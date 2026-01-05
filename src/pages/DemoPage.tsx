@@ -45,7 +45,7 @@ export const DemoPage = () => {
     setStep(2); // Go to processing
 
     // Use environment variable for API URL in production, or hardcoded fallback
-    const baseUrl = import.meta.env.VITE_API_URL || 'https://grateful-liberation-production-d036.up.railway.app';
+    const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
     const apiUrl = `${baseUrl}/api/demo/setup`;
 
     setErrorMsg(null);

@@ -31,7 +31,8 @@ export const Navbar = () => {
           <a href="#features" className="text-base font-medium text-gray-700 dark:text-white/80 hover:text-paymint-green transition-colors">Features</a>
           <a href="#pricing" className="text-base font-medium text-gray-700 dark:text-white/80 hover:text-paymint-green transition-colors">Pricing</a>
           <a href="#contact" className="text-base font-medium text-gray-700 dark:text-white/80 hover:text-paymint-green transition-colors">Contact</a>
-          <a href="#admin" className="text-base font-medium text-gray-700 dark:text-white/80 hover:text-paymint-green transition-colors">Admin Portal</a>
+          <a href="/login" className="text-base font-medium text-gray-700 dark:text-white/80 hover:text-paymint-green transition-colors">Owner Portal</a>
+          <a href="/signup" className="text-base font-medium text-gray-700 dark:text-white/80 hover:text-paymint-green transition-colors">Sign Up</a>
           <ThemeToggle />
           <a 
             href="#contact"
@@ -63,7 +64,8 @@ export const Navbar = () => {
               <a href="#features" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-gray-700 dark:text-white/80">Features</a>
               <a href="#pricing" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-gray-700 dark:text-white/80">Pricing</a>
               <a href="#contact" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-gray-700 dark:text-white/80">Contact</a>
-              <a href="#admin" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-gray-700 dark:text-white/80">Admin Portal</a>
+              <a href="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-gray-700 dark:text-white/80">Owner Portal</a>
+              <a href="/signup" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-gray-700 dark:text-white/80">Sign Up</a>
               <a 
                 href="#contact"
                 onClick={() => setIsMobileMenuOpen(false)}
