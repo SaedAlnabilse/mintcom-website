@@ -17,6 +17,7 @@ export function ReportsPage() {
     return date.toISOString().split('T')[0];
   });
   const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [selectedDateRange, setSelectedDateRange] = useState<string>('week');
 
   const [salesData, setSalesData] = useState<any>(null);
   const [topItems, setTopItems] = useState<any[]>([]);
@@ -79,7 +80,12 @@ export function ReportsPage() {
           break;
 
         case 'employees':
-          const empRes = await api.get('/reports/employees');
+          const empRes = await api.get('/reports/employees', {
+            params: {
+              startDate: start,
+              endDate: end,
+            },
+          });
           setEmployees(empRes.data || []);
           break;
       }
@@ -95,6 +101,7 @@ export function ReportsPage() {
   };
 
   const setQuickDate = (range: string) => {
+    setSelectedDateRange(range);
     const today = new Date();
     let start = new Date();
 
@@ -144,8 +151,8 @@ export function ReportsPage() {
             key={tab.id}
             onClick={() => setReportType(tab.id as ReportType)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-colors ${reportType === tab.id
-                ? 'bg-green-600 text-white'
-                : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
+              ? 'bg-green-600 text-white'
+              : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
               }`}
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -164,7 +171,10 @@ export function ReportsPage() {
               <button
                 key={range}
                 onClick={() => setQuickDate(range)}
-                className="px-3 py-1.5 text-sm bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 hover:text-white transition-colors capitalize"
+                className={`px-3 py-1.5 text-sm rounded-lg transition-colors capitalize ${selectedDateRange === range
+                    ? 'bg-green-600 text-white'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white'
+                  }`}
               >
                 {range === 'week' ? 'Last 7 Days' : range === 'month' ? 'Last 30 Days' : range === 'quarter' ? 'Last 90 Days' : range}
               </button>
@@ -228,26 +238,96 @@ export function ReportsPage() {
               </div>
 
               {/* Daily Sales Chart */}
-              {salesData.dailyBreakdown && salesData.dailyBreakdown.length > 0 && (
+              {salesData.dailyBreakdown && (
                 <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
                   <h3 className="text-lg font-semibold text-white mb-4">Daily Sales Trend</h3>
                   <div className="h-80">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={salesData.dailyBreakdown}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                        <XAxis dataKey="date" stroke="#9CA3AF" fontSize={12} />
-                        <YAxis stroke="#9CA3AF" fontSize={12} />
+                        <XAxis
+                          dataKey="date"
+                          stroke="#9CA3AF"
+                          fontSize={12}
+                          tickFormatter={(value) => new Date(value).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                        />
+                        <YAxis stroke="#9CA3AF" fontSize={12} tickFormatter={(value) => `$${value}`} />
                         <Tooltip
                           contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '8px' }}
                           labelStyle={{ color: '#fff' }}
                           formatter={(value) => formatCurrency(Number(value))}
+                          labelFormatter={(value) => new Date(value).toLocaleDateString()}
                         />
-                        <Line type="monotone" dataKey="revenue" stroke="#22c55e" strokeWidth={2} dot={{ fill: '#22c55e' }} />
+                        <Line type="monotone" dataKey="revenue" stroke="#22c55e" strokeWidth={2} dot={{ fill: '#22c55e' }} activeDot={{ r: 6 }} />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
                 </div>
               )}
+
+              {/* Breakdowns Row */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Payment Methods */}
+                <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
+                  <h3 className="text-lg font-semibold text-white mb-4">Sales by Payment Method</h3>
+                  <div className="h-80">
+                    {(!salesData.paymentMethodBreakdown || salesData.paymentMethodBreakdown.length === 0) ? (
+                      <div className="h-full flex items-center justify-center text-gray-500">No data available</div>
+                    ) : (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={salesData.paymentMethodBreakdown}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={100}
+                            label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
+                          >
+                            {salesData.paymentMethodBreakdown.map((_: any, index: number) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip
+                            contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '8px' }}
+                            formatter={(value) => formatCurrency(Number(value))}
+                          />
+                          <Legend />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    )}
+                  </div>
+                </div>
+
+                {/* Categories */}
+                <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
+                  <h3 className="text-lg font-semibold text-white mb-4">Sales by Category</h3>
+                  <div className="h-80">
+                    {(!salesData.categoryBreakdown || salesData.categoryBreakdown.length === 0) ? (
+                      <div className="h-full flex items-center justify-center text-gray-500">No data available</div>
+                    ) : (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                          data={salesData.categoryBreakdown}
+                          layout="vertical"
+                          margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#374151" />
+                          <XAxis type="number" stroke="#9CA3AF" fontSize={12} tickFormatter={(value) => `$${value}`} />
+                          <YAxis dataKey="name" type="category" stroke="#9CA3AF" fontSize={12} width={100} />
+                          <Tooltip
+                            contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '8px' }}
+                            cursor={{ fill: 'rgba(255, 255, 255, 0.05)' }}
+                            formatter={(value) => formatCurrency(Number(value))}
+                          />
+                          <Bar dataKey="value" fill="#8b5cf6" radius={[0, 4, 4, 0]} barSize={20} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
