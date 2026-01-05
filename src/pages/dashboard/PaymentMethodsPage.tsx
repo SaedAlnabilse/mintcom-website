@@ -37,6 +37,8 @@ export function PaymentMethodsPage() {
   const [newCardName, setNewCardName] = useState('');
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [selectedCardImage, setSelectedCardImage] = useState<File | null>(null);
+  const [cardImagePreview, setCardImagePreview] = useState<string | null>(null);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<PaymentMethodFormData>({
     resolver: zodResolver(paymentMethodSchema),
@@ -88,14 +90,32 @@ export function PaymentMethodsPage() {
     setShowModal(true);
   };
 
+  /* Helper to upload image */
+  const uploadImage = async (file: File, endpoint: string) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await api.post(endpoint, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data; // { success, imageUrl, imageKey }
+  };
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedImage(file);
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
+      reader.onloadend = () => setImagePreview(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCardImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedCardImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => setCardImagePreview(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
@@ -104,20 +124,30 @@ export function PaymentMethodsPage() {
     try {
       setIsSubmitting(true);
 
-      const formData = new FormData();
-      formData.append('name', data.name);
-      formData.append('isActive', String(data.isActive));
-      if (selectedImage) formData.append('image', selectedImage);
+      let imageUrl = editingMethod?.imageUrl;
+      let imageKey = (editingMethod as any)?.imageKey;
+
+      if (selectedImage) {
+        // Upload new image
+        const uploadRes = await uploadImage(selectedImage, '/payment-methods/upload-image');
+        if (uploadRes.success) {
+          imageUrl = uploadRes.imageUrl;
+          imageKey = uploadRes.imageKey;
+        }
+      }
+
+      const payload = {
+        name: data.name,
+        isActive: data.isActive,
+        imageUrl,
+        imageKey,
+      };
 
       if (editingMethod) {
-        await api.put(`/app-settings/payment-methods/${editingMethod.id}`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        await api.put(`/app-settings/payment-methods/${editingMethod.id}`, payload);
         toast.success('Payment method updated');
       } else {
-        await api.post('/app-settings/payment-methods', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        await api.post('/app-settings/payment-methods', payload);
         toast.success('Payment method created');
       }
 
@@ -142,14 +172,38 @@ export function PaymentMethodsPage() {
     }
   };
 
+  const openCardModal = () => {
+    setNewCardName('');
+    setSelectedCardImage(null);
+    setCardImagePreview(null);
+    setShowCardModal(true);
+  };
+
   const handleAddCardType = async () => {
     if (!newCardName.trim()) return;
 
     try {
       setIsSubmitting(true);
-      await api.post('/card-types', { name: newCardName });
+
+      let imageUrl, imageKey;
+      if (selectedCardImage) {
+        const uploadRes = await uploadImage(selectedCardImage, '/card-types/upload-image');
+        if (uploadRes.success) {
+          imageUrl = uploadRes.imageUrl;
+          imageKey = uploadRes.imageKey;
+        }
+      }
+
+      await api.post('/card-types', {
+        name: newCardName,
+        imageUrl,
+        imageKey
+      });
+
       toast.success('Card type added');
       setNewCardName('');
+      setSelectedCardImage(null);
+      setCardImagePreview(null);
       setShowCardModal(false);
       fetchCardTypes();
     } catch (err: any) {
@@ -220,9 +274,8 @@ export function PaymentMethodsPage() {
             {paymentMethods.map((method) => (
               <div
                 key={method.id}
-                className={`bg-gray-800 rounded-xl border p-5 ${
-                  method.isActive ? 'border-green-500/50' : 'border-gray-700'
-                }`}
+                className={`bg-gray-800 rounded-xl border p-5 ${method.isActive ? 'border-green-500/50' : 'border-gray-700'
+                  }`}
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-12 h-12 bg-gray-700 rounded-xl flex items-center justify-center overflow-hidden">
@@ -256,9 +309,8 @@ export function PaymentMethodsPage() {
 
                 <h3 className="text-white font-semibold text-lg mb-2">{method.name}</h3>
                 <div className="flex items-center gap-2">
-                  <span className={`px-2 py-1 text-xs font-medium rounded ${
-                    method.isActive ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'
-                  }`}>
+                  <span className={`px-2 py-1 text-xs font-medium rounded ${method.isActive ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'
+                    }`}>
                     {method.isActive ? 'Active' : 'Inactive'}
                   </span>
                   {method.isDefault && (
@@ -278,7 +330,7 @@ export function PaymentMethodsPage() {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-white">Card Types</h2>
           <button
-            onClick={() => setShowCardModal(true)}
+            onClick={openCardModal}
             className="px-3 py-1.5 text-sm bg-gray-700 text-white rounded-lg hover:bg-gray-600"
           >
             Add Card Type
@@ -399,6 +451,21 @@ export function PaymentMethodsPage() {
 
             <div className="p-6 space-y-4">
               <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Card Image</label>
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center border border-gray-600">
+                    {cardImagePreview ? (
+                      <img src={cardImagePreview} alt="Preview" className="w-full h-full object-contain" />
+                    ) : (
+                      <span className="text-2xl">💳</span>
+                    )}
+                  </div>
+                  <label className="px-3 py-1.5 bg-gray-700 text-white rounded-lg hover:bg-gray-600 cursor-pointer text-sm">
+                    Choose Image
+                    <input type="file" accept="image/*" onChange={handleCardImageChange} className="hidden" />
+                  </label>
+                </div>
+
                 <label className="block text-sm font-medium text-gray-300 mb-2">Card Name</label>
                 <input
                   type="text"

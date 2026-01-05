@@ -5,14 +5,15 @@ import toast from 'react-hot-toast';
 interface ActivityLog {
   id: string;
   userId: string;
-  user?: {
+  performedBy?: {
     username: string;
+    name: string;
   };
   action: string;
   description: string;
   metadata?: any;
   ipAddress?: string;
-  createdAt: string;
+  timestamp: string;
 }
 
 const actionColors: Record<string, string> = {
@@ -47,8 +48,11 @@ export function ActivityLogsPage() {
   const [selectedLog, setSelectedLog] = useState<ActivityLog | null>(null);
 
   useEffect(() => {
-    fetchLogs();
-  }, [page, actionFilter, dateFilter]);
+    const timer = setTimeout(() => {
+      fetchLogs();
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [page, actionFilter, dateFilter, searchQuery]);
 
   const fetchLogs = async () => {
     try {
@@ -57,6 +61,7 @@ export function ActivityLogsPage() {
       const params: any = {
         page,
         limit: 25,
+        search: searchQuery,
       };
 
       if (actionFilter !== 'all') {
@@ -93,15 +98,7 @@ export function ActivityLogsPage() {
     return actionColors[action] || 'bg-gray-500/20 text-gray-400';
   };
 
-  const filteredLogs = logs.filter(log => {
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      log.description?.toLowerCase().includes(query) ||
-      log.user?.username?.toLowerCase().includes(query) ||
-      log.action?.toLowerCase().includes(query)
-    );
-  });
+  const filteredLogs = logs;
 
   return (
     <div className="h-full overflow-y-auto bg-gray-900 p-6">
@@ -200,16 +197,19 @@ export function ActivityLogsPage() {
                   {filteredLogs.map((log) => (
                     <tr key={log.id} className="hover:bg-gray-700/30">
                       <td className="px-6 py-4 text-gray-300 text-sm whitespace-nowrap">
-                        {formatDate(log.createdAt)}
+                        {formatDate(log.timestamp)}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
                             <span className="text-white text-xs font-semibold">
-                              {log.user?.username?.charAt(0).toUpperCase() || '?'}
+                              {log.performedBy?.username?.charAt(0).toUpperCase() || log.performedBy?.name?.charAt(0).toUpperCase() || '?'}
                             </span>
                           </div>
-                          <span className="text-white">{log.user?.username || 'Unknown'}</span>
+                          <div className="flex flex-col">
+                            <span className="text-white text-sm font-medium">{log.performedBy?.username || 'Unknown'}</span>
+                            <span className="text-gray-400 text-xs">{log.performedBy?.name}</span>
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -286,12 +286,12 @@ export function ActivityLogsPage() {
             <div className="p-6 space-y-4">
               <div>
                 <p className="text-gray-400 text-sm">Timestamp</p>
-                <p className="text-white">{formatDate(selectedLog.createdAt)}</p>
+                <p className="text-white">{formatDate(selectedLog.timestamp)}</p>
               </div>
 
               <div>
                 <p className="text-gray-400 text-sm">User</p>
-                <p className="text-white">{selectedLog.user?.username || 'Unknown'}</p>
+                <p className="text-white">{selectedLog.performedBy?.username || 'Unknown'} ({selectedLog.performedBy?.name})</p>
               </div>
 
               <div>

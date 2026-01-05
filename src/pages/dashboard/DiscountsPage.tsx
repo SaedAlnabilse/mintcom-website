@@ -44,7 +44,15 @@ export function DiscountsPage() {
     try {
       setIsLoading(true);
       const response = await api.get('/app-settings/discounts');
-      setDiscounts(response.data || []);
+      // Map backend data (percentage only) to frontend structure
+      const mappedDiscounts = (response.data || []).map((d: any) => ({
+        id: d.id,
+        name: d.name,
+        type: 'percentage' as const,
+        value: d.percentage,
+        isActive: true, // Backend doesn't have isActive for discounts yet
+      }));
+      setDiscounts(mappedDiscounts);
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to load discounts');
     } finally {
@@ -62,9 +70,9 @@ export function DiscountsPage() {
     setEditingDiscount(discount);
     reset({
       name: discount.name,
-      type: discount.type,
+      type: 'percentage', // Always percentage for now
       value: discount.value,
-      isActive: discount.isActive,
+      isActive: true,
     });
     setShowModal(true);
   };
@@ -73,11 +81,17 @@ export function DiscountsPage() {
     try {
       setIsSubmitting(true);
 
+      const payload = {
+        name: data.name,
+        percentage: data.value,
+        adminOnly: false, // Default
+      };
+
       if (editingDiscount) {
-        await api.put(`/app-settings/discounts/${editingDiscount.id}`, data);
+        await api.put(`/app-settings/discounts/${editingDiscount.id}`, payload);
         toast.success('Discount updated successfully');
       } else {
-        await api.post('/app-settings/discounts', data);
+        await api.post('/app-settings/discounts', payload);
         toast.success('Discount created successfully');
       }
 
@@ -102,18 +116,7 @@ export function DiscountsPage() {
     }
   };
 
-  const toggleActive = async (discount: Discount) => {
-    try {
-      await api.put(`/app-settings/discounts/${discount.id}`, {
-        ...discount,
-        isActive: !discount.isActive,
-      });
-      toast.success(`Discount ${discount.isActive ? 'disabled' : 'enabled'}`);
-      fetchDiscounts();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to update discount');
-    }
-  };
+
 
   const formatValue = (discount: Discount) => {
     if (discount.type === 'percentage') {
@@ -164,38 +167,19 @@ export function DiscountsPage() {
           {discounts.map((discount) => (
             <div
               key={discount.id}
-              className={`bg-gray-800 rounded-xl border p-5 transition-colors ${
-                discount.isActive ? 'border-green-500/50' : 'border-gray-700'
-              }`}
+              className={`bg-gray-800 rounded-xl border p-5 transition-colors ${discount.isActive ? 'border-green-500/50' : 'border-gray-700'
+                }`}
             >
               <div className="flex items-start justify-between mb-4">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                  discount.type === 'percentage' ? 'bg-purple-500/20' : 'bg-blue-500/20'
-                }`}>
-                  <span className={`text-xl font-bold ${
-                    discount.type === 'percentage' ? 'text-purple-400' : 'text-blue-400'
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${discount.type === 'percentage' ? 'bg-purple-500/20' : 'bg-blue-500/20'
                   }`}>
+                  <span className={`text-xl font-bold ${discount.type === 'percentage' ? 'text-purple-400' : 'text-blue-400'
+                    }`}>
                     {discount.type === 'percentage' ? '%' : '$'}
                   </span>
                 </div>
                 <div className="flex gap-1">
-                  <button
-                    onClick={() => toggleActive(discount)}
-                    className={`p-2 rounded-lg transition-colors ${
-                      discount.isActive
-                        ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
-                        : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
-                    }`}
-                    title={discount.isActive ? 'Disable' : 'Enable'}
-                  >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      {discount.isActive ? (
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      ) : (
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      )}
-                    </svg>
-                  </button>
+                  {/* Active toggle not supported yet */}
                   <button
                     onClick={() => openEditModal(discount)}
                     className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
@@ -218,14 +202,12 @@ export function DiscountsPage() {
               <h3 className="text-white font-semibold text-lg mb-1">{discount.name}</h3>
               <p className="text-2xl font-bold text-green-400 mb-3">{formatValue(discount)}</p>
               <div className="flex items-center gap-2">
-                <span className={`px-2 py-1 text-xs font-medium rounded ${
-                  discount.type === 'percentage' ? 'bg-purple-500/20 text-purple-400' : 'bg-blue-500/20 text-blue-400'
-                }`}>
+                <span className={`px-2 py-1 text-xs font-medium rounded ${discount.type === 'percentage' ? 'bg-purple-500/20 text-purple-400' : 'bg-blue-500/20 text-blue-400'
+                  }`}>
                   {discount.type === 'percentage' ? 'Percentage' : 'Fixed Amount'}
                 </span>
-                <span className={`px-2 py-1 text-xs font-medium rounded ${
-                  discount.isActive ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'
-                }`}>
+                <span className={`px-2 py-1 text-xs font-medium rounded ${discount.isActive ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'
+                  }`}>
                   {discount.isActive ? 'Active' : 'Inactive'}
                 </span>
               </div>
@@ -263,25 +245,16 @@ export function DiscountsPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Type *</label>
-                <div className="flex gap-2">
-                  <label className={`flex-1 p-3 rounded-lg border cursor-pointer transition-colors ${
-                    discountType === 'percentage' ? 'border-green-500 bg-green-500/10' : 'border-gray-600 bg-gray-700'
-                  }`}>
-                    <input type="radio" {...register('type')} value="percentage" className="sr-only" />
+                <div className="flex w-full">
+                  <label className={`flex-1 p-3 rounded-lg border cursor-pointer transition-colors ${discountType === 'percentage' ? 'border-green-500 bg-green-500/10' : 'border-gray-600 bg-gray-700'
+                    }`}>
+                    <input type="radio" {...register('type')} value="percentage" className="sr-only" defaultChecked />
                     <div className="text-center">
                       <span className="text-2xl">%</span>
                       <p className="text-sm text-gray-300 mt-1">Percentage</p>
                     </div>
                   </label>
-                  <label className={`flex-1 p-3 rounded-lg border cursor-pointer transition-colors ${
-                    discountType === 'fixed' ? 'border-green-500 bg-green-500/10' : 'border-gray-600 bg-gray-700'
-                  }`}>
-                    <input type="radio" {...register('type')} value="fixed" className="sr-only" />
-                    <div className="text-center">
-                      <span className="text-2xl">$</span>
-                      <p className="text-sm text-gray-300 mt-1">Fixed Amount</p>
-                    </div>
-                  </label>
+                  {/* Fixed amount not supported by backend yet */}
                 </div>
               </div>
 
@@ -298,15 +271,7 @@ export function DiscountsPage() {
                 {errors.value && <p className="text-red-400 text-sm mt-1">{errors.value.message}</p>}
               </div>
 
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  {...register('isActive')}
-                  id="isActive"
-                  className="w-5 h-5 rounded border-gray-600 bg-gray-700 text-green-500 focus:ring-green-500"
-                />
-                <label htmlFor="isActive" className="text-gray-300">Discount is active</label>
-              </div>
+              {/* Active status not supported by backend yet */}
 
               <div className="flex gap-3 pt-4">
                 <button

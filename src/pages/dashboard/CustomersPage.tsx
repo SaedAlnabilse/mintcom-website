@@ -44,6 +44,7 @@ export function CustomersPage() {
   const [pointsAmount, setPointsAmount] = useState(0);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [sortOption, setSortOption] = useState('newest');
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<CustomerFormData>({
     resolver: zodResolver(customerSchema),
@@ -51,16 +52,66 @@ export function CustomersPage() {
 
   useEffect(() => {
     fetchCustomers();
-  }, [page]);
+  }, [page, sortOption]);
 
   const fetchCustomers = async () => {
     try {
       setIsLoading(true);
+
+      let sortBy = 'joinDate';
+      let sortOrder = 'desc';
+
+      switch (sortOption) {
+        case 'oldest':
+          sortBy = 'joinDate';
+          sortOrder = 'asc';
+          break;
+        case 'name_asc':
+          sortBy = 'name';
+          sortOrder = 'asc';
+          break;
+        case 'name_desc':
+          sortBy = 'name';
+          sortOrder = 'desc';
+          break;
+        case 'points_high':
+          sortBy = 'points';
+          sortOrder = 'desc';
+          break;
+        case 'points_low':
+          sortBy = 'points';
+          sortOrder = 'asc';
+          break;
+        case 'spent_high':
+          sortBy = 'totalSpent';
+          sortOrder = 'desc';
+          break;
+        case 'visits_high':
+          sortBy = 'visits';
+          sortOrder = 'desc';
+          break;
+      }
+
       const response = await api.get('/customers', {
-        params: { page, limit: 20 },
+        params: {
+          page,
+          limit: 20,
+          search: searchQuery,
+          sortBy,
+          sortOrder
+        },
       });
-      setCustomers(response.data.customers || response.data || []);
-      setTotalPages(response.data.totalPages || 1);
+      const data = response.data;
+      if (data && Array.isArray(data.customers)) {
+        setCustomers(data.customers);
+        setTotalPages(data.pagination?.totalPages || 1);
+      } else if (Array.isArray(data)) {
+        setCustomers(data);
+        setTotalPages(1);
+      } else {
+        setCustomers([]);
+        setTotalPages(1);
+      }
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to load customers');
     } finally {
@@ -69,22 +120,8 @@ export function CustomersPage() {
   };
 
   const searchCustomers = async () => {
-    if (!searchQuery.trim()) {
-      fetchCustomers();
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      const response = await api.get('/customers/search', {
-        params: { q: searchQuery },
-      });
-      setCustomers(response.data || []);
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Search failed');
-    } finally {
-      setIsLoading(false);
-    }
+    setPage(1);
+    fetchCustomers();
   };
 
   const openCreateModal = () => {
@@ -111,7 +148,14 @@ export function CustomersPage() {
 
     try {
       const response = await api.get(`/customers/${customer.id}/orders`);
-      setCustomerOrders(response.data || []);
+      const data = response.data;
+      if (data && Array.isArray(data.orders)) {
+        setCustomerOrders(data.orders);
+      } else if (Array.isArray(data)) {
+        setCustomerOrders(data);
+      } else {
+        setCustomerOrders([]);
+      }
     } catch (err) {
       console.error('Failed to load customer orders');
       setCustomerOrders([]);
@@ -247,6 +291,20 @@ export function CustomersPage() {
             Clear
           </button>
         )}
+        <select
+          value={sortOption}
+          onChange={(e) => setSortOption(e.target.value)}
+          className="px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+        >
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="name_asc">Name (A-Z)</option>
+          <option value="name_desc">Name (Z-A)</option>
+          <option value="points_high">Points (High-Low)</option>
+          <option value="points_low">Points (Low-High)</option>
+          <option value="spent_high">Total Spent (High-Low)</option>
+          <option value="visits_high">Visits (High-Low)</option>
+        </select>
       </div>
 
       {/* Customers Table */}
@@ -285,57 +343,61 @@ export function CustomersPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-700">
-                  {customers.map((customer) => (
-                    <tr
-                      key={customer.id}
-                      className="hover:bg-gray-700/30 cursor-pointer"
-                      onClick={() => openDetailModal(customer)}
-                    >
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                            <span className="text-white font-semibold">
-                              {customer.name.charAt(0).toUpperCase()}
-                            </span>
+                  {customers.map((customer) => {
+                    if (!customer) return null;
+                    const initial = customer.name ? customer.name.charAt(0).toUpperCase() : '?';
+                    return (
+                      <tr
+                        key={customer.id}
+                        className="hover:bg-gray-700/30 cursor-pointer"
+                        onClick={() => openDetailModal(customer)}
+                      >
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                              <span className="text-white font-semibold">
+                                {initial}
+                              </span>
+                            </div>
+                            <div>
+                              <p className="text-white font-medium">{customer.name || 'Unknown'}</p>
+                              {customer.email && <p className="text-gray-400 text-sm">{customer.email}</p>}
+                            </div>
                           </div>
-                          <div>
-                            <p className="text-white font-medium">{customer.name}</p>
-                            {customer.email && <p className="text-gray-400 text-sm">{customer.email}</p>}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-gray-300">{customer.phone}</td>
-                      <td className="px-6 py-4 text-green-400 font-medium">{customer.points}</td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-block px-2 py-1 text-xs font-medium rounded ${getTierColor(customer.tier)}`}>
-                          {customer.tier || 'Bronze'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-white">{formatCurrency(customer.totalSpent)}</td>
-                      <td className="px-6 py-4 text-gray-300">{customer.totalVisits}</td>
-                      <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
-                        <button
-                          onClick={() => openPointsModal(customer, 'add')}
-                          className="text-green-500 hover:text-green-400 mr-2"
-                          title="Add Points"
-                        >
-                          +Pts
-                        </button>
-                        <button
-                          onClick={() => openEditModal(customer)}
-                          className="text-blue-500 hover:text-blue-400 mr-2"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(customer.id, customer.name)}
-                          className="text-red-500 hover:text-red-400"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                        <td className="px-6 py-4 text-gray-300">{customer.phone}</td>
+                        <td className="px-6 py-4 text-green-400 font-medium">{customer.points}</td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-block px-2 py-1 text-xs font-medium rounded ${getTierColor(customer.tier)}`}>
+                            {customer.tier || 'Bronze'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-white">{formatCurrency(customer.totalSpent)}</td>
+                        <td className="px-6 py-4 text-gray-300">{customer.totalVisits}</td>
+                        <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
+                          <button
+                            onClick={() => openPointsModal(customer, 'add')}
+                            className="text-green-500 hover:text-green-400 mr-2"
+                            title="Add Points"
+                          >
+                            +Pts
+                          </button>
+                          <button
+                            onClick={() => openEditModal(customer)}
+                            className="text-blue-500 hover:text-blue-400 mr-2"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(customer.id, customer.name)}
+                            className="text-red-500 hover:text-red-400"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -499,11 +561,11 @@ export function CustomersPage() {
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center">
                   <span className="text-white text-2xl font-bold">
-                    {selectedCustomer.name.charAt(0).toUpperCase()}
+                    {selectedCustomer.name ? selectedCustomer.name.charAt(0).toUpperCase() : '?'}
                   </span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white">{selectedCustomer.name}</h3>
+                  <h3 className="text-xl font-bold text-white">{selectedCustomer.name || 'Unknown'}</h3>
                   <p className="text-gray-400">{selectedCustomer.phone}</p>
                   {selectedCustomer.email && <p className="text-gray-400">{selectedCustomer.email}</p>}
                 </div>
