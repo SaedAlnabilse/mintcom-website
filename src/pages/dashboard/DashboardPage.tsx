@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
-import { startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns';
+import { startOfDay, endOfDay } from 'date-fns';
 import api from '../../config/api';
+import { OrderDetailModal } from '../../components/OrderDetailModal';
 
 interface DashboardData {
-  todaySales: number;
-  todayOrders: number;
-  todayRevenue: number;
+  totalSales: number;
+  totalOrders: number;
+  revenue: number;
   averageOrderValue: number;
   activeShift: any;
   topSellingItems: any[];
@@ -21,74 +22,57 @@ export function DashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const [dateRange, setDateRange] = useState('today');
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
 
   useEffect(() => {
     fetchDashboardData();
     // Auto-refresh every 30 seconds
     const interval = setInterval(fetchDashboardData, 30000);
     return () => clearInterval(interval);
-  }, [dateRange]);
-
-  const getDateParams = (range: string) => {
-    const now = new Date();
-    let start, end;
-
-    switch (range) {
-      case 'week':
-        start = startOfWeek(now, { weekStartsOn: 1 });
-        end = endOfWeek(now, { weekStartsOn: 1 });
-        break;
-      case 'month':
-        start = startOfMonth(now);
-        end = endOfMonth(now);
-        break;
-      case 'today':
-      default:
-        start = startOfDay(now);
-        end = endOfDay(now);
-        break;
-    }
-
-    return {
-      startDate: start.toISOString(),
-      endDate: end.toISOString(),
-    };
-  };
+  }, []);
 
   const fetchDashboardData = async () => {
     try {
       setIsLoading(true);
-      const { startDate, endDate } = getDateParams(dateRange);
 
-      // Fetch multiple endpoints in parallel
-      const [dashboardRes, topItemsRes, ordersRes, peakHoursRes] = await Promise.all([
-        api.get('/reports/owner-dashboard'),
+      // 1. Fetch Dashboard Summary to get Active Shift
+      const dashboardRes = await api.get('/reports/owner-dashboard');
+      const ownerData = dashboardRes.data;
+      const metrics = ownerData.metrics || {};
+      const activeShift = metrics.activeShift;
+
+      // Determine time range from active/last shift
+      let startDate = startOfDay(new Date()).toISOString();
+      let endDate = endOfDay(new Date()).toISOString();
+
+      if (activeShift && activeShift.startTime) {
+        startDate = activeShift.startTime;
+        endDate = activeShift.endTime || new Date().toISOString();
+      }
+
+      // 2. Fetch details based on shift timing
+      const [topItemsRes, ordersRes, peakHoursRes] = await Promise.all([
         api.get('/reports/top-selling-items', {
           params: {
             limit: 5,
             startDate,
-            endDate
-          }
+            endDate,
+          },
         }),
         api.get('/reports/orders-history', {
           params: {
             limit: 5,
             startDate,
-            endDate
-          }
+            endDate,
+          },
         }),
         api.get('/reports/peak-hours', {
           params: {
             startDate,
-            endDate
-          }
+            endDate,
+          },
         }).catch(() => ({ data: [] })),
       ]);
-
-      const ownerData = dashboardRes.data;
-      const metrics = ownerData.metrics || {};
-      const activeShift = metrics.activeShift;
 
       // Transform peak hours data for chart
       const salesByHour = (peakHoursRes.data || []).map((item: any) => ({
@@ -100,14 +84,20 @@ export function DashboardPage() {
       const paymentMethodBreakdown = [
         { method: 'Cash', total: metrics.cashSales || 0 },
         { method: 'Card', total: metrics.cardSales || 0 },
-        { method: 'Other', total: metrics.otherSales || 0 },
-      ].filter(p => p.total > 0);
+        { method: 'Other', total: metrics.otherSales || metrics.otherPayments || 0 },
+      ].filter((p) => p.total > 0);
+
+      // Map metrics from dashboard summary
+      // Note: metrics keys depend on backend implementation. 
+      // Based on dashboard.service: netSales, numberOfOrders, etc might be used if totalSales undefined.
+      const totalSales = metrics.totalSales ?? metrics.netSales ?? 0;
+      const totalOrders = metrics.orderCount ?? metrics.numberOfOrders ?? 0;
 
       setData({
-        todaySales: metrics.totalSales || 0,
-        todayOrders: metrics.orderCount || 0,
-        todayRevenue: metrics.totalSales || 0,
-        averageOrderValue: metrics.orderCount > 0 ? (metrics.totalSales / metrics.orderCount) : 0,
+        totalSales: totalSales,
+        totalOrders: totalOrders,
+        revenue: totalSales,
+        averageOrderValue: totalOrders > 0 ? totalSales / totalOrders : 0,
         activeShift: activeShift,
         topSellingItems: topItemsRes.data || [],
         recentOrders: ordersRes.data?.orders || ordersRes.data || [],
@@ -176,15 +166,6 @@ export function DashboardPage() {
           <p className="text-gray-400 text-sm">Real-time overview of your restaurant</p>
         </div>
         <div className="flex items-center gap-3">
-          <select
-            value={dateRange}
-            onChange={(e) => setDateRange(e.target.value)}
-            className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-          >
-            <option value="today">Today</option>
-            <option value="week">This Week</option>
-            <option value="month">This Month</option>
-          </select>
           <button
             onClick={fetchDashboardData}
             className="p-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
@@ -212,7 +193,7 @@ export function DashboardPage() {
             </div>
           </div>
           <div className="text-right">
-            <p className="text-white font-semibold">{formatCurrency(data.activeShift.totalSales || 0)}</p>
+            <p className="text-white font-semibold">{formatCurrency(data.totalSales || 0)}</p>
             <p className="text-green-300 text-sm">Shift Sales</p>
           </div>
         </div>
@@ -228,8 +209,8 @@ export function DashboardPage() {
               </svg>
             </div>
           </div>
-          <p className="text-gray-400 text-sm">Today's Revenue</p>
-          <p className="text-2xl font-bold text-white">{formatCurrency(data?.todayRevenue || 0)}</p>
+          <p className="text-gray-400 text-sm">Shift Revenue</p>
+          <p className="text-2xl font-bold text-white">{formatCurrency(data?.revenue || 0)}</p>
         </div>
 
         <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
@@ -240,8 +221,8 @@ export function DashboardPage() {
               </svg>
             </div>
           </div>
-          <p className="text-gray-400 text-sm">Today's Orders</p>
-          <p className="text-2xl font-bold text-white">{data?.todayOrders || 0}</p>
+          <p className="text-gray-400 text-sm">Shift Orders</p>
+          <p className="text-2xl font-bold text-white">{data?.totalOrders || 0}</p>
         </div>
 
         <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
@@ -265,7 +246,7 @@ export function DashboardPage() {
             </div>
           </div>
           <p className="text-gray-400 text-sm">Total Sales</p>
-          <p className="text-2xl font-bold text-white">{formatCurrency(data?.todaySales || 0)}</p>
+          <p className="text-2xl font-bold text-white">{formatCurrency(data?.totalSales || 0)}</p>
         </div>
       </div>
 
@@ -377,7 +358,8 @@ export function DashboardPage() {
               data.recentOrders.map((order) => (
                 <div
                   key={order.id}
-                  className="flex items-center justify-between p-3 bg-gray-700/50 rounded-lg"
+                  onClick={() => setSelectedOrder(order)}
+                  className="flex items-center justify-between p-3 bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-700 transition-colors"
                 >
                   <div>
                     <p className="text-white font-medium">Order #{order.orderNumber}</p>
@@ -406,6 +388,14 @@ export function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {selectedOrder && (
+        <OrderDetailModal
+          order={selectedOrder}
+          onClose={() => setSelectedOrder(null)}
+          onRefundSuccess={fetchDashboardData}
+        />
+      )}
     </div>
   );
 }

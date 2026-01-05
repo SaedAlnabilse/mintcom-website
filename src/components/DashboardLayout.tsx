@@ -30,9 +30,8 @@ export function DashboardLayout() {
     <div className="min-h-screen bg-gray-900 flex">
       {/* Sidebar */}
       <aside
-        className={`${
-          sidebarOpen ? 'w-64' : 'w-20'
-        } bg-gray-800 border-r border-gray-700 flex flex-col transition-all duration-300`}
+        className={`${sidebarOpen ? 'w-64' : 'w-20'
+          } bg-gray-800 border-r border-gray-700 flex flex-col transition-all duration-300`}
       >
         {/* Logo */}
         <div className="p-4 border-b border-gray-700 flex items-center justify-between">
@@ -67,11 +66,11 @@ export function DashboardLayout() {
                 <NavLink
                   to={item.path}
                   end={item.path === '/dashboard'}
+                  title={!sidebarOpen ? item.label : undefined}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                      isActive
-                        ? 'bg-green-600 text-white'
-                        : 'text-gray-400 hover:text-white hover:bg-gray-700'
+                    `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive
+                      ? 'bg-green-600 text-white'
+                      : 'text-gray-400 hover:text-white hover:bg-gray-700'
                     }`
                   }
                 >
