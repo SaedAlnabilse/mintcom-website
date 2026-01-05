@@ -49,7 +49,7 @@ export function DiscountsPage() {
         id: d.id,
         name: d.name,
         type: 'percentage' as const,
-        value: d.percentage,
+        value: d.percentage * 100,
         isActive: true, // Backend doesn't have isActive for discounts yet
       }));
       setDiscounts(mappedDiscounts);
@@ -83,7 +83,7 @@ export function DiscountsPage() {
 
       const payload = {
         name: data.name,
-        percentage: data.value,
+        percentage: data.value / 100,
         adminOnly: false, // Default
       };
 
