@@ -1,34 +1,24 @@
 import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
-
-const productSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  description: z.string().optional(),
-  price: z.number().min(0, 'Price must be positive'),
-  categoryId: z.string().optional(),
-  isAvailable: z.boolean(),
-  availableStock: z.number().optional(),
-  barcode: z.string().optional(),
-});
-
-type ProductFormData = z.infer<typeof productSchema>;
+import { ConfirmModal } from '../../components/ConfirmModal';
+import { ProductFormModal } from '../../components/forms/ProductFormModal';
 
 interface Product {
   id: string;
   name: string;
   description?: string;
   price: number;
+  costPrice?: number;
   categoryId?: string;
   category?: { id: string; name: string };
   image?: string;
   isAvailable: boolean;
   availableStock?: number;
   trackStock?: boolean;
+  lowStockThresholdYellow?: number;
   barcode?: string;
+  type?: 'ITEM' | 'ADDON';
 }
 
 interface Category {
@@ -45,23 +35,24 @@ export function ProductsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<ProductFormData>({
-    resolver: zodResolver(productSchema),
-    defaultValues: {
-      isAvailable: true,
-      price: 0,
-    },
+  const [confirmConfig, setConfirmConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    type?: 'danger' | 'success' | 'warning';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => { },
   });
 
   // Helper to get full image URL
   const getImageUrl = (imagePath?: string) => {
     if (!imagePath) return null;
     if (imagePath.startsWith('http')) return imagePath;
-    // Always use production URL for images since they're stored on Railway
     const baseUrl = 'https://grateful-liberation-production-d036.up.railway.app';
     return `${baseUrl}${imagePath.startsWith('/') ? '' : '/'}${imagePath}`;
   };
@@ -94,54 +85,17 @@ export function ProductsPage() {
 
   const openCreateModal = () => {
     setEditingProduct(null);
-    reset({ name: '', description: '', price: 0, categoryId: '', isAvailable: true, availableStock: undefined, barcode: '' });
-    setSelectedImage(null);
-    setImagePreview(null);
     setShowModal(true);
   };
 
   const openEditModal = (product: Product) => {
     setEditingProduct(product);
-    reset({
-      name: product.name,
-      description: product.description || '',
-      price: product.price,
-      categoryId: product.categoryId || '',
-      isAvailable: product.isAvailable,
-      availableStock: product.availableStock,
-      barcode: product.barcode || '',
-    });
-    setSelectedImage(null);
-    setImagePreview(getImageUrl(product.image));
     setShowModal(true);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const onSubmit = async (data: ProductFormData) => {
+  const onSubmit = async (formData: FormData) => {
     try {
       setIsSubmitting(true);
-
-      const formData = new FormData();
-      formData.append('name', data.name);
-      formData.append('price', String(data.price));
-      formData.append('isAvailable', String(data.isAvailable));
-      formData.append('trackStock', data.availableStock !== undefined && data.availableStock > 0 ? 'true' : 'false');
-      if (data.description) formData.append('description', data.description);
-      if (data.categoryId) formData.append('categoryId', data.categoryId);
-      if (data.availableStock !== undefined) formData.append('availableStock', String(data.availableStock));
-      if (data.barcode) formData.append('barcode', data.barcode);
-      if (selectedImage) formData.append('image', selectedImage);
 
       if (editingProduct) {
         await api.patch(`/api/items/${editingProduct.id}`, formData, {
@@ -165,15 +119,21 @@ export function ProductsPage() {
   };
 
   const handleDelete = async (productId: string) => {
-    if (!confirm('Are you sure you want to delete this product?')) return;
-
-    try {
-      await api.delete(`/api/items/${productId}`);
-      toast.success('Product deleted successfully');
-      fetchProducts();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to delete product');
-    }
+    setConfirmConfig({
+      isOpen: true,
+      title: 'Delete Product',
+      message: 'Are you sure you want to delete this product? This action cannot be undone.',
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await api.delete(`/api/items/${productId}`);
+          toast.success('Product deleted successfully');
+          fetchProducts();
+        } catch (err: any) {
+          toast.error(err.response?.data?.message || 'Failed to delete product');
+        }
+      }
+    });
   };
 
   const filteredProducts = products.filter((product) => {
@@ -183,7 +143,11 @@ export function ProductsPage() {
   });
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'JOD',
+      minimumFractionDigits: 2,
+    }).format(value).replace('JOD', '').trim() + ' JOD';
   };
 
   return (
@@ -357,146 +321,24 @@ export function ProductsPage() {
       )}
 
       {/* Product Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-700 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-white">
-                {editingProduct ? 'Edit Product' : 'Add Product'}
-              </h2>
-              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-white">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
+      <ProductFormModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onSubmit={onSubmit}
+        onDelete={editingProduct ? () => handleDelete(editingProduct.id) : undefined}
+        initialData={editingProduct}
+        categories={categories}
+        isSubmitting={isSubmitting}
+      />
 
-            <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
-              {/* Image Upload */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Product Image</label>
-                <div className="flex items-center gap-4">
-                  <div className="w-24 h-24 bg-gray-700 rounded-lg overflow-hidden flex items-center justify-center">
-                    {imagePreview ? (
-                      <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                    ) : (
-                      <svg className="w-8 h-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    )}
-                  </div>
-                  <label className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 cursor-pointer transition-colors">
-                    Choose Image
-                    <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
-                  </label>
-                </div>
-              </div>
-
-              {/* Name */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Name *</label>
-                <input
-                  type="text"
-                  {...register('name')}
-                  className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-                {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>}
-              </div>
-
-              {/* Description */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
-                <textarea
-                  {...register('description')}
-                  rows={3}
-                  className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-              </div>
-
-              {/* Price & Category */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Price *</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    {...register('price', { valueAsNumber: true })}
-                    className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                  {errors.price && <p className="text-red-400 text-sm mt-1">{errors.price.message}</p>}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Category</label>
-                  <select
-                    {...register('categoryId')}
-                    className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    <option value="">No Category</option>
-                    {categories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>{cat.name}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Stock */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Stock Quantity</label>
-                  <input
-                    type="number"
-                    {...register('availableStock', { valueAsNumber: true })}
-                    className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Barcode</label>
-                  <input
-                    type="text"
-                    {...register('barcode')}
-                    className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                </div>
-              </div>
-
-              {/* In Stock Toggle */}
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  {...register('isAvailable')}
-                  id="isAvailable"
-                  className="w-5 h-5 rounded border-gray-600 bg-gray-700 text-green-500 focus:ring-green-500"
-                />
-                <label htmlFor="isAvailable" className="text-gray-300">Product is in stock</label>
-              </div>
-
-              {/* Actions */}
-              <div className="flex gap-3 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="flex-1 py-2.5 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex-1 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-600 transition-colors flex items-center justify-center gap-2"
-                >
-                  {isSubmitting && (
-                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                  )}
-                  {editingProduct ? 'Update' : 'Create'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <ConfirmModal
+        isOpen={confirmConfig.isOpen}
+        onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
+        onConfirm={confirmConfig.onConfirm}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        type={confirmConfig.type}
+      />
     </div>
   );
 }

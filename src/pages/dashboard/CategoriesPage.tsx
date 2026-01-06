@@ -1,24 +1,17 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, Legend } from 'recharts';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
-
-const categorySchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  description: z.string().optional(),
-  sortOrder: z.number().optional(),
-});
-
-type CategoryFormData = z.infer<typeof categorySchema>;
+import { ConfirmModal } from '../../components/ConfirmModal';
+import { CategoryFormModal } from '../../components/forms/CategoryFormModal';
 
 interface Category {
   id: string;
   name: string;
   description?: string;
   sortOrder: number;
+  icon?: string;
+  color?: string;
   _count?: { items: number };
 }
 
@@ -41,9 +34,17 @@ export function CategoriesPage() {
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<CategoryFormData>({
-    resolver: zodResolver(categorySchema),
+  const [confirmConfig, setConfirmConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    type?: 'danger' | 'success' | 'warning';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => { },
   });
 
   useEffect(() => {
@@ -69,35 +70,30 @@ export function CategoriesPage() {
 
   const openCreateModal = () => {
     setEditingCategory(null);
-    reset({ name: '', description: '', sortOrder: 0 });
     setShowModal(true);
   };
 
   const openEditModal = (e: React.MouseEvent, category: Category) => {
     e.stopPropagation();
     setEditingCategory(category);
-    reset({
-      name: category.name,
-      description: category.description || '',
-      sortOrder: category.sortOrder,
-    });
     setShowModal(true);
   };
 
-  const onSubmit = async (data: CategoryFormData) => {
+  const onSubmit = async (name: string, icon: string, color: string) => {
     try {
       setIsSubmitting(true);
+      const payload = { name, icon, color };
 
       if (editingCategory) {
-        await api.patch(`/api/categories/${editingCategory.id}`, data);
+        await api.patch(`/api/categories/${editingCategory.id}`, payload);
         toast.success('Category updated successfully');
       } else {
-        await api.post('/api/categories', data);
+        await api.post('/api/categories', payload);
         toast.success('Category created successfully');
       }
 
       setShowModal(false);
-      fetchData(); // Refresh both to keep counts in sync ideally
+      fetchData();
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to save category');
     } finally {
@@ -105,24 +101,33 @@ export function CategoriesPage() {
     }
   };
 
-  const handleDelete = async (e: React.MouseEvent, categoryId: string, itemCount: number) => {
-    e.stopPropagation();
-    if (itemCount > 0) {
-      if (!confirm(`This category has ${itemCount} products. Deleting it will remove the category from those products. Continue?`)) {
-        return;
+  const handleDelete = async (categoryId: string) => {
+    const itemCount = categories.find(c => c.id === categoryId)?._count?.items || 0;
+    
+    setConfirmConfig({
+      isOpen: true,
+      title: 'Delete Category',
+      message: itemCount > 0
+        ? `This category has ${itemCount} products. Deleting it will remove the category from those products. Continue?`
+        : 'Are you sure you want to delete this category?',
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await api.delete(`/api/categories/${categoryId}`);
+          toast.success('Category deleted successfully');
+          fetchData();
+        } catch (err: any) {
+          toast.error(err.response?.data?.message || 'Failed to delete category');
+        }
       }
-    } else if (!confirm('Are you sure you want to delete this category?')) {
-      return;
-    }
-
-    try {
-      await api.delete(`/api/categories/${categoryId}`);
-      toast.success('Category deleted successfully');
-      fetchData();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to delete category');
-    }
+    });
   };
+  
+  // Wrap handle delete for the event listener
+  const handleDeleteClick = (e: React.MouseEvent, categoryId: string) => {
+      e.stopPropagation();
+      handleDelete(categoryId);
+  }
 
   const filteredCategories = useMemo(() => {
     return categories.filter(c =>
@@ -158,18 +163,14 @@ export function CategoriesPage() {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
-    }).format(value);
+      currency: 'JOD',
+      minimumFractionDigits: 2,
+    }).format(value).replace('JOD', '').trim() + ' JOD';
   };
 
   const colors = [
     '#22c55e', '#3b82f6', '#8b5cf6', '#f59e0b',
     '#ef4444', '#ec4899', '#6366f1', '#06b6d4'
-  ];
-
-  const bgColors = [
-    'bg-green-500', 'bg-blue-500', 'bg-purple-500', 'bg-yellow-500',
-    'bg-red-500', 'bg-pink-500', 'bg-indigo-500', 'bg-cyan-500'
   ];
 
   const borderColors = [
@@ -342,7 +343,7 @@ export function CategoriesPage() {
                   </svg>
                 </button>
                 <button
-                  onClick={(e) => handleDelete(e, category.id, category._count?.items || 0)}
+                  onClick={(e) => handleDeleteClick(e, category.id)}
                   className="p-1.5 bg-gray-700 text-gray-300 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors shadow-md"
                   title="Delete"
                 >
@@ -353,8 +354,12 @@ export function CategoriesPage() {
               </div>
 
               <div className="flex items-center gap-4 mb-4">
-                <div className={`w-14 h-14 ${bgColors[index % bgColors.length]} rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
-                  <span className="text-white font-bold text-xl">
+                <div 
+                    className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}
+                    style={{ backgroundColor: category.color || '#22c55e' }}
+                >
+                  {/* We could use the icon here if we had the map in this file, but char is fine for now or pass icon map */}
+                   <span className="text-white font-bold text-xl">
                     {category.name.charAt(0).toUpperCase()}
                   </span>
                 </div>
@@ -398,7 +403,10 @@ export function CategoriesPage() {
           <div className="bg-gray-800 rounded-2xl border border-gray-700 w-full max-w-4xl shadow-2xl max-h-[85vh] flex flex-col" onClick={e => e.stopPropagation()}>
             <div className="p-6 border-b border-gray-700 flex items-center justify-between bg-gray-800/50 rounded-t-2xl">
               <div className="flex items-center gap-4">
-                <div className={`w-12 h-12 ${bgColors[categories.indexOf(viewingCategory) % bgColors.length]} rounded-xl flex items-center justify-center shadow-lg`}>
+                <div 
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg`}
+                    style={{ backgroundColor: viewingCategory.color || '#22c55e' }}
+                >
                   <span className="text-white font-bold text-xl">
                     {viewingCategory.name.charAt(0).toUpperCase()}
                   </span>
@@ -477,80 +485,23 @@ export function CategoriesPage() {
       )}
 
       {/* Category Edit/Create Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 w-full max-w-md shadow-2xl">
-            <div className="p-6 border-b border-gray-700 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-white">
-                {editingCategory ? 'Edit Category' : 'Add Category'}
-              </h2>
-              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-white transition-colors">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
+      <CategoryFormModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onSubmit={onSubmit}
+        onDelete={editingCategory ? () => handleDelete(editingCategory.id) : undefined}
+        initialData={editingCategory}
+        isSubmitting={isSubmitting}
+      />
 
-            <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-5">
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Category Name *</label>
-                <input
-                  type="text"
-                  {...register('name')}
-                  autoFocus
-                  className="w-full px-4 py-2.5 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500 transition-all focus:bg-gray-700"
-                  placeholder="e.g., Beverages"
-                />
-                {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
-                <textarea
-                  {...register('description')}
-                  rows={3}
-                  className="w-full px-4 py-2.5 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500 transition-all focus:bg-gray-700 resize-none"
-                  placeholder="Review category purpose..."
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Sort Order</label>
-                <input
-                  type="number"
-                  {...register('sortOrder', { valueAsNumber: true })}
-                  className="w-full px-4 py-2.5 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500 transition-all focus:bg-gray-700"
-                  placeholder="0"
-                />
-                <p className="text-gray-500 text-xs mt-1">Lower numbers appear first in lists.</p>
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="flex-1 py-2.5 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex-1 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-600 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-green-900/20"
-                >
-                  {isSubmitting && (
-                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                  )}
-                  {editingCategory ? 'Update' : 'Create'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <ConfirmModal
+        isOpen={confirmConfig.isOpen}
+        onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
+        onConfirm={confirmConfig.onConfirm}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        type={confirmConfig.type}
+      />
     </div>
   );
 }

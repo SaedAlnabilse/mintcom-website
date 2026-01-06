@@ -1,51 +1,64 @@
 import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
-
-const staffSchema = z.object({
-  username: z.string().min(1, 'Username is required'),
-  email: z.string().email('Invalid email').optional().or(z.literal('')),
-  password: z.string().min(4, 'Password must be at least 4 characters').optional().or(z.literal('')),
-  role: z.enum(['ADMIN', 'USER', 'EMPLOYEE']),
-  phone: z.string().optional(),
-});
-
-type StaffFormData = z.infer<typeof staffSchema>;
+import { ConfirmModal } from '../../components/ConfirmModal';
+import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 
 interface Staff {
   id: string;
+  name: string; // Updated to required string
   username: string;
   email?: string;
-  role: 'ADMIN' | 'USER' | 'EMPLOYEE';
+  role: string;
   phone?: string;
   isActive: boolean;
   createdAt: string;
+  permissions?: string[];
+  allowedDiscounts?: string[];
+}
+
+interface Discount {
+  id: string;
+  name: string;
+  percentage: number;
+  adminOnly: boolean;
 }
 
 export function StaffPage() {
   const [staff, setStaff] = useState<Staff[]>([]);
+  const [discounts, setDiscounts] = useState<Discount[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingStaff, setEditingStaff] = useState<Staff | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<StaffFormData>({
-    resolver: zodResolver(staffSchema),
-    defaultValues: { role: 'USER' },
+  const [confirmConfig, setConfirmConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    type?: 'danger' | 'success' | 'warning';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => { },
   });
 
   useEffect(() => {
     fetchStaff();
+    fetchDiscounts();
   }, []);
 
   const fetchStaff = async () => {
     try {
       setIsLoading(true);
       const response = await api.get('/api/users');
-      setStaff(response.data || []);
+      // Ensure name is a string
+      const staffData = (response.data || []).map((s: any) => ({
+          ...s,
+          name: s.name || '',
+      }));
+      setStaff(staffData);
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to load staff');
     } finally {
@@ -53,46 +66,40 @@ export function StaffPage() {
     }
   };
 
+  const fetchDiscounts = async () => {
+      try {
+          const response = await api.get('/app-settings/discounts');
+          // Map backend data to frontend structure if needed
+          const mappedDiscounts = (response.data || []).map((d: any) => ({
+              id: d.id,
+              name: d.name,
+              percentage: d.percentage,
+              adminOnly: d.adminOnly || false,
+          }));
+          setDiscounts(mappedDiscounts);
+      } catch (err) {
+          console.error('Failed to load discounts');
+      }
+  };
+
   const openCreateModal = () => {
     setEditingStaff(null);
-    reset({ username: '', email: '', password: '', role: 'USER', phone: '' });
     setShowModal(true);
   };
 
   const openEditModal = (member: Staff) => {
     setEditingStaff(member);
-    reset({
-      username: member.username,
-      email: member.email || '',
-      password: '',
-      role: member.role,
-      phone: member.phone || '',
-    });
     setShowModal(true);
   };
 
-  const onSubmit = async (data: StaffFormData) => {
+  const onSubmit = async (payload: any) => {
     try {
       setIsSubmitting(true);
-
-      const payload: any = {
-        username: data.username,
-        role: data.role,
-      };
-
-      if (data.email) payload.email = data.email;
-      if (data.phone) payload.phone = data.phone;
-      if (data.password) payload.password = data.password;
 
       if (editingStaff) {
         await api.put(`/api/users/${editingStaff.id}`, payload);
         toast.success('Staff updated successfully');
       } else {
-        if (!data.password) {
-          toast.error('Password is required for new staff');
-          setIsSubmitting(false);
-          return;
-        }
         await api.post('/api/users', payload);
         toast.success('Staff created successfully');
       }
@@ -107,15 +114,21 @@ export function StaffPage() {
   };
 
   const handleDelete = async (staffId: string, username: string) => {
-    if (!confirm(`Are you sure you want to delete "${username}"?`)) return;
-
-    try {
-      await api.delete(`/api/users/${staffId}`);
-      toast.success('Staff deleted successfully');
-      fetchStaff();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to delete staff');
-    }
+    setConfirmConfig({
+      isOpen: true,
+      title: 'Delete Staff Member',
+      message: `Are you sure you want to delete "${username}"?`,
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await api.delete(`/api/users/${staffId}`);
+          toast.success('Staff deleted successfully');
+          fetchStaff();
+        } catch (err: any) {
+          toast.error(err.response?.data?.message || 'Failed to delete staff');
+        }
+      }
+    });
   };
 
   const getRoleColor = (role: string) => {
@@ -234,103 +247,24 @@ export function StaffPage() {
       </div>
 
       {/* Staff Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 w-full max-w-md">
-            <div className="p-6 border-b border-gray-700 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-white">
-                {editingStaff ? 'Edit Staff' : 'Add Staff'}
-              </h2>
-              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-white">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
+      <EmployeeFormModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onSubmit={onSubmit}
+        onDelete={editingStaff ? () => handleDelete(editingStaff.id, editingStaff.username) : undefined}
+        initialData={editingStaff}
+        availableDiscounts={discounts}
+        isSubmitting={isSubmitting}
+      />
 
-            <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Username *</label>
-                <input
-                  type="text"
-                  {...register('username')}
-                  className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-                {errors.username && <p className="text-red-400 text-sm mt-1">{errors.username.message}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
-                <input
-                  type="email"
-                  {...register('email')}
-                  className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-                {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  {editingStaff ? 'New Password (leave blank to keep current)' : 'Password *'}
-                </label>
-                <input
-                  type="password"
-                  {...register('password')}
-                  className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-                {errors.password && <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Phone</label>
-                <input
-                  type="tel"
-                  {...register('phone')}
-                  className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Role *</label>
-                <select
-                  {...register('role')}
-                  className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="EMPLOYEE">Employee</option>
-                  <option value="USER">User</option>
-                  <option value="ADMIN">Admin</option>
-                </select>
-                <p className="text-gray-500 text-xs mt-1">
-                  Admin: Full access | User: Standard access | Employee: Limited access
-                </p>
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="flex-1 py-2.5 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex-1 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-600 transition-colors flex items-center justify-center gap-2"
-                >
-                  {isSubmitting && (
-                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                  )}
-                  {editingStaff ? 'Update' : 'Create'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <ConfirmModal
+        isOpen={confirmConfig.isOpen}
+        onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
+        onConfirm={confirmConfig.onConfirm}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        type={confirmConfig.type}
+      />
     </div>
   );
 }

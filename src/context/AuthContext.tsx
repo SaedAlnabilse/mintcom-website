@@ -1,137 +1,278 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import api from '../config/api';
 
-interface User {
+// Types for the new account-based authentication
+interface Account {
   id: string;
-  username: string;
   email: string;
-  role: string;
-  permissions: string[];
-  tenantId: string;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  avatar?: string;
+  emailVerified: boolean;
+  trialUsed: boolean;
+  trialEndDate?: string;
 }
 
-interface Tenant {
+interface Establishment {
   id: string;
-  slug: string;
   name: string;
+  type: string;
+  currency: string;
+  subscriptionStatus: string;
+  ownerPosId?: string;
 }
 
 interface AuthContextType {
-  user: User | null;
-  tenant: Tenant | null;
+  // Account (Main Account)
+  account: Account | null;
+  establishments: Establishment[];
+  currentEstablishment: Establishment | null;
+
+  // Auth state
   isAuthenticated: boolean;
   isLoading: boolean;
-  verifyTenant: (slug: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  login: (username: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  needsOnboarding: boolean;
+
+  // Account auth methods
+  register: (data: RegisterData) => Promise<AuthResult>;
+  login: (email: string, password: string) => Promise<AuthResult>;
   logout: () => void;
+
+  // Verification methods
+  verifyEmail: (token: string) => Promise<AuthResult>;
+  resendVerification: (email: string) => Promise<AuthResult>;
+  forgotPassword: (email: string) => Promise<AuthResult>;
+  resetPassword: (token: string, password: string) => Promise<AuthResult>;
+
+  // Establishment methods
+  setCurrentEstablishment: (establishment: Establishment) => void;
+  refreshEstablishments: () => Promise<void>;
+}
+
+interface RegisterData {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+}
+
+interface AuthResult {
+  success: boolean;
+  error?: string;
+  message?: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [tenant, setTenant] = useState<Tenant | null>(null);
+  const [account, setAccount] = useState<Account | null>(null);
+  const [establishments, setEstablishments] = useState<Establishment[]>([]);
+  const [currentEstablishment, setCurrentEstablishmentState] = useState<Establishment | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // Check for existing auth on mount
-    const token = localStorage.getItem('authToken');
-    const savedUser = localStorage.getItem('user');
-    const savedTenant = localStorage.getItem('tenant');
+  // Check if user needs to complete onboarding (no establishments)
+  const needsOnboarding = account !== null && establishments.length === 0;
 
-    if (token && savedUser && savedTenant) {
-      setUser(JSON.parse(savedUser));
-      setTenant(JSON.parse(savedTenant));
-    }
-    setIsLoading(false);
+  useEffect(() => {
+    initializeAuth();
   }, []);
 
-  const verifyTenant = async (slug: string, password: string) => {
+  const initializeAuth = async () => {
     try {
-      // Backend expects: tenantSlug and restaurantPassword
-      const response = await api.post('/api/auth/verify-tenant', {
-        tenantSlug: slug,
-        restaurantPassword: password
-      });
+      const token = localStorage.getItem('accountToken');
+      const savedAccount = localStorage.getItem('account');
+      const savedEstablishment = localStorage.getItem('currentEstablishment');
 
-      // Backend returns { id, name, slug, token } directly on success (HTTP 200)
-      if (response.data && response.data.id) {
-        const tenantData = {
-          id: response.data.id,
-          slug: response.data.slug,
-          name: response.data.name,
-        };
-        setTenant(tenantData);
-        localStorage.setItem('tenant', JSON.stringify(tenantData));
-        if (response.data.token) {
-          localStorage.setItem('tenantToken', response.data.token);
+      if (token && savedAccount) {
+        const accountData = JSON.parse(savedAccount);
+        setAccount(accountData);
+
+        if (savedEstablishment) {
+          setCurrentEstablishmentState(JSON.parse(savedEstablishment));
         }
-        return { success: true };
+
+        // Fetch fresh data
+        await refreshEstablishments();
       }
-      return { success: false, error: 'Invalid restaurant credentials' };
+    } catch (error) {
+      console.error('Failed to initialize auth:', error);
+      localStorage.removeItem('accountToken');
+      localStorage.removeItem('account');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const register = async (data: RegisterData): Promise<AuthResult> => {
+    try {
+      const response = await api.post('/api/accounts/register', data);
+
+      if (response.data.success) {
+        return {
+          success: true,
+          message: response.data.message || 'Account created! Please check your email to verify.',
+        };
+      }
+      return { success: false, error: 'Registration failed' };
     } catch (error: any) {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to verify restaurant'
+        error: error.response?.data?.message || 'Registration failed. Please try again.',
       };
     }
   };
 
-  const login = async (username: string, password: string) => {
+  const login = async (email: string, password: string): Promise<AuthResult> => {
     try {
-      const tenantToken = localStorage.getItem('tenantToken');
-      const savedTenant = localStorage.getItem('tenant');
-      const tenantSlug = savedTenant ? JSON.parse(savedTenant).slug : tenant?.slug;
-      
-      const response = await api.post('/api/auth/login',
-        { username, password, tenantSlug },
-        { headers: { Authorization: `Bearer ${tenantToken}` } }
-      );
+      const response = await api.post('/api/accounts/login', { email, password });
 
-      if (response.data.access_token) {
-        const token = response.data.access_token;
-        localStorage.setItem('authToken', token);
+      if (response.data.accessToken) {
+        const { accessToken, account: accountData, establishments: estList } = response.data;
 
-        // Fetch user profile
-        const profileResponse = await api.get('/api/auth/profile', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        // Save auth data
+        localStorage.setItem('accountToken', accessToken);
+        localStorage.setItem('account', JSON.stringify(accountData));
 
-        const userData = profileResponse.data;
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
+        setAccount(accountData);
+        setEstablishments(estList || []);
 
+        // We do NOT set default establishment automatically anymore
+        // This forces the user to go through the selection screen
+        // unless they are re-logging in and we restore from localStorage (handled in initializeAuth)
+        
         return { success: true };
       }
       return { success: false, error: 'Login failed' };
     } catch (error: any) {
       return {
         success: false,
-        error: error.response?.data?.message || 'Invalid username or password'
+        error: error.response?.data?.message || 'Invalid email or password',
       };
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('tenantToken');
-    localStorage.removeItem('user');
-    localStorage.removeItem('tenant');
-    setUser(null);
-    setTenant(null);
+    localStorage.removeItem('accountToken');
+    localStorage.removeItem('account');
+    localStorage.removeItem('currentEstablishment');
+    setAccount(null);
+    setEstablishments([]);
+    setCurrentEstablishmentState(null);
     window.location.href = '/login';
+  };
+
+  const verifyEmail = async (token: string): Promise<AuthResult> => {
+    try {
+      const response = await api.post('/api/accounts/verify-email', { token });
+      return {
+        success: response.data.success,
+        message: response.data.message,
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Verification failed',
+      };
+    }
+  };
+
+  const resendVerification = async (email: string): Promise<AuthResult> => {
+    try {
+      const response = await api.post('/api/accounts/resend-verification', { email });
+      return {
+        success: true,
+        message: response.data.message,
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Failed to resend verification',
+      };
+    }
+  };
+
+  const forgotPassword = async (email: string): Promise<AuthResult> => {
+    try {
+      const response = await api.post('/api/accounts/forgot-password', { email });
+      return {
+        success: true,
+        message: response.data.message,
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Failed to send reset email',
+      };
+    }
+  };
+
+  const resetPassword = async (token: string, newPassword: string): Promise<AuthResult> => {
+    try {
+      const response = await api.post('/api/accounts/reset-password', { token, newPassword });
+      return {
+        success: response.data.success,
+        message: response.data.message,
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Failed to reset password',
+      };
+    }
+  };
+
+  const setCurrentEstablishment = (establishment: Establishment) => {
+    setCurrentEstablishmentState(establishment);
+    localStorage.setItem('currentEstablishment', JSON.stringify(establishment));
+  };
+
+  const refreshEstablishments = async () => {
+    try {
+      const token = localStorage.getItem('accountToken');
+      if (!token) return;
+
+      const response = await api.get('/api/establishments', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setEstablishments(response.data || []);
+
+      // Update current establishment if it exists
+      const savedEst = localStorage.getItem('currentEstablishment');
+      if (savedEst) {
+        const parsed = JSON.parse(savedEst);
+        const updated = response.data?.find((e: Establishment) => e.id === parsed.id);
+        if (updated) {
+          setCurrentEstablishment(updated);
+        }
+      } else if (response.data?.length > 0) {
+        setCurrentEstablishment(response.data[0]);
+      }
+    } catch (error) {
+      console.error('Failed to refresh establishments:', error);
+    }
   };
 
   return (
     <AuthContext.Provider
       value={{
-        user,
-        tenant,
-        isAuthenticated: !!user && !!tenant,
+        account,
+        establishments,
+        currentEstablishment,
+        isAuthenticated: !!account,
         isLoading,
-        verifyTenant,
+        needsOnboarding,
+        register,
         login,
         logout,
+        verifyEmail,
+        resendVerification,
+        forgotPassword,
+        resetPassword,
+        setCurrentEstablishment,
+        refreshEstablishments,
       }}
     >
       {children}

@@ -97,7 +97,11 @@ export function ReportsPage() {
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'JOD',
+      minimumFractionDigits: 2,
+    }).format(value).replace('JOD', '').trim() + ' JOD';
   };
 
   const setQuickDate = (range: string) => {
@@ -251,7 +255,7 @@ export function ReportsPage() {
                           fontSize={12}
                           tickFormatter={(value) => new Date(value).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                         />
-                        <YAxis stroke="#9CA3AF" fontSize={12} tickFormatter={(value) => `$${value}`} />
+                        <YAxis stroke="#9CA3AF" fontSize={12} tickFormatter={(value) => `${value} JOD`} />
                         <Tooltip
                           contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '8px' }}
                           labelStyle={{ color: '#fff' }}
@@ -314,7 +318,7 @@ export function ReportsPage() {
                           margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
                         >
                           <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#374151" />
-                          <XAxis type="number" stroke="#9CA3AF" fontSize={12} tickFormatter={(value) => `$${value}`} />
+                          <XAxis type="number" stroke="#9CA3AF" fontSize={12} tickFormatter={(value) => `${value} JOD`} />
                           <YAxis dataKey="name" type="category" stroke="#9CA3AF" fontSize={12} width={100} />
                           <Tooltip
                             contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '8px' }}

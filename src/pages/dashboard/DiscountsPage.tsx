@@ -1,18 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
-
-const discountSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  type: z.enum(['percentage', 'fixed']),
-  value: z.number().min(0, 'Value must be positive'),
-  isActive: z.boolean(),
-});
-
-type DiscountFormData = z.infer<typeof discountSchema>;
+import { ConfirmModal } from '../../components/ConfirmModal';
+import { DiscountFormModal } from '../../components/forms/DiscountFormModal';
 
 interface Discount {
   id: string;
@@ -20,6 +10,8 @@ interface Discount {
   type: 'percentage' | 'fixed';
   value: number;
   isActive: boolean;
+  percentage: number; // for modal compatibility
+  adminOnly: boolean; // for modal compatibility
 }
 
 export function DiscountsPage() {
@@ -28,13 +20,18 @@ export function DiscountsPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingDiscount, setEditingDiscount] = useState<Discount | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<DiscountFormData>({
-    resolver: zodResolver(discountSchema),
-    defaultValues: { type: 'percentage', isActive: true },
+  const [confirmConfig, setConfirmConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    type?: 'danger' | 'success' | 'warning';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => { },
   });
-
-  const discountType = watch('type');
 
   useEffect(() => {
     fetchDiscounts();
@@ -49,8 +46,10 @@ export function DiscountsPage() {
         id: d.id,
         name: d.name,
         type: 'percentage' as const,
-        value: d.percentage * 100,
-        isActive: true, // Backend doesn't have isActive for discounts yet
+        value: d.percentage * 100, // Display value
+        percentage: d.percentage, // Actual value
+        adminOnly: d.adminOnly,
+        isActive: true, 
       }));
       setDiscounts(mappedDiscounts);
     } catch (err: any) {
@@ -62,29 +61,22 @@ export function DiscountsPage() {
 
   const openCreateModal = () => {
     setEditingDiscount(null);
-    reset({ name: '', type: 'percentage', value: 0, isActive: true });
     setShowModal(true);
   };
 
   const openEditModal = (discount: Discount) => {
     setEditingDiscount(discount);
-    reset({
-      name: discount.name,
-      type: 'percentage', // Always percentage for now
-      value: discount.value,
-      isActive: true,
-    });
     setShowModal(true);
   };
 
-  const onSubmit = async (data: DiscountFormData) => {
+  const onSubmit = async (name: string, percentage: number, adminOnly: boolean) => {
     try {
       setIsSubmitting(true);
 
       const payload = {
-        name: data.name,
-        percentage: data.value / 100,
-        adminOnly: false, // Default
+        name,
+        percentage, // Modal returns decimal
+        adminOnly,
       };
 
       if (editingDiscount) {
@@ -105,15 +97,21 @@ export function DiscountsPage() {
   };
 
   const handleDelete = async (discountId: string, name: string) => {
-    if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
-
-    try {
-      await api.delete(`/app-settings/discounts/${discountId}`);
-      toast.success('Discount deleted successfully');
-      fetchDiscounts();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to delete discount');
-    }
+    setConfirmConfig({
+      isOpen: true,
+      title: 'Delete Discount',
+      message: `Are you sure you want to delete "${name}"?`,
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await api.delete(`/app-settings/discounts/${discountId}`);
+          toast.success('Discount deleted successfully');
+          fetchDiscounts();
+        } catch (err: any) {
+          toast.error(err.response?.data?.message || 'Failed to delete discount');
+        }
+      }
+    });
   };
 
 
@@ -122,7 +120,11 @@ export function DiscountsPage() {
     if (discount.type === 'percentage') {
       return `${discount.value}%`;
     }
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(discount.value);
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'JOD',
+      minimumFractionDigits: 2,
+    }).format(discount.value).replace('JOD', '').trim() + ' JOD';
   };
 
   return (
@@ -175,7 +177,7 @@ export function DiscountsPage() {
                   }`}>
                   <span className={`text-xl font-bold ${discount.type === 'percentage' ? 'text-purple-400' : 'text-blue-400'
                     }`}>
-                    {discount.type === 'percentage' ? '%' : '$'}
+                    {discount.type === 'percentage' ? '%' : 'JOD'}
                   </span>
                 </div>
                 <div className="flex gap-1">
@@ -217,88 +219,23 @@ export function DiscountsPage() {
       )}
 
       {/* Discount Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 w-full max-w-md">
-            <div className="p-6 border-b border-gray-700 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-white">
-                {editingDiscount ? 'Edit Discount' : 'Add Discount'}
-              </h2>
-              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-white">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
+      <DiscountFormModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onSubmit={onSubmit}
+        onDelete={editingDiscount ? () => handleDelete(editingDiscount.id, editingDiscount.name) : undefined}
+        initialData={editingDiscount}
+        isSubmitting={isSubmitting}
+      />
 
-            <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Discount Name *</label>
-                <input
-                  type="text"
-                  {...register('name')}
-                  className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                  placeholder="e.g., Staff Discount"
-                />
-                {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Type *</label>
-                <div className="flex w-full">
-                  <label className={`flex-1 p-3 rounded-lg border cursor-pointer transition-colors ${discountType === 'percentage' ? 'border-green-500 bg-green-500/10' : 'border-gray-600 bg-gray-700'
-                    }`}>
-                    <input type="radio" {...register('type')} value="percentage" className="sr-only" defaultChecked />
-                    <div className="text-center">
-                      <span className="text-2xl">%</span>
-                      <p className="text-sm text-gray-300 mt-1">Percentage</p>
-                    </div>
-                  </label>
-                  {/* Fixed amount not supported by backend yet */}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Value ({discountType === 'percentage' ? '%' : '$'}) *
-                </label>
-                <input
-                  type="number"
-                  step={discountType === 'percentage' ? '1' : '0.01'}
-                  {...register('value', { valueAsNumber: true })}
-                  className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-                {errors.value && <p className="text-red-400 text-sm mt-1">{errors.value.message}</p>}
-              </div>
-
-              {/* Active status not supported by backend yet */}
-
-              <div className="flex gap-3 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="flex-1 py-2.5 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex-1 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-600 transition-colors flex items-center justify-center gap-2"
-                >
-                  {isSubmitting && (
-                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                  )}
-                  {editingDiscount ? 'Update' : 'Create'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <ConfirmModal
+        isOpen={confirmConfig.isOpen}
+        onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
+        onConfirm={confirmConfig.onConfirm}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        type={confirmConfig.type}
+      />
     </div>
   );
 }

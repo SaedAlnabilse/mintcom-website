@@ -13,13 +13,28 @@ export const api = axios.create({
   },
 });
 
-// Request interceptor to add auth token
+// Request interceptor to add auth token and establishment ID
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('authToken');
+    // Check for accountToken (new system) first, then authToken (legacy)
+    const token = localStorage.getItem('accountToken') || localStorage.getItem('authToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // Add current establishment ID for account owner requests
+    const currentEstablishment = localStorage.getItem('currentEstablishment');
+    if (currentEstablishment) {
+      try {
+        const est = JSON.parse(currentEstablishment);
+        if (est?.id) {
+          config.headers['X-Establishment-Id'] = est.id;
+        }
+      } catch (e) {
+        // Ignore parse errors
+      }
+    }
+
     return config;
   },
   (error) => {
@@ -32,7 +47,10 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Clear auth data and redirect to login
+      // Clear all auth data (both new and legacy keys) and redirect to login
+      localStorage.removeItem('accountToken');
+      localStorage.removeItem('account');
+      localStorage.removeItem('currentEstablishment');
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
       localStorage.removeItem('tenant');

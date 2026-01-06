@@ -17,66 +17,115 @@ export const Navbar = () => {
   }, []);
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 dark:bg-paymint-dark/90 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6'}`}>
-      <div className="container mx-auto px-6 flex justify-between items-center">
-        <div 
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="cursor-pointer"
-        >
-          <Logo size="md" />
-        </div>
-        
-        {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-8">
-          <a href="#features" className="text-base font-medium text-gray-700 dark:text-white/80 hover:text-paymint-green transition-colors">Features</a>
-          <a href="#pricing" className="text-base font-medium text-gray-700 dark:text-white/80 hover:text-paymint-green transition-colors">Pricing</a>
-          <a href="#contact" className="text-base font-medium text-gray-700 dark:text-white/80 hover:text-paymint-green transition-colors">Contact</a>
-          <a href="/login" className="text-base font-medium text-gray-700 dark:text-white/80 hover:text-paymint-green transition-colors">Owner Portal</a>
-          <a href="/signup" className="text-base font-medium text-gray-700 dark:text-white/80 hover:text-paymint-green transition-colors">Sign Up</a>
-          <ThemeToggle />
-          <a 
-            href="#contact"
-            className="bg-paymint-green text-black px-6 py-2 rounded-none font-medium hover:bg-paymint-green/90 transition-colors hover:shadow-lg hover:shadow-paymint-green/20"
+    <>
+      <nav 
+        className={`fixed w-full z-50 transition-all duration-500 ease-in-out ${
+          isScrolled 
+            ? 'bg-white/80 dark:bg-[#0f0f0f]/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-white/5 py-4' 
+            : 'bg-transparent py-6'
+        }`}
+      >
+        <div className="container mx-auto px-6 flex justify-between items-center">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="cursor-pointer"
           >
-            Book a Demo
-          </a>
-        </div>
+            <Logo size="md" />
+          </motion.div>
+          
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center gap-8">
+            <div className="flex items-center gap-6">
+              {['Features', 'Pricing', 'Contact'].map((item, i) => (
+                <motion.a
+                  key={item}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * i, duration: 0.5 }}
+                  href={`#${item.toLowerCase()}`}
+                  className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-paymint-green dark:hover:text-paymint-green transition-colors"
+                >
+                  {item}
+                </motion.a>
+              ))}
+            </div>
 
-        {/* Mobile Toggle */}
-        <div className="md:hidden flex items-center gap-4">
-          <ThemeToggle />
-          <button className="text-gray-900 dark:text-white" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            {isMobileMenuOpen ? <X /> : <Menu />}
-          </button>
-        </div>
-      </div>
+            <div className="h-6 w-px bg-gray-200 dark:bg-white/10" />
 
-      {/* Mobile Menu */}
+            <div className="flex items-center gap-4">
+              <motion.a
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+                href="/login"
+                className="text-sm font-medium text-gray-900 dark:text-white hover:text-paymint-green transition-colors"
+              >
+                Log In
+              </motion.a>
+              
+              <ThemeToggle />
+              
+              <motion.a 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                href="/signup"
+                className="bg-paymint-green text-black px-5 py-2.5 rounded-xl font-bold text-sm hover:shadow-lg hover:shadow-paymint-green/20 transition-all hover:-translate-y-0.5"
+              >
+                Get Started
+              </motion.a>
+            </div>
+          </div>
+
+          {/* Mobile Toggle */}
+          <div className="md:hidden flex items-center gap-4">
+            <ThemeToggle />
+            <button 
+              className="text-gray-900 dark:text-white p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X /> : <Menu />}
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white dark:bg-paymint-surface border-t border-gray-200 dark:border-white/10 absolute w-full shadow-lg"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed inset-0 z-40 bg-white/95 dark:bg-[#0f0f0f]/95 backdrop-blur-xl pt-24 px-6 md:hidden flex flex-col items-center"
           >
-            <div className="flex flex-col p-6 gap-4">
-              <a href="#features" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-gray-700 dark:text-white/80">Features</a>
-              <a href="#pricing" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-gray-700 dark:text-white/80">Pricing</a>
-              <a href="#contact" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-gray-700 dark:text-white/80">Contact</a>
-              <a href="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-gray-700 dark:text-white/80">Owner Portal</a>
-              <a href="/signup" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-medium text-gray-700 dark:text-white/80">Sign Up</a>
+            <div className="flex flex-col items-center gap-8 w-full max-w-sm">
+              {['Features', 'Pricing', 'Contact'].map((item) => (
+                <a 
+                  key={item}
+                  href={`#${item.toLowerCase()}`} 
+                  onClick={() => setIsMobileMenuOpen(false)} 
+                  className="text-2xl font-medium text-gray-900 dark:text-white"
+                >
+                  {item}
+                </a>
+              ))}
+              <div className="w-full h-px bg-gray-200 dark:bg-white/10" />
+              <a href="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-xl font-medium text-gray-600 dark:text-gray-400">Log In</a>
               <a 
-                href="#contact"
+                href="/signup"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="bg-paymint-green text-black px-6 py-3 rounded-none font-medium w-full shadow-md shadow-paymint-green/20 block text-center"
+                className="bg-paymint-green text-black px-8 py-4 rounded-xl font-bold text-lg w-full text-center shadow-lg shadow-paymint-green/20"
               >
-                Book a Demo
+                Get Started Free
               </a>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </>
   );
 };

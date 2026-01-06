@@ -1,4 +1,7 @@
+import { useState } from 'react';
+import toast from 'react-hot-toast';
 import api from '../config/api';
+import { ConfirmModal } from './ConfirmModal';
 
 interface OrderDetailModalProps {
     order: any;
@@ -7,11 +10,25 @@ interface OrderDetailModalProps {
 }
 
 export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetailModalProps) {
+    const [confirmConfig, setConfirmConfig] = useState<{
+        isOpen: boolean;
+        title: string;
+        message: string;
+        onConfirm: () => void;
+        type?: 'danger' | 'success' | 'warning' | 'info';
+    }>({
+        isOpen: false,
+        title: '',
+        message: '',
+        onConfirm: () => { },
+    });
+
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat('en-US', {
             style: 'currency',
-            currency: 'USD',
-        }).format(value);
+            currency: 'JOD',
+            minimumFractionDigits: 2,
+        }).format(value).replace('JOD', '').trim() + ' JOD';
     };
 
     const formatDate = (dateString: string) => {
@@ -33,17 +50,24 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
     };
 
     const handleRefund = async () => {
-        if (!confirm('Are you sure you want to refund this order?')) return;
-
-        try {
-            await api.post(`/api/orders/${order.id}/refund`, {
-                reason: 'Refunded via web dashboard',
-            });
-            if (onRefundSuccess) onRefundSuccess();
-            onClose();
-        } catch (err: any) {
-            alert(err.response?.data?.message || 'Failed to process refund');
-        }
+        setConfirmConfig({
+            isOpen: true,
+            title: 'Refund Order',
+            message: 'Are you sure you want to refund this order? This action cannot be undone.',
+            type: 'danger',
+            onConfirm: async () => {
+                try {
+                    await api.post(`/api/orders/${order.id}/refund`, {
+                        reason: 'Refunded via web dashboard',
+                    });
+                    toast.success('Order refunded successfully');
+                    if (onRefundSuccess) onRefundSuccess();
+                    onClose();
+                } catch (err: any) {
+                    toast.error(err.response?.data?.message || 'Failed to process refund');
+                }
+            }
+        });
     };
 
     return (
@@ -167,6 +191,15 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                     </div>
                 </div>
             </div>
+
+            <ConfirmModal
+                isOpen={confirmConfig.isOpen}
+                onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
+                onConfirm={confirmConfig.onConfirm}
+                title={confirmConfig.title}
+                message={confirmConfig.message}
+                type={confirmConfig.type}
+            />
         </div>
     );
 }

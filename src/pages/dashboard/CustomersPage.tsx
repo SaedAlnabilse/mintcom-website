@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
+import { ConfirmModal } from '../../components/ConfirmModal';
 
 const customerSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -45,6 +46,18 @@ export function CustomersPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [sortOption, setSortOption] = useState('newest');
+  const [confirmConfig, setConfirmConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    type?: 'danger' | 'success' | 'warning';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => { },
+  });
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<CustomerFormData>({
     resolver: zodResolver(customerSchema),
@@ -218,19 +231,29 @@ export function CustomersPage() {
   };
 
   const handleDelete = async (customerId: string, name: string) => {
-    if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
-
-    try {
-      await api.delete(`/customers/${customerId}`);
-      toast.success('Customer deleted successfully');
-      fetchCustomers();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to delete customer');
-    }
+    setConfirmConfig({
+      isOpen: true,
+      title: 'Delete Customer',
+      message: `Are you sure you want to delete "${name}"? This action cannot be undone.`,
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await api.delete(`/customers/${customerId}`);
+          toast.success('Customer deleted successfully');
+          fetchCustomers();
+        } catch (err: any) {
+          toast.error(err.response?.data?.message || 'Failed to delete customer');
+        }
+      }
+    });
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'JOD',
+      minimumFractionDigits: 2,
+    }).format(value).replace('JOD', '').trim() + ' JOD';
   };
 
   const getTierColor = (tier: string) => {
@@ -618,6 +641,15 @@ export function CustomersPage() {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={confirmConfig.isOpen}
+        onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
+        onConfirm={confirmConfig.onConfirm}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        type={confirmConfig.type}
+      />
     </div>
   );
 }

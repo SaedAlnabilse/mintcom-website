@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth, subYears } from 'date-fns';
 import api from '../../config/api';
+import toast from 'react-hot-toast';
+import { ConfirmModal } from '../../components/ConfirmModal';
 
 interface Order {
   id: string;
@@ -41,6 +43,18 @@ export function OrdersPage() {
   const [dateFilter, setDateFilter] = useState('today');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [confirmConfig, setConfirmConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    type?: 'danger' | 'success' | 'warning';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => { },
+  });
 
   useEffect(() => {
     fetchOrders();
@@ -153,24 +167,32 @@ export function OrdersPage() {
   };
 
   const handleRefund = async (orderId: string) => {
-    if (!confirm('Are you sure you want to refund this order?')) return;
-
-    try {
-      await api.post(`/api/orders/${orderId}/refund`, {
-        reason: 'Refunded via web dashboard',
-      });
-      fetchOrders();
-      setSelectedOrder(null);
-    } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to process refund');
-    }
+    setConfirmConfig({
+      isOpen: true,
+      title: 'Refund Order',
+      message: 'Are you sure you want to refund this order?',
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await api.post(`/api/orders/${orderId}/refund`, {
+            reason: 'Refunded via web dashboard',
+          });
+          toast.success('Order refunded successfully');
+          fetchOrders();
+          setSelectedOrder(null);
+        } catch (err: any) {
+          toast.error(err.response?.data?.message || 'Failed to process refund');
+        }
+      }
+    });
   };
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
-    }).format(value);
+      currency: 'JOD',
+      minimumFractionDigits: 2,
+    }).format(value).replace('JOD', '').trim() + ' JOD';
   };
 
   const formatDate = (dateString: string) => {
@@ -478,6 +500,15 @@ export function OrdersPage() {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={confirmConfig.isOpen}
+        onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
+        onConfirm={confirmConfig.onConfirm}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        type={confirmConfig.type}
+      />
     </div>
   );
 }

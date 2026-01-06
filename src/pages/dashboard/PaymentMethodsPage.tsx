@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
+import { ConfirmModal } from '../../components/ConfirmModal';
 
 const paymentMethodSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -39,6 +40,18 @@ export function PaymentMethodsPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [selectedCardImage, setSelectedCardImage] = useState<File | null>(null);
   const [cardImagePreview, setCardImagePreview] = useState<string | null>(null);
+  const [confirmConfig, setConfirmConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    type?: 'danger' | 'success' | 'warning';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => { },
+  });
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<PaymentMethodFormData>({
     resolver: zodResolver(paymentMethodSchema),
@@ -161,15 +174,21 @@ export function PaymentMethodsPage() {
   };
 
   const handleDelete = async (methodId: string, name: string) => {
-    if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
-
-    try {
-      await api.delete(`/app-settings/payment-methods/${methodId}`);
-      toast.success('Payment method deleted');
-      fetchPaymentMethods();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to delete');
-    }
+    setConfirmConfig({
+      isOpen: true,
+      title: 'Delete Payment Method',
+      message: `Are you sure you want to delete "${name}"? This action cannot be undone.`,
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await api.delete(`/app-settings/payment-methods/${methodId}`);
+          toast.success('Payment method deleted');
+          fetchPaymentMethods();
+        } catch (err: any) {
+          toast.error(err.response?.data?.message || 'Failed to delete');
+        }
+      }
+    });
   };
 
   const openCardModal = () => {
@@ -214,15 +233,21 @@ export function PaymentMethodsPage() {
   };
 
   const handleDeleteCardType = async (cardId: string, name: string) => {
-    if (!confirm(`Delete card type "${name}"?`)) return;
-
-    try {
-      await api.delete(`/card-types/${cardId}`);
-      toast.success('Card type deleted');
-      fetchCardTypes();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to delete');
-    }
+    setConfirmConfig({
+      isOpen: true,
+      title: 'Delete Card Type',
+      message: `Are you sure you want to delete "${name}"?`,
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await api.delete(`/card-types/${cardId}`);
+          toast.success('Card type deleted');
+          fetchCardTypes();
+        } catch (err: any) {
+          toast.error(err.response?.data?.message || 'Failed to delete');
+        }
+      }
+    });
   };
 
   const getMethodIcon = (name: string) => {
@@ -492,6 +517,15 @@ export function PaymentMethodsPage() {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={confirmConfig.isOpen}
+        onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
+        onConfirm={confirmConfig.onConfirm}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        type={confirmConfig.type}
+      />
     </div>
   );
 }

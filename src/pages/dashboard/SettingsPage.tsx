@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
+import { ConfirmModal } from '../../components/ConfirmModal';
 
 interface AppSettings {
   id?: string;
@@ -44,6 +45,19 @@ export function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [initialSettings, setInitialSettings] = useState<AppSettings | null>(null);
+  const [confirmConfig, setConfirmConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    type?: 'danger' | 'success' | 'warning';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => { },
+  });
 
   const { register, handleSubmit, reset, watch } = useForm<AppSettings>();
 
@@ -58,6 +72,7 @@ export function SettingsPage() {
       const response = await api.get('/app-settings');
       const data = response.data;
       setSettings(data);
+      setInitialSettings(data);
       reset(data);
       if (data.logoUrl) {
         setLogoPreview(data.logoUrl);
@@ -91,6 +106,22 @@ export function SettingsPage() {
   };
 
   const onSubmit = async (data: AppSettings) => {
+    // Check for critical changes (Currency)
+    const isCurrencyChanged = initialSettings && data.currency !== initialSettings.currency;
+
+    if (isCurrencyChanged) {
+      triggerTwoStepConfirm(
+        'Change System Currency',
+        `You are changing the system currency from ${initialSettings?.currency} to ${data.currency}. This affects all future transactions and financial reports.`,
+        () => saveSettings(data)
+      );
+      return;
+    }
+
+    saveSettings(data);
+  };
+
+  const saveSettings = async (data: AppSettings) => {
     try {
       setIsSaving(true);
 
@@ -121,14 +152,49 @@ export function SettingsPage() {
     }
   };
 
+  const triggerTwoStepConfirm = (title: string, message: string, onConfirm: () => void) => {
+    setConfirmConfig({
+      isOpen: true,
+      title,
+      message,
+      type: 'warning',
+      onConfirm: () => {
+        // Use a slight timeout to allow the first modal to close before opening the second
+        setTimeout(() => {
+          setConfirmConfig({
+            isOpen: true,
+            title: 'Final Confirmation',
+            message: 'Are you absolutely sure? This is a critical system change that affects your financial data and cannot be automatically reversed.',
+            type: 'danger',
+            onConfirm,
+          });
+        }, 300);
+      }
+    });
+  };
+
   const updateTaxRate = async () => {
     const taxRate = watch('taxRate');
-    try {
-      await api.put('/app-settings/tax-rate', { taxRate: Number(taxRate) });
-      toast.success('Tax rate updated');
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to update tax rate');
+    const isChanged = initialSettings && Number(taxRate) !== initialSettings.taxRate;
+
+    if (isChanged) {
+      triggerTwoStepConfirm(
+        'Update Tax Rate',
+        `You are changing the tax rate from ${initialSettings?.taxRate}% to ${taxRate}%. This will be applied to all new orders immediately.`,
+        async () => {
+          try {
+            await api.put('/app-settings/tax-rate', { taxRate: Number(taxRate) });
+            toast.success('Tax rate updated');
+            fetchSettings();
+          } catch (err: any) {
+            toast.error(err.response?.data?.message || 'Failed to update tax rate');
+          }
+        }
+      );
+      return;
     }
+
+    toast.error('Tax rate has not changed');
   };
 
   const updateLoyaltyConfig = async (enabled: boolean) => {
@@ -319,10 +385,10 @@ export function SettingsPage() {
                   {...register('currency')}
                   className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
                 >
+                  <option value="JOD">JOD - Jordanian Dinar (Default)</option>
                   <option value="USD">USD - US Dollar</option>
                   <option value="EUR">EUR - Euro</option>
                   <option value="GBP">GBP - British Pound</option>
-                  <option value="ILS">ILS - Israeli Shekel</option>
                   <option value="AED">AED - UAE Dirham</option>
                 </select>
               </div>
@@ -389,7 +455,7 @@ export function SettingsPage() {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Points per $1 spent</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Points per 1 JOD spent</label>
                     <input
                       type="number"
                       value={loyaltyConfig?.pointsPerCurrencyUnit || 1}
@@ -443,6 +509,15 @@ export function SettingsPage() {
           </button>
         </div>
       </form>
+
+      <ConfirmModal
+        isOpen={confirmConfig.isOpen}
+        onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
+        onConfirm={confirmConfig.onConfirm}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        type={confirmConfig.type}
+      />
     </div>
   );
 }

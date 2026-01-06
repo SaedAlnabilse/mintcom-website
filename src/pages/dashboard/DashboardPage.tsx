@@ -9,7 +9,20 @@ interface DashboardData {
   totalOrders: number;
   revenue: number;
   averageOrderValue: number;
-  activeShift: any;
+  activeShift: {
+    id?: string;
+    user?: {
+      id?: string;
+      name?: string;
+      username?: string;
+    };
+    startTime: string;
+    endTime?: string;
+    closingBalance?: number;
+    openingBalance?: number;
+    discrepancy?: number;
+    autoClose?: boolean;
+  } | null;
   topSellingItems: any[];
   recentOrders: any[];
   salesByHour: any[];
@@ -117,9 +130,9 @@ export function DashboardPage() {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'JOD',
       minimumFractionDigits: 2,
-    }).format(value);
+    }).format(value).replace('JOD', '').trim() + ' JOD';
   };
 
   if (isLoading && !data) {
@@ -181,20 +194,49 @@ export function DashboardPage() {
 
       {/* Active Shift Banner */}
       {data?.activeShift && (
-        <div className="mb-6 p-4 bg-green-600/20 border border-green-500/50 rounded-xl flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-            <div>
-              <p className="text-white font-medium">Active Shift</p>
-              <p className="text-green-300 text-sm">
-                Started by {data.activeShift.user?.username || 'Staff'} at{' '}
-                {new Date(data.activeShift.startTime).toLocaleTimeString()}
+        <div className={`mb-6 p-5 border rounded-xl flex items-start justify-between ${
+          data.activeShift.endTime
+            ? 'bg-red-600/20 border-red-500/50'
+            : 'bg-green-600/20 border-green-500/50'
+        }`}>
+          <div className="flex items-start gap-4 flex-1">
+            <div className={`w-3 h-3 rounded-full mt-1 ${
+              data.activeShift.endTime ? '' : 'animate-pulse bg-green-500'
+            } ${data.activeShift.endTime ? 'bg-red-500' : ''}`} />
+            <div className="flex-1">
+              <p className="text-white font-semibold text-lg mb-1">
+                {data.activeShift.endTime ? 'Last Shift' : 'Active Shift'}
               </p>
+              <p className={`text-sm mb-2 ${
+                data.activeShift.endTime ? 'text-red-300' : 'text-green-300'
+              }`}>
+                {data.activeShift.endTime ? 'Closed' : 'Started'} by {data.activeShift.user?.username || 'Staff'} at{' '}
+                {new Date(data.activeShift.startTime).toLocaleTimeString()}
+                {data.activeShift.endTime && data.activeShift.autoClose && (
+                  <span className="text-red-400 font-bold"> (Automatically Cashed Out)</span>
+                )}
+              </p>
+              {data.activeShift.endTime && data.activeShift.discrepancy !== undefined && data.activeShift.discrepancy !== 0 && (
+                <div className="inline-flex items-center gap-2 px-3 py-2 bg-red-500/20 border border-red-500/30 rounded-lg">
+                  <svg className="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={
+                      data.activeShift.discrepancy > 0
+                        ? "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                        : "M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"
+                    } />
+                  </svg>
+                  <span className="text-red-300 text-sm font-bold">
+                    {data.activeShift.discrepancy > 0 ? 'Overage' : 'Shortage'}: {data.activeShift.discrepancy > 0 ? '+' : ''}{formatCurrency(Math.abs(data.activeShift.discrepancy))}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
-          <div className="text-right">
-            <p className="text-white font-semibold">{formatCurrency(data.totalSales || 0)}</p>
-            <p className="text-green-300 text-sm">Shift Sales</p>
+          <div className="text-right ml-4">
+            <p className="text-white font-bold text-2xl mb-1">{formatCurrency(data.totalSales || 0)}</p>
+            <p className={`text-sm ${
+              data.activeShift.endTime ? 'text-red-300' : 'text-green-300'
+            }`}>Shift Sales</p>
           </div>
         </div>
       )}
@@ -261,7 +303,7 @@ export function DashboardPage() {
                 <BarChart data={data.salesByHour}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                   <XAxis dataKey="hour" stroke="#9CA3AF" fontSize={12} />
-                  <YAxis stroke="#9CA3AF" fontSize={12} />
+                  <YAxis stroke="#9CA3AF" fontSize={12} tickFormatter={(value) => `${value} JOD`} />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: '#1F2937',
