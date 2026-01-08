@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { motion } from 'framer-motion';
+import { Store, Save, CreditCard, Receipt, Award } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
@@ -43,8 +45,8 @@ export function SettingsPage() {
   const [loyaltyConfig, setLoyaltyConfig] = useState<LoyaltyConfig | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [initialSettings, setInitialSettings] = useState<AppSettings | null>(null);
   const [confirmConfig, setConfirmConfig] = useState<{
     isOpen: boolean;
@@ -59,7 +61,7 @@ export function SettingsPage() {
     onConfirm: () => { },
   });
 
-  const { register, handleSubmit, reset, watch } = useForm<AppSettings>();
+  const { register, handleSubmit, reset, watch, formState: { isDirty } } = useForm<AppSettings>();
 
   useEffect(() => {
     fetchSettings();
@@ -75,7 +77,7 @@ export function SettingsPage() {
       setInitialSettings(data);
       reset(data);
       if (data.logoUrl) {
-        setLogoPreview(data.logoUrl);
+        setPreviewImage(data.logoUrl);
       }
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to load settings');
@@ -99,14 +101,13 @@ export function SettingsPage() {
       setSelectedLogo(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setLogoPreview(reader.result as string);
+        setPreviewImage(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
   };
 
   const onSubmit = async (data: AppSettings) => {
-    // Check for critical changes (Currency)
     const isCurrencyChanged = initialSettings && data.currency !== initialSettings.currency;
 
     if (isCurrencyChanged) {
@@ -125,7 +126,6 @@ export function SettingsPage() {
     try {
       setIsSaving(true);
 
-      // If there's a new logo, upload it first
       if (selectedLogo) {
         const formData = new FormData();
         formData.append('file', selectedLogo);
@@ -159,12 +159,11 @@ export function SettingsPage() {
       message,
       type: 'warning',
       onConfirm: () => {
-        // Use a slight timeout to allow the first modal to close before opening the second
         setTimeout(() => {
           setConfirmConfig({
             isOpen: true,
             title: 'Final Confirmation',
-            message: 'Are you absolutely sure? This is a critical system change that affects your financial data and cannot be automatically reversed.',
+            message: 'Are you absolutely sure? This is a critical system change that affects your financial data.',
             type: 'danger',
             onConfirm,
           });
@@ -180,7 +179,7 @@ export function SettingsPage() {
     if (isChanged) {
       triggerTwoStepConfirm(
         'Update Tax Rate',
-        `You are changing the tax rate from ${initialSettings?.taxRate}% to ${taxRate}%. This will be applied to all new orders immediately.`,
+        `You are changing the tax rate from ${initialSettings?.taxRate}% to ${taxRate}%.`,
         async () => {
           try {
             await api.put('/app-settings/tax-rate', { taxRate: Number(taxRate) });
@@ -212,303 +211,297 @@ export function SettingsPage() {
   };
 
   const tabs = [
-    { id: 'profile', label: 'Restaurant Profile', icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4' },
-    { id: 'sales', label: 'Sales Settings', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
-    { id: 'receipt', label: 'Receipt Settings', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
-    { id: 'loyalty', label: 'Loyalty Program', icon: 'M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7' },
+    { id: 'profile', label: 'Restaurant Profile', icon: Store },
+    { id: 'sales', label: 'Sales Settings', icon: CreditCard },
+    { id: 'receipt', label: 'Receipt Design', icon: Receipt },
+    { id: 'loyalty', label: 'Loyalty Program', icon: Award },
   ];
 
   if (isLoading) {
     return (
-      <div className="h-full flex items-center justify-center bg-gray-900">
-        <svg className="animate-spin h-8 w-8 text-green-500" viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-        </svg>
+      <div className="h-full flex items-center justify-center bg-gray-50 dark:bg-[#050505]">
+        <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="h-full overflow-y-auto bg-gray-900 p-6">
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white">Settings</h1>
-        <p className="text-gray-400 text-sm">Configure your restaurant settings</p>
-      </div>
+    <div className="h-full overflow-y-auto bg-gray-50 dark:bg-[#050505] p-6 lg:p-10 transition-colors duration-300">
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-10">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Settings</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Manage your restaurant profile, sales configurations, and loyalty program</p>
+        </div>
 
-      {/* Tabs */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id as SettingsTab)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-colors ${
-              activeTab === tab.id
-                ? 'bg-green-600 text-white'
-                : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
-            }`}
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={tab.icon} />
-            </svg>
-            {tab.label}
-          </button>
-        ))}
-      </div>
+        {/* Tabs */}
+        <div className="flex flex-wrap gap-2 p-1 bg-gray-100 dark:bg-white/5 rounded-2xl w-fit mb-10 border border-gray-200 dark:border-white/5">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActiveTab(tab.id as SettingsTab)}
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                activeTab === tab.id
+                  ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700 dark:hover:text-white'
+              }`}
+            >
+              <tab.icon size={18} />
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Restaurant Profile */}
-        {activeTab === 'profile' && (
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 space-y-6">
-            <h3 className="text-lg font-semibold text-white">Restaurant Profile</h3>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pb-20">
+          {/* Restaurant Profile */}
+          {activeTab === 'profile' && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white dark:bg-white/5 rounded-3xl border border-gray-200 dark:border-white/10 p-8 shadow-sm dark:shadow-none space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300"
+            >
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Restaurant Profile</h3>
 
-            {/* Logo */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Logo</label>
-              <div className="flex items-center gap-4">
-                <div className="w-24 h-24 bg-gray-700 rounded-xl overflow-hidden flex items-center justify-center">
-                  {logoPreview ? (
-                    <img src={logoPreview} alt="Logo" className="w-full h-full object-cover" />
-                  ) : (
-                    <svg className="w-10 h-10 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  )}
+              {/* Logo */}
+              <div>
+                <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-4 uppercase tracking-wider">Logo</label>
+                <div className="flex items-center gap-8">
+                  <div className="w-32 h-32 bg-gray-50 dark:bg-black/20 rounded-2xl overflow-hidden flex items-center justify-center border border-gray-100 dark:border-white/5 shadow-inner">
+                    {previewImage ? (
+                      <img src={previewImage} alt="Logo" className="w-full h-full object-cover" />
+                    ) : (
+                      <Store className="w-12 h-12 text-gray-300 dark:text-gray-600" />
+                    )}
+                  </div>
+                  <label className="px-6 py-2.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white rounded-xl hover:bg-gray-50 dark:hover:bg-white/10 cursor-pointer font-bold shadow-sm transition-all">
+                    Change Logo
+                    <input type="file" accept="image/*" onChange={handleLogoChange} className="hidden" />
+                  </label>
                 </div>
-                <label className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 cursor-pointer">
-                  Upload Logo
-                  <input type="file" accept="image/*" onChange={handleLogoChange} className="hidden" />
+              </div>
+
+              {/* Restaurant Name */}
+              <div>
+                <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Restaurant Name</label>
+                <input
+                  type="text"
+                  {...register('restaurantName')}
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-colors font-medium"
+                />
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Description</label>
+                <textarea
+                  {...register('description')}
+                  rows={3}
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-colors font-medium resize-none"
+                />
+              </div>
+
+              {/* Address */}
+              <div>
+                <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Address</label>
+                <input
+                  type="text"
+                  {...register('address')}
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-colors font-medium"
+                />
+              </div>
+
+              {/* Phone & Email */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Phone</label>
+                  <input
+                    type="text"
+                    {...register('phone')}
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-colors font-medium"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Email</label>
+                  <input
+                    type="email"
+                    {...register('email')}
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-colors font-medium"
+                  />
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === 'sales' && (
+            <div className="bg-white dark:bg-white/5 rounded-3xl border border-gray-200 dark:border-white/10 p-8 shadow-sm dark:shadow-none space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sales & Financials</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Tax Rate (%)</label>
+                  <div className="flex gap-3">
+                    <input
+                      type="number"
+                      step="0.01"
+                      {...register('taxRate', { valueAsNumber: true })}
+                      className="flex-1 px-4 py-3 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-black focus:outline-none focus:border-paymint-green transition-colors"
+                    />
+                    <button
+                      type="button"
+                      onClick={updateTaxRate}
+                      className="px-6 py-2 bg-paymint-green/10 text-paymint-green font-bold rounded-xl hover:bg-paymint-green hover:text-black transition-all shadow-sm"
+                    >
+                      Update
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Currency</label>
+                  <select
+                    {...register('currency')}
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-bold focus:outline-none focus:border-paymint-green transition-colors"
+                  >
+                    <option value="JOD">JOD - Jordanian Dinar</option>
+                    <option value="USD">USD - US Dollar</option>
+                    <option value="EUR">EUR - Euro</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Invoice Prefix</label>
+                  <input
+                    type="text"
+                    {...register('invoicePrefix')}
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-mono focus:outline-none focus:border-paymint-green transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Tax ID / VAT</label>
+                  <input
+                    type="text"
+                    {...register('taxId')}
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-green transition-colors"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Receipt Settings */}
+          {activeTab === 'receipt' && (
+            <div className="bg-white dark:bg-white/5 rounded-3xl border border-gray-200 dark:border-white/10 p-8 shadow-sm dark:shadow-none space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Receipt Design</h3>
+              
+              <div className="bg-gray-50 dark:bg-[#2a2a2a] p-4 rounded-2xl flex items-center justify-between border border-gray-100 dark:border-transparent transition-colors">
+                <div>
+                  <p className="text-gray-900 dark:text-white font-bold text-sm">Print Logo</p>
+                  <p className="text-gray-500 text-xs mt-0.5">Show restaurant logo on receipts</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    id="showLogoOnReceipt"
+                    {...register('showLogoOnReceipt')}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-paymint-green"></div>
                 </label>
               </div>
-            </div>
 
-            {/* Restaurant Name */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Restaurant Name</label>
-              <input
-                type="text"
-                {...register('restaurantName')}
-                className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
-
-            {/* Description */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
-              <textarea
-                {...register('description')}
-                rows={3}
-                className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
-
-            {/* Address */}
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Address</label>
-              <input
-                type="text"
-                {...register('address')}
-                className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
-
-            {/* Phone & Email */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Phone</label>
-                <input
-                  type="tel"
-                  {...register('phone')}
-                  className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Receipt Header</label>
+                <textarea
+                  {...register('receiptHeader')}
+                  placeholder="Text shown at the top of receipts"
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-colors font-medium resize-none"
                 />
               </div>
+
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
-                <input
-                  type="email"
-                  {...register('email')}
-                  className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Receipt Footer</label>
+                <textarea
+                  {...register('receiptFooter')}
+                  placeholder="Text shown at the bottom of receipts (e.g., Thank you for visiting!)"
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-colors font-medium resize-none"
                 />
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Sales Settings */}
-        {activeTab === 'sales' && (
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 space-y-6">
-            <h3 className="text-lg font-semibold text-white">Sales Settings</h3>
+          {/* Loyalty Program */}
+          {activeTab === 'loyalty' && (
+            <div className="bg-white dark:bg-white/5 rounded-3xl border border-gray-200 dark:border-white/10 p-8 shadow-sm dark:shadow-none space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Loyalty Program</h3>
+                  <p className="text-gray-500 text-sm mt-1">Reward regular customers with points</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={loyaltyConfig?.enabled}
+                    onChange={() => updateLoyaltyConfig(!loyaltyConfig?.enabled)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-paymint-green"></div>
+                </label>
+              </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Tax Rate (%)</label>
-                <div className="flex gap-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+                <div>
+                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Points per 1 JOD spent</label>
                   <input
                     type="number"
-                    step="0.01"
-                    {...register('taxRate', { valueAsNumber: true })}
-                    className="flex-1 px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                    value={loyaltyConfig?.pointsPerCurrencyUnit || 1}
+                    onChange={(e) => setLoyaltyConfig(prev => prev ? {...prev, pointsPerCurrencyUnit: Number(e.target.value)} : null)}
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-black focus:outline-none focus:border-paymint-green transition-colors"
                   />
-                  <button
-                    type="button"
-                    onClick={updateTaxRate}
-                    className="px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                  >
-                    Update
-                  </button>
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Tax ID / VAT Number</label>
-                <input
-                  type="text"
-                  {...register('taxId')}
-                  className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Invoice Prefix</label>
-                <input
-                  type="text"
-                  {...register('invoicePrefix')}
-                  placeholder="e.g., INV-"
-                  className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Currency</label>
-                <select
-                  {...register('currency')}
-                  className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="JOD">JOD - Jordanian Dinar (Default)</option>
-                  <option value="USD">USD - US Dollar</option>
-                  <option value="EUR">EUR - Euro</option>
-                  <option value="GBP">GBP - British Pound</option>
-                  <option value="AED">AED - UAE Dirham</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Receipt Settings */}
-        {activeTab === 'receipt' && (
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 space-y-6">
-            <h3 className="text-lg font-semibold text-white">Receipt Settings</h3>
-
-            <div className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                {...register('showLogoOnReceipt')}
-                id="showLogoOnReceipt"
-                className="w-5 h-5 rounded border-gray-600 bg-gray-700 text-green-500 focus:ring-green-500"
-              />
-              <label htmlFor="showLogoOnReceipt" className="text-gray-300">Show logo on receipt</label>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Receipt Header</label>
-              <textarea
-                {...register('receiptHeader')}
-                rows={2}
-                placeholder="Text shown at the top of receipts"
-                className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Receipt Footer</label>
-              <textarea
-                {...register('receiptFooter')}
-                rows={2}
-                placeholder="Text shown at the bottom of receipts (e.g., Thank you for visiting!)"
-                className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Loyalty Program */}
-        {activeTab === 'loyalty' && (
-          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 space-y-6">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-white">Loyalty Program</h3>
-              <button
-                type="button"
-                onClick={() => updateLoyaltyConfig(!loyaltyConfig?.enabled)}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  loyaltyConfig?.enabled
-                    ? 'bg-green-600 text-white'
-                    : 'bg-gray-700 text-gray-300'
-                }`}
-              >
-                {loyaltyConfig?.enabled ? 'Enabled' : 'Disabled'}
-              </button>
-            </div>
-
-            {loyaltyConfig?.enabled && (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Points per 1 JOD spent</label>
-                    <input
-                      type="number"
-                      value={loyaltyConfig?.pointsPerCurrencyUnit || 1}
-                      onChange={(e) => setLoyaltyConfig(prev => prev ? {...prev, pointsPerCurrencyUnit: Number(e.target.value)} : null)}
-                      className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Minimum spend for points</label>
-                    <input
-                      type="number"
-                      value={loyaltyConfig?.minimumSpendForPoints || 0}
-                      onChange={(e) => setLoyaltyConfig(prev => prev ? {...prev, minimumSpendForPoints: Number(e.target.value)} : null)}
-                      className="w-full px-4 py-2.5 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                  </div>
-                </div>
-
-                {/* Tiers */}
                 <div>
-                  <h4 className="text-md font-medium text-white mb-3">Loyalty Tiers</h4>
-                  <div className="space-y-2">
-                    {(loyaltyConfig?.tiers || []).map((tier, index) => (
-                      <div key={index} className="flex items-center gap-4 p-3 bg-gray-700/50 rounded-lg">
-                        <span className="text-white font-medium">{tier.name}</span>
-                        <span className="text-gray-400">Min: {tier.minPoints} points</span>
-                        <span className="text-green-400">{tier.multiplier}x multiplier</span>
-                      </div>
-                    ))}
-                  </div>
+                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Min. Spend for Points</label>
+                  <input
+                    type="number"
+                    value={loyaltyConfig?.minimumSpendForPoints || 0}
+                    onChange={(e) => setLoyaltyConfig(prev => prev ? {...prev, minimumSpendForPoints: Number(e.target.value)} : null)}
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-black focus:outline-none focus:border-paymint-green transition-colors"
+                  />
                 </div>
-              </>
-            )}
-          </div>
-        )}
+              </div>
 
-        {/* Save Button */}
-        <div className="mt-6 flex justify-end">
-          <button
-            type="submit"
-            disabled={isSaving}
-            className="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-600 transition-colors flex items-center gap-2"
-          >
-            {isSaving && (
-              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-            )}
-            Save Changes
-          </button>
-        </div>
-      </form>
+              <div>
+                <h4 className="text-sm font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-4">Program Tiers</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {(loyaltyConfig?.tiers || []).map((tier, index) => (
+                    <div key={index} className="p-5 bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/5 transition-all hover:border-paymint-green/30 group">
+                      <p className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">{tier.name}</p>
+                      <p className="text-sm text-gray-500 font-medium mt-1">Min: {tier.minPoints} points</p>
+                      <p className="text-paymint-green font-black mt-3 text-xl">{tier.multiplier}x <span className="text-xs uppercase font-bold text-gray-400 tracking-widest">Multiplier</span></p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="flex justify-end pt-6">
+            <button
+              type="submit"
+              disabled={isSaving || !isDirty}
+              className="px-10 py-4 bg-paymint-green text-black font-bold rounded-2xl hover:bg-paymint-green/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl shadow-paymint-green/30 flex items-center gap-3 active:scale-95"
+            >
+              {isSaving ? (
+                <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+              ) : (
+                <Save size={20} />
+              )}
+              Save All Settings
+            </button>
+          </div>
+        </form>
+      </div>
 
       <ConfirmModal
         isOpen={confirmConfig.isOpen}

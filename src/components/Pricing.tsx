@@ -92,10 +92,10 @@ export const Pricing = () => {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1, duration: 0.5 }}
               whileHover={{ y: -10 }}
-              className={`rounded-3xl p-8 border relative flex flex-col ${
+              className={`rounded-3xl p-8 border relative flex flex-col transition-all duration-300 ${
                 plan.highlight 
-                  ? 'border-paymint-green bg-white dark:bg-[#1a1a1a] shadow-2xl shadow-paymint-green/10' 
-                  : 'border-gray-200 dark:border-white/10 bg-white dark:bg-[#151515] hover:border-paymint-green/30 transition-colors'
+                  ? 'border-paymint-green bg-white dark:bg-[#1a1a1a] shadow-2xl shadow-paymint-green/10 dark:shadow-none' 
+                  : 'border-gray-200 dark:border-white/10 bg-white dark:bg-[#151515] hover:border-paymint-green/30 shadow-lg shadow-gray-200/50 dark:shadow-none'
               }`}
             >
               {plan.highlight && (
@@ -106,7 +106,7 @@ export const Pricing = () => {
 
               <div className="mb-8">
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{plan.name}</h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm h-10">{plan.description}</p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm h-10">{plan.description}</p>
               </div>
 
               <div className="flex items-baseline gap-1 mb-8">
@@ -117,7 +117,7 @@ export const Pricing = () => {
               <ul className="space-y-4 mb-8 flex-1">
                 {plan.features.map((feature, i) => (
                   <li key={i} className="flex items-start gap-3 text-gray-700 dark:text-gray-300 text-sm">
-                    <div className="mt-0.5 w-5 h-5 rounded-full bg-paymint-green/10 flex items-center justify-center flex-shrink-0">
+                    <div className="mt-0.5 w-5 h-5 rounded-full bg-paymint-green/10 dark:bg-paymint-green/20 flex items-center justify-center flex-shrink-0">
                       <Check size={12} className="text-paymint-green" />
                     </div>
                     {feature}
@@ -139,7 +139,7 @@ export const Pricing = () => {
               
               <button 
                 onClick={() => setSelectedPlan(plan)}
-                className="mt-4 text-sm text-gray-500 hover:text-paymint-green transition-colors text-center"
+                className="mt-4 text-sm text-gray-500 hover:text-paymint-green transition-colors text-center font-medium"
               >
                 View full details
               </button>
@@ -157,22 +157,22 @@ export const Pricing = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedPlan(null)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-md"
+              className="absolute inset-0 bg-black/20 dark:bg-black/60 backdrop-blur-md transition-colors"
             />
             
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white dark:bg-[#1a1a1a] w-full max-w-lg rounded-3xl shadow-2xl relative z-10 overflow-hidden"
+              className="bg-white dark:bg-[#1a1a1a] w-full max-w-lg rounded-3xl shadow-2xl relative z-10 overflow-hidden border border-gray-100 dark:border-white/5 transition-colors duration-300"
             >
-              <div className="p-6 border-b border-gray-100 dark:border-white/5 flex justify-between items-center">
+              <div className="p-6 border-b border-gray-100 dark:border-white/5 flex justify-between items-center bg-gray-50/50 dark:bg-transparent">
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">Plan Details</h3>
                 <button 
                   onClick={() => setSelectedPlan(null)}
                   className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                 >
-                  <X size={20} className="text-gray-500" />
+                  <X size={20} className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-white" />
                 </button>
               </div>
               
@@ -180,13 +180,13 @@ export const Pricing = () => {
                 <div className="text-center mb-8">
                   <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{selectedPlan.name}</h2>
                   <div className="flex items-baseline justify-center gap-1 mb-4">
-                    <span className="text-4xl font-bold text-paymint-green">{selectedPlan.price}</span>
-                    <span className="text-gray-500">{selectedPlan.period}</span>
+                    <span className="text-4xl font-bold text-paymint-green dark:text-paymint-green">{selectedPlan.price}</span>
+                    <span className="text-gray-500 dark:text-gray-400">{selectedPlan.period}</span>
                   </div>
                   <p className="text-gray-600 dark:text-gray-400">{selectedPlan.description}</p>
                 </div>
 
-                <div className="bg-gray-50 dark:bg-black/20 rounded-2xl p-6 mb-8">
+                <div className="bg-gray-50 dark:bg-black/20 rounded-2xl p-6 mb-8 border border-gray-100 dark:border-transparent transition-colors">
                   <h4 className="font-bold text-gray-900 dark:text-white mb-4 text-sm uppercase tracking-wider">What's Included</h4>
                   <ul className="space-y-3">
                     {[...selectedPlan.features, ...(selectedPlan.detailedFeatures || [])].map((feature, i) => (
@@ -212,3 +212,5 @@ export const Pricing = () => {
     </section>
   );
 };
+
+

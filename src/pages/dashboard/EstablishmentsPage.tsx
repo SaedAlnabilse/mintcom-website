@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Store,
   Plus,
   MoreVertical,
   DollarSign,
   CheckCircle,
-  AlertCircle,
+  Loader2,
+  ShieldCheck
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
@@ -28,207 +29,181 @@ export function EstablishmentsPage() {
   const navigate = useNavigate();
   const { establishments, currentEstablishment, setCurrentEstablishment } = useAuth();
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [isSwitching, setIsSwitching] = useState(false);
+  const [selectedName, setSelectedName] = useState('');
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active':
-        return 'text-green-500 bg-green-500/10';
+        return 'text-paymint-green bg-paymint-green/10 border-paymint-green/20';
       case 'trial':
-        return 'text-yellow-500 bg-yellow-500/10';
+        return 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20';
       case 'past_due':
-        return 'text-red-500 bg-red-500/10';
-      case 'cancelled':
-        return 'text-gray-500 bg-gray-500/10';
+        return 'text-paymint-red bg-paymint-red/10 border-paymint-red/20';
       default:
-        return 'text-gray-500 bg-gray-500/10';
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'Active';
-      case 'trial':
-        return 'Trial';
-      case 'past_due':
-        return 'Past Due';
-      case 'cancelled':
-        return 'Cancelled';
-      default:
-        return status;
+        return 'text-gray-500 bg-gray-500/10 border-gray-100 dark:border-white/5';
     }
   };
 
   const handleSelectEstablishment = (est: Establishment) => {
-    setCurrentEstablishment(est as any);
-    toast.success(`Switched to ${est.name}`);
+    if (est.id === currentEstablishment?.id) return;
+    
+    setIsSwitching(true);
+    setSelectedName(est.name);
+    
+    setTimeout(() => {
+      setCurrentEstablishment(est as any);
+      toast.success(`Active: ${est.name}`);
+      setIsSwitching(false);
+    }, 800);
   };
 
   return (
-    <div className="p-6 overflow-y-auto h-full">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-2xl font-bold text-white">Establishments</h1>
-            <p className="text-gray-400">Manage your businesses and locations</p>
-          </div>
-          <button
-            onClick={() => navigate('/onboarding')}
-            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors"
-          >
-            <Plus className="w-5 h-5" />
-            Add Establishment
-          </button>
+    <div className="space-y-10 pb-16">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase">Registry</h1>
+          <p className="text-gray-500 dark:text-gray-400 font-medium mt-1">Multi-location enterprise asset management.</p>
         </div>
-
-        {/* Establishments Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {establishments.map((est) => (
-            <motion.div
-              key={est.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`bg-gray-800 rounded-xl p-6 border-2 transition-colors ${currentEstablishment?.id === est.id
-                  ? 'border-green-500'
-                  : 'border-transparent hover:border-gray-700'
-                }`}
-            >
-              {/* Header */}
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-green-600/20 rounded-xl flex items-center justify-center">
-                    <Store className="w-6 h-6 text-green-500" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-white">{est.name}</h3>
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(est.subscriptionStatus)}`}>
-                      {getStatusLabel(est.subscriptionStatus)}
-                    </span>
-                  </div>
-                </div>
-                <div className="relative">
-                  <button
-                    onClick={() => setOpenMenuId(openMenuId === est.id ? null : est.id)}
-                    className="p-1.5 hover:bg-gray-700 rounded-lg transition-colors"
-                  >
-                    <MoreVertical className="w-5 h-5 text-gray-400" />
-                  </button>
-                  {openMenuId === est.id && (
-                    <div className="absolute right-0 mt-1 w-48 bg-gray-700 rounded-lg shadow-lg z-10 overflow-hidden">
-                      <button
-                        onClick={() => {
-                          handleSelectEstablishment(est);
-                          setOpenMenuId(null);
-                        }}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 transition-colors"
-                      >
-                        Switch to this
-                      </button>
-                      <button
-                        onClick={() => {
-                          navigate('/dashboard/settings');
-                          setOpenMenuId(null);
-                        }}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 transition-colors"
-                      >
-                        Settings
-                      </button>
-                      <button
-                        onClick={() => {
-                          navigate('/dashboard/staff');
-                          setOpenMenuId(null);
-                        }}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 transition-colors"
-                      >
-                        Manage Staff
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Details */}
-              <div className="space-y-2 mb-4">
-                <div className="flex items-center gap-2 text-gray-400 text-sm">
-                  <DollarSign className="w-4 h-4" />
-                  <span>{est.currency}</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-400 text-sm capitalize">
-                  <Store className="w-4 h-4" />
-                  <span>{est.type.replace('_', ' ')}</span>
-                </div>
-              </div>
-
-              {/* Trial Info */}
-              {est.subscriptionStatus === 'trial' && (
-                <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 mb-4">
-                  <p className="text-yellow-500 text-sm">
-                    <AlertCircle className="w-4 h-4 inline mr-1" />
-                    Trial ends soon
-                  </p>
-                </div>
-              )}
-
-              {/* Action Button */}
-              {currentEstablishment?.id === est.id ? (
-                <div className="flex items-center justify-center gap-2 py-2 text-green-500">
-                  <CheckCircle className="w-5 h-5" />
-                  <span className="font-medium">Currently Active</span>
-                </div>
-              ) : (
-                <button
-                  onClick={() => handleSelectEstablishment(est)}
-                  className="w-full py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
-                >
-                  Switch to this
-                </button>
-              )}
-            </motion.div>
-          ))}
-
-          {/* Add New Card */}
-          <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            onClick={() => navigate('/onboarding')}
-            className="bg-gray-800/50 border-2 border-dashed border-gray-700 rounded-xl p-6 flex flex-col items-center justify-center gap-4 hover:border-green-500 hover:bg-gray-800 transition-all min-h-[250px]"
-          >
-            <div className="w-16 h-16 bg-green-600/20 rounded-full flex items-center justify-center">
-              <Plus className="w-8 h-8 text-green-500" />
-            </div>
-            <div className="text-center">
-              <h3 className="text-lg font-semibold text-white mb-1">Add Establishment</h3>
-              <p className="text-gray-400 text-sm">$20/month per establishment</p>
-            </div>
-          </motion.button>
-        </div>
-
-        {/* Info Section */}
-        <div className="mt-12 bg-gray-800 rounded-xl p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">About Multiple Establishments</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <h4 className="text-white font-medium mb-2">Separate Data</h4>
-              <p className="text-gray-400 text-sm">
-                Each establishment has its own menu, orders, staff, and reports. Data is kept completely separate.
-              </p>
-            </div>
-            <div>
-              <h4 className="text-white font-medium mb-2">Shared Employees</h4>
-              <p className="text-gray-400 text-sm">
-                Assign employees to multiple establishments. They'll be able to work at any location you assign them to.
-              </p>
-            </div>
-            <div>
-              <h4 className="text-white font-medium mb-2">Brands & Groups</h4>
-              <p className="text-gray-400 text-sm">
-                Create brands to group related establishments and share employees across them more easily.
-              </p>
-            </div>
-          </div>
-        </div>
+        <button
+          onClick={() => navigate('/onboarding')}
+          className="px-6 py-3 bg-paymint-green text-black font-black rounded-2xl hover:scale-105 transition-all flex items-center gap-2 shadow-lg shadow-paymint-green/20 active:scale-95"
+        >
+          <Plus size={20} />
+          <span>Add Establishment</span>
+        </button>
       </div>
+
+      {/* Establishments Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {establishments.map((est) => (
+          <motion.div
+            key={est.id}
+            layout
+            className={`bg-white dark:bg-[#0A0A0A] rounded-[2.5rem] p-10 border-2 transition-all group relative ${
+              currentEstablishment?.id === est.id
+                ? 'border-paymint-green shadow-xl shadow-paymint-green/5'
+                : 'border-gray-100 dark:border-white/[0.05] hover:border-gray-200 dark:hover:border-white/10'
+            }`}
+          >
+            {/* Card Header */}
+            <div className="flex items-start justify-between mb-10">
+              <div className="flex items-center gap-5">
+                <div className={`w-16 h-16 rounded-[1.5rem] flex items-center justify-center border transition-all duration-500 group-hover:scale-110 ${
+                  currentEstablishment?.id === est.id ? 'bg-paymint-green text-black border-paymint-green' : 'bg-gray-50 dark:bg-white/[0.03] text-gray-400 border-gray-100 dark:border-white/5'
+                }`}>
+                  <Store size={28} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-gray-900 dark:text-white truncate max-w-[150px] uppercase tracking-tight">{est.name}</h3>
+                  <span className={`inline-flex items-center px-3 py-1 text-[9px] font-black uppercase tracking-[0.2em] rounded-lg mt-2 border ${getStatusColor(est.subscriptionStatus)}`}>
+                    {est.subscriptionStatus}
+                  </span>
+                </div>
+              </div>
+              
+              <div className="relative">
+                <button
+                  onClick={() => setOpenMenuId(openMenuId === est.id ? null : est.id)}
+                  className="p-2.5 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-all text-gray-400"
+                >
+                  <MoreVertical size={20} />
+                </button>
+                <AnimatePresence>
+                  {openMenuId === est.id && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                      className="absolute right-0 mt-3 w-56 bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/[0.1] rounded-2xl shadow-2xl z-50 overflow-hidden py-2"
+                    >
+                      <button onClick={() => { handleSelectEstablishment(est); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-sm font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green hover:text-black transition-all flex items-center gap-3">
+                        <CheckCircle size={16} /> Switch Identity
+                      </button>
+                      <button onClick={() => { navigate('/dashboard/settings'); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-all">Settings</button>
+                      <button onClick={() => { navigate('/dashboard/staff'); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-all">Team Access</button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Details List */}
+            <div className="space-y-4 mb-10">
+              <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400 text-xs font-black uppercase tracking-widest">
+                <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-white/[0.03] flex items-center justify-center border border-gray-100 dark:border-white/5">
+                  <DollarSign size={16} className="text-paymint-green" />
+                </div>
+                <span>Currency: {est.currency}</span>
+              </div>
+              <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400 text-xs font-black uppercase tracking-widest">
+                <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-white/[0.03] flex items-center justify-center border border-gray-100 dark:border-white/5">
+                  <ShieldCheck size={16} className="text-blue-500" />
+                </div>
+                <span className="truncate">{est.type.replace('_', ' ')} Registry</span>
+              </div>
+            </div>
+
+            {/* Action Button */}
+            {currentEstablishment?.id === est.id ? (
+              <div className="flex items-center justify-center gap-2 py-4 px-6 rounded-2xl bg-paymint-green/10 text-paymint-green border border-paymint-green/20 shadow-inner">
+                <CheckCircle size={18} />
+                <span className="font-black text-xs uppercase tracking-widest">Selected Active Node</span>
+              </div>
+            ) : (
+              <button
+                onClick={() => handleSelectEstablishment(est)}
+                className="w-full py-4 px-6 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl hover:scale-[1.02] transition-all shadow-xl shadow-black/5 active:scale-95 text-xs uppercase tracking-[0.2em]"
+              >
+                Initialize Switch
+              </button>
+            )}
+          </motion.div>
+        ))}
+
+        {/* Add New Establishment Card */}
+        <motion.button
+          onClick={() => navigate('/onboarding')}
+          className="bg-white dark:bg-[#0A0A0A] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-[2.5rem] p-10 flex flex-col items-center justify-center gap-8 hover:border-paymint-green dark:hover:border-paymint-green hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all min-h-[400px] group shadow-sm hover:shadow-2xl"
+        >
+          <div className="w-24 h-24 bg-gray-50 dark:bg-white/[0.03] rounded-full flex items-center justify-center border border-gray-100 dark:border-white/5 group-hover:scale-110 transition-transform duration-500">
+            <Plus size={40} className="text-gray-300 group-hover:text-paymint-green transition-colors" />
+          </div>
+          <div className="text-center">
+            <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2 uppercase tracking-tight">Expand Node</h3>
+            <p className="text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] max-w-[200px] leading-loose">Deploy New Enterprise Location Profile</p>
+          </div>
+        </motion.button>
+      </div>
+
+      {/* Switcher Overlay - Truly Global (Portal equivalent) */}
+      <AnimatePresence>
+        {isSwitching && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] bg-white dark:bg-[#050505] flex flex-col items-center justify-center"
+          >
+            <div className="w-20 h-20 bg-paymint-green/10 rounded-[2.5rem] flex items-center justify-center mb-8 relative">
+              <Loader2 size={40} className="text-paymint-green animate-spin" />
+              <div className="absolute inset-0 bg-paymint-green/20 rounded-[2.5rem] animate-ping" />
+            </div>
+            <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase">Syncing Node</h2>
+            <p className="text-paymint-green font-black uppercase tracking-[0.3em] text-sm mt-4">{selectedName}</p>
+            
+            <div className="mt-12 w-48 h-1 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+              <motion.div 
+                initial={{ x: '-100%' }}
+                animate={{ x: '0%' }}
+                transition={{ duration: 0.8 }}
+                className="h-full bg-paymint-green"
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

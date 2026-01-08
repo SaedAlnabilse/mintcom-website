@@ -1,16 +1,39 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { ThemeToggle } from './ThemeToggle';
+import { 
+  LayoutDashboard, 
+  ShoppingCart, 
+  Package, 
+  Users, 
+  FileBarChart, 
+  Percent, 
+  CreditCard, 
+  Settings, 
+  History, 
+  Store, 
+  LogOut, 
+  ChevronDown, 
+  ChevronRight,
+  Zap,
+  PanelLeftClose,
+  PanelLeft,
+  Loader2,
+  Building2
+} from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface MenuItem {
   path: string;
   label: string;
-  icon: string;
+  icon: React.ElementType;
 }
 
 interface MenuGroup {
   label: string;
-  icon: string;
+  icon: React.ElementType;
   items: MenuItem[];
 }
 
@@ -21,44 +44,45 @@ const isMenuGroup = (item: MenuItemOrGroup): item is MenuGroup => {
 };
 
 const menuStructure: MenuItemOrGroup[] = [
-  { path: '/dashboard', label: 'Dashboard', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
-  { path: '/dashboard/orders', label: 'Orders', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01' },
+  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/dashboard/orders', label: 'Orders', icon: ShoppingCart },
   {
     label: 'Inventory',
-    icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
+    icon: Package,
     items: [
-      { path: '/dashboard/products', label: 'Products', icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4' },
-      { path: '/dashboard/categories', label: 'Categories', icon: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z' },
-      { path: '/dashboard/addons', label: 'Add-ons', icon: 'M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z' },
-      { path: '/dashboard/materials', label: 'Materials', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10' },
-      { path: '/dashboard/recipes', label: 'Recipes', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' },
+      { path: '/dashboard/products', label: 'Products', icon: Package },
+      { path: '/dashboard/categories', label: 'Categories', icon: LayoutDashboard },
+      { path: '/dashboard/addons', label: 'Add-ons', icon: Package },
+      { path: '/dashboard/materials', label: 'Materials', icon: Package },
+      { path: '/dashboard/recipes', label: 'Recipes', icon: FileBarChart },
     ],
   },
   {
-    label: 'People',
-    icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z',
+    label: 'Sales & Growth',
+    icon: Percent,
     items: [
-      { path: '/dashboard/staff', label: 'Staff', icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z' },
-      { path: '/dashboard/customers', label: 'Customers', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z' },
-    ],
-  },
-  { path: '/dashboard/reports', label: 'Reports', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
-  { path: '/dashboard/discounts', label: 'Discounts', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
-  { path: '/dashboard/payment-methods', label: 'Payment Methods', icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z' },
-  {
-    label: 'Account',
-    icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4',
-    items: [
-      { path: '/dashboard/establishments', label: 'Establishments', icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4' },
-      { path: '/dashboard/billing', label: 'Billing', icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z' },
+      { path: '/dashboard/discounts', label: 'Discounts', icon: Percent },
+      { path: '/dashboard/payment-methods', label: 'Payment Methods', icon: CreditCard },
+      { path: '/dashboard/reports', label: 'Analytics', icon: FileBarChart },
     ],
   },
   {
-    label: 'System',
-    icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z',
+    label: 'Community',
+    icon: Users,
     items: [
-      { path: '/dashboard/settings', label: 'Settings', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z' },
-      { path: '/dashboard/activity-logs', label: 'Activity Logs', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' },
+      { path: '/dashboard/staff', label: 'Team', icon: Users },
+      { path: '/dashboard/customers', label: 'Customers', icon: Users },
+    ],
+  },
+  {
+    label: 'Management',
+    icon: Store,
+    items: [
+      { path: '/dashboard/establishments', label: 'Establishments', icon: Store },
+      { path: '/dashboard/brands', label: 'Brands', icon: Building2 },
+      { path: '/dashboard/billing', label: 'Billing', icon: CreditCard },
+      { path: '/dashboard/settings', label: 'Settings', icon: Settings },
+      { path: '/dashboard/activity-logs', label: 'System Logs', icon: History },
     ],
   },
 ];
@@ -68,21 +92,34 @@ export function DashboardLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set(['Inventory']));
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set(['Inventory', 'Sales & Growth']));
   const [showEstablishmentDropdown, setShowEstablishmentDropdown] = useState(false);
+  const [activePopupGroup, setActivePopupGroup] = useState<string | null>(null);
+  const [isSwitching, setIsSwitching] = useState(false);
+  const [switchingToName, setSwitchingToName] = useState('');
+  const navRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
-  const toggleGroup = (label: string) => {
+  const toggleGroup = (label: string, e: React.MouseEvent) => {
+    if (!sidebarOpen) {
+      setActivePopupGroup(activePopupGroup === label ? null : label);
+      return;
+    }
+
     setExpandedGroups((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(label)) {
         newSet.delete(label);
       } else {
         newSet.add(label);
+        setTimeout(() => {
+          const target = e.currentTarget as HTMLElement;
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
       }
       return newSet;
     });
@@ -93,204 +130,497 @@ export function DashboardLayout() {
   };
 
   const handleEstablishmentChange = (establishment: typeof currentEstablishment) => {
-    if (establishment) {
-      setCurrentEstablishment(establishment);
+    if (establishment && establishment.id !== currentEstablishment?.id) {
+      setSwitchingToName(establishment.name);
+      setIsSwitching(true);
       setShowEstablishmentDropdown(false);
+      
+      // Animation delay for switching sequence
+      setTimeout(() => {
+        setCurrentEstablishment(establishment);
+        toast.success(`Active Node: ${establishment.name}`);
+        setIsSwitching(false);
+      }, 800);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex">
-      {/* Sidebar */}
-      <aside
-        className={`${sidebarOpen ? 'w-64' : 'w-20'
-          } bg-gray-800 border-r border-gray-700 flex flex-col transition-all duration-300`}
+    <div className="min-h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden selection:bg-paymint-green selection:text-black transition-colors duration-500">
+      {/* Sidebar Container - HIGHER Z-INDEX */}
+      <motion.aside
+        initial={false}
+        animate={{ 
+          width: sidebarOpen ? 300 : 100,
+          transition: { duration: 0.4, type: "spring", damping: 25, stiffness: 200 }
+        }}
+        className="relative z-[60] flex flex-col h-screen p-4 bg-white dark:bg-[#0A0A0A] border-r border-gray-200 dark:border-white/[0.05] transition-colors duration-500"
       >
-        {/* Logo */}
-        <div className="p-4 border-b border-gray-700 flex items-center justify-between">
-          {sidebarOpen && (
-            <h1 className="text-xl font-bold text-white">
-              Pay<span className="text-green-500">Mint</span>
-            </h1>
-          )}
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 rounded-lg hover:bg-gray-700 text-gray-400 hover:text-white transition-colors"
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Establishment Selector */}
-        {sidebarOpen && currentEstablishment && (
-          <div className="px-4 py-3 border-b border-gray-700">
-            <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Establishment</p>
-            <div className="relative">
-              <button
-                onClick={() => setShowEstablishmentDropdown(!showEstablishmentDropdown)}
-                className="w-full flex items-center justify-between text-left p-2 rounded-lg bg-gray-700/50 hover:bg-gray-700 transition-colors"
+        {/* Sidebar Glow Decor */}
+        <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-b from-transparent via-paymint-green/20 to-transparent opacity-50" />
+        
+        {/* Brand Header & Toggle */}
+        <div className="h-20 flex items-center justify-between px-2 mb-6 relative shrink-0">
+          <AnimatePresence mode="wait">
+            {sidebarOpen ? (
+              <motion.div
+                key="logo-full"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
+                className="flex items-center gap-3 cursor-pointer"
+                onClick={() => navigate('/dashboard')}
               >
-                <span className="text-sm font-medium text-white truncate">{currentEstablishment.name}</span>
-                <svg className={`w-4 h-4 text-gray-400 transition-transform ${showEstablishmentDropdown ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {showEstablishmentDropdown && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-gray-700 rounded-lg shadow-lg z-50 overflow-hidden">
-                  <button
-                    onClick={() => {
-                      navigate('/select-establishment');
-                      setShowEstablishmentDropdown(false);
-                    }}
-                    className="w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-gray-600 transition-colors border-b border-gray-600"
-                  >
-                    Switch Profile
-                  </button>
-                  {establishments.length > 1 && establishments.map((est) => (
-                    <button
-                      key={est.id}
-                      onClick={() => handleEstablishmentChange(est)}
-                      className={`w-full text-left px-3 py-2 text-sm transition-colors ${
-                        est.id === currentEstablishment.id
-                          ? 'bg-green-600 text-white'
-                          : 'text-gray-300 hover:bg-gray-600'
-                      }`}
-                    >
-                      {est.name}
-                    </button>
-                  ))}
+                <div className="w-10 h-10 bg-paymint-green rounded-[1rem] flex items-center justify-center shadow-lg shadow-paymint-green/20 transform hover:rotate-6 transition-transform">
+                  <Zap size={20} className="text-black" fill="currentColor" />
                 </div>
-              )}
-            </div>
-            {currentEstablishment.subscriptionStatus === 'trial' && (
-              <p className="text-xs text-yellow-500 mt-1">Trial Active</p>
+                <div className="flex flex-col">
+                  <span className="text-xl font-black text-gray-900 dark:text-white tracking-tighter leading-none">PayMint</span>
+                  <span className="text-[10px] font-black text-paymint-green uppercase tracking-[0.2em] mt-1">Enterprise</span>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="logo-icon"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                className="mx-auto"
+              >
+                <div className="w-12 h-12 bg-paymint-green rounded-2xl flex items-center justify-center shadow-lg shadow-paymint-green/20 cursor-pointer" onClick={() => setSidebarOpen(true)}>
+                  <Zap size={24} className="text-black" fill="currentColor" />
+                </div>
+              </motion.div>
             )}
-          </div>
-        )}
+          </AnimatePresence>
 
-        {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-4">
-          <ul className="space-y-1 px-3">
-            {menuStructure.map((item, index) => {
-              if (isMenuGroup(item)) {
-                const isExpanded = expandedGroups.has(item.label);
-                const isActive = isGroupActive(item.items);
-
-                return (
-                  <li key={index}>
-                    <button
-                      onClick={() => toggleGroup(item.label)}
-                      title={!sidebarOpen ? item.label : undefined}
-                      className={`w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive
-                          ? 'bg-green-600/10 text-green-500'
-                          : 'text-gray-400 hover:text-white hover:bg-gray-700'
-                        }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
-                        </svg>
-                        {sidebarOpen && <span className="font-medium">{item.label}</span>}
-                      </div>
-                      {sidebarOpen && (
-                        <svg
-                          className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      )}
-                    </button>
-                    {isExpanded && sidebarOpen && (
-                      <ul className="mt-1 ml-4 pl-4 border-l-2 border-gray-700 space-y-1">
-                        {item.items.map((subItem) => (
-                          <li key={subItem.path}>
-                            <NavLink
-                              to={subItem.path}
-                              end={subItem.path === '/dashboard'}
-                              className={({ isActive }) =>
-                                `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-sm ${isActive
-                                  ? 'bg-green-600 text-white'
-                                  : 'text-gray-400 hover:text-white hover:bg-gray-700'
-                                }`
-                              }
-                            >
-                              <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={subItem.icon} />
-                              </svg>
-                              <span className="font-medium">{subItem.label}</span>
-                            </NavLink>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </li>
-                );
-              } else {
-                return (
-                  <li key={item.path}>
-                    <NavLink
-                      to={item.path}
-                      end={item.path === '/dashboard'}
-                      title={!sidebarOpen ? item.label : undefined}
-                      className={({ isActive }) =>
-                        `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive
-                          ? 'bg-green-600 text-white'
-                          : 'text-gray-400 hover:text-white hover:bg-gray-700'
-                        }`
-                      }
-                    >
-                      <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
-                      </svg>
-                      {sidebarOpen && <span className="font-medium">{item.label}</span>}
-                    </NavLink>
-                  </li>
-                );
-              }
-            })}
-          </ul>
-        </nav>
-
-        {/* User Info */}
-        <div className="p-4 border-t border-gray-700">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-semibold">
-                {account?.firstName?.charAt(0).toUpperCase() || 'U'}
-              </span>
-            </div>
-            {sidebarOpen && (
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">
-                  {account?.firstName} {account?.lastName}
-                </p>
-                <p className="text-xs text-gray-500 truncate">{account?.email}</p>
-              </div>
-            )}
-          </div>
           {sidebarOpen && (
-            <button
-              onClick={handleLogout}
-              className="mt-3 w-full flex items-center justify-center gap-2 px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
+            <button 
+              onClick={() => setSidebarOpen(false)}
+              className="p-2 rounded-xl text-gray-400 hover:text-paymint-green hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-              Logout
+              <PanelLeftClose size={20} />
             </button>
           )}
         </div>
-      </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 overflow-hidden">
-        <Outlet />
+        {!sidebarOpen && (
+          <button 
+            onClick={() => setSidebarOpen(true)}
+            className="w-12 h-12 mx-auto mb-6 flex items-center justify-center rounded-2xl bg-gray-200 dark:bg-white/[0.03] text-gray-600 dark:text-gray-400 hover:text-paymint-green transition-all border border-gray-300 dark:border-white/[0.05] hover:border-paymint-green/30"
+          >
+            <PanelLeft size={20} />
+          </button>
+        )}
+
+        {/* Establishment Switcher */}
+        <div className={`px-2 mb-8 ${!sidebarOpen ? 'flex justify-center' : ''}`} style={{ position: 'relative', zIndex: showEstablishmentDropdown ? 100 : 10 }}>
+          <div className="relative w-full">
+            <button
+              onClick={() => setShowEstablishmentDropdown(!showEstablishmentDropdown)}
+              className={`w-full flex items-center gap-3 p-3 rounded-2xl bg-gray-100 dark:bg-[#111111] border border-gray-200 dark:border-white/[0.05] hover:border-paymint-green/30 transition-all group ${!sidebarOpen ? 'w-14 h-14 justify-center relative' : ''}`}
+            >
+              <div className="w-10 h-10 rounded-xl bg-white dark:bg-black flex items-center justify-center border border-gray-200 dark:border-white/[0.1] shadow-sm group-hover:scale-105 transition-transform shrink-0">
+                <Store size={18} className="text-paymint-green" />
+              </div>
+              
+              {sidebarOpen && (
+                <>
+                  <div className="flex-1 text-left overflow-hidden">
+                    <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-0.5">Location</p>
+                    <p className="text-sm font-black text-gray-900 dark:text-white truncate">{currentEstablishment?.name}</p>
+                  </div>
+                  <ChevronDown size={16} className={`text-gray-400 transition-transform duration-300 ${showEstablishmentDropdown ? 'rotate-180' : ''}`} />
+                </>
+              )}
+
+              {!sidebarOpen && (
+                <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[70] whitespace-nowrap">
+                  {currentEstablishment?.name || 'Location'}
+                </div>
+              )}
+            </button>
+
+            {/* Dropdown for expanded sidebar */}
+            <AnimatePresence>
+              {showEstablishmentDropdown && sidebarOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  style={{ position: 'absolute', zIndex: 9999 }}
+                  className="top-full left-0 right-0 mt-3 bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/[0.1] rounded-[1.5rem] shadow-2xl overflow-hidden"
+                >
+                  <div className="p-2 space-y-1">
+                    {establishments.map((est) => (
+                      <button
+                        key={est.id}
+                        onClick={() => handleEstablishmentChange(est)}
+                        className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all flex items-center gap-3 ${
+                          est.id === currentEstablishment?.id
+                            ? 'bg-paymint-green text-black font-black'
+                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/[0.05]'
+                        }`}
+                      >
+                        <div className={`w-2 h-2 rounded-full ${est.id === currentEstablishment?.id ? 'bg-black' : 'bg-gray-300'}`} />
+                        {est.name}
+                      </button>
+                    ))}
+                    <div className="h-px bg-gray-100 dark:bg-white/[0.05] my-2" />
+                    <button
+                      onClick={() => navigate('/select-establishment')}
+                      className="w-full text-left px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest text-gray-400 hover:text-paymint-green transition-colors"
+                    >
+                      Manage Establishments
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Establishment Popup for collapsed sidebar */}
+        <AnimatePresence>
+          {showEstablishmentDropdown && !sidebarOpen && (
+            <>
+              <div 
+                className="fixed inset-0" 
+                style={{ zIndex: 9998 }}
+                onClick={() => setShowEstablishmentDropdown(false)}
+              />
+              <motion.div
+                initial={{ opacity: 0, x: 20, scale: 0.95 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: 20, scale: 0.95 }}
+                style={{ 
+                  position: 'fixed', 
+                  left: 110,
+                  top: 140,
+                  zIndex: 9999 
+                }}
+                className="w-56 bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/[0.1] rounded-[1.5rem] shadow-2xl overflow-hidden"
+              >
+                <div className="px-4 py-3 border-b border-gray-100 dark:border-white/[0.05]">
+                  <p className="text-[10px] font-black text-paymint-green uppercase tracking-[0.2em]">Location</p>
+                </div>
+                <div className="p-2 space-y-1">
+                  {establishments.map((est) => (
+                    <button
+                      key={est.id}
+                      onClick={() => handleEstablishmentChange(est)}
+                      className={`w-full text-left px-4 py-3 rounded-xl text-sm transition-all flex items-center gap-3 ${
+                        est.id === currentEstablishment?.id
+                          ? 'bg-paymint-green text-black font-black'
+                          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/[0.05]'
+                      }`}
+                    >
+                      <div className={`w-2 h-2 rounded-full ${est.id === currentEstablishment?.id ? 'bg-black' : 'bg-gray-300'}`} />
+                      {est.name}
+                    </button>
+                  ))}
+                  <div className="h-px bg-gray-100 dark:bg-white/[0.05] my-2" />
+                  <button
+                    onClick={() => {
+                      setShowEstablishmentDropdown(false);
+                      navigate('/select-establishment');
+                    }}
+                    className="w-full text-left px-4 py-3 rounded-xl text-xs font-black uppercase tracking-widest text-gray-400 hover:text-paymint-green transition-colors"
+                  >
+                    Manage Establishments
+                  </button>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
+        {/* Navigation Section */}
+        <nav 
+          ref={navRef}
+          className="flex-1 overflow-y-auto px-2 space-y-1 scrollbar-none scroll-smooth"
+          style={{ position: 'relative', zIndex: 1 }}
+        >
+          {menuStructure.map((item, index) => {
+            if (isMenuGroup(item)) {
+              const isExpanded = expandedGroups.has(item.label);
+              const isActive = isGroupActive(item.items);
+              const Icon = item.icon;
+
+              return (
+                <div 
+                  key={index} 
+                  className="mb-2 relative"
+                >
+                  <button
+                    onClick={(e) => {
+                      if (!sidebarOpen) {
+                        // When collapsed, toggle the popup on click
+                        setActivePopupGroup(activePopupGroup === item.label ? null : item.label);
+                      } else {
+                        toggleGroup(item.label, e);
+                      }
+                    }}
+                    className={`w-full flex items-center gap-3 p-3 rounded-2xl transition-all group ${
+                      isActive
+                        ? 'bg-paymint-green/5 text-gray-900 dark:text-white'
+                        : 'text-gray-500 hover:text-paymint-green'
+                    } ${!sidebarOpen ? 'justify-center' : ''}`}
+                  >
+                    <div className={`p-2 rounded-xl transition-all ${
+                      isActive ? 'bg-paymint-green text-black' : 'bg-gray-200 dark:bg-[#111111] text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-transparent group-hover:scale-110 group-hover:border-paymint-green/30'
+                    }`}>
+                      <Icon size={18} />
+                    </div>
+                    
+                    {sidebarOpen && (
+                      <>
+                        <span className="flex-1 text-left text-xs font-black uppercase tracking-[0.1em]">{item.label}</span>
+                        <ChevronRight size={14} className={`text-gray-400 transition-transform duration-300 ${isExpanded ? 'rotate-90' : ''}`} />
+                      </>
+                    )}
+
+                    {!sidebarOpen && (
+                      <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[70] whitespace-nowrap">
+                        {item.label}
+                      </div>
+                    )}
+                  </button>
+                  
+                  <AnimatePresence>
+                    {isExpanded && sidebarOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="ml-6 pl-4 border-l-2 border-gray-100 dark:border-white/[0.05] space-y-1 my-2">
+                          {item.items.map((subItem) => (
+                            <NavLink
+                              key={subItem.path}
+                              to={subItem.path}
+                              end={subItem.path === '/dashboard'}
+                              className={({ isActive }) =>
+                                `flex items-center gap-3 p-2.5 rounded-xl text-sm font-bold transition-all relative ${
+                                  isActive
+                                    ? 'text-paymint-green'
+                                    : 'text-gray-500 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white'
+                                }`
+                              }
+                            >
+                              {({ isActive }) => (
+                                <>
+                                  {isActive && (
+                                    <motion.div
+                                      layoutId="activeSub"
+                                      className="absolute left-[-18px] w-1 h-4 bg-paymint-green rounded-full shadow-[0_0_10px_#7CC39F]"
+                                    />
+                                  )}
+                                  <span>{subItem.label}</span>
+                                </>
+                              )}
+                            </NavLink>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            } else {
+              const Icon = item.icon;
+              return (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  end={item.path === '/dashboard'}
+                  className={({ isActive }) =>
+                    `relative w-full flex items-center gap-3 p-3 rounded-2xl transition-all group ${
+                      isActive
+                        ? 'bg-paymint-green text-black font-black'
+                        : 'text-gray-500 hover:text-paymint-green'
+                    } ${!sidebarOpen ? 'justify-center' : ''}`
+                  }
+                >
+                  <div className={`p-2 rounded-xl transition-all ${
+                    location.pathname === item.path ? 'bg-black/10' : 'bg-gray-200 dark:bg-[#111111] text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-transparent group-hover:scale-110 group-hover:border-paymint-green/30'
+                  }`}>
+                    <Icon size={18} />
+                  </div>
+                  
+                  {sidebarOpen && (
+                    <span className="flex-1 text-left text-xs font-black uppercase tracking-[0.1em]">{item.label}</span>
+                  )}
+
+                  {!sidebarOpen && (
+                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[70] whitespace-nowrap">
+                      {item.label}
+                    </div>
+                  )}
+                </NavLink>
+              );
+            }
+          })}
+        </nav>
+
+        {/* Collapsed Sidebar Popups - Rendered outside nav to avoid overflow clipping */}
+        <AnimatePresence>
+          {!sidebarOpen && activePopupGroup && (
+            <>
+              {/* Backdrop */}
+              <div 
+                className="fixed inset-0" 
+                style={{ zIndex: 9998 }}
+                onClick={() => setActivePopupGroup(null)}
+              />
+              {menuStructure.map((item, index) => {
+                if (isMenuGroup(item) && activePopupGroup === item.label) {
+                  // Calculate position based on index
+                  const topOffset = 200 + (index * 56); // Approximate position
+                  return (
+                    <motion.div
+                      key={item.label}
+                      initial={{ opacity: 0, x: 20, scale: 0.95 }}
+                      animate={{ opacity: 1, x: 0, scale: 1 }}
+                      exit={{ opacity: 0, x: 20, scale: 0.95 }}
+                      style={{ 
+                        position: 'fixed', 
+                        left: 110,
+                        top: topOffset,
+                        zIndex: 9999 
+                      }}
+                      className="w-56 bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/[0.1] rounded-[1.5rem] shadow-2xl overflow-hidden py-3"
+                    >
+                      <div className="px-4 pb-2 mb-2 border-b border-gray-100 dark:border-white/[0.05]">
+                        <p className="text-[10px] font-black text-paymint-green uppercase tracking-[0.2em]">{item.label}</p>
+                      </div>
+                      <div className="px-2 space-y-1">
+                        {item.items.map((subItem) => (
+                          <NavLink
+                            key={subItem.path}
+                            to={subItem.path}
+                            onClick={() => setActivePopupGroup(null)}
+                            className={({ isActive }) =>
+                              `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                                isActive
+                                  ? 'bg-paymint-green text-black'
+                                  : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/[0.05] hover:text-gray-900 dark:hover:text-white'
+                              }`
+                            }
+                          >
+                            <span>{subItem.label}</span>
+                          </NavLink>
+                        ))}
+                      </div>
+                    </motion.div>
+                  );
+                }
+                return null;
+              })}
+            </>
+          )}
+        </AnimatePresence>
+
+        {/* Action Center Footer */}
+        <div className="p-2 mt-auto" style={{ position: 'relative', zIndex: 1 }}>
+          <div className="bg-gray-100 dark:bg-[#111111] border border-gray-200 dark:border-white/[0.05] rounded-[2rem] p-3 space-y-4 shadow-inner">
+            <div className={`flex items-center gap-3 ${!sidebarOpen ? 'justify-center flex-col relative group' : ''}`}>
+              <div className="w-12 h-12 rounded-[1.25rem] bg-gradient-to-br from-gray-900 to-black flex items-center justify-center border border-white/[0.1] shadow-xl shrink-0 group hover:scale-105 transition-transform cursor-pointer overflow-hidden relative">
+                <span className="text-white font-black text-lg">{account?.firstName?.charAt(0).toUpperCase()}</span>
+                <div className="absolute inset-0 bg-paymint-green opacity-0 group-hover:opacity-20 transition-opacity" />
+              </div>
+              
+              {sidebarOpen && (
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-black text-gray-900 dark:text-white truncate uppercase tracking-tight">
+                    {account?.firstName} {account?.lastName}
+                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-paymint-green animate-pulse" />
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Admin Access</span>
+                  </div>
+                </div>
+              )}
+
+              {!sidebarOpen && (
+                <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[70] whitespace-nowrap">
+                  {account?.firstName} {account?.lastName}
+                </div>
+              )}
+            </div>
+
+            {sidebarOpen && (
+              <div className="flex items-center justify-between gap-2 px-1">
+                <div className="flex items-center gap-1">
+                  <ThemeToggle dropdownDirection="up" />
+                </div>
+                
+                <button
+                  onClick={handleLogout}
+                  className="p-2.5 rounded-xl bg-paymint-red/10 text-paymint-red hover:bg-paymint-red hover:text-white transition-all shadow-sm"
+                  title="Logout"
+                >
+                  <LogOut size={18} />
+                </button>
+              </div>
+            )}
+
+            {!sidebarOpen && (
+              <div className="flex flex-col items-center gap-3">
+                <div className="relative group">
+                  <ThemeToggle dropdownDirection="up" />
+                  <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[70] whitespace-nowrap">
+                    Theme
+                  </div>
+                </div>
+                <div className="relative group">
+                  <button onClick={handleLogout} className="p-3 rounded-2xl bg-paymint-red/10 text-paymint-red hover:bg-paymint-red hover:text-white transition-all">
+                    <LogOut size={20} />
+                  </button>
+                  <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-[70] whitespace-nowrap">
+                    Logout
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </motion.aside>
+
+      {/* Main Content Viewport */}
+      <main className="flex-1 relative overflow-hidden bg-white dark:bg-[#050505] transition-colors duration-500">
+        <div className="h-full overflow-y-auto custom-scrollbar relative z-10 p-4 lg:p-8">
+          <Outlet />
+        </div>
       </main>
+
+      {/* Switching Overlay - Truly Global (Portal equivalent) */}
+      <AnimatePresence>
+        {isSwitching && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] bg-white dark:bg-[#050505] flex flex-col items-center justify-center"
+          >
+            <div className="w-20 h-20 bg-paymint-green/10 rounded-[2.5rem] flex items-center justify-center mb-8 relative">
+              <Loader2 size={40} className="text-paymint-green animate-spin" />
+              <div className="absolute inset-0 bg-paymint-green/20 rounded-[2.5rem] animate-ping" />
+            </div>
+            <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase">Syncing Node</h2>
+            <p className="text-paymint-green font-black uppercase tracking-[0.3em] text-sm mt-4">{switchingToName}</p>
+            
+            <div className="mt-12 w-48 h-1 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+              <motion.div 
+                initial={{ x: '-100%' }}
+                animate={{ x: '0%' }}
+                transition={{ duration: 0.8 }}
+                className="h-full bg-paymint-green"
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

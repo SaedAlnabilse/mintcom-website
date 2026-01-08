@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { ProtectedRoute, EstablishmentRequiredRoute } from './components/ProtectedRoute';
 import { DashboardLayout } from './components/DashboardLayout';
 
@@ -35,13 +36,16 @@ import { MaterialsPage } from './pages/dashboard/MaterialsPage';
 import { RecipesPage } from './pages/dashboard/RecipesPage';
 import { EstablishmentsPage } from './pages/dashboard/EstablishmentsPage';
 import { BillingPage } from './pages/dashboard/BillingPage';
+import { BrandsPage } from './pages/dashboard/BrandsPage';
+import { BrandDetailPage } from './pages/dashboard/BrandDetailPage';
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* Public Routes */}
+    <ThemeProvider defaultTheme="dark" storageKey="paymint-ui-theme">
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/demo" element={<DemoPage />} />
           <Route path="/login" element={<LoginPage />} />
@@ -75,6 +79,8 @@ function App() {
               <Route path="recipes" element={<RecipesPage />} />
               <Route path="establishments" element={<EstablishmentsPage />} />
               <Route path="billing" element={<BillingPage />} />
+              <Route path="brands" element={<BrandsPage />} />
+              <Route path="brands/:brandId" element={<BrandDetailPage />} />
             </Route>
           </Route>
         </Routes>
@@ -91,20 +97,23 @@ function App() {
           },
           success: {
             iconTheme: {
-              primary: '#22c55e',
+              primary: '#7CC39F',
               secondary: '#fff',
             },
           },
           error: {
             iconTheme: {
-              primary: '#ef4444',
+              primary: '#D55263',
               secondary: '#fff',
             },
           },
         }}
       />
-    </AuthProvider>
-  );
-}
-
+          </AuthProvider>
+        </ThemeProvider>
+      );
+    }
 export default App;
+
+
+

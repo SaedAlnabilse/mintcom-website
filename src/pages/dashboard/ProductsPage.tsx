@@ -1,8 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { motion } from 'framer-motion';
+import {
+  Search,
+  Filter,
+  Plus,
+  Grid,
+  List,
+  Package,
+  Edit2,
+  Trash2,
+  Image as ImageIcon,
+  ChevronLeft,
+  ChevronRight,
+  Download
+} from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { ProductFormModal } from '../../components/forms/ProductFormModal';
+import { exportToCSV } from '../../utils/export';
 
 interface Product {
   id: string;
@@ -16,7 +32,9 @@ interface Product {
   isAvailable: boolean;
   availableStock?: number;
   trackStock?: boolean;
+  allowNegativeStock?: boolean;
   lowStockThresholdYellow?: number;
+  lowStockThresholdRed?: number;
   barcode?: string;
   type?: 'ITEM' | 'ADDON';
 }
@@ -36,6 +54,9 @@ export function ProductsPage() {
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 12;
+
   const [confirmConfig, setConfirmConfig] = useState<{
     isOpen: boolean;
     title: string;
@@ -49,7 +70,6 @@ export function ProductsPage() {
     onConfirm: () => { },
   });
 
-  // Helper to get full image URL
   const getImageUrl = (imagePath?: string) => {
     if (!imagePath) return null;
     if (imagePath.startsWith('http')) return imagePath;
@@ -68,7 +88,7 @@ export function ProductsPage() {
       const response = await api.get('/api/items');
       setProducts(response.data || []);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to load products');
+      toast.error('Failed to load products');
     } finally {
       setIsLoading(false);
     }
@@ -93,26 +113,42 @@ export function ProductsPage() {
     setShowModal(true);
   };
 
+  const handleExport = () => {
+    const exportData = filteredProducts.map(p => ({
+      name: p.name,
+      category: p.category?.name || 'Uncategorized',
+      price: p.price,
+      cost: p.costPrice || 0,
+      stock: p.trackStock ? p.availableStock : 'N/A',
+      status: p.isAvailable ? 'Active' : 'Inactive',
+      barcode: p.barcode || 'N/A'
+    }));
+
+    exportToCSV(exportData, 'products_catalog', {
+      name: 'Product Name',
+      category: 'Category',
+      price: 'Price (JOD)',
+      cost: 'Cost Price (JOD)',
+      stock: 'Stock Level',
+      status: 'Status',
+      barcode: 'Barcode'
+    });
+  };
+
   const onSubmit = async (formData: FormData) => {
     try {
       setIsSubmitting(true);
-
       if (editingProduct) {
-        await api.patch(`/api/items/${editingProduct.id}`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
-        toast.success('Product updated successfully');
+        await api.patch(`/api/items/${editingProduct.id}`, formData);
+        toast.success('Product updated');
       } else {
-        await api.post('/api/items', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
-        toast.success('Product created successfully');
+        await api.post('/api/items', formData);
+        toast.success('Product created');
       }
-
       setShowModal(false);
       fetchProducts();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to save product');
+      toast.error('Error saving product');
     } finally {
       setIsSubmitting(false);
     }
@@ -122,223 +158,213 @@ export function ProductsPage() {
     setConfirmConfig({
       isOpen: true,
       title: 'Delete Product',
-      message: 'Are you sure you want to delete this product? This action cannot be undone.',
+      message: 'This will permanently remove the product from your menu. Continue?',
       type: 'danger',
       onConfirm: async () => {
         try {
           await api.delete(`/api/items/${productId}`);
-          toast.success('Product deleted successfully');
+          toast.success('Product deleted');
           fetchProducts();
         } catch (err: any) {
-          toast.error(err.response?.data?.message || 'Failed to delete product');
+          toast.error('Failed to delete product');
         }
       }
     });
   };
 
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = categoryFilter === 'all' || product.categoryId === categoryFilter;
+  const filteredProducts = products.filter((p) => {
+    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = categoryFilter === 'all' || p.categoryId === categoryFilter;
     return matchesSearch && matchesCategory;
   });
+
+  const paginatedProducts = useMemo(() => {
+    const start = (page - 1) * itemsPerPage;
+    return filteredProducts.slice(start, start + itemsPerPage);
+  }, [filteredProducts, page]);
+
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'JOD',
-      minimumFractionDigits: 2,
     }).format(value).replace('JOD', '').trim() + ' JOD';
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-gray-900 p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+    <div className="h-[calc(100vh-120px)] flex flex-col space-y-6">
+      {/* Header - Fixed */}
+      <div className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">Products</h1>
-          <p className="text-gray-400 text-sm">Manage your menu items</p>
+          <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Products & Menu</h1>
+          <p className="text-gray-500 dark:text-gray-400 font-medium mt-1">Manage items, stock levels, and pricing.</p>
         </div>
-        <button
-          onClick={openCreateModal}
-          className="px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
-        >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Add Product
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+          >
+            <Download size={18} />
+            <span>Export CSV</span>
+          </button>
+          <button
+            onClick={openCreateModal}
+            className="px-6 py-3 bg-paymint-green text-black font-black rounded-2xl hover:scale-105 transition-all flex items-center gap-2 shadow-lg shadow-paymint-green/20 active:scale-95"
+          >
+            <Plus size={20} />
+            <span>Add Item</span>
+          </button>
+        </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-4 mb-6">
-        <div className="flex-1 min-w-[250px]">
+      {/* Control Bar - Fixed */}
+      <div className="shrink-0 flex flex-col lg:flex-row gap-4">
+        <div className="flex-1 relative group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-paymint-green transition-colors" />
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
             placeholder="Search products..."
-            className="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-[#0A0A0A] border border-gray-100 dark:border-white/5 rounded-[1.25rem] text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-paymint-green/20 shadow-sm transition-all"
           />
         </div>
 
-        <select
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
-          className="px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-        >
-          <option value="all">All Categories</option>
-          {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>{cat.name}</option>
-          ))}
-        </select>
+        <div className="flex gap-3">
+          <div className="relative">
+            <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <select
+              value={categoryFilter}
+              onChange={(e) => { setCategoryFilter(e.target.value); setPage(1); }}
+              className="pl-11 pr-8 py-3.5 bg-white dark:bg-[#0A0A0A] border border-gray-100 dark:border-white/5 rounded-[1.25rem] text-gray-900 dark:text-white font-bold text-xs cursor-pointer focus:ring-2 focus:ring-paymint-green/20 shadow-sm appearance-none min-w-[160px]"
+            >
+              <option value="all">All Categories</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
+          </div>
 
-        <div className="flex bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
-          <button
-            onClick={() => setViewMode('grid')}
-            className={`p-2.5 ${viewMode === 'grid' ? 'bg-green-600 text-white' : 'text-gray-400 hover:text-white'}`}
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-            </svg>
-          </button>
-          <button
-            onClick={() => setViewMode('list')}
-            className={`p-2.5 ${viewMode === 'list' ? 'bg-green-600 text-white' : 'text-gray-400 hover:text-white'}`}
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-            </svg>
-          </button>
+          <div className="bg-white dark:bg-[#0A0A0A] border border-gray-100 dark:border-white/5 rounded-[1.25rem] p-1 flex gap-1 shadow-sm">
+            <button onClick={() => setViewMode('grid')} className={`p-2 rounded-xl transition-all ${viewMode === 'grid' ? 'bg-paymint-green text-black' : 'text-gray-400 hover:text-gray-600'}`}>
+              <Grid size={18} />
+            </button>
+            <button onClick={() => setViewMode('list')} className={`p-2 rounded-xl transition-all ${viewMode === 'list' ? 'bg-paymint-green text-black' : 'text-gray-400 hover:text-gray-600'}`}>
+              <List size={18} />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Products Display */}
-      {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <svg className="animate-spin h-8 w-8 text-green-500" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-          </svg>
-        </div>
-      ) : filteredProducts.length === 0 ? (
-        <div className="text-center py-12">
-          <svg className="w-16 h-16 mx-auto text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-          </svg>
-          <p className="text-gray-400">No products found</p>
-        </div>
-      ) : viewMode === 'grid' ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filteredProducts.map((product) => (
-            <div key={product.id} className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden hover:border-gray-600 transition-colors">
-              <div className="aspect-square bg-gray-700 relative">
-                {getImageUrl(product.image) ? (
-                  <img src={getImageUrl(product.image)!} alt={product.name} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <svg className="w-12 h-12 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                )}
-                {!product.isAvailable && (
-                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                    <span className="px-3 py-1 bg-red-500 text-white text-sm font-medium rounded-full">Out of Stock</span>
-                  </div>
-                )}
-              </div>
-              <div className="p-4">
-                <h3 className="text-white font-medium truncate">{product.name}</h3>
-                <p className="text-gray-400 text-sm truncate">{product.category?.name || 'No Category'}</p>
-                <p className="text-green-500 font-bold text-lg mt-2">{formatCurrency(product.price)}</p>
-                <div className="flex gap-2 mt-3">
-                  <button
-                    onClick={() => openEditModal(product)}
-                    className="flex-1 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(product.id)}
-                    className="py-2 px-3 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors"
-                  >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
+      {/* Main Content Area - Scrollable */}
+      <div className="flex-1 overflow-hidden flex flex-col min-h-0">
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
+          {isLoading ? (
+            <div className="py-20 flex flex-col items-center">
+              <div className="w-12 h-12 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
+              <p className="text-[10px] font-black uppercase text-gray-400">Loading Inventory...</p>
             </div>
-          ))}
-        </div>
-      ) : (
-        <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-700/50">
-              <tr>
-                <th className="text-left px-6 py-4 text-sm font-medium text-gray-300">Product</th>
-                <th className="text-left px-6 py-4 text-sm font-medium text-gray-300">Category</th>
-                <th className="text-left px-6 py-4 text-sm font-medium text-gray-300">Price</th>
-                <th className="text-left px-6 py-4 text-sm font-medium text-gray-300">Stock</th>
-                <th className="text-right px-6 py-4 text-sm font-medium text-gray-300">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-700">
-              {filteredProducts.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-700/30">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gray-700 rounded-lg overflow-hidden flex-shrink-0">
-                        {getImageUrl(product.image) ? (
-                          <img src={getImageUrl(product.image)!} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-500">
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                          </div>
-                        )}
+          ) : filteredProducts.length === 0 ? (
+            <div className="py-20 text-center flex flex-col items-center">
+              <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-[2rem] flex items-center justify-center mb-6">
+                <Package className="w-10 h-10 text-gray-300" />
+              </div>
+              <h3 className="text-xl font-black text-gray-900 dark:text-white mb-2">No items found</h3>
+            </div>
+          ) : viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-4">
+              {paginatedProducts.map((product) => (
+                <motion.div layout key={product.id} className="group bg-white dark:bg-[#0A0A0A] rounded-[2rem] border border-gray-200 dark:border-white/5 overflow-hidden shadow-md hover:shadow-xl hover:border-paymint-green/30 transition-all duration-300 relative">
+                  <div className="aspect-[4/3] bg-gray-100 dark:bg-black/20 relative overflow-hidden">
+                    {getImageUrl(product.image) ? (
+                      <img src={getImageUrl(product.image)!} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-300">
+                        <ImageIcon size={40} strokeWidth={1} />
                       </div>
-                      <span className="text-white font-medium">{product.name}</span>
+                    )}
+                    {!product.isAvailable && (
+                      <div className="absolute top-4 left-4">
+                        <span className="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest shadow-lg bg-accent text-white">
+                          Hidden
+                        </span>
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 backdrop-blur-[2px]">
+                      <button onClick={() => openEditModal(product)} className="w-10 h-10 rounded-full bg-white text-gray-900 flex items-center justify-center hover:bg-paymint-green hover:text-black transition-colors shadow-lg active:scale-95"><Edit2 size={16} /></button>
+                      <button onClick={() => handleDelete(product.id)} className="w-10 h-10 rounded-full bg-white text-gray-900 flex items-center justify-center hover:bg-accent hover:text-white transition-colors shadow-lg active:scale-95"><Trash2 size={16} /></button>
                     </div>
-                  </td>
-                  <td className="px-6 py-4 text-gray-300">{product.category?.name || '-'}</td>
-                  <td className="px-6 py-4 text-green-500 font-medium">{formatCurrency(product.price)}</td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-block px-2 py-1 text-xs font-medium rounded ${product.isAvailable ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                      {product.isAvailable ? 'In Stock' : 'Out of Stock'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <button onClick={() => openEditModal(product)} className="text-green-500 hover:text-green-400 mr-3">Edit</button>
-                    <button onClick={() => handleDelete(product.id)} className="text-red-500 hover:text-red-400">Delete</button>
-                  </td>
-                </tr>
+                  </div>
+                  <div className="p-5 bg-white dark:bg-[#0A0A0A]">
+                    <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">{product.category?.name || 'Uncategorized'}</p>
+                    <h3 className="font-black text-gray-900 dark:text-white truncate group-hover:text-paymint-green transition-colors">{product.name}</h3>
+                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
+                      <p className="text-lg font-black text-gray-900 dark:text-white">{formatCurrency(product.price)}</p>
+                      {product.trackStock && (
+                        <span className={`text-[10px] font-black uppercase px-2 py-1 rounded-lg ${(product.availableStock || 0) <= (product.lowStockThresholdYellow || 5) ? 'text-accent bg-accent/10' : 'text-paymint-green bg-paymint-green/10'}`}>
+                          {product.availableStock} Stock
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          ) : (
+            <div className="bg-white dark:bg-[#0A0A0A] rounded-[2.5rem] border border-gray-100 dark:border-white/5 overflow-hidden">
+              <table className="w-full">
+                <thead className="sticky top-0 z-10 bg-white dark:bg-[#0A0A0A]">
+                  <tr className="border-b border-gray-50 dark:border-white/5">
+                    <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Product</th>
+                    <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Category</th>
+                    <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Inventory</th>
+                    <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Price</th>
+                    <th className="px-8 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50 dark:divide-white/5">
+                  {paginatedProducts.map((p) => (
+                    <tr key={p.id} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+                      <td className="px-8 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-black/40 overflow-hidden border border-gray-100 dark:border-white/5">
+                            {getImageUrl(p.image) ? <img src={getImageUrl(p.image)!} className="w-full h-full object-cover" /> : <ImageIcon size={16} className="m-auto text-gray-300" />}
+                          </div>
+                          <p className="font-black text-gray-900 dark:text-white uppercase tracking-tight">{p.name}</p>
+                        </div>
+                      </td>
+                      <td className="px-8 py-4"><span className="text-[10px] font-black text-gray-500 uppercase">{p.category?.name || 'Uncategorized'}</span></td>
+                      <td className="px-8 py-4"><span className={`text-xs font-bold ${p.trackStock && (p.availableStock || 0) <= 5 ? 'text-paymint-red' : 'text-gray-700 dark:text-gray-300'}`}>{p.trackStock ? `${p.availableStock} Units` : '∞'}</span></td>
+                      <td className="px-8 py-4 font-black text-paymint-green">{formatCurrency(p.price)}</td>
+                      <td className="px-8 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button onClick={() => openEditModal(p)} className="p-2 text-gray-400 hover:text-paymint-green transition-colors"><Edit2 size={16} /></button>
+                          <button onClick={() => handleDelete(p.id)} className="p-2 text-gray-400 hover:text-accent transition-colors"><Trash2 size={16} /></button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
-      )}
 
-      {/* Product Modal */}
-      <ProductFormModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        onSubmit={onSubmit}
-        onDelete={editingProduct ? () => handleDelete(editingProduct.id) : undefined}
-        initialData={editingProduct}
-        categories={categories}
-        isSubmitting={isSubmitting}
-      />
+        {/* Pagination - Fixed */}
+        {totalPages > 1 && (
+          <div className="shrink-0 px-8 py-4 border-t border-gray-50 dark:border-white/5 bg-gray-50/50 dark:bg-[#0A0A0A] flex items-center justify-center gap-2">
+            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 disabled:opacity-30"><ChevronLeft size={18} /></button>
+            {[...Array(totalPages)].map((_, i) => (
+              <button key={i} onClick={() => setPage(i + 1)} className={`w-9 h-9 rounded-xl text-xs font-black transition-all ${page === i + 1 ? 'bg-paymint-green text-black shadow-lg' : 'text-gray-400 hover:text-gray-900'}`}>{i + 1}</button>
+            ))}
+            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 disabled:opacity-30"><ChevronRight size={18} /></button>
+          </div>
+        )}
+      </div>
 
-      <ConfirmModal
-        isOpen={confirmConfig.isOpen}
-        onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
-        onConfirm={confirmConfig.onConfirm}
-        title={confirmConfig.title}
-        message={confirmConfig.message}
-        type={confirmConfig.type}
-      />
+      <ProductFormModal isOpen={showModal} onClose={() => setShowModal(false)} onSubmit={onSubmit} onDelete={editingProduct ? () => handleDelete(editingProduct.id) : undefined} initialData={editingProduct} categories={categories} isSubmitting={isSubmitting} />
+      <ConfirmModal isOpen={confirmConfig.isOpen} onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })} onConfirm={confirmConfig.onConfirm} title={confirmConfig.title} message={confirmConfig.message} type={confirmConfig.type} />
     </div>
   );
 }

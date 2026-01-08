@@ -1,82 +1,109 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Quote, Star } from 'lucide-react';
 
-const testimonial = {
-  id: 1,
-  text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis",
-  name: "John Deo",
-  title: "Business Owner",
-  image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=500&q=80"
-};
+const testimonials = [
+  {
+    id: 1,
+    text: "PayMint has completely changed how we handle our rush hours. The interface is so intuitive that our new staff members are up to speed in less than 15 minutes. It's the most reliable system we've ever used.",
+    author: "Omar Khaled",
+    role: "Founder, Terra Cafe",
+    rating: 5,
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop"
+  },
+  {
+    id: 2,
+    text: "The multi-location management is a game changer. I can monitor all three of my branches in real-time from my phone. The analytics provided helped us reduce waste by 25% in the first two months.",
+    author: "Sara Ibrahim",
+    role: "CEO, Ibrahim Retail Group",
+    rating: 5,
+    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop"
+  }
+];
 
 export const FeaturedTestimonial = () => {
-  const handlePrevClick = () => {
-    // Arrow functionality can be added later if needed
-  };
+  const [index, setIndex] = useState(0);
+  const testimonial = testimonials[index];
 
-  const handleNextClick = () => {
-    // Arrow functionality can be added later if needed
-  };
+  const next = () => setIndex((prev) => (prev + 1) % testimonials.length);
+  const prev = () => setIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
 
   return (
-    <section className="py-20 bg-gray-50 dark:bg-paymint-surface overflow-hidden relative group">
+    <section className="py-24 lg:py-32 bg-gray-50 dark:bg-[#050505] transition-colors duration-300 overflow-hidden">
       <div className="container mx-auto px-6">
-        <div className="relative max-w-6xl mx-auto">
-            {/* Navigation Buttons */}
-            <button 
-              onClick={handlePrevClick}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 z-20 p-2 rounded-none bg-white dark:bg-black shadow-lg text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-paymint-green md:flex hidden border border-gray-200 dark:border-white/10"
-              aria-label="Previous"
-            >
-              <ChevronLeft className="w-6 h-6 md:w-8 md:h-8" />
-            </button>
-            
-            <button 
-              onClick={handleNextClick}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 z-20 p-2 rounded-none bg-white dark:bg-black shadow-lg text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-paymint-green md:flex hidden border border-gray-200 dark:border-white/10"
-              aria-label="Next"
-            >
-              <ChevronRight className="w-6 h-6 md:w-8 md:h-8" />
-            </button>
-
-            <div className="min-h-[400px] flex items-center justify-center">
-              <div className="flex flex-col md:flex-row items-center justify-center gap-12 md:gap-24 w-full">
-                {/* Quote Section */}
-                <div className="flex-1 max-w-xl relative pt-10 pb-10">
-                  <span className="absolute top-0 left-0 text-4xl md:text-5xl font-serif text-black/5 dark:text-white/10 leading-none select-none">"</span>
-                  
-                  <p className="text-lg md:text-xl leading-relaxed text-gray-700 dark:text-gray-300 font-normal px-8 relative z-10">
-                    {testimonial.text}
-                  </p>
-                  
-                  <span className="absolute bottom-[-1rem] right-0 text-4xl md:text-5xl font-serif text-black/5 dark:text-white/10 leading-none select-none">"</span>
-                </div>
-
+        <div className="max-w-6xl mx-auto">
+          <div className="relative">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="flex flex-col lg:flex-row items-center gap-12 lg:gap-24"
+              >
                 {/* Image Section */}
-                <div className="relative">
-                  <div className="text-center">
-                    <div className="w-64 h-64 rounded-none overflow-hidden mx-auto mb-6 relative border-4 border-gray-200 dark:border-white/5">
-                       <img 
-                         src={testimonial.image}
-                         alt={testimonial.name}
-                         className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
-                       />
+                <div className="lg:w-1/2 relative group">
+                  <div className="absolute inset-0 bg-paymint-green rounded-[3rem] rotate-3 opacity-10 group-hover:rotate-6 transition-transform duration-500" />
+                  <div className="relative aspect-square rounded-[3rem] overflow-hidden shadow-2xl">
+                    <img 
+                      src={testimonial.image} 
+                      alt={testimonial.author} 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                  </div>
+                  {/* Floating badge */}
+                  <div className="absolute -bottom-6 -right-6 bg-white dark:bg-gray-900 p-6 rounded-3xl shadow-2xl border border-gray-100 dark:border-white/10 hidden md:block">
+                    <div className="flex gap-1 mb-2">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} size={16} fill="#7CC39F" className="text-paymint-green" />
+                      ))}
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                      {testimonial.name}
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                      {testimonial.title}
-                    </p>
+                    <p className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest">Verified Partner</p>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Mobile Navigation Buttons - Below content */}
-            <div className="flex md:hidden justify-center gap-4 mt-8">
-              <button onClick={handlePrevClick} className="p-2 rounded-none bg-white dark:bg-black border border-gray-200 dark:border-white/10 shadow-md text-gray-900 dark:text-white"><ChevronLeft/></button>
-              <button onClick={handleNextClick} className="p-2 rounded-none bg-white dark:bg-black border border-gray-200 dark:border-white/10 shadow-md text-gray-900 dark:text-white"><ChevronRight/></button>
-            </div>
+                {/* Content Section */}
+                <div className="lg:w-1/2 space-y-8 text-center lg:text-left">
+                  <div className="w-16 h-16 bg-paymint-green/10 rounded-2xl flex items-center justify-center mx-auto lg:mx-0">
+                    <Quote size={32} className="text-paymint-green" fill="currentColor" />
+                  </div>
+                  
+                  <blockquote className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white leading-tight">
+                    "{testimonial.text}"
+                  </blockquote>
+
+                  <div>
+                    <p className="text-xl font-black text-gray-900 dark:text-white">{testimonial.author}</p>
+                    <p className="text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest text-xs mt-1">{testimonial.role}</p>
+                  </div>
+
+                  {/* Navigation */}
+                  <div className="flex items-center justify-center lg:justify-start gap-4 pt-4">
+                    <button 
+                      onClick={prev}
+                      className="w-12 h-12 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-900 dark:text-white hover:bg-paymint-green hover:text-black hover:border-paymint-green transition-all shadow-sm active:scale-90"
+                    >
+                      <ChevronLeft size={24} />
+                    </button>
+                    <button 
+                      onClick={next}
+                      className="w-12 h-12 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-900 dark:text-white hover:bg-paymint-green hover:text-black hover:border-paymint-green transition-all shadow-sm active:scale-90"
+                    >
+                      <ChevronRight size={24} />
+                    </button>
+                    <div className="ml-4 flex gap-2">
+                      {testimonials.map((_, i) => (
+                        <div 
+                          key={i} 
+                          className={`h-1.5 rounded-full transition-all duration-500 ${index === i ? 'w-8 bg-paymint-green' : 'w-2 bg-gray-200 dark:bg-white/10'}`} 
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </section>

@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { motion } from 'framer-motion';
+import { Plus, Percent, DollarSign, Trash2, Edit2, Tag, CheckCircle2, ShieldAlert, Award } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
@@ -41,13 +43,12 @@ export function DiscountsPage() {
     try {
       setIsLoading(true);
       const response = await api.get('/app-settings/discounts');
-      // Map backend data (percentage only) to frontend structure
       const mappedDiscounts = (response.data || []).map((d: any) => ({
         id: d.id,
         name: d.name,
         type: 'percentage' as const,
-        value: d.percentage * 100, // Display value
-        percentage: d.percentage, // Actual value
+        value: d.percentage * 100,
+        percentage: d.percentage,
         adminOnly: d.adminOnly,
         isActive: true, 
       }));
@@ -75,7 +76,7 @@ export function DiscountsPage() {
 
       const payload = {
         name,
-        percentage, // Modal returns decimal
+        percentage,
         adminOnly,
       };
 
@@ -114,8 +115,6 @@ export function DiscountsPage() {
     });
   };
 
-
-
   const formatValue = (discount: Discount) => {
     if (discount.type === 'percentage') {
       return `${discount.value}%`;
@@ -127,95 +126,154 @@ export function DiscountsPage() {
     }).format(discount.value).replace('JOD', '').trim() + ' JOD';
   };
 
+  const stats = useMemo(() => {
+    return {
+      total: discounts.length,
+      active: discounts.filter(d => d.isActive).length,
+      adminOnly: discounts.filter(d => d.adminOnly).length,
+    };
+  }, [discounts]);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.05 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div className="h-full overflow-y-auto bg-gray-900 p-6">
+    <div className="p-6 lg:p-10 space-y-8 h-full overflow-y-auto bg-gray-50 dark:bg-[#050505] transition-colors duration-300">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Discounts</h1>
-          <p className="text-gray-400 text-sm">Manage discount options for sales</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Discounts</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Manage promotional offers and employee benefits</p>
         </div>
         <button
           onClick={openCreateModal}
-          className="px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+          className="px-5 py-2.5 bg-paymint-green text-black font-bold rounded-xl hover:bg-paymint-green transition-all flex items-center gap-2 shadow-lg shadow-paymint-green/20 active:scale-95"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
+          <Plus size={20} />
           Add Discount
         </button>
       </div>
 
+      {/* Summary Stats */}
+      {!isLoading && discounts.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl p-6 flex items-center justify-between shadow-sm dark:shadow-none transition-colors">
+            <div>
+              <p className="text-gray-500 dark:text-gray-400 text-sm font-bold uppercase tracking-wider">Total Discounts</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{stats.total}</p>
+            </div>
+            <div className="w-12 h-12 bg-purple-50 dark:bg-white/5 rounded-xl flex items-center justify-center shadow-sm">
+              <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+            </div>
+          </div>
+          <div className="bg-white dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl p-6 flex items-center justify-between shadow-sm dark:shadow-none transition-colors">
+            <div>
+              <p className="text-gray-500 dark:text-gray-400 text-sm font-bold uppercase tracking-wider">Active Now</p>
+              <p className="text-3xl font-bold text-paymint-green mt-1">{stats.active}</p>
+            </div>
+            <div className="w-12 h-12 bg-paymint-green/10 dark:bg-white/5 rounded-xl flex items-center justify-center shadow-sm">
+              <CheckCircle2 className="w-6 h-6 text-paymint-green" />
+            </div>
+          </div>
+          <div className="bg-white dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl p-6 flex items-center justify-between shadow-sm dark:shadow-none transition-colors">
+            <div>
+              <p className="text-gray-500 dark:text-gray-400 text-sm font-bold uppercase tracking-wider">Restricted</p>
+              <p className="text-3xl font-bold text-amber-600 dark:text-yellow-400 mt-1">{stats.adminOnly}</p>
+            </div>
+            <div className="w-12 h-12 bg-amber-50 dark:bg-white/5 rounded-xl flex items-center justify-center shadow-sm">
+              <ShieldAlert className="w-6 h-6 text-amber-600 dark:text-yellow-400" />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Discounts Grid */}
       {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <svg className="animate-spin h-8 w-8 text-green-500" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-          </svg>
+        <div className="flex items-center justify-center py-24">
+          <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin" />
         </div>
       ) : discounts.length === 0 ? (
-        <div className="text-center py-12">
-          <svg className="w-16 h-16 mx-auto text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-          </svg>
-          <p className="text-gray-400 mb-4">No discounts configured</p>
-          <button onClick={openCreateModal} className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-            Create your first discount
+        <div className="flex flex-col items-center justify-center py-24 text-center">
+          <div className="w-20 h-20 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-6 shadow-sm">
+            <Tag className="w-10 h-10 text-gray-400 dark:text-gray-600" />
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No discounts found</h3>
+          <p className="text-gray-600 dark:text-gray-400 max-sm mb-8 mx-auto">
+            Create your first discount to start running promotions and rewarding your customers.
+          </p>
+          <button
+            onClick={openCreateModal}
+            className="px-6 py-2.5 bg-paymint-green text-black font-bold rounded-xl hover:bg-paymint-green/90 transition-all shadow-lg shadow-paymint-green/20"
+          >
+            Create Discount
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+        >
           {discounts.map((discount) => (
-            <div
+            <motion.div
               key={discount.id}
-              className={`bg-gray-800 rounded-xl border p-5 transition-colors ${discount.isActive ? 'border-green-500/50' : 'border-gray-700'
-                }`}
+              variants={itemVariants}
+              whileHover={{ y: -5 }}
+              className="bg-white dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl p-6 hover:border-paymint-green/50 dark:hover:border-paymint-green/30 transition-all shadow-md shadow-gray-200/50 dark:shadow-none group relative overflow-hidden"
             >
-              <div className="flex items-start justify-between mb-4">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${discount.type === 'percentage' ? 'bg-purple-500/20' : 'bg-blue-500/20'
-                  }`}>
-                  <span className={`text-xl font-bold ${discount.type === 'percentage' ? 'text-purple-400' : 'text-blue-400'
-                    }`}>
-                    {discount.type === 'percentage' ? '%' : 'JOD'}
-                  </span>
+              {/* Background gradient hint */}
+              <div className="absolute -right-10 -top-10 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl pointer-events-none" />
+
+              <div className="flex justify-between items-start mb-6">
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-sm transition-transform group-hover:scale-110 ${
+                  discount.type === 'percentage' ? 'bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400' : 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'
+                }`}>
+                  {discount.type === 'percentage' ? <Percent size={24} /> : <DollarSign size={24} />}
                 </div>
-                <div className="flex gap-1">
-                  {/* Active toggle not supported yet */}
+                
+                <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-[-10px] group-hover:translate-y-0">
                   <button
                     onClick={() => openEditModal(discount)}
-                    className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
+                    className="p-2 bg-gray-100 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 rounded-lg text-gray-600 dark:text-white transition-colors shadow-sm"
                   >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
+                    <Edit2 size={16} />
                   </button>
                   <button
                     onClick={() => handleDelete(discount.id, discount.name)}
-                    className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                    className="p-2 bg-accent/10 dark:bg-accent/10 hover:bg-accent/20 dark:hover:bg-accent/20 text-accent rounded-lg transition-colors shadow-sm"
                   >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
+                    <Trash2 size={16} />
                   </button>
                 </div>
               </div>
 
-              <h3 className="text-white font-semibold text-lg mb-1">{discount.name}</h3>
-              <p className="text-2xl font-bold text-green-400 mb-3">{formatValue(discount)}</p>
-              <div className="flex items-center gap-2">
-                <span className={`px-2 py-1 text-xs font-medium rounded ${discount.type === 'percentage' ? 'bg-purple-500/20 text-purple-400' : 'bg-blue-500/20 text-blue-400'
-                  }`}>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1 truncate group-hover:text-paymint-green transition-colors" title={discount.name}>{discount.name}</h3>
+              <p className="text-3xl font-black text-paymint-green mb-4">{formatValue(discount)} <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">OFF</span></p>
+              
+              <div className="flex flex-wrap gap-2">
+                <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-[10px] text-gray-600 dark:text-gray-400 font-bold uppercase tracking-wider">
                   {discount.type === 'percentage' ? 'Percentage' : 'Fixed Amount'}
                 </span>
-                <span className={`px-2 py-1 text-xs font-medium rounded ${discount.isActive ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'
-                  }`}>
-                  {discount.isActive ? 'Active' : 'Inactive'}
-                </span>
+                {discount.adminOnly && (
+                  <span className="px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-yellow-500/10 border border-amber-200 dark:border-yellow-500/20 text-[10px] text-amber-700 dark:text-yellow-500 font-bold uppercase tracking-wider">
+                    Manager Only
+                  </span>
+                )}
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
 
       {/* Discount Modal */}
@@ -239,3 +297,6 @@ export function DiscountsPage() {
     </div>
   );
 }
+
+
+

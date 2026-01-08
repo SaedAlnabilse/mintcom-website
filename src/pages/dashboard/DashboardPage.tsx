@@ -1,443 +1,238 @@
-import { useState, useEffect } from 'react';
-import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
-import { startOfDay, endOfDay } from 'date-fns';
-import api from '../../config/api';
-import { OrderDetailModal } from '../../components/OrderDetailModal';
+import { 
+  TrendingUp, 
+  Users, 
+  ShoppingBag, 
+  Clock, 
+  ArrowUpRight, 
+  ArrowDownRight,
+  Plus,
+  ArrowRight,
+  DollarSign,
+  Package,
+  Calendar
+} from 'lucide-react';
+import { motion } from 'framer-motion';
 
-interface DashboardData {
-  totalSales: number;
-  totalOrders: number;
-  revenue: number;
-  averageOrderValue: number;
-  activeShift: {
-    id?: string;
-    user?: {
-      id?: string;
-      name?: string;
-      username?: string;
-    };
-    startTime: string;
-    endTime?: string;
-    closingBalance?: number;
-    openingBalance?: number;
-    discrepancy?: number;
-    autoClose?: boolean;
-  } | null;
-  topSellingItems: any[];
-  recentOrders: any[];
-  salesByHour: any[];
-  paymentMethodBreakdown: any[];
-}
+const stats = [
+  { 
+    label: 'Total Revenue', 
+    value: '$12,482.00', 
+    change: '+12.5%', 
+    trend: 'up', 
+    icon: DollarSign, 
+    color: 'text-paymint-green',
+    bg: 'bg-paymint-green/10'
+  },
+  { 
+    label: 'Active Tables', 
+    value: '18/24', 
+    change: '75% occupancy', 
+    trend: 'neutral', 
+    icon: ShoppingBag, 
+    color: 'text-blue-500',
+    bg: 'bg-blue-500/10'
+  },
+  { 
+    label: 'Pending Orders', 
+    value: '7', 
+    change: '-2 from last hour', 
+    trend: 'down', 
+    icon: Clock, 
+    color: 'text-paymint-red',
+    bg: 'bg-paymint-red/10'
+  },
+  { 
+    label: 'Staff on Duty', 
+    value: '12', 
+    change: 'Full shift', 
+    trend: 'up', 
+    icon: Users, 
+    color: 'text-purple-500',
+    bg: 'bg-purple-500/10'
+  },
+];
 
-const COLORS = ['#22c55e', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+const recentActivity = [
+  { id: 1, type: 'order', title: 'New Order #2481', time: '2 mins ago', amount: '$42.50', status: 'Pending' },
+  { id: 2, type: 'payment', title: 'Payment Received #2479', time: '15 mins ago', amount: '$128.00', status: 'Completed' },
+  { id: 3, type: 'inventory', title: 'Low Stock Alert: Coffee Beans', time: '45 mins ago', amount: '5kg left', status: 'Warning' },
+  { id: 4, type: 'staff', title: 'Sarah M. clocked in', time: '1 hour ago', amount: 'Shift A', status: 'Info' },
+];
 
-export function DashboardPage() {
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+const popularItems = [
+  { name: 'Iced Caramel Macchiato', orders: 142, revenue: '$781.00', growth: '+8%' },
+  { name: 'Avocado Toast Deluxe', orders: 98, revenue: '$1,176.00', growth: '+12%' },
+  { name: 'Truffle Fries', orders: 85, revenue: '$425.00', growth: '-3%' },
+  { name: 'Classic Cheeseburger', orders: 76, revenue: '$912.00', growth: '+5%' },
+];
 
-  useEffect(() => {
-    fetchDashboardData();
-    // Auto-refresh every 30 seconds
-    const interval = setInterval(fetchDashboardData, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const fetchDashboardData = async () => {
-    try {
-      setIsLoading(true);
-
-      // 1. Fetch Dashboard Summary to get Active Shift
-      const dashboardRes = await api.get('/reports/owner-dashboard');
-      const ownerData = dashboardRes.data;
-      const metrics = ownerData.metrics || {};
-      const activeShift = metrics.activeShift;
-
-      // Determine time range from active/last shift
-      let startDate = startOfDay(new Date()).toISOString();
-      let endDate = endOfDay(new Date()).toISOString();
-
-      if (activeShift && activeShift.startTime) {
-        startDate = activeShift.startTime;
-        endDate = activeShift.endTime || new Date().toISOString();
-      }
-
-      // 2. Fetch details based on shift timing
-      const [topItemsRes, ordersRes, peakHoursRes] = await Promise.all([
-        api.get('/reports/top-selling-items', {
-          params: {
-            limit: 5,
-            startDate,
-            endDate,
-          },
-        }),
-        api.get('/reports/orders-history', {
-          params: {
-            limit: 5,
-            startDate,
-            endDate,
-          },
-        }),
-        api.get('/reports/peak-hours', {
-          params: {
-            startDate,
-            endDate,
-          },
-        }).catch(() => ({ data: [] })),
-      ]);
-
-      // Transform peak hours data for chart
-      const salesByHour = (peakHoursRes.data || []).map((item: any) => ({
-        hour: item.hour,
-        sales: item.total || 0,
-        orders: item.orders || 0,
-      }));
-
-      const paymentMethodBreakdown = [
-        { method: 'Cash', total: metrics.cashSales || 0 },
-        { method: 'Card', total: metrics.cardSales || 0 },
-        { method: 'Other', total: metrics.otherSales || metrics.otherPayments || 0 },
-      ].filter((p) => p.total > 0);
-
-      // Map metrics from dashboard summary
-      // Note: metrics keys depend on backend implementation. 
-      // Based on dashboard.service: netSales, numberOfOrders, etc might be used if totalSales undefined.
-      const totalSales = metrics.totalSales ?? metrics.netSales ?? 0;
-      const totalOrders = metrics.orderCount ?? metrics.numberOfOrders ?? 0;
-
-      setData({
-        totalSales: totalSales,
-        totalOrders: totalOrders,
-        revenue: totalSales,
-        averageOrderValue: totalOrders > 0 ? totalSales / totalOrders : 0,
-        activeShift: activeShift,
-        topSellingItems: topItemsRes.data || [],
-        recentOrders: ordersRes.data?.orders || ordersRes.data || [],
-        salesByHour,
-        paymentMethodBreakdown,
-      });
-
-      setError('');
-    } catch (err: any) {
-      console.error('Dashboard fetch error:', err);
-      setError(err.response?.data?.message || 'Failed to load dashboard data');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'JOD',
-      minimumFractionDigits: 2,
-    }).format(value).replace('JOD', '').trim() + ' JOD';
-  };
-
-  if (isLoading && !data) {
-    return (
-      <div className="h-full flex items-center justify-center bg-gray-900">
-        <div className="text-center">
-          <svg className="animate-spin h-12 w-12 mx-auto text-green-500 mb-4" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-          </svg>
-          <p className="text-gray-400">Loading dashboard...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error && !data) {
-    return (
-      <div className="h-full flex items-center justify-center bg-gray-900">
-        <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-red-500/10 rounded-full flex items-center justify-center">
-            <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-          </div>
-          <p className="text-red-400 mb-4">{error}</p>
-          <button
-            onClick={fetchDashboardData}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
-
+export const DashboardPage = () => {
   return (
-    <div className="h-full overflow-y-auto bg-gray-900 p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+    <div className="space-y-8 pb-12">
+      {/* Header section with Welcome and Quick Actions */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-          <p className="text-gray-400 text-sm">Real-time overview of your restaurant</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={fetchDashboardData}
-            className="p-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
-            title="Refresh"
-            disabled={isLoading}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
           >
-            <svg className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
+            <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+              Dashboard
+            </h1>
+            <div className="flex items-center gap-2 mt-2 text-gray-500 dark:text-gray-400 font-medium">
+              <Calendar size={16} />
+              <span>Wednesday, January 7, 2026</span>
+            </div>
+          </motion.div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+            <TrendingUp size={18} />
+            <span>Reports</span>
+          </button>
+          <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-paymint-green text-black font-black text-sm shadow-lg shadow-paymint-green/20 hover:scale-105 transition-all active:scale-95">
+            <Plus size={18} />
+            <span>New Order</span>
           </button>
         </div>
       </div>
 
-      {/* Active Shift Banner */}
-      {data?.activeShift && (
-        <div className={`mb-6 p-5 border rounded-xl flex items-start justify-between ${
-          data.activeShift.endTime
-            ? 'bg-red-600/20 border-red-500/50'
-            : 'bg-green-600/20 border-green-500/50'
-        }`}>
-          <div className="flex items-start gap-4 flex-1">
-            <div className={`w-3 h-3 rounded-full mt-1 ${
-              data.activeShift.endTime ? '' : 'animate-pulse bg-green-500'
-            } ${data.activeShift.endTime ? 'bg-red-500' : ''}`} />
-            <div className="flex-1">
-              <p className="text-white font-semibold text-lg mb-1">
-                {data.activeShift.endTime ? 'Last Shift' : 'Active Shift'}
-              </p>
-              <p className={`text-sm mb-2 ${
-                data.activeShift.endTime ? 'text-red-300' : 'text-green-300'
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((stat, index) => (
+          <motion.div
+            key={stat.label}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className="p-6 rounded-3xl bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/5 shadow-md hover:shadow-lg hover:border-gray-300 dark:hover:border-white/10 transition-all group"
+          >
+            <div className="flex justify-between items-start mb-4">
+              <div className={`p-3 rounded-2xl ${stat.bg} ${stat.color} transition-colors group-hover:scale-110 duration-300`}>
+                <stat.icon size={24} />
+              </div>
+              <div className={`flex items-center gap-1 text-xs font-black px-2 py-1 rounded-lg ${
+                stat.trend === 'up' ? 'text-paymint-green bg-paymint-green/10' : 
+                stat.trend === 'down' ? 'text-paymint-red bg-paymint-red/10' : 
+                'text-blue-500 bg-blue-500/10'
               }`}>
-                {data.activeShift.endTime ? 'Closed' : 'Started'} by {data.activeShift.user?.username || 'Staff'} at{' '}
-                {new Date(data.activeShift.startTime).toLocaleTimeString()}
-                {data.activeShift.endTime && data.activeShift.autoClose && (
-                  <span className="text-red-400 font-bold"> (Automatically Cashed Out)</span>
-                )}
-              </p>
-              {data.activeShift.endTime && data.activeShift.discrepancy !== undefined && data.activeShift.discrepancy !== 0 && (
-                <div className="inline-flex items-center gap-2 px-3 py-2 bg-red-500/20 border border-red-500/30 rounded-lg">
-                  <svg className="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={
-                      data.activeShift.discrepancy > 0
-                        ? "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                        : "M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"
-                    } />
-                  </svg>
-                  <span className="text-red-300 text-sm font-bold">
-                    {data.activeShift.discrepancy > 0 ? 'Overage' : 'Shortage'}: {data.activeShift.discrepancy > 0 ? '+' : ''}{formatCurrency(Math.abs(data.activeShift.discrepancy))}
-                  </span>
-                </div>
-              )}
+                {stat.trend === 'up' && <ArrowUpRight size={14} />}
+                {stat.trend === 'down' && <ArrowDownRight size={14} />}
+                {stat.change}
+              </div>
             </div>
-          </div>
-          <div className="text-right ml-4">
-            <p className="text-white font-bold text-2xl mb-1">{formatCurrency(data.totalSales || 0)}</p>
-            <p className={`text-sm ${
-              data.activeShift.endTime ? 'text-red-300' : 'text-green-300'
-            }`}>Shift Sales</p>
-          </div>
-        </div>
-      )}
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+            <div>
+              <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">{stat.label}</p>
+              <p className="text-3xl font-black text-gray-900 dark:text-white mt-1">{stat.value}</p>
             </div>
-          </div>
-          <p className="text-gray-400 text-sm">Shift Revenue</p>
-          <p className="text-2xl font-bold text-white">{formatCurrency(data?.revenue || 0)}</p>
-        </div>
-
-        <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-            </div>
-          </div>
-          <p className="text-gray-400 text-sm">Shift Orders</p>
-          <p className="text-2xl font-bold text-white">{data?.totalOrders || 0}</p>
-        </div>
-
-        <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-            </div>
-          </div>
-          <p className="text-gray-400 text-sm">Avg. Order Value</p>
-          <p className="text-2xl font-bold text-white">{formatCurrency(data?.averageOrderValue || 0)}</p>
-        </div>
-
-        <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-              </svg>
-            </div>
-          </div>
-          <p className="text-gray-400 text-sm">Total Sales</p>
-          <p className="text-2xl font-bold text-white">{formatCurrency(data?.totalSales || 0)}</p>
-        </div>
+          </motion.div>
+        ))}
       </div>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        {/* Sales by Hour Chart */}
-        <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
-          <h3 className="text-lg font-semibold text-white mb-4">Sales by Hour</h3>
-          <div className="h-64">
-            {data?.salesByHour && data.salesByHour.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data.salesByHour}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                  <XAxis dataKey="hour" stroke="#9CA3AF" fontSize={12} />
-                  <YAxis stroke="#9CA3AF" fontSize={12} tickFormatter={(value) => `${value} JOD`} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#1F2937',
-                      border: '1px solid #374151',
-                      borderRadius: '8px',
-                    }}
-                    labelStyle={{ color: '#fff' }}
-                  />
-                  <Bar dataKey="sales" fill="#22c55e" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="h-full flex items-center justify-center text-gray-500">
-                No data available
-              </div>
-            )}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Recent Activity */}
+        <div className="lg:col-span-2 space-y-4">
+          <div className="flex items-center justify-between px-2">
+            <h2 className="text-xl font-black text-gray-900 dark:text-white flex items-center gap-2">
+              Recent Activity
+              <span className="px-2 py-0.5 rounded-full bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest">Live</span>
+            </h2>
+            <button className="text-sm font-bold text-paymint-green hover:underline">View All</button>
           </div>
-        </div>
-
-        {/* Payment Methods Breakdown */}
-        <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
-          <h3 className="text-lg font-semibold text-white mb-4">Payment Methods</h3>
-          <div className="h-64">
-            {data?.paymentMethodBreakdown && data.paymentMethodBreakdown.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={data.paymentMethodBreakdown}
-                    dataKey="total"
-                    nameKey="method"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
-                  >
-                    {data.paymentMethodBreakdown.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(value) => formatCurrency(Number(value))}
-                    contentStyle={{
-                      backgroundColor: '#1F2937',
-                      border: '1px solid #374151',
-                      borderRadius: '8px',
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="h-full flex items-center justify-center text-gray-500">
-                No data available
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Top Selling Items */}
-        <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
-          <h3 className="text-lg font-semibold text-white mb-4">Top Selling Items</h3>
-          <div className="space-y-3">
-            {data?.topSellingItems && data.topSellingItems.length > 0 ? (
-              data.topSellingItems.map((item, index) => (
-                <div
-                  key={item.itemId || index}
-                  className="flex items-center justify-between p-3 bg-gray-700/50 rounded-lg"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="w-8 h-8 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center font-semibold text-sm">
-                      {index + 1}
-                    </span>
-                    <span className="text-white font-medium">{item.itemName || item.name}</span>
+          
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-3xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-md">
+            <div className="divide-y divide-gray-100 dark:divide-white/5">
+              {recentActivity.map((item) => (
+                <div key={item.id} className="p-5 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors group">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-gray-200 dark:bg-white/5 border border-gray-300 dark:border-transparent flex items-center justify-center text-gray-600 dark:text-gray-400 font-bold group-hover:bg-paymint-green/20 group-hover:text-paymint-green group-hover:border-paymint-green/30 transition-colors">
+                      {item.type === 'order' && <ShoppingBag size={20} />}
+                      {item.type === 'payment' && <DollarSign size={20} />}
+                      {item.type === 'inventory' && <Package size={20} />}
+                      {item.type === 'staff' && <Users size={20} />}
+                    </div>
+                    <div>
+                      <p className="font-bold text-gray-900 dark:text-white">{item.title}</p>
+                      <div className="flex items-center gap-2 text-xs text-gray-500">
+                        <span className="font-medium">{item.time}</span>
+                        <span>•</span>
+                        <span className={`px-2 py-0.5 rounded-md font-bold uppercase tracking-tighter text-[10px] ${
+                          item.status === 'Completed' ? 'bg-paymint-green/10 text-paymint-green' :
+                          item.status === 'Pending' ? 'bg-orange-500/10 text-orange-500' :
+                          item.status === 'Warning' ? 'bg-paymint-red/10 text-paymint-red' :
+                          'bg-blue-500/10 text-blue-500'
+                        }`}>
+                          {item.status}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-white font-semibold">{item.totalQuantitySold || item.quantity || item.count} sold</p>
-                    <p className="text-gray-400 text-sm">{formatCurrency(item.totalRevenue || item.revenue || item.total || 0)}</p>
+                    <p className="font-black text-gray-900 dark:text-white">{item.amount}</p>
+                    <button className="text-gray-400 hover:text-paymint-green transition-colors">
+                      <ArrowRight size={16} />
+                    </button>
                   </div>
                 </div>
-              ))
-            ) : (
-              <div className="text-center text-gray-500 py-8">No sales data yet</div>
-            )}
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Recent Orders */}
-        <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
-          <h3 className="text-lg font-semibold text-white mb-4">Recent Orders</h3>
-          <div className="space-y-3">
-            {data?.recentOrders && data.recentOrders.length > 0 ? (
-              data.recentOrders.map((order) => (
-                <div
-                  key={order.id}
-                  onClick={() => setSelectedOrder(order)}
-                  className="flex items-center justify-between p-3 bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-700 transition-colors"
-                >
+        {/* Popular Items */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between px-2">
+            <h2 className="text-xl font-black text-gray-900 dark:text-white">Popular Items</h2>
+            <button className="text-sm font-bold text-paymint-green hover:underline">Analytics</button>
+          </div>
+          
+          <div className="bg-white dark:bg-[#0A0A0A] rounded-3xl border border-gray-200 dark:border-white/5 p-6 shadow-md space-y-6">
+            {popularItems.map((item, index) => (
+              <div key={item.name} className="space-y-2">
+                <div className="flex justify-between items-end">
                   <div>
-                    <p className="text-white font-medium">Order #{order.orderNumber}</p>
-                    <p className="text-gray-400 text-sm">
-                      {order.items?.length || 0} items • {new Date(order.createdAt).toLocaleTimeString()}
+                    <p className="font-bold text-gray-900 dark:text-white">{item.name}</p>
+                    <p className="text-xs text-gray-500 font-medium">{item.orders} orders this week</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-black text-gray-900 dark:text-white">{item.revenue}</p>
+                    <p className={`text-[10px] font-black ${item.growth.startsWith('+') ? 'text-paymint-green' : 'text-paymint-red'}`}>
+                      {item.growth}
                     </p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-white font-semibold">{formatCurrency(order.total || 0)}</p>
-                    <span
-                      className={`inline-block px-2 py-0.5 text-xs font-medium rounded ${order.status === 'COMPLETED'
-                        ? 'bg-green-500/20 text-green-400'
-                        : order.status === 'PENDING'
-                          ? 'bg-yellow-500/20 text-yellow-400'
-                          : 'bg-red-500/20 text-red-400'
-                        }`}
-                    >
-                      {order.status || 'Unknown'}
-                    </span>
-                  </div>
                 </div>
-              ))
-            ) : (
-              <div className="text-center text-gray-500 py-8">No recent orders</div>
-            )}
+                <div className="w-full h-1.5 bg-gray-200 dark:bg-white/5 rounded-full overflow-hidden">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: `${Math.random() * 40 + 60}%` }}
+                    transition={{ duration: 1, delay: index * 0.1 }}
+                    className="h-full bg-paymint-green rounded-full"
+                  />
+                </div>
+              </div>
+            ))}
+            
+            <button className="w-full py-3 mt-4 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-transparent text-gray-700 dark:text-gray-300 font-bold text-sm hover:bg-paymint-green hover:text-black hover:border-paymint-green transition-all group">
+              View All Menu Performance
+            </button>
+          </div>
+
+          {/* Quick Support Card */}
+          <div className="bg-gray-900 dark:bg-paymint-green rounded-3xl p-6 shadow-xl relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-125 transition-transform duration-500">
+              <TrendingUp size={120} className="text-white dark:text-black" />
+            </div>
+            <div className="relative z-10">
+              <h3 className="text-white dark:text-black font-black text-xl leading-tight">Need help optimizing your sales?</h3>
+              <p className="text-gray-400 dark:text-black/60 text-sm mt-2 font-medium">Book a free session with our business experts.</p>
+              <button className="mt-4 px-6 py-2 rounded-xl bg-white dark:bg-black text-black dark:text-white font-black text-xs uppercase tracking-widest hover:scale-105 transition-transform">
+                Learn More
+              </button>
+            </div>
           </div>
         </div>
       </div>
-
-      {selectedOrder && (
-        <OrderDetailModal
-          order={selectedOrder}
-          onClose={() => setSelectedOrder(null)}
-          onRefundSuccess={fetchDashboardData}
-        />
-      )}
     </div>
   );
-}
+};

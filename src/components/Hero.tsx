@@ -105,53 +105,53 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               <motion.div 
                 animate={{ y: [0, -20, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="relative z-20 bg-gray-900 border border-gray-800 rounded-3xl shadow-2xl p-6 overflow-hidden"
+                className="relative z-20 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl shadow-2xl shadow-gray-200/50 dark:shadow-none p-6 overflow-hidden transition-colors duration-300"
               >
                 {/* Mock Header */}
-                <div className="flex items-center justify-between mb-8 border-b border-gray-800 pb-4">
+                <div className="flex items-center justify-between mb-8 border-b border-gray-100 dark:border-gray-800 pb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 rounded-full bg-red-500" />
-                    <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                    <div className="w-3 h-3 rounded-full bg-green-500" />
+                    <div className="w-3 h-3 rounded-full bg-accent/80 dark:bg-accent" />
+                    <div className="w-3 h-3 rounded-full bg-yellow-400 dark:bg-yellow-500" />
+                    <div className="w-3 h-3 rounded-full bg-paymint-green/80 dark:bg-paymint-green" />
                   </div>
-                  <div className="h-2 w-20 bg-gray-800 rounded-full" />
+                  <div className="h-2 w-20 bg-gray-100 dark:bg-gray-800 rounded-full" />
                 </div>
 
                 {/* Mock Content */}
                 <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="bg-gray-800/50 p-4 rounded-2xl border border-gray-800">
+                  <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 transition-colors">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="p-2 bg-green-500/20 rounded-lg">
-                        <BarChart3 size={16} className="text-green-500" />
+                      <div className="p-2 bg-paymint-green/10 dark:bg-paymint-green/20 rounded-lg">
+                        <BarChart3 size={16} className="text-paymint-green" />
                       </div>
-                      <span className="text-gray-400 text-sm">Revenue</span>
+                      <span className="text-gray-500 dark:text-gray-400 text-sm">Revenue</span>
                     </div>
-                    <div className="text-2xl font-bold text-white">$12,450</div>
-                    <div className="text-xs text-green-500 mt-1">+15% from yesterday</div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">$12,450</div>
+                    <div className="text-xs text-paymint-green mt-1">+15% from yesterday</div>
                   </div>
-                  <div className="bg-gray-800/50 p-4 rounded-2xl border border-gray-800">
+                  <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 transition-colors">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="p-2 bg-blue-500/20 rounded-lg">
-                        <Shield size={16} className="text-blue-500" />
+                      <div className="p-2 bg-blue-500/10 dark:bg-blue-500/20 rounded-lg">
+                        <Shield size={16} className="text-blue-600 dark:text-blue-500" />
                       </div>
-                      <span className="text-gray-400 text-sm">Orders</span>
+                      <span className="text-gray-500 dark:text-gray-400 text-sm">Orders</span>
                     </div>
-                    <div className="text-2xl font-bold text-white">142</div>
-                    <div className="text-xs text-blue-500 mt-1">Active right now</div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">142</div>
+                    <div className="text-xs text-blue-600 dark:text-blue-500 mt-1">Active right now</div>
                   </div>
                 </div>
 
                 <div className="space-y-3">
                   {[1, 2, 3].map((i) => (
-                    <div key={i} className="flex items-center justify-between p-3 bg-gray-800/30 rounded-xl">
+                    <div key={i} className="flex items-center justify-between p-3 bg-gray-50/50 dark:bg-gray-800/30 rounded-xl transition-colors">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gray-700 animate-pulse" />
+                        <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
                         <div>
-                          <div className="w-24 h-2 bg-gray-700 rounded-full mb-2" />
-                          <div className="w-16 h-2 bg-gray-800 rounded-full" />
+                          <div className="w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full mb-2" />
+                          <div className="w-16 h-2 bg-gray-100 dark:bg-gray-800 rounded-full" />
                         </div>
                       </div>
-                      <div className="w-12 h-6 bg-paymint-green/20 rounded-full" />
+                      <div className="w-12 h-6 bg-paymint-green/10 dark:bg-paymint-green/20 rounded-full" />
                     </div>
                   ))}
                 </div>
@@ -161,7 +161,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               <motion.div 
                 animate={{ rotate: [0, 5, 0] }}
                 transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute top-[-20px] right-[-20px] w-full h-full bg-gradient-to-br from-paymint-green/20 to-blue-500/20 rounded-3xl -z-10 blur-xl"
+                className="absolute top-[-20px] right-[-20px] w-full h-full bg-gradient-to-br from-paymint-green/20 to-blue-500/20 rounded-3xl -z-10 blur-xl opacity-50"
               />
             </div>
           </motion.div>
@@ -206,3 +206,6 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
     </section>
   );
 };
+
+
+

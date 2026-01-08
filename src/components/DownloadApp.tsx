@@ -151,7 +151,7 @@ export const DownloadApp = () => {
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
               className="absolute top-20 left-0 bg-white dark:bg-[#252525] p-4 rounded-2xl shadow-xl z-30 flex items-center gap-3 border border-gray-100 dark:border-white/5"
             >
-              <div className="bg-green-500/20 p-2 rounded-lg text-green-500">
+              <div className="bg-paymint-green/20 p-2 rounded-lg text-paymint-green">
                 <Tablet size={20} />
               </div>
               <div>
@@ -167,3 +167,6 @@ export const DownloadApp = () => {
     </section>
   );
 };
+
+
+

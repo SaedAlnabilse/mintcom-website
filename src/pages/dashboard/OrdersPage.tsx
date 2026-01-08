@@ -1,8 +1,21 @@
 import { useState, useEffect } from 'react';
 import { startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth, subYears } from 'date-fns';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Search, 
+  RefreshCw, 
+  ShoppingBag, 
+  Clock, 
+  ChevronRight, 
+  TrendingUp,
+  Download,
+  MoreVertical,
+  ChevronLeft
+} from 'lucide-react';
 import api from '../../config/api';
-import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
+import { OrderDetailModal } from '../../components/OrderDetailModal';
+import { exportToCSV } from '../../utils/export';
 
 interface Order {
   id: string;
@@ -23,6 +36,7 @@ interface Order {
     username: string;
   };
   note?: string;
+  status?: string;
 }
 
 interface OrderItem {
@@ -36,7 +50,7 @@ interface OrderItem {
 export function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [, setError] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -74,7 +88,7 @@ export function OrdersPage() {
           tax: h.orderData?.tax || 0,
           discount: h.orderData?.discount?.amount || 0,
           paymentMethod: 'N/A',
-          paymentStatus: 'HELD', // Custom status
+          paymentStatus: 'HELD',
           status: 'HELD',
           createdAt: h.pinnedAt,
           items: (h.orderData?.items || []).map((item: any) => ({
@@ -118,7 +132,7 @@ export function OrdersPage() {
           end = endOfMonth(now);
           break;
         case 'all':
-          start = subYears(now, 10); // Go back 10 years for "all time"
+          start = subYears(now, 10);
           end = endOfDay(now);
           break;
         case 'today':
@@ -166,27 +180,6 @@ export function OrdersPage() {
     }
   };
 
-  const handleRefund = async (orderId: string) => {
-    setConfirmConfig({
-      isOpen: true,
-      title: 'Refund Order',
-      message: 'Are you sure you want to refund this order?',
-      type: 'danger',
-      onConfirm: async () => {
-        try {
-          await api.post(`/api/orders/${orderId}/refund`, {
-            reason: 'Refunded via web dashboard',
-          });
-          toast.success('Order refunded successfully');
-          fetchOrders();
-          setSelectedOrder(null);
-        } catch (err: any) {
-          toast.error(err.response?.data?.message || 'Failed to process refund');
-        }
-      }
-    });
-  };
-
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -196,310 +189,245 @@ export function OrdersPage() {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString();
+    return new Date(dateString).toLocaleString([], { 
+      month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+    });
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusStyle = (status: string) => {
     switch (status) {
       case 'COMPLETED':
-        return 'bg-green-500/20 text-green-400';
+        return 'bg-paymint-green/10 text-paymint-green border-paymint-green/20';
       case 'PENDING':
       case 'HELD':
-        return 'bg-yellow-500/20 text-yellow-400';
+        return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
       case 'REFUNDED':
-        return 'bg-red-500/20 text-red-400';
+        return 'bg-paymint-red/10 text-paymint-red border-paymint-red/20';
       default:
-        return 'bg-gray-500/20 text-gray-400';
+        return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
     }
   };
 
+  const handleExport = () => {
+    const exportData = orders.map(o => ({
+      orderNumber: o.orderNumber,
+      date: formatDate(o.createdAt),
+      customer: o.customer?.name || 'Walk-in',
+      total: o.total,
+      status: o.paymentStatus || o.status,
+      paymentMethod: o.paymentMethod
+    }));
+
+    exportToCSV(exportData, 'orders_history', {
+      orderNumber: 'Order #',
+      date: 'Date',
+      customer: 'Customer',
+      total: 'Total (JOD)',
+      status: 'Status',
+      paymentMethod: 'Payment Method'
+    });
+  };
+
   return (
-    <div className="h-full overflow-y-auto bg-gray-900 p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+    <div className="h-[calc(100vh-120px)] flex flex-col space-y-6">
+      {/* Header - Fixed */}
+      <div className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">Orders</h1>
-          <p className="text-gray-400 text-sm">View and manage all orders</p>
+          <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Orders History</h1>
+          <p className="text-gray-500 dark:text-gray-400 font-medium mt-1">Track and manage every transaction across your business.</p>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={handleExport}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+          >
+            <Download size={18} />
+            <span>Export CSV</span>
+          </button>
+          <button 
+            onClick={fetchOrders}
+            className="p-2.5 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-paymint-green/20 hover:text-paymint-green transition-all"
+          >
+            <RefreshCw size={20} className={isLoading ? 'animate-spin' : ''} />
+          </button>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-4 mb-6">
-        <div className="flex-1 min-w-[250px]">
-          <div className="relative">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && searchOrder()}
-              placeholder="Search by order number..."
-              className="w-full pl-10 pr-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-            <svg
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+      {/* Quick Stats Summary - Fixed */}
+      <div className="shrink-0 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          { label: 'Total Volume', value: formatCurrency(orders.reduce((acc, o) => acc + (o.total || 0), 0)), icon: TrendingUp, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+          { label: 'Orders Processed', value: orders.length, icon: ShoppingBag, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+          { label: 'Pending/Held', value: orders.filter(o => o.status === 'HELD' || o.paymentStatus === 'PENDING').length, icon: Clock, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+        ].map((stat, i) => (
+          <div key={i} className="p-6 rounded-3xl bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/5 shadow-md hover:shadow-lg hover:border-gray-300 dark:hover:border-white/10 transition-all flex items-center gap-5">
+            <div className={`p-4 rounded-2xl ${stat.bg} ${stat.color}`}>
+              <stat.icon size={24} />
+            </div>
+            <div>
+              <p className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">{stat.label}</p>
+              <p className="text-2xl font-black text-gray-900 dark:text-white">{stat.value}</p>
+            </div>
           </div>
-        </div>
-
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-        >
-          <option value="all">All Status</option>
-          <option value="COMPLETED">Completed</option>
-          <option value="HELD">Held Orders</option>
-          <option value="REFUNDED">Refunded</option>
-        </select>
-
-        <select
-          value={dateFilter}
-          onChange={(e) => setDateFilter(e.target.value)}
-          className="px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
-        >
-          <option value="today">Today</option>
-          <option value="week">This Week</option>
-          <option value="month">This Month</option>
-          <option value="all">All Time</option>
-        </select>
-
-        <button
-          onClick={fetchOrders}
-          className="px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
-        >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          Refresh
-        </button>
+        ))}
       </div>
 
-      {/* Error State */}
-      {error && (
-        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-lg">
-          <p className="text-red-400">{error}</p>
+      {/* Filters Bar - Fixed */}
+      <div className="shrink-0 p-4 bg-white dark:bg-[#0A0A0A] rounded-3xl border border-gray-200 dark:border-white/5 shadow-md flex flex-col md:flex-row gap-4">
+        <div className="flex-1 relative group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-paymint-green transition-colors" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && searchOrder()}
+            placeholder="Search by order ID or customer..."
+            className="w-full pl-12 pr-4 py-3 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/5 rounded-2xl text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green/30 transition-all font-medium"
+          />
         </div>
-      )}
 
-      {/* Orders Table */}
-      <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
-        {isLoading ? (
-          <div className="p-12 text-center">
-            <svg className="animate-spin h-8 w-8 mx-auto text-green-500 mb-4" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-            </svg>
-            <p className="text-gray-400">Loading orders...</p>
-          </div>
-        ) : orders.length === 0 ? (
-          <div className="p-12 text-center">
-            <svg className="w-16 h-16 mx-auto text-gray-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
-            <p className="text-gray-400">No orders found</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
+        <div className="flex gap-2">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-4 py-3 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/5 rounded-2xl text-gray-900 dark:text-white focus:ring-2 focus:ring-paymint-green/20 transition-all font-bold text-sm cursor-pointer min-w-[140px]"
+          >
+            <option value="all">All Status</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="HELD">Held Orders</option>
+            <option value="REFUNDED">Refunded</option>
+          </select>
+
+          <select
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value)}
+            className="px-4 py-3 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/5 rounded-2xl text-gray-900 dark:text-white focus:ring-2 focus:ring-paymint-green/20 transition-all font-bold text-sm cursor-pointer min-w-[140px]"
+          >
+            <option value="today">Today</option>
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+            <option value="all">All Time</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Main Content Area - Scrollable */}
+      <div className="flex-1 bg-white dark:bg-[#0A0A0A] rounded-[2.5rem] border border-gray-200 dark:border-white/5 shadow-md overflow-hidden flex flex-col min-h-0">
+        <div className="overflow-y-auto flex-1 custom-scrollbar">
+          {isLoading && orders.length === 0 ? (
+            <div className="flex flex-col items-center justify-center p-20">
+              <div className="w-16 h-16 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
+              <p className="text-gray-500 font-black uppercase tracking-widest text-xs">Syncing Transactions...</p>
+            </div>
+          ) : orders.length === 0 ? (
+            <div className="flex flex-col items-center justify-center p-20 text-center">
+              <div className="w-24 h-24 bg-gray-50 dark:bg-white/5 rounded-[2.5rem] flex items-center justify-center mb-6">
+                <ShoppingBag className="w-12 h-12 text-gray-300" />
+              </div>
+              <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">No orders found</h3>
+              <p className="text-gray-500 dark:text-gray-400 font-medium max-w-xs">
+                Try adjusting your filters or search query.
+              </p>
+            </div>
+          ) : (
             <table className="w-full">
-              <thead className="bg-gray-700/50">
-                <tr>
-                  <th className="text-left px-6 py-4 text-sm font-medium text-gray-300">Order #</th>
-                  <th className="text-left px-6 py-4 text-sm font-medium text-gray-300">Date & Time</th>
-                  <th className="text-left px-6 py-4 text-sm font-medium text-gray-300">Items</th>
-                  <th className="text-left px-6 py-4 text-sm font-medium text-gray-300">Total</th>
-                  <th className="text-left px-6 py-4 text-sm font-medium text-gray-300">Payment</th>
-                  <th className="text-left px-6 py-4 text-sm font-medium text-gray-300">Status</th>
-                  <th className="text-left px-6 py-4 text-sm font-medium text-gray-300">Staff</th>
-                  <th className="text-right px-6 py-4 text-sm font-medium text-gray-300">Actions</th>
+              <thead className="sticky top-0 z-10 bg-white dark:bg-[#0A0A0A]">
+                <tr className="border-b border-gray-100 dark:border-white/5">
+                  <th className="px-8 py-6 text-left text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Order Details</th>
+                  <th className="px-8 py-6 text-left text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Customer Info</th>
+                  <th className="px-8 py-6 text-left text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Amount</th>
+                  <th className="px-8 py-6 text-left text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Status</th>
+                  <th className="px-8 py-6 text-right text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
-                {orders.map((order) => (
-                  <tr
-                    key={order.id}
-                    className="hover:bg-gray-700/30 transition-colors cursor-pointer"
-                    onClick={() => setSelectedOrder(order)}
-                  >
-                    <td className="px-6 py-4">
-                      <span className="font-mono text-white font-medium">#{order.orderNumber}</span>
-                    </td>
-                    <td className="px-6 py-4 text-gray-300">{formatDate(order.createdAt)}</td>
-                    <td className="px-6 py-4 text-gray-300">{order.items?.length || 0} items</td>
-                    <td className="px-6 py-4 text-white font-medium">{formatCurrency(order.total)}</td>
-                    <td className="px-6 py-4 text-gray-300">{order.paymentMethod}</td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-block px-2 py-1 text-xs font-medium rounded ${getStatusColor(order.paymentStatus)}`}>
-                        {order.paymentStatus}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-gray-300">{order.user?.username || 'Unknown'}</td>
-                    <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedOrder(order);
-                        }}
-                        className="text-green-500 hover:text-green-400 transition-colors"
-                      >
-                        View
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+              <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                <AnimatePresence mode='popLayout'>
+                  {orders.map((order) => (
+                    <motion.tr
+                      key={order.id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      onClick={() => setSelectedOrder(order)}
+                      className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer"
+                    >
+                      <td className="px-8 py-5">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center text-gray-500 group-hover:bg-paymint-green/20 group-hover:text-paymint-green group-hover:border-paymint-green/30 transition-colors">
+                            <ShoppingBag size={18} />
+                          </div>
+                          <div>
+                            <p className="font-black text-gray-900 dark:text-white">#{order.orderNumber}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{formatDate(order.createdAt)}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-8 py-5">
+                        <p className="font-bold text-gray-800 dark:text-gray-300">{order.customer?.name || 'Walk-in Customer'}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-500">{order.user?.username ? `Staff: ${order.user.username}` : 'POS Transaction'}</p>
+                      </td>
+                      <td className="px-8 py-5">
+                        <p className="font-black text-gray-900 dark:text-white">{formatCurrency(order.total)}</p>
+                        <p className="text-[10px] text-gray-500 dark:text-gray-500 font-black uppercase tracking-widest">{order.paymentMethod}</p>
+                      </td>
+                      <td className="px-8 py-5">
+                        <span className={`inline-flex items-center px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
+                          {order.paymentStatus || order.status}
+                        </span>
+                      </td>
+                      <td className="px-8 py-5 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button className="p-2 text-gray-400 hover:text-paymint-green hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg transition-colors">
+                            <MoreVertical size={18} />
+                          </button>
+                          <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center text-gray-500 group-hover:bg-paymint-green group-hover:text-black group-hover:border-paymint-green transition-all">
+                            <ChevronRight size={16} />
+                          </div>
+                        </div>
+                      </td>
+                    </motion.tr>
+                  ))}
+                </AnimatePresence>
               </tbody>
             </table>
-          </div>
-        )}
+          )}
+        </div>
 
-        {/* Pagination */}
+        {/* Pagination Controls - Fixed */}
         {totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-700 flex items-center justify-between">
-            <p className="text-sm text-gray-400">
-              Page {page} of {totalPages}
+          <div className="shrink-0 px-8 py-4 border-t border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-[#0A0A0A] flex items-center justify-between">
+            <p className="text-xs font-bold text-gray-600 dark:text-gray-500">
+              Page <span className="text-gray-900 dark:text-white font-black">{page}</span> of {totalPages}
             </p>
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="px-3 py-1.5 bg-gray-700 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-600 transition-colors"
+                className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-500 hover:border-paymint-green/30 hover:text-paymint-green disabled:opacity-30 disabled:hover:border-gray-200 disabled:hover:text-gray-600 transition-colors"
               >
-                Previous
+                <ChevronLeft size={20} />
               </button>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="px-3 py-1.5 bg-gray-700 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-600 transition-colors"
+                className="p-2.5 rounded-xl bg-paymint-green text-black shadow-lg shadow-paymint-green/20 hover:scale-105 disabled:opacity-30 disabled:hover:scale-100 transition-all"
               >
-                Next
+                <ChevronRight size={20} />
               </button>
             </div>
           </div>
         )}
       </div>
 
-      {/* Order Detail Modal */}
-      {selectedOrder && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-gray-800 rounded-2xl border border-gray-700 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-700 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-white">Order #{selectedOrder.orderNumber}</h2>
-              <button
-                onClick={() => setSelectedOrder(null)}
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            <div className="p-6 space-y-6">
-              {/* Order Info */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-gray-400 text-sm">Date & Time</p>
-                  <p className="text-white">{formatDate(selectedOrder.createdAt)}</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-sm">Status</p>
-                  <span className={`inline-block px-2 py-1 text-xs font-medium rounded ${getStatusColor(selectedOrder.paymentStatus)}`}>
-                    {selectedOrder.paymentStatus}
-                  </span>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-sm">Payment Method</p>
-                  <p className="text-white">{selectedOrder.paymentMethod}</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-sm">Staff</p>
-                  <p className="text-white">{selectedOrder.user?.username || 'Unknown'}</p>
-                </div>
-                {selectedOrder.customer && (
-                  <>
-                    <div>
-                      <p className="text-gray-400 text-sm">Customer</p>
-                      <p className="text-white">{selectedOrder.customer.name}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400 text-sm">Phone</p>
-                      <p className="text-white">{selectedOrder.customer.phone}</p>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* Order Items */}
-              <div>
-                <h3 className="text-lg font-medium text-white mb-3">Items</h3>
-                <div className="bg-gray-700/50 rounded-lg divide-y divide-gray-600">
-                  {selectedOrder.items?.map((item) => (
-                    <div key={item.id} className="p-3 flex items-center justify-between">
-                      <div>
-                        <p className="text-white font-medium">{item.name}</p>
-                        <p className="text-gray-400 text-sm">Qty: {item.quantity} x {formatCurrency(item.price)}</p>
-                      </div>
-                      <p className="text-white font-medium">{formatCurrency(item.total)}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Order Summary */}
-              <div className="bg-gray-700/50 rounded-lg p-4 space-y-2">
-                <div className="flex justify-between text-gray-300">
-                  <span>Subtotal</span>
-                  <span>{formatCurrency(selectedOrder.subtotal)}</span>
-                </div>
-                {selectedOrder.discount > 0 && (
-                  <div className="flex justify-between text-red-400">
-                    <span>Discount</span>
-                    <span>-{formatCurrency(selectedOrder.discount)}</span>
-                  </div>
-                )}
-                <div className="flex justify-between text-gray-300">
-                  <span>Tax</span>
-                  <span>{formatCurrency(selectedOrder.tax)}</span>
-                </div>
-                <div className="flex justify-between text-white font-bold text-lg pt-2 border-t border-gray-600">
-                  <span>Total</span>
-                  <span>{formatCurrency(selectedOrder.total)}</span>
-                </div>
-              </div>
-
-              {/* Notes */}
-              {selectedOrder.note && (
-                <div>
-                  <p className="text-gray-400 text-sm">Note</p>
-                  <p className="text-white">{selectedOrder.note}</p>
-                </div>
-              )}
-
-              {/* Actions */}
-              <div className="flex gap-3">
-                {selectedOrder.paymentStatus === 'COMPLETED' && (
-                  <button
-                    onClick={() => handleRefund(selectedOrder.id)}
-                    className="flex-1 py-2.5 px-4 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
-                  >
-                    Refund Order
-                  </button>
-                )}
-                <button
-                  onClick={() => setSelectedOrder(null)}
-                  className="flex-1 py-2.5 px-4 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {selectedOrder && (
+          <OrderDetailModal
+            order={selectedOrder}
+            onClose={() => setSelectedOrder(null)}
+            onRefundSuccess={fetchOrders}
+          />
+        )}
+      </AnimatePresence>
 
       <ConfirmModal
         isOpen={confirmConfig.isOpen}

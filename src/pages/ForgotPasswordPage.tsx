@@ -1,152 +1,141 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Mail, CheckCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Mail, ArrowLeft, CheckCircle2, Loader2 } from 'lucide-react';
+import api from '../config/api';
 import toast from 'react-hot-toast';
-import { useAuth } from '../context/AuthContext';
 
 const forgotPasswordSchema = z.object({
-  email: z.string().email('Please enter a valid email'),
+  email: z.string().email('Please enter a valid email address'),
 });
 
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export function ForgotPasswordPage() {
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [emailSent, setEmailSent] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [sentEmail, setSentEmail] = useState('');
-  const { forgotPassword } = useAuth();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ForgotPasswordFormData>({
+  const { register, handleSubmit, formState: { errors } } = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
   });
 
   const onSubmit = async (data: ForgotPasswordFormData) => {
     setIsSubmitting(true);
     try {
-      const result = await forgotPassword(data.email);
-
-      if (result.success) {
-        setSentEmail(data.email);
-        setEmailSent(true);
-        toast.success('Password reset email sent!');
-      } else {
-        toast.error(result.error || 'Failed to send reset email');
-      }
-    } catch {
-      toast.error('Something went wrong. Please try again.');
+      await api.post('/auth/forgot-password', data);
+      setSentEmail(data.email);
+      setIsSuccess(true);
+      toast.success('Reset link sent!');
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (emailSent) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-4">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-md w-full text-center"
-        >
-          <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-8 h-8 text-green-500" />
-          </div>
-          <h2 className="text-2xl font-bold text-white mb-4">Check Your Email</h2>
-          <p className="text-gray-400 mb-6">
-            We've sent a password reset link to <span className="text-white font-medium">{sentEmail}</span>.
-            Please click the link to reset your password.
-          </p>
-          <div className="bg-gray-700/50 rounded-lg p-4 mb-6">
-            <p className="text-sm text-gray-300">
-              Didn't receive the email? Check your spam folder or{' '}
-              <button
-                onClick={() => setEmailSent(false)}
-                className="text-green-500 hover:underline"
-              >
-                try again
-              </button>
-            </p>
-          </div>
-          <Link
-            to="/login"
-            className="inline-flex items-center justify-center w-full bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
-          >
-            Back to Login
-          </Link>
-        </motion.div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
-      >
-        <Link
-          to="/login"
-          className="inline-flex items-center text-gray-400 hover:text-white mb-8 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to login
-        </Link>
+    <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex items-center justify-center p-4 transition-colors duration-300">
+      <div className="w-full max-w-md">
+        {/* Back to Login */}
+        {!isSuccess && (
+          <button 
+            onClick={() => navigate('/login')}
+            className="flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors mb-8 group"
+          >
+            <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+            <span className="font-bold text-sm uppercase tracking-widest">Back to Login</span>
+          </button>
+        )}
 
-        <div className="bg-gray-800 rounded-2xl shadow-2xl p-8">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">
-              Pay<span className="text-green-500">Mint</span>
-            </h1>
-            <h2 className="text-xl font-semibold text-white mb-2">Forgot Password?</h2>
-            <p className="text-gray-400">Enter your email and we'll send you a reset link</p>
-          </div>
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Email Address
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  {...register('email')}
-                  type="email"
-                  className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 pl-10 pr-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  placeholder="you@example.com"
-                />
-              </div>
-              {errors.email && (
-                <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+        <AnimatePresence mode="wait">
+          {!isSuccess ? (
+            <motion.div
+              key="form"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white dark:bg-white/5 rounded-[2.5rem] shadow-2xl shadow-gray-200/50 dark:shadow-none p-8 lg:p-12 border border-gray-200 dark:border-white/10"
             >
-              {isSubmitting ? 'Sending...' : 'Send Reset Link'}
-            </button>
-          </form>
+              <div className="text-center mb-10">
+                <div className="w-16 h-16 bg-paymint-green/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Mail className="text-paymint-green" size={32} />
+                </div>
+                <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Forgot Password?</h1>
+                <p className="text-gray-600 dark:text-gray-400 mt-2 font-medium">No worries, we'll send you reset instructions.</p>
+              </div>
 
-          <div className="mt-6 text-center">
-            <p className="text-gray-400">
-              Remember your password?{' '}
-              <Link to="/login" className="text-green-500 hover:underline font-medium">
-                Sign in
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">Email Address</label>
+                  <div className="relative group">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                    <input
+                      type="email"
+                      {...register('email')}
+                      className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                      placeholder="you@example.com"
+                    />
+                  </div>
+                  {errors.email && (
+                    <p className="text-accent text-xs font-bold mt-1 ml-1">{errors.email.message}</p>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full py-5 bg-paymint-green text-black font-black text-xl rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3"
+                >
+                  {isSubmitting ? <Loader2 className="animate-spin" size={24} /> : null}
+                  Reset Password
+                </button>
+              </form>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-white dark:bg-white/5 rounded-[2.5rem] shadow-2xl shadow-gray-200/50 dark:shadow-none p-8 lg:p-12 border border-gray-200 dark:border-white/10 text-center"
+            >
+              <div className="w-20 h-20 bg-paymint-green/10 rounded-full flex items-center justify-center mx-auto mb-8">
+                <CheckCircle2 className="text-paymint-green" size={40} />
+              </div>
+              <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Check Your Email</h2>
+              <p className="text-gray-600 dark:text-gray-400 mt-4 text-lg font-medium">
+                We've sent a password reset link to:
+                <br />
+                <span className="text-gray-900 dark:text-white font-black">{sentEmail}</span>
+              </p>
+              
+              <div className="mt-10 pt-8 border-t border-gray-100 dark:border-white/5">
+                <p className="text-gray-500 text-sm font-medium">
+                  Didn't receive the email?{' '}
+                  <button 
+                    onClick={() => setIsSuccess(false)}
+                    className="text-paymint-green font-bold hover:underline"
+                  >
+                    Try another email
+                  </button>
+                </p>
+              </div>
+
+              <Link
+                to="/login"
+                className="mt-8 inline-flex items-center gap-2 text-gray-900 dark:text-white font-black uppercase tracking-widest text-sm hover:text-paymint-green transition-colors"
+              >
+                <ArrowLeft size={16} />
+                Back to Login
               </Link>
-            </p>
-          </div>
-        </div>
-      </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

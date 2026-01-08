@@ -1,34 +1,25 @@
 import React from 'react';
-import WhiteLogo from '../assets/White Green Full Logo.png';
-import GreenLogo from '../assets/Green Full Logo.png';
 
 interface LogoProps {
   className?: string;
-  size?: 'sm' | 'md' | 'lg';
+  variant?: 'full' | 'icon';
+  theme?: 'dark' | 'light';
 }
 
 export const Logo: React.FC<LogoProps> = ({
-  className = "",
-  size = "md"
+  className = '',
+  variant = 'full'
 }) => {
-  const logoSizes = {
-    sm: "h-10",
-    md: "h-14",
-    lg: "h-20"
-  };
-
   return (
-    <div className={`flex items-center ${className}`}>
-      <img
-        src={WhiteLogo}
-        alt="PayMint Logo"
-        className={`${logoSizes[size]} w-auto object-contain hidden dark:block`}
-      />
-      <img
-        src={GreenLogo}
-        alt="PayMint Logo"
-        className={`${logoSizes[size]} w-auto object-contain block dark:hidden`}
-      />
+    <div className={`flex items-center gap-2 ${className}`}>
+      <div className="w-8 h-8 bg-paymint-green rounded-lg flex items-center justify-center shadow-lg shadow-paymint-green/20 shrink-0">
+        <span className="text-black font-black text-lg">P</span>
+      </div>
+      {variant === 'full' && (
+        <span className="text-xl font-black text-gray-900 dark:text-white tracking-tight">
+          Pay<span className="text-paymint-green">Mint</span>
+        </span>
+      )}
     </div>
   );
 };

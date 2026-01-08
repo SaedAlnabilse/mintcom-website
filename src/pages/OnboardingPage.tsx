@@ -11,452 +11,378 @@ import {
   DollarSign,
   User,
   Lock,
-  Eye,
-  EyeOff,
+  Check,
   ArrowRight,
   ArrowLeft,
-  Check,
-  CreditCard,
   Loader2,
+  CreditCard,
+  CheckCircle2,
+  Building2,
+  UtensilsCrossed,
+  Coffee,
+  ShoppingBag,
+  KeyRound,
+  Hash
 } from 'lucide-react';
+import api from '../config/api';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
-import api from '../config/api';
-
-const establishmentTypes = [
-  { value: 'restaurant', label: 'Restaurant', icon: '🍽️' },
-  { value: 'cafe', label: 'Cafe / Coffee Shop', icon: '☕' },
-  { value: 'bar', label: 'Bar / Nightclub', icon: '🍸' },
-  { value: 'fast_food', label: 'Fast Food', icon: '🍔' },
-  { value: 'food_truck', label: 'Food Truck', icon: '🚚' },
-  { value: 'bakery', label: 'Bakery', icon: '🥐' },
-  { value: 'retail', label: 'Retail Store', icon: '🏪' },
-  { value: 'other', label: 'Other', icon: '🏢' },
-];
-
-const currencies = [
-  { value: 'USD', label: 'US Dollar ($)', symbol: '$' },
-  { value: 'EUR', label: 'Euro (€)', symbol: '€' },
-  { value: 'GBP', label: 'British Pound (£)', symbol: '£' },
-  { value: 'CAD', label: 'Canadian Dollar (C$)', symbol: 'C$' },
-  { value: 'AUD', label: 'Australian Dollar (A$)', symbol: 'A$' },
-  { value: 'AED', label: 'UAE Dirham (AED)', symbol: 'AED' },
-  { value: 'SAR', label: 'Saudi Riyal (SAR)', symbol: 'SAR' },
-  { value: 'EGP', label: 'Egyptian Pound (EGP)', symbol: 'EGP' },
-  { value: 'LBP', label: 'Lebanese Pound (LBP)', symbol: 'LBP' },
-  { value: 'JOD', label: 'Jordanian Dinar (JOD)', symbol: 'JOD' },
-];
 
 const step1Schema = z.object({
-  name: z.string().min(2, 'Establishment name is required'),
-  type: z.string().min(1, 'Please select a type'),
-  address: z.string().optional(),
-  phone: z.string().optional(),
-  currency: z.string().min(1, 'Please select a currency'),
+  name: z.string().min(1, 'Establishment name is required'),
+  type: z.string().min(1, 'Business type is required'),
+  address: z.string().min(1, 'Address is required'),
+  phone: z.string().min(1, 'Phone is required'),
+  currency: z.string().min(1, 'Currency is required'),
+  ownerPosId: z.string()
+    .min(4, 'POS ID must be at least 4 characters')
+    .regex(/^[a-zA-Z0-9_-]+$/, 'POS ID can only contain letters, numbers, underscores, and hyphens'),
+  ownerPosPassword: z.string().min(6, 'POS Password must be at least 6 characters'),
 });
 
 const step2Schema = z.object({
-  ownerPosId: z
-    .string()
-    .min(4, 'POS ID must be at least 4 characters')
-    .regex(/^[a-zA-Z0-9_-]+$/, 'Only letters, numbers, underscores, and hyphens allowed'),
-  ownerPosPassword: z
-    .string()
-    .min(4, 'POS password must be at least 4 characters'),
+  username: z.string()
+    .min(3, 'Username must be at least 3 characters')
+    .regex(/^[a-zA-Z0-9_-]+$/, 'Username can only contain letters, numbers, underscores, and hyphens'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  firstName: z.string().min(2, 'First name must be at least 2 characters'),
+  lastName: z.string().min(2, 'Last name must be at least 2 characters'),
 });
-
-type Step1Data = z.infer<typeof step1Schema>;
-type Step2Data = z.infer<typeof step2Schema>;
 
 export function OnboardingPage() {
   const navigate = useNavigate();
-  const { account, refreshEstablishments } = useAuth();
-  const [currentStep, setCurrentStep] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPosPassword, setShowPosPassword] = useState(false);
+  const { refreshEstablishments, account } = useAuth();
+  const [step, setStep] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [step1Data, setStep1Data] = useState<any>(null);
 
-  // Store data from each step
-  const [step1Data, setStep1Data] = useState<Step1Data | null>(null);
-
-  const step1Form = useForm<Step1Data>({
+  const { register: register1, handleSubmit: handleSubmit1, formState: { errors: errors1 } } = useForm({
     resolver: zodResolver(step1Schema),
-    defaultValues: {
-      currency: 'USD',
-    },
+    defaultValues: { currency: 'JOD', type: 'restaurant' }
   });
 
-  const step2Form = useForm<Step2Data>({
-    resolver: zodResolver(step2Schema),
+  const { register: register2, handleSubmit: handleSubmit2, formState: { errors: errors2 } } = useForm({
+    resolver: zodResolver(step2Schema)
   });
 
-  const handleStep1Submit = (data: Step1Data) => {
+  const onStep1Submit = (data: any) => {
     setStep1Data(data);
-    setCurrentStep(2);
+    setStep(2);
   };
 
-  const handleStep2Submit = async (data: Step2Data) => {
-    if (!step1Data) return;
-
-    setIsSubmitting(true);
+  const onStep2Submit = async (data: any) => {
+    setIsLoading(true);
     try {
-      const token = localStorage.getItem('accountToken');
-      const response = await api.post(
-        '/api/establishments',
-        {
-          ...step1Data,
-          ownerPosId: data.ownerPosId,
-          ownerPosPassword: data.ownerPosPassword,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      // Create Establishment
+      const estRes = await api.post('/api/establishments', step1Data);
+      // The API returns { success: true, establishment: { id, ... } }
+      const estId = estRes.data.establishment?.id || estRes.data.id;
 
-      if (response.data) {
-        await refreshEstablishments();
-        toast.success('Your establishment is ready!');
-        setCurrentStep(3);
+      if (!estId) {
+        throw new Error('Failed to get establishment ID');
       }
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to create establishment');
+
+      // Create Admin Employee for this Establishment
+      await api.post('/api/employees', {
+        username: data.username,
+        password: data.password,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: account?.email,
+        establishmentId: estId,
+        role: 'ADMIN',
+        permissions: [],
+        allowedDiscounts: []
+      });
+
+      setStep(3);
+      toast.success('Onboarding complete!');
+      await refreshEstablishments();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to complete onboarding');
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
-  const handleFinish = () => {
-    navigate('/dashboard');
-  };
-
-  const steps = [
-    { number: 1, title: 'Business Info', icon: Store },
-    { number: 2, title: 'POS Credentials', icon: Lock },
-    { number: 3, title: 'All Set!', icon: Check },
+  const businessTypes = [
+    { id: 'restaurant', label: 'Restaurant', icon: UtensilsCrossed },
+    { id: 'cafe', label: 'Cafe', icon: Coffee },
+    { id: 'retail', label: 'Retail', icon: ShoppingBag },
+    { id: 'other', label: 'Other', icon: Building2 },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      {/* Header */}
-      <div className="bg-gray-800 border-b border-gray-700">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-white">
-            Pay<span className="text-green-500">Mint</span>
-          </h1>
-          <p className="text-sm text-gray-400">
-            Welcome, {account?.firstName}!
-          </p>
+    <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex flex-col transition-colors duration-300">
+      {/* Navbar */}
+      <div className="p-6 flex justify-between items-center border-b border-gray-200 dark:border-white/5 bg-white dark:bg-transparent shadow-sm">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-paymint-green rounded-lg flex items-center justify-center">
+            <span className="text-black font-black">P</span>
+          </div>
+          <span className="text-xl font-black text-gray-900 dark:text-white tracking-tight">PayMint</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="flex gap-1.5">
+            {[1, 2, 3].map((s) => (
+              <div
+                key={s}
+                className={`h-1.5 rounded-full transition-all duration-500 ${step >= s ? 'w-8 bg-paymint-green' : 'w-4 bg-gray-200 dark:bg-white/10'
+                  }`}
+              />
+            ))}
+          </div>
+          <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Step {step} of 3</span>
         </div>
       </div>
 
-      {/* Progress Steps */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-center mb-12">
-          {steps.map((step, index) => (
-            <div key={step.number} className="flex items-center">
-              <div
-                className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all ${
-                  currentStep >= step.number
-                    ? 'bg-green-600 border-green-600 text-white'
-                    : 'border-gray-600 text-gray-600'
-                }`}
-              >
-                {currentStep > step.number ? (
-                  <Check className="w-5 h-5" />
-                ) : (
-                  <step.icon className="w-5 h-5" />
-                )}
-              </div>
-              <span
-                className={`ml-2 text-sm font-medium ${
-                  currentStep >= step.number ? 'text-white' : 'text-gray-500'
-                }`}
-              >
-                {step.title}
-              </span>
-              {index < steps.length - 1 && (
-                <div
-                  className={`w-16 h-0.5 mx-4 ${
-                    currentStep > step.number ? 'bg-green-600' : 'bg-gray-700'
-                  }`}
-                />
-              )}
-            </div>
-          ))}
-        </div>
-
+      <div className="flex-1 flex items-center justify-center p-6">
         <AnimatePresence mode="wait">
-          {/* Step 1: Business Information */}
-          {currentStep === 1 && (
+          {step === 1 && (
             <motion.div
               key="step1"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              className="max-w-xl mx-auto"
+              className="max-w-2xl w-full"
             >
-              <div className="bg-gray-800 rounded-2xl p-8">
-                <h2 className="text-2xl font-bold text-white mb-2">
-                  Tell us about your business
-                </h2>
-                <p className="text-gray-400 mb-8">
-                  This information helps us customize PayMint for your needs.
-                </p>
+              <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
+                <div className="mb-10">
+                  <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Business Profile</h2>
+                  <p className="text-gray-600 dark:text-gray-400 font-medium">Tell us about your establishment to get started.</p>
+                </div>
 
-                <form onSubmit={step1Form.handleSubmit(handleStep1Submit)} className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Establishment Name *
-                    </label>
-                    <div className="relative">
-                      <Store className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                      <input
-                        {...step1Form.register('name')}
-                        type="text"
-                        className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 pl-10 pr-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="e.g., The Coffee House"
-                      />
-                    </div>
-                    {step1Form.formState.errors.name && (
-                      <p className="text-red-400 text-sm mt-1">
-                        {step1Form.formState.errors.name.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Business Type *
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {establishmentTypes.map((type) => (
-                        <label
-                          key={type.value}
-                          className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${
-                            step1Form.watch('type') === type.value
-                              ? 'border-green-500 bg-green-500/10'
-                              : 'border-gray-600 hover:border-gray-500'
-                          }`}
-                        >
-                          <input
-                            {...step1Form.register('type')}
-                            type="radio"
-                            value={type.value}
-                            className="hidden"
-                          />
-                          <span className="text-xl">{type.icon}</span>
-                          <span className="text-sm text-white">{type.label}</span>
-                        </label>
-                      ))}
-                    </div>
-                    {step1Form.formState.errors.type && (
-                      <p className="text-red-400 text-sm mt-1">
-                        {step1Form.formState.errors.type.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Address (Optional)
-                    </label>
-                    <div className="relative">
-                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                      <input
-                        {...step1Form.register('address')}
-                        type="text"
-                        className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 pl-10 pr-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="123 Main Street"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Phone (Optional)
+                <form onSubmit={handleSubmit1(onStep1Submit)} className="space-y-8">
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
+                        Establishment Name <span className="text-red-500">*</span>
                       </label>
-                      <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <div className="relative group">
+                        <Store className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                         <input
-                          {...step1Form.register('phone')}
-                          type="tel"
-                          className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 pl-10 pr-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
-                          placeholder="+1 555-0000"
+                          type="text"
+                          {...register1('name')}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${errors1.name ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          placeholder="e.g. The Coffee House"
                         />
                       </div>
+                      {errors1.name && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{errors1.name.message as string}</p>}
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Currency *
+                    <div className="space-y-3">
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">Business Category</label>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        {businessTypes.map((type) => (
+                          <button
+                            key={type.id}
+                            type="button"
+                            onClick={() => { }} // Hooked via register
+                            className={`p-4 rounded-2xl border-2 flex flex-col items-center gap-2 transition-all ${true ? 'border-paymint-green bg-paymint-green/5 text-paymint-green' : 'border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-transparent text-gray-400'
+                              }`}
+                          >
+                            <type.icon size={24} />
+                            <span className="text-[10px] font-black uppercase tracking-widest">{type.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
+                          Phone Number <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative">
+                          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                          <input
+                            type="tel"
+                            {...register1('phone')}
+                            className={`w-full bg-gray-50 dark:bg-black/20 border ${errors1.phone ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                            placeholder="07XXXXXXXX"
+                          />
+                        </div>
+                        {errors1.phone && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{errors1.phone.message as string}</p>}
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
+                          Base Currency <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative">
+                          <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                          <select
+                            {...register1('currency')}
+                            className={`w-full bg-gray-50 dark:bg-black/20 border ${errors1.currency ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all appearance-none`}
+                          >
+                            <option value="JOD">JOD - Jordanian Dinar</option>
+                            <option value="USD">USD - US Dollar</option>
+                            <option value="AED">AED - UAE Dirham</option>
+                          </select>
+                        </div>
+                        {errors1.currency && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{errors1.currency.message as string}</p>}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
+                        Location Address <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
-                        <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                        <select
-                          {...step1Form.register('currency')}
-                          className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 pl-10 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none"
-                        >
-                          {currencies.map((c) => (
-                            <option key={c.value} value={c.value}>
-                              {c.label}
-                            </option>
-                          ))}
-                        </select>
+                        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                        <input
+                          type="text"
+                          {...register1('address')}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${errors1.address ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          placeholder="City, Area, Building"
+                        />
+                      </div>
+                      {errors1.address && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{errors1.address.message as string}</p>}
+                    </div>
+
+                    {/* POS Credentials Section */}
+                    <div className="pt-4 border-t border-gray-100 dark:border-white/5">
+                      <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-4">POS Access Credentials</h3>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">These credentials are used to log in to the POS app on your devices.</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
+                            POS ID <span className="text-red-500">*</span>
+                          </label>
+                          <div className="relative group">
+                            <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                            <input
+                              type="text"
+                              {...register1('ownerPosId')}
+                              className={`w-full bg-gray-50 dark:bg-black/20 border ${errors1.ownerPosId ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                              placeholder="e.g. coffeehouse01"
+                            />
+                          </div>
+                          {errors1.ownerPosId && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{errors1.ownerPosId.message as string}</p>}
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
+                            POS Password <span className="text-red-500">*</span>
+                          </label>
+                          <div className="relative group">
+                            <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                            <input
+                              type="password"
+                              {...register1('ownerPosPassword')}
+                              className={`w-full bg-gray-50 dark:bg-black/20 border ${errors1.ownerPosPassword ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                              placeholder="••••••••"
+                            />
+                          </div>
+                          {errors1.ownerPosPassword && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{errors1.ownerPosPassword.message as string}</p>}
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <button
-                    type="submit"
-                    className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
-                  >
-                    Continue
-                    <ArrowRight className="w-5 h-5" />
-                  </button>
+                  <div className="pt-4">
+                    <button
+                      type="submit"
+                      className="w-full py-5 bg-paymint-green text-black font-black text-xl rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
+                    >
+                      Next: Setup Admin Access
+                      <ArrowRight size={24} />
+                    </button>
+                  </div>
                 </form>
-              </div>
-
-              {/* Trial Info */}
-              <div className="mt-6 bg-green-500/10 border border-green-500/20 rounded-xl p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <CreditCard className="w-4 h-4 text-green-500" />
-                  </div>
-                  <div>
-                    <h4 className="text-white font-medium">7-Day Free Trial</h4>
-                    <p className="text-gray-400 text-sm">
-                      Try all features free for 7 days. No credit card required to start.
-                    </p>
-                  </div>
-                </div>
               </div>
             </motion.div>
           )}
 
-          {/* Step 2: POS Credentials */}
-          {currentStep === 2 && (
+          {step === 2 && (
             <motion.div
               key="step2"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              className="max-w-xl mx-auto"
+              className="max-w-md w-full"
             >
-              <div className="bg-gray-800 rounded-2xl p-8">
-                <h2 className="text-2xl font-bold text-white mb-2">
-                  Create your POS credentials
-                </h2>
-                <p className="text-gray-400 mb-8">
-                  These credentials will be used to log into the POS app on tablets and phones.
-                </p>
+              <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
+                <div className="mb-10">
+                  <button onClick={() => setStep(1)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 font-bold text-xs uppercase tracking-widest">
+                    <ArrowLeft size={14} /> Back
+                  </button>
+                  <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">POS Access</h2>
+                  <p className="text-gray-600 dark:text-gray-400 font-medium">Create your primary admin login for the point of sale.</p>
+                </div>
 
-                <form onSubmit={step2Form.handleSubmit(handleStep2Submit)} className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Owner POS ID *
+                <form onSubmit={handleSubmit2(onStep2Submit)} className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
+                        First Name <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative group">
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                        <input
+                          type="text"
+                          {...register2('firstName')}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${errors2.firstName ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          placeholder="John"
+                        />
+                      </div>
+                      {errors2.firstName && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{errors2.firstName.message as string}</p>}
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
+                        Last Name <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative group">
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
+                        <input
+                          type="text"
+                          {...register2('lastName')}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${errors2.lastName ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          placeholder="Doe"
+                        />
+                      </div>
+                      {errors2.lastName && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{errors2.lastName.message as string}</p>}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
+                      Admin Username <span className="text-red-500">*</span>
                     </label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <div className="relative group">
+                      <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                       <input
-                        {...step2Form.register('ownerPosId')}
                         type="text"
-                        className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 pl-10 pr-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="e.g., owner123"
+                        {...register2('username')}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${errors2.username ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        placeholder="admin"
                       />
                     </div>
-                    <p className="text-gray-500 text-sm mt-1">
-                      This is your unique ID to log into the POS app
-                    </p>
-                    {step2Form.formState.errors.ownerPosId && (
-                      <p className="text-red-400 text-sm mt-1">
-                        {step2Form.formState.errors.ownerPosId.message}
-                      </p>
-                    )}
+                    {errors2.username && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{errors2.username.message as string}</p>}
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      POS Password *
+                  <div className="space-y-2">
+                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
+                      Master Password <span className="text-red-500">*</span>
                     </label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <div className="relative group">
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                       <input
-                        {...step2Form.register('ownerPosPassword')}
-                        type={showPosPassword ? 'text' : 'password'}
-                        className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 pl-10 pr-12 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="Create a POS password"
+                        type="password"
+                        {...register2('password')}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${errors2.password ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        placeholder="••••••••"
                       />
-                      <button
-                        type="button"
-                        onClick={() => setShowPosPassword(!showPosPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
-                      >
-                        {showPosPassword ? (
-                          <EyeOff className="w-5 h-5" />
-                        ) : (
-                          <Eye className="w-5 h-5" />
-                        )}
-                      </button>
                     </div>
-                    <p className="text-gray-500 text-sm mt-1">
-                      This can be a simple PIN or password for quick POS access
-                    </p>
-                    {step2Form.formState.errors.ownerPosPassword && (
-                      <p className="text-red-400 text-sm mt-1">
-                        {step2Form.formState.errors.ownerPosPassword.message}
-                      </p>
-                    )}
+                    {errors2.password && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{errors2.password.message as string}</p>}
                   </div>
 
-                  <div className="bg-gray-700/50 rounded-lg p-4">
-                    <h4 className="text-white font-medium mb-2">How POS Login Works</h4>
-                    <ol className="text-gray-400 text-sm space-y-2">
-                      <li className="flex items-start gap-2">
-                        <span className="bg-green-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
-                          1
-                        </span>
-                        Staff opens the POS app on any device
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="bg-green-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
-                          2
-                        </span>
-                        They select your establishment from the list
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="bg-green-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
-                          3
-                        </span>
-                        They enter their POS ID and password to clock in
-                      </li>
-                    </ol>
-                  </div>
-
-                  <div className="flex gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setCurrentStep(1)}
-                      className="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
-                    >
-                      <ArrowLeft className="w-5 h-5" />
-                      Back
-                    </button>
+                  <div className="pt-4">
                     <button
                       type="submit"
-                      disabled={isSubmitting}
-                      className="flex-1 bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+                      disabled={isLoading}
+                      className="w-full py-5 bg-paymint-green text-black font-black text-xl rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3"
                     >
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className="w-5 h-5 animate-spin" />
-                          Creating...
-                        </>
-                      ) : (
-                        <>
-                          Create Establishment
-                          <ArrowRight className="w-5 h-5" />
-                        </>
-                      )}
+                      {isLoading ? <Loader2 className="animate-spin" size={24} /> : null}
+                      Complete Setup
                     </button>
                   </div>
                 </form>
@@ -464,71 +390,44 @@ export function OnboardingPage() {
             </motion.div>
           )}
 
-          {/* Step 3: Success */}
-          {currentStep === 3 && (
+          {step === 3 && (
             <motion.div
               key="step3"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="max-w-xl mx-auto"
+              className="max-w-2xl w-full"
             >
-              <div className="bg-gray-800 rounded-2xl p-8 text-center">
-                <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Check className="w-10 h-10 text-green-500" />
+              <div className="bg-white dark:bg-white/5 rounded-[3rem] border border-gray-200 dark:border-white/10 p-12 lg:p-16 shadow-2xl text-center">
+                <div className="w-24 h-24 bg-paymint-green rounded-full flex items-center justify-center mx-auto mb-10 shadow-xl shadow-paymint-green/20">
+                  <Check size={48} className="text-black" />
                 </div>
-                <h2 className="text-3xl font-bold text-white mb-4">
-                  You're All Set!
-                </h2>
-                <p className="text-gray-400 mb-8">
-                  Your establishment <span className="text-white font-medium">{step1Data?.name}</span> is
-                  ready. Your 7-day free trial has started.
+                <h2 className="text-4xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">System Ready!</h2>
+                <p className="text-gray-600 dark:text-gray-400 text-xl font-medium mb-12">
+                  <span className="text-gray-900 dark:text-white font-bold">{step1Data?.name}</span> is now active on the PayMint network.
                 </p>
 
-                <div className="bg-gray-700/50 rounded-xl p-6 mb-8 text-left">
-                  <h3 className="text-white font-semibold mb-4">What's Next?</h3>
-                  <ul className="space-y-4">
-                    <li className="flex items-start gap-3">
-                      <div className="w-6 h-6 bg-green-600/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-green-500 text-sm font-bold">1</span>
-                      </div>
-                      <div>
-                        <p className="text-white font-medium">Add your menu items</p>
-                        <p className="text-gray-400 text-sm">
-                          Create categories and products in the dashboard
-                        </p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <div className="w-6 h-6 bg-green-600/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-green-500 text-sm font-bold">2</span>
-                      </div>
-                      <div>
-                        <p className="text-white font-medium">Invite your staff</p>
-                        <p className="text-gray-400 text-sm">
-                          Create employee accounts with different roles
-                        </p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <div className="w-6 h-6 bg-green-600/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-green-500 text-sm font-bold">3</span>
-                      </div>
-                      <div>
-                        <p className="text-white font-medium">Download the POS app</p>
-                        <p className="text-gray-400 text-sm">
-                          Available on iOS and Android for tablets and phones
-                        </p>
-                      </div>
-                    </li>
-                  </ul>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                  <div className="p-6 bg-gray-50 dark:bg-black/20 rounded-3xl border border-gray-100 dark:border-white/5 text-left">
+                    <div className="w-10 h-10 bg-paymint-green/10 rounded-xl flex items-center justify-center mb-4">
+                      <CreditCard size={20} className="text-paymint-green" />
+                    </div>
+                    <h4 className="text-gray-900 dark:text-white font-bold mb-1">Standard Plan</h4>
+                    <p className="text-gray-500 text-xs font-medium">Free for 7 days</p>
+                  </div>
+                  <div className="p-6 bg-gray-50 dark:bg-black/20 rounded-3xl border border-gray-100 dark:border-white/5 text-left">
+                    <div className="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center mb-4">
+                      <CheckCircle2 size={20} className="text-blue-500" />
+                    </div>
+                    <h4 className="text-gray-900 dark:text-white font-bold mb-1">Data Isolated</h4>
+                    <p className="text-gray-500 text-xs font-medium">Secure encryption</p>
+                  </div>
                 </div>
 
                 <button
-                  onClick={handleFinish}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-lg"
+                  onClick={() => navigate('/dashboard')}
+                  className="w-full py-5 bg-gray-900 dark:bg-white text-white dark:text-black font-black text-xl rounded-2xl hover:scale-105 transition-all shadow-xl active:scale-[0.98]"
                 >
-                  Go to Dashboard
-                  <ArrowRight className="w-5 h-5" />
+                  Enter Dashboard
                 </button>
               </div>
             </motion.div>
