@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
-import { Store, Save, CreditCard, Receipt, Award, Shield } from 'lucide-react';
+import { Store, Save, CreditCard, Receipt, Award, Shield, Trash2, AlertTriangle } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
+import { EstablishmentDeletionWizard, PendingDeletionBanner } from '../../components/EstablishmentDeletionWizard';
 
 interface AppSettings {
   id?: string;
@@ -58,7 +59,23 @@ interface RewardFormState {
   freeCategoryName: string;
 }
 
-type SettingsTab = 'profile' | 'sales' | 'receipt' | 'loyalty';
+type SettingsTab = 'profile' | 'sales' | 'receipt' | 'loyalty' | 'danger';
+
+interface DeletionStatus {
+  id: string;
+  name: string;
+  status: 'active' | 'pending_deletion' | 'deleted';
+  deletionRequestedAt: string | null;
+  deletionScheduledFor: string | null;
+  deletionExportSentTo: string | null;
+  canCancel: boolean;
+  daysRemaining: number | null;
+}
+
+interface EstablishmentInfo {
+  id: string;
+  name: string;
+}
 
 export function SettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
@@ -392,11 +409,53 @@ export function SettingsPage() {
     toast.error('Tax rate has not changed');
   };
 
+  // Deletion state
+  const [showDeletionWizard, setShowDeletionWizard] = useState(false);
+  const [deletionStatus, setDeletionStatus] = useState<DeletionStatus | null>(null);
+  const [establishmentInfo, setEstablishmentInfo] = useState<EstablishmentInfo | null>(null);
+  const [isCancellingDeletion, setIsCancellingDeletion] = useState(false);
+
+  // Fetch establishment info and deletion status
+  useEffect(() => {
+    fetchEstablishmentInfo();
+  }, []);
+
+  const fetchEstablishmentInfo = async () => {
+    try {
+      // Get current establishment from localStorage or context
+      const currentEstablishment = localStorage.getItem('currentEstablishment');
+      if (currentEstablishment) {
+        const parsed = JSON.parse(currentEstablishment);
+        setEstablishmentInfo({ id: parsed.id, name: parsed.name });
+        // Fetch deletion status
+        const response = await api.get(`/api/establishments/${parsed.id}/deletion-status`);
+        setDeletionStatus(response.data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch establishment info:', err);
+    }
+  };
+
+  const handleCancelDeletion = async () => {
+    if (!establishmentInfo) return;
+    try {
+      setIsCancellingDeletion(true);
+      await api.post(`/api/establishments/${establishmentInfo.id}/cancel-deletion`);
+      toast.success('Deletion cancelled successfully!');
+      fetchEstablishmentInfo();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to cancel deletion');
+    } finally {
+      setIsCancellingDeletion(false);
+    }
+  };
+
   const tabs = [
     { id: 'profile', label: 'Restaurant Profile', icon: Store },
     { id: 'sales', label: 'Sales Settings', icon: CreditCard },
     { id: 'receipt', label: 'Receipt Design', icon: Receipt },
     { id: 'loyalty', label: 'Loyalty Program', icon: Award },
+    { id: 'danger', label: 'Danger Zone', icon: Trash2, isDanger: true },
   ];
 
   if (isLoading) {
@@ -435,8 +494,12 @@ export function SettingsPage() {
               type="button"
               onClick={() => setActiveTab(tab.id as SettingsTab)}
               className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === tab.id
-                ? 'bg-cream-50 dark:bg-white/10 text-paymint-green shadow-md border border-cream-200 dark:border-white/10'
-                : 'text-gray-500 hover:text-gray-700 dark:hover:text-white'
+                ? tab.isDanger
+                  ? 'bg-red-50 dark:bg-red-500/10 text-red-500 shadow-md border border-red-200 dark:border-red-500/20'
+                  : 'bg-cream-50 dark:bg-white/10 text-paymint-green shadow-md border border-cream-200 dark:border-white/10'
+                : tab.isDanger
+                  ? 'text-red-400 hover:text-red-500 dark:hover:text-red-400'
+                  : 'text-gray-500 hover:text-gray-700 dark:hover:text-white'
                 }`}
             >
               <tab.icon size={18} />
@@ -1008,6 +1071,80 @@ export function SettingsPage() {
             </div>
           )}
 
+          {/* Danger Zone */}
+          {activeTab === 'danger' && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300"
+            >
+              {/* Pending Deletion Banner */}
+              {deletionStatus && (
+                <PendingDeletionBanner
+                  deletionStatus={deletionStatus}
+                  onCancelDeletion={handleCancelDeletion}
+                  isCancelling={isCancellingDeletion}
+                />
+              )}
+
+              {/* Delete Establishment Card */}
+              <div className="bg-red-50 dark:bg-red-500/5 rounded-3xl border-2 border-red-200 dark:border-red-500/20 p-8 shadow-sm dark:shadow-none">
+                {/* Header */}
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-red-100 dark:bg-red-500/10 flex items-center justify-center">
+                    <Trash2 className="w-7 h-7 text-red-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-red-700 dark:text-red-400">Delete Establishment</h3>
+                    <p className="text-sm text-red-600 dark:text-red-300/80">Permanently delete this establishment and all its data</p>
+                  </div>
+                </div>
+
+                {/* Warning Box */}
+                <div className="bg-white dark:bg-red-500/5 rounded-2xl p-6 border border-red-200 dark:border-red-500/10 mb-6">
+                  <div className="flex items-start gap-3">
+                    <AlertTriangle className="text-red-500 flex-shrink-0 mt-0.5" size={20} />
+                    <div>
+                      <h4 className="font-bold text-red-700 dark:text-red-400 mb-2">Before you proceed, understand that:</h4>
+                      <ul className="space-y-2 text-sm text-red-600 dark:text-red-300/80">
+                        <li className="flex items-start gap-2">
+                          <span className="text-red-400 mt-1">•</span>
+                          <span>All orders, customers, products, and employee records will be permanently deleted</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-red-400 mt-1">•</span>
+                          <span>You'll have a 30-day grace period to cancel the deletion</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-red-400 mt-1">•</span>
+                          <span>Data exports will be sent to your email before deletion</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-red-400 mt-1">•</span>
+                          <span>This action cannot be undone after the grace period</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Delete Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowDeletionWizard(true)}
+                  disabled={deletionStatus?.status === 'pending_deletion'}
+                  className="px-8 py-4 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-colors flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Trash2 size={20} />
+                  {deletionStatus?.status === 'pending_deletion'
+                    ? 'Deletion Already Scheduled'
+                    : 'Delete This Establishment'
+                  }
+                </button>
+              </div>
+            </motion.div>
+          )}
+
           {/* Save Button */}
           <div className="flex justify-end gap-3 sticky bottom-8 z-20">
             {hasUnsavedChanges && (
@@ -1043,6 +1180,16 @@ export function SettingsPage() {
         message={confirmConfig.message}
         type={confirmConfig.type}
       />
+
+      {/* Deletion Wizard Modal */}
+      {showDeletionWizard && establishmentInfo && (
+        <EstablishmentDeletionWizard
+          establishmentId={establishmentInfo.id}
+          establishmentName={establishmentInfo.name}
+          onClose={() => setShowDeletionWizard(false)}
+          onDeletionRequested={fetchEstablishmentInfo}
+        />
+      )}
     </div>
   );
 }
