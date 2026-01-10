@@ -72,12 +72,12 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
 
     return (
         <div className="fixed inset-0 bg-black/20 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 transition-colors duration-300">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl shadow-gray-200/50 dark:shadow-none transition-colors duration-300">
-                <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+            <div className="bg-cream-50 dark:bg-gray-800 rounded-2xl border border-cream-300 dark:border-gray-700 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl shadow-gray-200/50 dark:shadow-none transition-colors duration-300">
+                <div className="p-6 border-b border-cream-300 dark:border-gray-700 flex items-center justify-between">
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">Order #{order.orderNumber}</h2>
                     <button
                         onClick={onClose}
-                        className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full"
+                        className="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors p-2 hover:bg-cream-200 dark:hover:bg-white/5 rounded-full"
                     >
                         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -127,7 +127,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                     {/* Order Items */}
                     <div>
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">Items</h3>
-                        <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl divide-y divide-gray-200 dark:divide-gray-600 border border-gray-100 dark:border-transparent transition-colors">
+                        <div className="bg-cream-100 dark:bg-gray-700/50 rounded-xl divide-y divide-cream-300 dark:divide-gray-600 border border-cream-200 dark:border-transparent transition-colors">
                             {order.items?.map((item: any) => (
                                 <div key={item.id} className="p-3 flex items-center justify-between">
                                     <div>
@@ -143,7 +143,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                     </div>
 
                     {/* Order Summary */}
-                    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 space-y-2 border border-gray-100 dark:border-transparent transition-colors">
+                    <div className="bg-cream-100 dark:bg-gray-700/50 rounded-xl p-4 space-y-2 border border-cream-200 dark:border-transparent transition-colors">
                         <div className="flex justify-between text-gray-600 dark:text-gray-300">
                             <span>Subtotal</span>
                             <span>{formatCurrency(order.subtotal || 0)}</span>
@@ -158,7 +158,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                             <span>Tax</span>
                             <span>{formatCurrency(order.tax || 0)}</span>
                         </div>
-                        <div className="flex justify-between text-gray-900 dark:text-white font-bold text-lg pt-2 border-t border-gray-200 dark:border-gray-600">
+                        <div className="flex justify-between text-gray-900 dark:text-white font-bold text-lg pt-2 border-t border-cream-300 dark:border-gray-600">
                             <span>Total</span>
                             <span>{formatCurrency(order.total || 0)}</span>
                         </div>
@@ -168,7 +168,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                     {order.note && (
                         <div>
                             <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Note</p>
-                            <p className="text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl border border-gray-100 dark:border-transparent">{order.note}</p>
+                            <p className="text-gray-900 dark:text-white bg-cream-100 dark:bg-gray-700/50 p-3 rounded-xl border border-cream-200 dark:border-transparent">{order.note}</p>
                         </div>
                     )}
 
@@ -184,7 +184,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                         )}
                         <button
                             onClick={onClose}
-                            className="flex-1 py-3 px-4 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:border-transparent dark:text-white dark:hover:bg-gray-600 font-bold rounded-xl transition-colors"
+                            className="flex-1 py-3 px-4 bg-cream-50 border border-cream-300 text-gray-700 hover:bg-cream-100 dark:bg-gray-700 dark:border-transparent dark:text-white dark:hover:bg-gray-600 font-bold rounded-xl transition-colors"
                         >
                             Close
                         </button>

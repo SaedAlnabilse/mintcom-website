@@ -50,7 +50,7 @@ export function DiscountsPage() {
         value: d.percentage * 100,
         percentage: d.percentage,
         adminOnly: d.adminOnly,
-        isActive: true, 
+        isActive: true,
       }));
       setDiscounts(mappedDiscounts);
     } catch (err: any) {
@@ -148,26 +148,39 @@ export function DiscountsPage() {
   };
 
   return (
-    <div className="p-6 lg:p-10 space-y-8 h-full overflow-y-auto bg-gray-50 dark:bg-[#050505] transition-colors duration-300">
+    <div className="p-6 lg:p-10 space-y-8 h-full overflow-y-auto bg-cream-50 dark:bg-paymint-dark transition-colors duration-300">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Discounts</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Manage promotional offers and employee benefits</p>
+      {/* Header */}
+      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-cream-50 via-cream-100 to-cream-50 dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-cream-300 dark:border-white/5 shadow-sm">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/30">
+              <Percent size={28} className="text-black" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Discounts</h1>
+              <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Manage promotional offers and employee benefits</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={openCreateModal}
+              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 transition-all shadow-lg shadow-paymint-green/30"
+            >
+              <Plus size={18} />
+              <span>Add Discount</span>
+            </button>
+          </div>
         </div>
-        <button
-          onClick={openCreateModal}
-          className="px-5 py-2.5 bg-paymint-green text-black font-bold rounded-xl hover:bg-paymint-green transition-all flex items-center gap-2 shadow-lg shadow-paymint-green/20 active:scale-95"
-        >
-          <Plus size={20} />
-          Add Discount
-        </button>
       </div>
 
       {/* Summary Stats */}
       {!isLoading && discounts.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl p-6 flex items-center justify-between shadow-sm dark:shadow-none transition-colors">
+          <div className="bg-cream-100 dark:bg-white/5 backdrop-blur-sm border border-cream-300 dark:border-white/10 rounded-2xl p-6 flex items-center justify-between shadow-sm dark:shadow-none transition-colors">
             <div>
               <p className="text-gray-500 dark:text-gray-400 text-sm font-bold uppercase tracking-wider">Total Discounts</p>
               <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{stats.total}</p>
@@ -176,7 +189,7 @@ export function DiscountsPage() {
               <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" />
             </div>
           </div>
-          <div className="bg-white dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl p-6 flex items-center justify-between shadow-sm dark:shadow-none transition-colors">
+          <div className="bg-cream-100 dark:bg-white/5 backdrop-blur-sm border border-cream-300 dark:border-white/10 rounded-2xl p-6 flex items-center justify-between shadow-sm dark:shadow-none transition-colors">
             <div>
               <p className="text-gray-500 dark:text-gray-400 text-sm font-bold uppercase tracking-wider">Active Now</p>
               <p className="text-3xl font-bold text-paymint-green mt-1">{stats.active}</p>
@@ -185,7 +198,7 @@ export function DiscountsPage() {
               <CheckCircle2 className="w-6 h-6 text-paymint-green" />
             </div>
           </div>
-          <div className="bg-white dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl p-6 flex items-center justify-between shadow-sm dark:shadow-none transition-colors">
+          <div className="bg-cream-100 dark:bg-white/5 backdrop-blur-sm border border-cream-300 dark:border-white/10 rounded-2xl p-6 flex items-center justify-between shadow-sm dark:shadow-none transition-colors">
             <div>
               <p className="text-gray-500 dark:text-gray-400 text-sm font-bold uppercase tracking-wider">Restricted</p>
               <p className="text-3xl font-bold text-amber-600 dark:text-yellow-400 mt-1">{stats.adminOnly}</p>
@@ -204,7 +217,7 @@ export function DiscountsPage() {
         </div>
       ) : discounts.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-20 h-20 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-6 shadow-sm">
+          <div className="w-20 h-20 bg-cream-100 dark:bg-white/5 rounded-full flex items-center justify-center mb-6 shadow-sm border border-cream-200">
             <Tag className="w-10 h-10 text-gray-400 dark:text-gray-600" />
           </div>
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No discounts found</h3>
@@ -230,22 +243,21 @@ export function DiscountsPage() {
               key={discount.id}
               variants={itemVariants}
               whileHover={{ y: -5 }}
-              className="bg-white dark:bg-white/5 backdrop-blur-sm border border-gray-200 dark:border-white/10 rounded-2xl p-6 hover:border-paymint-green/50 dark:hover:border-paymint-green/30 transition-all shadow-md shadow-gray-200/50 dark:shadow-none group relative overflow-hidden"
+              className="bg-cream-100 dark:bg-white/5 backdrop-blur-sm border border-cream-300 dark:border-white/10 rounded-2xl p-6 hover:border-paymint-green/50 dark:hover:border-paymint-green/30 transition-all shadow-md group relative overflow-hidden"
             >
               {/* Background gradient hint */}
               <div className="absolute -right-10 -top-10 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl pointer-events-none" />
 
               <div className="flex justify-between items-start mb-6">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-sm transition-transform group-hover:scale-110 ${
-                  discount.type === 'percentage' ? 'bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400' : 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'
-                }`}>
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-sm transition-transform group-hover:scale-110 ${discount.type === 'percentage' ? 'bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400' : 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'
+                  }`}>
                   {discount.type === 'percentage' ? <Percent size={24} /> : <DollarSign size={24} />}
                 </div>
-                
+
                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-[-10px] group-hover:translate-y-0">
                   <button
                     onClick={() => openEditModal(discount)}
-                    className="p-2 bg-gray-100 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 rounded-lg text-gray-600 dark:text-white transition-colors shadow-sm"
+                    className="p-2 bg-cream-50 dark:bg-white/10 hover:bg-cream-200 dark:hover:bg-white/20 rounded-lg text-gray-600 dark:text-white transition-colors shadow-sm"
                   >
                     <Edit2 size={16} />
                   </button>
@@ -260,9 +272,9 @@ export function DiscountsPage() {
 
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1 truncate group-hover:text-paymint-green transition-colors" title={discount.name}>{discount.name}</h3>
               <p className="text-3xl font-black text-paymint-green mb-4">{formatValue(discount)} <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">OFF</span></p>
-              
+
               <div className="flex flex-wrap gap-2">
-                <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-[10px] text-gray-600 dark:text-gray-400 font-bold uppercase tracking-wider">
+                <span className="px-2.5 py-1 rounded-lg bg-cream-50 dark:bg-white/5 border border-cream-200 dark:border-white/5 text-[10px] text-gray-600 dark:text-gray-400 font-bold uppercase tracking-wider">
                   {discount.type === 'percentage' ? 'Percentage' : 'Fixed Amount'}
                 </span>
                 {discount.adminOnly && (

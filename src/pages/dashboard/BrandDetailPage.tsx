@@ -227,24 +227,34 @@ export function BrandDetailPage() {
   return (
     <div className="space-y-10 pb-16">
       {/* Header */}
-      <div className="flex items-center gap-6">
-        <button
-          onClick={() => navigate('/dashboard/brands')}
-          className="p-3 rounded-2xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
-        >
-          <ArrowLeft size={20} className="text-gray-600 dark:text-gray-400" />
-        </button>
-        <div className="flex items-center gap-5">
-          <div className="w-16 h-16 rounded-[1.5rem] bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 flex items-center justify-center border border-paymint-green/20">
-            <Building2 size={28} className="text-paymint-green" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase">{brand.name}</h1>
-            <div className="flex items-center gap-2 mt-1">
-              <Hash size={14} className="text-gray-400" />
-              <code className="text-sm font-mono text-paymint-green">{brand.ownerPosId}</code>
-              <span className="text-gray-400 mx-2">|</span>
-              <span className="text-sm text-gray-500">{brand.establishments.length} locations</span>
+      {/* Header */}
+      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-white via-gray-50 to-white dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-gray-200 dark:border-white/5 shadow-sm">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-6">
+            <button
+              onClick={() => navigate('/dashboard/brands')}
+              className="p-3 rounded-2xl bg-white/50 dark:bg-white/5 text-gray-500 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-white/10 transition-all border border-transparent hover:border-gray-200 dark:hover:border-white/5"
+            >
+              <ArrowLeft size={24} />
+            </button>
+            <div className="flex items-center gap-5">
+              <div className="w-16 h-16 rounded-[1.5rem] bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/30">
+                <Building2 size={32} className="text-black" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase">{brand.name}</h1>
+                <div className="flex items-center gap-3 mt-1 text-sm font-medium">
+                  <div className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
+                    <Hash size={14} />
+                    <code className="text-paymint-green font-bold">{brand.ownerPosId}</code>
+                  </div>
+                  <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700" />
+                  <span className="text-gray-500 dark:text-gray-400">{brand.establishments.length} locations active</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -263,11 +273,10 @@ export function BrandDetailPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${
-                activeTab === tab.id
+              className={`px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeTab === tab.id
                   ? 'bg-white dark:bg-[#0A0A0A] text-gray-900 dark:text-white shadow-sm'
                   : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
-              }`}
+                }`}
             >
               <Icon size={16} />
               {tab.label}
@@ -721,11 +730,10 @@ export function BrandDetailPage() {
                         {emp.email && <p className="text-xs text-gray-400 mt-1">{emp.email}</p>}
                       </div>
                     </div>
-                    <div className={`px-3 py-1 rounded-lg text-xs font-bold ${
-                      emp.isActive
+                    <div className={`px-3 py-1 rounded-lg text-xs font-bold ${emp.isActive
                         ? 'bg-paymint-green/10 text-paymint-green'
                         : 'bg-gray-200 dark:bg-white/10 text-gray-500'
-                    }`}>
+                      }`}>
                       {emp.isActive ? 'Active' : 'Inactive'}
                     </div>
                   </div>

@@ -195,49 +195,60 @@ export function ProductsPage() {
   return (
     <div className="h-[calc(100vh-120px)] flex flex-col space-y-6">
       {/* Header - Fixed */}
-      <div className="shrink-0 flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Products & Menu</h1>
-          <p className="text-gray-500 dark:text-gray-400 font-medium mt-1">Manage items, stock levels, and pricing.</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={handleExport}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
-          >
-            <Download size={18} />
-            <span>Export CSV</span>
-          </button>
-          <button
-            onClick={openCreateModal}
-            className="px-6 py-3 bg-paymint-green text-black font-black rounded-2xl hover:scale-105 transition-all flex items-center gap-2 shadow-lg shadow-paymint-green/20 active:scale-95"
-          >
-            <Plus size={20} />
-            <span>Add Item</span>
-          </button>
+      {/* Header - Fixed */}
+      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-cream-50 via-cream-100 to-cream-50 dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-cream-300 dark:border-white/5 shadow-sm shrink-0">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/30">
+              <Package size={28} className="text-black" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Products & Menu</h1>
+              <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Manage items, stock levels, and pricing</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleExport}
+              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-cream-100 dark:bg-white/5 border border-cream-300 dark:border-white/10 text-gray-900 dark:text-gray-300 font-bold text-sm hover:scale-105 hover:bg-cream-50 dark:hover:bg-white/10 transition-all shadow-sm"
+            >
+              <Download size={18} />
+              <span>Export CSV</span>
+            </button>
+            <button
+              onClick={openCreateModal}
+              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 transition-all shadow-lg shadow-paymint-green/30"
+            >
+              <Plus size={18} />
+              <span>Add Item</span>
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Control Bar - Fixed */}
-      <div className="shrink-0 flex flex-col lg:flex-row gap-4">
+      <div className="shrink-0 flex items-center gap-4">
         <div className="flex-1 relative group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-paymint-green transition-colors" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-paymint-green transition-colors" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
             placeholder="Search products..."
-            className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-[#0A0A0A] border border-gray-100 dark:border-white/5 rounded-[1.25rem] text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-paymint-green/20 shadow-sm transition-all"
+            className="w-full pl-11 pr-4 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green/30 shadow-md transition-all text-sm font-medium"
           />
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex items-center gap-3">
           <div className="relative">
             <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <select
               value={categoryFilter}
               onChange={(e) => { setCategoryFilter(e.target.value); setPage(1); }}
-              className="pl-11 pr-8 py-3.5 bg-white dark:bg-[#0A0A0A] border border-gray-100 dark:border-white/5 rounded-[1.25rem] text-gray-900 dark:text-white font-bold text-xs cursor-pointer focus:ring-2 focus:ring-paymint-green/20 shadow-sm appearance-none min-w-[160px]"
+              className="pl-11 pr-8 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white font-bold text-xs cursor-pointer focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green/30 shadow-md appearance-none min-w-[140px]"
             >
               <option value="all">All Categories</option>
               {categories.map((cat) => (
@@ -246,12 +257,12 @@ export function ProductsPage() {
             </select>
           </div>
 
-          <div className="bg-white dark:bg-[#0A0A0A] border border-gray-100 dark:border-white/5 rounded-[1.25rem] p-1 flex gap-1 shadow-sm">
+          <div className="bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-2xl p-1 flex gap-1 shadow-md">
             <button onClick={() => setViewMode('grid')} className={`p-2 rounded-xl transition-all ${viewMode === 'grid' ? 'bg-paymint-green text-black' : 'text-gray-400 hover:text-gray-600'}`}>
-              <Grid size={18} />
+              <Grid size={16} />
             </button>
             <button onClick={() => setViewMode('list')} className={`p-2 rounded-xl transition-all ${viewMode === 'list' ? 'bg-paymint-green text-black' : 'text-gray-400 hover:text-gray-600'}`}>
-              <List size={18} />
+              <List size={16} />
             </button>
           </div>
         </div>
@@ -267,7 +278,7 @@ export function ProductsPage() {
             </div>
           ) : filteredProducts.length === 0 ? (
             <div className="py-20 text-center flex flex-col items-center">
-              <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-[2rem] flex items-center justify-center mb-6">
+              <div className="w-20 h-20 bg-cream-100 dark:bg-white/5 rounded-[2rem] flex items-center justify-center mb-6">
                 <Package className="w-10 h-10 text-gray-300" />
               </div>
               <h3 className="text-xl font-black text-gray-900 dark:text-white mb-2">No items found</h3>
@@ -275,8 +286,14 @@ export function ProductsPage() {
           ) : viewMode === 'grid' ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-4">
               {paginatedProducts.map((product) => (
-                <motion.div layout key={product.id} className="group bg-white dark:bg-[#0A0A0A] rounded-[2rem] border border-gray-200 dark:border-white/5 overflow-hidden shadow-md hover:shadow-xl hover:border-paymint-green/30 transition-all duration-300 relative">
-                  <div className="aspect-[4/3] bg-gray-100 dark:bg-black/20 relative overflow-hidden">
+                <motion.div
+                  layout
+                  key={product.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="group bg-cream-50 dark:bg-[#0A0A0A] rounded-[2rem] border border-cream-200 dark:border-white/5 overflow-hidden shadow-sm hover:shadow-xl hover:border-cream-300 dark:hover:border-white/10 transition-all duration-300"
+                >
+                  <div className="aspect-[4/3] bg-cream-200 dark:bg-black/20 relative overflow-hidden">
                     {getImageUrl(product.image) ? (
                       <img src={getImageUrl(product.image)!} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                     ) : (
@@ -296,10 +313,10 @@ export function ProductsPage() {
                       <button onClick={() => handleDelete(product.id)} className="w-10 h-10 rounded-full bg-white text-gray-900 flex items-center justify-center hover:bg-accent hover:text-white transition-colors shadow-lg active:scale-95"><Trash2 size={16} /></button>
                     </div>
                   </div>
-                  <div className="p-5 bg-white dark:bg-[#0A0A0A]">
+                  <div className="p-5 bg-cream-50 dark:bg-[#0A0A0A]">
                     <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">{product.category?.name || 'Uncategorized'}</p>
                     <h3 className="font-black text-gray-900 dark:text-white truncate group-hover:text-paymint-green transition-colors">{product.name}</h3>
-                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
+                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-cream-300 dark:border-white/5">
                       <p className="text-lg font-black text-gray-900 dark:text-white">{formatCurrency(product.price)}</p>
                       {product.trackStock && (
                         <span className={`text-[10px] font-black uppercase px-2 py-1 rounded-lg ${(product.availableStock || 0) <= (product.lowStockThresholdYellow || 5) ? 'text-accent bg-accent/10' : 'text-paymint-green bg-paymint-green/10'}`}>
@@ -312,10 +329,10 @@ export function ProductsPage() {
               ))}
             </div>
           ) : (
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-[2.5rem] border border-gray-100 dark:border-white/5 overflow-hidden">
+            <div className="bg-cream-50 dark:bg-[#0A0A0A] rounded-[2.5rem] border border-cream-300 dark:border-white/5 overflow-hidden">
               <table className="w-full">
-                <thead className="sticky top-0 z-10 bg-white dark:bg-[#0A0A0A]">
-                  <tr className="border-b border-gray-50 dark:border-white/5">
+                <thead className="sticky top-0 z-10 bg-cream-50 dark:bg-[#0A0A0A]">
+                  <tr className="border-b border-cream-200 dark:border-white/5">
                     <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Product</th>
                     <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Category</th>
                     <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Inventory</th>
@@ -323,12 +340,12 @@ export function ProductsPage() {
                     <th className="px-8 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50 dark:divide-white/5">
+                <tbody className="divide-y divide-cream-200 dark:divide-white/5">
                   {paginatedProducts.map((p) => (
-                    <tr key={p.id} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+                    <tr key={p.id} className="group hover:bg-cream-100 dark:hover:bg-white/[0.02] transition-colors">
                       <td className="px-8 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-black/40 overflow-hidden border border-gray-100 dark:border-white/5">
+                          <div className="w-10 h-10 rounded-xl bg-cream-100 dark:bg-black/40 overflow-hidden border border-cream-300 dark:border-white/5">
                             {getImageUrl(p.image) ? <img src={getImageUrl(p.image)!} className="w-full h-full object-cover" /> : <ImageIcon size={16} className="m-auto text-gray-300" />}
                           </div>
                           <p className="font-black text-gray-900 dark:text-white uppercase tracking-tight">{p.name}</p>
@@ -353,12 +370,12 @@ export function ProductsPage() {
 
         {/* Pagination - Fixed */}
         {totalPages > 1 && (
-          <div className="shrink-0 px-8 py-4 border-t border-gray-50 dark:border-white/5 bg-gray-50/50 dark:bg-[#0A0A0A] flex items-center justify-center gap-2">
-            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 disabled:opacity-30"><ChevronLeft size={18} /></button>
+          <div className="shrink-0 px-8 py-4 border-t border-cream-200 dark:border-white/5 bg-cream-100/50 dark:bg-[#0A0A0A] flex items-center justify-center gap-2">
+            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2.5 rounded-xl bg-cream-50 dark:bg-white/5 border border-cream-300 dark:border-white/10 text-gray-500 disabled:opacity-30"><ChevronLeft size={18} /></button>
             {[...Array(totalPages)].map((_, i) => (
               <button key={i} onClick={() => setPage(i + 1)} className={`w-9 h-9 rounded-xl text-xs font-black transition-all ${page === i + 1 ? 'bg-paymint-green text-black shadow-lg' : 'text-gray-400 hover:text-gray-900'}`}>{i + 1}</button>
             ))}
-            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 disabled:opacity-30"><ChevronRight size={18} /></button>
+            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2.5 rounded-xl bg-cream-50 dark:bg-white/5 border border-cream-300 dark:border-white/10 text-gray-500 disabled:opacity-30"><ChevronRight size={18} /></button>
           </div>
         )}
       </div>

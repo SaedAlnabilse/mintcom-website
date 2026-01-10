@@ -32,6 +32,20 @@ export default {
         neutral: {
           bg: '#000000',
           white: '#FFFFFF',
+        },
+        // Light mode color palette - warmer tones
+        cream: {
+          50: '#FEFDFB',   // Very subtle cream for main bg
+          100: '#FAF9F7',  // Light cream for surfaces
+          200: '#F5F3F0',  // Slightly darker for cards
+          300: '#EFECE7',  // Borders and dividers
+          400: '#E5E1DB',  // Stronger borders
+        },
+        slate: {
+          // Override slate for better light mode contrast
+          50: '#F8FAFC',
+          100: '#F1F5F9',
+          150: '#EAEFF5', // Custom intermediate
         }
       },
       fontFamily: {

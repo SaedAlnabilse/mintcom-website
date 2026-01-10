@@ -278,18 +278,30 @@ export function PaymentMethodsPage() {
   return (
     <div className="space-y-10 pb-16">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Payment Infrastructure</h1>
-          <p className="text-gray-500 dark:text-gray-400 font-medium mt-1">Configure your checkout experience and accepted settlement methods.</p>
+      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-cream-50 via-cream-100 to-cream-50 dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-cream-300 dark:border-white/5 shadow-sm">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/30">
+              <CreditCard size={28} className="text-black" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Payment Engine</h1>
+              <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Configure settlement protocols and merchant infrastructure</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => { setEditingMethod(null); reset({ name: '', isActive: true }); setImagePreview(null); setShowModal(true); setIsGeneratingImage(false); }}
+              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 transition-all shadow-lg shadow-paymint-green/30"
+            >
+              <Plus size={18} />
+              <span>Initialize Protocol</span>
+            </button>
+          </div>
         </div>
-        <button
-          onClick={() => { setEditingMethod(null); reset({ name: '', isActive: true }); setImagePreview(null); setShowModal(true); setIsGeneratingImage(false); }}
-          className="px-6 py-3 bg-paymint-green text-black font-black rounded-2xl hover:scale-105 transition-all flex items-center gap-2 shadow-lg shadow-paymint-green/20 active:scale-95"
-        >
-          <Plus size={20} />
-          <span>Add Custom Method</span>
-        </button>
       </div>
 
       {/* Main Section */}
@@ -359,32 +371,32 @@ export function PaymentMethodsPage() {
       </section>
 
       {/* Card Types Section */}
-      <section className="bg-white dark:bg-[#0A0A0A] rounded-[3rem] border border-gray-100 dark:border-white/5 p-10 shadow-sm relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-12 opacity-[0.03] dark:opacity-[0.05] pointer-events-none">
-          <CreditCard size={200} />
+      <section className="bg-cream-50 dark:bg-[#0A0A0A] rounded-[3rem] border border-cream-200 dark:border-white/5 p-10 shadow-md relative overflow-hidden">
+        <div className="absolute -bottom-12 -right-12 opacity-[0.05] dark:opacity-[0.1] pointer-events-none -rotate-12">
+          <CreditCard size={270} />
         </div>
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 relative z-10">
           <div>
             <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Accepted Card Networks</h2>
-            <p className="text-gray-500 font-medium mt-1">Specify which card providers are visually supported at your terminals.</p>
+            <p className="text-gray-500 dark:text-gray-400 font-medium mt-1">Specify which card providers are visually supported at your terminals.</p>
           </div>
           <button
             onClick={() => { setNewCardName(''); setCardImagePreview(null); setShowCardModal(true); setCardErrors({}); }}
-            className="px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-[1.25rem] text-sm flex items-center gap-2 hover:scale-105 active:scale-95 transition-all shadow-xl"
+            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 transition-all shadow-lg shadow-paymint-green/30"
           >
             <Plus size={18} />
-            Add Network
+            <span>Add Network</span>
           </button>
         </div>
 
         <div className="flex flex-wrap gap-4 relative z-10">
           {cardTypes.length === 0 ? (
-            <p className="text-gray-400 font-bold uppercase tracking-widest text-xs py-8">No card networks configured yet.</p>
+            <p className="text-gray-400 font-black uppercase tracking-widest text-[10px] py-8">No card networks configured yet.</p>
           ) : (
             cardTypes.map((card) => (
-              <div key={card.id} className="group flex items-center gap-4 pl-4 pr-3 py-3 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 transition-all hover:border-paymint-green/30">
-                <div className="w-10 h-10 bg-white dark:bg-black rounded-xl flex items-center justify-center border border-gray-100 dark:border-white/10 shadow-sm overflow-hidden p-1">
+              <div key={card.id} className="group flex items-center gap-4 pl-4 pr-3 py-3 bg-white dark:bg-white/5 rounded-2xl border border-cream-200 dark:border-white/5 transition-all hover:border-paymint-green/30 shadow-sm hover:shadow-md">
+                <div className="w-10 h-10 bg-cream-50 dark:bg-black rounded-xl flex items-center justify-center border border-cream-100 dark:border-white/10 overflow-hidden p-1.5">
                   {card.imageUrl ? (
                     <img src={card.imageUrl} alt={card.name} className="w-full h-full object-contain" />
                   ) : (
@@ -394,7 +406,7 @@ export function PaymentMethodsPage() {
                 <span className="text-sm font-black text-gray-900 dark:text-white">{card.name}</span>
                 <button
                   onClick={() => handleDeleteCardType(card.id, card.name)}
-                  className="p-2 text-gray-400 hover:text-paymint-red opacity-0 group-hover:opacity-100 transition-all"
+                  className="p-2 text-gray-400 hover:text-paymint-red opacity-0 group-hover:opacity-100 transition-all ml-2"
                 >
                   <Trash2 size={16} />
                 </button>

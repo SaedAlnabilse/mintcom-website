@@ -10,31 +10,50 @@
   html {
     scroll-behavior: smooth;
   }
+
   body {
-    @apply font-sans text-gray-900 bg-white dark:text-paymint-light dark:bg-paymint-dark antialiased transition-colors duration-300;
+    @apply font-sans text-gray-900 bg-cream-50 dark:text-paymint-light dark:bg-paymint-dark antialiased transition-colors duration-300;
   }
 }
 
 @layer utilities {
   .scrollbar-none {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
+
   .scrollbar-none::-webkit-scrollbar {
     display: none;
   }
-  
+
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
+
   .custom-scrollbar::-webkit-scrollbar-track {
     @apply bg-transparent;
   }
+
   .custom-scrollbar::-webkit-scrollbar-thumb {
     @apply bg-gray-300 dark:bg-white/10 rounded-full hover:bg-gray-400 dark:hover:bg-white/20 transition-colors;
   }
 }
 
+/* Dark mode styling for native select dropdowns */
+.dark select {
+  color-scheme: dark;
+}
 
+.dark select option {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
 
+.dark select option:hover,
+.dark select option:checked {
+  background-color: #7CC39F;
+  color: #000000;
+}

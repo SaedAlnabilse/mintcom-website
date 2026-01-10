@@ -12,6 +12,8 @@ interface Account {
   emailVerified: boolean;
   trialUsed: boolean;
   trialEndDate?: string;
+  ownerPosId?: string; // Account-level Owner POS ID
+  defaultPaymentMethod?: string; // Last 4 digits of saved card (e.g., "4242")
 }
 
 interface Establishment {
@@ -48,6 +50,9 @@ interface AuthContextType {
   // Establishment methods
   setCurrentEstablishment: (establishment: Establishment) => void;
   refreshEstablishments: () => Promise<void>;
+
+  // Account update
+  updateAccount: (updates: Partial<Account>) => void;
 }
 
 interface RegisterData {
@@ -141,7 +146,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // We do NOT set default establishment automatically anymore
         // This forces the user to go through the selection screen
         // unless they are re-logging in and we restore from localStorage (handled in initializeAuth)
-        
+
         return { success: true };
       }
       return { success: false, error: 'Login failed' };
@@ -255,6 +260,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // Update account data (e.g., after setting Owner POS ID)
+  const updateAccount = (updates: Partial<Account>) => {
+    if (account) {
+      const updatedAccount = { ...account, ...updates };
+      setAccount(updatedAccount);
+      localStorage.setItem('account', JSON.stringify(updatedAccount));
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -273,6 +287,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         resetPassword,
         setCurrentEstablishment,
         refreshEstablishments,
+        updateAccount,
       }}
     >
       {children}

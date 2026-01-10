@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { motion } from 'framer-motion';
-import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Phone, Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Phone, Check, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 
@@ -102,7 +102,30 @@ export function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex transition-colors duration-300 relative">
+      {/* Full-screen Loading Overlay */}
+      <AnimatePresence>
+        {isSubmitting && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center"
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              className="bg-white dark:bg-gray-800 rounded-2xl p-8 flex flex-col items-center gap-4 shadow-2xl"
+            >
+              <Loader2 className="w-16 h-16 text-paymint-green animate-spin" />
+              <p className="text-xl font-semibold text-gray-900 dark:text-white">Creating your account...</p>
+              <p className="text-gray-500 dark:text-gray-400 text-sm">Please wait a moment</p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Left Side - Form */}
       <div className="flex-1 flex items-center justify-center p-8 bg-white dark:bg-transparent transition-colors duration-300">
         <motion.div

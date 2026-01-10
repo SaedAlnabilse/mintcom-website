@@ -304,7 +304,7 @@ export function ProductFormModal({
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-white dark:bg-[#1e1e1e] w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col transition-colors duration-300"
+          className="bg-cream-50 dark:bg-[#1e1e1e] w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col transition-colors duration-300"
         >
           {/* Header */}
           <div className="flex items-center justify-between p-6 pb-2">
@@ -314,7 +314,7 @@ export function ProductFormModal({
             <button
               onClick={() => !isGeneratingImage && onClose()}
               disabled={isGeneratingImage}
-              className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-cream-200 dark:hover:bg-white/10 rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <X size={24} />
             </button>
@@ -327,7 +327,7 @@ export function ProductFormModal({
               <div className="flex flex-col items-center justify-center">
                 <div className="relative group">
                   <div
-                    className="w-36 h-36 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-600 flex flex-col items-center justify-center overflow-hidden bg-gray-50 dark:bg-[#2a2a2a] cursor-pointer hover:border-paymint-green transition-colors"
+                    className="w-36 h-36 rounded-2xl border-2 border-dashed border-cream-400 dark:border-gray-600 flex flex-col items-center justify-center overflow-hidden bg-cream-100 dark:bg-[#2a2a2a] cursor-pointer hover:border-paymint-green transition-colors"
                   >
                     {imagePreview ? (
                       <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
@@ -348,7 +348,7 @@ export function ProductFormModal({
                     <button
                       type="button"
                       onClick={() => { setSelectedImage(null); setImagePreview(null); }}
-                      className="absolute -top-2 -right-2 bg-white rounded-full p-1 text-accent shadow-md hover:bg-gray-100 border border-gray-100"
+                      className="absolute -top-2 -right-2 bg-cream-50 rounded-full p-1 text-accent shadow-md hover:bg-cream-100 border border-cream-300"
                     >
                       <X size={16} />
                     </button>
@@ -381,7 +381,7 @@ export function ProductFormModal({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Latte"
-                  className={`w-full bg-gray-50 dark:bg-[#2a2a2a] border ${errors.name ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/5'} rounded-2xl px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all`}
+                  className={`w-full bg-cream-100 dark:bg-[#2a2a2a] border ${errors.name ? 'border-red-500 ring-2 ring-red-500/20' : 'border-cream-300 dark:border-white/5'} rounded-2xl px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all`}
                 />
                 {errors.name && (
                   <p className="mt-1 px-1 text-red-500 text-[10px] font-bold uppercase tracking-wider">{errors.name}</p>
@@ -394,7 +394,7 @@ export function ProductFormModal({
                 <div>
                   <label className="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-2 px-1">Cost Price</label>
                   <div className="relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-200 dark:bg-white/10 rounded-lg">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-cream-200 dark:bg-white/10 rounded-lg">
                       <span className="text-gray-500 dark:text-gray-400 text-xs font-black">{currencySymbol}</span>
                     </div>
                     <input
@@ -402,7 +402,7 @@ export function ProductFormModal({
                       value={costPrice}
                       onChange={handleCostPriceChange}
                       placeholder="0.00"
-                      className="w-full bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-white/5 rounded-2xl pl-16 pr-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-bold text-lg"
+                      className="w-full bg-cream-100 dark:bg-[#2a2a2a] border border-cream-300 dark:border-white/5 rounded-2xl pl-16 pr-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-bold text-lg"
                     />
                   </div>
                 </div>
@@ -421,7 +421,7 @@ export function ProductFormModal({
                       value={price}
                       onChange={handlePriceChange}
                       placeholder="0.00"
-                      className={`w-full bg-gray-50 dark:bg-[#2a2a2a] border ${errors.price ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/5'} rounded-2xl pl-16 pr-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-black text-2xl`}
+                      className={`w-full bg-cream-100 dark:bg-[#2a2a2a] border ${errors.price ? 'border-red-500 ring-2 ring-red-500/20' : 'border-cream-300 dark:border-white/5'} rounded-2xl pl-16 pr-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-black text-2xl`}
                     />
                   </div>
                   {errors.price && (
@@ -432,7 +432,7 @@ export function ProductFormModal({
 
                 {/* Tax Breakdown (FE Style Calculation) */}
                 <div className="grid grid-cols-3 gap-3">
-                  <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-4 border border-gray-100 dark:border-white/5">
+                  <div className="bg-cream-100 dark:bg-white/5 rounded-2xl p-4 border border-cream-300 dark:border-white/5">
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 leading-tight">Tax Rate</p>
                     <div className="flex items-baseline gap-1">
                       <p className="text-gray-900 dark:text-white font-black text-lg">{taxRate}</p>
@@ -469,7 +469,7 @@ export function ProductFormModal({
                   onChange={(e) => setDescription(e.target.value.slice(0, 30))}
                   placeholder="e.g. A rich, aromatic coffee"
                   rows={2}
-                  className="w-full bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-white/5 rounded-2xl px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all resize-none font-medium"
+                  className="w-full bg-cream-100 dark:bg-[#2a2a2a] border border-cream-300 dark:border-white/5 rounded-2xl px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all resize-none font-medium"
                 />
               </div>
 
@@ -481,7 +481,7 @@ export function ProductFormModal({
                 <button
                   type="button"
                   onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
-                  className={`w-full bg-gray-50 dark:bg-[#2a2a2a] border ${errors.category ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/5'} rounded-2xl px-4 py-4 text-left flex items-center justify-between text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all shadow-sm`}
+                  className={`w-full bg-cream-100 dark:bg-[#2a2a2a] border ${errors.category ? 'border-red-500 ring-2 ring-red-500/20' : 'border-cream-300 dark:border-white/5'} rounded-2xl px-4 py-4 text-left flex items-center justify-between text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all shadow-sm`}
                 >
                   <span className={categoryId ? 'text-gray-900 dark:text-white font-bold' : 'text-gray-500 italic'}>
                     {categories.find(c => c.id === categoryId)?.name || 'Select Category'}
@@ -498,7 +498,7 @@ export function ProductFormModal({
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#2a2a2a] border border-gray-100 dark:border-white/10 rounded-2xl shadow-2xl z-[30] max-h-48 overflow-y-auto custom-scrollbar overflow-hidden"
+                      className="absolute top-full left-0 right-0 mt-2 bg-cream-50 dark:bg-[#2a2a2a] border border-cream-300 dark:border-white/10 rounded-2xl shadow-2xl z-[30] max-h-48 overflow-y-auto custom-scrollbar overflow-hidden"
                     >
                       {categories.map(cat => (
                         <button
@@ -508,7 +508,7 @@ export function ProductFormModal({
                             setCategoryId(cat.id);
                             setShowCategoryDropdown(false);
                           }}
-                          className="w-full px-5 py-4 text-left hover:bg-paymint-green/5 flex items-center justify-between group transition-colors border-b border-gray-50 dark:border-white/5 last:border-none"
+                          className="w-full px-5 py-4 text-left hover:bg-paymint-green/5 flex items-center justify-between group transition-colors border-b border-cream-200 dark:border-white/5 last:border-none"
                         >
                           <span className={`text-sm ${categoryId === cat.id ? 'text-paymint-green font-black' : 'text-gray-700 dark:text-gray-300 font-bold'}`}>
                             {cat.name}
@@ -527,7 +527,7 @@ export function ProductFormModal({
                 <button
                   type="button"
                   onClick={() => setShowAddonsDropdown(!showAddonsDropdown)}
-                  className="w-full bg-gray-50 dark:bg-[#2a2a2a] border border-gray-200 dark:border-white/5 rounded-2xl px-4 py-4 text-left flex items-center justify-between text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all shadow-sm"
+                  className="w-full bg-cream-100 dark:bg-[#2a2a2a] border border-cream-300 dark:border-white/5 rounded-2xl px-4 py-4 text-left flex items-center justify-between text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all shadow-sm"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-paymint-green/10 flex items-center justify-center">
@@ -550,7 +550,7 @@ export function ProductFormModal({
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#2a2a2a] border border-gray-100 dark:border-white/10 rounded-2xl shadow-2xl z-[30] max-h-48 overflow-y-auto custom-scrollbar overflow-hidden"
+                      className="absolute top-full left-0 right-0 mt-2 bg-cream-50 dark:bg-[#2a2a2a] border border-cream-300 dark:border-white/10 rounded-2xl shadow-2xl z-[30] max-h-48 overflow-y-auto custom-scrollbar overflow-hidden"
                     >
                       {attributes.map(attr => (
                         <button
@@ -563,7 +563,7 @@ export function ProductFormModal({
                               setSelectedAttributeIds([...selectedAttributeIds, attr.id]);
                             }
                           }}
-                          className="w-full px-5 py-4 text-left hover:bg-paymint-green/5 flex items-center justify-between group transition-colors border-b border-gray-50 dark:border-white/5 last:border-none"
+                          className="w-full px-5 py-4 text-left hover:bg-paymint-green/5 flex items-center justify-between group transition-colors border-b border-cream-200 dark:border-white/5 last:border-none"
                         >
                           <div className="flex flex-col">
                             <span className={`text-sm ${selectedAttributeIds.includes(attr.id) ? 'text-paymint-green font-black' : 'text-gray-700 dark:text-gray-300 font-bold'}`}>
@@ -608,7 +608,7 @@ export function ProductFormModal({
               </div>
 
               {/* Stock Tracking (FE Style) */}
-              <div ref={stockRef} className="bg-gray-50 dark:bg-white/10 rounded-3xl p-6 border border-gray-100 dark:border-white/5 space-y-6">
+              <div ref={stockRef} className="bg-cream-100 dark:bg-white/10 rounded-3xl p-6 border border-cream-300 dark:border-white/5 space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="text-gray-900 dark:text-white font-black text-sm uppercase tracking-wider">Track Stock</h4>
@@ -621,13 +621,13 @@ export function ProductFormModal({
                       onChange={(e) => setTrackStock(e.target.checked)}
                       className="sr-only peer"
                     />
-                    <div className="w-12 h-6 bg-gray-200 dark:bg-white/5 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
+                    <div className="w-12 h-6 bg-cream-200 dark:bg-white/5 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
                   </label>
                 </div>
 
                 {trackStock && (
                   <div className="space-y-4 animate-in fade-in zoom-in-95 duration-200">
-                    <div className="flex items-center justify-between bg-white dark:bg-black/20 p-4 rounded-2xl border border-gray-100 dark:border-white/5">
+                    <div className="flex items-center justify-between bg-cream-50 dark:bg-black/20 p-4 rounded-2xl border border-cream-300 dark:border-white/5">
                       <div>
                         <h4 className="text-gray-900 dark:text-white font-black text-sm uppercase tracking-wider text-[10px]">Allow Negative Stock</h4>
                         <p className="text-gray-500 text-[8px] font-bold uppercase mt-0.5">Sell items when out of stock</p>
@@ -639,7 +639,7 @@ export function ProductFormModal({
                           onChange={(e) => setAllowNegativeStock(e.target.checked)}
                           className="sr-only peer"
                         />
-                        <div className="w-10 h-5 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5"></div>
+                        <div className="w-10 h-5 bg-cream-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5"></div>
                       </label>
                     </div>
 
@@ -650,7 +650,7 @@ export function ProductFormModal({
                         value={stock}
                         onChange={(e) => setStock(e.target.value)}
                         placeholder="0"
-                        className={`w-full bg-white dark:bg-black/20 border ${errors.stock ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/5'} rounded-2xl px-4 py-3 text-gray-900 dark:text-white font-black text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all`}
+                        className={`w-full bg-cream-50 dark:bg-black/20 border ${errors.stock ? 'border-red-500 ring-2 ring-red-500/20' : 'border-cream-300 dark:border-white/5'} rounded-2xl px-4 py-3 text-gray-900 dark:text-white font-black text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all`}
                       />
                       {errors.stock && (
                         <p className="mt-1 text-red-500 text-[8px] font-bold uppercase text-center">{errors.stock}</p>
@@ -666,7 +666,7 @@ export function ProductFormModal({
                           value={lowStockYellow}
                           onChange={(e) => setLowStockYellow(e.target.value)}
                           placeholder="5"
-                          className={`w-full bg-white dark:bg-black/20 border ${errors.lowStockYellow ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/5'} rounded-2xl px-4 py-3 text-gray-900 dark:text-white font-black text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all`}
+                          className={`w-full bg-cream-50 dark:bg-black/20 border ${errors.lowStockYellow ? 'border-red-500 ring-2 ring-red-500/20' : 'border-cream-300 dark:border-white/5'} rounded-2xl px-4 py-3 text-gray-900 dark:text-white font-black text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all`}
                         />
                         {errors.lowStockYellow && (
                           <p className="mt-1 text-red-500 text-[8px] font-bold uppercase text-center leading-tight">{errors.lowStockYellow}</p>
@@ -681,7 +681,7 @@ export function ProductFormModal({
                           value={lowStockRed}
                           onChange={(e) => setLowStockRed(e.target.value)}
                           placeholder="2"
-                          className={`w-full bg-white dark:bg-black/20 border ${errors.lowStockRed ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/5'} rounded-2xl px-4 py-3 text-gray-900 dark:text-white font-black text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all`}
+                          className={`w-full bg-cream-50 dark:bg-black/20 border ${errors.lowStockRed ? 'border-red-500 ring-2 ring-red-500/20' : 'border-cream-300 dark:border-white/5'} rounded-2xl px-4 py-3 text-gray-900 dark:text-white font-black text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all`}
                         />
                         {errors.lowStockRed && (
                           <p className="mt-1 text-red-500 text-[8px] font-bold uppercase text-center leading-tight">{errors.lowStockRed}</p>
@@ -696,7 +696,7 @@ export function ProductFormModal({
           </div>
 
           {/* Footer (FE Parity Buttons) */}
-          <div className="p-8 border-t border-gray-100 dark:border-white/5 flex items-center gap-4 bg-gray-50/50 dark:bg-white/[0.02]">
+          <div className="p-8 border-t border-cream-300 dark:border-white/5 flex items-center gap-4 bg-cream-100/50 dark:bg-white/[0.02]">
             {initialData && onDelete && (
               <button
                 type="button"

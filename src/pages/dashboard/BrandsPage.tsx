@@ -143,26 +143,39 @@ export function BrandsPage() {
   return (
     <div className="space-y-10 pb-16">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase">Brands</h1>
-          <p className="text-gray-500 dark:text-gray-400 font-medium mt-1">Merge multiple establishments under one brand for unified management.</p>
+      {/* Header */}
+      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-cream-50 via-cream-100 to-cream-50 dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-cream-300 dark:border-white/5 shadow-sm">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/30">
+              <Building2 size={28} className="text-black" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Brands</h1>
+              <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Merge multiple establishments under one brand for unified management</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            {availableEstablishments.length >= 2 && (
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 transition-all shadow-lg shadow-paymint-green/30"
+              >
+                <Link2 size={18} />
+                <span>Merge Establishments</span>
+              </button>
+            )}
+          </div>
         </div>
-        {availableEstablishments.length >= 2 && (
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="px-6 py-3 bg-paymint-green text-black font-black rounded-2xl hover:scale-105 transition-all flex items-center gap-2 shadow-lg shadow-paymint-green/20 active:scale-95"
-          >
-            <Link2 size={20} />
-            <span>Merge Establishments</span>
-          </button>
-        )}
       </div>
 
       {/* Brands Grid */}
       {brands.length === 0 ? (
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-[2.5rem] border-2 border-dashed border-gray-200 dark:border-white/10 p-16 text-center">
-          <div className="w-24 h-24 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-8">
+        <div className="bg-cream-50 dark:bg-[#0A0A0A] rounded-[2.5rem] border-2 border-dashed border-cream-300 dark:border-white/10 p-16 text-center">
+          <div className="w-24 h-24 bg-cream-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-8">
             <Building2 size={40} className="text-gray-400" />
           </div>
           <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-4">No Brands Yet</h3>
@@ -187,7 +200,7 @@ export function BrandsPage() {
             <motion.div
               key={brand.id}
               layout
-              className="bg-white dark:bg-[#0A0A0A] rounded-[2.5rem] p-10 border-2 border-gray-100 dark:border-white/[0.05] hover:border-paymint-green/50 transition-all group relative"
+              className="bg-cream-50 dark:bg-[#0A0A0A] rounded-[2.5rem] p-10 border border-cream-200 dark:border-white/[0.05] hover:border-paymint-green/50 transition-all group relative"
             >
               {/* Header */}
               <div className="flex items-start justify-between mb-8">
@@ -206,7 +219,7 @@ export function BrandsPage() {
                 <div className="relative">
                   <button
                     onClick={() => setOpenMenuId(openMenuId === brand.id ? null : brand.id)}
-                    className="p-2.5 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-all text-gray-400"
+                    className="p-2.5 hover:bg-cream-200 dark:hover:bg-white/5 rounded-xl transition-all text-gray-400"
                   >
                     <MoreVertical size={20} />
                   </button>
@@ -255,7 +268,7 @@ export function BrandsPage() {
               </div>
 
               {/* POS ID */}
-              <div className="flex items-center gap-3 mb-6 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl">
+              <div className="flex items-center gap-3 mb-6 p-4 bg-cream-100 dark:bg-white/5 rounded-2xl">
                 <Hash size={16} className="text-paymint-green" />
                 <span className="text-sm font-bold text-gray-700 dark:text-gray-300">Brand POS ID:</span>
                 <code className="text-sm font-mono text-paymint-green">{brand.ownerPosId}</code>
@@ -268,7 +281,7 @@ export function BrandsPage() {
                   {brand.establishments.map((est) => (
                     <div
                       key={est.id}
-                      className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/5 rounded-xl"
+                      className="flex items-center gap-3 p-3 bg-cream-100 dark:bg-white/5 rounded-xl"
                     >
                       <Store size={16} className="text-gray-400" />
                       <span className="text-sm font-bold text-gray-700 dark:text-gray-300">{est.name}</span>
@@ -296,7 +309,7 @@ export function BrandsPage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white dark:bg-[#0A0A0A] rounded-[2.5rem] w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+              className="bg-cream-50 dark:bg-[#0A0A0A] rounded-[2.5rem] w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-cream-300 dark:border-white/5"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-10">
@@ -308,7 +321,7 @@ export function BrandsPage() {
                   </div>
                   <button
                     onClick={() => setShowCreateModal(false)}
-                    className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-all"
+                    className="p-2 hover:bg-cream-200 dark:hover:bg-white/5 rounded-xl transition-all"
                   >
                     <X size={24} className="text-gray-400" />
                   </button>
@@ -324,7 +337,7 @@ export function BrandsPage() {
                       <input
                         type="text"
                         {...register('name')}
-                        className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 px-5 text-gray-900 dark:text-white font-bold focus:outline-none focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/50`}
+                        className={`w-full bg-cream-100 dark:bg-[#1a1a1a] border ${errors.name ? 'border-red-500 ring-2 ring-red-500/20' : 'border-cream-300 dark:border-white/10'} rounded-2xl py-4 px-5 text-gray-900 dark:text-white font-bold focus:outline-none focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/50`}
                         placeholder="e.g. Coffee House Group"
                       />
                       {errors.name && <p className="text-red-500 text-xs font-bold pt-1">{errors.name.message as string}</p>}
@@ -340,7 +353,7 @@ export function BrandsPage() {
                           <input
                             type="text"
                             {...register('ownerPosId')}
-                            className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.ownerPosId ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/50`}
+                            className={`w-full bg-cream-100 dark:bg-[#1a1a1a] border ${errors.ownerPosId ? 'border-red-500 ring-2 ring-red-500/20' : 'border-cream-300 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/50`}
                             placeholder="coffeehouse_brand"
                           />
                         </div>
@@ -355,7 +368,7 @@ export function BrandsPage() {
                           <input
                             type="password"
                             {...register('ownerPosPassword')}
-                            className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.ownerPosPassword ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/50`}
+                            className={`w-full bg-cream-100 dark:bg-[#1a1a1a] border ${errors.ownerPosPassword ? 'border-red-500 ring-2 ring-red-500/20' : 'border-cream-300 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/50`}
                             placeholder="••••••••"
                           />
                         </div>
@@ -376,7 +389,7 @@ export function BrandsPage() {
                     </div>
 
                     {availableEstablishments.length === 0 ? (
-                      <div className="p-6 bg-gray-50 dark:bg-white/5 rounded-2xl text-center">
+                      <div className="p-6 bg-cream-50 dark:bg-white/5 rounded-2xl text-center border border-cream-200">
                         <p className="text-gray-500 text-sm">All establishments are already part of a brand.</p>
                       </div>
                     ) : (
@@ -387,13 +400,13 @@ export function BrandsPage() {
                             type="button"
                             onClick={() => toggleEstablishment(est.id)}
                             className={`flex items-center gap-4 p-4 rounded-2xl border-2 transition-all text-left ${selectedEstablishments.includes(est.id)
-                                ? 'border-paymint-green bg-paymint-green/5'
-                                : 'border-gray-100 dark:border-white/5 hover:border-gray-200 dark:hover:border-white/10'
+                              ? 'border-paymint-green bg-paymint-green/5'
+                              : 'border-cream-200 dark:border-white/5 hover:border-cream-300 dark:hover:border-white/10'
                               }`}
                           >
                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${selectedEstablishments.includes(est.id)
-                                ? 'bg-paymint-green text-black'
-                                : 'bg-gray-100 dark:bg-white/5 text-gray-400'
+                              ? 'bg-paymint-green text-black'
+                              : 'bg-cream-100 dark:bg-white/5 text-gray-400'
                               }`}>
                               {selectedEstablishments.includes(est.id) ? (
                                 <CheckCircle size={20} />
@@ -436,7 +449,7 @@ export function BrandsPage() {
                     <button
                       type="button"
                       onClick={() => setShowCreateModal(false)}
-                      className="flex-1 py-4 border-2 border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 font-black rounded-2xl hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
+                      className="flex-1 py-4 border-2 border-cream-300 dark:border-white/10 text-gray-700 dark:text-gray-300 font-black rounded-2xl hover:bg-cream-100 dark:hover:bg-white/5 transition-all"
                     >
                       Cancel
                     </button>

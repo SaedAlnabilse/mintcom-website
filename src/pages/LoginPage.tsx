@@ -37,7 +37,7 @@ export function LoginPage() {
 
       if (result.success) {
         toast.success('Welcome back!');
-        navigate('/select-establishment');
+        navigate('/owner');
       } else {
         toast.error(result.error || 'Login failed');
         setError('email', { type: 'manual' });
@@ -84,9 +84,8 @@ export function LoginPage() {
                 <input
                   {...register('email')}
                   type="email"
-                  className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${
-                    errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                  } rounded-lg py-3 pl-10 pr-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                  className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
+                    } rounded-lg py-3 pl-10 pr-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                   placeholder="you@example.com"
                 />
               </div>
@@ -104,9 +103,8 @@ export function LoginPage() {
                 <input
                   {...register('password')}
                   type={showPassword ? 'text' : 'password'}
-                  className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${
-                    errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                  } rounded-lg py-3 pl-10 pr-12 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                  className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
+                    } rounded-lg py-3 pl-10 pr-12 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                   placeholder="Enter your password"
                 />
                 <button

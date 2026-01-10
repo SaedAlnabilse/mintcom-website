@@ -82,7 +82,7 @@ export function ConfirmModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/40 dark:bg-black/80 backdrop-blur-sm transition-colors duration-300"
+            className="fixed inset-0 bg-black/30 dark:bg-black/80 backdrop-blur-sm transition-colors duration-300"
           />
 
           {/* Modal */}
@@ -91,7 +91,7 @@ export function ConfirmModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", duration: 0.4, bounce: 0.3 }}
-            className={`relative w-full max-w-md overflow-hidden rounded-[2.5rem] bg-white dark:bg-[#0A0A0A] border border-gray-100 dark:border-white/5 shadow-2xl ${theme.glow} transition-colors duration-300`}
+            className={`relative w-full max-w-md overflow-hidden rounded-[2.5rem] bg-cream-50 dark:bg-[#0A0A0A] border border-cream-300 dark:border-white/5 shadow-2xl ${theme.glow} transition-colors duration-300`}
           >
 
             {/* Top Accent Bar */}
@@ -100,7 +100,7 @@ export function ConfirmModal({
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-6 right-6 p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all z-10 active:scale-90"
+              className="absolute top-6 right-6 p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-xl hover:bg-cream-200 dark:hover:bg-white/5 transition-all z-10 active:scale-90"
             >
               <X size={20} />
             </button>
@@ -133,7 +133,7 @@ export function ConfirmModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 border border-gray-200 dark:border-white/5 transition-all duration-200 active:scale-95"
+                  className="px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-cream-200 dark:hover:bg-white/5 border border-cream-300 dark:border-white/5 transition-all duration-200 active:scale-95"
                 >
                   {cancelText}
                 </button>

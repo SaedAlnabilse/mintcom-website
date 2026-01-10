@@ -93,7 +93,7 @@ export function CategoryFormModal({
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-white dark:bg-[#1e1e1e] w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] transition-colors duration-300"
+          className="bg-cream-50 dark:bg-[#1e1e1e] w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] transition-colors duration-300"
         >
           {/* Header */}
           <div className="flex items-center justify-between p-6 pb-2">
@@ -102,7 +102,7 @@ export function CategoryFormModal({
             </h2>
             <button
               onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors"
+              className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-cream-200 dark:hover:bg-white/10 rounded-full transition-colors"
             >
               <X size={24} />
             </button>
@@ -131,7 +131,7 @@ export function CategoryFormModal({
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
                   placeholder="e.g. Hot Drinks"
-                  className={`w-full bg-gray-50 dark:bg-[#2a2a2a] border ${errors.name ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-gray-700'} rounded-xl px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-paymint-green transition-colors`}
+                  className={`w-full bg-cream-100 dark:bg-[#2a2a2a] border ${errors.name ? 'border-red-500 ring-2 ring-red-500/20' : 'border-cream-300 dark:border-gray-700'} rounded-xl px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-paymint-green transition-colors`}
                 />
                 {errors.name && <p className="mt-1 text-xs font-bold text-red-500">{errors.name}</p>}
               </div>
@@ -150,7 +150,7 @@ export function CategoryFormModal({
                         onClick={() => setSelectedIcon(icon)}
                         className={`aspect-square flex items-center justify-center rounded-xl border transition-all ${isSelected
                           ? 'bg-paymint-green border-paymint-green'
-                          : 'bg-gray-50 dark:bg-[#2a2a2a] border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
+                          : 'bg-cream-100 dark:bg-[#2a2a2a] border-cream-300 dark:border-gray-700 hover:bg-cream-200 dark:hover:bg-gray-700'
                           }`}
                       >
                         <IconComp
@@ -167,7 +167,7 @@ export function CategoryFormModal({
           </div>
 
           {/* Footer */}
-          <div className="p-6 border-t border-gray-100 dark:border-gray-800 flex items-center gap-3 bg-gray-50 dark:bg-[#1e1e1e] transition-colors">
+          <div className="p-6 border-t border-cream-200 dark:border-gray-800 flex items-center gap-3 bg-cream-100 dark:bg-[#1e1e1e] transition-colors">
             {initialData && onDelete && (
               <button
                 type="button"
@@ -180,7 +180,7 @@ export function CategoryFormModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-12 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 font-semibold hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="flex-1 h-12 rounded-xl border border-cream-300 dark:border-gray-700 text-gray-600 dark:text-gray-300 font-semibold hover:bg-cream-200 dark:hover:bg-gray-800 transition-colors"
             >
               Cancel
             </button>

@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Store, Plus, LogOut, ChevronRight, CheckCircle2, Loader2, Zap } from 'lucide-react';
+import { Store, Plus, LogOut, ChevronRight, CheckCircle2, Loader2, Zap, Crown, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
 export function SelectEstablishmentPage() {
-  const { establishments, setCurrentEstablishment, logout } = useAuth();
+  const { establishments, setCurrentEstablishment, logout, account } = useAuth();
   const navigate = useNavigate();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [isSwitching, setIsSwitching] = useState(false);
@@ -15,7 +15,7 @@ export function SelectEstablishmentPage() {
   const handleSelect = (est: any) => {
     setIsSwitching(true);
     setSelectedName(est.name);
-    
+
     // Simulate a "Real" backend switch transition
     setTimeout(() => {
       setCurrentEstablishment(est);
@@ -32,19 +32,37 @@ export function SelectEstablishmentPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex flex-col transition-colors duration-500 relative overflow-hidden">
       {/* Remove glass glows, use solid background colors */}
-      
+
       {/* Header */}
       <div className="p-8 flex justify-between items-center relative z-10">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-paymint-green rounded-xl flex items-center justify-center shadow-lg shadow-paymint-green/20">
-            <Zap size={20} className="text-black" fill="currentColor" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xl font-black text-gray-900 dark:text-white tracking-tighter leading-none">PayMint</span>
-            <span className="text-[10px] font-black text-paymint-green uppercase tracking-[0.2em] mt-1">Enterprise</span>
+        <div className="flex items-center gap-4">
+          {/* Owner Portal Button */}
+          <button
+            onClick={() => navigate('/owner')}
+            className="group flex items-center gap-3 px-4 py-3 rounded-2xl bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/20 hover:border-amber-500/40 hover:from-amber-500/20 hover:to-yellow-500/20 transition-all duration-300"
+          >
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:scale-110 transition-transform">
+              <Crown size={18} className="text-white" />
+            </div>
+            <div className="hidden sm:block text-left">
+              <p className="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-[0.15em]">Owner Portal</p>
+              <p className="text-sm font-bold text-gray-900 dark:text-white truncate max-w-[120px]">{account?.firstName} {account?.lastName}</p>
+            </div>
+            <ArrowLeft size={16} className="text-amber-500 group-hover:-translate-x-1 transition-transform hidden sm:block" />
+          </button>
+
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-paymint-green rounded-xl flex items-center justify-center shadow-lg shadow-paymint-green/20">
+              <Zap size={20} className="text-black" fill="currentColor" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xl font-black text-gray-900 dark:text-white tracking-tighter leading-none">PayMint</span>
+              <span className="text-[10px] font-black text-paymint-green uppercase tracking-[0.2em] mt-1">Enterprise</span>
+            </div>
           </div>
         </div>
-        <button 
+        <button
           onClick={handleLogout}
           className="flex items-center gap-2 text-gray-400 hover:text-paymint-red transition-all font-black text-xs uppercase tracking-widest px-4 py-2 rounded-xl hover:bg-paymint-red/5"
         >
@@ -81,9 +99,9 @@ export function SelectEstablishmentPage() {
               <div className="w-24 h-24 bg-gray-50 dark:bg-white/[0.03] rounded-[2rem] flex items-center justify-center mb-8 border border-gray-100 dark:border-white/5 transition-transform duration-500 group-hover:scale-110 group-hover:bg-paymint-green/10">
                 <Store size={40} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
               </div>
-              
-              <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-3 truncate w-full">{est.name}</h3>
-              
+
+              <h3 className="text-xl font-black text-gray-900 dark:text-white mb-3 px-2 leading-tight text-center">{est.name}</h3>
+
               <div className="flex items-center gap-3 mb-10">
                 <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] font-black uppercase tracking-[0.15em] text-gray-500">
                   {est.currency}
@@ -145,7 +163,7 @@ export function SelectEstablishmentPage() {
               </div>
               <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Initializing</h2>
               <p className="text-paymint-green font-black uppercase tracking-[0.3em] text-sm mt-2">{selectedName}</p>
-              
+
               <div className="mt-12 w-48 h-1 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
                 <motion.div
                   initial={{ x: '-100%' }}

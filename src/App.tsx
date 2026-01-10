@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ProtectedRoute, EstablishmentRequiredRoute } from './components/ProtectedRoute';
 import { DashboardLayout } from './components/DashboardLayout';
+import { OwnerLayout } from './components/OwnerLayout';
 
 // Public Pages
 import { LandingPage } from './pages/LandingPage';
@@ -18,6 +19,20 @@ import { ResetPasswordPage } from './pages/ResetPasswordPage';
 import { OnboardingPage } from './pages/OnboardingPage';
 
 import { SelectEstablishmentPage } from './pages/SelectEstablishmentPage';
+
+// Owner Portal Pages
+import { OwnerOverviewPage } from './pages/owner/OwnerOverviewPage';
+import { OwnerEstablishmentsPage } from './pages/owner/OwnerEstablishmentsPage';
+import { OwnerEmployeesPage } from './pages/owner/OwnerEmployeesPage';
+import { OwnerBillingPage } from './pages/owner/OwnerBillingPage';
+import { OwnerMergePage } from './pages/owner/OwnerMergePage';
+import { OwnerBrandsPage } from './pages/owner/OwnerBrandsPage';
+
+// Brand Dashboard
+import { BrandLayout } from './components/BrandLayout';
+import { BrandDashboardPage } from './pages/brand/BrandDashboardPage';
+import { BrandLocationsPage } from './pages/brand/BrandLocationsPage';
+import { BrandTeamPage } from './pages/brand/BrandTeamPage';
 
 // Dashboard Pages
 import { DashboardPage } from './pages/dashboard/DashboardPage';
@@ -36,8 +51,7 @@ import { MaterialsPage } from './pages/dashboard/MaterialsPage';
 import { RecipesPage } from './pages/dashboard/RecipesPage';
 import { EstablishmentsPage } from './pages/dashboard/EstablishmentsPage';
 import { BillingPage } from './pages/dashboard/BillingPage';
-import { BrandsPage } from './pages/dashboard/BrandsPage';
-import { BrandDetailPage } from './pages/dashboard/BrandDetailPage';
+import { AdminUsersPage } from './pages/dashboard/AdminUsersPage';
 
 function App() {
   return (
@@ -46,73 +60,93 @@ function App() {
         <BrowserRouter>
           <Routes>
             {/* Public Routes */}
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/demo" element={<DemoPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/verify-email" element={<VerifyEmailPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/demo" element={<DemoPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/verify-email" element={<VerifyEmailPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-          {/* Protected Onboarding Route */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/onboarding" element={<OnboardingPage />} />
-            <Route path="/select-establishment" element={<SelectEstablishmentPage />} />
-          </Route>
-
-          {/* Protected Dashboard Routes */}
-          <Route element={<EstablishmentRequiredRoute />}>
-            <Route path="/dashboard" element={<DashboardLayout />}>
-              <Route index element={<DashboardPage />} />
-              <Route path="orders" element={<OrdersPage />} />
-              <Route path="products" element={<ProductsPage />} />
-              <Route path="categories" element={<CategoriesPage />} />
-              <Route path="staff" element={<StaffPage />} />
-              <Route path="customers" element={<CustomersPage />} />
-              <Route path="reports" element={<ReportsPage />} />
-              <Route path="discounts" element={<DiscountsPage />} />
-              <Route path="payment-methods" element={<PaymentMethodsPage />} />
-              <Route path="settings" element={<SettingsPage />} />
-              <Route path="activity-logs" element={<ActivityLogsPage />} />
-              <Route path="addons" element={<AddonsPage />} />
-              <Route path="materials" element={<MaterialsPage />} />
-              <Route path="recipes" element={<RecipesPage />} />
-              <Route path="establishments" element={<EstablishmentsPage />} />
-              <Route path="billing" element={<BillingPage />} />
-              <Route path="brands" element={<BrandsPage />} />
-              <Route path="brands/:brandId" element={<BrandDetailPage />} />
+            {/* Protected Onboarding Route */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/onboarding" element={<OnboardingPage />} />
+              <Route path="/select-establishment" element={<SelectEstablishmentPage />} />
             </Route>
-          </Route>
-        </Routes>
-      </BrowserRouter>
 
-      {/* Toast Notifications */}
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: {
-            background: '#1f2937',
-            color: '#fff',
-            border: '1px solid #374151',
-          },
-          success: {
-            iconTheme: {
-              primary: '#7CC39F',
-              secondary: '#fff',
+            {/* Owner Portal Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/owner" element={<OwnerLayout />}>
+                <Route index element={<OwnerOverviewPage />} />
+                <Route path="establishments" element={<OwnerEstablishmentsPage />} />
+                <Route path="brands" element={<OwnerBrandsPage />} />
+                <Route path="employees" element={<OwnerEmployeesPage />} />
+                <Route path="billing" element={<OwnerBillingPage />} />
+                <Route path="merge" element={<OwnerMergePage />} />
+              </Route>
+            </Route>
+
+            {/* Brand Dashboard Routes (opens in new tab) */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/brand/:brandId" element={<BrandLayout />}>
+                <Route index element={<BrandDashboardPage />} />
+                <Route path="locations" element={<BrandLocationsPage />} />
+                <Route path="team" element={<BrandTeamPage />} />
+              </Route>
+            </Route>
+
+            {/* Protected Dashboard Routes (Establishment-specific) */}
+            <Route element={<EstablishmentRequiredRoute />}>
+              <Route path="/dashboard" element={<DashboardLayout />}>
+                <Route index element={<DashboardPage />} />
+                <Route path="orders" element={<OrdersPage />} />
+                <Route path="products" element={<ProductsPage />} />
+                <Route path="categories" element={<CategoriesPage />} />
+                <Route path="staff" element={<StaffPage />} />
+                <Route path="customers" element={<CustomersPage />} />
+                <Route path="reports" element={<ReportsPage />} />
+                <Route path="discounts" element={<DiscountsPage />} />
+                <Route path="payment-methods" element={<PaymentMethodsPage />} />
+                <Route path="settings" element={<SettingsPage />} />
+                <Route path="activity-logs" element={<ActivityLogsPage />} />
+                <Route path="addons" element={<AddonsPage />} />
+                <Route path="materials" element={<MaterialsPage />} />
+                <Route path="recipes" element={<RecipesPage />} />
+                <Route path="establishments" element={<EstablishmentsPage />} />
+                <Route path="billing" element={<BillingPage />} />
+                <Route path="admin-users" element={<AdminUsersPage />} />
+              </Route>
+            </Route>
+          </Routes>
+        </BrowserRouter>
+
+        {/* Toast Notifications */}
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            style: {
+              background: '#1f2937',
+              color: '#fff',
+              border: '1px solid #374151',
             },
-          },
-          error: {
-            iconTheme: {
-              primary: '#D55263',
-              secondary: '#fff',
+            success: {
+              iconTheme: {
+                primary: '#7CC39F',
+                secondary: '#fff',
+              },
             },
-          },
-        }}
-      />
-          </AuthProvider>
-        </ThemeProvider>
-      );
-    }
+            error: {
+              iconTheme: {
+                primary: '#D55263',
+                secondary: '#fff',
+              },
+            },
+          }}
+        />
+      </AuthProvider>
+    </ThemeProvider>
+  );
+}
 export default App;
 
 

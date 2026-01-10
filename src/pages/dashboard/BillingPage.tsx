@@ -27,10 +27,21 @@ export function BillingPage() {
   return (
     <div className="p-6 lg:p-10 space-y-8 h-full overflow-y-auto bg-gray-50 dark:bg-[#050505] transition-colors duration-300">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Billing & Subscription</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Manage your plan, payments, and invoices</p>
+      {/* Header */}
+      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-white via-gray-50 to-white dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-gray-200 dark:border-white/5 shadow-sm mb-8">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/30">
+              <CreditCard size={28} className="text-black" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Billing & Subscription</h1>
+              <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Manage your plan, payments, and invoices</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -85,9 +96,8 @@ export function BillingPage() {
                       <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 font-medium">{invoice.date}</td>
                       <td className="px-6 py-4 text-sm text-gray-900 dark:text-white font-bold">{invoice.amount}</td>
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-lg ${
-                          invoice.status === 'Paid' ? 'bg-paymint-green/10 text-paymint-green' : 'bg-accent/10 text-accent'
-                        }`}>
+                        <span className={`inline-flex items-center px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-lg ${invoice.status === 'Paid' ? 'bg-paymint-green/10 text-paymint-green' : 'bg-accent/10 text-accent'
+                          }`}>
                           {invoice.status}
                         </span>
                       </td>
@@ -106,7 +116,7 @@ export function BillingPage() {
         <div className="space-y-8">
           <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-6 shadow-sm dark:shadow-none">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Payment Method</h3>
-            
+
             <div className="space-y-4">
               <div className="p-4 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/5 flex items-center justify-between group">
                 <div className="flex items-center gap-3">

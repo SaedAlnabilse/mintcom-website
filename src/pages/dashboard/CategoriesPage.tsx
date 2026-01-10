@@ -170,18 +170,31 @@ export function CategoriesPage() {
   return (
     <div className="space-y-8 pb-12">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Catalog Categories</h1>
-          <p className="text-gray-500 dark:text-gray-400 font-medium mt-1">Organize your menu items for better navigation and reporting.</p>
+      {/* Header */}
+      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-cream-50 via-cream-100 to-cream-50 dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-cream-300 dark:border-white/5 shadow-sm">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/30">
+              <Layers size={28} className="text-black" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Catalog Categories</h1>
+              <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Organize your menu items for better navigation and reporting</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={openCreateModal}
+              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 transition-all shadow-lg shadow-paymint-green/30"
+            >
+              <Plus size={18} />
+              <span>New Category</span>
+            </button>
+          </div>
         </div>
-        <button
-          onClick={openCreateModal}
-          className="px-6 py-3 bg-paymint-green text-black font-black rounded-2xl hover:scale-105 transition-all flex items-center gap-2 shadow-lg shadow-paymint-green/20 active:scale-95"
-        >
-          <Plus size={20} />
-          <span>New Category</span>
-        </button>
       </div>
 
       {/* Stats and Analytics */}
@@ -192,7 +205,7 @@ export function CategoriesPage() {
             { label: 'Total Products', value: stats.products, icon: Package, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
             { label: 'Most Popular', value: stats.top?.name || 'N/A', sub: `${stats.top?._count?.items || 0} items`, icon: TrendingUp, color: 'text-purple-500', bg: 'bg-purple-500/10' },
           ].map((stat, i) => (
-            <div key={i} className="p-6 rounded-3xl bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/5 shadow-md hover:shadow-lg hover:border-gray-300 dark:hover:border-white/10 transition-all flex items-center gap-5">
+            <div key={i} className="p-6 rounded-3xl bg-cream-50 dark:bg-[#0A0A0A] border border-cream-300 dark:border-white/5 shadow-md hover:shadow-lg hover:border-cream-400 dark:hover:border-white/10 transition-all flex items-center gap-5">
               <div className={`p-4 rounded-2xl ${stat.bg} ${stat.color}`}>
                 <stat.icon size={24} />
               </div>
@@ -205,14 +218,14 @@ export function CategoriesPage() {
           ))}
         </div>
 
-        <div className="lg:col-span-2 bg-white dark:bg-[#0A0A0A] p-8 rounded-[2.5rem] border border-gray-200 dark:border-white/5 shadow-md relative overflow-hidden">
+        <div className="lg:col-span-2 bg-cream-50 dark:bg-[#0A0A0A] p-8 rounded-[2.5rem] border border-cream-300 dark:border-white/5 shadow-md relative overflow-hidden">
           <div className="flex items-center justify-between mb-8 relative z-10">
             <h3 className="font-black text-gray-900 dark:text-white flex items-center gap-2">
               <ChartIcon size={18} className="text-paymint-green" />
               Distribution Analysis
             </h3>
           </div>
-          <div className="h-[200px] relative z-10">
+          <div className="h-[320px] relative z-10 -mt-4">
             {chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -220,11 +233,11 @@ export function CategoriesPage() {
                     data={chartData}
                     dataKey="value"
                     nameKey="name"
-                    cx="50%"
+                    cx="35%"
                     cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={5}
+                    innerRadius={65}
+                    outerRadius={95}
+                    paddingAngle={3}
                   >
                     {chartData.map((_, index) => (
                       <Cell key={index} fill={colors[index % colors.length]} stroke="none" />
@@ -232,16 +245,54 @@ export function CategoriesPage() {
                   </Pie>
                   <RechartsTooltip
                     contentStyle={{
-                      backgroundColor: resolvedTheme === 'dark' ? '#0A0A0A' : '#FFFFFF',
+                      backgroundColor: resolvedTheme === 'dark' ? '#111111' : '#FFFFFF',
                       borderRadius: '16px',
                       border: 'none',
-                      boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+                      boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+                      padding: '12px'
+                    }}
+                    itemStyle={{
+                      fontWeight: '800',
+                      textTransform: 'uppercase',
+                      fontSize: '10px',
+                      letterSpacing: '0.05em',
+                      color: resolvedTheme === 'dark' ? '#FFFFFF' : '#111111'
+                    }}
+                    labelStyle={{
+                      color: resolvedTheme === 'dark' ? '#7CC39F' : '#059669',
+                      fontWeight: '900',
+                      marginBottom: '4px'
                     }}
                   />
-                  <Legend />
+                  <Legend
+                    layout="vertical"
+                    align="right"
+                    verticalAlign="middle"
+                    iconType="circle"
+                    iconSize={10}
+                    formatter={(value) => (
+                      <span style={{
+                        color: resolvedTheme === 'dark' ? '#A1A1AA' : '#4B5563',
+                        fontSize: '11px',
+                        fontWeight: '800',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.05em',
+                        paddingLeft: '4px'
+                      }}>
+                        {value}
+                      </span>
+                    )}
+                    wrapperStyle={{
+                      paddingLeft: '20px',
+                      overflowY: 'auto',
+                      maxHeight: '280px'
+                    }}
+                  />
+
                 </PieChart>
               </ResponsiveContainer>
             ) : (
+
               <div className="h-full flex items-center justify-center text-gray-400 text-sm font-bold uppercase tracking-widest">
                 No Data Available
               </div>
@@ -251,87 +302,86 @@ export function CategoriesPage() {
       </div>
 
       {/* Categories Grid */}
-      <div className="space-y-6">
-        <div className="relative group max-w-md">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-paymint-green transition-colors" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search categories..."
-            className="w-full pl-12 pr-4 py-3 bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/5 rounded-2xl text-gray-900 dark:text-white focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green/30 transition-all font-medium shadow-md"
-          />
-        </div>
-
-        {isLoading ? (
-          <div className="py-24 flex flex-col items-center">
-            <div className="w-16 h-16 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
-          </div>
-        ) : filteredCategories.length === 0 ? (
-          <div className="py-24 bg-white dark:bg-[#0A0A0A] rounded-[2.5rem] border border-gray-200 dark:border-white/5 text-center flex flex-col items-center shadow-md">
-            <div className="w-24 h-24 bg-gray-100 dark:bg-white/5 rounded-[2.5rem] flex items-center justify-center mb-6 border border-gray-200 dark:border-transparent">
-              <Layers className="w-12 h-12 text-gray-300" />
-            </div>
-            <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">No categories yet</h3>
-            <p className="text-gray-500 max-w-xs font-medium">Create your first category to start organizing your menu items.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredCategories.map((category, idx) => {
-              const IconComponent = ICON_MAP[category.icon || 'tag'] || Tag;
-              return (
-                <motion.div
-                  key={category.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                  onClick={() => setViewingCategory(category)}
-                  className="group relative bg-white dark:bg-[#0A0A0A] p-6 rounded-[2rem] border border-gray-200 dark:border-white/5 shadow-md hover:shadow-xl hover:border-gray-300 dark:hover:border-white/10 transition-all cursor-pointer overflow-hidden"
-                >
-                  <div
-                    className="absolute top-0 left-0 w-2 h-full opacity-70 group-hover:w-3 transition-all bg-paymint-green"
-                  />
-
-                  <div className="flex justify-between items-start mb-6">
-                    <div
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500 bg-paymint-green"
-                    >
-                      <IconComponent size={28} className="text-black" />
-                    </div>
-                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity translate-x-4 group-hover:translate-x-0">
-                      <button
-                        onClick={(e) => openEditModal(e, category)}
-                        className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-transparent text-gray-600 dark:text-gray-500 hover:text-paymint-green hover:border-paymint-green/30 transition-colors"
-                      >
-                        <Edit2 size={16} />
-                      </button>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
-                        className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-transparent text-gray-600 dark:text-gray-500 hover:text-paymint-red hover:border-paymint-red/30 transition-colors"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </div>
-
-                  <h3 className="text-xl font-black text-gray-900 dark:text-white truncate group-hover:text-paymint-green transition-colors">
-                    {category.name}
-                  </h3>
-                  <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-widest">Order: {category.sortOrder}</p>
-
-                  <div className="mt-8 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Package size={14} className="text-gray-400" />
-                      <span className="text-sm font-black text-gray-500">{category._count?.items || 0} Items</span>
-                    </div>
-                    <ChevronRight size={18} className="text-gray-300 group-hover:text-paymint-green group-hover:translate-x-1 transition-all" />
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        )}
+      <div className="flex-1 relative group max-w-sm">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-paymint-green transition-colors" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search categories..."
+          className="w-full pl-11 pr-4 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green/30 shadow-md transition-all text-sm font-medium"
+        />
       </div>
+
+      {isLoading ? (
+        <div className="py-24 flex flex-col items-center">
+          <div className="w-16 h-16 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
+        </div>
+      ) : filteredCategories.length === 0 ? (
+        <div className="py-24 bg-cream-50 dark:bg-[#0A0A0A] rounded-[2.5rem] border border-cream-300 dark:border-white/5 text-center flex flex-col items-center shadow-md">
+          <div className="w-24 h-24 bg-cream-100 dark:bg-white/5 rounded-[2.5rem] flex items-center justify-center mb-6 border border-cream-300 dark:border-transparent">
+            <Layers className="w-12 h-12 text-gray-300" />
+          </div>
+          <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">No categories yet</h3>
+          <p className="text-gray-500 max-w-xs font-medium">Create your first category to start organizing your menu items.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {filteredCategories.map((category, idx) => {
+            const IconComponent = ICON_MAP[category.icon || 'tag'] || Tag;
+            return (
+              <motion.div
+                key={category.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}
+                onClick={() => setViewingCategory(category)}
+                className="group relative bg-cream-50 dark:bg-[#0A0A0A] p-6 rounded-[2rem] border border-cream-300 dark:border-white/5 shadow-md hover:shadow-xl hover:border-cream-400 dark:hover:border-white/10 transition-all cursor-pointer overflow-hidden"
+              >
+                <div
+                  className="absolute top-0 left-0 w-2 h-full opacity-70 group-hover:w-3 transition-all bg-paymint-green"
+                />
+
+                <div className="flex justify-between items-start mb-6">
+                  <div
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500 bg-paymint-green"
+                  >
+                    <IconComponent size={28} className="text-black" />
+                  </div>
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity translate-x-4 group-hover:translate-x-0">
+                    <button
+                      onClick={(e) => openEditModal(e, category)}
+                      className="p-2 rounded-lg bg-cream-100 dark:bg-white/5 border border-cream-300 dark:border-transparent text-gray-600 dark:text-gray-500 hover:text-paymint-green hover:border-paymint-green/30 transition-colors"
+                    >
+                      <Edit2 size={16} />
+                    </button>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
+                      className="p-2 rounded-lg bg-cream-100 dark:bg-white/5 border border-cream-300 dark:border-transparent text-gray-600 dark:text-gray-500 hover:text-paymint-red hover:border-paymint-red/30 transition-colors"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+
+                <h3 className="text-xl font-black text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors leading-tight">
+                  {category.name}
+                </h3>
+
+                <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-widest">Order: {category.sortOrder}</p>
+
+                <div className="mt-8 pt-4 border-t border-cream-300 dark:border-white/5 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Package size={14} className="text-gray-400" />
+                    <span className="text-sm font-black text-gray-500">{category._count?.items || 0} Items</span>
+                  </div>
+                  <ChevronRight size={18} className="text-gray-300 group-hover:text-paymint-green group-hover:translate-x-1 transition-all" />
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Detail Modal */}
       <AnimatePresence>
@@ -346,10 +396,10 @@ export function CategoriesPage() {
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
-              className="bg-white dark:bg-[#0A0A0A] w-full max-w-4xl rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col max-h-[85vh]"
+              className="bg-cream-50 dark:bg-[#0A0A0A] w-full max-w-4xl rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col max-h-[85vh]"
               onClick={e => e.stopPropagation()}
             >
-              <div className="p-8 border-b border-gray-50 dark:border-white/5 flex items-center justify-between">
+              <div className="p-8 border-b border-cream-200 dark:border-white/5 flex items-center justify-between">
                 <div className="flex items-center gap-5">
                   <div
                     className="w-16 h-16 rounded-[1.25rem] flex items-center justify-center shadow-lg bg-paymint-green"
@@ -363,7 +413,7 @@ export function CategoriesPage() {
                 </div>
                 <button
                   onClick={() => setViewingCategory(null)}
-                  className="p-3 rounded-2xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-white transition-colors"
+                  className="p-3 rounded-2xl bg-cream-100 dark:bg-white/5 text-gray-400 hover:text-white transition-colors"
                 >
                   <X size={24} />
                 </button>
@@ -378,9 +428,9 @@ export function CategoriesPage() {
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {categoryProducts.map((p) => (
-                      <div key={p.id} className="p-5 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-3xl group hover:border-paymint-green/30 transition-all">
+                      <div key={p.id} className="p-5 bg-cream-100 dark:bg-white/[0.02] border border-cream-200 dark:border-white/5 rounded-3xl group hover:border-paymint-green/30 transition-all">
                         <div className="flex items-center gap-4">
-                          <div className="w-16 h-16 rounded-2xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 overflow-hidden">
+                          <div className="w-16 h-16 rounded-2xl bg-cream-50 dark:bg-white/5 border border-cream-200 dark:border-white/5 overflow-hidden">
                             {p.image ? (
                               <img src={p.image} alt="" className="w-full h-full object-cover" />
                             ) : (
@@ -423,6 +473,6 @@ export function CategoriesPage() {
         message={confirmConfig.message}
         type={confirmConfig.type}
       />
-    </div>
+    </div >
   );
 }
