@@ -1146,7 +1146,8 @@ export function SettingsPage() {
           )}
 
           {/* Save Button */}
-          <div className="flex justify-end gap-3 sticky bottom-8 z-20">
+          {activeTab !== 'danger' && (
+            <div className="flex justify-end gap-3 sticky bottom-8 z-20">
             {hasUnsavedChanges && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -1169,6 +1170,7 @@ export function SettingsPage() {
               Save All Settings
             </button>
           </div>
+          )}
         </form>
       </div>
 
