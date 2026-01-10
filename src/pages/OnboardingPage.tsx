@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Store,
   MapPin,
-  Phone,
   DollarSign,
   User,
   Lock,
@@ -24,7 +23,8 @@ import {
   KeyRound,
   Hash,
   ShieldCheck,
-  Plus
+  Plus,
+  ChevronDown
 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
@@ -72,6 +72,32 @@ export function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<any>({});
   const [useSavedCard, setUseSavedCard] = useState(true); // Default to using saved card if available
+  const [selectedCountry, setSelectedCountry] = useState({ code: 'JO', name: 'Jordan', dialCode: '+962', flag: '🇯🇴' });
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [countrySearch, setCountrySearch] = useState('');
+
+  // Country codes list
+  const countries = [
+    { code: 'JO', name: 'Jordan', dialCode: '+962', flag: '🇯🇴' },
+    { code: 'AE', name: 'UAE', dialCode: '+971', flag: '🇦🇪' },
+    { code: 'SA', name: 'Saudi Arabia', dialCode: '+966', flag: '🇸🇦' },
+    { code: 'US', name: 'USA', dialCode: '+1', flag: '🇺🇸' },
+    { code: 'GB', name: 'UK', dialCode: '+44', flag: '🇬🇧' },
+    { code: 'EG', name: 'Egypt', dialCode: '+20', flag: '🇪🇬' },
+    { code: 'LB', name: 'Lebanon', dialCode: '+961', flag: '🇱🇧' },
+    { code: 'KW', name: 'Kuwait', dialCode: '+965', flag: '🇰🇼' },
+    { code: 'QA', name: 'Qatar', dialCode: '+974', flag: '🇶🇦' },
+    { code: 'BH', name: 'Bahrain', dialCode: '+973', flag: '🇧🇭' },
+    { code: 'OM', name: 'Oman', dialCode: '+968', flag: '🇴🇲' },
+    { code: 'IQ', name: 'Iraq', dialCode: '+964', flag: '🇮🇶' },
+    { code: 'PS', name: 'Palestine', dialCode: '+970', flag: '🇵🇸' },
+    { code: 'SY', name: 'Syria', dialCode: '+963', flag: '🇸🇾' },
+    { code: 'TR', name: 'Turkey', dialCode: '+90', flag: '🇹🇷' },
+    { code: 'DE', name: 'Germany', dialCode: '+49', flag: '🇩🇪' },
+    { code: 'FR', name: 'France', dialCode: '+33', flag: '🇫🇷' },
+    { code: 'IN', name: 'India', dialCode: '+91', flag: '🇮🇳' },
+    { code: 'PK', name: 'Pakistan', dialCode: '+92', flag: '🇵🇰' },
+  ];
 
   // Determine if this is a Trial (first est) or Paid (additional est) flow
   const isTrialFlow = needsOnboarding;
@@ -126,7 +152,9 @@ export function OnboardingPage() {
   };
 
   const onStep1Submit = (data: any) => {
-    setFormData((prev: any) => ({ ...prev, ...data }));
+    // Combine country dial code with phone number
+    const fullPhone = `${selectedCountry.dialCode} ${data.phone}`;
+    setFormData((prev: any) => ({ ...prev, ...data, phone: fullPhone }));
     setStep(2);
   };
 
@@ -159,65 +187,30 @@ export function OnboardingPage() {
       }
     }
 
-    // Check if user already has an Owner POS ID at the account level
-    if (account?.ownerPosId) {
-      // Skip Step 3 - use existing Owner POS ID
-      console.log('User already has Owner POS ID:', account.ownerPosId);
-      setFormData((prev: any) => ({
-        ...prev,
-        ownerPosId: account.ownerPosId,
-        skipOwnerPosStep: true
-      }));
-      setStep(4); // Skip to Step 4 (Admin Employee creation)
-    } else {
-      // Show Step 3 - create new Owner POS ID
-      setStep(3);
-    }
+    // Always show Step 3 - each establishment gets its own unique Owner POS ID
+    setStep(3);
   };
 
-  const onStep3Submit = async (data: any) => {
-    // Save Owner POS credentials at account level first
-    try {
-      const response = await api.post('/api/accounts/owner-pos-credentials', {
-        ownerPosId: data.ownerPosId,
-        ownerPosPassword: data.ownerPosPassword,
-      });
-
-      // Update the local account state with the new ownerPosId
-      if (response.data?.ownerPosId) {
-        updateAccount({ ownerPosId: response.data.ownerPosId });
-      }
-
-      setFormData((prev: any) => ({ ...prev, ...data }));
-      setStep(4);
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to set Owner POS ID');
-    }
+  const onStep3Submit = (data: any) => {
+    // Store Owner POS credentials locally for this establishment
+    // Each establishment gets its own unique Owner POS ID
+    setFormData((prev: any) => ({ ...prev, ...data }));
+    setStep(4);
   };
 
 
   const onStep4Submit = async (data: any) => {
     setIsLoading(true);
     try {
-      // Generate a unique establishment POS ID based on account's Owner POS ID
-      // This is for backwards compatibility - each establishment needs its own unique ID
-      const baseOwnerPosId = formData.ownerPosId || account?.ownerPosId;
-      const establishmentSlug = formData.name
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '')
-        .substring(0, 20);
-      const uniqueEstPosId = `${baseOwnerPosId}-${establishmentSlug}-${Date.now().toString(36)}`;
-
-      // 1. Create Establishment
+      // 1. Create Establishment with user-provided Owner POS ID
       const establishmentPayload = {
         name: formData.name,
         type: formData.type,
         address: formData.address,
         phone: formData.phone,
         currency: formData.currency,
-        ownerPosId: uniqueEstPosId, // Auto-generated unique ID per establishment
-        ownerPosPassword: formData.ownerPosPassword || 'temp_' + Date.now(), // Will be overridden by account-level
+        ownerPosId: formData.ownerPosId, // User-provided unique ID for this establishment
+        ownerPosPassword: formData.ownerPosPassword, // User-provided password
         paymentMethodToken: formData.paymentMethodToken
       };
 
@@ -345,39 +338,116 @@ export function OnboardingPage() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
-                          Phone Number <span className="text-red-500">*</span>
-                        </label>
+                    {/* Phone Number Row */}
+                    <div className="space-y-2">
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
+                        Phone Number <span className="text-red-500">*</span>
+                      </label>
+                      <div className="flex gap-2">
+                        {/* Country Code Selector */}
                         <div className="relative">
-                          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowCountryDropdown(!showCountryDropdown);
+                              if (showCountryDropdown) setCountrySearch('');
+                            }}
+                            className={`flex items-center gap-2 bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 px-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all min-w-[130px]`}
+                          >
+                            <span className="text-xl">{selectedCountry.flag}</span>
+                            <span className="text-sm">{selectedCountry.dialCode}</span>
+                            <ChevronDown size={16} className="text-gray-400" />
+                          </button>
+                          <AnimatePresence>
+                            {showCountryDropdown && (
+                              <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="absolute top-full left-0 mt-2 w-72 bg-white dark:bg-[#111] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden"
+                              >
+                                {/* Search Input */}
+                                <div className="p-3 border-b border-gray-100 dark:border-white/5">
+                                  <input
+                                    type="text"
+                                    value={countrySearch}
+                                    onChange={(e) => setCountrySearch(e.target.value)}
+                                    placeholder="Search country..."
+                                    className="w-full bg-gray-50 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded-xl py-2 px-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
+                                    autoFocus
+                                  />
+                                </div>
+                                {/* Filtered Countries List */}
+                                <div className="max-h-52 overflow-y-auto">
+                                  {countries
+                                    .filter((country) =>
+                                      country.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
+                                      country.code.toLowerCase().includes(countrySearch.toLowerCase()) ||
+                                      country.dialCode.includes(countrySearch)
+                                    )
+                                    .map((country) => (
+                                      <button
+                                        key={country.code}
+                                        type="button"
+                                        onClick={() => {
+                                          setSelectedCountry(country);
+                                          setShowCountryDropdown(false);
+                                          setCountrySearch('');
+                                        }}
+                                        className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-paymint-green/10 transition-colors ${selectedCountry.code === country.code ? 'bg-paymint-green/5 text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}
+                                      >
+                                        <span className="text-xl">{country.flag}</span>
+                                        <span className="font-bold text-sm">{country.name}</span>
+                                        <span className="text-gray-400 text-sm ml-auto">{country.dialCode}</span>
+                                      </button>
+                                    ))}
+                                  {countries.filter((country) =>
+                                    country.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
+                                    country.code.toLowerCase().includes(countrySearch.toLowerCase()) ||
+                                    country.dialCode.includes(countrySearch)
+                                  ).length === 0 && (
+                                      <p className="text-center text-gray-400 text-sm py-4">No countries found</p>
+                                    )}
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                        {/* Phone Number Input */}
+                        <div className="relative flex-1">
                           <input
                             type="tel"
                             {...form1.register('phone')}
-                            className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                            placeholder="+1 (555) 000-0000"
+                            onChange={(e) => {
+                              // Only allow numbers
+                              const value = e.target.value.replace(/[^0-9]/g, '');
+                              form1.setValue('phone', value);
+                            }}
+                            className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 px-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                            placeholder="Enter phone number"
                           />
                         </div>
-                        {form1.formState.errors.phone && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form1.formState.errors.phone.message as string}</p>}
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
-                          Base Currency <span className="text-red-500">*</span>
-                        </label>
-                        <div className="relative">
-                          <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                          <select
-                            {...form1.register('currency')}
-                            className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.currency ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all appearance-none`}
-                          >
-                            <option value="JOD">JOD - Jordanian Dinar</option>
-                            <option value="USD">USD - US Dollar</option>
-                            <option value="AED">AED - UAE Dirham</option>
-                          </select>
-                        </div>
-                        {form1.formState.errors.currency && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form1.formState.errors.currency.message as string}</p>}
+                      {form1.formState.errors.phone && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form1.formState.errors.phone.message as string}</p>}
+                    </div>
+
+                    {/* Base Currency Row */}
+                    <div className="space-y-2">
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
+                        Base Currency <span className="text-red-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                        <select
+                          {...form1.register('currency')}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.currency ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all appearance-none`}
+                        >
+                          <option value="JOD">JOD - Jordanian Dinar</option>
+                          <option value="USD">USD - US Dollar</option>
+                          <option value="AED">AED - UAE Dirham</option>
+                        </select>
                       </div>
+                      {form1.formState.errors.currency && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form1.formState.errors.currency.message as string}</p>}
                     </div>
 
                     <div className="space-y-2">
@@ -576,7 +646,8 @@ export function OnboardingPage() {
 
                   <div className="pt-2">
                     <button
-                      type="submit"
+                      type={hasSavedCard && useSavedCard ? 'button' : 'submit'}
+                      onClick={hasSavedCard && useSavedCard ? () => onStep2Submit({}) : undefined}
                       className="w-full py-5 bg-paymint-green text-black font-black text-xl rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
                       {isTrialFlow ? 'Start Free Trial' : 'Activate & Pay $20'}
@@ -599,13 +670,13 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
-                  <button onClick={() => setStep(1)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 font-bold text-xs uppercase tracking-widest">
+                  <button onClick={() => setStep(2)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 font-bold text-xs uppercase tracking-widest">
                     <ArrowLeft size={14} /> Back
                   </button>
                   <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Create Your Owner ID</h2>
-                  <p className="text-gray-600 dark:text-gray-400 font-medium">This ID will be used to log into the POS app for <strong>all</strong> your establishments.</p>
+                  <p className="text-gray-600 dark:text-gray-400 font-medium">This ID will be used to log into the POS app for this establishment.</p>
                   <div className="mt-4 p-3 bg-paymint-green/10 text-paymint-green text-xs rounded-xl font-medium border border-paymint-green/20">
-                    <p>✨ <strong>One-time setup:</strong> You'll only create this once. All future establishments will use this same Owner ID.</p>
+                    <p>✨ <strong>Unique access:</strong> Each establishment has its own Owner ID and password for secure POS login.</p>
                   </div>
                 </div>
 
@@ -667,7 +738,7 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
-                  <button onClick={() => setStep(account?.ownerPosId ? 1 : 3)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 font-bold text-xs uppercase tracking-widest">
+                  <button onClick={() => setStep(3)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 font-bold text-xs uppercase tracking-widest">
                     <ArrowLeft size={14} /> Back
                   </button>
                   <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Create Your POS Login</h2>

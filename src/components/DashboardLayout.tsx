@@ -124,7 +124,9 @@ export function DashboardLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-cream-100 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden selection:bg-paymint-green selection:text-black transition-colors duration-500">
+    <div
+      className="h-screen bg-cream-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden selection:bg-paymint-green selection:text-black transition-colors duration-500"
+    >
       {/* Sidebar Container - HIGHER Z-INDEX */}
       <motion.aside
         initial={false}
@@ -468,12 +470,12 @@ export function DashboardLayout() {
       </motion.aside>
 
       {/* Main Content Viewport */}
-      <main className="flex-1 relative overflow-hidden bg-cream-100 dark:bg-[#050505] transition-colors duration-500">
-        <div className="h-full overflow-y-auto custom-scrollbar relative z-10 p-4 lg:p-8">
+      <main className="flex-1 relative overflow-hidden bg-cream-100 dark:bg-paymint-dark transition-all duration-500 border-l border-cream-300 dark:border-white/[0.05]">
+        <div className="h-full overflow-y-auto custom-scrollbar relative p-4 lg:p-10">
           <Outlet />
         </div>
       </main>
 
-    </div>
+    </div >
   );
 }

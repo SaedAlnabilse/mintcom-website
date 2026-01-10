@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { Store, Save, CreditCard, Receipt, Award, Shield } from 'lucide-react';
@@ -16,25 +16,22 @@ interface AppSettings {
   logoUrl?: string;
   taxRate: number;
   taxId?: string;
-  invoicePrefix?: string;
   currency: string;
   showLogoOnReceipt: boolean;
   receiptHeader?: string;
   receiptFooter?: string;
-  loyaltyEnabled: boolean;
-  pointsPerUnit: number;
-  minimumSpend: number;
+  // Receipt display options
+  showRestaurantName?: boolean;
+  showDescription?: boolean;
+  showAddress?: boolean;
+  showTaxId?: boolean;
+  showFarewellMessage?: boolean;
 }
 
 interface LoyaltyConfig {
   enabled: boolean;
-  pointsPerCurrencyUnit: number;
-  minimumSpendForPoints: number;
-  tiers: {
-    name: string;
-    minPoints: number;
-    multiplier: number;
-  }[];
+  pointsPerCurrency: number;  // Points customer gets per currency unit spent
+  currencyPerPoint: number;   // Currency amount required to earn 1 point
   rewards?: LoyaltyReward[];
 }
 
@@ -87,8 +84,17 @@ export function SettingsPage() {
 
   const { register, handleSubmit, reset, watch, formState: { isDirty } } = useForm<AppSettings>();
 
+  // Watch receipt display options
+  const showRestaurantName = watch('showRestaurantName');
+  const showDescription = watch('showDescription');
+  const showAddress = watch('showAddress');
+  const showTaxId = watch('showTaxId');
+  const showFarewellMessage = watch('showFarewellMessage');
+
   // Rewards state
   const [rewards, setRewards] = useState<LoyaltyReward[]>([]);
+  const [initialRewards, setInitialRewards] = useState<LoyaltyReward[]>([]);
+  const [initialLoyaltyConfig, setInitialLoyaltyConfig] = useState<LoyaltyConfig | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [showRewardModal, setShowRewardModal] = useState(false);
   const [editingReward, setEditingReward] = useState<LoyaltyReward | null>(null);
@@ -99,6 +105,42 @@ export function SettingsPage() {
     freeCategoryId: '',
     freeCategoryName: '',
   });
+
+  // ATM-style input state for currencyPerPoint (stores value in cents)
+  const [currencyPerPointCents, setCurrencyPerPointCents] = useState(0);
+  const lastSyncedCurrencyPerPoint = useRef<number | null>(null);
+
+  // ATM display value (formatted as decimal)
+  const currencyPerPointDisplay = (currencyPerPointCents / 100).toFixed(2);
+
+  // ATM-style input handler
+  const handleCurrencyPerPointChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const digitsOnly = e.target.value.replace(/[^0-9]/g, '');
+    const cents = parseInt(digitsOnly, 10) || 0;
+    if (cents <= 999999999) {
+      setCurrencyPerPointCents(cents);
+      lastSyncedCurrencyPerPoint.current = cents / 100;
+      // Update loyalty config with the actual value
+      setLoyaltyConfig(prev => prev ? { ...prev, currencyPerPoint: cents / 100 } : null);
+    }
+  };
+
+  // Check if loyalty config has changes
+  const hasLoyaltyChanges =
+    JSON.stringify(loyaltyConfig) !== JSON.stringify(initialLoyaltyConfig) ||
+    JSON.stringify(rewards) !== JSON.stringify(initialRewards);
+
+  // Combined dirty state
+  const hasUnsavedChanges = isDirty || hasLoyaltyChanges;
+
+  // Sync ATM cents state when loyalty config is loaded from API (only if not from our own update)
+  useEffect(() => {
+    if (loyaltyConfig?.currencyPerPoint !== undefined &&
+      loyaltyConfig.currencyPerPoint !== lastSyncedCurrencyPerPoint.current) {
+      lastSyncedCurrencyPerPoint.current = loyaltyConfig.currencyPerPoint;
+      setCurrencyPerPointCents(Math.round(loyaltyConfig.currencyPerPoint * 100));
+    }
+  }, [loyaltyConfig?.currencyPerPoint]);
 
   useEffect(() => {
     fetchSettings();
@@ -128,9 +170,14 @@ export function SettingsPage() {
     try {
       const response = await api.get('/app-settings/loyalty-config');
       setLoyaltyConfig(response.data);
+      setInitialLoyaltyConfig(JSON.parse(JSON.stringify(response.data)));
       // Set rewards from loyalty config
       if (response.data?.rewards) {
         setRewards(response.data.rewards);
+        setInitialRewards(JSON.parse(JSON.stringify(response.data.rewards)));
+      } else {
+        setRewards([]);
+        setInitialRewards([]);
       }
     } catch (err) {
       console.error('Failed to load loyalty config');
@@ -139,10 +186,12 @@ export function SettingsPage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await api.get('/categories');
-      setCategories(response.data || []);
+      const response = await api.get('/api/categories');
+      // Categories endpoint returns array directly
+      const data = Array.isArray(response.data) ? response.data : response.data?.data || [];
+      setCategories(data);
     } catch (err) {
-      console.error('Failed to load categories');
+      console.error('Failed to load categories:', err);
     }
   };
 
@@ -275,10 +324,23 @@ export function SettingsPage() {
         }
       }
 
+      // Save app settings
       await api.put('/app-settings', data);
+
+      // If on loyalty tab, also save loyalty config
+      if (activeTab === 'loyalty' && loyaltyConfig) {
+        await api.put('/app-settings/loyalty-config', {
+          ...loyaltyConfig,
+          rewards: rewards,
+        });
+      }
+
       toast.success('Settings saved successfully');
       setSelectedLogo(null);
       fetchSettings();
+      if (activeTab === 'loyalty') {
+        fetchLoyaltyConfig();
+      }
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to save settings');
     } finally {
@@ -346,8 +408,8 @@ export function SettingsPage() {
   }
 
   return (
-    <div className="h-full overflow-y-auto bg-cream-50 dark:bg-paymint-dark p-6 lg:p-10 transition-colors duration-300">
-      <div className="max-w-4xl mx-auto">
+    <div className="relative z-10 p-4 lg:p-10 bg-cream-50 dark:bg-paymint-dark transition-colors duration-300 min-h-full">
+      <div className="w-full">
         <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-cream-50 via-cream-100 to-cream-50 dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-cream-300 dark:border-white/5 shadow-sm mb-10">
           <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
@@ -431,7 +493,7 @@ export function SettingsPage() {
                 />
               </div>
 
-              {/* Address */}
+              {/* Address & Phone */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Address</label>
@@ -450,11 +512,20 @@ export function SettingsPage() {
                   />
                 </div>
               </div>
+            </motion.div>
+          )}
 
-              {/* Phone & Email */}
+          {activeTab === 'sales' && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-cream-50 dark:bg-white/5 rounded-3xl border border-cream-300 dark:border-white/10 p-8 shadow-sm dark:shadow-none space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300"
+            >
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sales & Logic</h3>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Tax Rate */}
                 <div className="flex flex-col">
-                  {/* Tax Rate - Special Case */}
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-sm font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Tax Rate (%)</label>
                     <button
@@ -473,6 +544,8 @@ export function SettingsPage() {
                   />
                   <p className="text-[10px] text-gray-400 mt-2 font-bold uppercase tracking-widest">Updating this affects historical revenue calculation.</p>
                 </div>
+
+                {/* Currency */}
                 <div>
                   <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Currency</label>
                   <select
@@ -489,35 +562,6 @@ export function SettingsPage() {
             </motion.div>
           )}
 
-          {activeTab === 'sales' && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-cream-50 dark:bg-white/5 rounded-3xl border border-cream-300 dark:border-white/10 p-8 shadow-sm dark:shadow-none space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300"
-            >
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sales & Logic</h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Tax ID</label>
-                  <input
-                    type="text"
-                    {...register('taxId')}
-                    className="w-full px-4 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-colors font-medium"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Invoice Prefix</label>
-                  <input
-                    type="text"
-                    {...register('invoicePrefix')}
-                    className="w-full px-4 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-colors font-medium"
-                  />
-                </div>
-              </div>
-            </motion.div>
-          )}
-
           {/* Receipt Settings */}
           {activeTab === 'receipt' && (
             <motion.div
@@ -525,36 +569,161 @@ export function SettingsPage() {
               animate={{ opacity: 1, y: 0 }}
               className="bg-cream-50 dark:bg-white/5 rounded-3xl border border-cream-300 dark:border-white/10 p-8 shadow-sm dark:shadow-none space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300"
             >
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Receipt Blueprint</h3>
-
-              <div className="flex items-center space-x-3 p-4 bg-cream-100 dark:bg-white/5 rounded-2xl border border-cream-300 dark:border-white/10">
-                <input
-                  type="checkbox"
-                  id="showLogoOnReceipt"
-                  {...register('showLogoOnReceipt')}
-                  className="w-5 h-5 rounded border-gray-300 text-paymint-green focus:ring-paymint-green"
-                />
-                <label htmlFor="showLogoOnReceipt" className="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider cursor-pointer">Show Logo on Printed Snapshot</label>
+              {/* Header */}
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-paymint-green/10 flex items-center justify-center">
+                  <Receipt className="w-7 h-7 text-paymint-green" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Receipt Design</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Customize what appears on printed receipts</p>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Receipt Header Message</label>
-                <textarea
-                  {...register('receiptHeader')}
-                  rows={2}
-                  className="w-full px-4 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-colors font-medium resize-none"
-                  placeholder="e.g. Welcome to our Restaurant"
-                />
+              {/* Display Options Section */}
+              <div className="border-t border-cream-300 dark:border-white/10 pt-6">
+                <h4 className="text-sm font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <svg className="w-4 h-4 text-paymint-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Display Options
+                </h4>
+                <div className="space-y-4">
+                  {/* Show Logo */}
+                  <div className="p-4 bg-cream-100 dark:bg-white/5 rounded-2xl border border-cream-300 dark:border-white/10">
+                    <div className="flex items-center space-x-3">
+                      <input
+                        type="checkbox"
+                        id="showLogoOnReceipt"
+                        {...register('showLogoOnReceipt')}
+                        className="w-5 h-5 rounded border-gray-300 text-paymint-green focus:ring-paymint-green cursor-pointer"
+                      />
+                      <div>
+                        <label htmlFor="showLogoOnReceipt" className="text-sm font-bold text-gray-700 dark:text-gray-300 cursor-pointer">Show Logo</label>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Display your restaurant logo on receipts (set logo in Restaurant Profile)</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Restaurant Name */}
+                  <div className="p-4 bg-cream-100 dark:bg-white/5 rounded-2xl border border-cream-300 dark:border-white/10">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <input
+                        type="checkbox"
+                        id="showRestaurantName"
+                        {...register('showRestaurantName')}
+                        className="w-5 h-5 rounded border-gray-300 text-paymint-green focus:ring-paymint-green cursor-pointer"
+                      />
+                      <label htmlFor="showRestaurantName" className="text-sm font-bold text-gray-700 dark:text-gray-300 cursor-pointer">Show Restaurant Name</label>
+                    </div>
+                    <input
+                      type="text"
+                      {...register('restaurantName')}
+                      disabled={!showRestaurantName}
+                      placeholder="Enter restaurant name"
+                      className={`w-full px-4 py-3 bg-cream-50 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-all font-medium ${!showRestaurantName ? 'opacity-50 grayscale cursor-not-allowed bg-gray-100 dark:bg-gray-800/30' : ''}`}
+                    />
+                  </div>
+
+                  {/* Description */}
+                  <div className="p-4 bg-cream-100 dark:bg-white/5 rounded-2xl border border-cream-300 dark:border-white/10">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <input
+                        type="checkbox"
+                        id="showDescription"
+                        {...register('showDescription')}
+                        className="w-5 h-5 rounded border-gray-300 text-paymint-green focus:ring-paymint-green cursor-pointer"
+                      />
+                      <label htmlFor="showDescription" className="text-sm font-bold text-gray-700 dark:text-gray-300 cursor-pointer">Show Description</label>
+                    </div>
+                    <textarea
+                      {...register('description')}
+                      disabled={!showDescription}
+                      rows={2}
+                      placeholder="Enter restaurant description"
+                      className={`w-full px-4 py-3 bg-cream-50 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-all font-medium resize-none ${!showDescription ? 'opacity-50 grayscale cursor-not-allowed bg-gray-100 dark:bg-gray-800/30' : ''}`}
+                    />
+                  </div>
+
+                  {/* Address */}
+                  <div className="p-4 bg-cream-100 dark:bg-white/5 rounded-2xl border border-cream-300 dark:border-white/10">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <input
+                        type="checkbox"
+                        id="showAddress"
+                        {...register('showAddress')}
+                        className="w-5 h-5 rounded border-gray-300 text-paymint-green focus:ring-paymint-green cursor-pointer"
+                      />
+                      <label htmlFor="showAddress" className="text-sm font-bold text-gray-700 dark:text-gray-300 cursor-pointer">Show Address</label>
+                    </div>
+                    <input
+                      type="text"
+                      {...register('address')}
+                      disabled={!showAddress}
+                      placeholder="Enter restaurant address"
+                      className={`w-full px-4 py-3 bg-cream-50 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-all font-medium ${!showAddress ? 'opacity-50 grayscale cursor-not-allowed bg-gray-100 dark:bg-gray-800/30' : ''}`}
+                    />
+                  </div>
+
+                  {/* Tax ID */}
+                  <div className="p-4 bg-cream-100 dark:bg-white/5 rounded-2xl border border-cream-300 dark:border-white/10">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <input
+                        type="checkbox"
+                        id="showTaxId"
+                        {...register('showTaxId')}
+                        className="w-5 h-5 rounded border-gray-300 text-paymint-green focus:ring-paymint-green cursor-pointer"
+                      />
+                      <label htmlFor="showTaxId" className="text-sm font-bold text-gray-700 dark:text-gray-300 cursor-pointer">Show Tax ID</label>
+                    </div>
+                    <input
+                      type="text"
+                      {...register('taxId')}
+                      disabled={!showTaxId}
+                      placeholder="Enter tax ID number (e.g. 123-456-789)"
+                      className={`w-full px-4 py-3 bg-cream-50 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-all font-medium ${!showTaxId ? 'opacity-50 grayscale cursor-not-allowed bg-gray-100 dark:bg-gray-800/30' : ''}`}
+                    />
+                  </div>
+
+                  {/* Farewell Message */}
+                  <div className="p-4 bg-cream-100 dark:bg-white/5 rounded-2xl border border-cream-300 dark:border-white/10">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <input
+                        type="checkbox"
+                        id="showFarewellMessage"
+                        {...register('showFarewellMessage')}
+                        className="w-5 h-5 rounded border-gray-300 text-paymint-green focus:ring-paymint-green cursor-pointer"
+                      />
+                      <label htmlFor="showFarewellMessage" className="text-sm font-bold text-gray-700 dark:text-gray-300 cursor-pointer">Show Farewell Message</label>
+                    </div>
+                    <textarea
+                      {...register('receiptFooter')}
+                      disabled={!showFarewellMessage}
+                      rows={2}
+                      placeholder="Enter farewell message (e.g. Thank you for visiting!)"
+                      className={`w-full px-4 py-3 bg-cream-50 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-all font-medium resize-none ${!showFarewellMessage ? 'opacity-50 grayscale cursor-not-allowed bg-gray-100 dark:bg-gray-800/30' : ''}`}
+                    />
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Receipt Footer Message</label>
-                <textarea
-                  {...register('receiptFooter')}
-                  rows={2}
-                  className="w-full px-4 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-colors font-medium resize-none"
-                  placeholder="e.g. Thank you for visiting!"
-                />
+              {/* Header Message Section */}
+              <div className="border-t border-cream-300 dark:border-white/10 pt-6">
+                <h4 className="text-sm font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <svg className="w-4 h-4 text-paymint-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                  </svg>
+                  Header Message
+                </h4>
+                <div className="bg-cream-100 dark:bg-white/5 rounded-2xl border border-cream-300 dark:border-white/10 p-6">
+                  <textarea
+                    {...register('receiptHeader')}
+                    rows={2}
+                    className="w-full px-4 py-3 bg-cream-50 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-colors font-medium resize-none"
+                    placeholder="e.g. Welcome to our Restaurant"
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">This message appears at the top of the receipt, below the restaurant info</p>
+                </div>
               </div>
             </motion.div>
           )}
@@ -594,11 +763,12 @@ export function SettingsPage() {
                           <span className="text-sm font-bold text-paymint-green">{watch('currency') || 'JOD'}</span>
                         </div>
                         <input
-                          type="number"
-                          step="0.01"
-                          {...register('minimumSpend')}
+                          type="text"
+                          inputMode="numeric"
+                          value={currencyPerPointDisplay}
+                          onChange={handleCurrencyPerPointChange}
                           placeholder="0.00"
-                          className="flex-1 px-4 py-3 bg-transparent text-gray-900 dark:text-white font-semibold focus:outline-none"
+                          className="flex-1 px-4 py-3 bg-transparent text-gray-900 dark:text-white font-semibold focus:outline-none text-right"
                         />
                       </div>
                     </div>
@@ -609,10 +779,16 @@ export function SettingsPage() {
                           <span className="text-xs font-bold text-paymint-green">PTS</span>
                         </div>
                         <input
-                          type="number"
-                          {...register('pointsPerUnit')}
+                          type="text"
+                          inputMode="numeric"
+                          value={Math.max(0, loyaltyConfig?.pointsPerCurrency ?? 0)}
+                          onChange={(e) => {
+                            const digitsOnly = e.target.value.replace(/[^0-9]/g, '');
+                            const value = parseInt(digitsOnly, 10) || 0;
+                            setLoyaltyConfig(prev => prev ? { ...prev, pointsPerCurrency: value } : null);
+                          }}
                           placeholder="0"
-                          className="flex-1 px-4 py-3 bg-transparent text-gray-900 dark:text-white font-semibold focus:outline-none"
+                          className="flex-1 px-4 py-3 bg-transparent text-gray-900 dark:text-white font-semibold focus:outline-none text-right"
                         />
                       </div>
                     </div>
@@ -834,7 +1010,7 @@ export function SettingsPage() {
 
           {/* Save Button */}
           <div className="flex justify-end gap-3 sticky bottom-8 z-20">
-            {isDirty && (
+            {hasUnsavedChanges && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
