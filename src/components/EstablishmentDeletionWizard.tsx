@@ -16,6 +16,9 @@ import {
     ChevronRight,
     Shield,
     Loader2,
+    Eye,
+    EyeOff,
+    Lock,
 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
@@ -79,6 +82,8 @@ export function EstablishmentDeletionWizard({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [stats, setStats] = useState<EstablishmentStats | null>(null);
     const [confirmationName, setConfirmationName] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     // Export options
     const [exportOptions, setExportOptions] = useState({
@@ -112,11 +117,17 @@ export function EstablishmentDeletionWizard({
             return;
         }
 
+        if (password.length < 6) {
+            toast.error('Please enter your account password');
+            return;
+        }
+
         try {
             setIsSubmitting(true);
             await api.post(`/api/establishments/${establishmentId}/request-deletion`, {
                 ...exportOptions,
                 confirmationName,
+                password,
             });
             toast.success('Deletion scheduled. Check your email for data exports.');
             onDeletionRequested();
@@ -418,6 +429,38 @@ export function EstablishmentDeletionWizard({
                                         </p>
                                     )}
                                 </div>
+
+                                {/* Password Input */}
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center gap-2">
+                                        <Lock size={14} className="text-red-500" />
+                                        Enter your account password
+                                    </label>
+                                    <div className="relative">
+                                        <input
+                                            type={showPassword ? 'text' : 'password'}
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            placeholder="Your account password"
+                                            className={`w-full px-4 py-3 pr-12 bg-white dark:bg-[#2a2a2a] border rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none transition-colors ${password.length >= 6
+                                                ? 'border-green-500 focus:border-green-500'
+                                                : 'border-gray-300 dark:border-gray-700 focus:border-red-500'
+                                                }`}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                        >
+                                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                        </button>
+                                    </div>
+                                    {password.length >= 6 && (
+                                        <p className="text-green-500 text-sm mt-2 flex items-center gap-1">
+                                            <Check size={14} /> Password entered
+                                        </p>
+                                    )}
+                                </div>
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -456,6 +499,7 @@ export function EstablishmentDeletionWizard({
                             onClick={handleRequestDeletion}
                             disabled={
                                 confirmationName.toLowerCase() !== establishmentName.toLowerCase() ||
+                                password.length < 6 ||
                                 isSubmitting
                             }
                             className="px-6 py-3 bg-red-500 text-white rounded-xl font-bold hover:bg-red-600 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
