@@ -79,10 +79,34 @@ export function ReportsPage() {
     let start = new Date();
     let end = new Date();
     switch (range) {
-      case 'yesterday': start.setDate(today.getDate() - 1); end.setDate(today.getDate() - 1); break;
-      case 'this_week': start.setDate(today.getDate() - today.getDay()); break;
-      case 'this_month': start.setDate(1); break;
-      case 'last_30': start.setDate(today.getDate() - 30); break;
+      case 'yesterday':
+        start.setDate(today.getDate() - 1);
+        end.setDate(today.getDate() - 1);
+        break;
+      case 'this_week':
+        // Get the day of week (0 = Sunday, 6 = Saturday)
+        const dayOfWeek = today.getDay();
+        // Go back to the start of the week (Sunday)
+        // If today is Sunday (0), we want to go back 6 days to show the full week
+        // Otherwise, go back to the previous Sunday
+        if (dayOfWeek === 0) {
+          // It's Sunday - show the past 7 days (last Sunday to today)
+          start.setDate(today.getDate() - 6);
+        } else {
+          // Go back to the previous Sunday
+          start.setDate(today.getDate() - dayOfWeek);
+        }
+        // End is always today
+        end = new Date(today);
+        break;
+      case 'this_month':
+        start.setDate(1);
+        end = new Date(today);
+        break;
+      case 'last_30':
+        start.setDate(today.getDate() - 30);
+        end = new Date(today);
+        break;
     }
     setStartDate(start.toISOString().split('T')[0]);
     setEndDate(end.toISOString().split('T')[0]);
@@ -240,22 +264,22 @@ export function ReportsPage() {
             </div>
             <div className="flex-1 flex items-center justify-between">
               <div className="flex flex-col gap-0.5 min-w-0">
-                <span className="text-[8px] text-gray-400 font-black uppercase tracking-[0.2em] opacity-50">Origin</span>
+                <span className="text-[8px] text-gray-400 font-black uppercase tracking-[0.2em]">Origin</span>
                 <input
                   type="date"
                   value={startDate}
                   onChange={(e) => { setStartDate(e.target.value); setSelectedDateRange('custom'); }}
-                  className="bg-transparent focus:outline-none cursor-pointer text-[11px] font-black text-gray-900 dark:text-white uppercase tracking-tighter"
+                  className="bg-transparent focus:outline-none cursor-pointer text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter dark:[color-scheme:dark] [&::-webkit-calendar-picker-indicator]:scale-150 [&::-webkit-calendar-picker-indicator]:ml-2"
                 />
               </div>
               <div className="w-px h-8 bg-cream-300 dark:bg-white/10 mx-4 flex-shrink-0" />
               <div className="flex flex-col gap-0.5 min-w-0">
-                <span className="text-[8px] text-gray-400 font-black uppercase tracking-[0.2em] opacity-50">Target</span>
+                <span className="text-[8px] text-gray-400 font-black uppercase tracking-[0.2em]">Target</span>
                 <input
                   type="date"
                   value={endDate}
                   onChange={(e) => { setEndDate(e.target.value); setSelectedDateRange('custom'); }}
-                  className="bg-transparent focus:outline-none cursor-pointer text-[11px] font-black text-gray-900 dark:text-white uppercase tracking-tighter"
+                  className="bg-transparent focus:outline-none cursor-pointer text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter dark:[color-scheme:dark] [&::-webkit-calendar-picker-indicator]:scale-150 [&::-webkit-calendar-picker-indicator]:ml-2"
                 />
               </div>
             </div>
@@ -341,6 +365,9 @@ export function ReportsPage() {
                           const isHourly = salesData.dailyBreakdown?.some((d: any) => d.date.includes(':'));
                           let chartData = salesData.dailyBreakdown || [];
 
+                          // Determine if we need daily aggregation (for week/month views)
+                          const needsDailyAggregation = ['this_week', 'this_month', 'last_30'].includes(selectedDateRange) && isHourly;
+
                           // If it's "Yesterday" and we have hourly data, fill in the missing hours to show a full 24h timeline
                           if (selectedDateRange === 'yesterday' && isHourly) {
                             const allHours = Array.from({ length: 24 }, (_, i) => {
@@ -363,6 +390,35 @@ export function ReportsPage() {
                               return existing ? { ...existing, date: hourStr } : { date: hourStr, revenue: 0 };
                             });
                             chartData = allHours;
+                          }
+
+                          // For week/month views, aggregate hourly data into daily data
+                          if (needsDailyAggregation) {
+                            const dailyMap: { [key: string]: { date: string; revenue: number; displayDate: string } } = {};
+
+                            chartData.forEach((d: any) => {
+                              const dateObj = new Date(d.date);
+                              if (!isNaN(dateObj.getTime())) {
+                                // Create a day key (YYYY-MM-DD)
+                                const dayKey = dateObj.toISOString().split('T')[0];
+                                const dayName = format(dateObj, 'EEE'); // Mon, Tue, etc.
+                                const fullDate = format(dateObj, 'MMM d'); // Jan 5, etc.
+
+                                if (!dailyMap[dayKey]) {
+                                  dailyMap[dayKey] = {
+                                    date: dayKey,
+                                    revenue: 0,
+                                    displayDate: selectedDateRange === 'this_week' ? dayName : fullDate
+                                  };
+                                }
+                                dailyMap[dayKey].revenue += Number(d.revenue) || 0;
+                              }
+                            });
+
+                            // Sort by date and convert to array
+                            chartData = Object.values(dailyMap).sort((a, b) =>
+                              new Date(a.date).getTime() - new Date(b.date).getTime()
+                            );
                           }
 
                           const maxRevenue = chartData.length > 0
@@ -397,7 +453,7 @@ export function ReportsPage() {
 
                               {/* Scrollable Chart Area */}
                               <div className="flex-1 overflow-x-auto overflow-y-hidden pl-[50px] custom-scrollbar scroll-smooth">
-                                {isHourly ? (
+                                {isHourly && !needsDailyAggregation ? (
                                   <div style={{ width: `${Math.max(800, chartData.length * 85)}px`, height: '100%' }}>
                                     <AreaChart
                                       width={Math.max(800, chartData.length * 85)}
@@ -473,13 +529,19 @@ export function ReportsPage() {
                                       </defs>
                                       <CartesianGrid strokeDasharray="0 0" stroke={isDark ? "#ffffff05" : "#00000005"} vertical={false} />
                                       <XAxis
-                                        dataKey="date"
+                                        dataKey={needsDailyAggregation ? "displayDate" : "date"}
                                         stroke={isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.1)"}
                                         fontSize={10}
                                         tickLine={false}
                                         axisLine={{ stroke: isDark ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.2)", strokeWidth: 1 }}
                                         tick={{ fill: isDark ? "#94a3b8" : "#64748b", fontWeight: '700' }}
-                                        tickFormatter={(val) => format(new Date(val), 'MMM d')}
+                                        tickFormatter={(val) => {
+                                          // If it's already a display value (like "Mon" or "Jan 5"), return as-is
+                                          if (needsDailyAggregation) return val;
+                                          // Otherwise format the date
+                                          const date = new Date(val);
+                                          return !isNaN(date.getTime()) ? format(date, 'MMM d') : val;
+                                        }}
                                         dy={15}
                                         interval="preserveStartEnd"
                                       />
@@ -495,7 +557,18 @@ export function ReportsPage() {
                                         }}
                                         itemStyle={{ color: '#7CC39F', fontWeight: '900', fontSize: '12px', textTransform: 'uppercase' }}
                                         labelStyle={{ fontWeight: '900', color: isDark ? '#fff' : '#000', marginBottom: '8px', fontSize: '10px' }}
-                                        labelFormatter={(val) => format(new Date(val), 'MMM d, yyyy')}
+                                        labelFormatter={(val, payload) => {
+                                          // For aggregated data, show the full date from the date field
+                                          if (needsDailyAggregation && payload && payload[0]) {
+                                            const dateStr = payload[0].payload?.date;
+                                            if (dateStr) {
+                                              const date = new Date(dateStr);
+                                              return !isNaN(date.getTime()) ? format(date, 'EEEE, MMM d, yyyy') : val;
+                                            }
+                                          }
+                                          const date = new Date(val);
+                                          return !isNaN(date.getTime()) ? format(date, 'MMM d, yyyy') : val;
+                                        }}
                                       />
                                       <Area
                                         type="monotone"

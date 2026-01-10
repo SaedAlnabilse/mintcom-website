@@ -30,6 +30,10 @@ import api from '../config/api';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 
+// Paymint Logo imports
+import PaymintLogoGreen from '../assets/Green Full Logo.png';
+import PaymintLogoWhite from '../assets/White Green Full Logo.png';
+
 // Step 1: Establishment Details
 const step1Schema = z.object({
   name: z.string().min(1, 'Establishment name is required'),
@@ -261,11 +265,17 @@ export function OnboardingPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex flex-col transition-colors duration-300">
       {/* Navbar */}
       <div className="p-6 flex justify-between items-center border-b border-gray-200 dark:border-white/5 bg-white dark:bg-transparent shadow-sm">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-paymint-green rounded-lg flex items-center justify-center">
-            <span className="text-black font-black">P</span>
-          </div>
-          <span className="text-xl font-black text-gray-900 dark:text-white tracking-tight">PayMint</span>
+        <div className="flex items-center">
+          <img
+            src={PaymintLogoGreen}
+            alt="PayMint"
+            className="h-8 w-auto object-contain dark:hidden"
+          />
+          <img
+            src={PaymintLogoWhite}
+            alt="PayMint"
+            className="h-8 w-auto object-contain hidden dark:block"
+          />
         </div>
 
         {step <= totalSteps && (

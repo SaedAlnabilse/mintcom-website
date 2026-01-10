@@ -43,7 +43,8 @@
 }
 
 /* Dark mode styling for native select dropdowns */
-.dark select {
+.dark select,
+.dark input {
   color-scheme: dark;
 }
 

@@ -8,6 +8,10 @@ import { Eye, EyeOff, ArrowLeft, Mail, Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 
+// Paymint Logo imports
+import PaymintLogoGreen from '../assets/Green Full Logo.png';
+import PaymintLogoWhite from '../assets/White Green Full Logo.png';
+
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email'),
   password: z.string().min(1, 'Password is required'),
@@ -67,9 +71,18 @@ export function LoginPage() {
 
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-2xl p-8 transition-colors duration-300 border border-gray-100 dark:border-transparent">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              Pay<span className="text-paymint-green">Mint</span>
-            </h1>
+            <div className="flex justify-center mb-4">
+              <img
+                src={PaymintLogoGreen}
+                alt="PayMint"
+                className="h-10 w-auto object-contain dark:hidden"
+              />
+              <img
+                src={PaymintLogoWhite}
+                alt="PayMint"
+                className="h-10 w-auto object-contain hidden dark:block"
+              />
+            </div>
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Welcome back</h2>
             <p className="text-gray-600 dark:text-gray-400">Sign in to access your dashboard</p>
           </div>

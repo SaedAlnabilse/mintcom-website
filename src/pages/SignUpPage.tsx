@@ -8,6 +8,10 @@ import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Phone, Check, Loader2 } from 
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 
+// Paymint Logo imports
+import PaymintLogoGreen from '../assets/Green Full Logo.png';
+import PaymintLogoWhite from '../assets/White Green Full Logo.png';
+
 const signUpSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
   lastName: z.string().min(2, 'Last name must be at least 2 characters'),
@@ -142,9 +146,18 @@ export function SignUpPage() {
           </Link>
 
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-              Pay<span className="text-paymint-green">Mint</span>
-            </h1>
+            <div className="flex mb-4">
+              <img
+                src={PaymintLogoGreen}
+                alt="PayMint"
+                className="h-12 w-auto object-contain dark:hidden"
+              />
+              <img
+                src={PaymintLogoWhite}
+                alt="PayMint"
+                className="h-12 w-auto object-contain hidden dark:block"
+              />
+            </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Create your account</h2>
             <p className="text-gray-600 dark:text-gray-400">Start your 7-day free trial. No credit card required.</p>
           </div>
@@ -160,9 +173,8 @@ export function SignUpPage() {
                   <input
                     {...register('firstName')}
                     type="text"
-                    className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${
-                      errors.firstName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 pl-10 pr-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.firstName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
+                      } rounded-lg py-3 pl-10 pr-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                     placeholder="John"
                   />
                 </div>
@@ -177,9 +189,8 @@ export function SignUpPage() {
                 <input
                   {...register('lastName')}
                   type="text"
-                  className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${
-                    errors.lastName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                  } rounded-lg py-3 px-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                  className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.lastName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
+                    } rounded-lg py-3 px-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                   placeholder="Doe"
                 />
                 {errors.lastName?.message && (
@@ -197,9 +208,8 @@ export function SignUpPage() {
                 <input
                   {...register('email')}
                   type="email"
-                  className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${
-                    errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                  } rounded-lg py-3 pl-10 pr-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                  className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
+                    } rounded-lg py-3 pl-10 pr-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                   placeholder="john@example.com"
                 />
               </div>
@@ -232,9 +242,8 @@ export function SignUpPage() {
                 <input
                   {...register('password')}
                   type={showPassword ? 'text' : 'password'}
-                  className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${
-                    errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                  } rounded-lg py-3 pl-10 pr-12 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                  className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
+                    } rounded-lg py-3 pl-10 pr-12 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                   placeholder="Create a strong password"
                 />
                 <button
@@ -259,9 +268,8 @@ export function SignUpPage() {
                 <input
                   {...register('confirmPassword')}
                   type={showConfirmPassword ? 'text' : 'password'}
-                  className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${
-                    errors.confirmPassword ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                  } rounded-lg py-3 pl-10 pr-12 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                  className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.confirmPassword ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
+                    } rounded-lg py-3 pl-10 pr-12 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                   placeholder="Confirm your password"
                 />
                 <button

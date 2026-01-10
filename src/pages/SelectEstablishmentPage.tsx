@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Store, Plus, LogOut, ChevronRight, CheckCircle2, Loader2, Zap, Crown, ArrowLeft } from 'lucide-react';
+import { Store, Plus, LogOut, ChevronRight, CheckCircle2, Loader2, Crown, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+
+// Paymint Logo imports
+import PaymintLogoGreen from '../assets/Green Full Logo.png';
+import PaymintLogoWhite from '../assets/White Green Full Logo.png';
 
 export function SelectEstablishmentPage() {
   const { establishments, setCurrentEstablishment, logout, account } = useAuth();
@@ -53,13 +57,16 @@ export function SelectEstablishmentPage() {
 
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-paymint-green rounded-xl flex items-center justify-center shadow-lg shadow-paymint-green/20">
-              <Zap size={20} className="text-black" fill="currentColor" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-black text-gray-900 dark:text-white tracking-tighter leading-none">PayMint</span>
-              <span className="text-[10px] font-black text-paymint-green uppercase tracking-[0.2em] mt-1">Enterprise</span>
-            </div>
+            <img
+              src={PaymintLogoGreen}
+              alt="PayMint"
+              className="h-10 w-auto object-contain dark:hidden"
+            />
+            <img
+              src={PaymintLogoWhite}
+              alt="PayMint"
+              className="h-10 w-auto object-contain hidden dark:block"
+            />
           </div>
         </div>
         <button

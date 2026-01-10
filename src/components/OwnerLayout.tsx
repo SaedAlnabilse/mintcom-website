@@ -11,6 +11,10 @@ import {
     Building2,
 } from 'lucide-react';
 
+// Paymint Logo imports
+import PaymintLogoGreen from '../assets/Green Full Logo.png';
+import PaymintLogoWhite from '../assets/White Green Full Logo.png';
+
 const menuItems = [
     { path: '/owner', label: 'Overview', icon: LayoutDashboard },
     { path: '/owner/establishments', label: 'Establishments', icon: Store },
@@ -34,11 +38,17 @@ export function OwnerLayout() {
             {/* Sidebar */}
             <aside className="w-56 bg-white dark:bg-[#0A0A0A] border-r border-gray-200 dark:border-white/5 flex flex-col transition-colors duration-300">
                 {/* Logo */}
-                <div className="h-16 flex items-center gap-2 px-5 border-b border-gray-100 dark:border-white/5">
-                    <div className="w-8 h-8 bg-indigo-600 dark:bg-paymint-green rounded-lg flex items-center justify-center">
-                        <Store size={18} className="text-white dark:text-black" />
-                    </div>
-                    <span className="text-lg font-bold text-gray-900 dark:text-white">OmniPOS</span>
+                <div className="h-16 flex items-center justify-center px-5 border-b border-gray-100 dark:border-white/5">
+                    <img
+                        src={PaymintLogoGreen}
+                        alt="PayMint"
+                        className="h-8 w-auto object-contain dark:hidden"
+                    />
+                    <img
+                        src={PaymintLogoWhite}
+                        alt="PayMint"
+                        className="h-8 w-auto object-contain hidden dark:block"
+                    />
                 </div>
 
                 {/* Navigation */}

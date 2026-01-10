@@ -8,15 +8,15 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
           {/* Brand */}
           <div className="space-y-8">
-            <Logo />
+            <Logo size="lg" />
             <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed max-w-xs">
               The modern POS ecosystem built for fast-growing businesses. Simple, secure, and infinitely scalable.
             </p>
             <div className="flex gap-4">
               {[Instagram, Twitter, Linkedin, Facebook].map((Icon, i) => (
-                <a 
-                  key={i} 
-                  href="#" 
+                <a
+                  key={i}
+                  href="#"
                   className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-paymint-green hover:text-black hover:border-paymint-green transition-all"
                 >
                   <Icon size={18} />

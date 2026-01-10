@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -8,13 +8,15 @@ import {
     Store,
     Users,
     LogOut,
-    Building2,
     PanelLeftClose,
     PanelLeft,
     ArrowLeft,
 } from 'lucide-react';
-import { useEffect } from 'react';
 import api from '../config/api';
+
+// Paymint Logo imports (sidebar is always dark, so only white logo is needed)
+import PaymintLogoWhite from '../assets/White Green Full Logo.png';
+import PaymintLeafIcon from '../assets/Samll-Logo-removebg-preview.png';
 
 interface Brand {
     id: string;
@@ -25,6 +27,8 @@ interface Brand {
         name: string;
     }[];
 }
+
+const SIDEBAR_STATE_KEY = 'brand_sidebar_expanded';
 
 const getMenuItems = (brandId: string) => [
     { path: `/brand/${brandId}`, label: 'Overview', icon: LayoutDashboard },
@@ -37,12 +41,23 @@ export function BrandLayout() {
     const { account, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+
+    // Persist sidebar state in localStorage
+    const [sidebarOpen, setSidebarOpen] = useState(() => {
+        const saved = localStorage.getItem(SIDEBAR_STATE_KEY);
+        return saved !== null ? saved === 'true' : true; // Default to true (expanded)
+    });
+
     const [brand, setBrand] = useState<Brand | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const navRef = useRef<HTMLDivElement>(null);
 
     const menuItems = brandId ? getMenuItems(brandId) : [];
+
+    // Save sidebar state to localStorage when it changes
+    useEffect(() => {
+        localStorage.setItem(SIDEBAR_STATE_KEY, String(sidebarOpen));
+    }, [sidebarOpen]);
 
     useEffect(() => {
         if (brandId) {
@@ -81,7 +96,7 @@ export function BrandLayout() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden transition-colors duration-500">
+        <div className="h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden transition-colors duration-500">
             {/* Sidebar */}
             <motion.aside
                 initial={false}
@@ -92,26 +107,35 @@ export function BrandLayout() {
                 className="relative z-[60] flex flex-col h-screen p-4 bg-black border-r border-white/10"
             >
                 {/* Brand Header */}
-                <div className="h-20 flex items-center justify-between px-2 mb-6 relative shrink-0">
+                <div className="flex flex-col items-center px-3 mb-6 relative shrink-0">
                     <AnimatePresence mode="wait">
                         {sidebarOpen ? (
                             <motion.div
                                 key="logo-full"
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -10 }}
-                                className="flex items-center gap-3"
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="flex flex-col items-center w-full py-5 group"
                             >
-                                <div className="w-12 h-12 bg-paymint-green rounded-2xl flex items-center justify-center shadow-lg shadow-paymint-green/20">
-                                    <Building2 size={24} className="text-black" />
-                                </div>
-                                <div className="flex flex-col">
-                                    <span className="text-lg font-black text-white tracking-tight leading-none truncate max-w-[150px]">
+                                {/* PayMint Logo */}
+                                <img
+                                    src={PaymintLogoWhite}
+                                    alt="PayMint"
+                                    className="h-7 w-auto object-contain opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all mb-5"
+                                />
+
+
+                                {/* Brand Info Card */}
+                                <div className="w-full bg-gradient-to-br from-white/[0.08] to-white/[0.02] backdrop-blur-sm rounded-2xl border border-white/[0.08] p-4 text-center">
+                                    <h2 className="text-lg font-black text-white tracking-tight leading-tight mb-1.5">
                                         {brand?.name || 'Brand'}
-                                    </span>
-                                    <span className="text-[10px] font-bold text-paymint-green uppercase tracking-[0.15em] mt-1">
-                                        Brand Dashboard
-                                    </span>
+                                    </h2>
+                                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-paymint-green/10 border border-paymint-green/20">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-paymint-green animate-pulse" />
+                                        <span className="text-[10px] font-black text-paymint-green uppercase tracking-[0.15em]">
+                                            Brand Portal
+                                        </span>
+                                    </div>
                                 </div>
                             </motion.div>
                         ) : (
@@ -120,10 +144,17 @@ export function BrandLayout() {
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.8 }}
-                                className="mx-auto"
+                                className="py-4"
                             >
-                                <div className="w-12 h-12 bg-paymint-green rounded-2xl flex items-center justify-center shadow-lg shadow-paymint-green/20">
-                                    <Building2 size={24} className="text-black" />
+                                <div
+                                    className="w-12 h-12 rounded-2xl flex items-center justify-center cursor-pointer overflow-hidden bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 hover:border-paymint-green/40 transition-all hover:scale-105"
+                                    onClick={() => setSidebarOpen(true)}
+                                >
+                                    <img
+                                        src={PaymintLeafIcon}
+                                        alt="PayMint"
+                                        className="h-7 w-7 object-contain"
+                                    />
                                 </div>
                             </motion.div>
                         )}
@@ -132,9 +163,9 @@ export function BrandLayout() {
                     {sidebarOpen && (
                         <button
                             onClick={() => setSidebarOpen(false)}
-                            className="p-2 rounded-xl text-gray-500 hover:text-white hover:bg-white/10 transition-all"
+                            className="absolute right-2 top-4 p-2 rounded-xl text-gray-500 hover:text-white hover:bg-white/10 transition-all"
                         >
-                            <PanelLeftClose size={20} />
+                            <PanelLeftClose size={18} />
                         </button>
                     )}
                 </div>

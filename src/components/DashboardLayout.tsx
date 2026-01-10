@@ -16,10 +16,14 @@ import {
   Store,
   LogOut,
   ChevronRight,
-  Zap,
   PanelLeftClose,
   PanelLeft,
 } from 'lucide-react';
+
+// Paymint Logo imports
+import PaymintLogoGreen from '../assets/Green Full Logo.png';
+import PaymintLogoWhite from '../assets/White Green Full Logo.png';
+import PaymintLeafIcon from '../assets/Samll-Logo-removebg-preview.png';
 
 interface MenuItem {
   path: string;
@@ -148,16 +152,21 @@ export function DashboardLayout() {
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
-                className="flex items-center gap-3 cursor-pointer"
+                className="flex items-center cursor-pointer group"
                 onClick={() => navigate('/dashboard')}
               >
-                <div className="w-10 h-10 bg-paymint-green rounded-[1rem] flex items-center justify-center shadow-lg shadow-paymint-green/20 transform hover:rotate-6 transition-transform">
-                  <Zap size={20} className="text-black" fill="currentColor" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-xl font-black text-gray-900 dark:text-white tracking-tighter leading-none">PayMint</span>
-                  <span className="text-[10px] font-black text-paymint-green uppercase tracking-[0.2em] mt-1">Enterprise</span>
-                </div>
+                {/* Light mode logo */}
+                <img
+                  src={PaymintLogoGreen}
+                  alt="PayMint"
+                  className="h-10 w-auto object-contain dark:hidden group-hover:scale-105 transition-transform"
+                />
+                {/* Dark mode logo */}
+                <img
+                  src={PaymintLogoWhite}
+                  alt="PayMint"
+                  className="h-10 w-auto object-contain hidden dark:block group-hover:scale-105 transition-transform"
+                />
               </motion.div>
             ) : (
               <motion.div
@@ -167,8 +176,15 @@ export function DashboardLayout() {
                 exit={{ opacity: 0, scale: 0.8 }}
                 className="mx-auto"
               >
-                <div className="w-12 h-12 bg-paymint-green rounded-2xl flex items-center justify-center shadow-lg shadow-paymint-green/20 cursor-pointer" onClick={() => setSidebarOpen(true)}>
-                  <Zap size={24} className="text-black" fill="currentColor" />
+                <div
+                  className="w-12 h-12 rounded-2xl flex items-center justify-center cursor-pointer overflow-hidden bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 hover:border-paymint-green/40 transition-all hover:scale-105"
+                  onClick={() => setSidebarOpen(true)}
+                >
+                  <img
+                    src={PaymintLeafIcon}
+                    alt="PayMint"
+                    className="h-7 w-7 object-contain"
+                  />
                 </div>
               </motion.div>
             )}
