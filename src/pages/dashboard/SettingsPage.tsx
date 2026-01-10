@@ -35,6 +35,30 @@ interface LoyaltyConfig {
     minPoints: number;
     multiplier: number;
   }[];
+  rewards?: LoyaltyReward[];
+}
+
+interface LoyaltyReward {
+  id: string;
+  type: 'DISCOUNT' | 'FREE_ITEM';
+  name: string;
+  pointsRequired: number;
+  discountPercentage?: number;
+  freeCategoryId?: string;
+  freeCategoryName?: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+}
+
+interface RewardFormState {
+  type: 'DISCOUNT' | 'FREE_ITEM';
+  pointsRequired: string;
+  discountPercentage: string;
+  freeCategoryId: string;
+  freeCategoryName: string;
 }
 
 type SettingsTab = 'profile' | 'sales' | 'receipt' | 'loyalty';
@@ -63,9 +87,23 @@ export function SettingsPage() {
 
   const { register, handleSubmit, reset, watch, formState: { isDirty } } = useForm<AppSettings>();
 
+  // Rewards state
+  const [rewards, setRewards] = useState<LoyaltyReward[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [showRewardModal, setShowRewardModal] = useState(false);
+  const [editingReward, setEditingReward] = useState<LoyaltyReward | null>(null);
+  const [rewardForm, setRewardForm] = useState<RewardFormState>({
+    type: 'DISCOUNT',
+    pointsRequired: '',
+    discountPercentage: '',
+    freeCategoryId: '',
+    freeCategoryName: '',
+  });
+
   useEffect(() => {
     fetchSettings();
     fetchLoyaltyConfig();
+    fetchCategories();
   }, []);
 
   const fetchSettings = async () => {
@@ -90,8 +128,104 @@ export function SettingsPage() {
     try {
       const response = await api.get('/app-settings/loyalty-config');
       setLoyaltyConfig(response.data);
+      // Set rewards from loyalty config
+      if (response.data?.rewards) {
+        setRewards(response.data.rewards);
+      }
     } catch (err) {
       console.error('Failed to load loyalty config');
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await api.get('/categories');
+      setCategories(response.data || []);
+    } catch (err) {
+      console.error('Failed to load categories');
+    }
+  };
+
+  // Reward handlers
+  const handleEditReward = (reward: LoyaltyReward) => {
+    setEditingReward(reward);
+    setRewardForm({
+      type: reward.type,
+      pointsRequired: String(reward.pointsRequired),
+      discountPercentage: reward.discountPercentage ? String(reward.discountPercentage) : '',
+      freeCategoryId: reward.freeCategoryId || '',
+      freeCategoryName: reward.freeCategoryName || '',
+    });
+    setShowRewardModal(true);
+  };
+
+  const handleDeleteReward = async (rewardId: string) => {
+    const updatedRewards = rewards.filter(r => r.id !== rewardId);
+    try {
+      await api.put('/app-settings/loyalty-config', {
+        ...loyaltyConfig,
+        rewards: updatedRewards,
+      });
+      setRewards(updatedRewards);
+      toast.success('Reward deleted successfully');
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to delete reward');
+    }
+  };
+
+  const handleSaveReward = async () => {
+    // Validation
+    const pointsValue = parseInt(rewardForm.pointsRequired, 10);
+    if (!rewardForm.pointsRequired || pointsValue < 1) {
+      toast.error('Points required must be at least 1');
+      return;
+    }
+
+    if (rewardForm.type === 'FREE_ITEM' && !rewardForm.freeCategoryId) {
+      toast.error('Please select a category for free item reward');
+      return;
+    }
+
+    if (rewardForm.type === 'DISCOUNT') {
+      const discountValue = parseFloat(rewardForm.discountPercentage);
+      if (!rewardForm.discountPercentage || discountValue <= 0 || discountValue > 100) {
+        toast.error('Discount percentage must be between 1 and 100');
+        return;
+      }
+    }
+
+    // Create reward object
+    const newReward: LoyaltyReward = {
+      id: editingReward?.id || `reward_${Date.now()}`,
+      type: rewardForm.type,
+      name: rewardForm.type === 'DISCOUNT'
+        ? `Discount ${parseFloat(rewardForm.discountPercentage)}%`
+        : 'Free Item',
+      pointsRequired: pointsValue,
+      discountPercentage: rewardForm.type === 'DISCOUNT' ? parseFloat(rewardForm.discountPercentage) : undefined,
+      freeCategoryId: rewardForm.type === 'FREE_ITEM' ? rewardForm.freeCategoryId : undefined,
+      freeCategoryName: rewardForm.type === 'FREE_ITEM' ? rewardForm.freeCategoryName : undefined,
+    };
+
+    let updatedRewards: LoyaltyReward[];
+    if (editingReward) {
+      updatedRewards = rewards.map(r => r.id === editingReward.id ? newReward : r);
+    } else {
+      updatedRewards = [...rewards, newReward];
+    }
+
+    try {
+      await api.put('/app-settings/loyalty-config', {
+        ...loyaltyConfig,
+        rewards: updatedRewards,
+      });
+      setRewards(updatedRewards);
+      setShowRewardModal(false);
+      setEditingReward(null);
+      setRewardForm({ type: 'DISCOUNT', pointsRequired: '', discountPercentage: '', freeCategoryId: '', freeCategoryName: '' });
+      toast.success(editingReward ? 'Reward updated successfully' : 'Reward added successfully');
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Failed to save reward');
     }
   };
 
@@ -194,20 +328,6 @@ export function SettingsPage() {
     }
 
     toast.error('Tax rate has not changed');
-  };
-
-  const updateLoyaltyConfig = async (enabled: boolean) => {
-    try {
-      await api.put('/app-settings/loyalty-config', {
-        enabled,
-        pointsPerCurrencyUnit: loyaltyConfig?.pointsPerCurrencyUnit || 1,
-        minimumSpendForPoints: loyaltyConfig?.minimumSpendForPoints || 0,
-      });
-      toast.success(`Loyalty program ${enabled ? 'enabled' : 'disabled'}`);
-      fetchLoyaltyConfig();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to update loyalty config');
-    }
   };
 
   const tabs = [
@@ -601,8 +721,8 @@ export function SettingsPage() {
                       type="button"
                       onClick={() => setRewardForm({ ...rewardForm, type: 'DISCOUNT' })}
                       className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border font-semibold transition-all ${rewardForm.type === 'DISCOUNT'
-                          ? 'bg-paymint-green text-black border-paymint-green'
-                          : 'bg-cream-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 border-cream-300 dark:border-white/10 hover:border-paymint-green'
+                        ? 'bg-paymint-green text-black border-paymint-green'
+                        : 'bg-cream-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 border-cream-300 dark:border-white/10 hover:border-paymint-green'
                         }`}
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -614,8 +734,8 @@ export function SettingsPage() {
                       type="button"
                       onClick={() => setRewardForm({ ...rewardForm, type: 'FREE_ITEM' })}
                       className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border font-semibold transition-all ${rewardForm.type === 'FREE_ITEM'
-                          ? 'bg-paymint-green text-black border-paymint-green'
-                          : 'bg-cream-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 border-cream-300 dark:border-white/10 hover:border-paymint-green'
+                        ? 'bg-paymint-green text-black border-paymint-green'
+                        : 'bg-cream-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 border-cream-300 dark:border-white/10 hover:border-paymint-green'
                         }`}
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
