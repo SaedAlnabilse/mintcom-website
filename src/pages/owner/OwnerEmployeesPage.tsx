@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Users } from 'lucide-react';
 import api from '../../config/api';
+import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 
 interface Employee {
     id: string;
@@ -13,21 +14,36 @@ interface Employee {
     establishments: string[];
 }
 
+
 export function OwnerEmployeesPage() {
     const [employees, setEmployees] = useState<Employee[]>([]);
+    const [establishments, setEstablishments] = useState<{ id: string; name: string }[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+
+    // For now we don't have editing implemented in this view fully, 
+    // as editing deeply nested global user vs local assignment is complex.
+    // We focus on "Add Employee" as requested.
+
 
     useEffect(() => {
-        fetchEmployees();
+        fetchData();
     }, []);
 
-    const fetchEmployees = async () => {
+    const fetchData = async () => {
         try {
             setIsLoading(true);
-            const response = await api.get('/api/accounts/all-employees');
-            setEmployees(response.data || []);
+            const [empRes, profileRes] = await Promise.all([
+                api.get('/api/accounts/all-employees'),
+                api.get('/api/accounts/profile')
+            ]);
+
+            setEmployees(empRes.data || []);
+            setEstablishments(profileRes.data.establishments || []);
         } catch (err) {
-            // Fallback demo data
+            console.error(err);
+            // Fallback demo data if API fails
             setEmployees([
                 {
                     id: '1',
@@ -44,6 +60,19 @@ export function OwnerEmployeesPage() {
         }
     };
 
+    const handleAddEmployee = async (data: any) => {
+        try {
+            setIsSubmitting(true);
+            await api.post('/api/accounts/employees', data);
+            setShowModal(false);
+            fetchData(); // Refresh list
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     const getRoleBadge = (role: string) => {
         const styles: Record<string, string> = {
             Owner: 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/30',
@@ -56,7 +85,6 @@ export function OwnerEmployeesPage() {
 
     return (
         <div className="max-w-5xl">
-            {/* Header */}
             {/* Header */}
             <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-white via-gray-50 to-white dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-gray-200 dark:border-white/5 shadow-sm mb-8">
                 <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
@@ -73,7 +101,11 @@ export function OwnerEmployeesPage() {
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
-                        <button className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 transition-all shadow-lg shadow-paymint-green/30">
+                        <button
+                            onClick={() => {
+                                setShowModal(true);
+                            }}
+                            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 transition-all shadow-lg shadow-paymint-green/30">
                             <Plus size={18} />
                             <span>Add Employee</span>
                         </button>
@@ -138,6 +170,15 @@ export function OwnerEmployeesPage() {
                     </tbody>
                 </table>
             </div>
-        </div>
+
+            <EmployeeFormModal
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+                onSubmit={handleAddEmployee}
+                establishments={establishments}
+                isSubmitting={isSubmitting}
+                availableDiscounts={[]} // We can implement fetching discounts later if needed
+            />
+        </div >
     );
 }

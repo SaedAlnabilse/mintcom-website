@@ -27,6 +27,8 @@ interface EmployeeFormModalProps {
   onDelete?: (id: string) => void;
   initialData?: StaffMember | null;
   availableDiscounts?: Discount[];
+
+  establishments?: { id: string; name: string }[];
   isSubmitting?: boolean;
 }
 
@@ -47,7 +49,9 @@ export function EmployeeFormModal({
   onSubmit,
   onDelete,
   initialData,
+
   availableDiscounts = [],
+  establishments,
   isSubmitting = false,
 }: EmployeeFormModalProps) {
   const [name, setName] = useState('');
@@ -60,6 +64,11 @@ export function EmployeeFormModal({
   const [permissions, setPermissions] = useState<string[]>([]);
   const [allowedDiscounts, setAllowedDiscounts] = useState<string[]>([]);
   const [allDiscountsSelected, setAllDiscountsSelected] = useState(true);
+
+  // Establishment selection for Owner Dashboard
+  const [selectedEstablishmentIds, setSelectedEstablishmentIds] = useState<string[]>([]);
+  const [establishmentSearch, setEstablishmentSearch] = useState('');
+  const [showEstablishmentDropdown, setShowEstablishmentDropdown] = useState(false);
 
   const [showPermissionsDropdown, setShowPermissionsDropdown] = useState(false); // Default closed on web to save space
   const [showDiscountsDropdown, setShowDiscountsDropdown] = useState(false);
@@ -78,10 +87,24 @@ export function EmployeeFormModal({
         if (initialData.allowedDiscounts && initialData.allowedDiscounts.length > 0) {
           setAllDiscountsSelected(false);
           setAllowedDiscounts(initialData.allowedDiscounts);
-        } else {
           setAllDiscountsSelected(true);
           setAllowedDiscounts([]);
         }
+
+        // If editing an existing employee (initialData), we might need to populate their establishments
+        // But the current initialData interface doesn't strictly have establishmentIds array easily accessible in the same way
+        // If we are in "Owner Mode" (establishments prop exists), we should try to extract them if available
+        // For now, if editing, we might need to pass establishmentIds in initialData if we want to pre-fill it.
+        // Assuming initialData might have 'establishmentIds' or we just default to empty if new.
+        if ((initialData as any)?.establishmentIds) {
+          setSelectedEstablishmentIds((initialData as any).establishmentIds);
+        } else if (establishments && establishments.length === 1) {
+          // If there is only one establishment, pre-select it
+          setSelectedEstablishmentIds([establishments[0].id]);
+        } else {
+          setSelectedEstablishmentIds([]);
+        }
+
       } else {
         setName('');
         setUsername('');
@@ -92,9 +115,17 @@ export function EmployeeFormModal({
         setPermissions(['pos']);
         setAllDiscountsSelected(true);
         setAllowedDiscounts([]);
+
+        // If creating new and there's only one establishment, select it by default
+        if (establishments && establishments.length === 1) {
+          setSelectedEstablishmentIds([establishments[0].id]);
+        } else {
+          setSelectedEstablishmentIds([]);
+        }
       }
       setShowPermissionsDropdown(false);
       setShowDiscountsDropdown(false);
+      setShowEstablishmentDropdown(false);
     }
   }, [isOpen, initialData]);
 
@@ -143,6 +174,11 @@ export function EmployeeFormModal({
       newErrors.confirmPassword = 'Passwords do not match';
     }
 
+    // Validate establishment selection if in Owner Mode
+    if (establishments && selectedEstablishmentIds.length === 0) {
+      newErrors.establishments = 'Select at least one establishment';
+    }
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -156,7 +192,9 @@ export function EmployeeFormModal({
       email: email || undefined,
       role: role.toUpperCase(),
       permissions: role === 'ADMIN' ? AVAILABLE_PERMISSIONS.map(p => p.id) : permissions,
+
       allowedDiscounts: allDiscountsSelected ? [] : allowedDiscounts,
+      establishmentIds: establishments ? selectedEstablishmentIds : undefined,
     };
 
     if (password) {
@@ -246,6 +284,77 @@ export function EmployeeFormModal({
                 />
                 {errors.email && <p className="mt-1 text-xs font-bold text-red-500">{errors.email}</p>}
               </div>
+
+              {/* Establishment Selection (Only if establishments prop is provided) */}
+              {establishments && (
+                <div className="relative">
+                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+                    Access <span className="text-red-500">*</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowEstablishmentDropdown(!showEstablishmentDropdown)}
+                    className={`w-full bg-gray-50 dark:bg-[#2a2a2a] border ${errors.establishments ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-gray-700'} rounded-xl px-4 py-3 text-left flex items-center justify-between transition-colors`}
+                  >
+                    <span className={selectedEstablishmentIds.length ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'}>
+                      {selectedEstablishmentIds.length === 0
+                        ? 'Select establishments...'
+                        : selectedEstablishmentIds.length === establishments.length
+                          ? 'All Establishments'
+                          : `${selectedEstablishmentIds.length} location${selectedEstablishmentIds.length === 1 ? '' : 's'} selected`}
+                    </span>
+                    <ChevronDown size={20} className={`text-gray-400 transition-transform ${showEstablishmentDropdown ? 'rotate-180' : ''}`} />
+                  </button>
+                  {errors.establishments && <p className="mt-1 text-xs font-bold text-red-500">{errors.establishments}</p>}
+
+                  {/* Dropdown */}
+                  {showEstablishmentDropdown && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1e1e1e] border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-20 max-h-60 overflow-hidden flex flex-col">
+                      {/* Search */}
+                      <div className="p-3 border-b border-gray-100 dark:border-white/5">
+                        <input
+                          type="text"
+                          placeholder="Search locations..."
+                          value={establishmentSearch}
+                          onChange={(e) => setEstablishmentSearch(e.target.value)}
+                          className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-lg px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:ring-0"
+                          autoFocus
+                        />
+                      </div>
+                      {/* List */}
+                      <div className="overflow-y-auto p-2 custom-scrollbar">
+                        {establishments
+                          .filter(e => e.name.toLowerCase().includes(establishmentSearch.toLowerCase()))
+                          .map(est => {
+                            const isSelected = selectedEstablishmentIds.includes(est.id);
+                            return (
+                              <button
+                                key={est.id}
+                                type="button"
+                                onClick={() => {
+                                  setSelectedEstablishmentIds(prev =>
+                                    prev.includes(est.id)
+                                      ? prev.filter(id => id !== est.id)
+                                      : [...prev, est.id]
+                                  );
+                                }}
+                                className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${isSelected ? 'bg-paymint-green/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                              >
+                                <span className={`text-sm font-medium ${isSelected ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
+                                  {est.name}
+                                </span>
+                                {isSelected && <Check size={16} className="text-paymint-green" />}
+                              </button>
+                            );
+                          })}
+                        {establishments.filter(e => e.name.toLowerCase().includes(establishmentSearch.toLowerCase())).length === 0 && (
+                          <div className="p-4 text-center text-sm text-gray-500">No locations found</div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Role Selection */}
               <div>
