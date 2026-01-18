@@ -12,7 +12,7 @@ import {
     Eye,
     EyeOff,
     UserPlus,
-    Building2
+    Check
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';

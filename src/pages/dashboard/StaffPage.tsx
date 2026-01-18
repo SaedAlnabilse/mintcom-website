@@ -60,7 +60,9 @@ export function StaffPage() {
     title: string;
     message: string;
     onConfirm: () => void;
-    type?: 'danger' | 'success' | 'warning';
+    type?: 'danger' | 'success' | 'warning' | 'info';
+    confirmText?: string;
+    showCancel?: boolean;
   }>({
     isOpen: false,
     title: '',

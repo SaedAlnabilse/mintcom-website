@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import api from '../config/api';
 import { ConfirmModal } from './ConfirmModal';
 import { QuickInfo } from './QuickInfo';
-import { X, Award } from 'lucide-react';
+import { X } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface OrderDetailModalProps {

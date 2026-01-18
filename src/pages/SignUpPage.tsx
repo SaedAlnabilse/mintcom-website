@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Phone, Check, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
-import { ConfirmModal } from '../components/ConfirmModal';
 
 // Paymint Logo imports
 import PaymintLogoGreen from '../assets/green-full-logo.png';
@@ -306,16 +305,6 @@ export function SignUpPage() {
             </Link>
           </p>
         </motion.div>
-        <ConfirmModal
-          isOpen={confirmConfig.isOpen}
-          onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
-          onConfirm={confirmConfig.onConfirm}
-          title={confirmConfig.title}
-          message={confirmConfig.message}
-          type={confirmConfig.type}
-          confirmText={confirmConfig.confirmText}
-          showCancel={confirmConfig.showCancel}
-        />
       </div>
 
       {/* Right Side - Benefits */}

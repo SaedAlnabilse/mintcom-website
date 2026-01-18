@@ -4,7 +4,6 @@ import { Plus, CreditCard, DollarSign, Trash2, Star, AlertCircle, Calendar, Chec
 import api from '../../config/api';
 import { AddPaymentMethodModal } from '../../components/AddPaymentMethodModal';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
-import { ConfirmModal } from '../../components/ConfirmModal';
 import toast from 'react-hot-toast';
 
 interface SavedCard {
@@ -56,20 +55,7 @@ export function OwnerBillingPage() {
     });
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
-    const [confirmConfig, setConfirmConfig] = useState<{
-        isOpen: boolean;
-        title: string;
-        message: string;
-        onConfirm: () => void;
-        type?: 'danger' | 'success' | 'warning' | 'info';
-        confirmText?: string;
-        showCancel?: boolean;
-    }>({
-        isOpen: false,
-        title: '',
-        message: '',
-        onConfirm: () => { },
-    });
+
 
     useEffect(() => {
         fetchBillingInfo();

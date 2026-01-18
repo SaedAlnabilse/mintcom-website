@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
-import { ConfirmModal } from './ConfirmModal';
+
 
 interface SecurityVerificationModalProps {
     isOpen: boolean;
@@ -36,20 +36,7 @@ export function SecurityVerificationModal({
     const [password, setPassword] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const [confirmConfig, setConfirmConfig] = useState<{
-        isOpen: boolean;
-        title: string;
-        message: string;
-        onConfirm: () => void;
-        type?: 'danger' | 'success' | 'warning' | 'info';
-        confirmText?: string;
-        showCancel?: boolean;
-    }>({
-        isOpen: false,
-        title: '',
-        message: '',
-        onConfirm: () => { },
-    });
+
 
     const getModeConfig = () => {
         switch (mode) {

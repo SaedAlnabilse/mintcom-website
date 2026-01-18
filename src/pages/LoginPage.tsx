@@ -7,7 +7,6 @@ import { motion } from 'framer-motion';
 import { Eye, EyeOff, ArrowLeft, Mail, Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
-import { ConfirmModal } from '../components/ConfirmModal';
 
 // Paymint Logo imports
 import PaymintLogoGreen from '../assets/green-full-logo.png';

@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 import PaymintLogoGreen from '../assets/green-full-logo.png';
 import PaymintLogoWhite from '../assets/white-green-full-logo.png';
 
-import { ConfirmModal } from '../components/ConfirmModal';
+
 
 export function SelectEstablishmentPage() {
   const { establishments, setCurrentEstablishment, logout, account } = useAuth();
