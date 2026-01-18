@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const plans = [
   {
     name: "Premium Plan",
-    price: "36 JOD",
+    price: "20$",
     period: "/m",
     description: "The complete all-in-one solution for your business.",
     features: ["Software License", "Cash Drawer Included", "Installment Options", "Year-round Support", "Mobile Admin Portal"],

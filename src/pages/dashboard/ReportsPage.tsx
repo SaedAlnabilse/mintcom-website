@@ -1,16 +1,19 @@
 import { useState, useEffect } from 'react';
 import {
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, Legend, AreaChart, Area
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area
 } from 'recharts';
 import { endOfDay, startOfDay, format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  TrendingUp, Clock, DollarSign, Activity, ShoppingBag, Percent, ArrowUpRight, RefreshCw,
-  ChevronRight, Filter, DownloadCloud, BarChart3, Wallet, CreditCard, Users
+  TrendingUp, Clock, Activity, ShoppingBag, ArrowUpRight, RefreshCw,
+  Filter, DownloadCloud, ChevronRight, ChevronLeft, BarChart3, Users, Wallet, CreditCard, ExternalLink, Percent, DollarSign
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { useTheme } from '../../context/ThemeContext';
+import { PayInPayOutLogModal } from '../../components/dashboard/reports/PayInPayOutLogModal';
+import { MultiSelect } from '../../components/MultiSelect';
+import { SingleSelect } from '../../components/SingleSelect';
 import { exportToCSV } from '../../utils/export';
 
 type ReportType = 'sales' | 'top-items' | 'peak-hours' | 'shifts';
@@ -25,15 +28,62 @@ export function ReportsPage() {
   const [startDate, setStartDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [selectedDateRange, setSelectedDateRange] = useState<string>('today');
+  const [showPayInOutModal, setShowPayInOutModal] = useState(false);
 
   const [salesData, setSalesData] = useState<any>(null);
-  const [topItems, setTopItems] = useState<any[]>([]);
+
   const [peakHours, setPeakHours] = useState<any[]>([]);
   const [shifts, setShifts] = useState<any[]>([]);
+  const [itemReportData, setItemReportData] = useState<any>(null);
+  const [itemReportTab, setItemReportTab] = useState<'items' | 'categories' | 'modifiers'>('items');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Filter State
+  const [availableCategories, setAvailableCategories] = useState<any[]>([]);
+  const [availableItems, setAvailableItems] = useState<any[]>([]);
+  const [availableModifiers, setAvailableModifiers] = useState<any[]>([]);
+
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
+  const [selectedModifierIds, setSelectedModifierIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (reportType === 'top-items') {
+      fetchFilterOptions();
+    }
+  }, [reportType]);
 
   useEffect(() => {
     fetchReportData();
-  }, [reportType, startDate, endDate]);
+    setCurrentPage(1);
+  }, [reportType, startDate, endDate, selectedCategoryId, selectedItemIds, selectedModifierIds, itemReportTab]);
+
+
+
+  const fetchFilterOptions = async () => {
+    try {
+      const [catsRes, itemsRes, attrsRes] = await Promise.all([
+        api.get('/api/categories'),
+        api.get('/api/items'),
+        api.get('/api/attributes')
+      ]);
+
+      setAvailableCategories(catsRes.data?.map((c: any) => ({ label: c.name, value: c.id })) || []);
+      // Include categoryId for filtering items by category (matching frontend)
+      setAvailableItems(itemsRes.data?.map((i: any) => ({ label: i.name, value: i.id, categoryId: i.categoryId })) || []);
+
+      // Flatten sub-attributes for modifiers
+      const modifiers = attrsRes.data?.flatMap((attr: any) =>
+        attr.subAttributes?.map((sub: any) => ({ label: sub.name, value: sub.id })) || []
+      ) || [];
+      setAvailableModifiers(modifiers);
+
+    } catch (error) {
+      console.error('Failed to load filter options', error);
+      toast.error('Failed to load filters');
+    }
+  };
 
   const fetchReportData = async () => {
     try {
@@ -47,8 +97,16 @@ export function ReportsPage() {
           setSalesData(salesRes.data);
           break;
         case 'top-items':
-          const topRes = await api.get('/reports/top-selling-items', { params: { startDate: start, endDate: end, limit: 10 } });
-          setTopItems(topRes.data || []);
+          const itemRes = await api.get('/reports/item-report', {
+            params: {
+              startDate: start,
+              endDate: end,
+              categoryId: selectedCategoryId || '',
+              itemId: selectedItemIds.join(','),
+              subAttributeIds: selectedModifierIds.join(',')
+            }
+          });
+          setItemReportData(itemRes.data);
           break;
         case 'peak-hours':
           const peakRes = await api.get('/reports/peak-hours', { params: { startDate: start, endDate: end } });
@@ -84,19 +142,12 @@ export function ReportsPage() {
         end.setDate(today.getDate() - 1);
         break;
       case 'this_week':
-        // Get the day of week (0 = Sunday, 6 = Saturday)
         const dayOfWeek = today.getDay();
-        // Go back to the start of the week (Sunday)
-        // If today is Sunday (0), we want to go back 6 days to show the full week
-        // Otherwise, go back to the previous Sunday
         if (dayOfWeek === 0) {
-          // It's Sunday - show the past 7 days (last Sunday to today)
           start.setDate(today.getDate() - 6);
         } else {
-          // Go back to the previous Sunday
           start.setDate(today.getDate() - dayOfWeek);
         }
-        // End is always today
         end = new Date(today);
         break;
       case 'this_month':
@@ -123,22 +174,33 @@ export function ReportsPage() {
         headers = { date: 'Date', revenue: 'Revenue (JOD)', count: 'Orders' };
         break;
       case 'top-items':
-        dataToExport = topItems;
-        headers = { itemName: 'Item', quantity: 'Units Sold', revenue: 'Total Revenue' };
+        dataToExport = itemReportData?.breakdown || [];
+        headers = { itemName: 'Item', quantity: 'Units Sold', totalSales: 'Total Revenue' };
         break;
       case 'peak-hours':
         dataToExport = peakHours;
         headers = { hour: 'Hour', total: 'Revenue', count: 'Orders' };
         break;
       case 'shifts':
-        dataToExport = shifts.map(s => ({
-          username: s.user?.username,
-          period: `${new Date(s.startTime).toLocaleTimeString()} - ${s.endTime ? new Date(s.endTime).toLocaleTimeString() : 'Active'}`,
-          opening: s.openingBalance,
-          sales: s.totalSales,
-          status: s.status
-        }));
-        headers = { username: 'Staff', period: 'Shift Period', opening: 'Opening Bal', sales: 'Net Sales', status: 'Status' };
+        dataToExport = shifts.map(s => {
+          const start = new Date(s.startTime);
+          const end = s.endTime ? new Date(s.endTime) : new Date();
+          const hoursWorked = ((end.getTime() - start.getTime()) / (1000 * 60 * 60)).toFixed(1);
+          const cashOverShort = s.discrepancy !== null && s.discrepancy !== undefined
+            ? (s.discrepancy > 0.001 ? `+${s.discrepancy.toFixed(3)} Over` : s.discrepancy < -0.001 ? `${s.discrepancy.toFixed(3)} Short` : '0')
+            : 'Active';
+          return {
+            username: s.user?.username,
+            period: `${start.toLocaleTimeString()} - ${s.endTime ? end.toLocaleTimeString() : 'Active'}`,
+            hoursWorked: hoursWorked,
+            opening: s.openingBalance,
+            sales: s.totalSales,
+            closing: s.closingBalance !== null && s.closingBalance !== undefined ? s.closingBalance : 'Active',
+            cashOverShort: cashOverShort,
+            status: s.status
+          };
+        });
+        headers = { username: 'Staff', period: 'Shift Period', hoursWorked: 'Hours Worked', opening: 'Opening Bal', sales: 'Net Sales', closing: 'Closing Bal', cashOverShort: 'Cash Over/Short', status: 'Status' };
         break;
     }
 
@@ -146,67 +208,48 @@ export function ReportsPage() {
   };
 
   return (
-    <div className="space-y-8 pb-12">
-      {/* Header with Glass Effect */}
-      <div className="relative overflow-hidden rounded-[2.5rem] bg-cream-50 dark:bg-[#0A0A0A] p-10 border border-cream-300 dark:border-white/5 shadow-xl">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-paymint-green/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2" />
-
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-10">
-          <div className="flex items-center gap-6">
-            <div className="w-16 h-16 rounded-[1.5rem] bg-paymint-green flex items-center justify-center shadow-2xl shadow-paymint-green/40 transform -rotate-3 hover:rotate-0 transition-transform duration-500">
-              <TrendingUp size={32} className="text-black" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="px-2 py-0.5 rounded-md bg-paymint-green/10 text-paymint-green text-[9px] font-black uppercase tracking-[0.2em]">Enterprise Core</span>
-                <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">{reportType.replace('-', ' ')}</span>
-              </div>
-              <h1 className="text-4xl font-black text-gray-900 dark:text-white tracking-tighter leading-none mb-2">
-                Unified <span className="text-paymint-green text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-emerald-400">Intelligence</span>
-              </h1>
-              <p className="text-gray-500 dark:text-gray-400 font-bold text-sm tracking-tight">Machine-analyzed business performance metrics & predictions</p>
+    <div className="max-w-7xl mx-auto space-y-8 pb-10">
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+              Analytics
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
+              </span>
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Live Data</span>
             </div>
           </div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Reports & Analytics</h1>
+          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Business performance metrics & insights</p>
+        </div>
 
-          <div className="flex flex-wrap items-center gap-4">
-            {selectedDateRange === 'today' && (
-              <div className="flex flex-col items-end mr-4 hidden sm:flex">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Live Feed Status</p>
-                <div className="flex items-center gap-2">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
-                  </span>
-                  <span className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-tighter">Connected</span>
-                </div>
-              </div>
-            )}
-
-            <div className="h-12 w-px bg-gray-100 dark:bg-white/5 mx-2 hidden lg:block" />
-
-            <button
-              onClick={handleExport}
-              className="group flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-cream-100 dark:bg-white/5 border border-cream-300 dark:border-white/10 text-gray-900 dark:text-white font-black text-xs uppercase tracking-widest hover:bg-cream-50 dark:hover:bg-white/10 hover:shadow-lg transition-all"
-            >
-              <DownloadCloud size={18} className="text-paymint-green group-hover:bounce" />
-              <span>Snapshot</span>
-            </button>
-            <button
-              onClick={fetchReportData}
-              className="w-14 h-14 rounded-2xl bg-paymint-green text-black flex items-center justify-center shadow-lg shadow-paymint-green/30 hover:scale-105 active:scale-95 transition-all group"
-            >
-              <RefreshCw size={24} className={`${isLoading ? 'animate-spin' : 'group-hover:rotate-180 transition-transform duration-700'}`} />
-            </button>
-          </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
+          >
+            <DownloadCloud size={18} className="text-paymint-green" />
+            <span>Export</span>
+          </button>
+          <button
+            onClick={fetchReportData}
+            className="p-3 rounded-xl bg-paymint-green text-black hover:bg-emerald-400 transition-all shadow-sm"
+            title="Refresh Data"
+          >
+            <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
+          </button>
         </div>
       </div>
 
       {/* Dynamic Filter Strip */}
       <div className="space-y-6">
-        {/* Report Type Selector - Grid for accessibility */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {/* Report Type Selector - Premium Sliding Switcher */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 bg-gray-100 dark:bg-[#0B1120] p-1.5 rounded-2xl border border-gray-200 dark:border-white/[0.03] relative isolate shadow-sm">
           {[
             { id: 'sales', label: 'Revenue Flow', icon: BarChart3, sub: 'Financial Logic' },
             { id: 'top-items', label: 'Item Performance', icon: ShoppingBag, sub: 'Catalog Insights' },
@@ -216,24 +259,28 @@ export function ReportsPage() {
             <button
               key={tab.id}
               onClick={() => setReportType(tab.id as ReportType)}
-              className={`flex items-center gap-4 p-4 rounded-[1.8rem] transition-all border text-left group relative overflow-hidden ${reportType === tab.id
-                ? 'bg-paymint-green/10 border-paymint-green/30 shadow-lg shadow-paymint-green/5'
-                : 'bg-cream-50 dark:bg-[#0A0A0A] border-cream-300 dark:border-white/5 hover:border-paymint-green/30'
+              className={`flex items-center gap-4 p-4 rounded-xl transition-all text-left group relative overflow-hidden ${reportType === tab.id
+                ? 'text-black'
+                : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
                 }`}
             >
               {reportType === tab.id && (
-                <motion.div layoutId="tab-glow" className="absolute inset-0 bg-gradient-to-tr from-paymint-green/5 to-transparent pointer-events-none" />
+                <motion.div
+                  layoutId="active-report-tab"
+                  className="absolute inset-0 bg-paymint-green rounded-xl -z-10 shadow-sm shadow-paymint-green/20"
+                  transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                />
               )}
-              <div className={`w-11 h-11 rounded-2xl flex items-center justify-center transition-all duration-300 ${reportType === tab.id
-                ? 'bg-paymint-green text-black scale-110 rotate-3'
-                : 'bg-cream-100 dark:bg-white/5 text-gray-500 group-hover:bg-paymint-green/20 group-hover:text-paymint-green'
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300 ${reportType === tab.id
+                ? 'bg-white/20 text-black scale-110'
+                : 'bg-gray-50 dark:bg-white/5 text-gray-500 group-hover:bg-paymint-green/20 group-hover:text-paymint-green'
                 }`}>
                 <tab.icon size={20} className={reportType === tab.id ? 'animate-pulse' : ''} />
               </div>
               <div className="flex flex-col min-w-0">
-                <span className={`text-[10px] font-black uppercase tracking-widest truncate ${reportType === tab.id ? 'text-gray-900 dark:text-white' : 'text-gray-500'
-                  }`}>{tab.label}</span>
-                <span className="text-[8px] font-bold text-gray-400 uppercase tracking-tighter mt-0.5 truncate opacity-60">
+                <span className={`text-[10px] font-black uppercase tracking-widest truncate`}>{tab.label}</span>
+                <span className={`text-[8px] font-black uppercase tracking-tighter mt-0.5 truncate ${reportType === tab.id ? 'text-black/60' : 'text-gray-400 opacity-60'
+                  }`}>
                   {tab.sub}
                 </span>
               </div>
@@ -243,22 +290,29 @@ export function ReportsPage() {
 
         {/* Date Filters Control Bar */}
         <div className="flex flex-col lg:flex-row gap-4">
-          <div className="flex-[3] grid grid-cols-2 md:grid-cols-4 gap-2 bg-cream-50 dark:bg-[#0A0A0A] p-2 rounded-[2rem] border border-cream-300 dark:border-white/5 shadow-lg">
+          <div className="flex-[3] grid grid-cols-2 md:grid-cols-4 gap-2 bg-gray-100 dark:bg-[#0B1120] p-1.5 rounded-2xl border border-gray-200 dark:border-white/[0.03] relative isolate shadow-sm">
             {['today', 'yesterday', 'this_week', 'this_month'].map((range) => (
               <button
                 key={range}
                 onClick={() => setQuickDate(range)}
-                className={`py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.15em] transition-all ${selectedDateRange === range
-                  ? 'bg-gray-900 dark:bg-white text-white dark:text-black shadow-md scale-[0.98]'
-                  : 'text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-cream-100 dark:hover:bg-white/5'
+                className={`relative py-3 rounded-xl text-[10px] font-black uppercase tracking-wide transition-all duration-300 ${selectedDateRange === range
+                  ? 'text-white dark:text-black'
+                  : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'
                   }`}
               >
+                {selectedDateRange === range && (
+                  <motion.div
+                    layoutId="active-date-range"
+                    className="absolute inset-0 bg-gray-900 dark:bg-white rounded-xl -z-10 shadow-md"
+                    transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                  />
+                )}
                 {range.replace('_', ' ')}
               </button>
             ))}
           </div>
 
-          <div className="flex-[2] flex items-center gap-6 bg-cream-50 dark:bg-[#0A0A0A] px-8 py-3 rounded-[2rem] border border-cream-300 dark:border-white/5 shadow-lg group">
+          <div className="flex-[2] flex items-center gap-6 bg-white dark:bg-[#0B1120] px-6 py-3 rounded-2xl border border-gray-200 dark:border-white/[0.03] group shadow-sm transition-all hover:border-paymint-green/30">
             <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
               <Filter size={18} className="text-paymint-green" />
             </div>
@@ -269,17 +323,17 @@ export function ReportsPage() {
                   type="date"
                   value={startDate}
                   onChange={(e) => { setStartDate(e.target.value); setSelectedDateRange('custom'); }}
-                  className="bg-transparent focus:outline-none cursor-pointer text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter dark:[color-scheme:dark] [&::-webkit-calendar-picker-indicator]:scale-150 [&::-webkit-calendar-picker-indicator]:ml-2"
+                  className="bg-transparent focus:outline-none cursor-pointer text-sm font-bold text-gray-900 dark:text-white uppercase tracking-tighter dark:[color-scheme:dark] [&::-webkit-calendar-picker-indicator]:scale-150 [&::-webkit-calendar-picker-indicator]:ml-2"
                 />
               </div>
-              <div className="w-px h-8 bg-cream-300 dark:bg-white/10 mx-4 flex-shrink-0" />
+              <div className="w-px h-8 bg-gray-200 dark:bg-white/10 mx-4 flex-shrink-0" />
               <div className="flex flex-col gap-0.5 min-w-0">
                 <span className="text-[8px] text-gray-400 font-black uppercase tracking-[0.2em]">Target</span>
                 <input
                   type="date"
                   value={endDate}
                   onChange={(e) => { setEndDate(e.target.value); setSelectedDateRange('custom'); }}
-                  className="bg-transparent focus:outline-none cursor-pointer text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter dark:[color-scheme:dark] [&::-webkit-calendar-picker-indicator]:scale-150 [&::-webkit-calendar-picker-indicator]:ml-2"
+                  className="bg-transparent focus:outline-none cursor-pointer text-sm font-bold text-gray-900 dark:text-white uppercase tracking-tighter dark:[color-scheme:dark] [&::-webkit-calendar-picker-indicator]:scale-150 [&::-webkit-calendar-picker-indicator]:ml-2"
                 />
               </div>
             </div>
@@ -292,75 +346,149 @@ export function ReportsPage() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-32">
             <div className="w-16 h-16 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-xs font-black uppercase tracking-widest text-gray-400">Processing Analytics...</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Processing Analytics...</p>
           </div>
         ) : (
           <motion.div key={reportType} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
             {/* Sales Dashboard Section */}
             {reportType === 'sales' && salesData && (
               <div className="space-y-8">
-                {/* Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {[
-                    { label: 'Calculated Net Revenue', value: formatCurrency(salesData.totalRevenue || 0), icon: DollarSign, color: 'text-paymint-green', bg: 'bg-paymint-green/10', sub: 'Gross Minus Refunds' },
-                    { label: 'Validated Transactions', value: salesData.totalOrders || 0, icon: ShoppingBag, color: 'text-blue-500', bg: 'bg-blue-500/10', sub: 'Fulfilled Success' },
-                    { label: 'Average Unit Value', value: formatCurrency(salesData.averageOrderValue || 0), icon: Activity, color: 'text-purple-500', bg: 'bg-purple-500/10', sub: 'Per Order Ticket' },
-                    { label: 'Applied Tax Aggregate', value: formatCurrency(salesData.taxCollected || 0), icon: Percent, color: 'text-orange-500', bg: 'bg-orange-500/10', sub: 'Registry Standard' },
-                  ].map((stat, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: i * 0.1 }}
-                      className="group relative h-40 bg-cream-50 dark:bg-[#0A0A0A] rounded-[2.5rem] border border-cream-300 dark:border-white/5 shadow-lg p-7 overflow-hidden transition-all hover:border-paymint-green/30"
-                    >
-                      <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bg} blur-3xl opacity-50 group-hover:scale-150 transition-transform duration-700`} />
-                      <div className="relative z-10 h-full flex flex-col justify-between">
-                        <div className="flex items-center justify-between">
-                          <div className={`p-2.5 rounded-xl ${stat.bg} ${stat.color} shadow-lg shadow-black/5`}>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {(() => {
+                    const netPayInOut = (salesData.totalPayIn || 0) - (salesData.totalPayOut || 0);
+
+                    return [
+                      {
+                        label: 'Net Sales',
+                        value: (salesData.totalRevenue || 0).toFixed(3),
+                        icon: TrendingUp,
+                        color: 'text-paymint-green',
+                        bg: 'bg-paymint-green/10',
+                        sub: 'Gross Minus Refunds'
+                      },
+                      {
+                        label: 'Total Orders',
+                        value: (salesData.totalOrders || 0).toString(),
+                        suffix: 'ORD',
+                        icon: ShoppingBag,
+                        color: 'text-indigo-500',
+                        bg: 'bg-indigo-500/10',
+                        sub: 'Completed Sales'
+                      },
+                      {
+                        label: 'Refunds',
+                        value: (salesData.totalRefunds || 0).toFixed(3),
+                        icon: RefreshCw,
+                        color: 'text-red-500',
+                        bg: 'bg-red-500/10',
+                        sub: 'Returned Items'
+                      },
+                      {
+                        label: 'Tax Collected',
+                        value: (salesData.taxCollected || 0).toFixed(3),
+                        icon: Percent,
+                        color: 'text-purple-500',
+                        bg: 'bg-purple-500/10',
+                        sub: 'Accumulated Tax'
+                      },
+                      {
+                        label: 'Gross Profit',
+                        value: (salesData.grossProfit || 0).toFixed(3),
+                        icon: DollarSign,
+                        color: (salesData.grossProfit || 0) >= 0 ? 'text-emerald-500' : 'text-red-500',
+                        bg: (salesData.grossProfit || 0) >= 0 ? 'bg-emerald-500/10' : 'bg-red-500/10',
+                        sub: 'Sales - Cost - Tax'
+                      },
+                      {
+                        label: 'Time Worked',
+                        value: (salesData.totalHoursWorked || 0).toFixed(1),
+                        suffix: 'HRS',
+                        icon: Clock,
+                        color: 'text-orange-500',
+                        bg: 'bg-orange-500/10',
+                        sub: 'Staff Hours',
+                        onClick: () => setReportType('shifts')
+                      },
+                      {
+                        label: 'Pay In / Pay Out',
+                        value: (
+                          <div className="flex flex-col -mt-1">
+                            <div className="flex items-baseline gap-1">
+                              <span className="text-xl font-bold text-paymint-green">+{formatCurrency(salesData.totalPayIn || 0).replace(' JOD', '')}</span>
+                            </div>
+                            <div className="flex items-baseline gap-1">
+                              <span className="text-xl font-bold text-red-500">-{formatCurrency(salesData.totalPayOut || 0).replace(' JOD', '')}</span>
+                            </div>
+                          </div>
+                        ),
+                        icon: ArrowUpRight,
+                        color: 'text-cyan-500',
+                        bg: 'bg-cyan-500/10',
+                        sub: `Net Flow: ${formatCurrency(netPayInOut).replace(' JOD', '')}`,
+                        onClick: () => setShowPayInOutModal(true)
+                      },
+                    ].map((stat, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.05 }}
+                        onClick={stat.onClick}
+                        className={`p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col hover:border-paymint-green/30 transition-all group ${stat.onClick ? 'cursor-pointer' : ''}`}
+                      >
+                        <div className="flex items-center justify-between mb-4">
+                          <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform group-hover:scale-110`}>
                             <stat.icon size={20} />
                           </div>
-                          {selectedDateRange === 'today' && (
-                            <p className="text-[8px] font-black text-gray-400 group-hover:text-paymint-green uppercase tracking-[0.3em] transition-colors">Real-time Feed</p>
+                          {stat.onClick && (
+                            <ExternalLink size={14} className="text-gray-300 dark:text-gray-600 group-hover:text-paymint-green transition-colors" />
                           )}
                         </div>
-                        <div>
-                          <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1">{stat.label}</p>
-                          <div className="flex items-baseline gap-2">
-                            <p className="text-3xl font-black text-gray-900 dark:text-white tracking-tighter leading-none">{stat.value}</p>
-                            {selectedDateRange === 'today' && (
-                              <span className="text-[9px] font-black text-paymint-green animate-pulse">Live</span>
-                            )}
-                          </div>
-                          <p className="text-[9px] font-bold text-gray-400 mt-2 flex items-center gap-1 opacity-60">
-                            <ChevronRight size={10} className="text-paymint-green" /> {stat.sub}
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">{stat.label}</p>
+                        {typeof stat.value === 'string' ? (
+                          <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                            {stat.value}
+                            {stat.suffix && <span className="text-sm ml-1 text-gray-300 dark:text-gray-500">{stat.suffix}</span>}
                           </p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
+                        ) : (
+                          stat.value
+                        )}
+                        <p className="text-[10px] font-medium text-gray-400 mt-1 opacity-70">
+                          {stat.sub}
+                        </p>
+                      </motion.div>
+                    ));
+                  })()}
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  {/* Revenue Line Chart */}
-                  <div className="lg:col-span-2 p-10 bg-cream-50 dark:bg-[#0A0A0A] rounded-[3rem] border border-cream-300 dark:border-white/5 shadow-2xl relative h-[560px]">
-                    <div className="absolute top-0 right-10 w-64 h-64 bg-paymint-green/5 rounded-full blur-[80px] pointer-events-none" />
-                    <div className="relative z-10 h-full flex flex-col">
-                      <div className="flex items-center justify-between mb-10">
-                        <div>
-                          <h3 className="text-xl font-black text-gray-900 dark:text-white flex items-center gap-3">
-                            <TrendingUp className="text-paymint-green" size={24} />
-                            Revenue Momentum
-                          </h3>
-                          <p className="text-xs font-bold text-gray-500 mt-1 uppercase tracking-widest">Chronological Financial Performance</p>
-                        </div>
-                        <div className="flex items-center gap-2 bg-cream-100 dark:bg-white/5 px-4 py-2 rounded-full border border-cream-300 dark:border-white/5">
-                          <Activity size={14} className="text-paymint-green" />
-                          <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Volatility: Low</span>
-                        </div>
-                      </div>
+                <PayInPayOutLogModal
+                  isOpen={showPayInOutModal}
+                  onClose={() => setShowPayInOutModal(false)}
+                  startDate={startOfDay(new Date(startDate)).toISOString()}
+                  endDate={endOfDay(new Date(endDate)).toISOString()}
+                />
 
-                      <div className="flex h-[400px] relative">
+
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Revenue Line Chart */}
+                  <div className="lg:col-span-2 p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
+                    <div className="flex items-center justify-between mb-6">
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                          <TrendingUp className="text-paymint-green" size={20} />
+                          Revenue Trend
+                        </h3>
+                        <p className="text-xs text-gray-500 mt-1">Financial performance over time</p>
+                      </div>
+                      <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                        <Activity size={12} className="text-paymint-green" />
+                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Real-time</span>
+                      </div>
+                    </div>
+                    <div className="h-[300px]">
+
+                      <div className="flex h-full relative">
                         {(() => {
                           const isHourly = salesData.dailyBreakdown?.some((d: any) => d.date.includes(':'));
                           let chartData = salesData.dailyBreakdown || [];
@@ -426,10 +554,27 @@ export function ReportsPage() {
                             : 100;
                           const maxY = maxRevenue > 0 ? maxRevenue : 100;
 
+                          // Check if there's any actual revenue data
+                          const hasRevenueData = chartData.length > 0 && chartData.some((d: any) => Number(d.revenue) > 0);
+
+                          if (!hasRevenueData) {
+                            return (
+                              <div className="h-full w-full flex flex-col items-center justify-center space-y-4 bg-gray-50/50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-200 dark:border-white/[0.03]">
+                                <div className="p-5 rounded-full bg-gray-100 dark:bg-white/5">
+                                  <Activity size={36} className="text-gray-400 dark:text-gray-600" />
+                                </div>
+                                <div className="text-center">
+                                  <p className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide">No Revenue Data</p>
+                                  <p className="text-xs text-gray-500 mt-1">There are no sales recorded for the selected period.</p>
+                                </div>
+                              </div>
+                            );
+                          }
+
                           return (
                             <>
                               {/* Fixed Y-Axis Container */}
-                              <div className="absolute left-0 top-0 bottom-0 w-[50px] z-20 pointer-events-none" style={{ background: 'linear-gradient(to right, ' + (isDark ? '#0A0A0A 80%, transparent' : '#FAF9F7 80%, transparent') + ')' }}>
+                              <div className="absolute left-0 top-0 bottom-0 w-[50px] z-20 pointer-events-none" style={{ background: 'linear-gradient(to right, ' + (isDark ? '#0B1120 80%, transparent' : '#FAF9F7 80%, transparent') + ')' }}>
                                 <ResponsiveContainer width="100%" height="100%">
                                   <AreaChart
                                     data={chartData}
@@ -488,7 +633,7 @@ export function ReportsPage() {
                                       <Tooltip
                                         cursor={{ stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' }}
                                         contentStyle={{
-                                          backgroundColor: isDark ? '#0A0A0A' : '#fff',
+                                          backgroundColor: isDark ? '#0B1120' : '#fff',
                                           borderRadius: '24px',
                                           border: '1px solid rgba(255,255,255,0.05)',
                                           boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
@@ -549,7 +694,7 @@ export function ReportsPage() {
                                       <Tooltip
                                         cursor={{ stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' }}
                                         contentStyle={{
-                                          backgroundColor: isDark ? '#0A0A0A' : '#fff',
+                                          backgroundColor: isDark ? '#0B1120' : '#fff',
                                           borderRadius: '24px',
                                           border: '1px solid rgba(255,255,255,0.05)',
                                           boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
@@ -592,23 +737,21 @@ export function ReportsPage() {
                   </div>
 
                   {/* Payment Source Breakdown */}
-                  {/* Payment Source Breakdown */}
-                  <div className="p-8 bg-cream-50 dark:bg-[#0A0A0A] rounded-[3rem] border border-cream-300 dark:border-white/5 shadow-2xl relative overflow-hidden">
-                    <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-[60px]" />
-                    <div className="relative z-10">
-                      <div className="flex items-center gap-3 mb-6">
-                        <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500">
-                          <Wallet size={24} />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-black text-gray-900 dark:text-white">Capital Sources</h3>
-                          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Payment Distribution</p>
-                        </div>
+                  <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+                        <Wallet size={20} />
                       </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Capital Sources</h3>
+                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Today's Payment Distribution</p>
+                      </div>
+                    </div>
+                    <div className="flex-1 flex flex-col justify-center">
 
                       {salesData.paymentMethodBreakdown && salesData.paymentMethodBreakdown.length > 0 ? (
                         <>
-                          <div className="h-[180px] -mx-4">
+                          <div className="h-[160px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
                               <PieChart>
                                 <Pie
@@ -626,10 +769,9 @@ export function ReportsPage() {
                                 </Pie>
                                 <Tooltip
                                   contentStyle={{
-                                    backgroundColor: isDark ? '#111' : '#fff',
+                                    backgroundColor: isDark ? '#0B1120' : '#fff',
                                     borderRadius: '16px',
                                     border: 'none',
-                                    boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
                                     padding: '12px'
                                   }}
                                   itemStyle={{
@@ -642,22 +784,22 @@ export function ReportsPage() {
                               </PieChart>
                             </ResponsiveContainer>
                           </div>
-                          <div className="space-y-3 mt-4">
-                            {salesData.paymentMethodBreakdown.map((item: any, i: number) => (
-                              <div key={i} className="flex items-center justify-between p-3 rounded-2xl bg-cream-100 dark:bg-white/[0.02] border border-cream-300 dark:border-white/5">
-                                <div className="flex items-center gap-3">
-                                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                                  <span className="text-xs font-black text-gray-900 dark:text-white uppercase">{item.name}</span>
+                          <div className="space-y-2 mt-4">
+                            {salesData.paymentMethodBreakdown.slice(0, 3).map((item: any, i: number) => (
+                              <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                                  <span className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase">{item.name}</span>
                                 </div>
-                                <span className="text-xs font-black text-gray-500">{formatCurrency(item.value)}</span>
+                                <span className="text-xs font-bold text-gray-900 dark:text-white">{formatCurrency(item.value)}</span>
                               </div>
                             ))}
                           </div>
                         </>
                       ) : (
-                        <div className="flex flex-col items-center justify-center py-12 text-gray-400">
-                          <CreditCard size={40} className="mb-3 opacity-20" />
-                          <p className="text-sm font-bold">No payment data</p>
+                        <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                          <CreditCard size={32} className="mb-3 opacity-20" />
+                          <p className="text-xs font-bold uppercase tracking-wide">No payment data</p>
                         </div>
                       )}
                     </div>
@@ -666,301 +808,438 @@ export function ReportsPage() {
               </div>
             )}
 
-            {/* Top Items Section */}
-            {reportType === 'top-items' && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-cream-50 dark:bg-[#0A0A0A] rounded-[3rem] border border-cream-300 dark:border-white/5 shadow-2xl overflow-hidden relative">
-                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-paymint-green shadow-[0_0_15px_#7CC39F]" />
-                  <div className="p-10 border-b border-cream-200 dark:border-white/5 flex items-center justify-between">
-                    <div>
-                      <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Catalog Performance</h3>
-                      <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">High-Volume Product Registry</p>
-                    </div>
-                    <div className="w-12 h-12 bg-paymint-green/10 rounded-2xl flex items-center justify-center text-paymint-green">
-                      <ShoppingBag size={24} />
-                    </div>
-                  </div>
-                  <div className="p-4 space-y-3">
-                    {topItems.map((item, index) => (
-                      <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                        key={index}
-                        className="p-6 bg-cream-100 dark:bg-white/[0.02] border border-cream-200 dark:border-white/5 rounded-3xl flex items-center justify-between group hover:bg-cream-50 dark:hover:bg-white/5 hover:border-paymint-green/30 transition-all hover:shadow-lg"
-                      >
-                        <div className="flex items-center gap-6">
-                          <div className="relative">
-                            <div className="w-14 h-14 rounded-2xl bg-cream-50 dark:bg-white/10 flex items-center justify-center text-lg font-black text-gray-900 dark:text-white border border-cream-200 dark:border-white/10 group-hover:bg-paymint-green group-hover:text-black transition-all duration-500">
-                              {index + 1}
-                            </div>
-                            {index < 3 && (
-                              <div className="absolute -top-2 -right-2 w-6 h-6 bg-paymint-green rounded-full flex items-center justify-center border-4 border-cream-50 dark:border-[#0A0A0A]">
-                                <ArrowUpRight size={10} className="text-black" />
-                              </div>
-                            )}
-                          </div>
-                          <div>
-                            <p className="font-black text-lg text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors uppercase tracking-tight leading-none mb-1">{item.itemName || item.name}</p>
-                            <div className="flex items-center gap-3">
-                              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
-                                <Activity size={12} className="text-paymint-green" /> {item.quantity} DISPATCHED
-                              </span>
-                              <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/10" />
-                              <span className="text-[10px] font-black text-paymint-green uppercase">Top 10% Tier</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-xl font-black text-gray-900 dark:text-white tracking-tighter">{formatCurrency(item.revenue || 0)}</p>
-                          <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest opacity-60">Gross Inflow</p>
-                        </div>
-                      </motion.div>
-                    ))}
+            {/* Item Report Section */}
+            {reportType === 'top-items' && itemReportData && (
+              <div className="space-y-6">
+                {/* Premium Segmented Toggle Switch */}
+                <div className="flex justify-center w-full">
+                  <div className="flex items-center bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/[0.03] p-1.5 shadow-sm relative isolate overflow-hidden">
+                    {/* Sliding Background Pill */}
+                    <motion.div
+                      className="absolute top-1.5 bottom-1.5 left-1.5 bg-paymint-green rounded-xl shadow-md shadow-paymint-green/20 -z-10"
+                      initial={false}
+                      animate={{
+                        x: itemReportTab === 'items' ? '0%' : itemReportTab === 'modifiers' ? '100%' : '200%' // Simplified logic for 2 tabs, extend for 3
+                      }}
+                      // Since we only have 2 visible buttons in the previous truncated code, let's stick to 2 for now or restore 3 if needed. 
+                      // The original code had 3 tabs but the UI only showed buttons for 'items' and 'modifiers'. 
+                      // I'll stick to 'items' and 'modifiers' as they are the primary ones.
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      style={{ width: 'calc(50% - 6px)' }}
+                    />
+
+                    <button
+                      onClick={() => {
+                        setSelectedModifierIds([]);
+                        setItemReportTab('items');
+                      }}
+                      className={`relative flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-colors duration-300 z-10 ${itemReportTab === 'items' ? 'text-black' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                        }`}
+                    >
+                      Products
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedCategoryId(null);
+                        setSelectedItemIds([]);
+                        setItemReportTab('modifiers');
+                      }}
+                      className={`relative flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-colors duration-300 z-10 ${itemReportTab === 'modifiers' ? 'text-black' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                        }`}
+                    >
+                      Add-ons
+                    </button>
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-8">
-                  {/* Revenue Distribution Pie */}
-                  <div className="p-10 bg-cream-50 dark:bg-[#0A0A0A] rounded-[3rem] border border-cream-300 dark:border-white/5 shadow-2xl relative overflow-hidden flex flex-col h-[450px]">
-                    <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight mb-8">Share of Revenue</h3>
-                    <div className="flex-1 min-h-0">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={topItems.slice(0, 5)}
-                            dataKey="revenue"
-                            nameKey="itemName"
-                            cx="35%"
-                            cy="50%"
-                            outerRadius={110}
-                            innerRadius={70}
-                            paddingAngle={5}
-                            animationDuration={1500}
-                          >
-                            {topItems.slice(0, 5).map((_, index) => (
-                              <Cell key={index} fill={COLORS[index % COLORS.length]} stroke="none" />
-                            ))}
-                          </Pie>
-                          <Tooltip
-                            contentStyle={{
-                              backgroundColor: isDark ? '#111' : '#fff',
-                              borderRadius: '24px',
-                              border: 'none',
-                              boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
-                              padding: '16px'
-                            }}
-                            itemStyle={{
-                              color: isDark ? '#fff' : '#111',
-                              textTransform: 'uppercase',
-                              fontWeight: '900',
-                              fontSize: '10px'
-                            }}
-                            labelStyle={{
-                              color: isDark ? '#7CC39F' : '#059669',
-                              fontWeight: '900',
-                              marginBottom: '4px',
-                              fontSize: '10px',
-                              textTransform: 'uppercase'
-                            }}
-                          />
-                          <Legend
-                            layout="vertical"
-                            align="right"
-                            verticalAlign="middle"
-                            iconType="circle"
-                            iconSize={10}
-                            formatter={(value) => (
-                              <span style={{
-                                color: isDark ? '#A1A1AA' : '#4B5563',
-                                fontSize: '11px',
-                                fontWeight: '800',
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.05em',
-                                paddingLeft: '4px'
-                              }}>
-                                {value}
-                              </span>
-                            )}
-                            wrapperStyle={{
-                              paddingLeft: '20px',
-                              overflowY: 'auto',
-                              maxHeight: '300px'
-                            }}
-                          />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
-
-                  {/* Summary Metric */}
-                  <div className="p-10 bg-paymint-green rounded-[3rem] border border-paymint-green shadow-2xl shadow-paymint-green/20 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-1000" />
-                    <div className="relative z-10">
-                      <h3 className="text-black font-black uppercase tracking-[0.2em] text-xs mb-6 opacity-60">Inventory Insights</h3>
-                      <div className="flex items-center gap-6">
-                        <div className="w-20 h-20 rounded-[2rem] bg-black/10 flex items-center justify-center relative">
-                          <Activity size={40} className="text-black" />
-                          <div className="absolute top-0 right-0 w-3 h-3 bg-white rounded-full animate-ping" />
-                        </div>
-                        <div>
-                          <p className="text-black text-4xl font-black tracking-tight leading-none mb-2">94% Efficiency</p>
-                          <p className="text-black/60 text-xs font-bold uppercase tracking-widest">Calculated Sell-through Rate</p>
-                        </div>
+                {/* Filters Container - Clean Card Look */}
+                <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-4 shadow-sm">
+                  {itemReportTab !== 'modifiers' ? (
+                    // Products Mode Filters
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <SingleSelect
+                        label="Category"
+                        placeholder="All Categories"
+                        allOptionLabel="All Categories"
+                        options={availableCategories}
+                        value={selectedCategoryId}
+                        onChange={(val) => {
+                          setSelectedCategoryId(val);
+                          setSelectedItemIds([]);
+                        }}
+                        className="w-full"
+                      />
+                      {/* Items filter - matching disabled state visual */}
+                      <div className={`relative transition-opacity duration-300 ${!selectedCategoryId ? 'opacity-40 pointer-events-none grayscale' : 'opacity-100'}`}>
+                        <MultiSelect
+                          label="Items"
+                          placeholder={!selectedCategoryId ? 'Select a category first' : 'All Items'}
+                          options={
+                            selectedCategoryId
+                              ? availableItems.filter((item: any) => item.categoryId === selectedCategoryId)
+                              : []
+                          }
+                          value={selectedItemIds}
+                          onChange={setSelectedItemIds}
+                        />
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Peak Hours Section */}
-            {reportType === 'peak-hours' && (
-              <div className="space-y-8">
-                <div className="p-12 bg-cream-50 dark:bg-[#0A0A0A] rounded-[3rem] border border-cream-300 dark:border-white/5 shadow-2xl relative overflow-hidden h-[600px]">
-                  <div className="absolute -top-20 -right-20 w-80 h-80 bg-paymint-green/5 rounded-full blur-[100px]" />
-                  <div className="relative z-10 h-full flex flex-col">
-                    <div className="flex items-center justify-between mb-12">
-                      <div>
-                        <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Load Heatmap</h3>
-                        <p className="text-xs font-black text-gray-500 uppercase tracking-widest mt-1">Personnel Allocation Optimizer</p>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 rounded-full bg-paymint-green" />
-                          <span className="text-[10px] font-black text-gray-400 uppercase">Volume</span>
-                        </div>
-                        <div className="h-4 w-px bg-cream-300 dark:bg-white/10" />
-                        <span className="text-[10px] font-black text-paymint-green bg-paymint-green/10 px-3 py-1 rounded-full uppercase tracking-tighter">Live Updates</span>
-                      </div>
+                  ) : (
+                    // Add-ons Mode Filters
+                    <div className="grid grid-cols-1 gap-8">
+                      <MultiSelect
+                        label="Add-ons / Modifiers"
+                        placeholder="All Add-ons"
+                        options={availableModifiers}
+                        value={selectedModifierIds}
+                        onChange={setSelectedModifierIds}
+                      />
                     </div>
-
-                    <div className="flex-1">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={peakHours.map(h => ({ ...h, hour: `${h.hour}:00` }))}>
-                          <defs>
-                            <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="#7CC39F" stopOpacity={1} />
-                              <stop offset="100%" stopColor="#10b981" stopOpacity={0.8} />
-                            </linearGradient>
-                          </defs>
-                          <CartesianGrid strokeDasharray="0 0" stroke={isDark ? "#ffffff05" : "#00000005"} vertical={false} />
-                          <XAxis dataKey="hour" stroke="#94a3b8" fontSize={10} tickLine={false} axisLine={false} dy={10} />
-                          <YAxis yAxisId="left" stroke="#94a3b8" fontSize={10} tickLine={false} axisLine={false} dx={-10} />
-                          <Tooltip
-                            cursor={{ fill: 'transparent' }}
-                            contentStyle={{ backgroundColor: isDark ? '#111' : '#fff', borderRadius: '24px', border: 'none', boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}
-                            itemStyle={{ fontWeight: '900', textTransform: 'uppercase', fontSize: '10px' }}
-                            labelStyle={{ color: '#7CC39F', fontWeight: '900', marginBottom: '8px' }}
-                          />
-                          <Bar yAxisId="left" dataKey="total" name="Gross Flow" fill="url(#barGradient)" radius={[12, 12, 4, 4]} barSize={40} animationDuration={1500} />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
+                  )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  {[
-                    { label: 'Morning Peak', time: '08:00 - 10:00', load: 'HIGH', icon: Clock },
-                    { label: 'Afternoon Peak', time: '13:00 - 15:00', load: 'MODERATE', icon: Clock },
-                    { label: 'Evening Peak', time: '18:00 - 20:00', load: 'HIGH', icon: Clock },
-                  ].map((p, i) => (
-                    <div key={i} className="p-8 bg-cream-50 dark:bg-[#0A0A0A] rounded-[2.5rem] border border-cream-300 dark:border-white/5 shadow-xl flex items-center justify-between">
-                      <div>
-                        <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">{p.label}</p>
-                        <p className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">{p.time}</p>
-                      </div>
-                      <div className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest ${p.load === 'HIGH' ? 'bg-red-500/10 text-red-500' : 'bg-paymint-green/10 text-paymint-green'}`}>
-                        {p.load} LOAD
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Shift Logs Section */}
-            {reportType === 'shifts' && (
-              <div className="space-y-8">
-                <div className="bg-cream-50 dark:bg-[#0A0A0A] rounded-[3rem] border border-cream-300 dark:border-white/5 shadow-2xl overflow-hidden relative">
-                  <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-paymint-green via-blue-500 to-paymint-green" />
-                  <div className="p-10 border-b border-cream-200 dark:border-white/5 flex items-center justify-between">
-                    <div>
-                      <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Shift Operations Portal</h3>
-                      <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Operator Deployment History</p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-4 py-2 bg-cream-100 dark:bg-white/5 rounded-xl border border-cream-200 dark:border-white/5">
-                        Total {shifts.length} Sessions
-                      </span>
-                    </div>
-                  </div>
+                {/* Data Table */}
+                <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
                   <div className="overflow-x-auto">
                     <table className="w-full">
-                      <thead>
-                        <tr className="bg-cream-100 dark:bg-white/[0.01]">
-                          <th className="px-10 py-6 text-left text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.25em]">Operator Identity</th>
-                          <th className="px-10 py-6 text-left text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.25em]">Session Timeline</th>
-                          <th className="px-10 py-6 text-left text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.25em]">Origin Registry</th>
-                          <th className="px-10 py-6 text-left text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.25em]">Flow Performance</th>
-                          <th className="px-10 py-6 text-right text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.25em]">Module Status</th>
+                      <thead className="bg-gray-50 dark:bg-white/[0.02]">
+                        <tr className="border-b border-gray-200 dark:border-white/5">
+                          <th className="px-8 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                            {itemReportTab === 'modifiers' ? 'Add-on Name' : 'Product Name'}
+                          </th>
+                          <th className="px-8 py-5 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Units Sold</th>
+                          <th className="px-8 py-5 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Gross Revenue</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-cream-200 dark:divide-white/5">
-                        {shifts.map((shift, idx) => (
-                          <motion.tr
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: idx * 0.03 }}
-                            key={idx}
-                            className="group hover:bg-cream-100 dark:hover:bg-white/[0.02] transition-colors"
-                          >
-                            <td className="px-10 py-7">
-                              <div className="flex items-center gap-5">
-                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-paymint-green to-emerald-500 text-black flex items-center justify-center font-black text-xl shadow-lg shadow-paymint-green/20 group-hover:scale-110 transition-transform duration-500">
-                                  {shift.user?.username?.charAt(0).toUpperCase()}
-                                </div>
-                                <div>
-                                  <span className="font-black text-lg text-gray-900 dark:text-white uppercase tracking-tight block leading-none mb-1">{shift.user?.username}</span>
-                                  <span className="text-[9px] font-black text-paymint-green uppercase tracking-widest">Operator Role</span>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="px-10 py-7">
-                              <div className="flex flex-col gap-1">
-                                <p className="font-black text-gray-900 dark:text-white text-sm uppercase tracking-tighter">{format(new Date(shift.startTime), 'MMM dd, yyyy')}</p>
-                                <p className="text-[10px] text-gray-400 font-bold uppercase flex items-center gap-1.5">
-                                  <Clock size={10} className="text-paymint-green" />
-                                  {format(new Date(shift.startTime), 'HH:mm')} - {shift.endTime ? format(new Date(shift.endTime), 'HH:mm') : 'SYNCING'}
-                                </p>
-                              </div>
-                            </td>
-                            <td className="px-10 py-7 font-black text-gray-900 dark:text-white text-sm uppercase tracking-tighter">{formatCurrency(shift.openingBalance || 0)}</td>
-                            <td className="px-10 py-7">
-                              <div className="flex flex-col gap-1">
-                                <span className="font-black text-paymint-green text-lg tracking-tighter leading-none">{formatCurrency(shift.totalSales || 0)}</span>
-                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Net Realized</span>
-                              </div>
-                            </td>
-                            <td className="px-10 py-7 text-right">
-                              <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-all shadow-sm ${shift.status === 'ACTIVE'
-                                ? 'bg-paymint-green text-black shadow-paymint-green/20 animate-pulse'
-                                : 'bg-cream-100 dark:bg-white/5 text-gray-500'}`}
+                      <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                        {itemReportData.breakdown && itemReportData.breakdown.length > 0 ? (
+                          itemReportData.breakdown
+                            .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                            .map((item: any, idx: number) => (
+                              <motion.tr
+                                key={idx}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: idx * 0.05 }}
+                                className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
                               >
-                                {shift.status === 'ACTIVE' && <span className="w-1.5 h-1.5 rounded-full bg-black animate-ping" />}
-                                {shift.status || 'CLOSED'}
-                              </span>
-                            </td>
-                          </motion.tr>
-                        ))}
+                                <td className="px-8 py-5">
+                                  <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center font-black text-[10px] text-gray-500 border border-gray-200 dark:border-white/5 shadow-sm">
+                                      {(currentPage - 1) * itemsPerPage + idx + 1}
+                                    </div>
+                                    <span className="font-bold text-gray-900 dark:text-white text-sm">{item.itemName || item.name}</span>
+                                  </div>
+                                </td>
+                                <td className="px-8 py-5 text-right font-bold text-gray-700 dark:text-gray-300">
+                                  {item.quantity}
+                                </td>
+                                <td className="px-8 py-5 text-right font-bold text-paymint-green">
+                                  {formatCurrency(item.totalSales || item.revenue)}
+                                </td>
+                              </motion.tr>
+                            ))
+                        ) : (
+                          <tr>
+                            <td colSpan={3} className="py-20 text-center text-gray-400 font-black text-[10px] uppercase tracking-[0.2em]">No transactional data identified for this period</td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>
+
+                  {/* Pagination */}
+                  {itemReportData.breakdown && itemReportData.breakdown.length > itemsPerPage && (
+                    <div className="flex items-center justify-between px-8 py-4 border-t border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.01]">
+                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                        Page {currentPage} of {Math.ceil(itemReportData.breakdown.length / itemsPerPage)}
+                      </p>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                          disabled={currentPage === 1}
+                          className="p-2 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50 transition-all"
+                        >
+                          <ChevronLeft size={16} />
+                        </button>
+                        <button
+                          onClick={() => setCurrentPage(p => Math.min(Math.ceil(itemReportData.breakdown.length / itemsPerPage), p + 1))}
+                          disabled={currentPage === Math.ceil(itemReportData.breakdown.length / itemsPerPage)}
+                          className="p-2 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50 transition-all"
+                        >
+                          <ChevronRight size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
-            )}
+            )
+            }
 
+            {/* Shifts Report Section */}
+            {
+              reportType === 'shifts' && (
+                <div className="space-y-6">
+                  {/* Employee Shift Summary Cards */}
+                  {shifts.length > 0 && (() => {
+                    // Aggregate shifts by employee
+                    const employeeStats = shifts.reduce((acc: any, shift: any) => {
+                      const username = shift.user?.username || 'Unknown';
+                      if (!acc[username]) {
+                        acc[username] = {
+                          username,
+                          totalShifts: 0,
+                          totalSales: 0,
+                          totalHours: 0,
+                          lastShift: null,
+                          lastClosingBalance: null
+                        };
+                      }
+                      acc[username].totalShifts += 1;
+                      acc[username].totalSales += shift.totalSales || 0;
+
+                      // Calculate hours worked
+                      if (shift.startTime) {
+                        const start = new Date(shift.startTime);
+                        const end = shift.endTime ? new Date(shift.endTime) : new Date();
+                        const hours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+                        acc[username].totalHours += hours;
+                      }
+
+                      // Track last shift for closing balance
+                      const shiftDate = new Date(shift.startTime);
+                      if (!acc[username].lastShift || shiftDate > new Date(acc[username].lastShift)) {
+                        acc[username].lastShift = shift.startTime;
+                        acc[username].lastClosingBalance = shift.closingBalance;
+                      }
+
+                      return acc;
+                    }, {});
+
+                    const employeeList = Object.values(employeeStats);
+
+                    return (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {employeeList.map((emp: any, idx: number) => (
+                          <motion.div
+                            key={emp.username}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: idx * 0.05 }}
+                            className="p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-md transition-all"
+                          >
+                            <div className="flex items-center gap-3 mb-4">
+                              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center font-black text-sm">
+                                {emp.username.charAt(0).toUpperCase()}
+                              </div>
+                              <div>
+                                <p className="font-bold text-gray-900 dark:text-white text-sm">{emp.username}</p>
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Operator</p>
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="p-3 bg-gray-50 dark:bg-white/5 rounded-xl">
+                                <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Shifts</p>
+                                <p className="text-xl font-bold text-gray-900 dark:text-white">{emp.totalShifts}</p>
+                              </div>
+                              <div className="p-3 bg-gray-50 dark:bg-white/5 rounded-xl">
+                                <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Hours Worked</p>
+                                <p className="text-xl font-bold text-gray-900 dark:text-white">{emp.totalHours.toFixed(1)}<span className="text-sm text-gray-400 ml-0.5">hrs</span></p>
+                              </div>
+                              <div className="p-3 bg-paymint-green/10 rounded-xl">
+                                <p className="text-[9px] font-black text-paymint-green/70 uppercase tracking-widest mb-1">Total Sales</p>
+                                <p className="text-lg font-bold text-paymint-green">{formatCurrency(emp.totalSales).replace(' JOD', '')}</p>
+                              </div>
+                              <div className="p-3 bg-blue-500/10 rounded-xl">
+                                <p className="text-[9px] font-black text-blue-500/70 uppercase tracking-widest mb-1">Last Closing</p>
+                                <p className="text-lg font-bold text-blue-500">
+                                  {emp.lastClosingBalance !== null ? formatCurrency(emp.lastClosingBalance).replace(' JOD', '') : '—'}
+                                </p>
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    );
+                  })()}
+
+                  {/* Shifts Table */}
+                  <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-gray-50 dark:bg-white/[0.02]">
+                          <tr className="border-b border-gray-200 dark:border-white/5">
+                            <th className="px-5 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Staff Member</th>
+                            <th className="px-5 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Shift Period</th>
+                            <th className="px-5 py-5 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Opening Bal</th>
+                            <th className="px-5 py-5 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Net Sales</th>
+                            <th className="px-5 py-5 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Closing Bal</th>
+                            <th className="px-5 py-5 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">Cash Over/Short</th>
+                            <th className="px-5 py-5 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                          {shifts.length > 0 ? (
+                            shifts.map((shift: any, idx: number) => (
+                              <motion.tr
+                                key={shift.id}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: idx * 0.05 }}
+                                className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                              >
+                                <td className="px-5 py-5">
+                                  <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center font-black text-[10px]">
+                                      {shift.user?.username?.charAt(0).toUpperCase()}
+                                    </div>
+                                    <span className="font-bold text-gray-900 dark:text-white text-sm">{shift.user?.username || 'Unknown'}</span>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-5">
+                                  <div className="flex flex-col">
+                                    <span className="text-xs font-bold text-gray-900 dark:text-white">
+                                      {format(new Date(shift.startTime), 'MMM d, HH:mm')}
+                                    </span>
+                                    <span className="text-[10px] font-medium text-gray-500">
+                                      to {shift.endTime ? format(new Date(shift.endTime), 'HH:mm') : 'Present'}
+                                    </span>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-5 text-right font-medium text-gray-500">
+                                  {formatCurrency(shift.openingBalance)}
+                                </td>
+                                <td className="px-5 py-5 text-right font-bold text-paymint-green">
+                                  {formatCurrency(shift.totalSales)}
+                                </td>
+                                <td className="px-5 py-5 text-right">
+                                  {shift.status === 'CLOSED' ? (
+                                    <span className="font-bold text-blue-500">
+                                      {shift.closingBalance !== null && shift.closingBalance !== undefined
+                                        ? formatCurrency(shift.closingBalance)
+                                        : '—'}
+                                    </span>
+                                  ) : (
+                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Active</span>
+                                  )}
+                                </td>
+                                <td className="px-5 py-5 text-center">
+                                  {shift.status === 'CLOSED' && shift.discrepancy !== null && shift.discrepancy !== undefined ? (
+                                    <div className="flex flex-col items-center">
+                                      <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${shift.discrepancy > 0.001
+                                        ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
+                                        : shift.discrepancy < -0.001
+                                          ? 'bg-red-500/10 text-red-500 border-red-500/20'
+                                          : 'bg-gray-100 dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10'
+                                        }`}>
+                                        {shift.discrepancy > 0.001
+                                          ? `+${formatCurrency(shift.discrepancy).replace(' JOD', '')} Over`
+                                          : shift.discrepancy < -0.001
+                                            ? `${formatCurrency(shift.discrepancy).replace(' JOD', '')} Short`
+                                            : '0'}
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">—</span>
+                                  )}
+                                </td>
+                                <td className="px-5 py-5 text-center">
+                                  <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border transition-all ${shift.status === 'OPEN'
+                                    ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
+                                    : 'bg-gray-100 dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10'
+                                    }`}>
+                                    {shift.status}
+                                  </span>
+                                </td>
+                              </motion.tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan={7} className="py-20 text-center text-gray-400 font-black text-[10px] uppercase tracking-[0.2em]">No shift records found in cluster</td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              )
+            }
+
+            {/* Peak Hours Section */}
+            {
+              reportType === 'peak-hours' && (
+                <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
+                        <Clock size={20} />
+                      </div>
+                      <div>
+                        <h3 className="text-base font-bold text-gray-900 dark:text-white">Traffic Heatmap</h3>
+                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Hourly distribution</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="h-[400px]">
+                    {peakHours.length > 0 && peakHours.some((h: any) => Number(h.total) > 0) ? (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={peakHours.map((h: any) => ({ ...h, hourFormatted: `${h.hour}:00` }))} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                          <defs>
+                            <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#f97316" stopOpacity={1} />
+                              <stop offset="100%" stopColor="#ec4899" stopOpacity={0.8} />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? "#ffffff10" : "#00000010"} />
+                          <XAxis
+                            dataKey="hourFormatted"
+                            stroke="#94a3b8"
+                            fontSize={10}
+                            tickLine={false}
+                            axisLine={false}
+                            dy={10}
+                          />
+                          <YAxis
+                            stroke="#94a3b8"
+                            fontSize={10}
+                            tickLine={false}
+                            axisLine={false}
+                            tickFormatter={(val) => formatCurrency(val).replace(' JOD', '')}
+                          />
+                          <Tooltip
+                            cursor={{ fill: 'transparent' }}
+                            contentStyle={{
+                              backgroundColor: isDark ? '#0B1120' : '#fff',
+                              borderRadius: '16px',
+                              border: 'none',
+                              boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+                              padding: '12px'
+                            }}
+                            itemStyle={{ color: '#f97316', fontWeight: 'bold', fontSize: '12px', textTransform: 'uppercase' }}
+                            labelStyle={{ color: isDark ? '#fff' : '#000', fontWeight: 'bold', marginBottom: '4px', fontSize: '10px' }}
+                            formatter={(val: any) => [formatCurrency(val), 'Revenue']}
+                          />
+                          <Bar dataKey="total" name="Revenue" fill="url(#barGradient)" radius={[6, 6, 0, 0]} barSize={40} animationDuration={1500} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="h-full w-full flex flex-col items-center justify-center space-y-4 bg-gray-50/50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-200 dark:border-white/[0.03]">
+                        <div className="p-5 rounded-full bg-gray-100 dark:bg-white/5">
+                          <Clock size={36} className="text-gray-400 dark:text-gray-600" />
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide">No Traffic Data</p>
+                          <p className="text-xs text-gray-500 mt-1">There is no transaction activity recorded for the selected period.</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
           </motion.div>
         )}
       </AnimatePresence>

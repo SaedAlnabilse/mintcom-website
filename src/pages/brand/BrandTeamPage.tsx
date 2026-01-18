@@ -1,27 +1,31 @@
-import { useState, useEffect } from 'react';
-import { useParams, useOutletContext } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     Users,
-    Store,
-    UserCheck,
     Shield,
+    Search,
+    RefreshCw,
+    MapPin,
+    UserPlus,
     Mail,
-    Search
+    AtSign,
+    Edit2,
+    Trash2,
+    Grid3X3,
+    List,
+    X,
+    MoreVertical,
+    UserCheck,
+    Eye,
+    EyeOff,
+    AlertTriangle
 } from 'lucide-react';
 import api from '../../config/api';
-
-interface Brand {
-    id: string;
-    name: string;
-    ownerPosId: string;
-    establishments: {
-        id: string;
-        name: string;
-        type: string;
-        currency: string;
-    }[];
-}
+import toast from 'react-hot-toast';
+import { CustomSelect } from '../../components/CustomSelect';
+import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
+import { useAuth } from '../../context/AuthContext';
 
 interface Employee {
     id: string;
@@ -29,7 +33,9 @@ interface Employee {
     firstName: string;
     lastName: string;
     email: string | null;
+    phone?: string;
     isActive: boolean;
+    createdAt?: string;
     establishments: {
         id: string;
         name: string;
@@ -37,20 +43,59 @@ interface Employee {
     }[];
 }
 
+type ViewMode = 'grid' | 'list';
+type RoleFilter = 'all' | 'ADMIN' | 'CASHIER';
+type SortOption = 'name' | 'role' | 'locations';
+
 export function BrandTeamPage() {
     const { brandId } = useParams<{ brandId: string }>();
-    const context = useOutletContext<{ brand: Brand | null }>();
-    const brand = context?.brand;
+    const { establishments, account } = useAuth();
 
     const [employees, setEmployees] = useState<Employee[]>([]);
+    const [brandName, setBrandName] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
+    const [viewMode, setViewMode] = useState<ViewMode>('list');
+    const [roleFilter, setRoleFilter] = useState<RoleFilter>('all');
+    const [locationFilter, setLocationFilter] = useState<string>('all');
+    const [sortBy, setSortBy] = useState<SortOption>('name');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+    const [activeMenu, setActiveMenu] = useState<string | null>(null);
+    const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+    const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
+
+    // Delete confirmation modal state
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(null);
+    const [deletePassword, setDeletePassword] = useState('');
+    const [showDeletePassword, setShowDeletePassword] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [deleteError, setDeleteError] = useState('');
 
     useEffect(() => {
         if (brandId) {
             fetchEmployees();
+            fetchBrandInfo();
         }
     }, [brandId]);
+
+    // Close menu when clicking outside
+    useEffect(() => {
+        const handleClick = () => setActiveMenu(null);
+        if (activeMenu) {
+            document.addEventListener('click', handleClick);
+            return () => document.removeEventListener('click', handleClick);
+        }
+    }, [activeMenu]);
+
+    const fetchBrandInfo = async () => {
+        try {
+            const response = await api.get(`/api/brands/${brandId}`);
+            setBrandName(response.data?.name || 'Brand');
+        } catch (err) {
+            console.error('Failed to fetch brand info:', err);
+        }
+    };
 
     const fetchEmployees = async () => {
         try {
@@ -59,198 +104,709 @@ export function BrandTeamPage() {
             setEmployees(response.data || []);
         } catch (err) {
             console.error('Failed to fetch employees:', err);
+            toast.error('Failed to load team data');
         } finally {
             setIsLoading(false);
         }
     };
 
-    const filteredEmployees = employees.filter(emp =>
-        emp.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        emp.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        emp.username.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    const getRoleBadgeColor = (role: string) => {
-        switch (role.toUpperCase()) {
-            case 'MANAGER':
-                return 'bg-purple-500/10 text-purple-500';
-            case 'CASHIER':
-                return 'bg-blue-500/10 text-blue-500';
-            case 'ADMIN':
-                return 'bg-paymint-green/10 text-paymint-green';
-            default:
-                return 'bg-gray-500/10 text-gray-500';
+    const handleEmployeeSubmit = async (data: any) => {
+        try {
+            if (editingEmployee) {
+                await api.put(`/api/accounts/employees/${editingEmployee.id}`, data);
+                toast.success('Employee updated successfully');
+            } else {
+                await api.post('/api/accounts/employees', data);
+                toast.success('Employee added successfully');
+            }
+            setIsFormModalOpen(false);
+            setEditingEmployee(null);
+            fetchEmployees();
+        } catch (error: any) {
+            toast.error(error.response?.data?.message || 'Failed to save employee');
+            throw error; // Re-throw to let the modal know it failed
         }
     };
 
+    const handleEditEmployee = (emp: Employee) => {
+        setEditingEmployee(emp);
+        setIsFormModalOpen(true);
+        setActiveMenu(null);
+    };
+
+    const handleAddEmployee = () => {
+        setEditingEmployee(null);
+        setIsFormModalOpen(true);
+    };
+
+    const openDeleteModal = (emp: Employee) => {
+        setEmployeeToDelete(emp);
+        setDeletePassword('');
+        setDeleteError('');
+        setDeleteModalOpen(true);
+        setActiveMenu(null);
+    };
+
+    const closeDeleteModal = () => {
+        setDeleteModalOpen(false);
+        setEmployeeToDelete(null);
+        setDeletePassword('');
+        setDeleteError('');
+    };
+
+    const confirmDelete = async () => {
+        if (!employeeToDelete || !account?.email) return;
+
+        if (!deletePassword.trim()) {
+            setDeleteError('Please enter your password');
+            return;
+        }
+
+        setIsDeleting(true);
+        setDeleteError('');
+
+        try {
+            await api.delete(`/api/accounts/employees/${employeeToDelete.id}`, {
+                data: { email: account.email, password: deletePassword }
+            });
+            toast.success('Employee removed successfully');
+            closeDeleteModal();
+            fetchEmployees();
+        } catch (error: any) {
+            setDeleteError(error.response?.data?.message || 'Incorrect password or failed to delete');
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
+    // Get unique locations for filter
+    const locations = useMemo(() => {
+        const locSet = new Map<string, string>();
+        employees.forEach(emp => {
+            emp.establishments.forEach(est => {
+                locSet.set(est.id, est.name);
+            });
+        });
+        return Array.from(locSet.entries()).map(([id, name]) => ({ id, name }));
+    }, [employees]);
+
+    // Filtered and sorted employees
+    const filteredEmployees = useMemo(() => {
+        let result = [...employees];
+
+        // Apply search filter
+        if (searchQuery.trim()) {
+            const query = searchQuery.toLowerCase();
+            result = result.filter(emp =>
+                emp.firstName.toLowerCase().includes(query) ||
+                emp.lastName.toLowerCase().includes(query) ||
+                emp.username.toLowerCase().includes(query) ||
+                emp.email?.toLowerCase().includes(query)
+            );
+        }
+
+        // Apply role filter
+        if (roleFilter !== 'all') {
+            result = result.filter(emp =>
+                emp.establishments.some(est => est.role === roleFilter)
+            );
+        }
+
+        // Apply location filter
+        if (locationFilter !== 'all') {
+            result = result.filter(emp =>
+                emp.establishments.some(est => est.id === locationFilter)
+            );
+        }
+
+        // Apply sorting
+        result.sort((a, b) => {
+            let comparison = 0;
+            switch (sortBy) {
+                case 'name':
+                    comparison = `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`);
+                    break;
+                case 'role':
+                    const roleA = a.establishments[0]?.role || '';
+                    const roleB = b.establishments[0]?.role || '';
+                    comparison = roleA.localeCompare(roleB);
+                    break;
+                case 'locations':
+                    comparison = a.establishments.length - b.establishments.length;
+                    break;
+            }
+            return sortOrder === 'asc' ? comparison : -comparison;
+        });
+
+        return result;
+    }, [employees, searchQuery, roleFilter, locationFilter, sortBy, sortOrder]);
+
+    // Stats calculations
+    const stats = useMemo(() => {
+        return {
+            total: employees.length,
+            users: employees.filter(e => e.establishments.some(est => est.role !== 'ADMIN')).length,
+            admins: employees.filter(e => e.establishments.some(est => est.role === 'ADMIN')).length,
+        };
+    }, [employees]);
+
+    const getRoleDisplay = (role: string) => {
+        // Map all roles to Admin or User
+        return role.toUpperCase() === 'ADMIN' ? 'Admin' : 'User';
+    };
+
+    const getRoleBadgeStyle = (role: string) => {
+        const base = "px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border";
+        if (role.toUpperCase() === 'ADMIN') {
+            return `${base} bg-paymint-green/10 text-paymint-green border-paymint-green/20`;
+        }
+        return `${base} bg-blue-500/10 text-blue-500 border-blue-500/20`;
+    };
+
+    const clearFilters = () => {
+        setSearchQuery('');
+        setRoleFilter('all');
+        setLocationFilter('all');
+        setSortBy('name');
+        setSortOrder('asc');
+    };
+
+    const hasActiveFilters = searchQuery || roleFilter !== 'all' || locationFilter !== 'all';
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
+                <div className="relative">
+                    <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
+                    <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
+                </div>
+                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Loading team data...</p>
+            </div>
+        );
+    }
+
     return (
-        <div className="space-y-8">
+        <div className="max-w-7xl mx-auto space-y-8 pb-10">
             {/* Header */}
-            <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-white via-gray-50 to-white dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-gray-200 dark:border-white/5 shadow-sm">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-
-                <div className="relative z-10">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-16 h-16 rounded-2xl bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/20">
-                            <Users size={32} className="text-black" />
-                        </div>
-                        <div>
-                            <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Brand Team</h1>
-                            <p className="text-gray-500 dark:text-gray-400 font-medium">
-                                Shared employees across {brand?.name} locations
-                            </p>
-                        </div>
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                <div>
+                    <div className="flex items-center gap-3 mb-2">
+                        <span className="px-3 py-1 rounded-lg bg-purple-500/10 text-purple-500 text-[10px] font-black uppercase tracking-widest border border-purple-500/20">
+                            Staff Matrix
+                        </span>
                     </div>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Team Members</h1>
+                    <p className="text-gray-500 dark:text-gray-400 mt-2">
+                        Manage personnel and access rights across {brandName}
+                    </p>
+                </div>
 
-                    {/* Stats Summary */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="bg-white dark:bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-gray-100 dark:border-white/5">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center">
-                                    <Users size={20} className="text-paymint-green" />
-                                </div>
-                                <div>
-                                    <p className="text-2xl font-black text-gray-900 dark:text-white">{employees.length}</p>
-                                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Total</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bg-white dark:bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-gray-100 dark:border-white/5">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center">
-                                    <UserCheck size={20} className="text-green-500" />
-                                </div>
-                                <div>
-                                    <p className="text-2xl font-black text-gray-900 dark:text-white">
-                                        {employees.filter(e => e.isActive).length}
-                                    </p>
-                                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Active</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bg-white dark:bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-gray-100 dark:border-white/5">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
-                                    <Shield size={20} className="text-purple-500" />
-                                </div>
-                                <div>
-                                    <p className="text-2xl font-black text-gray-900 dark:text-white">
-                                        {employees.filter(e => e.establishments.some(est => est.role === 'MANAGER')).length}
-                                    </p>
-                                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Managers</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bg-white dark:bg-white/5 backdrop-blur-sm rounded-2xl p-4 border border-gray-100 dark:border-white/5">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                                    <Store size={20} className="text-blue-500" />
-                                </div>
-                                <div>
-                                    <p className="text-2xl font-black text-gray-900 dark:text-white">
-                                        {brand?.establishments.length || 0}
-                                    </p>
-                                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Locations</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={fetchEmployees}
+                        className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
+                        title="Refresh"
+                    >
+                        <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
+                    </button>
+                    <button
+                        onClick={handleAddEmployee}
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
+                    >
+                        <UserPlus size={18} />
+                        <span>Add Member</span>
+                    </button>
                 </div>
             </div>
 
-            {/* Team List */}
-            <div className="bg-white dark:bg-[#0A0A0A] rounded-3xl border border-gray-200 dark:border-white/5 p-6">
-                <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center">
-                            <Users size={20} className="text-paymint-green" />
+            {/* Stats Grid */}
+            <div className="grid grid-cols-3 gap-4">
+                {[
+                    { label: 'Total Members', value: stats.total, icon: Users, color: 'text-gray-900 dark:text-white', bg: 'bg-gray-100 dark:bg-white/5' },
+                    { label: 'Users', value: stats.users, icon: UserCheck, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                    { label: 'Admins', value: stats.admins, icon: Shield, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+                ].map((stat, i) => (
+                    <div key={i} className="p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm">
+                        <div className="flex items-center gap-3 mb-3">
+                            <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center`}>
+                                <stat.icon size={20} />
+                            </div>
                         </div>
-                        <div>
-                            <h2 className="text-lg font-black text-gray-900 dark:text-white">All Team Members</h2>
-                            <p className="text-xs text-gray-500">Employees shared across brand locations</p>
-                        </div>
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">{stat.label}</p>
+                        <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                     </div>
+                ))}
+            </div>
 
+            {/* Filters Bar */}
+            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm">
+                <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                     {/* Search */}
-                    <div className="relative">
-                        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <div className="relative flex-1 max-w-md">
+                        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input
                             type="text"
-                            placeholder="Search employees..."
+                            placeholder="Search by name, username, or email..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
+                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
                         />
+                    </div>
+
+                    {/* Filter Controls */}
+                    <div className="flex items-center gap-3 flex-wrap">
+                        {/* Role Filter */}
+                        <div className="w-36">
+                            <CustomSelect
+                                value={roleFilter}
+                                onChange={(val) => setRoleFilter(val as RoleFilter)}
+                                options={[
+                                    { label: 'All Roles', value: 'all' },
+                                    { label: 'Admin', value: 'ADMIN' },
+                                    { label: 'User', value: 'CASHIER' },
+                                ]}
+                            />
+                        </div>
+
+                        {/* Location Filter */}
+                        {locations.length > 1 && (
+                            <div className="w-44">
+                                <CustomSelect
+                                    value={locationFilter}
+                                    onChange={(val) => setLocationFilter(val as string)}
+                                    options={[
+                                        { label: 'All Locations', value: 'all' },
+                                        ...locations.map(loc => ({ label: loc.name, value: loc.id }))
+                                    ]}
+                                />
+                            </div>
+                        )}
+
+                        {/* Sort */}
+                        <div className="w-40">
+                            <CustomSelect
+                                value={sortBy}
+                                onChange={(val) => setSortBy(val as SortOption)}
+                                options={[
+                                    { label: 'Sort by Name', value: 'name' },
+                                    { label: 'Sort by Role', value: 'role' },
+                                    { label: 'Sort by Locations', value: 'locations' },
+                                ]}
+                            />
+                        </div>
+
+                        {/* View Mode Toggle */}
+                        <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1">
+                            <button
+                                onClick={() => setViewMode('grid')}
+                                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                            >
+                                <Grid3X3 size={18} />
+                            </button>
+                            <button
+                                onClick={() => setViewMode('list')}
+                                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                            >
+                                <List size={18} />
+                            </button>
+                        </div>
+
+                        {/* Clear Filters */}
+                        {hasActiveFilters && (
+                            <button
+                                onClick={clearFilters}
+                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-paymint-red/10 text-paymint-red text-xs font-bold uppercase tracking-wide hover:bg-paymint-red/20 transition-all"
+                            >
+                                <X size={14} />
+                                Clear
+                            </button>
+                        )}
                     </div>
                 </div>
 
-                {isLoading ? (
-                    <div className="flex items-center justify-center py-16">
-                        <div className="w-10 h-10 border-4 border-paymint-green border-t-transparent rounded-full animate-spin" />
-                    </div>
-                ) : filteredEmployees.length === 0 ? (
-                    <div className="text-center py-16">
-                        <Users size={48} className="mx-auto text-gray-300 dark:text-gray-600 mb-4" />
-                        <p className="text-gray-500">{searchQuery ? 'No employees match your search' : 'No team members found'}</p>
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {filteredEmployees.map((employee, index) => (
-                            <motion.div
-                                key={employee.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.03 }}
-                                className="p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 hover:border-paymint-green/50 transition-all"
-                            >
-                                <div className="flex items-start gap-4 mb-4">
-                                    <div className="w-12 h-12 rounded-[1rem] bg-gradient-to-br from-gray-900 to-black flex items-center justify-center border border-white/10 shadow-lg">
-                                        <span className="text-white font-black text-lg">
-                                            {employee.firstName.charAt(0).toUpperCase()}
-                                        </span>
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <h3 className="font-black text-gray-900 dark:text-white truncate">
-                                            {employee.firstName} {employee.lastName}
-                                        </h3>
-                                        <p className="text-xs text-gray-500 truncate">@{employee.username}</p>
-                                    </div>
-                                    <div className={`w-2 h-2 rounded-full ${employee.isActive ? 'bg-green-500' : 'bg-gray-400'}`} />
-                                </div>
-
-                                {employee.email && (
-                                    <div className="flex items-center gap-2 mb-4 text-sm text-gray-500">
-                                        <Mail size={14} />
-                                        <span className="truncate">{employee.email}</span>
-                                    </div>
-                                )}
-
-                                {/* Locations & Roles */}
-                                <div className="space-y-2">
-                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Assigned Locations</p>
-                                    <div className="flex flex-wrap gap-1.5">
-                                        {employee.establishments.map((est) => (
-                                            <div
-                                                key={est.id}
-                                                className="flex items-center gap-1.5 px-2 py-1 bg-white dark:bg-black/20 rounded-lg"
-                                            >
-                                                <span className="text-xs font-bold text-gray-700 dark:text-gray-300">{est.name}</span>
-                                                <span className={`px-1.5 py-0.5 rounded text-[10px] font-black uppercase ${getRoleBadgeColor(est.role)}`}>
-                                                    {est.role}
-                                                </span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </motion.div>
-                        ))}
+                {/* Active Filters Display */}
+                {hasActiveFilters && (
+                    <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
+                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wide">Active filters:</span>
+                        <div className="flex items-center gap-2 flex-wrap">
+                            {searchQuery && (
+                                <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
+                                    Search: "{searchQuery}"
+                                </span>
+                            )}
+                            {roleFilter !== 'all' && (
+                                <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
+                                    Role: {roleFilter === 'CASHIER' ? 'User' : roleFilter}
+                                </span>
+                            )}
+                            {locationFilter !== 'all' && (
+                                <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
+                                    Location: {locations.find(l => l.id === locationFilter)?.name}
+                                </span>
+                            )}
+                        </div>
+                        <span className="text-xs font-medium text-gray-400 ml-auto">
+                            {filteredEmployees.length} of {employees.length} members
+                        </span>
                     </div>
                 )}
             </div>
+
+
+
+            {/* Team Display */}
+            {filteredEmployees.length === 0 ? (
+                <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
+                    <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">No team members found</p>
+                    <p className="text-sm text-gray-500 mt-1">
+                        {hasActiveFilters ? 'Try adjusting your filters' : 'Add new members to see them here'}
+                    </p>
+                    {hasActiveFilters && (
+                        <button
+                            onClick={clearFilters}
+                            className="mt-4 px-6 py-2 rounded-xl bg-paymint-green text-black text-sm font-bold hover:bg-emerald-400 transition-all"
+                        >
+                            Clear Filters
+                        </button>
+                    )}
+                </div>
+            ) : viewMode === 'grid' ? (
+                /* Grid View */
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <AnimatePresence mode="popLayout">
+                        {filteredEmployees.map((emp, index) => (
+                            <motion.div
+                                key={emp.id}
+                                layout
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                transition={{ delay: index * 0.03 }}
+                                className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 p-6 transition-all shadow-sm hover:shadow-lg overflow-hidden"
+                            >
+
+                                {/* Header */}
+                                {/* Header */}
+                                <div className="flex items-start justify-between mb-6">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-14 h-14 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center relative flex-shrink-0">
+                                            <span className="text-gray-900 dark:text-white font-bold text-xl">
+                                                {emp.firstName.charAt(0).toUpperCase()}
+                                            </span>
+                                            {emp.isActive && (
+                                                <div className="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white dark:border-[#0A0A0A]" />
+                                            )}
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
+                                                {emp.firstName} {emp.lastName}
+                                            </h3>
+                                            <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                                                <AtSign size={12} />
+                                                {emp.username}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="relative">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActiveMenu(activeMenu === emp.id ? null : emp.id);
+                                            }}
+                                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                        >
+                                            <MoreVertical size={18} />
+                                        </button>
+
+                                        <AnimatePresence>
+                                            {activeMenu === emp.id && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, scale: 0.95, y: -5 }}
+                                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                    exit={{ opacity: 0, scale: 0.95, y: -5 }}
+                                                    className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                                >
+                                                    <button
+                                                        onClick={() => handleEditEmployee(emp)}
+                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                    >
+                                                        <Edit2 size={16} />
+                                                        Edit Details
+                                                    </button>
+                                                    <button
+                                                        onClick={() => openDeleteModal(emp)}
+                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                        Remove
+                                                    </button>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+                                </div>
+
+                                {/* Status Badge */}
+                                <div className="mb-4">
+                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border ${emp.isActive
+                                        ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
+                                        : 'bg-gray-100 text-gray-500 border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10'
+                                        }`}>
+                                        <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                                        {emp.isActive ? 'Active' : 'Inactive'}
+                                    </span>
+                                </div>
+
+                                {/* Contact Info */}
+                                <div className="space-y-3 mb-6">
+                                    {emp.email && (
+                                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl">
+                                            <Mail size={16} className="text-gray-400" />
+                                            <span className="text-xs font-medium text-gray-600 dark:text-gray-300 truncate">{emp.email}</span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Access Rights */}
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Access Rights</p>
+                                        <span className="text-xs font-bold text-gray-900 dark:text-white">{emp.establishments.length} Location{emp.establishments.length !== 1 ? 's' : ''}</span>
+                                    </div>
+                                    <div className="space-y-2">
+                                        {emp.establishments.slice(0, 2).map((est, eIdx) => (
+                                            <div
+                                                key={eIdx}
+                                                className="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5"
+                                            >
+                                                <div className="flex items-center gap-2 overflow-hidden">
+                                                    <MapPin size={14} className="text-gray-400 flex-shrink-0" />
+                                                    <span className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate">
+                                                        {est.name}
+                                                    </span>
+                                                </div>
+                                                <span className={getRoleBadgeStyle(est.role)}>
+                                                    {getRoleDisplay(est.role)}
+                                                </span>
+                                            </div>
+                                        ))}
+                                        {emp.establishments.length > 2 && (
+                                            <div className="text-center py-1">
+                                                <span className="text-[10px] font-medium text-gray-400">+ {emp.establishments.length - 2} more locations</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="flex items-center gap-3 pt-6 mt-6 border-t border-gray-100 dark:border-white/5">
+                                    <button className="flex-1 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-2 border border-gray-200 dark:border-white/5">
+                                        <Edit2 size={14} />
+                                        Edit
+                                    </button>
+                                    <button className="p-2.5 rounded-xl text-red-500 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors border border-red-100 dark:border-red-500/20">
+                                        <Trash2 size={16} />
+                                    </button>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
+                </div>
+            ) : (
+                /* List View */
+                <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+                    {/* Table Header */}
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                        <div className="col-span-4">Member</div>
+                        <div className="col-span-2">Status</div>
+                        <div className="col-span-2">Primary Role</div>
+                        <div className="col-span-2">Locations</div>
+                        <div className="col-span-2 text-right">Actions</div>
+                    </div>
+
+                    {/* Table Body */}
+                    <div className="divide-y divide-gray-100 dark:divide-white/5">
+                        <AnimatePresence mode="popLayout">
+                            {filteredEmployees.map((emp, index) => (
+                                <motion.div
+                                    key={emp.id}
+                                    layout
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, x: -10 }}
+                                    transition={{ delay: index * 0.02 }}
+                                    className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                                >
+
+                                    {/* Member Info */}
+                                    {/* Member Info */}
+                                    <div className="col-span-4 flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center relative">
+                                            <span className="text-gray-900 dark:text-white font-bold text-sm">
+                                                {emp.firstName.charAt(0).toUpperCase()}
+                                            </span>
+                                            {emp.isActive && (
+                                                <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-[#0A0A0A]" />
+                                            )}
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-gray-900 dark:text-white">
+                                                {emp.firstName} {emp.lastName}
+                                            </h3>
+                                            <p className="text-xs text-gray-500 mt-0.5">@{emp.username}</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Status */}
+                                    <div className="col-span-2 flex items-center">
+                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border ${emp.isActive
+                                            ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
+                                            : 'bg-gray-100 text-gray-500 border-gray-200'
+                                            }`}>
+                                            <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                                            {emp.isActive ? 'Active' : 'Inactive'}
+                                        </span>
+                                    </div>
+
+                                    {/* Primary Role */}
+                                    <div className="col-span-2 flex items-center">
+                                        {emp.establishments[0] && (
+                                            <span className={getRoleBadgeStyle(emp.establishments[0].role)}>
+                                                {getRoleDisplay(emp.establishments[0].role)}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* Locations Count */}
+                                    <div className="col-span-2 flex items-center">
+                                        <span className="font-bold text-gray-900 dark:text-white">
+                                            {emp.establishments.length} location{emp.establishments.length !== 1 ? 's' : ''}
+                                        </span>
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="col-span-2 flex items-center justify-end gap-2">
+                                        <button
+                                            onClick={() => handleEditEmployee(emp)}
+                                            className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all flex items-center gap-2 border border-gray-200 dark:border-white/5"
+                                        >
+                                            <Edit2 size={14} />
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => openDeleteModal(emp)}
+                                            className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-red-500 transition-colors"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    </div>
+                </div>
+            )}
+
+            {/* Results Summary */}
+            {filteredEmployees.length > 0 && (
+                <div className="text-center">
+                    <p className="text-sm text-gray-500">
+                        Showing <span className="font-bold text-gray-900 dark:text-white">{filteredEmployees.length}</span> of{' '}
+                        <span className="font-bold text-gray-900 dark:text-white">{employees.length}</span> team members
+                    </p>
+                </div>
+            )}
+
+            {/* Employee Form Modal */}
+            <EmployeeFormModal
+                isOpen={isFormModalOpen}
+                onClose={() => { setIsFormModalOpen(false); setEditingEmployee(null); }}
+                onSubmit={handleEmployeeSubmit}
+                establishments={establishments}
+                initialData={editingEmployee ? {
+                    id: editingEmployee.id,
+                    name: `${editingEmployee.firstName} ${editingEmployee.lastName}`,
+                    username: editingEmployee.username,
+                    role: editingEmployee.establishments?.[0]?.role || 'USER',
+                    email: editingEmployee.email ?? undefined,
+                    permissions: [],
+                    establishmentIds: editingEmployee.establishments?.map(e => e.id) || []
+                } : null}
+            />
+
+            {/* Delete Confirmation Modal */}
+            <AnimatePresence>
+                {deleteModalOpen && employeeToDelete && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="bg-white dark:bg-[#1E293B] w-full max-w-md rounded-[2rem] overflow-hidden border border-gray-200 dark:border-white/10 shadow-2xl"
+                        >
+                            <div className="p-8 pb-4">
+                                <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-6">
+                                    <AlertTriangle size={32} />
+                                </div>
+                                <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight mb-2">Remove Employee</h3>
+                                <p className="text-gray-500 text-sm leading-relaxed">
+                                    Are you sure you want to remove <span className="font-bold text-gray-900 dark:text-white">{employeeToDelete.firstName} {employeeToDelete.lastName}</span>? This action is irreversible.
+                                </p>
+                            </div>
+
+                            <div className="px-8 pb-6 space-y-4">
+                                <div>
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">
+                                        Verify Your Password
+                                    </label>
+                                    <div className="relative">
+                                        <input
+                                            type={showDeletePassword ? 'text' : 'password'}
+                                            value={deletePassword}
+                                            onChange={(e) => { setDeletePassword(e.target.value); setDeleteError(''); }}
+                                            placeholder="Enter your account password"
+                                            className={`w-full bg-gray-50 dark:bg-white/5 border ${deleteError ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-red-500 transition-colors`}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowDeletePassword(!showDeletePassword)}
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-white"
+                                        >
+                                            {showDeletePassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                        </button>
+                                    </div>
+                                    {deleteError && <p className="mt-2 text-xs font-bold text-red-500">{deleteError}</p>}
+                                </div>
+                            </div>
+
+                            <div className="p-6 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 bg-gray-50 dark:bg-white/[0.02]">
+                                <button
+                                    onClick={closeDeleteModal}
+                                    className="flex-1 py-3.5 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-bold text-xs uppercase tracking-wider hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={confirmDelete}
+                                    disabled={isDeleting}
+                                    className="flex-1 py-3.5 rounded-xl bg-red-500 text-white font-bold text-xs uppercase tracking-wider hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-red-500/20"
+                                >
+                                    {isDeleting ? (
+                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    ) : (
+                                        <>
+                                            <Trash2 size={16} />
+                                            Confirm
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

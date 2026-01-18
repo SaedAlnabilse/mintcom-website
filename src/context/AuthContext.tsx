@@ -12,7 +12,7 @@ interface Account {
   emailVerified: boolean;
   trialUsed: boolean;
   trialEndDate?: string;
-  ownerPosId?: string; // Account-level Owner POS ID
+  establishmentLoginId?: string; // Account-level Owner POS ID
   defaultPaymentMethod?: string; // Last 4 digits of saved card (e.g., "4242")
 }
 
@@ -22,7 +22,7 @@ interface Establishment {
   type: string;
   currency: string;
   subscriptionStatus: string;
-  ownerPosId?: string;
+  establishmentLoginId?: string;
 }
 
 interface AuthContextType {
@@ -88,7 +88,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const token = localStorage.getItem('accountToken');
       const savedAccount = localStorage.getItem('account');
-      const savedEstablishment = localStorage.getItem('currentEstablishment');
+      // Use sessionStorage for currentEstablishment - this is per-tab, allowing multiple tabs with different establishments
+      const savedEstablishment = sessionStorage.getItem('currentEstablishment');
 
       if (token && savedAccount) {
         const accountData = JSON.parse(savedAccount);
@@ -161,7 +162,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     localStorage.removeItem('accountToken');
     localStorage.removeItem('account');
-    localStorage.removeItem('currentEstablishment');
+    // Clear sessionStorage for current tab
+    sessionStorage.removeItem('currentEstablishment');
     setAccount(null);
     setEstablishments([]);
     setCurrentEstablishmentState(null);
@@ -230,7 +232,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const setCurrentEstablishment = (establishment: Establishment) => {
     setCurrentEstablishmentState(establishment);
-    localStorage.setItem('currentEstablishment', JSON.stringify(establishment));
+    // Use sessionStorage so each tab can have its own establishment
+    sessionStorage.setItem('currentEstablishment', JSON.stringify(establishment));
   };
 
   const refreshEstablishments = async () => {
@@ -244,8 +247,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setEstablishments(response.data || []);
 
-      // Update current establishment if it exists
-      const savedEst = localStorage.getItem('currentEstablishment');
+      // Update current establishment if it exists (use sessionStorage for per-tab isolation)
+      const savedEst = sessionStorage.getItem('currentEstablishment');
       if (savedEst) {
         const parsed = JSON.parse(savedEst);
         const updated = response.data?.find((e: Establishment) => e.id === parsed.id);

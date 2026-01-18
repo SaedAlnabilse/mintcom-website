@@ -1,16 +1,60 @@
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Plus, Store, GitMerge } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+    Plus,
+    Store,
+    Search,
+    DollarSign,
+    Zap,
+    Building2,
+    Grid3X3,
+    List,
+    MoreVertical,
+    ExternalLink,
+    Settings,
+    Eye
+} from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { CustomSelect } from '../../components/CustomSelect';
+
+const STATUS_OPTIONS = [
+    { label: 'All Statuses', value: 'all' },
+    { label: 'Active', value: 'ACTIVE' },
+    { label: 'Trial', value: 'TRIAL' },
+    { label: 'Expired', value: 'EXPIRED' }
+];
+
+const TYPE_OPTIONS = [
+    { label: 'All Types', value: 'all' },
+    { label: 'Restaurant', value: 'RESTAURANT' },
+    { label: 'Cafe', value: 'CAFE' },
+    { label: 'Retail', value: 'RETAIL' }
+];
+
+type ViewMode = 'grid' | 'list';
 
 export function OwnerEstablishmentsPage() {
     const navigate = useNavigate();
     const { establishments, setCurrentEstablishment } = useAuth();
+    const [searchQuery, setSearchQuery] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [typeFilter, setTypeFilter] = useState('all');
+    const [viewMode, setViewMode] = useState<ViewMode>('list');
+    const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
-    const handleEstablishmentClick = (establishment: typeof establishments[0]) => {
-        // Set as current establishment and open dashboard in NEW TAB
+    const filteredEstablishments = useMemo(() => {
+        return establishments.filter(est => {
+            const matchesSearch = est.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                est.type?.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesStatus = statusFilter === 'all' || est.subscriptionStatus === statusFilter;
+            const matchesType = typeFilter === 'all' || est.type?.toUpperCase() === typeFilter;
+            return matchesSearch && matchesStatus && matchesType;
+        });
+    }, [establishments, searchQuery, statusFilter, typeFilter]);
+
+    const handleEstablishmentClick = (establishment: any) => {
         setCurrentEstablishment(establishment);
-        // Store the selected establishment in localStorage for the new tab
         localStorage.setItem('selectedEstablishmentId', establishment.id);
         window.open('/dashboard', '_blank');
     };
@@ -19,98 +63,323 @@ export function OwnerEstablishmentsPage() {
         navigate('/onboarding');
     };
 
-    const getStatusBadge = (status: string) => {
+    const getStatusColor = (status: string) => {
         switch (status?.toUpperCase()) {
-            case 'TRIAL':
-                return <span className="text-xs font-bold text-emerald-600 dark:text-paymint-green uppercase">TRIAL</span>;
             case 'ACTIVE':
-                return <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase">ACTIVE</span>;
+                return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
+            case 'TRIAL':
+                return 'bg-amber-500/10 text-amber-500 border-amber-500/20';
             case 'EXPIRED':
-                return <span className="text-xs font-bold text-red-600 dark:text-red-400 uppercase">EXPIRED</span>;
+                return 'bg-red-500/10 text-red-500 border-red-500/20';
             default:
-                return <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">{status}</span>;
+                return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
         }
     };
 
-    return (
-        <div className="max-w-5xl">
-            {/* Header */}
-            <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-white via-gray-50 to-white dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-gray-200 dark:border-white/5 shadow-sm mb-8 transition-all">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
-                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-2xl bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/30">
-                            <Store size={28} className="text-black" />
-                        </div>
-                        <div>
-                            <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Establishments</h1>
-                            <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Manage your business locations</p>
-                        </div>
+
+    return (
+        <div className="space-y-8 pb-20">
+            {/* Header */}
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                <div>
+                    <div className="flex items-center gap-3 mb-2">
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+                            Fleet Inventory
+                        </span>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <button
-                            onClick={() => navigate('/owner/merge')}
-                            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-gray-100 dark:bg-white/10 backdrop-blur-sm text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-200 dark:hover:bg-white/20 transition-all border border-gray-200 dark:border-white/10"
-                        >
-                            <GitMerge size={18} />
-                            <span>Merge</span>
-                        </button>
-                        <button
-                            onClick={handleAddEstablishment}
-                            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 transition-all shadow-lg shadow-paymint-green/30"
-                        >
-                            <Plus size={18} />
-                            <span>Add Establishment</span>
-                        </button>
-                    </div>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Establishments</h1>
+                    <p className="text-gray-500 dark:text-gray-400 mt-2">
+                        Manage {establishments.length} operational units across your enterprise.
+                    </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3">
+                    <button
+                        onClick={() => navigate('/owner/brands')}
+                        className="px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all flex items-center gap-2"
+                    >
+                        <Building2 size={18} className="text-purple-500" />
+                        <span>Manage Brands</span>
+                    </button>
+                    <button
+                        onClick={handleAddEstablishment}
+                        className="px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20 flex items-center gap-2"
+                    >
+                        <Plus size={18} />
+                        <span>Add New Node</span>
+                    </button>
                 </div>
             </div>
 
-            {/* Establishments Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {establishments.map((est, index) => (
-                    <motion.div
-                        key={est.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        onClick={() => handleEstablishmentClick(est)}
-                        className="bg-white dark:bg-[#0A0A0A] rounded-2xl border border-gray-100 dark:border-white/5 p-5 shadow-sm cursor-pointer hover:shadow-md hover:border-indigo-200 dark:hover:border-paymint-green/30 transition-all group"
-                    >
-                        <div className="flex items-start justify-between mb-3">
-                            <div className="flex-1 min-w-0 pr-3">
-                                <h3 className="font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-paymint-green transition-colors truncate" title={est.name}>
-                                    {est.name}
-                                </h3>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">{est.type}</p>
-                            </div>
-                            <div className="w-10 h-10 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center shrink-0">
-                                <Store size={20} className="text-gray-400" />
-                            </div>
+            {/* Filters Bar */}
+            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm">
+                <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+                    {/* Search */}
+                    <div className="relative flex-1 min-w-[300px]">
+                        <Search
+                            size={18}
+                            className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-300 ${searchQuery ? 'text-paymint-green' : 'text-gray-400'}`}
+                        />
+                        <input
+                            type="text"
+                            placeholder="Search by name, ID, or type..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm hover:shadow-md focus:shadow-lg"
+                        />
+                    </div>
+
+                    {/* Filter Controls */}
+                    <div className="flex items-center gap-3 flex-wrap lg:ml-auto">
+                        <div className="w-44">
+                            <CustomSelect
+                                value={statusFilter}
+                                onChange={(val) => setStatusFilter(val)}
+                                options={STATUS_OPTIONS}
+                            />
                         </div>
-                        <div className="flex items-center justify-between pt-3 border-t border-gray-50 dark:border-white/5">
-                            <span className="text-sm text-gray-500 dark:text-gray-400">{est.currency || 'USA'}</span>
-                            {getStatusBadge(est.subscriptionStatus)}
+                        <div className="w-44">
+                            <CustomSelect
+                                value={typeFilter}
+                                onChange={(val) => setTypeFilter(val)}
+                                options={TYPE_OPTIONS}
+                            />
                         </div>
-                    </motion.div>
-                ))}
+
+                        {/* View Mode Toggle */}
+                        <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1">
+                            <button
+                                onClick={() => setViewMode('grid')}
+                                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                            >
+                                <Grid3X3 size={18} />
+                            </button>
+                            <button
+                                onClick={() => setViewMode('list')}
+                                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                            >
+                                <List size={18} />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
 
-            {establishments.length === 0 && (
-                <div className="text-center py-16">
-                    <div className="w-20 h-20 bg-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Store size={32} className="text-gray-400" />
+            {/* Establishments Grid */}
+            {filteredEstablishments.length === 0 ? (
+                <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
+                    <Store size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">No establishments found</p>
+                    <p className="text-sm text-gray-500 mt-1">
+                        Add your first establishment to get started or adjust your searches
+                    </p>
+                </div>
+            ) : viewMode === 'grid' ? (
+                /* Grid View */
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <AnimatePresence mode="popLayout">
+                        {filteredEstablishments.map((est, index) => (
+                            <motion.div
+                                key={est.id}
+                                layout
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                transition={{ delay: index * 0.03 }}
+                                className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 p-6 cursor-pointer transition-all shadow-sm hover:shadow-lg overflow-hidden"
+                                onClick={() => handleEstablishmentClick(est)}
+                            >
+                                {/* Hover gradient */}
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                                {/* Header */}
+                                <div className="flex items-start justify-between mb-6 relative z-10">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-14 h-14 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-center justify-center text-gray-500 group-hover:text-paymint-green group-hover:border-paymint-green/30 transition-all">
+                                            <Store size={28} />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors truncate max-w-[180px]">
+                                                {est.name}
+                                            </h3>
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <span className="text-xs font-medium text-gray-500">{est.type || 'Standard'}</span>
+                                                <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
+                                                <span className="text-xs font-medium text-gray-500">{est.currency || 'JOD'}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="relative">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActiveMenu(activeMenu === est.id ? null : est.id);
+                                            }}
+                                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                        >
+                                            <MoreVertical size={18} />
+                                        </button>
+
+                                        <AnimatePresence>
+                                            {activeMenu === est.id && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, scale: 0.95, y: -5 }}
+                                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                    exit={{ opacity: 0, scale: 0.95, y: -5 }}
+                                                    className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                                >
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleEstablishmentClick(est);
+                                                        }}
+                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                    >
+                                                        <Eye size={16} />
+                                                        Enter Dashboard
+                                                    </button>
+                                                    <button
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                    >
+                                                        <Settings size={16} />
+                                                        Settings
+                                                    </button>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+                                </div>
+
+                                {/* Status Badge */}
+                                <div className="mb-6">
+                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border ${getStatusColor(est.subscriptionStatus)}`}>
+                                        <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                                        {est.subscriptionStatus}
+                                    </span>
+                                </div>
+
+                                {/* Quick Stats */}
+                                <div className="grid grid-cols-2 gap-3 mb-6">
+                                    <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
+                                        <div className="flex items-center gap-2 mb-1 text-gray-400">
+                                            <DollarSign size={12} />
+                                            <p className="text-[10px] font-bold uppercase tracking-wide">Currency</p>
+                                        </div>
+                                        <p className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'JOD'}</p>
+                                    </div>
+                                    <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
+                                        <div className="flex items-center gap-2 mb-1 text-gray-400">
+                                            <Zap size={12} />
+                                            <p className="text-[10px] font-bold uppercase tracking-wide">Status</p>
+                                        </div>
+                                        <p className="text-sm font-bold text-emerald-500">Online</p>
+                                    </div>
+                                </div>
+
+                                {/* Action Button */}
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleEstablishmentClick(est);
+                                    }}
+                                    className="w-full py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wide hover:bg-paymint-green hover:text-black transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-paymint-green"
+                                >
+                                    <span>Open Terminal</span>
+                                    <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
+                                </button>
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
+                </div>
+            ) : (
+                /* List View */
+                <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+                    {/* Table Header */}
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                        <div className="col-span-4">Establishment</div>
+                        <div className="col-span-2">Type</div>
+                        <div className="col-span-2">Status</div>
+                        <div className="col-span-2">Currency</div>
+                        <div className="col-span-2 text-right">Actions</div>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No Establishments Yet</h3>
-                    <p className="text-gray-500 dark:text-gray-400 mb-6">Add your first establishment to get started.</p>
-                    <button
-                        onClick={handleAddEstablishment}
-                        className="px-6 py-3 bg-indigo-600 dark:bg-paymint-green text-white dark:text-black rounded-lg font-medium hover:bg-indigo-700 dark:hover:bg-paymint-green/90 transition-colors"
-                    >
-                        Add Establishment
-                    </button>
+
+                    {/* Table Body */}
+                    <div className="divide-y divide-gray-100 dark:divide-white/5">
+                        <AnimatePresence mode="popLayout">
+                            {filteredEstablishments.map((est, index) => (
+                                <motion.div
+                                    key={est.id}
+                                    layout
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, x: -10 }}
+                                    transition={{ delay: index * 0.02 }}
+                                    className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group"
+                                    onClick={() => handleEstablishmentClick(est)}
+                                >
+                                    {/* Info */}
+                                    <div className="col-span-4 flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green transition-colors">
+                                            <Store size={20} />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
+                                                {est.name}
+                                            </h3>
+                                            <p className="text-xs text-gray-500 mt-0.5 md:hidden">{est.type}</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Type */}
+                                    <div className="col-span-2 flex items-center">
+                                        <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                            {est.type || 'Standard'}
+                                        </span>
+                                    </div>
+
+                                    {/* Status */}
+                                    <div className="col-span-2 flex items-center">
+                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border ${getStatusColor(est.subscriptionStatus)}`}>
+                                            <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                                            {est.subscriptionStatus}
+                                        </span>
+                                    </div>
+
+                                    {/* Currency */}
+                                    <div className="col-span-2 flex items-center">
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">
+                                            {est.currency || 'JOD'}
+                                        </span>
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="col-span-2 flex items-center justify-end gap-2">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleEstablishmentClick(est);
+                                            }}
+                                            className="px-4 py-2 rounded-lg bg-paymint-green text-black text-xs font-bold uppercase tracking-wide hover:bg-emerald-400 transition-all flex items-center gap-2"
+                                        >
+                                            <Eye size={14} />
+                                            View
+                                        </button>
+                                        <button
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                        >
+                                            <MoreVertical size={18} />
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    </div>
                 </div>
             )}
         </div>

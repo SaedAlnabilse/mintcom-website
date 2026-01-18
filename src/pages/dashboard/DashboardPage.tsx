@@ -11,21 +11,18 @@ import {
   Package,
   Calendar,
   FileBarChart,
-  Loader2,
   CreditCard,
   Percent,
   RefreshCw,
   Receipt,
   Wallet,
   Activity,
-  ChevronRight,
   Zap,
-  Target,
   PieChart
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, PieChart as RechartsPie, Pie, Cell, BarChart, Bar } from 'recharts';
-import { format } from 'date-fns';
+import { format, startOfDay, endOfDay, isSameDay } from 'date-fns';
 import api from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -66,21 +63,32 @@ export const DashboardPage = () => {
 
   useEffect(() => {
     fetchDashboardData();
+
+    // Check for day change every minute to ensure data resets at midnight
+    const checkDayChange = setInterval(() => {
+      const lastFetchDate = localStorage.getItem('last_dashboard_fetch');
+      if (lastFetchDate && !isSameDay(new Date(lastFetchDate), new Date())) {
+        fetchDashboardData();
+      }
+    }, 60000);
+
+    return () => clearInterval(checkDayChange);
   }, [currentEstablishment?.id]);
 
   const fetchDashboardData = async () => {
     try {
       setIsLoading(true);
 
-      // Fetch today's sales summary
-      const today = new Date().toISOString().split('T')[0];
-      const startOfDay = new Date(today).toISOString();
-      const endOfDay = new Date(new Date(today).getTime() + 24 * 60 * 60 * 1000).toISOString();
+      // Fetch today's sales summary using local timezone boundaries
+      const start = startOfDay(new Date()).toISOString();
+      const end = endOfDay(new Date()).toISOString();
+
+      localStorage.setItem('last_dashboard_fetch', new Date().toISOString());
 
       const [summaryRes, topItemsRes, peakRes] = await Promise.all([
-        api.get('/reports/historical-summary', { params: { startDate: startOfDay, endDate: endOfDay } }).catch(() => ({ data: null })),
-        api.get('/reports/top-selling-items', { params: { startDate: startOfDay, endDate: endOfDay, limit: 5 } }).catch(() => ({ data: [] })),
-        api.get('/reports/peak-hours', { params: { startDate: startOfDay, endDate: endOfDay } }).catch(() => ({ data: [] }))
+        api.get('/reports/historical-summary', { params: { startDate: start, endDate: end } }).catch(() => ({ data: null })),
+        api.get('/reports/top-selling-items', { params: { startDate: start, endDate: end, limit: 5 } }).catch(() => ({ data: [] })),
+        api.get('/reports/peak-hours', { params: { startDate: start, endDate: end } }).catch(() => ({ data: [] }))
       ]);
 
       // Process stats
@@ -121,10 +129,11 @@ export const DashboardPage = () => {
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-JO', {
-      style: 'decimal',
+      style: 'currency',
+      currency: 'JOD',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
-    }).format(value) + ' JOD';
+    }).format(value);
   };
 
   const formatDate = () => {
@@ -145,9 +154,12 @@ export const DashboardPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center py-32">
-        <Loader2 className="w-12 h-12 text-paymint-green animate-spin mb-4" />
-        <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">Loading Dashboard...</p>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
+          <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
+        </div>
+        <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Loading Dashboard...</p>
       </div>
     );
   }
@@ -156,273 +168,222 @@ export const DashboardPage = () => {
   const netCashFlow = (stats?.totalPayIn || 0) - (stats?.totalPayOut || 0);
 
   return (
-    <div className="space-y-8 pb-12">
-      {/* Premium Header */}
-      <div className="relative overflow-hidden rounded-[3rem] bg-cream-50 dark:bg-[#0A0A0A] p-10 border border-cream-300 dark:border-white/5 shadow-2xl">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-paymint-green/5 rounded-full blur-[150px] -translate-y-1/2 translate-x-1/4" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/4" />
+    <div className="max-w-7xl mx-auto space-y-8 pb-10">
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+              Live Operations
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
+              </span>
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">System Active</span>
+            </div>
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{getGreeting()}</h1>
+          <div className="flex items-center gap-3 mt-2 text-gray-500 dark:text-gray-400 font-medium text-sm">
+            <Calendar size={16} />
+            <span>{formatDate()}</span>
+            <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
+            <span className="text-paymint-green font-bold">{currentEstablishment?.name}</span>
+          </div>
+        </div>
 
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-          <div className="flex items-center gap-6">
-            <div className="w-20 h-20 rounded-[2rem] bg-paymint-green flex items-center justify-center shadow-2xl shadow-paymint-green/40 transform -rotate-3 hover:rotate-0 transition-transform duration-500">
-              <Target size={40} className="text-black" />
-            </div>
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <span className="px-3 py-1 rounded-xl bg-paymint-green/10 text-paymint-green text-[9px] font-black uppercase tracking-[0.2em]">Command Center</span>
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
-                </span>
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Live</span>
-              </div>
-              <h1 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">{getGreeting()}</h1>
-              <div className="flex items-center gap-3 mt-2 text-gray-500 dark:text-gray-400 font-bold text-sm">
-                <Calendar size={16} />
-                <span>{formatDate()}</span>
-                <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                <span className="text-paymint-green">{currentEstablishment?.name || 'Dashboard'}</span>
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate('/dashboard/reports')}
-              className="group flex items-center gap-3 px-6 py-4 rounded-2xl bg-cream-100 dark:bg-white/5 backdrop-blur-sm text-gray-900 dark:text-white font-black text-xs uppercase tracking-widest hover:bg-cream-50 dark:hover:bg-white/10 transition-all border border-cream-300 dark:border-white/10 shadow-lg"
-            >
-              <FileBarChart size={20} className="text-paymint-green" />
-              <span>Full Analytics</span>
-              <ChevronRight size={16} className="opacity-0 group-hover:opacity-100 -ml-1 transition-opacity" />
-            </button>
-            <button
-              onClick={fetchDashboardData}
-              className="w-14 h-14 rounded-2xl bg-paymint-green text-black hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/30 flex items-center justify-center"
-            >
-              <RefreshCw size={22} className={isLoading ? 'animate-spin' : ''} />
-            </button>
-          </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate('/dashboard/reports')}
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
+          >
+            <FileBarChart size={18} className="text-paymint-green" />
+            <span>Reports</span>
+          </button>
+          <button
+            onClick={fetchDashboardData}
+            className="p-3 rounded-xl bg-paymint-green text-black hover:bg-emerald-400 transition-all shadow-sm"
+            title="Refresh Data"
+          >
+            <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
+          </button>
         </div>
       </div>
 
       {/* Primary KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[
-          {
-            label: 'Net Revenue',
-            value: formatCurrency(stats?.totalRevenue || 0),
-            sub: 'Calculated gross inflow',
-            icon: DollarSign,
-            color: 'paymint-green',
-            pulse: true
-          },
-          {
-            label: 'Transactions',
-            value: stats?.totalOrders?.toString() || '0',
-            sub: 'Completed orders today',
-            icon: Receipt,
-            color: 'blue-500',
-            pulse: false
-          },
-          {
-            label: 'Avg. Basket',
-            value: formatCurrency(stats?.averageOrderValue || 0),
-            sub: 'Per transaction average',
-            icon: ShoppingBag,
-            color: 'purple-500',
-            pulse: false
-          },
-          {
-            label: 'Tax Collected',
-            value: formatCurrency(stats?.taxCollected || 0),
-            sub: 'Accumulated tax total',
-            icon: Percent,
-            color: 'orange-500',
-            pulse: false
-          }
-        ].map((stat, index) => (
-          <motion.div
-            key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.05 }}
-            className="p-8 rounded-[2.5rem] bg-cream-50 dark:bg-[#0A0A0A] border border-cream-300 dark:border-white/5 shadow-xl hover:shadow-2xl hover:border-paymint-green/20 transition-all group relative overflow-hidden"
-          >
-            <div className={`absolute top-0 right-0 w-32 h-32 bg-${stat.color}/5 rounded-full blur-[60px] -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-700`} />
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-6">
-                <div className={`w-14 h-14 rounded-2xl bg-${stat.color}/10 flex items-center justify-center text-${stat.color} group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                  <stat.icon size={28} />
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <span className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-500 text-[9px] font-black uppercase tracking-widest border border-blue-500/20">
+            Today's Metrics
+          </span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            {
+              label: 'Net Revenue',
+              value: formatCurrency(stats?.totalRevenue || 0),
+              sub: 'Today\'s gross inflow',
+              icon: DollarSign,
+              color: 'text-paymint-green',
+              bg: 'bg-paymint-green/10'
+            },
+            {
+              label: 'Transactions',
+              value: stats?.totalOrders?.toString() || '0',
+              sub: 'Today\'s orders',
+              icon: Receipt,
+              color: 'text-blue-500',
+              bg: 'bg-blue-500/10'
+            },
+            {
+              label: 'Avg. Basket',
+              value: formatCurrency(stats?.averageOrderValue || 0),
+              sub: 'Per transaction',
+              icon: ShoppingBag,
+              color: 'text-purple-500',
+              bg: 'bg-purple-500/10'
+            },
+            {
+              label: 'Tax Collected',
+              value: formatCurrency(stats?.taxCollected || 0),
+              sub: 'Today\'s tax',
+              icon: Percent,
+              color: 'text-orange-500',
+              bg: 'bg-orange-500/10'
+            }
+          ].map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              className="p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm hover:border-paymint-green/30 transition-all group"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform group-hover:scale-110`}>
+                  <stat.icon size={20} />
                 </div>
-                {stat.pulse && (
-                  <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-paymint-green/10">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
-                    </span>
-                    <span className="text-[9px] font-black text-paymint-green uppercase tracking-tighter">Live</span>
-                  </span>
-                )}
               </div>
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2">{stat.label}</p>
-              <p className="text-3xl font-black text-gray-900 dark:text-white tracking-tighter leading-none">{stat.value}</p>
-              <p className="text-[10px] font-bold text-gray-400 mt-3 flex items-center gap-1 opacity-60">
-                <ChevronRight size={10} className="text-paymint-green" /> {stat.sub}
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">{stat.label}</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{stat.value}</p>
+              <p className="text-[10px] font-medium text-gray-400 mt-1 opacity-70">
+                {stat.sub}
               </p>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          ))}
+        </div>
       </div>
 
       {/* Revenue Chart & Payment Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Revenue Momentum Chart */}
-        <div className="lg:col-span-2 p-10 bg-cream-50 dark:bg-[#0A0A0A] rounded-[3rem] border border-cream-300 dark:border-white/5 shadow-2xl relative">
-          <div className="absolute top-0 right-10 w-64 h-64 bg-paymint-green/5 rounded-full blur-[80px] pointer-events-none" />
-          <div className="relative z-10 h-full flex flex-col">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h3 className="text-xl font-black text-gray-900 dark:text-white flex items-center gap-3">
-                  <TrendingUp className="text-paymint-green" size={24} />
-                  Today's Revenue Flow
-                </h3>
-                <p className="text-xs font-bold text-gray-500 mt-1 uppercase tracking-widest">Hourly Performance Breakdown</p>
-              </div>
-              <div className="flex items-center gap-2 bg-cream-100 dark:bg-white/5 px-4 py-2 rounded-full border border-cream-300 dark:border-white/5">
-                <Activity size={14} className="text-paymint-green" />
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Real-time</span>
-              </div>
+        <div className="lg:col-span-2 p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <TrendingUp className="text-paymint-green" size={20} />
+                Today's Revenue
+              </h3>
+              <p className="text-xs text-gray-500 mt-1">Today's hourly performance breakdown</p>
             </div>
-
-            <div className="h-[360px] relative">
-              {stats?.dailyBreakdown && stats.dailyBreakdown.length > 0 ? (() => {
-                const chartData = stats.dailyBreakdown.map((d: any) => ({ ...d, revenue: Number(d.revenue) || 0 }));
-                const maxRevenue = Math.max(...chartData.map((d: any) => d.revenue));
-                const maxY = maxRevenue > 0 ? maxRevenue : 100;
-
-                return (
-                  <div className="flex h-full relative">
-                    {/* Fixed Y-Axis Container */}
-                    <div className="absolute left-0 top-0 bottom-0 w-[50px] z-20 pointer-events-none" style={{ background: 'linear-gradient(to right, ' + (isDark ? '#0A0A0A 80%, transparent' : '#FAF9F7 80%, transparent') + ')' }}>
-                      <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart
-                          data={chartData}
-                          margin={{ top: 10, right: 0, left: 0, bottom: 60 }}
-                        >
-                          <YAxis
-                            stroke="#94a3b8"
-                            fontSize={10}
-                            tickLine={false}
-                            axisLine={false}
-                            tickFormatter={(val) => Math.round(val) === val ? val.toString() : val.toFixed(1)}
-                            domain={[0, maxY]}
-                            ticks={[0, maxY / 2, maxY]}
-                            width={40}
-                          />
-                          {/* Dummy Area to force render */}
-                          <Area dataKey="revenue" stroke="none" fill="none" />
-                        </AreaChart>
-                      </ResponsiveContainer>
-                    </div>
-
-                    {/* Scrollable Chart Area */}
-                    <div className="flex-1 overflow-x-auto overflow-y-hidden pl-[50px] custom-scrollbar scroll-smooth">
-                      <div style={{ width: `${Math.max(700, chartData.length * 85)}px`, height: '100%' }}>
-                        <AreaChart
-                          width={Math.max(700, chartData.length * 85)}
-                          height={360}
-                          data={chartData}
-                          margin={{ top: 10, right: 30, left: 0, bottom: 60 }}
-                        >
-                          <defs>
-                            <linearGradient id="colorRevenueDash" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="5%" stopColor="#7CC39F" stopOpacity={0.4} />
-                              <stop offset="60%" stopColor="#7CC39F" stopOpacity={0.1} />
-                              <stop offset="100%" stopColor="#7CC39F" stopOpacity={0} />
-                            </linearGradient>
-                          </defs>
-                          <CartesianGrid strokeDasharray="0 0" stroke={isDark ? "#ffffff05" : "#00000005"} vertical={false} />
-                          <XAxis
-                            dataKey="date"
-                            stroke={isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.1)"}
-                            fontSize={10}
-                            tickLine={false}
-                            axisLine={{ stroke: isDark ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.2)", strokeWidth: 1 }}
-                            tick={{ fill: "#94a3b8", fontWeight: '700' }}
-                            tickFormatter={(val) => {
-                              const date = new Date(val);
-                              return val.includes(':') ? format(date, 'HH:00') : format(date, 'MMM d');
-                            }}
-                            dy={15}
-                            interval={0}
-                          />
-                          <YAxis hide domain={[0, maxY]} />
-                          <Tooltip
-                            cursor={{ stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' }}
-                            contentStyle={{
-                              backgroundColor: isDark ? '#0A0A0A' : '#fff',
-                              borderRadius: '24px',
-                              border: '1px solid rgba(255,255,255,0.05)',
-                              boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
-                              padding: '16px'
-                            }}
-                            itemStyle={{ color: '#7CC39F', fontWeight: '900', fontSize: '12px', textTransform: 'uppercase' }}
-                            labelStyle={{ fontWeight: '900', color: isDark ? '#fff' : '#000', marginBottom: '8px', fontSize: '10px' }}
-                            labelFormatter={(val) => {
-                              const date = new Date(val);
-                              return val.includes(':') ? format(date, 'MMM d, HH:00') : format(date, 'MMM d, yyyy');
-                            }}
-                          />
-                          <Area
-                            type="monotone"
-                            dataKey="revenue"
-                            stroke="#7CC39F"
-                            strokeWidth={4}
-                            fillOpacity={1}
-                            fill="url(#colorRevenueDash)"
-                            animationDuration={1500}
-                            strokeLinecap="round"
-                          />
-                        </AreaChart>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })() : (
-                <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                  <Zap size={48} className="mb-4 opacity-20" />
-                  <p className="text-sm font-bold">No revenue data yet for today</p>
-                </div>
-              )}
+            <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+              <Activity size={12} className="text-paymint-green" />
+              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Real-time</span>
             </div>
+          </div>
+
+          <div className="h-[300px]">
+            {stats?.dailyBreakdown && stats.dailyBreakdown.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart
+                  data={stats.dailyBreakdown.map((d: any) => ({ ...d, revenue: Number(d.revenue) || 0 }))}
+                  margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                >
+                  <defs>
+                    <linearGradient id="colorRevenueDash" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#7CC39F" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="#7CC39F" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#ffffff10" : "#00000005"} vertical={false} />
+                  <XAxis
+                    dataKey="date"
+                    stroke={isDark ? "#525252" : "#e5e5e5"}
+                    fontSize={10}
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fill: "#9ca3af" }}
+                    tickFormatter={(val) => {
+                      const date = new Date(val);
+                      return val.includes(':') ? format(date, 'HH:00') : format(date, 'MMM d');
+                    }}
+                    dy={10}
+                  />
+                  <YAxis
+                    hide
+                    domain={[0, 'auto']}
+                  />
+                  <Tooltip
+                    cursor={{ stroke: '#7CC39F', strokeWidth: 1, strokeDasharray: '4 4' }}
+                    contentStyle={{
+                      backgroundColor: isDark ? '#0B1120' : '#fff',
+                      borderRadius: '12px',
+                      border: '1px solid rgba(124, 195, 159, 0.2)',
+                      boxShadow: '0 10px 30px -10px rgba(0,0,0,0.3)',
+                      padding: '12px'
+                    }}
+                    itemStyle={{ color: '#7CC39F', fontWeight: 'bold', fontSize: '12px' }}
+                    labelStyle={{ color: isDark ? '#fff' : '#000', marginBottom: '4px', fontSize: '10px', fontWeight: 'bold' }}
+                    formatter={(val) => [formatCurrency(val as number), 'Revenue']}
+                    labelFormatter={(val) => {
+                      const date = new Date(val);
+                      return val.includes(':') ? format(date, 'MMM d, HH:00') : format(date, 'MMM d, yyyy');
+                    }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="revenue"
+                    stroke="#7CC39F"
+                    strokeWidth={2}
+                    fillOpacity={1}
+                    fill="url(#colorRevenueDash)"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                <Zap size={32} className="mb-3 opacity-20" />
+                <p className="text-xs font-bold uppercase tracking-wide">No revenue data</p>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Payment Methods Breakdown */}
-        <div className="p-8 bg-cream-50 dark:bg-[#0A0A0A] rounded-[3rem] border border-cream-300 dark:border-white/5 shadow-2xl relative overflow-hidden">
-          <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-500/10 rounded-full blur-[60px]" />
-          <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500">
-                <Wallet size={24} />
-              </div>
-              <div>
-                <h3 className="text-lg font-black text-gray-900 dark:text-white">Capital Sources</h3>
-                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Payment Distribution</p>
-              </div>
+        <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+              <Wallet size={20} />
             </div>
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">Capital Sources</h3>
+              <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Today's Payment Distribution</p>
+            </div>
+          </div>
 
+          <div className="flex-1 flex flex-col justify-center">
             {stats?.paymentMethodBreakdown && stats.paymentMethodBreakdown.length > 0 ? (
               <>
-                <div className="h-[180px] -mx-4">
+                <div className="h-[160px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <RechartsPie>
                       <Pie
                         data={stats.paymentMethodBreakdown}
-                        innerRadius={50}
-                        outerRadius={80}
+                        innerRadius={45}
+                        outerRadius={70}
                         paddingAngle={4}
                         dataKey="value"
-                        animationDuration={1500}
                         stroke="none"
                       >
                         {stats.paymentMethodBreakdown.map((_, index) => (
@@ -431,38 +392,33 @@ export const DashboardPage = () => {
                       </Pie>
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: isDark ? '#111' : '#fff',
-                          borderRadius: '16px',
+                          backgroundColor: isDark ? '#0B1120' : '#fff',
+                          borderRadius: '12px',
                           border: 'none',
                           boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
-                          padding: '12px'
+                          fontSize: '12px'
                         }}
-                        itemStyle={{
-                          color: isDark ? '#fff' : '#111',
-                          fontWeight: '800',
-                          fontSize: '10px',
-                          textTransform: 'uppercase'
-                        }}
+                        itemStyle={{ color: isDark ? '#fff' : '#111', fontWeight: 'bold' }}
                       />
                     </RechartsPie>
                   </ResponsiveContainer>
                 </div>
-                <div className="space-y-3 mt-4">
-                  {stats.paymentMethodBreakdown.map((item, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 rounded-2xl bg-cream-100 dark:bg-white/[0.02] border border-cream-300 dark:border-white/5">
-                      <div className="flex items-center gap-3">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                        <span className="text-xs font-black text-gray-900 dark:text-white uppercase">{item.name}</span>
+                <div className="space-y-2 mt-4">
+                  {stats.paymentMethodBreakdown.slice(0, 3).map((item, i) => (
+                    <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                        <span className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase">{item.name}</span>
                       </div>
-                      <span className="text-xs font-black text-gray-500">{formatCurrency(item.value)}</span>
+                      <span className="text-xs font-bold text-gray-900 dark:text-white">{formatCurrency(item.value)}</span>
                     </div>
                   ))}
                 </div>
               </>
             ) : (
-              <div className="flex flex-col items-center justify-center py-12 text-gray-400">
-                <CreditCard size={40} className="mb-3 opacity-20" />
-                <p className="text-sm font-bold">No payment data</p>
+              <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                <CreditCard size={32} className="mb-3 opacity-20" />
+                <p className="text-xs font-bold uppercase tracking-wide">No payment data</p>
               </div>
             )}
           </div>
@@ -476,24 +432,24 @@ export const DashboardPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className={`p-8 rounded-[2.5rem] border shadow-xl relative overflow-hidden ${netCashFlow >= 0
-            ? 'bg-gradient-to-br from-paymint-green/10 to-paymint-green/5 border-paymint-green/20'
-            : 'bg-gradient-to-br from-red-500/10 to-red-500/5 border-red-500/20'
+          className={`p-6 rounded-2xl border relative overflow-hidden ${netCashFlow >= 0
+            ? 'bg-paymint-green/5 border-paymint-green/20'
+            : 'bg-red-500/5 border-red-500/20'
             }`}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className={`text-xs font-black uppercase tracking-widest mb-2 ${netCashFlow >= 0 ? 'text-paymint-green' : 'text-red-500'}`}>Net Cash Flow</p>
-              <p className="text-4xl font-black text-gray-900 dark:text-white tracking-tighter">
+              <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${netCashFlow >= 0 ? 'text-paymint-green' : 'text-red-500'}`}>Net Cash Flow</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">
                 {netCashFlow >= 0 ? '+' : ''}{formatCurrency(netCashFlow)}
               </p>
-              <p className="text-[10px] font-bold text-gray-400 mt-2 uppercase tracking-widest">Pay In - Pay Out Balance</p>
+              <p className="text-[10px] font-medium text-gray-400 mt-1">Today's Inflow - Outflow</p>
             </div>
-            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center ${netCashFlow >= 0 ? 'bg-paymint-green/20' : 'bg-red-500/20'}`}>
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${netCashFlow >= 0 ? 'bg-paymint-green/10' : 'bg-red-500/10'}`}>
               {netCashFlow >= 0 ? (
-                <ArrowUpRight size={32} className="text-paymint-green" />
+                <ArrowUpRight size={20} className="text-paymint-green" />
               ) : (
-                <ArrowDownRight size={32} className="text-red-500" />
+                <ArrowDownRight size={20} className="text-red-500" />
               )}
             </div>
           </div>
@@ -504,16 +460,16 @@ export const DashboardPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="p-8 rounded-[2.5rem] bg-gradient-to-br from-orange-500/10 to-orange-500/5 border border-orange-500/20 shadow-xl"
+          className="p-6 rounded-2xl bg-orange-500/5 border border-orange-500/10"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-black text-orange-500 uppercase tracking-widest mb-2">Refunds</p>
-              <p className="text-4xl font-black text-gray-900 dark:text-white tracking-tighter">{formatCurrency(stats?.totalRefunds || 0)}</p>
-              <p className="text-[10px] font-bold text-gray-400 mt-2 uppercase tracking-widest">Total Returned Value</p>
+              <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-1">Refunds</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(stats?.totalRefunds || 0)}</p>
+              <p className="text-[10px] font-medium text-gray-400 mt-1">Today's Returned Value</p>
             </div>
-            <div className="w-16 h-16 rounded-2xl bg-orange-500/20 flex items-center justify-center">
-              <ArrowDownRight size={32} className="text-orange-500" />
+            <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center">
+              <ArrowDownRight size={20} className="text-orange-500" />
             </div>
           </div>
         </motion.div>
@@ -523,93 +479,93 @@ export const DashboardPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="p-8 rounded-[2.5rem] bg-gradient-to-br from-purple-500/10 to-purple-500/5 border border-purple-500/20 shadow-xl"
+          className="p-6 rounded-2xl bg-purple-500/5 border border-purple-500/10"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs font-black text-purple-500 uppercase tracking-widest mb-2">Top Category</p>
-              <p className="text-2xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">
+              <p className="text-[10px] font-black text-purple-500 uppercase tracking-widest mb-1">Top Category</p>
+              <p className="text-xl font-bold text-gray-900 dark:text-white truncate max-w-[150px]">
                 {stats?.categoryBreakdown?.[0]?.name || 'No data'}
               </p>
-              <p className="text-[10px] font-bold text-gray-400 mt-2 uppercase tracking-widest">
-                {stats?.categoryBreakdown?.[0] ? formatCurrency(stats.categoryBreakdown[0].value) : 'Best performer'}
+              <p className="text-[10px] font-medium text-gray-400 mt-1">
+                {stats?.categoryBreakdown?.[0] ? formatCurrency(stats.categoryBreakdown[0].value) : 'Today\'s performer'}
               </p>
             </div>
-            <div className="w-16 h-16 rounded-2xl bg-purple-500/20 flex items-center justify-center">
-              <PieChart size={32} className="text-purple-500" />
+            <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
+              <PieChart size={20} className="text-purple-500" />
             </div>
           </div>
         </motion.div>
       </div>
 
       {/* Top Products & Peak Hours */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Top Products */}
-        <div className="bg-cream-50 dark:bg-[#0A0A0A] rounded-[3rem] border border-cream-300 dark:border-white/5 shadow-2xl overflow-hidden">
-          <div className="p-8 border-b border-cream-300 dark:border-white/5 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
-                <Package size={24} />
+        <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
+          <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+                <Package size={20} />
               </div>
               <div>
-                <h3 className="text-lg font-black text-gray-900 dark:text-white">Top Performers</h3>
-                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Best selling items today</p>
+                <h3 className="text-base font-bold text-gray-900 dark:text-white">Top Performers</h3>
+                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Today's best selling items</p>
               </div>
             </div>
             <button
               onClick={() => navigate('/dashboard/reports')}
-              className="text-sm font-bold text-paymint-green hover:underline"
+              className="text-xs font-bold text-paymint-green hover:underline uppercase tracking-wide"
             >
               View All
             </button>
           </div>
-          <div className="p-6 space-y-4">
+          <div className="p-4 space-y-3">
             {topProducts.length > 0 ? topProducts.map((item, index) => (
               <motion.div
                 key={item.name}
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="p-5 rounded-2xl bg-cream-100 dark:bg-white/[0.02] border border-cream-300 dark:border-white/5 flex items-center justify-between group hover:border-paymint-green/30 transition-all"
+                className="p-4 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex items-center justify-between group hover:border-paymint-green/30 transition-all"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-cream-50 dark:bg-white/10 flex items-center justify-center text-lg font-black text-gray-900 dark:text-white border border-cream-300 dark:border-white/10 group-hover:bg-paymint-green group-hover:text-black transition-all">
+                  <div className="w-8 h-8 rounded-lg bg-white dark:bg-white/10 flex items-center justify-center text-sm font-black text-gray-500 group-hover:text-paymint-green transition-colors border border-gray-100 dark:border-white/5">
                     {index + 1}
                   </div>
                   <div>
-                    <p className="font-black text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">{item.name}</p>
-                    <p className="text-xs text-gray-500">{item.orders} units sold</p>
+                    <p className="font-bold text-sm text-gray-900 dark:text-white">{item.name}</p>
+                    <p className="text-[10px] text-gray-500 font-medium">{item.orders} sold</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-black text-gray-900 dark:text-white">{formatCurrency(item.revenue)}</p>
+                  <p className="font-bold text-sm text-gray-900 dark:text-white">{formatCurrency(item.revenue)}</p>
                 </div>
               </motion.div>
             )) : (
               <div className="text-center py-12">
-                <Package className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
-                <p className="text-sm font-bold text-gray-500 dark:text-gray-400">No products data yet</p>
+                <Package className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+                <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">No products data</p>
               </div>
             )}
           </div>
         </div>
 
         {/* Peak Hours */}
-        <div className="bg-cream-50 dark:bg-[#0A0A0A] rounded-[3rem] border border-cream-300 dark:border-white/5 shadow-2xl overflow-hidden">
-          <div className="p-8 border-b border-cream-300 dark:border-white/5 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500">
-                <Clock size={24} />
+        <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
+          <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
+                <Clock size={20} />
               </div>
               <div>
-                <h3 className="text-lg font-black text-gray-900 dark:text-white">Traffic Heatmap</h3>
-                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Hourly order distribution</p>
+                <h3 className="text-base font-bold text-gray-900 dark:text-white">Traffic Heatmap</h3>
+                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Today's hourly distribution</p>
               </div>
             </div>
           </div>
           <div className="p-6">
-            {peakHours.length > 0 ? (
-              <div className="h-[280px]">
+            {peakHours.length > 0 && peakHours.some((h: any) => Number(h.total) > 0) ? (
+              <div className="h-[250px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={peakHours.map(h => ({ ...h, hour: `${h.hour}:00` }))}>
                     <defs>
@@ -618,23 +574,27 @@ export const DashboardPage = () => {
                         <stop offset="100%" stopColor="#10b981" stopOpacity={0.8} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="0 0" stroke={isDark ? "#ffffff05" : "#00000005"} vertical={false} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#ffffff05" : "#00000005"} vertical={false} />
                     <XAxis dataKey="hour" stroke="#94a3b8" fontSize={10} tickLine={false} axisLine={false} dy={10} />
-                    <YAxis stroke="#94a3b8" fontSize={10} tickLine={false} axisLine={false} dx={-10} />
                     <Tooltip
                       cursor={{ fill: 'transparent' }}
-                      contentStyle={{ backgroundColor: isDark ? '#111' : '#fff', borderRadius: '16px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}
-                      itemStyle={{ fontWeight: '900', textTransform: 'uppercase', fontSize: '10px' }}
-                      labelStyle={{ color: '#7CC39F', fontWeight: '900', marginBottom: '8px' }}
+                      contentStyle={{ backgroundColor: isDark ? '#111' : '#fff', borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}
+                      itemStyle={{ fontWeight: 'bold', fontSize: '10px', textTransform: 'uppercase' }}
+                      labelStyle={{ color: '#7CC39F', fontWeight: 'bold', marginBottom: '4px', fontSize: '10px' }}
                     />
-                    <Bar dataKey="total" name="Revenue" fill="url(#barGradientDash)" radius={[8, 8, 2, 2]} barSize={24} animationDuration={1500} />
+                    <Bar dataKey="total" name="Revenue" fill="url(#barGradientDash)" radius={[4, 4, 0, 0]} barSize={20} animationDuration={1500} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-12 text-gray-400">
-                <Clock size={40} className="mb-3 opacity-20" />
-                <p className="text-sm font-bold">No traffic data yet</p>
+              <div className="h-[250px] flex flex-col items-center justify-center space-y-3 bg-gray-50/50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-200 dark:border-white/5">
+                <div className="p-4 rounded-full bg-gray-100 dark:bg-black/20">
+                  <Clock size={28} className="text-gray-400 dark:text-gray-600" />
+                </div>
+                <div className="text-center">
+                  <p className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide">No Traffic Data</p>
+                  <p className="text-xs text-gray-500 mt-1">There is no transaction activity recorded today.</p>
+                </div>
               </div>
             )}
           </div>
@@ -642,11 +602,11 @@ export const DashboardPage = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="p-8 bg-gradient-to-r from-paymint-green/10 via-blue-500/5 to-purple-500/10 rounded-[3rem] border border-white/10 shadow-xl">
+      <div className="p-6 bg-white dark:bg-[#0B1120] bg-gradient-to-r from-paymint-green/5 via-blue-500/5 to-purple-500/5 rounded-2xl border border-gray-200 dark:border-white/[0.03]">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="text-xl font-black text-gray-900 dark:text-white">Quick Actions</h3>
-            <p className="text-sm text-gray-500 mt-1">Jump to frequently used sections</p>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Quick Actions</h3>
+            <p className="text-xs font-medium text-gray-500 mt-1">Jump to frequently used sections</p>
           </div>
           <div className="flex flex-wrap gap-3">
             {[
@@ -658,9 +618,9 @@ export const DashboardPage = () => {
               <button
                 key={action.label}
                 onClick={() => navigate(action.path)}
-                className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-cream-50 dark:bg-white/10 border border-cream-300 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-paymint-green hover:text-black hover:border-paymint-green transition-all shadow-md"
+                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-white/10 border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white font-bold text-xs hover:bg-paymint-green hover:text-black hover:border-paymint-green transition-all shadow-sm"
               >
-                <action.icon size={18} />
+                <action.icon size={16} />
                 {action.label}
               </button>
             ))}

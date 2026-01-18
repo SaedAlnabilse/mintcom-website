@@ -1,21 +1,27 @@
 import { useState, useEffect } from 'react';
-import { startOfDay, endOfDay, startOfWeek, endOfWeek, startOfMonth, endOfMonth, subYears } from 'date-fns';
+import { startOfDay, endOfDay } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
   RefreshCw,
-  ShoppingBag,
+  ShoppingCart,
   Clock,
   ChevronRight,
   TrendingUp,
   Download,
   MoreVertical,
-  ChevronLeft
+  ChevronLeft,
+
+  Eye,
+  Undo2,
+  Calendar
 } from 'lucide-react';
 import api from '../../config/api';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { OrderDetailModal } from '../../components/OrderDetailModal';
 import { exportToCSV } from '../../utils/export';
+import { toast } from 'react-hot-toast';
+import { CustomSelect } from '../../components/CustomSelect';
 
 interface Order {
   id: string;
@@ -54,7 +60,11 @@ export function OrdersPage() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [dateFilter, setDateFilter] = useState('today');
+  const [startDate, setStartDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
+
+  const [selectedDateRange, setSelectedDateRange] = useState<string>('today');
+  const [activeActionMenu, setActiveActionMenu] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [confirmConfig, setConfirmConfig] = useState<{
@@ -63,6 +73,8 @@ export function OrdersPage() {
     message: string;
     onConfirm: () => void;
     type?: 'danger' | 'success' | 'warning';
+    confirmText?: string;
+    showCancel?: boolean;
   }>({
     isOpen: false,
     title: '',
@@ -72,7 +84,18 @@ export function OrdersPage() {
 
   useEffect(() => {
     fetchOrders();
-  }, [page, statusFilter, dateFilter]);
+  }, [page, statusFilter, startDate, endDate]);
+
+  useEffect(() => {
+    if (activeActionMenu) {
+      setTimeout(() => {
+        const row = document.querySelector(`[data-order-id="${activeActionMenu}"]`);
+        if (row) {
+          row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }, 50);
+    }
+  }, [activeActionMenu]);
 
   const fetchOrders = async () => {
     try {
@@ -119,28 +142,10 @@ export function OrdersPage() {
         params.status = statusFilter;
       }
 
-      const now = new Date();
-      let start, end;
 
-      switch (dateFilter) {
-        case 'week':
-          start = startOfWeek(now, { weekStartsOn: 1 });
-          end = endOfWeek(now, { weekStartsOn: 1 });
-          break;
-        case 'month':
-          start = startOfMonth(now);
-          end = endOfMonth(now);
-          break;
-        case 'all':
-          start = subYears(now, 10);
-          end = endOfDay(now);
-          break;
-        case 'today':
-        default:
-          start = startOfDay(now);
-          end = endOfDay(now);
-          break;
-      }
+      // Date filtering is now handled by startDate and endDate states
+      const start = startOfDay(new Date(startDate));
+      const end = endOfDay(new Date(endDate));
 
       params.startDate = start.toISOString();
       params.endDate = end.toISOString();
@@ -194,6 +199,63 @@ export function OrdersPage() {
     });
   };
 
+  const setQuickDate = (range: string) => {
+    setSelectedDateRange(range);
+    const today = new Date();
+    let start = new Date();
+    let end = new Date();
+    switch (range) {
+      case 'today':
+        start = new Date(today);
+        end = new Date(today);
+        break;
+      case 'yesterday':
+        start.setDate(today.getDate() - 1);
+        end.setDate(today.getDate() - 1);
+        break;
+      case 'this_week':
+        const dayOfWeek = today.getDay();
+        if (dayOfWeek === 0) {
+          start.setDate(today.getDate() - 6);
+        } else {
+          start.setDate(today.getDate() - dayOfWeek);
+        }
+        end = new Date(today);
+        break;
+      case 'this_month':
+        start.setDate(1);
+        end = new Date(today);
+        break;
+      case 'last_30':
+        start.setDate(today.getDate() - 30);
+        end = new Date(today);
+        break;
+    }
+    setStartDate(start.toISOString().split('T')[0]);
+    setEndDate(end.toISOString().split('T')[0]);
+  };
+
+  const handleRefund = (order: Order) => {
+    setConfirmConfig({
+      isOpen: true,
+      title: 'Refund Order',
+      message: 'Are you sure you want to refund this order? This action cannot be undone.',
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await api.post(`/api/orders/${order.id}/refund`, {
+            reason: 'Refunded via web dashboard',
+          });
+          toast.success('Order refunded successfully');
+          fetchOrders(); // Refresh the list
+          setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+        } catch (err: any) {
+          toast.error(err.response?.data?.message || 'Failed to process refund');
+        }
+      }
+    });
+  };
+
   const getStatusStyle = (status: string) => {
     switch (status) {
       case 'COMPLETED':
@@ -229,205 +291,279 @@ export function OrdersPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-120px)] flex flex-col space-y-6">
-      {/* Header - Fixed */}
-      {/* Header - Fixed */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-cream-50 via-cream-100 to-cream-50 dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-cream-300 dark:border-white/5 shadow-sm shrink-0">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+    <div className="max-w-7xl mx-auto space-y-8 pb-10">
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+              Transactions
+            </span>
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Orders History</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">
+            Track and manage every transaction across your business
+          </p>
+        </div>
 
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/30">
-              <ShoppingBag size={28} className="text-black" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Orders History</h1>
-              <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Track and manage every transaction across your business</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleExport}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-cream-100 dark:bg-white/5 border border-cream-300 dark:border-white/10 text-gray-900 dark:text-gray-300 font-bold text-sm hover:scale-105 hover:bg-cream-50 dark:hover:bg-white/10 transition-all shadow-sm"
-            >
-              <Download size={18} />
-              <span>Export CSV</span>
-            </button>
-            <button
-              onClick={fetchOrders}
-              className="p-3.5 rounded-xl bg-cream-50 dark:bg-white/5 border border-cream-300 dark:border-white/10 text-gray-500 hover:text-paymint-green shadow-sm hover:shadow-md transition-all hover:scale-105"
-            >
-              <RefreshCw size={20} className={isLoading ? 'animate-spin' : ''} />
-            </button>
-          </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
+          >
+            <Download size={18} />
+            <span>Export CSV</span>
+          </button>
+          <button
+            onClick={fetchOrders}
+            className="p-3 rounded-xl bg-paymint-green text-black hover:bg-emerald-400 transition-all shadow-sm"
+            title="Refresh"
+          >
+            <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
+          </button>
         </div>
       </div>
 
-      {/* Quick Stats Summary - Fixed */}
-      <div className="shrink-0 grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* KPI Strip */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
           { label: 'Total Volume', value: formatCurrency(orders.reduce((acc, o) => acc + (o.total || 0), 0)), icon: TrendingUp, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
-          { label: 'Orders Processed', value: orders.length, icon: ShoppingBag, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+          { label: 'Orders Processed', value: orders.length, icon: ShoppingCart, color: 'text-blue-500', bg: 'bg-blue-500/10' },
           { label: 'Pending/Held', value: orders.filter(o => o.status === 'HELD' || o.paymentStatus === 'PENDING').length, icon: Clock, color: 'text-orange-500', bg: 'bg-orange-500/10' },
         ].map((stat, i) => (
-          <div key={i} className="p-6 rounded-3xl bg-cream-50 dark:bg-[#0A0A0A] border border-cream-300 dark:border-white/5 shadow-md hover:shadow-lg hover:border-cream-400 dark:hover:border-white/10 transition-all flex items-center gap-5">
-            <div className={`p-4 rounded-2xl ${stat.bg} ${stat.color}`}>
-              <stat.icon size={24} />
+          <div key={i} className="p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:border-paymint-green/30 transition-all flex items-center gap-4">
+            <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
+              <stat.icon size={20} />
             </div>
             <div>
-              <p className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">{stat.label}</p>
-              <p className="text-2xl font-black text-gray-900 dark:text-white">{stat.value}</p>
+              <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-0.5">{stat.label}</p>
+              <p className="text-xl font-black text-gray-900 dark:text-white">{stat.value}</p>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Filters Bar - Fixed */}
-      <div className="shrink-0 p-4 bg-cream-50 dark:bg-[#0A0A0A] rounded-3xl border border-cream-300 dark:border-white/5 shadow-md flex flex-col md:flex-row gap-4">
+      {/* Filters Bar */}
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm flex flex-col lg:flex-row gap-4">
         <div className="flex-1 relative group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-paymint-green transition-colors" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && searchOrder()}
             placeholder="Search by order ID or customer..."
-            className="w-full pl-12 pr-4 py-3 bg-cream-100 dark:bg-white/5 border border-cream-300 dark:border-white/5 rounded-2xl text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green/30 transition-all font-medium"
+            className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
           />
         </div>
 
-        <div className="flex gap-2">
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white focus:ring-2 focus:ring-paymint-green/20 transition-all font-bold text-sm cursor-pointer min-w-[140px]"
-          >
-            <option value="all">All Status</option>
-            <option value="COMPLETED">Completed</option>
-            <option value="HELD">Held Orders</option>
-            <option value="REFUNDED">Refunded</option>
-          </select>
+        <div className="flex flex-col sm:flex-row gap-3 items-center">
+          {/* Quick Date Toggles */}
+          <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1">
+            {['today', 'yesterday', 'this_week'].map((range) => (
+              <button
+                key={range}
+                onClick={() => setQuickDate(range)}
+                className={`px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all ${selectedDateRange === range
+                  ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm'
+                  : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
+                  }`}
+              >
+                {range.replace('_', ' ')}
+              </button>
+            ))}
+          </div>
 
-          <select
-            value={dateFilter}
-            onChange={(e) => setDateFilter(e.target.value)}
-            className="px-4 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white focus:ring-2 focus:ring-paymint-green/20 transition-all font-bold text-sm cursor-pointer min-w-[140px]"
-          >
-            <option value="today">Today</option>
-            <option value="week">This Week</option>
-            <option value="month">This Month</option>
-            <option value="all">All Time</option>
-          </select>
+          {/* Custom Date Inputs */}
+          <div className="flex items-center gap-2 bg-gray-50 dark:bg-white/5 p-1 px-3 rounded-xl border border-gray-200 dark:border-white/10 h-[46px]">
+            <Calendar size={14} className="text-gray-400" />
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => { setStartDate(e.target.value); setSelectedDateRange('custom'); }}
+              className="bg-transparent border-none text-xs font-bold text-gray-900 dark:text-white focus:ring-0 p-0 w-24"
+            />
+            <span className="text-gray-400">-</span>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => { setEndDate(e.target.value); setSelectedDateRange('custom'); }}
+              className="bg-transparent border-none text-xs font-bold text-gray-900 dark:text-white focus:ring-0 p-0 w-24"
+            />
+          </div>
+
+          <div className="w-40">
+            <CustomSelect
+              value={statusFilter}
+              onChange={(val) => setStatusFilter(val as string)}
+              options={[
+                { label: 'All Status', value: 'all' },
+                { label: 'Completed', value: 'COMPLETED' },
+                { label: 'Held Orders', value: 'HELD' },
+                { label: 'Refunded', value: 'REFUNDED' },
+              ]}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Main Content Area - Scrollable */}
-      <div className="flex-1 bg-cream-50 dark:bg-[#0A0A0A] rounded-[2.5rem] border border-cream-300 dark:border-white/5 shadow-md overflow-hidden flex flex-col min-h-0">
-        <div className="overflow-y-auto flex-1 custom-scrollbar">
-          {isLoading && orders.length === 0 ? (
-            <div className="flex flex-col items-center justify-center p-20">
-              <div className="w-16 h-16 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
-              <p className="text-gray-500 font-black uppercase tracking-widest text-xs">Syncing Transactions...</p>
-            </div>
-          ) : orders.length === 0 ? (
-            <div className="flex flex-col items-center justify-center p-20 text-center">
-              <div className="w-24 h-24 bg-cream-100 dark:bg-white/5 rounded-[2.5rem] flex items-center justify-center mb-6">
-                <ShoppingBag className="w-12 h-12 text-gray-300" />
-              </div>
-              <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">No orders found</h3>
-              <p className="text-gray-500 dark:text-gray-400 font-medium max-w-xs">
-                Try adjusting your filters or search query.
-              </p>
-            </div>
-          ) : (
-            <table className="w-full">
-              <thead className="sticky top-0 z-10 bg-white dark:bg-[#0A0A0A]">
-                <tr className="border-b border-gray-100 dark:border-white/5">
-                  <th className="px-8 py-6 text-left text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Order Details</th>
-                  <th className="px-8 py-6 text-left text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Customer Info</th>
-                  <th className="px-8 py-6 text-left text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Amount</th>
-                  <th className="px-8 py-6 text-left text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Status</th>
-                  <th className="px-8 py-6 text-right text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Actions</th>
+      {/* Orders Table */}
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col min-h-[400px]">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 dark:bg-white/[0.02]">
+              <tr className="border-b border-gray-200 dark:border-white/5">
+                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Order Details</th>
+                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Customer</th>
+                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Amount</th>
+                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
+                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+              {isLoading && orders.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="py-20 text-center">
+                    <div className="flex flex-col items-center justify-center">
+                      <div className="w-12 h-12 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
+                      <p className="text-xs font-black uppercase text-gray-400">Loading Orders...</p>
+                    </div>
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+              ) : orders.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="py-20 text-center">
+                    <div className="flex flex-col items-center justify-center">
+                      <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4">
+                        <ShoppingCart className="w-8 h-8 text-gray-300" />
+                      </div>
+                      <p className="text-sm font-bold text-gray-500">No orders found</p>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
                 <AnimatePresence mode='popLayout'>
                   {orders.map((order) => (
                     <motion.tr
                       key={order.id}
+                      data-order-id={order.id}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       onClick={() => setSelectedOrder(order)}
-                      className="group hover:bg-cream-100 dark:hover:bg-white/[0.02] transition-colors cursor-pointer"
+                      className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer"
                     >
-                      <td className="px-8 py-5">
-                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-xl bg-cream-100 dark:bg-white/5 border border-cream-300 dark:border-white/5 flex items-center justify-center text-gray-500 group-hover:bg-paymint-green/20 group-hover:text-paymint-green group-hover:border-paymint-green/30 transition-colors">
-                            <ShoppingBag size={18} />
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 group-hover:text-paymint-green transition-colors">
+                            <ShoppingCart size={16} />
                           </div>
                           <div>
-                            <p className="font-black text-gray-900 dark:text-white">#{order.orderNumber}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{formatDate(order.createdAt)}</p>
+                            <p className="font-bold text-gray-900 dark:text-white text-sm">#{order.orderNumber}</p>
+                            <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">{formatDate(order.createdAt)}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-8 py-5">
-                        <p className="font-bold text-gray-800 dark:text-gray-300">{order.customer?.name || 'Walk-in Customer'}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-500">{order.user?.username ? `Staff: ${order.user.username}` : 'POS Transaction'}</p>
+                      <td className="px-6 py-4">
+                        <p className="font-bold text-gray-800 dark:text-gray-300 text-sm">{order.customer?.name || 'Walk-in Customer'}</p>
+                        <p className="text-xs text-gray-500">{order.user?.username ? `Staff: ${order.user.username}` : 'POS'}</p>
                       </td>
-                      <td className="px-8 py-5">
-                        <p className="font-black text-gray-900 dark:text-white">{formatCurrency(order.total)}</p>
-                        <p className="text-[10px] text-gray-500 dark:text-gray-500 font-black uppercase tracking-widest">{order.paymentMethod}</p>
+                      <td className="px-6 py-4">
+                        <p className="font-bold text-gray-900 dark:text-white">{formatCurrency(order.total)}</p>
+                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">{order.paymentMethod}</p>
                       </td>
-                      <td className="px-8 py-5">
-                        <span className={`inline-flex items-center px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
                           {order.paymentStatus || order.status}
                         </span>
                       </td>
-                      <td className="px-8 py-5 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <button className="p-2 text-gray-400 hover:text-paymint-green hover:bg-cream-100 dark:hover:bg-white/5 rounded-lg transition-colors">
-                            <MoreVertical size={18} />
-                          </button>
-                          <div className="w-8 h-8 rounded-full bg-cream-100 dark:bg-white/5 border border-cream-300 dark:border-white/5 flex items-center justify-center text-gray-500 group-hover:bg-paymint-green group-hover:text-black group-hover:border-paymint-green transition-all">
-                            <ChevronRight size={16} />
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2 relative">
+                          <div className="relative">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveActionMenu(activeActionMenu === order.id ? null : order.id);
+                              }}
+                              className={`p-2 rounded-lg transition-colors ${activeActionMenu === order.id
+                                ? 'text-paymint-green bg-gray-100 dark:bg-white/5'
+                                : 'text-gray-400 hover:text-paymint-green hover:bg-gray-100 dark:hover:bg-white/5'
+                                }`}
+                            >
+                              <MoreVertical size={16} />
+                            </button>
+
+                            <AnimatePresence>
+                              {activeActionMenu === order.id && (
+                                <>
+                                  <div
+                                    className="fixed inset-0 z-40"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setActiveActionMenu(null);
+                                    }}
+                                  />
+                                  <motion.div
+                                    initial={{ opacity: 0, scale: 0.95, y: 5 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.95, y: 5 }}
+                                    className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                  >
+                                    <div className="p-1">
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setSelectedOrder(order);
+                                          setActiveActionMenu(null);
+                                        }}
+                                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                                      >
+                                        <Eye size={14} />
+                                        View Details
+                                      </button>
+
+                                      {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleRefund(order);
+                                            setActiveActionMenu(null);
+                                          }}
+                                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-paymint-red hover:bg-paymint-red/10 transition-colors"
+                                        >
+                                          <Undo2 size={14} />
+                                          Refund Order
+                                        </button>
+                                      )}
+                                    </div>
+                                  </motion.div>
+                                </>
+                              )}
+                            </AnimatePresence>
+                          </div>
+                          <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green group-hover:border-paymint-green/30 transition-all">
+                            <ChevronRight size={14} />
                           </div>
                         </div>
                       </td>
                     </motion.tr>
                   ))}
                 </AnimatePresence>
-              </tbody>
-            </table>
-          )}
+              )}
+            </tbody>
+          </table>
         </div>
-
-        {/* Pagination Controls - Fixed */}
-        {totalPages > 1 && (
-          <div className="shrink-0 px-8 py-4 border-t border-cream-300 dark:border-white/5 bg-cream-100 dark:bg-[#0A0A0A] flex items-center justify-between">
-            <p className="text-xs font-bold text-gray-600 dark:text-gray-500">
-              Page <span className="text-gray-900 dark:text-white font-black">{page}</span> of {totalPages}
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="p-2.5 rounded-xl bg-cream-50 dark:bg-white/5 border border-cream-300 dark:border-white/10 text-gray-600 dark:text-gray-500 hover:border-paymint-green/30 hover:text-paymint-green disabled:opacity-30 disabled:hover:border-cream-300 disabled:hover:text-gray-600 transition-colors"
-              >
-                <ChevronLeft size={20} />
-              </button>
-              <button
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                className="p-2.5 rounded-xl bg-paymint-green text-black shadow-lg shadow-paymint-green/20 hover:scale-105 disabled:opacity-30 disabled:hover:scale-100 transition-all"
-              >
-                <ChevronRight size={20} />
-              </button>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-center">
+          <div className="flex items-center gap-2 p-1 rounded-xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm">
+            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500 disabled:opacity-30"><ChevronLeft size={18} /></button>
+            <span className="px-4 text-xs font-bold text-gray-600 dark:text-gray-400">Page {page} of {totalPages}</span>
+            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500 disabled:opacity-30"><ChevronRight size={18} /></button>
+          </div>
+        </div>
+      )}
 
       <AnimatePresence>
         {selectedOrder && (
@@ -446,6 +582,8 @@ export function OrdersPage() {
         title={confirmConfig.title}
         message={confirmConfig.message}
         type={confirmConfig.type}
+        confirmText={confirmConfig.confirmText}
+        showCancel={confirmConfig.showCancel}
       />
     </div>
   );

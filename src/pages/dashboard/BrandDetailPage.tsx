@@ -26,7 +26,7 @@ interface BrandDetail {
   id: string;
   name: string;
   logo?: string;
-  ownerPosId: string;
+  establishmentLoginId: string;
   establishments: {
     id: string;
     name: string;
@@ -227,12 +227,8 @@ export function BrandDetailPage() {
   return (
     <div className="space-y-10 pb-16">
       {/* Header */}
-      {/* Header */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-white via-gray-50 to-white dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-gray-200 dark:border-white/5 shadow-sm">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="rounded-2xl bg-white dark:bg-[#1E293B] p-8 border border-gray-200 dark:border-white/5">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-center gap-6">
             <button
               onClick={() => navigate('/dashboard/brands')}
@@ -241,7 +237,7 @@ export function BrandDetailPage() {
               <ArrowLeft size={24} />
             </button>
             <div className="flex items-center gap-5">
-              <div className="w-16 h-16 rounded-[1.5rem] bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/30">
+              <div className="w-16 h-16 rounded-[1.5rem] bg-paymint-green flex items-center justify-center">
                 <Building2 size={32} className="text-black" />
               </div>
               <div>
@@ -249,7 +245,7 @@ export function BrandDetailPage() {
                 <div className="flex items-center gap-3 mt-1 text-sm font-medium">
                   <div className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
                     <Hash size={14} />
-                    <code className="text-paymint-green font-bold">{brand.ownerPosId}</code>
+                    <code className="text-paymint-green font-bold">{brand.establishmentLoginId}</code>
                   </div>
                   <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-700" />
                   <span className="text-gray-500 dark:text-gray-400">{brand.establishments.length} locations active</span>
@@ -274,8 +270,8 @@ export function BrandDetailPage() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
               className={`px-6 py-3 rounded-xl font-bold text-sm transition-all flex items-center gap-2 ${activeTab === tab.id
-                  ? 'bg-white dark:bg-[#0A0A0A] text-gray-900 dark:text-white shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                ? 'bg-white dark:bg-[#1E293B] text-gray-900 dark:text-white'
+                : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
                 }`}
             >
               <Icon size={16} />
@@ -293,7 +289,7 @@ export function BrandDetailPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white dark:bg-[#0A0A0A] rounded-[2rem] p-8 border border-gray-100 dark:border-white/5"
+              className="bg-white dark:bg-[#1E293B] rounded-2xl p-8 border border-gray-100 dark:border-white/5"
             >
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center">
@@ -308,7 +304,7 @@ export function BrandDetailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white dark:bg-[#0A0A0A] rounded-[2rem] p-8 border border-gray-100 dark:border-white/5"
+              className="bg-white dark:bg-[#1E293B] rounded-2xl p-8 border border-gray-100 dark:border-white/5"
             >
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center">
@@ -323,7 +319,7 @@ export function BrandDetailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white dark:bg-[#0A0A0A] rounded-[2rem] p-8 border border-gray-100 dark:border-white/5"
+              className="bg-white dark:bg-[#1E293B] rounded-2xl p-8 border border-gray-100 dark:border-white/5"
             >
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
@@ -338,7 +334,7 @@ export function BrandDetailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-white dark:bg-[#0A0A0A] rounded-[2rem] p-8 border border-gray-100 dark:border-white/5"
+              className="bg-white dark:bg-[#1E293B] rounded-2xl p-8 border border-gray-100 dark:border-white/5"
             >
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
@@ -353,7 +349,7 @@ export function BrandDetailPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-white dark:bg-[#0A0A0A] rounded-[2rem] p-8 border border-gray-100 dark:border-white/5"
+              className="bg-white dark:bg-[#1E293B] rounded-2xl p-8 border border-gray-100 dark:border-white/5"
             >
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center">
@@ -366,7 +362,7 @@ export function BrandDetailPage() {
           </div>
 
           {/* Establishments List */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-[2.5rem] border border-gray-100 dark:border-white/5 p-8">
+          <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-100 dark:border-white/5 p-8">
             <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight mb-6">Locations</h3>
             <div className="space-y-4">
               {brand.establishments.map((est, index) => {
@@ -426,7 +422,7 @@ export function BrandDetailPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-gradient-to-br from-paymint-green/10 to-paymint-green/5 rounded-[2rem] p-8 border border-paymint-green/20"
+                className="bg-gradient-to-br from-paymint-green/10 to-paymint-green/5 rounded-2xl p-8 border border-paymint-green/20"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <ArrowUpRight size={24} className="text-paymint-green" />
@@ -445,7 +441,7 @@ export function BrandDetailPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="bg-gradient-to-br from-orange-500/10 to-orange-500/5 rounded-[2rem] p-8 border border-orange-500/20"
+                className="bg-gradient-to-br from-orange-500/10 to-orange-500/5 rounded-2xl p-8 border border-orange-500/20"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <ArrowDownRight size={24} className="text-orange-500" />
@@ -461,7 +457,7 @@ export function BrandDetailPage() {
           </div>
 
           {/* Side by Side Comparison Table */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-[2.5rem] border border-gray-100 dark:border-white/5 overflow-hidden">
+          <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-100 dark:border-white/5 overflow-hidden">
             <div className="p-8 border-b border-gray-100 dark:border-white/5">
               <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">
                 Branch Performance Comparison
@@ -614,8 +610,8 @@ export function BrandDetailPage() {
                   <tr className="border-t border-gray-100 dark:border-white/5">
                     <td className="px-8 py-5">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center">
-                          <Percent size={18} className="text-red-500" />
+                        <div className="w-10 h-10 rounded-xl bg-paymint-red/10 flex items-center justify-center">
+                          <Percent size={18} className="text-paymint-red" />
                         </div>
                         <span className="font-bold text-gray-900 dark:text-white">Refund Rate</span>
                       </div>
@@ -664,7 +660,7 @@ export function BrandDetailPage() {
           </div>
 
           {/* Top Items Comparison */}
-          <div className="bg-white dark:bg-[#0A0A0A] rounded-[2.5rem] border border-gray-100 dark:border-white/5 p-8">
+          <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-100 dark:border-white/5 p-8">
             <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight mb-6">
               Top Selling Items by Branch
             </h3>
@@ -697,7 +693,7 @@ export function BrandDetailPage() {
 
       {/* Employees Tab */}
       {activeTab === 'employees' && (
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-[2.5rem] border border-gray-100 dark:border-white/5 p-8">
+        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-100 dark:border-white/5 p-8">
           <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight mb-6">
             Shared Employees Across All Locations
           </h3>
@@ -731,8 +727,8 @@ export function BrandDetailPage() {
                       </div>
                     </div>
                     <div className={`px-3 py-1 rounded-lg text-xs font-bold ${emp.isActive
-                        ? 'bg-paymint-green/10 text-paymint-green'
-                        : 'bg-gray-200 dark:bg-white/10 text-gray-500'
+                      ? 'bg-paymint-green/10 text-paymint-green'
+                      : 'bg-gray-200 dark:bg-white/10 text-gray-500'
                       }`}>
                       {emp.isActive ? 'Active' : 'Inactive'}
                     </div>
@@ -764,7 +760,7 @@ export function BrandDetailPage() {
 
       {/* Shifts Tab */}
       {activeTab === 'shifts' && (
-        <div className="bg-white dark:bg-[#0A0A0A] rounded-[2.5rem] border border-gray-100 dark:border-white/5 p-8">
+        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-100 dark:border-white/5 p-8">
           <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight mb-6">
             Employee Shift Activity by Location
           </h3>

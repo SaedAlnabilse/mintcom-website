@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Upload, Trash2, ChevronDown, Check, Wand2, Plus } from 'lucide-react';
+import { X, Upload, Trash2, ChevronDown, Check, Wand2, Plus, RefreshCw, Search, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import api from '../../config/api';
+import { QuickInfo } from '../QuickInfo';
 
 interface Product {
   id: string;
@@ -57,6 +59,7 @@ export function ProductFormModal({
   categories,
   isSubmitting = false,
 }: ProductFormModalProps) {
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [price, setPrice] = useState<string>('');
   const [costPrice, setCostPrice] = useState<string>('');
@@ -76,11 +79,15 @@ export function ProductFormModal({
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const categoryRef = useRef<HTMLDivElement>(null);
+  const addonsRef = useRef<HTMLDivElement>(null);
 
   // New states for FE parity
   const [attributes, setAttributes] = useState<Attribute[]>([]);
   const [selectedAttributeIds, setSelectedAttributeIds] = useState<string[]>([]);
   const [showAddonsDropdown, setShowAddonsDropdown] = useState(false);
+  const [categorySearchQuery, setCategorySearchQuery] = useState('');
+  const [addonsSearchQuery, setAddonsSearchQuery] = useState('');
   const [taxRate, setTaxRate] = useState(0);
   const [currencySymbol, setCurrencySymbol] = useState('JOD');
 
@@ -88,6 +95,7 @@ export function ProductFormModal({
     const digits = val.replace(/\D/g, '');
     const cents = parseInt(digits || '0', 10);
     if (cents > 9999999) return null;
+    if (cents === 0) return '';
     return (cents / 100).toFixed(2);
   };
 
@@ -118,7 +126,8 @@ export function ProductFormModal({
       );
 
       const blob = response.data;
-      const file = new File([blob], `${name.toLowerCase().replace(/\s+/g, '-')}-ai.jpg`, { type: 'image/jpeg' });
+      const safeName = name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') || 'item';
+      const file = new File([blob], `${safeName}-ai.jpg`, { type: 'image/jpeg' });
 
       setSelectedImage(file);
       setImagePreview(URL.createObjectURL(blob));
@@ -149,9 +158,9 @@ export function ProductFormModal({
     if (isOpen) {
       fetchAddonsAndSettings();
       if (initialData) {
-        setName(initialData.name);
-        setPrice(String(initialData.price));
-        setCostPrice(initialData.costPrice ? String(initialData.costPrice) : '');
+        setName(initialData.name || '');
+        setPrice(initialData.price == null || initialData.price === 0 ? '' : initialData.price.toFixed(2));
+        setCostPrice(!initialData.costPrice || initialData.costPrice === 0 ? '' : initialData.costPrice.toFixed(2));
         setCategoryId(initialData.categoryId || '');
         setDescription(initialData.description || '');
         setType(initialData.type || 'ITEM');
@@ -191,7 +200,7 @@ export function ProductFormModal({
         setName('');
         setPrice('');
         setCostPrice('');
-        setCategoryId(categories.length > 0 ? categories[0].id : '');
+        setCategoryId('');
         setDescription('');
         setType('ITEM');
         setTrackStock(false);
@@ -203,6 +212,8 @@ export function ProductFormModal({
         setImagePreview(null);
         setSelectedAttributeIds([]);
       }
+      setCategorySearchQuery('');
+      setAddonsSearchQuery('');
     }
   }, [isOpen, initialData, categories]);
 
@@ -286,13 +297,46 @@ export function ProductFormModal({
     if (trackStock && stockRef.current) {
       const timer = setTimeout(() => {
         stockRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 100);
+      }, 50);
       return () => clearTimeout(timer);
     }
   }, [trackStock]);
 
+  useEffect(() => {
+    if (showCategoryDropdown) {
+      setTimeout(() => {
+        categoryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 50);
+    }
+  }, [showCategoryDropdown]);
+
+  useEffect(() => {
+    if (showAddonsDropdown) {
+      setTimeout(() => {
+        addonsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 50);
+    } else {
+      setAddonsSearchQuery('');
+    }
+  }, [showAddonsDropdown]);
+
+  useEffect(() => {
+    if (!showCategoryDropdown) {
+      setCategorySearchQuery('');
+    }
+  }, [showCategoryDropdown]);
+
+  const filteredCategories = categories.filter(cat =>
+    cat.name.toLowerCase().includes(categorySearchQuery.toLowerCase())
+  );
+
+  const filteredAttributes = attributes.filter(attr =>
+    attr.name.toLowerCase().includes(addonsSearchQuery.toLowerCase())
+  );
+
   const totalRetailPrice = parseFloat(price) || 0;
-  const netPrice = totalRetailPrice / (1 + (taxRate / 100));
+  const effectiveTaxRate = taxRate < 1 ? taxRate : taxRate / 100;
+  const netPrice = totalRetailPrice / (1 + effectiveTaxRate);
   const taxAmount = totalRetailPrice - netPrice;
 
   if (!isOpen) return null;
@@ -304,37 +348,45 @@ export function ProductFormModal({
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-cream-50 dark:bg-[#1e1e1e] w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col transition-colors duration-300"
+          className="bg-white dark:bg-[#1E293B] w-full max-w-lg rounded-2xl overflow-hidden max-h-[90vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 shadow-2xl relative"
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-6 pb-2">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-              {initialData ? 'Edit Item' : 'New Item'}
-            </h2>
+          <div className="flex items-center justify-between p-8 pb-4 relative isolate">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Product Registry</span>
+                <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
+                <span className="text-[10px] font-black text-paymint-green uppercase tracking-widest">Active Node</span>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                {initialData?.id ? 'Edit Inventory Item' : 'New Catalog Item'}
+              </h2>
+            </div>
             <button
               onClick={() => !isGeneratingImage && onClose()}
               disabled={isGeneratingImage}
-              className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-cream-200 dark:hover:bg-white/10 rounded-full transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90 disabled:opacity-30"
             >
-              <X size={24} />
+              <X size={20} />
             </button>
           </div>
 
-          <div className="overflow-y-auto p-6 pt-2 custom-scrollbar flex-1" ref={scrollRef}>
-            <form id="product-form" onSubmit={handleSubmit} className="space-y-6">
+          <div className="overflow-y-auto p-8 pt-2 custom-scrollbar flex-1" ref={scrollRef}>
+            <form id="product-form" onSubmit={handleSubmit} className="space-y-8">
 
               {/* Image Picker */}
-              <div className="flex flex-col items-center justify-center">
+              <div className="flex flex-col items-center justify-center py-6 bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/5 shadow-inner mb-2">
                 <div className="relative group">
                   <div
-                    className="w-36 h-36 rounded-2xl border-2 border-dashed border-cream-400 dark:border-gray-600 flex flex-col items-center justify-center overflow-hidden bg-cream-100 dark:bg-[#2a2a2a] cursor-pointer hover:border-paymint-green transition-colors"
+                    className="w-40 h-40 rounded-2xl border-2 border-dashed border-gray-300 dark:border-white/10 flex flex-col items-center justify-center overflow-hidden bg-white dark:bg-[#1E293B] cursor-pointer hover:border-paymint-green transition-all shadow-sm"
                   >
                     {imagePreview ? (
                       <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                     ) : (
-                      <div className="flex flex-col items-center text-paymint-green">
-                        <Upload size={32} className="mb-2" />
-                        <span className="text-xs font-bold">Upload Image</span>
+                      <div className="flex flex-col items-center text-gray-400 group-hover:text-paymint-green transition-colors">
+                        <Upload size={32} strokeWidth={1.5} className="mb-2" />
+                        <span className="text-[10px] font-black uppercase tracking-widest">Upload Media</span>
                       </div>
                     )}
                     <input
@@ -348,9 +400,9 @@ export function ProductFormModal({
                     <button
                       type="button"
                       onClick={() => { setSelectedImage(null); setImagePreview(null); }}
-                      className="absolute -top-2 -right-2 bg-cream-50 rounded-full p-1 text-accent shadow-md hover:bg-cream-100 border border-cream-300"
+                      className="absolute -top-2 -right-2 bg-white dark:bg-gray-800 rounded-full p-1.5 text-paymint-red hover:bg-red-50 border border-gray-200 dark:border-white/10 shadow-lg active:scale-90 transition-all"
                     >
-                      <X size={16} />
+                      <X size={14} />
                     </button>
                   )}
                 </div>
@@ -360,136 +412,151 @@ export function ProductFormModal({
                   type="button"
                   onClick={handleGenerateImage}
                   disabled={isGeneratingImage || !name.trim()}
-                  className="mt-3 flex items-center gap-2 text-xs font-bold text-paymint-green bg-paymint-green/10 px-4 py-2 rounded-xl hover:bg-paymint-green/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="mt-6 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-paymint-green bg-paymint-green/10 px-5 py-2.5 rounded-xl hover:bg-paymint-green/20 transition-all border border-paymint-green/20 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm active:scale-95"
                 >
                   {isGeneratingImage ? (
-                    <div className="w-4 h-4 border-2 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin" />
+                    <RefreshCw size={14} className="animate-spin" />
                   ) : (
                     <Wand2 size={14} />
                   )}
-                  <span>Generate AI Image</span>
+                  <span>Synthesize AI Imagery</span>
                 </button>
               </div>
 
               {/* Name */}
-              <div>
-                <label className="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-2 px-1">
-                  Name <span className="text-red-500">*</span>
+              <div className="space-y-3">
+                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-1 flex items-center">
+                  Legal Descriptor <span className="text-paymint-red mx-1">*</span>
+                  <QuickInfo text="The item name as it will appear on the POS grid and customer receipts." />
                 </label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Latte"
-                  className={`w-full bg-cream-100 dark:bg-[#2a2a2a] border ${errors.name ? 'border-red-500 ring-2 ring-red-500/20' : 'border-cream-300 dark:border-white/5'} rounded-2xl px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all`}
+                  placeholder="e.g. ORGANIC ESPRESSO"
+                  className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-bold shadow-sm`}
                 />
                 {errors.name && (
-                  <p className="mt-1 px-1 text-red-500 text-[10px] font-bold uppercase tracking-wider">{errors.name}</p>
+                  <p className="mt-1.5 px-1 text-paymint-red text-[10px] font-black uppercase tracking-widest">{errors.name}</p>
                 )}
               </div>
 
               {/* Prices Grid */}
-              <div className="space-y-4">
-                {/* Cost Price */}
-                <div>
-                  <label className="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-2 px-1">Cost Price</label>
-                  <div className="relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-cream-200 dark:bg-white/10 rounded-lg">
-                      <span className="text-gray-500 dark:text-gray-400 text-xs font-black">{currencySymbol}</span>
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Cost Price */}
+                  <div className="space-y-3">
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-1 flex items-center">
+                      Acquisition Cost
+                      <QuickInfo text="Your purchase cost for this item. Used to calculate profit margins." />
+                    </label>
+                    <div className="relative group">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-lg shadow-sm">
+                        <span className="text-gray-400 text-[10px] font-black">{currencySymbol}</span>
+                      </div>
+                      <input
+                        type="text"
+                        value={costPrice}
+                        onChange={handleCostPriceChange}
+                        placeholder="0.00"
+                        className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-4 py-4 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-bold text-lg shadow-sm group-hover:border-paymint-green/50"
+                      />
                     </div>
-                    <input
-                      type="text"
-                      value={costPrice}
-                      onChange={handleCostPriceChange}
-                      placeholder="0.00"
-                      className="w-full bg-cream-100 dark:bg-[#2a2a2a] border border-cream-300 dark:border-white/5 rounded-2xl pl-16 pr-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-bold text-lg"
-                    />
                   </div>
-                </div>
 
-                {/* Retail Price (Total) */}
-                <div>
-                  <label className="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-2 px-1">
-                    Retail Price (Total) <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-paymint-green/10 rounded-lg">
-                      <span className="text-paymint-green text-xs font-black">{currencySymbol}</span>
+                  {/* Retail Price (Total) */}
+                  <div className="space-y-3">
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-1 flex items-center">
+                      Settlement Value <span className="text-paymint-red mx-1">*</span>
+                      <QuickInfo text="The final price the customer pays, including any applicable tax." />
+                    </label>
+                    <div className="relative group">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg shadow-sm">
+                        <span className="text-paymint-green text-[10px] font-black">{currencySymbol}</span>
+                      </div>
+                      <input
+                        type="text"
+                        value={price}
+                        onChange={handlePriceChange}
+                        placeholder="0.00"
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.price ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pl-16 pr-4 py-4 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-bold text-2xl shadow-sm group-hover:border-paymint-green/50`}
+                      />
                     </div>
-                    <input
-                      type="text"
-                      value={price}
-                      onChange={handlePriceChange}
-                      placeholder="0.00"
-                      className={`w-full bg-cream-100 dark:bg-[#2a2a2a] border ${errors.price ? 'border-red-500 ring-2 ring-red-500/20' : 'border-cream-300 dark:border-white/5'} rounded-2xl pl-16 pr-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-black text-2xl`}
-                    />
                   </div>
-                  {errors.price && (
-                    <p className="mt-1 px-1 text-red-500 text-[10px] font-bold uppercase tracking-wider">{errors.price}</p>
-                  )}
-                  <p className="mt-2 text-[10px] text-gray-500 font-bold uppercase tracking-tighter px-1 italic">Type your desired final customer price here</p>
                 </div>
 
                 {/* Tax Breakdown (FE Style Calculation) */}
                 <div className="grid grid-cols-3 gap-3">
-                  <div className="bg-cream-100 dark:bg-white/5 rounded-2xl p-4 border border-cream-300 dark:border-white/5">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 leading-tight">Tax Rate</p>
+                  <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-4 border border-gray-100 dark:border-white/5 shadow-sm">
+                    <div className="flex items-center mb-1.5 gap-1">
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-tight">Tax Code</p>
+                      <QuickInfo text="The tax percentage configured in your store settings." />
+                    </div>
                     <div className="flex items-baseline gap-1">
-                      <p className="text-gray-900 dark:text-white font-black text-lg">{taxRate}</p>
-                      <p className="text-[10px] text-gray-500 font-black uppercase">%</p>
+                      <p className="text-gray-900 dark:text-white font-bold text-lg">
+                        {taxRate < 1 ? parseFloat((taxRate * 100).toFixed(2)) : taxRate}
+                      </p>
+                      <p className="text-[9px] text-gray-400 font-black uppercase">%</p>
                     </div>
                   </div>
-                  <div className="bg-paymint-green/5 rounded-2xl p-4 border border-paymint-green/20">
-                    <p className="text-[10px] font-black text-paymint-green uppercase tracking-widest mb-1.5 leading-tight">Tax Amount</p>
+                  <div className="bg-paymint-green/5 rounded-2xl p-4 border border-paymint-green/20 shadow-sm">
+                    <p className="text-[9px] font-black text-paymint-green uppercase tracking-widest mb-1.5 leading-tight">Tax Share</p>
                     <div className="flex items-baseline gap-1">
-                      <p className="text-paymint-green font-black text-lg">{taxAmount.toFixed(3)}</p>
+                      <p className="text-paymint-green font-bold text-lg">{taxAmount.toFixed(3)}</p>
                       <p className="text-[8px] text-paymint-green/60 font-black uppercase">{currencySymbol}</p>
                     </div>
                   </div>
-                  <div className="bg-paymint-green/10 rounded-2xl p-4 border border-paymint-green/30">
-                    <p className="text-[10px] font-black text-paymint-green uppercase tracking-widest mb-1.5 leading-tight">Net Price</p>
+                  <div className="bg-paymint-green/10 rounded-2xl p-4 border border-paymint-green/30 shadow-sm">
+                    <p className="text-[9px] font-black text-paymint-green uppercase tracking-widest mb-1.5 leading-tight">Net Capital</p>
                     <div className="flex items-baseline gap-1">
-                      <p className="text-paymint-green font-black text-lg">{netPrice.toFixed(3)}</p>
+                      <p className="text-paymint-green font-bold text-lg">{netPrice.toFixed(3)}</p>
                       <p className="text-[8px] text-paymint-green/60 font-black uppercase">{currencySymbol}</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Description (30 chars limit like FE) */}
-              <div>
-                <div className="flex items-center justify-between mb-2 px-1">
-                  <label className="block text-sm font-bold text-gray-400 uppercase tracking-widest">Description</label>
-                  <span className={`text-[10px] font-black ${description.length >= 30 ? 'text-accent' : 'text-gray-500'}`}>
-                    {description.length}/30
+              {/* Description */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between px-1">
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center">
+                    Client Description
+                    <QuickInfo text="A short description that may appear on online menus or receipts (max 30 chars)." />
+                  </label>
+                  <span className={`text-[9px] font-black uppercase tracking-widest ${description.length >= 30 ? 'text-paymint-red' : 'text-gray-400'}`}>
+                    {description.length} / 30
                   </span>
                 </div>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value.slice(0, 30))}
-                  placeholder="e.g. A rich, aromatic coffee"
+                  placeholder="Summarize product characteristics..."
                   rows={2}
-                  className="w-full bg-cream-100 dark:bg-[#2a2a2a] border border-cream-300 dark:border-white/5 rounded-2xl px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all resize-none font-medium"
+                  className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all resize-none font-medium shadow-sm group-hover:border-paymint-green/50"
                 />
               </div>
 
               {/* Category */}
-              <div className="relative">
-                <label className="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-2 px-1">
-                  Category <span className="text-red-500">*</span>
+              <div className="relative space-y-3" ref={categoryRef}>
+                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-1 flex items-center">
+                  Classification <span className="text-paymint-red mx-1">*</span>
+                  <QuickInfo text="The category determines where this item appears on the POS menu." />
                 </label>
                 <button
                   type="button"
-                  onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
-                  className={`w-full bg-cream-100 dark:bg-[#2a2a2a] border ${errors.category ? 'border-red-500 ring-2 ring-red-500/20' : 'border-cream-300 dark:border-white/5'} rounded-2xl px-4 py-4 text-left flex items-center justify-between text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all shadow-sm`}
+                  onClick={() => {
+                    setShowCategoryDropdown(!showCategoryDropdown);
+                    setShowAddonsDropdown(false);
+                  }}
+                  className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.category ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-left flex items-center justify-between text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all shadow-sm group-hover:border-paymint-green/50`}
                 >
-                  <span className={categoryId ? 'text-gray-900 dark:text-white font-bold' : 'text-gray-500 italic'}>
-                    {categories.find(c => c.id === categoryId)?.name || 'Select Category'}
+                  <span className={categoryId ? 'text-gray-900 dark:text-white font-bold' : 'text-gray-400 italic'}>
+                    {categories.find(c => c.id === categoryId)?.name || 'Select Primary Category'}
                   </span>
-                  <ChevronDown size={20} className={`text-gray-400 transition-transform ${showCategoryDropdown ? 'rotate-180' : ''}`} />
+                  <ChevronDown size={20} className={`text-gray-400 transition-transform duration-300 ${showCategoryDropdown ? 'rotate-180 text-paymint-green' : ''}`} />
                 </button>
                 {errors.category && (
-                  <p className="mt-1 px-1 text-red-500 text-[10px] font-bold uppercase tracking-wider">{errors.category}</p>
+                  <p className="mt-1.5 px-1 text-paymint-red text-[10px] font-black uppercase tracking-widest">{errors.category}</p>
                 )}
 
                 <AnimatePresence>
@@ -498,50 +565,106 @@ export function ProductFormModal({
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="absolute top-full left-0 right-0 mt-2 bg-cream-50 dark:bg-[#2a2a2a] border border-cream-300 dark:border-white/10 rounded-2xl shadow-2xl z-[30] max-h-48 overflow-y-auto custom-scrollbar overflow-hidden"
+                      className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl z-[30] max-h-80 overflow-y-auto custom-scrollbar shadow-2xl overflow-hidden"
                     >
-                      {categories.map(cat => (
-                        <button
-                          key={cat.id}
-                          type="button"
-                          onClick={() => {
-                            setCategoryId(cat.id);
-                            setShowCategoryDropdown(false);
-                          }}
-                          className="w-full px-5 py-4 text-left hover:bg-paymint-green/5 flex items-center justify-between group transition-colors border-b border-cream-200 dark:border-white/5 last:border-none"
-                        >
-                          <span className={`text-sm ${categoryId === cat.id ? 'text-paymint-green font-black' : 'text-gray-700 dark:text-gray-300 font-bold'}`}>
-                            {cat.name}
-                          </span>
-                          {categoryId === cat.id && <Check size={18} className="text-paymint-green" />}
-                        </button>
-                      ))}
+                      {/* Search Bar */}
+                      <div className="sticky top-0 bg-white dark:bg-[#1E293B] p-3 border-b border-gray-100 dark:border-white/5 z-10">
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={categorySearchQuery}
+                            onChange={(e) => setCategorySearchQuery(e.target.value)}
+                            placeholder="Filter categories..."
+                            className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCategoryId('');
+                          setShowCategoryDropdown(false);
+                        }}
+                        className="w-full px-5 py-4 text-left hover:bg-gray-50 dark:hover:bg-white/[0.02] flex items-center justify-between group transition-colors border-b border-gray-100 dark:border-white/5"
+                      >
+                        <span className={`text-xs font-black uppercase tracking-widest ${!categoryId ? 'text-paymint-green' : 'text-gray-400 italic'}`}>
+                          None Selected
+                        </span>
+                        {!categoryId && <Check size={18} className="text-paymint-green" strokeWidth={3} />}
+                      </button>
+
+                      {filteredCategories.length === 0 ? (
+                        <div className="p-8 text-center">
+                          <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 italic">No matches found</p>
+                        </div>
+                      ) : (
+                        filteredCategories.map(cat => (
+                          <button
+                            key={cat.id}
+                            type="button"
+                            onClick={() => {
+                              setCategoryId(cat.id);
+                              setShowCategoryDropdown(false);
+                            }}
+                            className="w-full px-5 py-4 text-left hover:bg-gray-50 dark:hover:bg-white/[0.02] flex items-center justify-between group transition-colors border-b border-gray-100 dark:border-white/5 last:border-none"
+                          >
+                            <span className={`text-xs font-bold ${categoryId === cat.id ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
+                              {cat.name}
+                            </span>
+                            {categoryId === cat.id && <Check size={18} className="text-paymint-green" strokeWidth={3} />}
+                          </button>
+                        ))
+                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
 
-              {/* Add-ons (Attributes) - FE style */}
-              <div className="relative">
-                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.15em] mb-2 px-1">Add-ons & Modifiers</label>
+              {/* Add-ons (Attributes) */}
+              <div className="relative space-y-3" ref={addonsRef}>
+                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-1 flex items-center">
+                  Modifier Protocols
+                  <QuickInfo text="Attach options like toppings, sizes, or special instructions to this item." />
+                </label>
+
+                {attributes.length === 0 && (
+                  <div className="bg-red-50 dark:bg-red-500/5 border border-red-200 dark:border-red-500/20 rounded-2xl p-4 mb-1 border-dashed">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-500/20 flex items-center justify-center shrink-0">
+                        <AlertCircle size={16} className="text-red-600 dark:text-red-500" strokeWidth={2.5} />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-[0.15em] text-red-600 dark:text-red-500">Inventory Notice</p>
+                        <p className="text-[11px] font-bold text-red-500/90 dark:text-red-400/70 leading-snug">No modifiers found in your database. Please visit the <span className="underline cursor-pointer hover:text-red-600" onClick={() => { onClose(); navigate('/dashboard/addons', { state: { openCreateModal: true } }); }}>Add-ons section</span> to create some.</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <button
                   type="button"
-                  onClick={() => setShowAddonsDropdown(!showAddonsDropdown)}
-                  className="w-full bg-cream-100 dark:bg-[#2a2a2a] border border-cream-300 dark:border-white/5 rounded-2xl px-4 py-4 text-left flex items-center justify-between text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all shadow-sm"
+                  onClick={() => {
+                    if (attributes.length === 0) return;
+                    setShowAddonsDropdown(!showAddonsDropdown);
+                    setShowCategoryDropdown(false);
+                  }}
+                  className={`w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 text-left flex items-center justify-between text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all shadow-sm ${attributes.length === 0 ? 'opacity-50 cursor-not-allowed' : 'group-hover:border-paymint-green/50'}`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-paymint-green/10 flex items-center justify-center">
-                      <Plus size={16} className="text-paymint-green" />
+                      <Plus size={16} className="text-paymint-green" strokeWidth={2.5} />
                     </div>
-                    <span className={selectedAttributeIds.length > 0 ? 'text-gray-900 dark:text-white font-bold' : 'text-gray-500 italic'}>
+                    <span className={selectedAttributeIds.length > 0 ? 'text-gray-900 dark:text-white font-bold' : 'text-gray-400 italic'}>
                       {selectedAttributeIds.length === 0
-                        ? 'Select Add-ons'
+                        ? (attributes.length === 0 ? 'No Modifiers Available' : 'Link Optional Modifiers')
                         : selectedAttributeIds.length === 1
-                          ? attributes.find(a => a.id === selectedAttributeIds[0])?.name || '1 Add-on Selected'
-                          : `${selectedAttributeIds.length} Add-ons Selected`}
+                          ? attributes.find(a => a.id === selectedAttributeIds[0])?.name || '1 Modifier Active'
+                          : `${selectedAttributeIds.length} Modifiers Linked`}
                     </span>
                   </div>
-                  <ChevronDown size={20} className={`text-gray-400 transition-transform ${showAddonsDropdown ? 'rotate-180' : ''}`} />
+                  <ChevronDown size={20} className={`text-gray-400 transition-transform duration-300 ${showAddonsDropdown ? 'rotate-180 text-paymint-green' : ''}`} />
                 </button>
 
                 <AnimatePresence>
@@ -550,53 +673,75 @@ export function ProductFormModal({
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="absolute top-full left-0 right-0 mt-2 bg-cream-50 dark:bg-[#2a2a2a] border border-cream-300 dark:border-white/10 rounded-2xl shadow-2xl z-[30] max-h-48 overflow-y-auto custom-scrollbar overflow-hidden"
+                      className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl z-[30] max-h-80 overflow-y-auto custom-scrollbar shadow-2xl overflow-hidden"
                     >
-                      {attributes.map(attr => (
-                        <button
-                          key={attr.id}
-                          type="button"
-                          onClick={() => {
-                            if (selectedAttributeIds.includes(attr.id)) {
-                              setSelectedAttributeIds(selectedAttributeIds.filter(id => id !== attr.id));
-                            } else {
-                              setSelectedAttributeIds([...selectedAttributeIds, attr.id]);
-                            }
-                          }}
-                          className="w-full px-5 py-4 text-left hover:bg-paymint-green/5 flex items-center justify-between group transition-colors border-b border-cream-200 dark:border-white/5 last:border-none"
-                        >
-                          <div className="flex flex-col">
-                            <span className={`text-sm ${selectedAttributeIds.includes(attr.id) ? 'text-paymint-green font-black' : 'text-gray-700 dark:text-gray-300 font-bold'}`}>
-                              {attr.name}
-                            </span>
-                            <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">
-                              {attr.subAttributes?.length === 0
-                                ? 'No options available'
-                                : `${attr.subAttributes?.length || 0} option${attr.subAttributes?.length !== 1 ? 's' : ''} available`}
-                            </span>
-                          </div>
-                          <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${selectedAttributeIds.includes(attr.id) ? 'bg-paymint-green border-paymint-green' : 'border-gray-200 dark:border-white/10'}`}>
-                            {selectedAttributeIds.includes(attr.id) && <Check size={14} className="text-black" />}
-                          </div>
-                        </button>
-                      ))}
+                      {/* Search Bar */}
+                      <div className="sticky top-0 bg-white dark:bg-[#1E293B] p-3 border-b border-gray-100 dark:border-white/5 z-10">
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={addonsSearchQuery}
+                            onChange={(e) => setAddonsSearchQuery(e.target.value)}
+                            placeholder="Filter modifiers..."
+                            className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+                        </div>
+                      </div>
+
+                      {filteredAttributes.length === 0 ? (
+                        <div className="p-8 text-center">
+                          <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 italic">No matches found</p>
+                        </div>
+                      ) : (
+                        filteredAttributes.map(attr => (
+                          <button
+                            key={attr.id}
+                            type="button"
+                            onClick={() => {
+                              if (selectedAttributeIds.includes(attr.id)) {
+                                setSelectedAttributeIds(selectedAttributeIds.filter(id => id !== attr.id));
+                              } else {
+                                setSelectedAttributeIds([...selectedAttributeIds, attr.id]);
+                              }
+                              setShowAddonsDropdown(false);
+                            }}
+                            className="w-full px-5 py-4 text-left hover:bg-gray-50 dark:hover:bg-white/[0.02] flex items-center justify-between group transition-colors border-b border-gray-100 dark:border-white/5 last:border-none"
+                          >
+                            <div className="flex flex-col">
+                              <span className={`text-sm font-bold ${selectedAttributeIds.includes(attr.id) ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
+                                {attr.name}
+                              </span>
+                              <span className="text-[10px] text-gray-400 uppercase tracking-widest font-black mt-0.5">
+                                {attr.subAttributes?.length === 0
+                                  ? 'No Sub-Items'
+                                  : `${attr.subAttributes?.length || 0} Option${attr.subAttributes?.length !== 1 ? 's' : ''}`}
+                              </span>
+                            </div>
+                            <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${selectedAttributeIds.includes(attr.id) ? 'bg-paymint-green border-paymint-green shadow-sm' : 'border-gray-300 dark:border-white/10'}`}>
+                              {selectedAttributeIds.includes(attr.id) && <Check size={14} className="text-black" strokeWidth={3} />}
+                            </div>
+                          </button>
+                        ))
+                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>
 
                 {/* Selected Addon Pills */}
                 {selectedAttributeIds.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-3">
+                  <div className="flex flex-wrap gap-2 mt-4 px-1">
                     {selectedAttributeIds.map(id => {
                       const attr = attributes.find(a => a.id === id);
                       if (!attr) return null;
                       return (
-                        <div key={id} className="flex items-center gap-2 bg-paymint-green/10 text-paymint-green px-3 py-1.5 rounded-xl border border-paymint-green/20">
-                          <span className="text-xs font-black uppercase tracking-wider">{attr.name}</span>
+                        <div key={id} className="flex items-center gap-2 bg-paymint-green/10 text-paymint-green px-4 py-2 rounded-xl border border-paymint-green/20 shadow-sm transition-all hover:bg-paymint-green/20">
+                          <span className="text-[10px] font-black uppercase tracking-widest">{attr.name}</span>
                           <button
                             type="button"
                             onClick={() => setSelectedAttributeIds(selectedAttributeIds.filter(idx => idx !== id))}
-                            className="hover:text-accent transition-colors"
+                            className="hover:text-paymint-red transition-colors active:scale-90"
                           >
                             <X size={14} />
                           </button>
@@ -607,12 +752,15 @@ export function ProductFormModal({
                 )}
               </div>
 
-              {/* Stock Tracking (FE Style) */}
-              <div ref={stockRef} className="bg-cream-100 dark:bg-white/10 rounded-3xl p-6 border border-cream-300 dark:border-white/5 space-y-6">
+              {/* Stock Tracking */}
+              <div ref={stockRef} className="bg-gray-50 dark:bg-black/20 rounded-2xl p-8 border border-gray-200 dark:border-white/5 space-y-8 shadow-inner">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="text-gray-900 dark:text-white font-black text-sm uppercase tracking-wider">Track Stock</h4>
-                    <p className="text-gray-500 text-[10px] font-bold uppercase mt-1">Manage inventory & alerts</p>
+                    <h4 className="text-gray-900 dark:text-white font-bold text-sm uppercase tracking-tight flex items-center gap-2">
+                      Inventory Control
+                      <QuickInfo text="Enable this to count inventory for this item. Selling will decrease the count." />
+                    </h4>
+                    <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mt-1">Real-time depletion monitoring</p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
@@ -621,16 +769,19 @@ export function ProductFormModal({
                       onChange={(e) => setTrackStock(e.target.checked)}
                       className="sr-only peer"
                     />
-                    <div className="w-12 h-6 bg-cream-200 dark:bg-white/5 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
+                    <div className="w-12 h-7 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:after:translate-x-5 shadow-sm"></div>
                   </label>
                 </div>
 
                 {trackStock && (
-                  <div className="space-y-4 animate-in fade-in zoom-in-95 duration-200">
-                    <div className="flex items-center justify-between bg-cream-50 dark:bg-black/20 p-4 rounded-2xl border border-cream-300 dark:border-white/5">
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                    <div className="flex items-center justify-between bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
                       <div>
-                        <h4 className="text-gray-900 dark:text-white font-black text-sm uppercase tracking-wider text-[10px]">Allow Negative Stock</h4>
-                        <p className="text-gray-500 text-[8px] font-bold uppercase mt-0.5">Sell items when out of stock</p>
+                        <h4 className="text-gray-900 dark:text-white font-bold text-xs uppercase tracking-tight flex items-center gap-1">
+                          Negative Float
+                          <QuickInfo text="If enabled, you can continue selling this item even when inventory reaches zero." />
+                        </h4>
+                        <p className="text-gray-400 text-[9px] font-bold uppercase mt-0.5">Sell below threshold</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
@@ -639,72 +790,70 @@ export function ProductFormModal({
                           onChange={(e) => setAllowNegativeStock(e.target.checked)}
                           className="sr-only peer"
                         />
-                        <div className="w-10 h-5 bg-cream-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5"></div>
+                        <div className="w-11 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5"></div>
                       </label>
                     </div>
 
-                    <div>
-                      <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 px-1">Available Units</label>
+                    <div className="space-y-3">
+                      <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest px-1 flex items-center">
+                        Available Balance
+                        <QuickInfo text="Current number of units in stock." />
+                      </label>
                       <input
                         type="number"
                         value={stock}
                         onChange={(e) => setStock(e.target.value)}
                         placeholder="0"
-                        className={`w-full bg-cream-50 dark:bg-black/20 border ${errors.stock ? 'border-red-500 ring-2 ring-red-500/20' : 'border-cream-300 dark:border-white/5'} rounded-2xl px-4 py-3 text-gray-900 dark:text-white font-black text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all`}
+                        className={`w-full bg-white dark:bg-black/20 border ${errors.stock ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-gray-900 dark:text-white font-bold text-center text-2xl focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                       />
                       {errors.stock && (
-                        <p className="mt-1 text-red-500 text-[8px] font-bold uppercase text-center">{errors.stock}</p>
+                        <p className="mt-1.5 text-paymint-red text-[10px] font-black uppercase text-center tracking-widest">{errors.stock}</p>
                       )}
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 px-1">
-                          <span className="text-yellow-500 mr-1">●</span> Yellow Threshold
+
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest px-1 flex items-center">
+                          <span className="text-yellow-500 mr-2 text-lg">●</span> Warn Level
                         </label>
                         <input
                           type="number"
                           value={lowStockYellow}
                           onChange={(e) => setLowStockYellow(e.target.value)}
                           placeholder="5"
-                          className={`w-full bg-cream-50 dark:bg-black/20 border ${errors.lowStockYellow ? 'border-red-500 ring-2 ring-red-500/20' : 'border-cream-300 dark:border-white/5'} rounded-2xl px-4 py-3 text-gray-900 dark:text-white font-black text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all`}
+                          className={`w-full bg-white dark:bg-black/20 border ${errors.lowStockYellow ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-3 text-gray-900 dark:text-white font-bold text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                         />
-                        {errors.lowStockYellow && (
-                          <p className="mt-1 text-red-500 text-[8px] font-bold uppercase text-center leading-tight">{errors.lowStockYellow}</p>
-                        )}
                       </div>
-                      <div>
-                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 px-1">
-                          <span className="text-red-500 mr-1">●</span> Red Threshold
+                      <div className="space-y-3">
+                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest px-1 flex items-center">
+                          <span className="text-paymint-red mr-2 text-lg">●</span> Alert Level
                         </label>
                         <input
                           type="number"
                           value={lowStockRed}
                           onChange={(e) => setLowStockRed(e.target.value)}
                           placeholder="2"
-                          className={`w-full bg-cream-50 dark:bg-black/20 border ${errors.lowStockRed ? 'border-red-500 ring-2 ring-red-500/20' : 'border-cream-300 dark:border-white/5'} rounded-2xl px-4 py-3 text-gray-900 dark:text-white font-black text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all`}
+                          className={`w-full bg-white dark:bg-black/20 border ${errors.lowStockRed ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-3 text-gray-900 dark:text-white font-bold text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                         />
-                        {errors.lowStockRed && (
-                          <p className="mt-1 text-red-500 text-[8px] font-bold uppercase text-center leading-tight">{errors.lowStockRed}</p>
-                        )}
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 )}
               </div>
 
             </form>
           </div>
 
-          {/* Footer (FE Parity Buttons) */}
-          <div className="p-8 border-t border-cream-300 dark:border-white/5 flex items-center gap-4 bg-cream-100/50 dark:bg-white/[0.02]">
-            {initialData && onDelete && (
+          {/* Footer */}
+          <div className="p-8 border-t border-gray-100 dark:border-white/5 flex items-center gap-4 bg-gray-50 dark:bg-black/20 transition-colors">
+            {initialData?.id && onDelete && (
               <button
                 type="button"
-                onClick={() => onDelete(initialData.id)}
-                className="px-6 py-4 bg-accent/10 text-accent font-black rounded-2xl hover:bg-accent hover:text-white transition-all active:scale-95 flex items-center gap-2 uppercase tracking-widest text-[10px]"
+                onClick={() => onDelete(initialData.id!)}
+                className="flex-1 py-4 px-6 border border-paymint-red/20 text-paymint-red font-black text-xs rounded-2xl hover:bg-paymint-red/5 transition-all uppercase tracking-widest flex items-center justify-center gap-2"
               >
-                <Trash2 size={18} />
-                <span>Remove</span>
+                <Trash2 size={16} />
+                <span>Delete Product</span>
               </button>
             )}
 
@@ -712,21 +861,21 @@ export function ProductFormModal({
               type="button"
               onClick={onClose}
               disabled={isSubmitting || isGeneratingImage}
-              className="flex-1 py-4 bg-gray-400 text-white font-black rounded-2xl hover:bg-gray-500 transition-all uppercase tracking-widest text-xs disabled:opacity-50 active:scale-95 shadow-lg"
+              className="flex-1 h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
             >
-              Cancel
+              Abort
             </button>
 
             <button
               type="submit"
               form="product-form"
               disabled={isSubmitting || isGeneratingImage || Object.keys(errors).length > 0}
-              className="flex-[1.5] py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] transition-all disabled:opacity-50 flex items-center justify-center shadow-xl shadow-paymint-green/20 text-xs uppercase tracking-widest active:scale-95"
+              className="flex-[2] h-14 bg-paymint-green text-black font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
             >
               {isSubmitting ? (
-                <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                <RefreshCw size={18} className="animate-spin" />
               ) : (
-                initialData ? 'Save Changes' : 'Add Item'
+                initialData?.id ? 'Commit Node Changes' : 'Deploy To Catalog'
               )}
             </button>
           </div>

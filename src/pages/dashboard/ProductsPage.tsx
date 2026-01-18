@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
-  Filter,
   Plus,
   Grid,
   List,
@@ -19,6 +19,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { ProductFormModal } from '../../components/forms/ProductFormModal';
 import { exportToCSV } from '../../utils/export';
+import { CustomSelect } from '../../components/CustomSelect';
 
 interface Product {
   id: string;
@@ -45,17 +46,20 @@ interface Category {
 }
 
 export function ProductsPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [page, setPage] = useState(1);
-  const itemsPerPage = 12;
+  const itemsPerPage = 20;
 
   const [confirmConfig, setConfirmConfig] = useState<{
     isOpen: boolean;
@@ -78,9 +82,41 @@ export function ProductsPage() {
   };
 
   useEffect(() => {
-    fetchProducts();
-    fetchCategories();
+    const init = async () => {
+      await Promise.all([
+        fetchProducts(),
+        fetchCategories()
+      ]);
+    };
+    init();
   }, []);
+
+  useEffect(() => {
+    if (isLoading || isCategoriesLoading) return; // Wait for both types of data to be ready
+
+    const state = location.state as { productId?: string; categoryId?: string; openCreateModal?: boolean };
+
+    if (state?.openCreateModal) {
+      openCreateModal(state.categoryId);
+    }
+    // ... rest of logic
+    if (state?.categoryId) {
+      setCategoryFilter(state.categoryId);
+    }
+
+    if (state?.productId && products.length > 0) {
+      const product = products.find(p => p.id === state.productId);
+      if (product) {
+        setEditingProduct(product);
+        setShowModal(true);
+      }
+    }
+
+    // Clean up state only after processing everything
+    if (state?.productId || state?.categoryId || state?.openCreateModal) {
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state, products, categories, isLoading, isCategoriesLoading]);
 
   const fetchProducts = async () => {
     try {
@@ -96,15 +132,32 @@ export function ProductsPage() {
 
   const fetchCategories = async () => {
     try {
+      setIsCategoriesLoading(true);
       const response = await api.get('/api/categories');
       setCategories(response.data || []);
     } catch (err) {
       console.error('Failed to load categories');
+    } finally {
+      setIsCategoriesLoading(false);
     }
   };
 
-  const openCreateModal = () => {
-    setEditingProduct(null);
+  const openCreateModal = (defaultCategoryId?: string) => {
+    // Skip categories length check if we already have a default category target
+    // or if we are still loading (to prevent premature warning)
+    if (!defaultCategoryId && categories.length === 0 && !isLoading && !isCategoriesLoading) {
+      setConfirmConfig({
+        isOpen: true,
+        title: 'No Categories Found',
+        message: 'You need to create a category before adding products. Would you like to create one now?',
+        type: 'warning',
+        onConfirm: () => {
+          navigate('/dashboard/categories', { state: { openCreateModal: true } });
+        }
+      });
+      return;
+    }
+    setEditingProduct(defaultCategoryId ? { categoryId: defaultCategoryId } as Product : null);
     setShowModal(true);
   };
 
@@ -138,16 +191,24 @@ export function ProductsPage() {
   const onSubmit = async (formData: FormData) => {
     try {
       setIsSubmitting(true);
-      if (editingProduct) {
-        await api.patch(`/api/items/${editingProduct.id}`, formData);
-        toast.success('Product updated');
+      // Force Content-Type to undefined/null so browser sets the boundary
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        transformRequest: [(data: any) => data], // Prevent Axios from stringifying FormData
+      };
+
+      if (editingProduct?.id) {
+        await api.patch(`/api/items/${editingProduct.id}`, formData, config);
       } else {
-        await api.post('/api/items', formData);
-        toast.success('Product created');
+        await api.post('/api/items', formData, config);
       }
+      toast.success(editingProduct?.id ? 'Product updated' : 'Product created');
       setShowModal(false);
       fetchProducts();
     } catch (err: any) {
+      console.error(err);
       toast.error('Error saving product');
     } finally {
       setIsSubmitting(false);
@@ -193,192 +254,204 @@ export function ProductsPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-120px)] flex flex-col space-y-6">
-      {/* Header - Fixed */}
-      {/* Header - Fixed */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-cream-50 via-cream-100 to-cream-50 dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-cream-300 dark:border-white/5 shadow-sm shrink-0">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/30">
-              <Package size={28} className="text-black" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Products & Menu</h1>
-              <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Manage items, stock levels, and pricing</p>
-            </div>
+    <div className="max-w-7xl mx-auto space-y-8 pb-10">
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+              Inventory
+            </span>
           </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleExport}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-cream-100 dark:bg-white/5 border border-cream-300 dark:border-white/10 text-gray-900 dark:text-gray-300 font-bold text-sm hover:scale-105 hover:bg-cream-50 dark:hover:bg-white/10 transition-all shadow-sm"
-            >
-              <Download size={18} />
-              <span>Export CSV</span>
-            </button>
-            <button
-              onClick={openCreateModal}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 transition-all shadow-lg shadow-paymint-green/30"
-            >
-              <Plus size={18} />
-              <span>Add Item</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Control Bar - Fixed */}
-      <div className="shrink-0 flex items-center gap-4">
-        <div className="flex-1 relative group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-paymint-green transition-colors" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-            placeholder="Search products..."
-            className="w-full pl-11 pr-4 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green/30 shadow-md transition-all text-sm font-medium"
-          />
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Products & Menu</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">
+            Manage items, stock levels, and pricing
+          </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="relative">
-            <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <select
-              value={categoryFilter}
-              onChange={(e) => { setCategoryFilter(e.target.value); setPage(1); }}
-              className="pl-11 pr-8 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white font-bold text-xs cursor-pointer focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green/30 shadow-md appearance-none min-w-[140px]"
-            >
-              <option value="all">All Categories</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
-              ))}
-            </select>
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
+          >
+            <Download size={18} />
+            <span>Export CSV</span>
+          </button>
+          <button
+            onClick={() => openCreateModal()}
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
+          >
+            <Plus size={18} />
+            <span>Add Item</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-4 shadow-sm">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+          {/* Search */}
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+              placeholder="Search products..."
+              className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+            />
           </div>
 
-          <div className="bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-2xl p-1 flex gap-1 shadow-md">
-            <button onClick={() => setViewMode('grid')} className={`p-2 rounded-xl transition-all ${viewMode === 'grid' ? 'bg-paymint-green text-black' : 'text-gray-400 hover:text-gray-600'}`}>
-              <Grid size={16} />
-            </button>
-            <button onClick={() => setViewMode('list')} className={`p-2 rounded-xl transition-all ${viewMode === 'list' ? 'bg-paymint-green text-black' : 'text-gray-400 hover:text-gray-600'}`}>
-              <List size={16} />
-            </button>
+          {/* Filters Top Right of Control Bar */}
+          <div className="flex items-center gap-3">
+            <div className="w-64">
+              <CustomSelect
+                value={categoryFilter}
+                onChange={(val) => { setCategoryFilter(val as string); setPage(1); }}
+                options={[
+                  { label: 'All Categories', value: 'all' },
+                  ...categories.map(cat => ({ label: cat.name, value: cat.id }))
+                ]}
+                className="category-pill-select"
+              />
+            </div>
+
+            <div className="flex items-center bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/[0.03] p-1.5 shadow-sm">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`p-2.5 rounded-xl transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+              >
+                <Grid size={20} />
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`p-2.5 rounded-xl transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+              >
+                <List size={20} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Main Content Area - Scrollable */}
-      <div className="flex-1 overflow-hidden flex flex-col min-h-0">
-        <div className="flex-1 overflow-y-auto custom-scrollbar">
-          {isLoading ? (
-            <div className="py-20 flex flex-col items-center">
-              <div className="w-12 h-12 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
-              <p className="text-[10px] font-black uppercase text-gray-400">Loading Inventory...</p>
+      {/* Main Content Area */}
+      <div>
+        {isLoading ? (
+          <div className="py-20 flex flex-col items-center">
+            <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
+            <p className="text-xs font-black uppercase tracking-widest text-gray-400">Loading Inventory...</p>
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="py-20 text-center flex flex-col items-center bg-white dark:bg-[#0B1120] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 shadow-inner">
+            <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 shadow-sm">
+              <Package className="w-10 h-10 text-gray-300" />
             </div>
-          ) : filteredProducts.length === 0 ? (
-            <div className="py-20 text-center flex flex-col items-center">
-              <div className="w-20 h-20 bg-cream-100 dark:bg-white/5 rounded-[2rem] flex items-center justify-center mb-6">
-                <Package className="w-10 h-10 text-gray-300" />
-              </div>
-              <h3 className="text-xl font-black text-gray-900 dark:text-white mb-2">No items found</h3>
-            </div>
-          ) : viewMode === 'grid' ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-4">
-              {paginatedProducts.map((product) => (
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No items found</h3>
+            <p className="text-gray-500 max-w-xs text-sm font-medium">Create your first product to get started with your inventory.</p>
+          </div>
+        ) : viewMode === 'grid' ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <AnimatePresence mode="popLayout">
+              {paginatedProducts.map((product, index) => (
                 <motion.div
                   layout
                   key={product.id}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="group bg-cream-50 dark:bg-[#0A0A0A] rounded-[2rem] border border-cream-200 dark:border-white/5 overflow-hidden shadow-sm hover:shadow-xl hover:border-cream-300 dark:hover:border-white/10 transition-all duration-300"
+                  transition={{ delay: index * 0.03 }}
+                  className="group bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden hover:border-paymint-green/50 transition-all duration-300 shadow-sm hover:shadow-lg"
                 >
-                  <div className="aspect-[4/3] bg-cream-200 dark:bg-black/20 relative overflow-hidden">
+                  <div className="aspect-[4/3] bg-gray-100 dark:bg-white/5 relative overflow-hidden">
                     {getImageUrl(product.image) ? (
                       <img src={getImageUrl(product.image)!} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-300">
-                        <ImageIcon size={40} strokeWidth={1} />
+                      <div className="w-full h-full flex items-center justify-center text-gray-300 dark:text-gray-600">
+                        <ImageIcon size={32} strokeWidth={1.5} />
                       </div>
                     )}
                     {!product.isAvailable && (
-                      <div className="absolute top-4 left-4">
-                        <span className="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest shadow-lg bg-accent text-white">
+                      <div className="absolute top-3 left-3">
+                        <span className="px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-gray-900/80 text-white backdrop-blur-sm">
                           Hidden
                         </span>
                       </div>
                     )}
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 backdrop-blur-[2px]">
-                      <button onClick={() => openEditModal(product)} className="w-10 h-10 rounded-full bg-white text-gray-900 flex items-center justify-center hover:bg-paymint-green hover:text-black transition-colors shadow-lg active:scale-95"><Edit2 size={16} /></button>
-                      <button onClick={() => handleDelete(product.id)} className="w-10 h-10 rounded-full bg-white text-gray-900 flex items-center justify-center hover:bg-accent hover:text-white transition-colors shadow-lg active:scale-95"><Trash2 size={16} /></button>
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 backdrop-blur-[2px]">
+                      <button onClick={() => openEditModal(product)} className="p-2.5 rounded-xl bg-white text-black hover:bg-paymint-green transition-colors active:scale-95">
+                        <Edit2 size={16} />
+                      </button>
+                      <button onClick={() => handleDelete(product.id)} className="p-2.5 rounded-xl bg-white text-red-500 hover:bg-red-500 hover:text-white transition-colors active:scale-95">
+                        <Trash2 size={16} />
+                      </button>
                     </div>
                   </div>
-                  <div className="p-5 bg-cream-50 dark:bg-[#0A0A0A]">
-                    <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">{product.category?.name || 'Uncategorized'}</p>
-                    <h3 className="font-black text-gray-900 dark:text-white truncate group-hover:text-paymint-green transition-colors">{product.name}</h3>
-                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-cream-300 dark:border-white/5">
-                      <p className="text-lg font-black text-gray-900 dark:text-white">{formatCurrency(product.price)}</p>
+                  <div className="p-4">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{product.category?.name || 'Uncategorized'}</p>
+                    <h3 className="text-sm font-bold text-gray-900 dark:text-white truncate group-hover:text-paymint-green transition-colors">{product.name}</h3>
+                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100 dark:border-white/5">
+                      <p className="text-sm font-bold text-gray-900 dark:text-white">{formatCurrency(product.price)}</p>
                       {product.trackStock && (
-                        <span className={`text-[10px] font-black uppercase px-2 py-1 rounded-lg ${(product.availableStock || 0) <= (product.lowStockThresholdYellow || 5) ? 'text-accent bg-accent/10' : 'text-paymint-green bg-paymint-green/10'}`}>
-                          {product.availableStock} Stock
+                        <span className={`text-[10px] font-black uppercase px-2 py-1 rounded-lg ${(product.availableStock || 0) <= (product.lowStockThresholdYellow || 5) ? 'text-paymint-red bg-paymint-red/10' : 'text-paymint-green bg-paymint-green/10'}`}>
+                          {product.availableStock} Units
                         </span>
                       )}
                     </div>
                   </div>
                 </motion.div>
               ))}
-            </div>
-          ) : (
-            <div className="bg-cream-50 dark:bg-[#0A0A0A] rounded-[2.5rem] border border-cream-300 dark:border-white/5 overflow-hidden">
-              <table className="w-full">
-                <thead className="sticky top-0 z-10 bg-cream-50 dark:bg-[#0A0A0A]">
-                  <tr className="border-b border-cream-200 dark:border-white/5">
-                    <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Product</th>
-                    <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Category</th>
-                    <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Inventory</th>
-                    <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Price</th>
-                    <th className="px-8 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Actions</th>
+            </AnimatePresence>
+          </div>
+        ) : (
+          <div className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
+            <table className="w-full">
+              <thead className="bg-gray-50 dark:bg-white/[0.02]">
+                <tr className="border-b border-gray-200 dark:border-white/5">
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Product</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Category</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Inventory</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Price</th>
+                  <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                {paginatedProducts.map((p) => (
+                  <tr key={p.id} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 overflow-hidden border border-gray-200 dark:border-white/5">
+                          {getImageUrl(p.image) ? <img src={getImageUrl(p.image)!} className="w-full h-full object-cover" /> : <ImageIcon size={16} className="m-auto text-gray-300" />}
+                        </div>
+                        <p className="font-bold text-gray-900 dark:text-white text-sm">{p.name}</p>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4"><span className="text-xs font-medium text-gray-500 dark:text-gray-400">{p.category?.name || 'Uncategorized'}</span></td>
+                    <td className="px-6 py-4"><span className={`font-black text-[10px] uppercase tracking-widest ${p.trackStock && (p.availableStock || 0) <= 5 ? 'text-paymint-red bg-paymint-red/10 px-2 py-1 rounded-lg' : 'text-gray-700 dark:text-gray-300'} ${!p.trackStock ? 'text-xl text-gray-400' : ''}`}>{p.trackStock ? `${p.availableStock} Units` : '∞'}</span></td>
+                    <td className="px-6 py-4 font-bold text-gray-900 dark:text-white text-sm">{formatCurrency(p.price)}</td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button onClick={() => openEditModal(p)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-paymint-green transition-colors"><Edit2 size={16} /></button>
+                        <button onClick={() => handleDelete(p.id)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-red-500 transition-colors"><Trash2 size={16} /></button>
+                      </div>
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-cream-200 dark:divide-white/5">
-                  {paginatedProducts.map((p) => (
-                    <tr key={p.id} className="group hover:bg-cream-100 dark:hover:bg-white/[0.02] transition-colors">
-                      <td className="px-8 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-cream-100 dark:bg-black/40 overflow-hidden border border-cream-300 dark:border-white/5">
-                            {getImageUrl(p.image) ? <img src={getImageUrl(p.image)!} className="w-full h-full object-cover" /> : <ImageIcon size={16} className="m-auto text-gray-300" />}
-                          </div>
-                          <p className="font-black text-gray-900 dark:text-white uppercase tracking-tight">{p.name}</p>
-                        </div>
-                      </td>
-                      <td className="px-8 py-4"><span className="text-[10px] font-black text-gray-500 uppercase">{p.category?.name || 'Uncategorized'}</span></td>
-                      <td className="px-8 py-4"><span className={`text-xs font-bold ${p.trackStock && (p.availableStock || 0) <= 5 ? 'text-paymint-red' : 'text-gray-700 dark:text-gray-300'}`}>{p.trackStock ? `${p.availableStock} Units` : '∞'}</span></td>
-                      <td className="px-8 py-4 font-black text-paymint-green">{formatCurrency(p.price)}</td>
-                      <td className="px-8 py-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <button onClick={() => openEditModal(p)} className="p-2 text-gray-400 hover:text-paymint-green transition-colors"><Edit2 size={16} /></button>
-                          <button onClick={() => handleDelete(p.id)} className="p-2 text-gray-400 hover:text-accent transition-colors"><Trash2 size={16} /></button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-
-        {/* Pagination - Fixed */}
-        {totalPages > 1 && (
-          <div className="shrink-0 px-8 py-4 border-t border-cream-200 dark:border-white/5 bg-cream-100/50 dark:bg-[#0A0A0A] flex items-center justify-center gap-2">
-            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2.5 rounded-xl bg-cream-50 dark:bg-white/5 border border-cream-300 dark:border-white/10 text-gray-500 disabled:opacity-30"><ChevronLeft size={18} /></button>
-            {[...Array(totalPages)].map((_, i) => (
-              <button key={i} onClick={() => setPage(i + 1)} className={`w-9 h-9 rounded-xl text-xs font-black transition-all ${page === i + 1 ? 'bg-paymint-green text-black shadow-lg' : 'text-gray-400 hover:text-gray-900'}`}>{i + 1}</button>
-            ))}
-            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2.5 rounded-xl bg-cream-50 dark:bg-white/5 border border-cream-300 dark:border-white/10 text-gray-500 disabled:opacity-30"><ChevronRight size={18} /></button>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center">
+          <div className="flex items-center gap-2 p-1 rounded-xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm">
+            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500 disabled:opacity-30"><ChevronLeft size={18} /></button>
+            {[...Array(totalPages)].map((_, i) => (
+              <button key={i} onClick={() => setPage(i + 1)} className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${page === i + 1 ? 'bg-paymint-green text-black' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{i + 1}</button>
+            ))}
+            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500 disabled:opacity-30"><ChevronRight size={18} /></button>
+          </div>
+        </div>
+      )}
 
       <ProductFormModal isOpen={showModal} onClose={() => setShowModal(false)} onSubmit={onSubmit} onDelete={editingProduct ? () => handleDelete(editingProduct.id) : undefined} initialData={editingProduct} categories={categories} isSubmitting={isSubmitting} />
       <ConfirmModal isOpen={confirmConfig.isOpen} onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })} onConfirm={confirmConfig.onConfirm} title={confirmConfig.title} message={confirmConfig.message} type={confirmConfig.type} />

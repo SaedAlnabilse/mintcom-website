@@ -24,15 +24,19 @@ import {
   Hash,
   ShieldCheck,
   Plus,
-  ChevronDown
+  ChevronDown,
+  Copy,
+  Box,
+  Tags
 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import { QuickInfo } from '../components/QuickInfo';
 
 // Paymint Logo imports
-import PaymintLogoGreen from '../assets/Green Full Logo.png';
-import PaymintLogoWhite from '../assets/White Green Full Logo.png';
+import PaymintLogoGreen from '../assets/green-full-logo.png';
+import PaymintLogoWhite from '../assets/white-green-full-logo.png';
 
 // Step 1: Establishment Details
 const step1Schema = z.object({
@@ -53,10 +57,10 @@ const step2Schema = z.object({
 
 // Step 3: Establishment Access Credentials
 const step3Schema = z.object({
-  ownerPosId: z.string()
-    .min(4, 'POS ID must be at least 4 characters')
-    .regex(/^[a-zA-Z0-9_-]+$/, 'POS ID can only contain letters, numbers, underscores, and hyphens'),
-  ownerPosPassword: z.string().min(6, 'POS Password must be at least 6 characters'),
+  establishmentLoginId: z.string()
+    .min(4, 'Establishment ID must be at least 4 characters')
+    .regex(/^[a-zA-Z0-9_-]+$/, 'Establishment ID can only contain letters, numbers, underscores, and hyphens'),
+  establishmentPassword: z.string().min(6, 'Establishment Password must be at least 6 characters'),
 });
 
 // Step 4: Admin Access
@@ -79,6 +83,12 @@ export function OnboardingPage() {
   const [selectedCountry, setSelectedCountry] = useState({ code: 'JO', name: 'Jordan', dialCode: '+962', flag: '🇯🇴' });
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [countrySearch, setCountrySearch] = useState('');
+
+  // Duplication State
+  const [duplicateFromId, setDuplicateFromId] = useState<string>('');
+  const [duplicateInventory, setDuplicateInventory] = useState(true);
+  const [duplicateDiscounts, setDuplicateDiscounts] = useState(true);
+  const [duplicatePaymentMethods, setDuplicatePaymentMethods] = useState(true);
 
   // Country codes list
   const countries = [
@@ -158,7 +168,18 @@ export function OnboardingPage() {
   const onStep1Submit = (data: any) => {
     // Combine country dial code with phone number
     const fullPhone = `${selectedCountry.dialCode} ${data.phone}`;
-    setFormData((prev: any) => ({ ...prev, ...data, phone: fullPhone }));
+
+    // Save duplication preferences
+    setFormData((prev: any) => ({
+      ...prev,
+      ...data,
+      phone: fullPhone,
+      duplicateFromId,
+      duplicateInventory: duplicateFromId ? duplicateInventory : false,
+      duplicateDiscounts: duplicateFromId ? duplicateDiscounts : false,
+      duplicatePaymentMethods: duplicateFromId ? duplicatePaymentMethods : false,
+    }));
+
     setStep(2);
   };
 
@@ -206,16 +227,21 @@ export function OnboardingPage() {
   const onStep4Submit = async (data: any) => {
     setIsLoading(true);
     try {
-      // 1. Create Establishment with user-provided Owner POS ID
+      // 1. Create Establishment with user-provided Establishment Login ID
       const establishmentPayload = {
         name: formData.name,
         type: formData.type,
         address: formData.address,
         phone: formData.phone,
         currency: formData.currency,
-        ownerPosId: formData.ownerPosId, // User-provided unique ID for this establishment
-        ownerPosPassword: formData.ownerPosPassword, // User-provided password
-        paymentMethodToken: formData.paymentMethodToken
+        establishmentLoginId: formData.establishmentLoginId, // User-provided unique ID for this establishment
+        establishmentPassword: formData.establishmentPassword, // User-provided password
+        paymentMethodToken: formData.paymentMethodToken,
+        // Duplication params
+        duplicateFromId: formData.duplicateFromId,
+        duplicateInventory: formData.duplicateInventory,
+        duplicateDiscounts: formData.duplicateDiscounts,
+        duplicatePaymentMethods: formData.duplicatePaymentMethods,
       };
 
       const estRes = await api.post('/api/establishments', establishmentPayload);
@@ -315,23 +341,27 @@ export function OnboardingPage() {
                 <form onSubmit={form1.handleSubmit(onStep1Submit)} className="space-y-8">
                   <div className="space-y-6">
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
-                        Establishment Name <span className="text-red-500">*</span>
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1 flex items-center">
+                        Establishment Name <span className="text-paymint-red mx-1">*</span>
+                        <QuickInfo text="The legal or trade name of your business as shown on receipts." />
                       </label>
                       <div className="relative group">
                         <Store className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                         <input
                           type="text"
                           {...form1.register('name')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.name ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                           placeholder="e.g. The Coffee House"
                         />
                       </div>
-                      {form1.formState.errors.name && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form1.formState.errors.name.message as string}</p>}
+                      {form1.formState.errors.name && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form1.formState.errors.name.message as string}</p>}
                     </div>
 
                     <div className="space-y-3">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">Business Category</label>
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1 flex items-center">
+                        Business Category
+                        <QuickInfo text="Select the category that best describes your business to help us tailor your experience." />
+                      </label>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         {businessTypes.map((type) => (
                           <button
@@ -350,8 +380,9 @@ export function OnboardingPage() {
 
                     {/* Phone Number Row */}
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
-                        Phone Number <span className="text-red-500">*</span>
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1 flex items-center">
+                        Phone Number <span className="text-paymint-red mx-1">*</span>
+                        <QuickInfo text="Used for account verification and emergency support." />
                       </label>
                       <div className="flex gap-2">
                         {/* Country Code Selector */}
@@ -362,7 +393,7 @@ export function OnboardingPage() {
                               setShowCountryDropdown(!showCountryDropdown);
                               if (showCountryDropdown) setCountrySearch('');
                             }}
-                            className={`flex items-center gap-2 bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 px-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all min-w-[130px]`}
+                            className={`flex items-center gap-2 bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 px-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all min-w-[130px]`}
                           >
                             <span className="text-xl">{selectedCountry.flag}</span>
                             <span className="text-sm">{selectedCountry.dialCode}</span>
@@ -374,7 +405,7 @@ export function OnboardingPage() {
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
-                                className="absolute top-full left-0 mt-2 w-72 bg-white dark:bg-[#111] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden"
+                                className="absolute top-full left-0 mt-2 w-72 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden"
                               >
                                 {/* Search Input */}
                                 <div className="p-3 border-b border-gray-100 dark:border-white/5">
@@ -433,48 +464,157 @@ export function OnboardingPage() {
                               const value = e.target.value.replace(/[^0-9]/g, '');
                               form1.setValue('phone', value);
                             }}
-                            className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 px-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                            className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 px-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                             placeholder="Enter phone number"
                           />
                         </div>
                       </div>
-                      {form1.formState.errors.phone && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form1.formState.errors.phone.message as string}</p>}
+                      {form1.formState.errors.phone && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form1.formState.errors.phone.message as string}</p>}
                     </div>
 
                     {/* Base Currency Row */}
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
-                        Base Currency <span className="text-red-500">*</span>
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1 flex items-center">
+                        Base Currency <span className="text-paymint-red mx-1">*</span>
+                        <QuickInfo text="The primary currency for your sales and inventory reports." />
                       </label>
                       <div className="relative">
                         <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                         <select
                           {...form1.register('currency')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.currency ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all appearance-none`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.currency ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all appearance-none`}
                         >
                           <option value="JOD">JOD - Jordanian Dinar</option>
                           <option value="USD">USD - US Dollar</option>
                           <option value="AED">AED - UAE Dirham</option>
                         </select>
                       </div>
-                      {form1.formState.errors.currency && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form1.formState.errors.currency.message as string}</p>}
+                      {form1.formState.errors.currency && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form1.formState.errors.currency.message as string}</p>}
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
-                        Location Address <span className="text-red-500">*</span>
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1 flex items-center">
+                        Location Address <span className="text-paymint-red mx-1">*</span>
+                        <QuickInfo text="Physical location of your establishment." />
                       </label>
                       <div className="relative">
                         <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                         <input
                           type="text"
                           {...form1.register('address')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.address ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.address ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                           placeholder="City, Area, Building"
                         />
                       </div>
-                      {form1.formState.errors.address && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form1.formState.errors.address.message as string}</p>}
+                      {form1.formState.errors.address && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form1.formState.errors.address.message as string}</p>}
                     </div>
+
+                    {/* Import Settings Section - Only show if user has existing establishments */}
+                    {establishments.length > 0 && (
+                      <div className="pt-4 border-t border-gray-100 dark:border-white/5">
+                        <div className="flex items-center gap-2 mb-4">
+                          <Copy className="text-paymint-green" size={20} />
+                          <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">Quick Setup</h3>
+                        </div>
+
+                        <div className="bg-gray-50 dark:bg-black/20 rounded-2xl p-5 border border-gray-100 dark:border-white/5">
+                          <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] mb-2 flex items-center">
+                            Import Settings From
+                            <QuickInfo text="Accelerate setup by copying your menu and settings from another location." />
+                          </label>
+                          <div className="relative mb-4">
+                            <select
+                              value={duplicateFromId}
+                              onChange={(e) => setDuplicateFromId(e.target.value)}
+                              className="w-full bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 appearance-none"
+                            >
+                              <option value="">Do not import (Start fresh)</option>
+                              {establishments.map((est) => (
+                                <option key={est.id} value={est.id}>
+                                  {est.name} ({est.type})
+                                </option>
+                              ))}
+                            </select>
+                            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
+                          </div>
+
+                          {/* Checkboxes - Only show if an establishment is selected */}
+                          <AnimatePresence>
+                            {duplicateFromId && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="space-y-3 overflow-hidden"
+                              >
+                                <p className="text-xs font-bold text-gray-400 mb-2">SELECT DATA TO DUPLICATE:</p>
+
+                                {/* Inventory Checkbox */}
+                                <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicateInventory ? 'border-paymint-green bg-paymint-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
+                                  <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicateInventory ? 'bg-paymint-green text-black' : 'bg-gray-200 dark:bg-white/10'}`}>
+                                    {duplicateInventory && <Check size={14} strokeWidth={4} />}
+                                  </div>
+                                  <input
+                                    type="checkbox"
+                                    className="hidden"
+                                    checked={duplicateInventory}
+                                    onChange={(e) => setDuplicateInventory(e.target.checked)}
+                                  />
+                                  <div className="flex-1 flex items-center gap-2">
+                                    <Box size={16} className={duplicateInventory ? 'text-paymint-green' : 'text-gray-400'} />
+                                    <div>
+                                      <p className="text-sm font-bold text-gray-900 dark:text-white">Inventory & Menu</p>
+                                      <p className="text-[10px] text-gray-500 font-medium">Categories, products, add-ons, recipes</p>
+                                    </div>
+                                  </div>
+                                </label>
+
+                                {/* Discounts Checkbox */}
+                                <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicateDiscounts ? 'border-paymint-green bg-paymint-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
+                                  <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicateDiscounts ? 'bg-paymint-green text-black' : 'bg-gray-200 dark:bg-white/10'}`}>
+                                    {duplicateDiscounts && <Check size={14} strokeWidth={4} />}
+                                  </div>
+                                  <input
+                                    type="checkbox"
+                                    className="hidden"
+                                    checked={duplicateDiscounts}
+                                    onChange={(e) => setDuplicateDiscounts(e.target.checked)}
+                                  />
+                                  <div className="flex-1 flex items-center gap-2">
+                                    <Tags size={16} className={duplicateDiscounts ? 'text-paymint-green' : 'text-gray-400'} />
+                                    <div>
+                                      <p className="text-sm font-bold text-gray-900 dark:text-white">Discounts</p>
+                                      <p className="text-[10px] text-gray-500 font-medium">Promo codes and discount rules</p>
+                                    </div>
+                                  </div>
+                                </label>
+
+                                {/* Payment Methods Checkbox */}
+                                <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicatePaymentMethods ? 'border-paymint-green bg-paymint-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
+                                  <div className={`w-5 h-5 rounded flex items-center justify-center mr-3 transition-colors ${duplicatePaymentMethods ? 'bg-paymint-green text-black' : 'bg-gray-200 dark:bg-white/10'}`}>
+                                    {duplicatePaymentMethods && <Check size={14} strokeWidth={4} />}
+                                  </div>
+                                  <input
+                                    type="checkbox"
+                                    className="hidden"
+                                    checked={duplicatePaymentMethods}
+                                    onChange={(e) => setDuplicatePaymentMethods(e.target.checked)}
+                                  />
+                                  <div className="flex-1 flex items-center gap-2">
+                                    <CreditCard size={16} className={duplicatePaymentMethods ? 'text-paymint-green' : 'text-gray-400'} />
+                                    <div>
+                                      <p className="text-sm font-bold text-gray-900 dark:text-white">Payment Methods</p>
+                                      <p className="text-[10px] text-gray-500 font-medium">Card types and custom payment options</p>
+                                    </div>
+                                  </div>
+                                </label>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      </div>
+                    )}
+
                   </div>
 
                   <div className="pt-4">
@@ -605,10 +745,10 @@ export function OnboardingPage() {
                             }}
                             maxLength={19}
                             placeholder="0000 0000 0000 0000"
-                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cardNumber ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 pl-12 pr-4 text-gray-700 dark:text-white placeholder-gray-400 tracking-widest focus:outline-none focus:ring-2 focus:ring-paymint-green/50`}
+                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cardNumber ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 pl-12 pr-4 text-gray-700 dark:text-white placeholder-gray-400 tracking-widest focus:outline-none focus:ring-2 focus:ring-paymint-green/50`}
                           />
                         </div>
-                        {form2.formState.errors.cardNumber && <p className="text-red-500 text-xs mt-1 ml-1">{form2.formState.errors.cardNumber.message as string}</p>}
+                        {form2.formState.errors.cardNumber && <p className="text-paymint-red text-xs mt-1 ml-1">{form2.formState.errors.cardNumber.message as string}</p>}
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
@@ -623,7 +763,7 @@ export function OnboardingPage() {
                             }}
                             maxLength={5}
                             placeholder="MM/YY"
-                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.expiryDate ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-gray-700 dark:text-white placeholder-gray-400 tracking-wider focus:outline-none focus:ring-2 focus:ring-paymint-green/50 text-center`}
+                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.expiryDate ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-gray-700 dark:text-white placeholder-gray-400 tracking-wider focus:outline-none focus:ring-2 focus:ring-paymint-green/50 text-center`}
                           />
                         </div>
                         <div className="space-y-2">
@@ -637,7 +777,7 @@ export function OnboardingPage() {
                             }}
                             maxLength={4}
                             placeholder="123"
-                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cvc ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-gray-700 dark:text-white placeholder-gray-400 tracking-wider focus:outline-none focus:ring-2 focus:ring-paymint-green/50 text-center`}
+                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cvc ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-gray-700 dark:text-white placeholder-gray-400 tracking-wider focus:outline-none focus:ring-2 focus:ring-paymint-green/50 text-center`}
                           />
                         </div>
                       </div>
@@ -648,7 +788,7 @@ export function OnboardingPage() {
                           type="text"
                           {...form2.register('cardName')}
                           placeholder="John Doe"
-                          className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cardName ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50`}
+                          className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cardName ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50`}
                         />
                       </div>
                     </div>
@@ -669,7 +809,7 @@ export function OnboardingPage() {
             </motion.div>
           )}
 
-          {/* STEP 3: Account Owner POS Credentials */}
+          {/* STEP 3: Establishment Access Credentials */}
           {step === 3 && (
             <motion.div
               key="step3"
@@ -683,44 +823,46 @@ export function OnboardingPage() {
                   <button onClick={() => setStep(2)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 font-bold text-xs uppercase tracking-widest">
                     <ArrowLeft size={14} /> Back
                   </button>
-                  <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Create Your Owner ID</h2>
+                  <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Create Establishment Login</h2>
                   <p className="text-gray-600 dark:text-gray-400 font-medium">This ID will be used to log into the POS app for this establishment.</p>
                   <div className="mt-4 p-3 bg-paymint-green/10 text-paymint-green text-xs rounded-xl font-medium border border-paymint-green/20">
-                    <p>✨ <strong>Unique access:</strong> Each establishment has its own Owner ID and password for secure POS login.</p>
+                    <p>✨ <strong>Unique access:</strong> Each establishment has its own ID and password for secure POS login.</p>
                   </div>
                 </div>
 
                 <form onSubmit={form3.handleSubmit(onStep3Submit)} className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
-                      Owner POS ID <span className="text-red-500">*</span>
+                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1 flex items-center">
+                      Establishment ID <span className="text-paymint-red mx-1">*</span>
+                      <QuickInfo text="A unique ID for this specific location. Used during the first step of POS login." />
                     </label>
                     <div className="relative group">
                       <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                       <input
                         type="text"
-                        {...form3.register('ownerPosId')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.ownerPosId ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                        placeholder="e.g. mycompany"
+                        {...form3.register('establishmentLoginId')}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.establishmentLoginId ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        placeholder="e.g. mycompany-downtown"
                       />
                     </div>
-                    {form3.formState.errors.ownerPosId && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form3.formState.errors.ownerPosId.message as string}</p>}
-                    <p className="text-[10px] text-gray-400 ml-1">Your unique Owner ID for POS login (Step 1 of 2-step login).</p>
+                    {form3.formState.errors.establishmentLoginId && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form3.formState.errors.establishmentLoginId.message as string}</p>}
+                    <p className="text-[10px] text-gray-400 ml-1">Unique ID for this location's POS login (Step 1 of 2-step login).</p>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
-                      POS Password <span className="text-red-500">*</span>
+                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1 flex items-center">
+                      Establishment Password <span className="text-paymint-red mx-1">*</span>
+                      <QuickInfo text="The password for the Establishment ID. Shared by all staff at this location." />
                     </label>
                     <div className="relative group">
                       <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                       <input
                         type="password"
-                        {...form3.register('ownerPosPassword')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.ownerPosPassword ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        {...form3.register('establishmentPassword')}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.establishmentPassword ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                         placeholder="••••••••"
                       />
                     </div>
-                    {form3.formState.errors.ownerPosPassword && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form3.formState.errors.ownerPosPassword.message as string}</p>}
+                    {form3.formState.errors.establishmentPassword && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form3.formState.errors.establishmentPassword.message as string}</p>}
                   </div>
 
                   <div className="pt-4">
@@ -762,66 +904,68 @@ export function OnboardingPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
-                        First Name <span className="text-red-500">*</span>
+                        First Name <span className="text-paymint-red">*</span>
                       </label>
                       <div className="relative group">
                         <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                         <input
                           type="text"
                           {...form4.register('firstName')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.firstName ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.firstName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                           placeholder="John"
                         />
                       </div>
-                      {form4.formState.errors.firstName && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form4.formState.errors.firstName.message as string}</p>}
+                      {form4.formState.errors.firstName && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form4.formState.errors.firstName.message as string}</p>}
                     </div>
                     <div className="space-y-2">
                       <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
-                        Last Name <span className="text-red-500">*</span>
+                        Last Name <span className="text-paymint-red">*</span>
                       </label>
                       <div className="relative group">
                         <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                         <input
                           type="text"
                           {...form4.register('lastName')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.lastName ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.lastName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                           placeholder="Doe"
                         />
                       </div>
-                      {form4.formState.errors.lastName && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form4.formState.errors.lastName.message as string}</p>}
+                      {form4.formState.errors.lastName && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form4.formState.errors.lastName.message as string}</p>}
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
-                      Admin Username <span className="text-red-500">*</span>
+                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1 flex items-center">
+                      Admin Username <span className="text-paymint-red mx-1">*</span>
+                      <QuickInfo text="Your personal identifier for the second step of POS login." />
                     </label>
                     <div className="relative group">
                       <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                       <input
                         type="text"
                         {...form4.register('username')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.username ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.username ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                         placeholder="admin"
                       />
                     </div>
-                    {form4.formState.errors.username && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form4.formState.errors.username.message as string}</p>}
+                    {form4.formState.errors.username && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form4.formState.errors.username.message as string}</p>}
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
-                      Personal Password <span className="text-red-500">*</span>
+                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1 flex items-center">
+                      Personal Password <span className="text-paymint-red mx-1">*</span>
+                      <QuickInfo text="Your unique password to log into the system as an operator." />
                     </label>
                     <div className="relative group">
                       <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                       <input
                         type="password"
                         {...form4.register('password')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.password ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.password ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                         placeholder="••••••••"
                       />
                     </div>
-                    {form4.formState.errors.password && <p className="text-red-500 text-xs font-bold mt-1 ml-1">{form4.formState.errors.password.message as string}</p>}
+                    {form4.formState.errors.password && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form4.formState.errors.password.message as string}</p>}
                   </div>
 
                   <div className="pt-4">

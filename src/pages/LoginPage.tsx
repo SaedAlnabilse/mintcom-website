@@ -7,10 +7,11 @@ import { motion } from 'framer-motion';
 import { Eye, EyeOff, ArrowLeft, Mail, Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import { ConfirmModal } from '../components/ConfirmModal';
 
 // Paymint Logo imports
-import PaymintLogoGreen from '../assets/Green Full Logo.png';
-import PaymintLogoWhite from '../assets/White Green Full Logo.png';
+import PaymintLogoGreen from '../assets/green-full-logo.png';
+import PaymintLogoWhite from '../assets/white-green-full-logo.png';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email'),

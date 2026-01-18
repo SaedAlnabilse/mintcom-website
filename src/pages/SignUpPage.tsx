@@ -7,16 +7,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Phone, Check, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import { ConfirmModal } from '../components/ConfirmModal';
 
 // Paymint Logo imports
-import PaymintLogoGreen from '../assets/Green Full Logo.png';
-import PaymintLogoWhite from '../assets/White Green Full Logo.png';
+import PaymintLogoGreen from '../assets/green-full-logo.png';
+import PaymintLogoWhite from '../assets/white-green-full-logo.png';
 
 const signUpSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
   lastName: z.string().min(2, 'Last name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email'),
-  phone: z.string().optional(),
+  phone: z.string().min(5, 'Please enter a valid phone number'),
   password: z
     .string()
     .min(8, 'Password must be at least 8 characters')
@@ -159,14 +160,14 @@ export function SignUpPage() {
               />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Create your account</h2>
-            <p className="text-gray-600 dark:text-gray-400">Start your 7-day free trial. No credit card required.</p>
+            <p className="text-gray-600 dark:text-gray-400">Start your 7-day free trial.</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  First Name
+                  First Name<span className="text-accent ml-1">*</span>
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -184,7 +185,7 @@ export function SignUpPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Last Name
+                  Last Name<span className="text-accent ml-1">*</span>
                 </label>
                 <input
                   {...register('lastName')}
@@ -201,7 +202,7 @@ export function SignUpPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Email Address
+                Email Address<span className="text-accent ml-1">*</span>
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -220,22 +221,26 @@ export function SignUpPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Phone Number (Optional)
+                Phone Number<span className="text-accent ml-1">*</span>
               </label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   {...register('phone')}
                   type="tel"
-                  className="w-full bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg py-3 pl-10 pr-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors"
+                  className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.phone ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
+                    } rounded-lg py-3 pl-10 pr-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                   placeholder="+1 (555) 000-0000"
                 />
               </div>
+              {errors.phone?.message && (
+                <p className="text-accent dark:text-accent text-sm mt-1">{errors.phone.message}</p>
+              )}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Password
+                Password<span className="text-accent ml-1">*</span>
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -261,7 +266,7 @@ export function SignUpPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Confirm Password
+                Confirm Password<span className="text-accent ml-1">*</span>
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -301,6 +306,16 @@ export function SignUpPage() {
             </Link>
           </p>
         </motion.div>
+        <ConfirmModal
+          isOpen={confirmConfig.isOpen}
+          onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
+          onConfirm={confirmConfig.onConfirm}
+          title={confirmConfig.title}
+          message={confirmConfig.message}
+          type={confirmConfig.type}
+          confirmText={confirmConfig.confirmText}
+          showCancel={confirmConfig.showCancel}
+        />
       </div>
 
       {/* Right Side - Benefits */}

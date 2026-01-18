@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2 } from 'lucide-react';
+import { QuickInfo } from '../QuickInfo';
 
 interface Discount {
   id: string;
@@ -36,7 +37,7 @@ export function DiscountFormModal({
       setErrors({});
       if (initialData) {
         setName(initialData.name);
-        setPercentage(String(initialData.percentage * 100)); // Display as 0-100
+        setPercentage(String(initialData.percentage * 100));
         setAdminOnly(initialData.adminOnly);
       } else {
         setName('');
@@ -51,15 +52,22 @@ export function DiscountFormModal({
 
     const newErrors: Record<string, string> = {};
     if (!name.trim()) newErrors.name = 'Required';
-    if (!percentage) newErrors.percentage = 'Required';
+
+    const numVal = parseFloat(percentage);
+    if (!percentage || isNaN(numVal)) {
+      newErrors.percentage = 'Required';
+    } else if (numVal > 100) {
+      newErrors.percentage = 'Cannot exceed 100%';
+    } else if (numVal < 0) {
+      newErrors.percentage = 'Cannot be negative';
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    // Pass as decimal (0.10 for 10%)
-    await onSubmit(name, parseFloat(percentage) / 100, adminOnly);
+    await onSubmit(name, numVal / 100, adminOnly);
   };
 
   if (!isOpen) return null;
@@ -71,7 +79,7 @@ export function DiscountFormModal({
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-white dark:bg-[#1e1e1e] w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col transition-colors duration-300"
+          className="bg-white dark:bg-[#1e1e1e] w-full max-w-md rounded-3xl overflow-hidden flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/10"
         >
           {/* Header */}
           <div className="flex items-center justify-between p-6 pb-2">
@@ -91,43 +99,53 @@ export function DiscountFormModal({
 
               {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
-                  Discount Name <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2 flex items-center">
+                  Discount Name <span className="text-paymint-red mx-1">*</span>
+                  <QuickInfo text="The name that appears on the receipt (e.g. 'Staff Meal')." />
                 </label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
                   placeholder="e.g. Employee Discount"
-                  className={`w-full bg-gray-50 dark:bg-[#2a2a2a] border ${errors.name ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-gray-700'} rounded-xl px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-paymint-green transition-colors`}
+                  className={`w-full bg-gray-50 dark:bg-[#2a2a2a] border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-gray-700'} rounded-xl px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-paymint-green transition-colors`}
                 />
-                {errors.name && <p className="mt-1 text-xs font-bold text-red-500">{errors.name}</p>}
+                {errors.name && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
               </div>
 
               {/* Percentage */}
               <div>
-                <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
-                  Percentage (%) <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2 flex items-center">
+                  Percentage (%) <span className="text-paymint-red mx-1">*</span>
+                  <QuickInfo text="The percentage value to deduct from the item or order total." />
                 </label>
                 <div className="relative">
                   <input
                     type="number"
                     value={percentage}
-                    onChange={(e) => { setPercentage(e.target.value); if (errors.percentage) setErrors({ ...errors, percentage: '' }); }}
-                    placeholder="10"
-                    step="0.1"
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (parseFloat(val) > 100) return; // Prevent typing more than 100
+                      setPercentage(val);
+                      if (errors.percentage) setErrors({ ...errors, percentage: '' });
+                    }}
+                    placeholder="0"
+                    step="0.01"
                     min="0"
                     max="100"
-                    className={`w-full bg-gray-50 dark:bg-[#2a2a2a] border ${errors.percentage ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-gray-700'} rounded-xl px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-paymint-green transition-colors font-bold`}
+                    className={`w-full bg-gray-50 dark:bg-[#2a2a2a] border ${errors.percentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-gray-700'} rounded-xl px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-paymint-green transition-colors font-bold`}
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">%</span>
                 </div>
-                {errors.percentage && <p className="mt-1 text-xs font-bold text-red-500">{errors.percentage}</p>}
+                {errors.percentage && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.percentage}</p>}
               </div>
 
               {/* Manager Only Toggle */}
               <div className="bg-gray-50 dark:bg-[#2a2a2a] p-4 rounded-xl flex items-center justify-between border border-gray-200 dark:border-transparent transition-colors">
-                <span className="text-gray-900 dark:text-white font-medium">Manager Only</span>
+                <div className="flex items-center">
+                  <span className="text-gray-900 dark:text-white font-medium">Manager Only</span>
+                  <QuickInfo text="If enabled, a manager PIN is required to apply this discount." />
+                </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
@@ -164,7 +182,7 @@ export function DiscountFormModal({
               type="submit"
               form="discount-form"
               disabled={isSubmitting}
-              className="flex-1 h-12 rounded-xl bg-paymint-green text-black font-bold hover:bg-paymint-green/90 transition-colors disabled:opacity-50 flex items-center justify-center shadow-lg shadow-paymint-green/20"
+              className="flex-1 h-12 rounded-xl bg-paymint-green text-black font-bold hover:bg-paymint-green/90 transition-colors disabled:opacity-50 flex items-center justify-center"
             >
               {isSubmitting ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

@@ -8,21 +8,19 @@ import {
   Edit2,
   Trash2,
   X,
-  CheckCircle2,
-  XCircle,
   Upload,
   Smartphone,
   Globe,
   DollarSign,
   Wallet,
   Star,
-  RefreshCw,
-  Wand2 // Imported Wand2
+  RefreshCw
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import api from '../../config/api';
+import api, { API_BASE_URL } from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
+import { QuickInfo } from '../../components/QuickInfo';
 
 const paymentMethodSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -43,6 +41,7 @@ interface CardType {
   id: string;
   name: string;
   imageUrl?: string;
+  imageKey?: string;
 }
 
 export function PaymentMethodsPage() {
@@ -58,7 +57,7 @@ export function PaymentMethodsPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [selectedCardImage, setSelectedCardImage] = useState<File | null>(null);
   const [cardImagePreview, setCardImagePreview] = useState<string | null>(null);
-  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [editingCard, setEditingCard] = useState<CardType | null>(null);
   const [cardErrors, setCardErrors] = useState<Record<string, string>>({}); // For manual forms
   const [confirmConfig, setConfirmConfig] = useState<{
     isOpen: boolean;
@@ -66,6 +65,8 @@ export function PaymentMethodsPage() {
     message: string;
     onConfirm: () => void;
     type?: 'danger' | 'success' | 'warning';
+    confirmText?: string;
+    showCancel?: boolean;
   }>({
     isOpen: false,
     title: '',
@@ -73,12 +74,16 @@ export function PaymentMethodsPage() {
     onConfirm: () => { },
   });
 
-  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<PaymentMethodFormData>({ // added watch
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<PaymentMethodFormData>({ // added watch
     resolver: zodResolver(paymentMethodSchema),
     defaultValues: { isActive: true },
   });
 
-  const paymentMethodName = watch('name'); // watch the name field
+  const getImageUrl = (imagePath?: string) => {
+    if (!imagePath) return null;
+    if (imagePath.startsWith('http')) return imagePath;
+    return `${API_BASE_URL}${imagePath.startsWith('/') ? '' : '/'}${imagePath}`;
+  };
 
   useEffect(() => {
     fetchPaymentMethods();
@@ -135,41 +140,21 @@ export function PaymentMethodsPage() {
     }
   };
 
-  // New AI Image Generation Handler
-  const handleGenerateImage = async () => {
-    if (!paymentMethodName?.trim()) {
-      toast.error('Please enter a payment method name first');
-      return;
-    }
+  const handleRemoveImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+  };
 
-    setIsGeneratingImage(true);
-    try {
-      const promptText = `minimalist icon logo for payment method ${paymentMethodName}, vector style, flat design, white background, high quality, centered`;
-
-      const response = await api.post('/api/items/generate-image',
-        { prompt: promptText },
-        { responseType: 'blob' }
-      );
-
-      const blob = response.data;
-      const file = new File([blob], `${paymentMethodName.toLowerCase().replace(/\s+/g, '-')}-ai.jpg`, { type: 'image/jpeg' });
-
-      setSelectedImage(file);
-      setImagePreview(URL.createObjectURL(blob));
-      toast.success('AI Icon generated!');
-    } catch (error) {
-      console.error('Failed to generate image:', error);
-      toast.error('Failed to generate icon. Service may be unavailable.');
-    } finally {
-      setIsGeneratingImage(false);
-    }
+  const handleRemoveCardImage = () => {
+    setSelectedCardImage(null);
+    setCardImagePreview(null);
   };
 
   const onSubmit = async (data: PaymentMethodFormData) => {
     try {
       setIsSubmitting(true);
-      let imageUrl = editingMethod?.imageUrl;
-      let imageKey = (editingMethod as any)?.imageKey;
+      let imageUrl = imagePreview ? (editingMethod?.imageUrl || null) : null;
+      let imageKey = imagePreview ? ((editingMethod as any)?.imageKey || null) : null;
 
       if (selectedImage) {
         const uploadRes = await uploadImage(selectedImage, '/payment-methods/upload-image');
@@ -229,7 +214,9 @@ export function PaymentMethodsPage() {
     }
     try {
       setIsSubmitting(true);
-      let imageUrl, imageKey;
+      let imageUrl = cardImagePreview ? (editingCard?.imageUrl || null) : null;
+      let imageKey = cardImagePreview ? (editingCard?.imageKey || null) : null;
+
       if (selectedCardImage) {
         const uploadRes = await uploadImage(selectedCardImage, '/card-types/upload-image');
         if (uploadRes.success) {
@@ -237,12 +224,21 @@ export function PaymentMethodsPage() {
           imageKey = uploadRes.imageKey;
         }
       }
-      await api.post('/card-types', { name: newCardName, imageUrl, imageKey });
-      toast.success('Card type added');
+
+      const payload = { name: newCardName, imageUrl, imageKey };
+
+      if (editingCard) {
+        await api.patch(`/card-types/${editingCard.id}`, payload);
+        toast.success('Card network updated');
+      } else {
+        await api.post('/card-types', payload);
+        toast.success('Card network added');
+      }
+
       setShowCardModal(false);
       fetchCardTypes();
     } catch (err: any) {
-      toast.error('Failed to add card type');
+      toast.error('Failed to save card network');
     } finally {
       setIsSubmitting(false);
     }
@@ -276,47 +272,110 @@ export function PaymentMethodsPage() {
   };
 
   return (
-    <div className="space-y-10 pb-16">
+    <div className="max-w-7xl mx-auto space-y-10 pb-16">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-cream-50 via-cream-100 to-cream-50 dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-cream-300 dark:border-white/5 shadow-sm">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/30">
-              <CreditCard size={28} className="text-black" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Payment Engine</h1>
-              <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Configure settlement protocols and merchant infrastructure</p>
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+              Settlement
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
+              </span>
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Active</span>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => { setEditingMethod(null); reset({ name: '', isActive: true }); setImagePreview(null); setShowModal(true); setIsGeneratingImage(false); }}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 transition-all shadow-lg shadow-paymint-green/30"
-            >
-              <Plus size={18} />
-              <span>Initialize Protocol</span>
-            </button>
-          </div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Payment Methods</h1>
+          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Configure settlement protocols and merchant infrastructure</p>
         </div>
       </div>
+
+      {/* Card Types Section */}
+      <section className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
+        <div className="flex items-start gap-4 mb-10">
+          <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green flex-shrink-0">
+            <CreditCard size={24} />
+          </div>
+          <div className="flex flex-col gap-1">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight uppercase">Accepted Card Networks</h2>
+            <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Specify which card providers are visually supported at your terminals.</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {cardTypes.length === 0 ? (
+            <div className="col-span-full py-12 text-center">
+              <p className="text-gray-400 font-black uppercase tracking-widest text-[10px]">No card networks configured yet.</p>
+            </div>
+          ) : (
+            cardTypes.map((card) => (
+              <motion.div
+                layout
+                key={card.id}
+                className="group relative bg-gray-50 dark:bg-white/[0.02] p-6 rounded-2xl border border-gray-100 dark:border-white/5 transition-all duration-300 hover:border-paymint-green/30 hover:shadow-md"
+              >
+                <div className="flex justify-between items-start mb-6">
+                  <div className="w-16 h-16 rounded-xl bg-white dark:bg-black/40 flex items-center justify-center border border-gray-100 dark:border-white/5 transition-transform group-hover:scale-110 duration-500 overflow-hidden p-3">
+                    {getImageUrl(card.imageUrl) ? (
+                      <img src={getImageUrl(card.imageUrl)!} alt={card.name} className="w-full h-full object-contain" />
+                    ) : (
+                      <CreditCard size={24} className="text-gray-400" />
+                    )}
+                  </div>
+
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                    <button
+                      onClick={() => { setEditingCard(card); setNewCardName(card.name); setCardImagePreview(card.imageUrl || null); setSelectedCardImage(null); setShowCardModal(true); setCardErrors({}); }}
+                      className="p-2 rounded-lg bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-green shadow-sm border border-gray-100 dark:border-white/5"
+                    >
+                      <Edit2 size={16} />
+                    </button>
+                    <button onClick={() => handleDeleteCardType(card.id, card.name)} className="p-2 rounded-lg bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-red shadow-sm border border-gray-100 dark:border-white/5">
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate">{card.name}</h3>
+              </motion.div>
+            ))
+          )}
+
+          {/* Add New Network Card */}
+          <motion.div
+            layout
+            onClick={() => { setEditingCard(null); setNewCardName(''); setCardImagePreview(null); setSelectedCardImage(null); setShowCardModal(true); setCardErrors({}); }}
+            className="group relative bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-2xl p-6 cursor-pointer hover:border-paymint-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center min-h-[180px]"
+          >
+            <div className="w-12 h-12 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all shadow-sm">
+              <Plus size={20} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
+            </div>
+            <h3 className="text-base font-bold text-gray-900 dark:text-white">Add Network</h3>
+            <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mt-1">Expand Reach</p>
+          </motion.div>
+        </div>
+      </section>
 
       {/* Main Section */}
       <section className="space-y-6">
         <div className="flex items-center justify-between px-2">
-          <h2 className="text-xl font-black text-gray-900 dark:text-white flex items-center gap-2">
-            Accepted Methods
-            <span className="px-2 py-0.5 rounded-full bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest">Active</span>
-          </h2>
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+              <Wallet size={20} />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white uppercase tracking-tight">
+              Other Payments
+            </h2>
+          </div>
         </div>
 
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-48 rounded-[2rem] bg-gray-100 dark:bg-white/5 animate-pulse" />
+              <div key={i} className="h-48 rounded-2xl bg-gray-100 dark:bg-white/5 animate-pulse" />
             ))}
           </div>
         ) : (
@@ -325,16 +384,16 @@ export function PaymentMethodsPage() {
               <motion.div
                 layout
                 key={method.id}
-                className={`group relative bg-white dark:bg-[#0A0A0A] p-8 rounded-[2.5rem] border-2 transition-all duration-300 ${method.isActive
-                  ? 'border-paymint-green/20 hover:border-paymint-green/50 shadow-sm hover:shadow-xl'
+                className={`group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border transition-all duration-300 shadow-sm ${method.isActive
+                  ? 'border-paymint-green/20 hover:border-paymint-green/50'
                   : 'border-gray-100 dark:border-white/5 opacity-60'
                   }`}
               >
-                <div className="flex justify-between items-start mb-8">
-                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center border-2 border-gray-100 dark:border-white/5 shadow-inner transition-transform group-hover:scale-110 duration-500 overflow-hidden ${method.isActive ? 'bg-paymint-green/10 text-paymint-green' : 'bg-gray-50 dark:bg-white/5 text-gray-400'
+                <div className="flex justify-between items-start mb-6">
+                  <div className={`w-14 h-14 rounded-xl flex items-center justify-center border border-gray-100 dark:border-white/5 transition-transform group-hover:scale-110 duration-500 overflow-hidden ${method.isActive ? 'bg-paymint-green/10 text-paymint-green' : 'bg-gray-50 dark:bg-white/5 text-gray-400'
                     }`}>
-                    {method.imageUrl ? (
-                      <img src={method.imageUrl} alt={method.name} className="w-full h-full object-cover" />
+                    {getImageUrl(method.imageUrl) ? (
+                      <img src={getImageUrl(method.imageUrl)!} alt={method.name} className="w-full h-full object-cover" />
                     ) : (
                       getMethodIcon(method.name)
                     )}
@@ -342,153 +401,105 @@ export function PaymentMethodsPage() {
 
                   {!method.isDefault && (
                     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                      <button onClick={() => { setEditingMethod(method); reset({ name: method.name, isActive: method.isActive }); setImagePreview(method.imageUrl || null); setShowModal(true); setIsGeneratingImage(false); }} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green">
+                      <button onClick={() => { setEditingMethod(method); reset({ name: method.name, isActive: method.isActive }); setImagePreview(method.imageUrl || null); setShowModal(true); }} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green border border-gray-100 dark:border-white/5 shadow-sm">
                         <Edit2 size={16} />
                       </button>
-                      <button onClick={() => handleDelete(method.id, method.name)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red">
+                      <button onClick={() => handleDelete(method.id, method.name)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red border border-gray-100 dark:border-white/5 shadow-sm">
                         <Trash2 size={16} />
                       </button>
                     </div>
                   )}
                 </div>
 
-                <h3 className="text-xl font-black text-gray-900 dark:text-white truncate">{method.name}</h3>
-                <div className="mt-4 flex items-center justify-between">
-                  <div className={`flex items-center gap-1.5 font-black text-[10px] uppercase tracking-[0.15em] ${method.isActive ? 'text-paymint-green' : 'text-gray-400'}`}>
-                    {method.isActive ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
-                    {method.isActive ? 'Available' : 'Disabled'}
-                  </div>
-                  {method.isDefault && (
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate">{method.name}</h3>
+                {method.isDefault && (
+                  <div className="mt-4 flex items-center justify-between">
                     <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest flex items-center gap-1">
                       <Star size={10} fill="currentColor" /> System
                     </span>
-                  )}
-                </div>
+                  </div>
+                )}
               </motion.div>
             ))}
+
+            {/* Add New Method Card */}
+            <motion.div
+              layout
+              onClick={() => { setEditingMethod(null); reset({ name: '', isActive: true }); setImagePreview(null); setShowModal(true); }}
+              className="group relative bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-2xl p-6 cursor-pointer hover:border-paymint-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center min-h-[180px]"
+            >
+              <div className="w-12 h-12 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all shadow-sm">
+                <Plus size={20} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
+              </div>
+              <h3 className="text-base font-bold text-gray-900 dark:text-white">Add Method</h3>
+              <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mt-1">New Protocol</p>
+            </motion.div>
           </div>
         )}
-      </section>
-
-      {/* Card Types Section */}
-      <section className="bg-cream-50 dark:bg-[#0A0A0A] rounded-[3rem] border border-cream-200 dark:border-white/5 p-10 shadow-md relative overflow-hidden">
-        <div className="absolute -bottom-12 -right-12 opacity-[0.05] dark:opacity-[0.1] pointer-events-none -rotate-12">
-          <CreditCard size={270} />
-        </div>
-
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 relative z-10">
-          <div>
-            <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Accepted Card Networks</h2>
-            <p className="text-gray-500 dark:text-gray-400 font-medium mt-1">Specify which card providers are visually supported at your terminals.</p>
-          </div>
-          <button
-            onClick={() => { setNewCardName(''); setCardImagePreview(null); setShowCardModal(true); setCardErrors({}); }}
-            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 transition-all shadow-lg shadow-paymint-green/30"
-          >
-            <Plus size={18} />
-            <span>Add Network</span>
-          </button>
-        </div>
-
-        <div className="flex flex-wrap gap-4 relative z-10">
-          {cardTypes.length === 0 ? (
-            <p className="text-gray-400 font-black uppercase tracking-widest text-[10px] py-8">No card networks configured yet.</p>
-          ) : (
-            cardTypes.map((card) => (
-              <div key={card.id} className="group flex items-center gap-4 pl-4 pr-3 py-3 bg-white dark:bg-white/5 rounded-2xl border border-cream-200 dark:border-white/5 transition-all hover:border-paymint-green/30 shadow-sm hover:shadow-md">
-                <div className="w-10 h-10 bg-cream-50 dark:bg-black rounded-xl flex items-center justify-center border border-cream-100 dark:border-white/10 overflow-hidden p-1.5">
-                  {card.imageUrl ? (
-                    <img src={card.imageUrl} alt={card.name} className="w-full h-full object-contain" />
-                  ) : (
-                    <CreditCard size={18} className="text-gray-400" />
-                  )}
-                </div>
-                <span className="text-sm font-black text-gray-900 dark:text-white">{card.name}</span>
-                <button
-                  onClick={() => handleDeleteCardType(card.id, card.name)}
-                  className="p-2 text-gray-400 hover:text-paymint-red opacity-0 group-hover:opacity-100 transition-all ml-2"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
-            ))
-          )}
-        </div>
       </section>
 
       {/* Payment Method Modal */}
       <AnimatePresence>
         {showModal && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#0A0A0A] rounded-[2.5rem] border border-gray-100 dark:border-white/5 w-full max-w-md shadow-2xl overflow-hidden">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md overflow-hidden shadow-2xl">
               <div className="p-8 border-b border-gray-50 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                   {editingMethod ? 'Configure Method' : 'Add Settlement'}
                 </h2>
                 <button
-                  onClick={() => !isGeneratingImage && setShowModal(false)}
-                  disabled={isGeneratingImage}
-                  className="p-2 text-gray-400 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                  onClick={() => setShowModal(false)}
+                  className="p-2 text-gray-400 hover:text-white transition-colors"
                 >
                   <X size={24} />
                 </button>
               </div>
               <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-8">
                 <div className="flex flex-col items-center gap-4">
-                  <div className="w-24 h-24 bg-gray-50 dark:bg-white/5 rounded-[2rem] flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden relative group cursor-pointer">
+                  <div className="w-24 h-24 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden relative group">
                     {imagePreview ? (
-                      <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                      <>
+                        <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); handleRemoveImage(); }}
+                          className="absolute top-2 right-2 p-1.5 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors backdrop-blur-sm shadow-xl"
+                        >
+                          <X size={14} />
+                        </button>
+                      </>
                     ) : (
-                      <Upload size={32} className="text-gray-300" />
+                      <>
+                        <Upload size={32} className="text-gray-300" />
+                        <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onChange={handleImageChange} />
+                      </>
                     )}
-                    <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onChange={handleImageChange} />
                   </div>
 
-                  {/* AI Generation Button for Payment Methods */}
-                  <button
-                    type="button"
-                    onClick={handleGenerateImage}
-                    disabled={isGeneratingImage || !paymentMethodName?.trim()}
-                    className="flex items-center gap-2 text-xs font-bold text-paymint-green bg-paymint-green/10 px-4 py-2 rounded-xl hover:bg-paymint-green/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isGeneratingImage ? (
-                      <div className="w-4 h-4 border-2 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin" />
-                    ) : (
-                      <Wand2 size={14} />
-                    )}
-                    <span>Generate Icon</span>
-                  </button>
-
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Branded Icon (Optional)</p>
+                  <div className="flex items-center">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Branded Icon (Optional)</p>
+                    <QuickInfo text="Visual icon displayed for this payment method on the checkout screen." />
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 px-1">
-                    Legal Name <span className="text-red-500">*</span>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 px-1 flex items-center">
+                    Legal Name <span className="text-paymint-red mx-1">*</span>
+                    <QuickInfo text="The official name used for reporting and receipts." />
                   </label>
                   <input
                     type="text"
                     {...register('name')}
-                    className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-red-500 ring-2 ring-red-500/20' : 'border-none'} rounded-2xl text-gray-900 dark:text-white font-black focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
+                    className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-none'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
                     placeholder="e.g. DIGITAL WALLET"
                   />
-                  {errors.name && <p className="text-red-500 text-[10px] font-black uppercase mt-2 px-1">{errors.name.message}</p>}
+                  {errors.name && <p className="text-paymint-red text-[10px] font-black uppercase mt-2 px-1">{errors.name.message}</p>}
                 </div>
 
-                <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-[1.5rem] border border-gray-100 dark:border-white/5">
-                  <div>
-                    <p className="text-sm font-black text-gray-900 dark:text-white">Active Status</p>
-                    <p className="text-[10px] text-gray-500 font-bold uppercase mt-0.5">Enable during checkout</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" {...register('isActive')} className="sr-only peer" />
-                    <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-paymint-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
-                  </label>
-                </div>
 
-                <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] shadow-xl shadow-paymint-green/20 uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-2">
+                <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-2">
                   {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
-                  {editingMethod ? 'Update Protocol' : 'Initialize Method'}
+                  {editingMethod ? 'Update' : 'Add Method'}
                 </button>
               </form>
             </motion.div>
@@ -500,29 +511,47 @@ export function PaymentMethodsPage() {
       <AnimatePresence>
         {showCardModal && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#0A0A0A] rounded-[2.5rem] border border-gray-100 dark:border-white/5 w-full max-w-sm shadow-2xl overflow-hidden">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-100 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl">
               <div className="p-8 border-b border-gray-50 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Add Network</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                  {editingCard ? 'Configure Network' : 'Add Network'}
+                </h2>
                 <button onClick={() => setShowCardModal(false)} className="p-2 text-gray-400 hover:text-white transition-colors">
                   <X size={24} />
                 </button>
               </div>
               <div className="p-8 space-y-8">
                 <div className="flex flex-col items-center gap-4">
-                  <div className="w-24 h-24 bg-gray-50 dark:bg-white/5 rounded-[2rem] flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden relative cursor-pointer">
+                  <div className="w-24 h-24 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden relative group">
                     {cardImagePreview ? (
-                      <img src={cardImagePreview} alt="Preview" className="w-full h-full object-contain p-4" />
+                      <>
+                        <img src={cardImagePreview} alt="Preview" className="w-full h-full object-contain p-4" />
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); handleRemoveCardImage(); }}
+                          className="absolute top-2 right-2 p-1.5 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors backdrop-blur-sm shadow-xl"
+                        >
+                          <X size={14} />
+                        </button>
+                      </>
                     ) : (
-                      <Upload size={32} className="text-gray-300" />
+                      <>
+                        <Upload size={32} className="text-gray-300" />
+                        <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onChange={handleCardImageChange} />
+                      </>
                     )}
-                    <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onChange={handleCardImageChange} />
                   </div>
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Provider Logo</p>
+
+                  <div className="flex items-center">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Provider Logo</p>
+                    <QuickInfo text="Logo displayed to customers to indicate accepted card networks." />
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 px-1">
-                    Network Name <span className="text-red-500">*</span>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 px-1 flex items-center">
+                    Network Name <span className="text-paymint-red mx-1">*</span>
+                    <QuickInfo text="The name of the card network (e.g. Visa, MasterCard)." />
                   </label>
                   <input
                     type="text"
@@ -531,19 +560,19 @@ export function PaymentMethodsPage() {
                       setNewCardName(e.target.value);
                       if (cardErrors.cardName) setCardErrors({ ...cardErrors, cardName: '' });
                     }}
-                    className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${cardErrors.cardName ? 'border-red-500 ring-2 ring-red-500/20' : 'border-none'} rounded-2xl text-gray-900 dark:text-white font-black focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
+                    className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${cardErrors.cardName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-none'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
                     placeholder="e.g. MASTERCARD"
                   />
-                  {cardErrors.cardName && <p className="text-red-500 text-[10px] font-black uppercase mt-2 px-1">{cardErrors.cardName}</p>}
+                  {cardErrors.cardName && <p className="text-paymint-red text-[10px] font-black uppercase mt-2 px-1">{cardErrors.cardName}</p>}
                 </div>
 
                 <button
                   onClick={handleAddCardType}
                   disabled={isSubmitting || !newCardName.trim()}
-                  className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl hover:scale-[1.02] shadow-xl transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl hover:scale-[1.02] transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2"
                 >
                   {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
-                  Register Network
+                  {editingCard ? 'Update Network' : 'Register Network'}
                 </button>
               </div>
             </motion.div>
@@ -558,6 +587,8 @@ export function PaymentMethodsPage() {
         title={confirmConfig.title}
         message={confirmConfig.message}
         type={confirmConfig.type}
+        confirmText={confirmConfig.confirmText}
+        showCancel={confirmConfig.showCancel}
       />
     </div>
   );

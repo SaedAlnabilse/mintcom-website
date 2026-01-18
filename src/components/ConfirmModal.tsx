@@ -10,6 +10,7 @@ interface ConfirmModalProps {
   confirmText?: string;
   cancelText?: string;
   type?: 'danger' | 'success' | 'warning' | 'info';
+  showCancel?: boolean;
 }
 
 export function ConfirmModal({
@@ -20,7 +21,8 @@ export function ConfirmModal({
   message,
   confirmText = 'Confirm',
   cancelText = 'Cancel',
-  type = 'success'
+  type = 'success',
+  showCancel = true
 }: ConfirmModalProps) {
 
   const getTheme = () => {
@@ -31,8 +33,8 @@ export function ConfirmModal({
           color: 'text-accent',
           bgColor: 'bg-accent/10',
           borderColor: 'border-accent/30',
-          buttonBg: 'bg-accent text-white shadow-xl shadow-accent/20',
-          glow: 'shadow-[0_0_50px_-12px_rgba(213,82,99,0.3)]',
+          buttonBg: 'bg-accent text-white',
+          glow: '',
           iconRing: 'ring-accent/20'
         };
       case 'warning':
@@ -41,8 +43,8 @@ export function ConfirmModal({
           color: 'text-amber-500',
           bgColor: 'bg-amber-500/10',
           borderColor: 'border-amber-500/30',
-          buttonBg: 'bg-amber-500 text-white shadow-xl shadow-amber-500/20',
-          glow: 'shadow-[0_0_50px_-12px_rgba(245,158,11,0.3)]',
+          buttonBg: 'bg-amber-500 text-white',
+          glow: '',
           iconRing: 'ring-amber-500/20'
         };
       case 'info':
@@ -51,8 +53,8 @@ export function ConfirmModal({
           color: 'text-blue-500',
           bgColor: 'bg-blue-500/10',
           borderColor: 'border-blue-500/30',
-          buttonBg: 'bg-blue-500 text-white shadow-xl shadow-blue-500/20',
-          glow: 'shadow-[0_0_50px_-12px_rgba(59,130,246,0.3)]',
+          buttonBg: 'bg-blue-500 text-white',
+          glow: '',
           iconRing: 'ring-blue-500/20'
         };
       case 'success':
@@ -62,8 +64,8 @@ export function ConfirmModal({
           color: 'text-paymint-green',
           bgColor: 'bg-paymint-green/10',
           borderColor: 'border-paymint-green/30',
-          buttonBg: 'bg-paymint-green text-black shadow-xl shadow-paymint-green/20',
-          glow: 'shadow-[0_0_50px_-12px_rgba(124,195,159,0.3)]',
+          buttonBg: 'bg-paymint-green text-black',
+          glow: '',
           iconRing: 'ring-paymint-green/20'
         };
     }
@@ -91,7 +93,7 @@ export function ConfirmModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", duration: 0.4, bounce: 0.3 }}
-            className={`relative w-full max-w-md overflow-hidden rounded-[2.5rem] bg-cream-50 dark:bg-[#0A0A0A] border border-cream-300 dark:border-white/5 shadow-2xl ${theme.glow} transition-colors duration-300`}
+            className={`relative w-full max-w-md overflow-hidden rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 ${theme.glow} transition-colors duration-300`}
           >
 
             {/* Top Accent Bar */}
@@ -100,50 +102,52 @@ export function ConfirmModal({
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-6 right-6 p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-xl hover:bg-cream-200 dark:hover:bg-white/5 transition-all z-10 active:scale-90"
+              className="absolute top-6 right-6 p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all z-10 active:scale-90"
             >
               <X size={20} />
             </button>
 
-            <div className="relative p-8 sm:p-10">
+            <div className="relative p-6 sm:p-8">
               <div className="flex flex-col items-center text-center">
                 {/* Icon Container */}
                 <motion.div
                   initial={{ scale: 0.5, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.1, type: "spring" }}
-                  className={`mb-6 p-5 rounded-[2rem] ${theme.bgColor} ${theme.color} ring-1 ring-inset ${theme.iconRing} flex items-center justify-center shadow-inner`}
+                  className={`mb-6 p-5 rounded-2xl ${theme.bgColor} ${theme.color} ring-1 ring-inset ${theme.iconRing} flex items-center justify-center`}
                 >
                   <Icon size={40} strokeWidth={2.5} />
                 </motion.div>
 
                 {/* Content */}
                 <div className="space-y-3">
-                  <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                     {title}
                   </h3>
-                  <p className="text-gray-500 dark:text-gray-400 font-medium leading-relaxed max-w-[280px] mx-auto text-sm">
+                  <p className="text-gray-500 dark:text-gray-400 font-medium leading-relaxed max-w-sm mx-auto text-sm">
                     {message}
                   </p>
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="mt-10 grid grid-cols-2 gap-4">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-cream-200 dark:hover:bg-white/5 border border-cream-300 dark:border-white/5 transition-all duration-200 active:scale-95"
-                >
-                  {cancelText}
-                </button>
+              <div className={`mt-10 ${showCancel ? 'grid grid-cols-2 gap-4' : 'flex justify-center'}`}>
+                {showCancel && (
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="px-6 py-4 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 border border-gray-200 dark:border-white/5 transition-all duration-200 active:scale-95"
+                  >
+                    {cancelText}
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => {
                     onConfirm();
                     onClose();
                   }}
-                  className={`px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest ${theme.buttonBg} transition-all duration-300 active:scale-95 hover:scale-[1.02]`}
+                  className={`px-6 py-4 rounded-xl text-xs font-bold uppercase tracking-widest ${theme.buttonBg} transition-all duration-300 active:scale-95 hover:scale-[1.02] ${!showCancel ? 'w-full' : ''}`}
                 >
                   {confirmText}
                 </button>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
@@ -13,6 +13,18 @@
 
   body {
     @apply font-sans text-gray-900 bg-cream-50 dark:text-paymint-light dark:bg-paymint-dark antialiased transition-colors duration-300;
+  }
+
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type=number] {
+    -moz-appearance: textfield;
   }
 }
 
@@ -49,7 +61,7 @@
 }
 
 .dark select option {
-  background-color: #1a1a1a;
+  background-color: #1E293B;
   color: #ffffff;
 }
 
@@ -57,4 +69,18 @@
 .dark select option:checked {
   background-color: #7CC39F;
   color: #000000;
+}
+
+.category-pill-select button {
+  border-radius: 9999px !important;
+  padding-top: 0.8rem !important;
+  padding-bottom: 0.8rem !important;
+  border-color: rgba(229, 231, 235, 0.6) !important;
+  background-color: white !important;
+  font-weight: 700 !important;
+}
+
+.dark .category-pill-select button {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
 }

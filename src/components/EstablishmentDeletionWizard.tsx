@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
+import { QuickInfo } from './QuickInfo';
 
 interface EstablishmentStats {
     establishment: {
@@ -81,7 +82,10 @@ export function EstablishmentDeletionWizard({
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [stats, setStats] = useState<EstablishmentStats | null>(null);
-    const [confirmationName, setConfirmationName] = useState('');
+    const [establishmentLoginId, setEstablishmentLoginId] = useState('');
+    const [establishmentPassword, setEstablishmentPassword] = useState('');
+    const [showEstablishmentPassword, setShowEstablishmentPassword] = useState(false);
+    const [accountEmail, setAccountEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
@@ -112,8 +116,18 @@ export function EstablishmentDeletionWizard({
     };
 
     const handleRequestDeletion = async () => {
-        if (confirmationName.toLowerCase() !== establishmentName.toLowerCase()) {
-            toast.error('Please type the exact establishment name to confirm');
+        if (!establishmentLoginId) {
+            toast.error('Please enter Establishment ID');
+            return;
+        }
+
+        if (establishmentPassword.length < 6) {
+            toast.error('Please enter Establishment Password');
+            return;
+        }
+
+        if (!accountEmail || !accountEmail.includes('@')) {
+            toast.error('Please enter a valid Account Email');
             return;
         }
 
@@ -126,7 +140,9 @@ export function EstablishmentDeletionWizard({
             setIsSubmitting(true);
             await api.post(`/api/establishments/${establishmentId}/request-deletion`, {
                 ...exportOptions,
-                confirmationName,
+                establishmentLoginId,
+                establishmentPassword,
+                accountEmail,
                 password,
             });
             toast.success('Deletion scheduled. Check your email for data exports.');
@@ -165,10 +181,10 @@ export function EstablishmentDeletionWizard({
     if (isLoading) {
         return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-                <div className="bg-white dark:bg-[#1a1a1a] rounded-3xl p-8 shadow-2xl">
-                    <div className="w-12 h-12 border-4 border-red-500/30 border-t-red-500 rounded-full animate-spin mx-auto" />
-                    <p className="text-gray-500 dark:text-gray-400 mt-4 text-center">Loading establishment data...</p>
-                </div>
+            <div className="bg-white dark:bg-[#1E293B] rounded-2xl p-8 border border-gray-200 dark:border-white/5 shadow-xl">
+                <div className="w-12 h-12 border-4 border-paymint-red/10 border-t-paymint-red rounded-full animate-spin mx-auto" />
+                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mt-4 text-center">Loading establishment metadata...</p>
+            </div>
             </div>
         );
     }
@@ -179,10 +195,10 @@ export function EstablishmentDeletionWizard({
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white dark:bg-[#1a1a1a] rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
+                className="bg-white dark:bg-[#1E293B] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col border border-gray-200 dark:border-white/5 shadow-2xl"
             >
                 {/* Header */}
-                <div className="bg-gradient-to-r from-red-500 to-red-600 p-6 text-white relative">
+                <div className="bg-gradient-to-r from-paymint-red to-paymint-red p-6 text-white relative">
                     <button
                         onClick={onClose}
                         className="absolute top-4 right-4 p-2 hover:bg-white/10 rounded-xl transition-colors"
@@ -194,7 +210,7 @@ export function EstablishmentDeletionWizard({
                             <Trash2 size={28} />
                         </div>
                         <div>
-                            <h2 className="text-xl font-black">Delete Establishment</h2>
+                            <h2 className="text-xl font-bold">Delete Establishment</h2>
                             <p className="text-white/80 text-sm">{establishmentName}</p>
                         </div>
                     </div>
@@ -204,8 +220,8 @@ export function EstablishmentDeletionWizard({
                         {['warning', 'export', 'confirm'].map((s, i) => (
                             <div key={s} className="flex items-center">
                                 <div
-                                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${step === s
-                                        ? 'bg-white text-red-500'
+                                    className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black transition-colors ${step === s
+                                        ? 'bg-white text-paymint-red shadow-sm'
                                         : ['warning', 'export', 'confirm'].indexOf(step) > i
                                             ? 'bg-white/30 text-white'
                                             : 'bg-white/10 text-white/50'
@@ -238,14 +254,14 @@ export function EstablishmentDeletionWizard({
                                 exit={{ opacity: 0, x: -20 }}
                                 className="space-y-6"
                             >
-                                <div className="bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-2xl p-4">
+                                <div className="bg-paymint-red/10 dark:bg-paymint-red/10 border border-red-200 dark:border-paymint-red/20 rounded-2xl p-4">
                                     <div className="flex items-start gap-3">
-                                        <AlertTriangle className="text-red-500 flex-shrink-0 mt-0.5" size={20} />
+                                        <AlertTriangle className="text-paymint-red flex-shrink-0 mt-0.5" size={20} />
                                         <div>
-                                            <h3 className="font-bold text-red-700 dark:text-red-400">
+                                            <h3 className="font-bold text-red-700 dark:text-paymint-red">
                                                 This action is irreversible
                                             </h3>
-                                            <p className="text-red-600 dark:text-red-300 text-sm mt-1">
+                                            <p className="text-paymint-red dark:text-red-300 text-sm mt-1">
                                                 After the 30-day grace period, all data will be permanently deleted.
                                             </p>
                                         </div>
@@ -253,9 +269,9 @@ export function EstablishmentDeletionWizard({
                                 </div>
 
                                 <div>
-                                    <h3 className="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                                        <Package size={18} className="text-red-500" />
-                                        Data that will be deleted
+                                    <h3 className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2 px-1">
+                                        <Package size={14} className="text-paymint-red" />
+                                        Inventory & Audit Purge List
                                     </h3>
                                     <div className="grid grid-cols-2 gap-3">
                                         <StatCard
@@ -399,7 +415,7 @@ export function EstablishmentDeletionWizard({
                                     <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">
                                         Permanent deletion scheduled for:
                                     </p>
-                                    <p className="text-2xl font-black text-red-500">
+                                    <p className="text-2xl font-bold text-paymint-red">
                                         {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', {
                                             weekday: 'long',
                                             year: 'numeric',
@@ -410,31 +426,72 @@ export function EstablishmentDeletionWizard({
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2">
-                                        Type <span className="text-red-500">"{establishmentName}"</span> to confirm
+                                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center">
+                                        Establishment ID
+                                        <QuickInfo text="The unique ID you use to log into this establishment's POS." />
                                     </label>
                                     <input
                                         type="text"
-                                        value={confirmationName}
-                                        onChange={(e) => setConfirmationName(e.target.value)}
-                                        placeholder="Enter establishment name"
-                                        className={`w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none transition-colors ${confirmationName.toLowerCase() === establishmentName.toLowerCase()
-                                            ? 'border-green-500 focus:border-green-500'
-                                            : 'border-gray-300 dark:border-gray-700 focus:border-red-500'
-                                            }`}
+                                        value={establishmentLoginId}
+                                        onChange={(e) => setEstablishmentLoginId(e.target.value)}
+                                        placeholder="Enter establishment ID"
+                                        className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-red transition-colors"
                                     />
-                                    {confirmationName.toLowerCase() === establishmentName.toLowerCase() && (
-                                        <p className="text-green-500 text-sm mt-2 flex items-center gap-1">
-                                            <Check size={14} /> Name confirmed
-                                        </p>
-                                    )}
+                                </div>
+
+                                {/* Establishment Password */}
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center gap-2">
+                                        <div className="flex items-center gap-2">
+                                            <Lock size={14} className="text-paymint-red" />
+                                            Establishment Password
+                                        </div>
+                                        <QuickInfo text="The master password used by staff to access this location." />
+                                    </label>
+                                    <div className="relative">
+                                        <input
+                                            type={showEstablishmentPassword ? 'text' : 'password'}
+                                            value={establishmentPassword}
+                                            onChange={(e) => setEstablishmentPassword(e.target.value)}
+                                            placeholder="Establishment password"
+                                            className="w-full px-4 py-3 pr-12 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-red transition-colors"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowEstablishmentPassword(!showEstablishmentPassword)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                        >
+                                            {showEstablishmentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Account Email */}
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center gap-2">
+                                        <div className="flex items-center gap-2">
+                                            <Mail size={14} className="text-paymint-red" />
+                                            Account Email
+                                        </div>
+                                        <QuickInfo text="Your main owner account email address for confirmation." />
+                                    </label>
+                                    <input
+                                        type="email"
+                                        value={accountEmail}
+                                        onChange={(e) => setAccountEmail(e.target.value)}
+                                        placeholder="Enter account email"
+                                        className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-red transition-colors"
+                                    />
                                 </div>
 
                                 {/* Password Input */}
                                 <div>
                                     <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center gap-2">
-                                        <Lock size={14} className="text-red-500" />
-                                        Enter your account password
+                                        <div className="flex items-center gap-2">
+                                            <Lock size={14} className="text-paymint-red" />
+                                            Enter your account password
+                                        </div>
+                                        <QuickInfo text="Security verification to authorize this deletion request." />
                                     </label>
                                     <div className="relative">
                                         <input
@@ -444,7 +501,7 @@ export function EstablishmentDeletionWizard({
                                             placeholder="Your account password"
                                             className={`w-full px-4 py-3 pr-12 bg-white dark:bg-[#2a2a2a] border rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none transition-colors ${password.length >= 6
                                                 ? 'border-green-500 focus:border-green-500'
-                                                : 'border-gray-300 dark:border-gray-700 focus:border-red-500'
+                                                : 'border-gray-300 dark:border-gray-700 focus:border-paymint-red'
                                                 }`}
                                         />
                                         <button
@@ -467,20 +524,20 @@ export function EstablishmentDeletionWizard({
                 </div>
 
                 {/* Footer */}
-                <div className="p-6 border-t border-gray-200 dark:border-white/10 flex gap-3">
+                <div className="p-6 border-t border-gray-200 dark:border-white/5 flex gap-3">
                     {step !== 'warning' && (
                         <button
                             onClick={() =>
                                 setStep(step === 'confirm' ? 'export' : 'warning')
                             }
-                            className="px-6 py-3 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                            className="px-6 py-3 bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                         >
                             Back
                         </button>
                     )}
                     <button
                         onClick={onClose}
-                        className="px-6 py-3 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors ml-auto"
+                        className="px-6 py-3 bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-100 dark:hover:bg-white/10 transition-colors ml-auto"
                     >
                         Cancel
                     </button>
@@ -489,7 +546,7 @@ export function EstablishmentDeletionWizard({
                             onClick={() =>
                                 setStep(step === 'warning' ? 'export' : 'confirm')
                             }
-                            className="px-6 py-3 bg-red-500 text-white rounded-xl font-bold hover:bg-red-600 transition-colors flex items-center gap-2"
+                            className="px-6 py-3 bg-paymint-red text-white rounded-xl font-bold hover:bg-paymint-red transition-colors flex items-center gap-2"
                         >
                             Continue
                             <ChevronRight size={18} />
@@ -498,11 +555,13 @@ export function EstablishmentDeletionWizard({
                         <button
                             onClick={handleRequestDeletion}
                             disabled={
-                                confirmationName.toLowerCase() !== establishmentName.toLowerCase() ||
+                                !establishmentLoginId ||
+                                establishmentPassword.length < 6 ||
+                                !accountEmail ||
                                 password.length < 6 ||
                                 isSubmitting
                             }
-                            className="px-6 py-3 bg-red-500 text-white rounded-xl font-bold hover:bg-red-600 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="px-6 py-3 bg-paymint-red text-white rounded-xl font-bold hover:bg-paymint-red transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isSubmitting ? (
                                 <>
@@ -535,11 +594,11 @@ function StatCard({
 }) {
     return (
         <div className="bg-gray-100 dark:bg-white/5 rounded-xl p-4 text-center">
-            <Icon size={20} className="text-red-500 mx-auto mb-2" />
-            <div className="text-2xl font-black text-gray-900 dark:text-white">
+            <Icon size={20} className="text-paymint-red mx-auto mb-2" />
+            <div className="text-2xl font-bold text-gray-900 dark:text-white tracking-tighter">
                 {value.toLocaleString()}
             </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            <div className="text-[10px] text-gray-500 dark:text-gray-400 font-black uppercase tracking-widest mt-1">
                 {label}
             </div>
         </div>
@@ -620,7 +679,7 @@ export function PendingDeletionBanner({
         <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-red-500 to-red-600 rounded-2xl p-6 text-white mb-8"
+            className="bg-gradient-to-r from-paymint-red to-paymint-red rounded-2xl p-6 text-white mb-8"
         >
             <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center gap-4">
@@ -628,7 +687,7 @@ export function PendingDeletionBanner({
                         <AlertTriangle size={28} />
                     </div>
                     <div>
-                        <h3 className="font-black text-lg">Deletion Scheduled</h3>
+                        <h3 className="font-bold text-lg">Deletion Scheduled</h3>
                         <p className="text-white/80 text-sm">
                             This establishment will be permanently deleted on{' '}
                             <span className="font-bold">{scheduledDate}</span>
@@ -637,13 +696,13 @@ export function PendingDeletionBanner({
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="text-center">
-                        <div className="text-3xl font-black">{deletionStatus.daysRemaining}</div>
+                        <div className="text-3xl font-bold">{deletionStatus.daysRemaining}</div>
                         <div className="text-xs text-white/80 uppercase">days left</div>
                     </div>
                     <button
                         onClick={onCancelDeletion}
                         disabled={isCancelling}
-                        className="px-6 py-3 bg-white text-red-500 font-bold rounded-xl hover:bg-white/90 transition-colors flex items-center gap-2 disabled:opacity-50"
+                        className="px-6 py-3 bg-white text-paymint-red font-bold rounded-xl hover:bg-white/90 transition-colors flex items-center gap-2 disabled:opacity-50"
                     >
                         {isCancelling ? (
                             <>

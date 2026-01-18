@@ -15,14 +15,18 @@ export default {
         },
         paymint: {
           green: '#7CC39F',
-          dark: '#000000', // Main background
+          dark: '#0F172A', // Main background (matched to POS)
           light: '#FFFFFF', // Main text
-          gray: '#9CA3AF', // Subtitles
-          surface: '#121212', // Cards/Sections
+          gray: '#94A3B8', // Subtitles (matched to POS textTertiary)
+          surface: '#1E293B', // Cards/Sections (matched to POS)
+          tertiary: '#334155', // Tertiary background (matched to POS)
+          red: '#D55263', // System Error/Delete
+          text: '#F8FAFC', // Primary text in dark mode (matched to POS)
+          textSecondary: '#CBD5E1', // Secondary text (matched to POS)
         },
         dark: {
-          DEFAULT: '#000000',
-          light: '#1A1A1A',
+          DEFAULT: '#0F172A',
+          light: '#1E293B',
         },
         accent: {
           DEFAULT: '#D55263',
@@ -30,7 +34,7 @@ export default {
           dark: '#B8404F',
         },
         neutral: {
-          bg: '#000000',
+          bg: '#0F172A',
           white: '#FFFFFF',
         },
         // Light mode color palette - warmer tones
@@ -49,7 +53,7 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Barlow', 'system-ui', 'sans-serif'],
         paymint: ['Crimson Text', 'serif'],
         poppins: ['Poppins', 'sans-serif'],
       },

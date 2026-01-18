@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
+  Search,
   Plus,
   Users,
   Mail,
@@ -11,14 +12,19 @@ import {
   CheckCircle2,
   XCircle,
   MoreVertical,
-  Briefcase,
-  Download
+  Download,
+  Key,
+  ChevronLeft,
+  ChevronRight,
+  RefreshCw
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
+import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
 import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { exportToCSV } from '../../utils/export';
+
 interface Staff {
   id: string;
   name: string;
@@ -27,6 +33,7 @@ interface Staff {
   role: string;
   phone?: string;
   isActive: boolean;
+  isClockedIn?: boolean;
   createdAt: string;
   permissions?: string[];
   allowedDiscounts?: string[];
@@ -45,6 +52,8 @@ export function StaffPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingStaff, setEditingStaff] = useState<Staff | null>(null);
+  const [filterRole, setFilterRole] = useState<'ALL' | 'ADMIN' | 'USER'>('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmConfig, setConfirmConfig] = useState<{
     isOpen: boolean;
@@ -58,6 +67,41 @@ export function StaffPage() {
     message: '',
     onConfirm: () => { },
   });
+
+  const [securityModal, setSecurityModal] = useState<{
+    isOpen: boolean;
+    memberId: string;
+    memberName: string;
+  }>({
+    isOpen: false,
+    memberId: '',
+    memberName: ''
+  });
+
+  const [itemsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (activeDropdown && !(event.target as Element).closest('.dropdown-container')) {
+        setActiveDropdown(null);
+      }
+    };
+
+    if (activeDropdown) {
+      setTimeout(() => {
+        const row = document.querySelector(`[data-member-id="${activeDropdown}"]`);
+        if (row) {
+          row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }, 50);
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [activeDropdown]);
 
   useEffect(() => {
     fetchStaff();
@@ -75,6 +119,22 @@ export function StaffPage() {
       setIsLoading(false);
     }
   };
+
+  const filteredStaff = staff.filter(s => {
+    const matchesRole = filterRole === 'ALL' || (filterRole === 'USER' ? s.role !== 'ADMIN' : s.role === filterRole);
+    const matchesSearch = s.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (s.name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+      (s.email?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
+    return matchesRole && matchesSearch;
+  });
+
+  // Pagination Logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredStaff.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredStaff.length / itemsPerPage);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const fetchDiscounts = async () => {
     try {
@@ -131,21 +191,11 @@ export function StaffPage() {
     }
   };
 
-  const handleDelete = async (staffId: string, username: string) => {
-    setConfirmConfig({
+  const handleDelete = (staffId: string, username: string) => {
+    setSecurityModal({
       isOpen: true,
-      title: 'Remove Member',
-      message: `Are you sure you want to remove ${username}? They will lose all access.`,
-      type: 'danger',
-      onConfirm: async () => {
-        try {
-          await api.delete(`/api/users/${staffId}`);
-          toast.success('Member removed');
-          fetchStaff();
-        } catch (err: any) {
-          toast.error('Failed to remove member');
-        }
-      }
+      memberId: staffId,
+      memberName: username
     });
   };
 
@@ -161,157 +211,299 @@ export function StaffPage() {
   };
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="max-w-7xl mx-auto space-y-8 pb-10">
       {/* Header */}
-      {/* Header */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-cream-50 via-cream-100 to-cream-50 dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-cream-300 dark:border-white/5 shadow-sm">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+              Human Capital
+            </span>
+            <div className="flex items-center gap-2">
+              <div className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
+              </div>
+              <span className="text-[10px] font-bold text-paymint-green uppercase tracking-widest">Live</span>
+            </div>
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Team Management</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm font-medium">Orchestrate staff access and operational permissions</p>
+        </div>
 
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/30">
-              <Users size={28} className="text-black" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Team Management</h1>
-              <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Manage staff access, roles, and system permissions</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleExport}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-cream-100 dark:bg-white/5 border border-cream-300 dark:border-white/10 text-gray-900 dark:text-gray-300 font-bold text-sm hover:scale-105 hover:bg-cream-50 dark:hover:bg-white/10 transition-all shadow-sm"
-            >
-              <Download size={18} />
-              <span>Export CSV</span>
-            </button>
-            <button
-              onClick={() => { setEditingStaff(null); setShowModal(true); }}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 transition-all shadow-lg shadow-paymint-green/30"
-            >
-              <Plus size={18} />
-              <span>Add Team Member</span>
-            </button>
-          </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={fetchStaff}
+            className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm"
+            title="Refresh Team Data"
+          >
+            <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
+          </button>
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm"
+          >
+            <Download size={18} />
+            <span>Export CSV</span>
+          </button>
+          <button
+            onClick={() => { setEditingStaff(null); setShowModal(true); }}
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20"
+          >
+            <Plus size={18} />
+            <span>Add Member</span>
+          </button>
         </div>
       </div>
 
       {/* Quick Stats Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
           { label: 'Total Team', value: staff.length, icon: Users, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
-          { label: 'Active Now', value: staff.filter(s => s.isActive).length, icon: CheckCircle2, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+          { label: 'Online Now', value: staff.filter(s => s.isClockedIn).length, icon: CheckCircle2, color: 'text-blue-500', bg: 'bg-blue-500/10' },
           { label: 'Administrators', value: staff.filter(s => s.role === 'ADMIN').length, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-          { label: 'Managers', value: staff.filter(s => s.role === 'MANAGER').length, icon: Briefcase, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+          { label: 'Team Members', value: staff.filter(s => s.role !== 'ADMIN').length, icon: Users, color: 'text-orange-500', bg: 'bg-orange-500/10' },
         ].map((stat, i) => (
-          <div key={i} className="p-6 rounded-3xl bg-cream-50 dark:bg-[#0A0A0A] border border-cream-200 dark:border-white/5 shadow-md hover:shadow-lg hover:border-cream-300 dark:hover:border-white/10 transition-all">
-            <div className={`w-12 h-12 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center mb-4`}>
+          <div key={i} className="p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm transition-all flex items-center gap-4">
+            <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
               <stat.icon size={20} />
             </div>
-            <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">{stat.label}</p>
-            <p className="text-2xl font-black text-gray-900 dark:text-white mt-1">{stat.value}</p>
+            <div>
+              <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-0.5">{stat.label}</p>
+              <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">{stat.value}</p>
+            </div>
           </div>
         ))}
       </div>
 
+      {/* Filters & Search */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+          {['ALL', 'ADMIN', 'USER'].map((role) => (
+            <button
+              key={role}
+              onClick={() => { setFilterRole(role as any); setCurrentPage(1); }}
+              className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${filterRole === role
+                ? 'bg-gray-900 dark:bg-white text-white dark:text-black shadow-sm'
+                : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10'
+                }`}
+            >
+              {role === 'USER' ? 'Users' : role === 'ADMIN' ? 'Admins' : 'All Staff'}
+            </button>
+          ))}
+        </div>
+
+        <div className="relative flex-1 max-w-md">
+          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search by name, username or email..."
+            value={searchQuery}
+            onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+            className="w-full pl-11 pr-4 py-2.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 dark:hover:bg-white/10 rounded-md transition-colors"
+            >
+              <XCircle size={14} className="text-gray-400" />
+            </button>
+          )}
+        </div>
+      </div>
+
       {/* Main List */}
-      <div className="bg-cream-50 dark:bg-[#0A0A0A] rounded-[2.5rem] border border-cream-200 dark:border-white/5 shadow-md overflow-hidden">
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-h-[400px] flex flex-col">
         {isLoading ? (
-          <div className="py-32 flex flex-col items-center">
-            <div className="w-16 h-16 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
+          <div className="flex-1 flex flex-col items-center justify-center p-32">
+            <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
             <p className="text-xs font-black uppercase tracking-widest text-gray-400">Loading Team Data...</p>
           </div>
-        ) : staff.length === 0 ? (
-          <div className="py-32 text-center flex flex-col items-center">
-            <div className="w-24 h-24 bg-cream-100 dark:bg-white/5 rounded-[2.5rem] flex items-center justify-center mb-6 border border-cream-200 dark:border-transparent">
-              <Users className="w-12 h-12 text-gray-400 dark:text-gray-300" />
+        ) : filteredStaff.length === 0 ? (
+          <div className="flex-1 flex flex-col items-center justify-center p-32 text-center bg-gray-50/30 dark:bg-black/10">
+            <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
+              <Users size={40} className="text-gray-300" />
             </div>
-            <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Your team is empty</h3>
-            <p className="text-gray-500 max-w-xs font-medium mx-auto">Start by adding your first team member to give them access to the platform.</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 uppercase tracking-tight">Registry Empty</h3>
+            <p className="text-gray-500 max-w-xs text-sm font-medium mx-auto">Initialize your first team member to build the operational workforce.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead>
-                <tr className="border-b border-cream-200 dark:border-white/5">
-                  <th className="px-8 py-6 text-left text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Member Details</th>
-                  <th className="px-8 py-6 text-left text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Role & Access</th>
-                  <th className="px-8 py-6 text-left text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Contact</th>
-                  <th className="px-8 py-6 text-left text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Status</th>
-                  <th className="px-8 py-6 text-right text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Actions</th>
+              <thead className="bg-gray-50 dark:bg-white/[0.02]">
+                <tr className="border-b border-gray-200 dark:border-white/5">
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Member Details</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Role & Access</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Contact</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
+                  <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-cream-200 dark:divide-white/5">
-                {staff.map((member, idx) => (
-                  <motion.tr
-                    key={member.id}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.05 }}
-                    className="group hover:bg-cream-100 dark:hover:bg-white/[0.02] transition-colors"
-                  >
-                    <td className="px-8 py-5">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-lg group-hover:scale-110 transition-transform duration-300">
-                          {member.username.charAt(0).toUpperCase()}
+              <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                <AnimatePresence mode="popLayout">
+                  {currentItems.map((member, idx) => (
+                    <motion.tr
+                      key={member.id}
+                      data-member-id={member.id}
+                      layout
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 10, scale: 0.95 }}
+                      transition={{ delay: idx * 0.03 }}
+                      className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-sm group-hover:scale-110 transition-transform duration-300">
+                            {member.username.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <p className="font-bold text-gray-900 dark:text-white text-sm">{member.username}</p>
+                            <p className="text-xs text-gray-500">{member.name}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-black text-gray-900 dark:text-white">{member.username}</p>
-                          <p className="text-xs text-gray-500 font-medium">{member.name}</p>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wide border ${getRoleStyle(member.role)}`}>
+                          <Shield size={10} />
+                          {member.role}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 text-xs text-gray-500">
+                            <Mail size={12} className="text-gray-400" />
+                            <span className="font-medium">{member.email || 'No Email'}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-gray-500">
+                            <Phone size={12} className="text-gray-400" />
+                            <span className="font-medium">{member.phone || 'No Phone'}</span>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-8 py-5">
-                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border ${getRoleStyle(member.role)}`}>
-                        <Shield size={10} />
-                        {member.role}
-                      </span>
-                    </td>
-                    <td className="px-8 py-5">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
-                          <Mail size={12} className="text-gray-400" />
-                          <span className="font-medium">{member.email || 'No Email'}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className={`flex items-center gap-2 font-black text-[10px] uppercase tracking-wide ${!member.isActive
+                          ? 'text-paymint-red'
+                          : member.isClockedIn
+                            ? 'text-paymint-green'
+                            : 'text-gray-400'
+                          }`}>
+                          {!member.isActive ? (
+                            <>
+                              <XCircle size={14} />
+                              <span>Suspended</span>
+                            </>
+                          ) : member.isClockedIn ? (
+                            <>
+                              <div className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
+                              </div>
+                              <span>Active Now</span>
+                            </>
+                          ) : (
+                            <>
+                              <div className="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-600" />
+                              <span>Offline</span>
+                            </>
+                          )}
                         </div>
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
-                          <Phone size={12} className="text-gray-400" />
-                          <span className="font-medium">{member.phone || 'No Phone'}</span>
+                      </td>
+                      <td className="px-8 py-5 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          <button
+                            onClick={() => openEditModal(member)}
+                            className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-90"
+                          >
+                            <Edit2 size={16} />
+                          </button>
+                          <div className="relative dropdown-container">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveDropdown(activeDropdown === member.id ? null : member.id);
+                              }}
+                              className={`p-2.5 rounded-xl border transition-all active:scale-90 shadow-sm ${activeDropdown === member.id ? 'bg-paymint-green text-black border-paymint-green' : 'bg-white dark:bg-white/5 border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/10'}`}
+                            >
+                              <MoreVertical size={16} />
+                            </button>
+
+                            <AnimatePresence>
+                              {activeDropdown === member.id && (
+                                <motion.div
+                                  initial={{ opacity: 0, scale: 0.95, y: 5 }}
+                                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                                  exit={{ opacity: 0, scale: 0.95, y: 5 }}
+                                  className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl shadow-2xl border border-gray-100 dark:border-white/10 z-50 overflow-hidden py-1.5"
+                                >
+                                  <button
+                                    onClick={() => { setActiveDropdown(null); toast.success('Protocol sent to identity mail'); }}
+                                    className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
+                                  >
+                                    <Key size={14} className="text-paymint-green" />
+                                    <span>Reset Access</span>
+                                  </button>
+                                  <button
+                                    onClick={() => { setActiveDropdown(null); handleDelete(member.id, member.username); }}
+                                    className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
+                                  >
+                                    <Trash2 size={14} />
+                                    <span>Purge Member</span>
+                                  </button>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-8 py-5">
-                      <div className={`flex items-center gap-2 font-black text-[10px] uppercase tracking-widest ${member.isActive ? 'text-paymint-green' : 'text-gray-400'}`}>
-                        {member.isActive ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
-                        {member.isActive ? 'Active' : 'Inactive'}
-                      </div>
-                    </td>
-                    <td className="px-8 py-5 text-right">
-                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => openEditModal(member)}
-                          className="p-2.5 rounded-xl bg-cream-100 dark:bg-white/5 border border-cream-300 dark:border-transparent text-gray-600 dark:text-gray-500 hover:text-paymint-green hover:bg-cream-200 hover:border-paymint-green/30 transition-all"
-                        >
-                          <Edit2 size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(member.id, member.username)}
-                          className="p-2.5 rounded-xl bg-cream-100 dark:bg-white/5 border border-cream-300 dark:border-transparent text-gray-600 dark:text-gray-500 hover:text-paymint-red hover:bg-paymint-red/10 hover:border-paymint-red/30 transition-all"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                        <button className="p-2.5 rounded-xl bg-cream-100 dark:bg-white/5 border border-cream-300 dark:border-transparent text-gray-600 dark:text-gray-500">
-                          <MoreVertical size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </motion.tr>
-                ))}
+                      </td>
+                    </motion.tr>
+                  ))}
+                </AnimatePresence>
               </tbody>
             </table>
           </div>
         )}
-      </div>
+      </div >
+
+      {/* Pagination Controls */}
+      {filteredStaff.length > itemsPerPage && (
+        <div className="flex items-center justify-between px-4">
+          <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+            Showing <span className="font-bold text-gray-900 dark:text-white">{indexOfFirstItem + 1}</span> to <span className="font-bold text-gray-900 dark:text-white">{Math.min(indexOfLastItem, filteredStaff.length)}</span> of <span className="font-bold text-gray-900 dark:text-white">{filteredStaff.length}</span> members
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="p-2 rounded-lg border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <div className="flex items-center gap-1">
+              {[...Array(totalPages)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => paginate(i + 1)}
+                  className={`w-8 h-8 rounded-lg text-sm font-bold transition-all ${currentPage === i + 1
+                    ? 'bg-paymint-green text-black'
+                    : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5'
+                    }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="p-2 rounded-lg border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronRight size={20} />
+            </button>
+          </div>
+        </div>
+      )}
 
       <EmployeeFormModal
         isOpen={showModal}
@@ -330,7 +522,21 @@ export function StaffPage() {
         title={confirmConfig.title}
         message={confirmConfig.message}
         type={confirmConfig.type}
+        confirmText={confirmConfig.confirmText}
+        showCancel={confirmConfig.showCancel}
       />
-    </div>
+
+      <SecurityVerificationModal
+        isOpen={securityModal.isOpen}
+        onClose={() => setSecurityModal(prev => ({ ...prev, isOpen: false }))}
+        onSuccess={() => {
+          toast.success('Member removed successfully');
+          fetchStaff();
+        }}
+        targetId={securityModal.memberId}
+        targetName={securityModal.memberName}
+        mode="delete-employee"
+      />
+    </div >
   );
 }

@@ -1,9 +1,9 @@
 import React from 'react';
 
 // Import actual Paymint logos
-import PaymintLogoGreen from '../assets/Green Full Logo.png';
-import PaymintLogoWhite from '../assets/White Green Full Logo.png';
-import PaymintLeafIcon from '../assets/Samll-Logo-removebg-preview.png';
+import PaymintLogoGreen from '../assets/green-full-logo.png';
+import PaymintLogoWhite from '../assets/white-green-full-logo.png';
+import PaymintLeafIcon from '../assets/small-logo.png';
 
 interface LogoProps {
   className?: string;

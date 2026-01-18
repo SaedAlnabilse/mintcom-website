@@ -12,12 +12,13 @@ import {
   AlertTriangle,
   RefreshCw
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import api from '../../config/api';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { CustomSelect } from '../../components/CustomSelect';
+import { QuickInfo } from '../../components/QuickInfo';
 
 interface RawMaterial {
   id: string;
@@ -39,6 +40,7 @@ interface SubRecipe {
 
 export function MaterialsPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState<'materials' | 'prepared'>('materials');
   const [rawMaterials, setRawMaterials] = useState<RawMaterial[]>([]);
   const [subRecipes, setSubRecipes] = useState<SubRecipe[]>([]);
@@ -60,6 +62,8 @@ export function MaterialsPage() {
     message: string;
     onConfirm: () => void;
     type?: 'danger' | 'success' | 'warning';
+    confirmText?: string;
+    showCancel?: boolean;
   }>({
     isOpen: false,
     title: '',
@@ -72,11 +76,23 @@ export function MaterialsPage() {
     unit: 'kg',
     quantity: 0,
     costPerUnit: 0,
-    lowStockThreshold: 10,
+    lowStockThreshold: 0,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const units = ['kg', 'g', 'L', 'ml', 'pcs', 'units', 'oz', 'lb', 'cups'];
+
+  useEffect(() => {
+    const state = location.state as { openCreateModal?: boolean };
+    if (state?.openCreateModal) {
+      setActiveTab('materials');
+      setEditingMaterial(null);
+      setMaterialForm({ name: '', unit: 'kg', quantity: 0, costPerUnit: 0, lowStockThreshold: 0 });
+      setShowMaterialModal(true);
+      // Clean up state
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   useEffect(() => {
     fetchData();
@@ -110,13 +126,13 @@ export function MaterialsPage() {
     );
   }, [subRecipes, searchQuery]);
 
-  const totalPages = Math.ceil((activeTab === 'materials' ? filteredMaterials.length : filteredPrepared.length) / itemsPerPage);
-
   const paginatedItems = useMemo(() => {
     const start = (page - 1) * itemsPerPage;
     const items = activeTab === 'materials' ? filteredMaterials : filteredPrepared;
     return items.slice(start, start + itemsPerPage);
   }, [activeTab, filteredMaterials, filteredPrepared, page]);
+
+  const totalPages = Math.ceil((activeTab === 'materials' ? filteredMaterials.length : filteredPrepared.length) / itemsPerPage);
 
   const handleMaterialSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -184,71 +200,66 @@ export function MaterialsPage() {
   };
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="max-w-7xl mx-auto space-y-8 pb-10">
       {/* Header */}
-      {/* Header */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-cream-50 via-cream-100 to-cream-50 dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-cream-300 dark:border-white/5 shadow-sm">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+              Inventory Control
+            </span>
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Supply Chain</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">
+            Manage raw stock, prepared materials, and manufacturing costs
+          </p>
+        </div>
 
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/30">
-              <Package size={28} className="text-black" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Supply Chain & Inventory</h1>
-              <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Manage raw stock, prepared materials, and manufacturing costs</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => {
-                if (activeTab === 'materials') {
-                  setEditingMaterial(null);
-                  setMaterialForm({ name: '', unit: 'kg', quantity: 0, costPerUnit: 0, lowStockThreshold: 10 });
-                  setShowMaterialModal(true);
-                } else {
-                  navigate('/dashboard/recipes');
-                }
-              }}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 transition-all shadow-lg shadow-paymint-green/30"
-            >
-              <Plus size={18} />
-              <span>{activeTab === 'materials' ? 'Add Raw Material' : 'New Sub-Recipe'}</span>
-            </button>
-          </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => {
+              if (activeTab === 'materials') {
+                setEditingMaterial(null);
+                setMaterialForm({ name: '', unit: 'kg', quantity: 0, costPerUnit: 0, lowStockThreshold: 0 });
+                setShowMaterialModal(true);
+              } else {
+                navigate('/dashboard/recipes');
+              }
+            }}
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
+          >
+            <Plus size={18} />
+            <span>{activeTab === 'materials' ? 'Add Material' : 'New Sub-Recipe'}</span>
+          </button>
         </div>
       </div>
 
       {/* Control Panel */}
-      <div className="space-y-6">
-        <div className="flex items-center gap-4">
-          <div className="flex-1 relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-paymint-green transition-colors" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-              placeholder="Filter inventory registry..."
-              className="w-full pl-11 pr-4 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green/30 shadow-md transition-all text-sm font-medium"
-            />
-          </div>
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm flex flex-col md:flex-row gap-4 items-center">
+        <div className="flex-1 relative group w-full">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+            placeholder="Filter inventory registry..."
+            className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+          />
+        </div>
 
-          <div className="flex p-1 bg-cream-100 dark:bg-[#0A0A0A] border border-cream-300 dark:border-white/10 rounded-2xl shadow-md">
-            <button
-              onClick={() => { setActiveTab('materials'); setPage(1); }}
-              className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'materials' ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
-            >
-              Raw Materials
-            </button>
-            <button
-              onClick={() => { setActiveTab('prepared'); setPage(1); }}
-              className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'prepared' ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
-            >
-              Prepared Stock
-            </button>
-          </div>
+        <div className="flex p-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl">
+          <button
+            onClick={() => { setActiveTab('materials'); setPage(1); }}
+            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'materials' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+          >
+            Raw Materials
+          </button>
+          <button
+            onClick={() => { setActiveTab('prepared'); setPage(1); }}
+            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'prepared' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+          >
+            Prepared Stock
+          </button>
         </div>
       </div>
 
@@ -256,66 +267,66 @@ export function MaterialsPage() {
       <AnimatePresence mode="wait">
         {isLoading ? (
           <div className="py-32 flex flex-col items-center">
-            <div className="w-16 h-16 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
+            <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
             <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Syncing Ledger...</p>
           </div>
         ) : paginatedItems.length === 0 ? (
-          <div className="py-24 bg-cream-50 dark:bg-[#0A0A0A] rounded-[2.5rem] border border-cream-300 dark:border-white/5 text-center flex flex-col items-center shadow-md">
-            <div className="w-24 h-24 bg-cream-100 dark:bg-white/5 rounded-[2.5rem] flex items-center justify-center mb-6 border border-cream-200 dark:border-transparent">
+          <div className="py-24 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
+            <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
               <Package size={32} className="text-gray-300" />
             </div>
-            <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Registry is empty</h3>
-            <p className="text-gray-500 max-w-xs font-medium">Add materials to begin tracking your manufacturing costs and inventory levels.</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Registry is empty</h3>
+            <p className="text-gray-500 max-w-xs text-sm">Add materials to begin tracking your manufacturing costs and inventory levels.</p>
           </div>
         ) : (
           <div className="space-y-8">
             {activeTab === 'materials' ? (
-              <div className="bg-cream-50 dark:bg-[#0A0A0A] rounded-[2.5rem] border border-cream-200 dark:border-white/5 shadow-md overflow-hidden">
+              <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-cream-200 dark:border-white/5">
-                        <th className="px-8 py-6 text-left text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Material Signature</th>
-                        <th className="px-8 py-6 text-left text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Quantity in Stock</th>
-                        <th className="px-8 py-6 text-left text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Unit Cost</th>
-                        <th className="px-8 py-6 text-left text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Readiness</th>
-                        <th className="px-8 py-6 text-right text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em]">Actions</th>
+                    <thead className="bg-gray-50 dark:bg-white/[0.02]">
+                      <tr className="border-b border-gray-200 dark:border-white/5">
+                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Material</th>
+                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Quantity</th>
+                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Unit Cost</th>
+                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
+                        <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-cream-200 dark:divide-white/5">
+                    <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                       {paginatedItems.map((m: any) => {
                         const isLow = m.lowStockThreshold && m.quantity <= m.lowStockThreshold;
                         return (
-                          <tr key={m.id} className="group hover:bg-cream-100 dark:hover:bg-white/[0.02] transition-colors">
-                            <td className="px-8 py-5">
-                              <div className="flex items-center gap-4">
-                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black border ${isLow ? 'bg-paymint-red/10 text-paymint-red border-paymint-red/20' : 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'}`}>
+                          <tr key={m.id} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-3">
+                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs border ${isLow ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'}`}>
                                   {m.name.charAt(0).toUpperCase()}
                                 </div>
-                                <span className="font-black text-gray-900 dark:text-white uppercase tracking-tight">{m.name}</span>
+                                <span className="font-bold text-gray-900 dark:text-white text-sm">{m.name}</span>
                               </div>
                             </td>
-                            <td className="px-8 py-5">
-                              <span className="font-black text-gray-900 dark:text-white">{m.quantity.toFixed(2)}</span>
-                              <span className="ml-1 text-[10px] font-black text-gray-400 uppercase">{m.unit}</span>
+                            <td className="px-6 py-4">
+                              <span className="font-bold text-gray-900 dark:text-white">{m.quantity.toFixed(2)}</span>
+                              <span className="ml-1 text-xs font-medium text-gray-500 uppercase">{m.unit}</span>
                             </td>
-                            <td className="px-8 py-5 font-black text-gray-900 dark:text-white">{formatCurrency(m.costPerUnit)}</td>
-                            <td className="px-8 py-5">
-                              <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border ${isLow ? 'bg-paymint-red/10 text-paymint-red border-paymint-red/20' : 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'}`}>
-                                {isLow ? <AlertTriangle size={12} /> : <TrendingUp size={12} />}
-                                {isLow ? 'Reorder Needed' : 'Stable'}
+                            <td className="px-6 py-4 font-bold text-gray-900 dark:text-white text-sm">{formatCurrency(m.costPerUnit)}</td>
+                            <td className="px-6 py-4">
+                              <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wide border ${isLow ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'}`}>
+                                {isLow ? <AlertTriangle size={10} /> : <TrendingUp size={10} />}
+                                {isLow ? 'Low Stock' : 'Optimal'}
                               </div>
                             </td>
-                            <td className="px-8 py-5 text-right">
+                            <td className="px-6 py-4 text-right">
                               <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onClick={() => { setRestockMaterial(m); setRestockAmount(0); setShowRestockModal(true); }} className="px-4 py-2 bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-paymint-green hover:text-black transition-all">
+                                <button onClick={() => { setRestockMaterial(m); setRestockAmount(0); setShowRestockModal(true); }} className="px-3 py-1.5 bg-paymint-green/10 text-paymint-green text-[10px] font-bold uppercase tracking-wide rounded-lg hover:bg-paymint-green hover:text-black transition-all">
                                   Restock
                                 </button>
-                                <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 10 }); setShowMaterialModal(true); }} className="p-2 rounded-xl bg-cream-100 dark:bg-white/5 border border-cream-300 dark:border-transparent text-gray-600 dark:text-gray-400 hover:text-paymint-green hover:border-paymint-green/30">
-                                  <Edit2 size={16} />
+                                <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors">
+                                  <Edit2 size={14} />
                                 </button>
-                                <button onClick={() => handleDeleteMaterial(m.id, m.name)} className="p-2 rounded-xl bg-cream-100 dark:bg-white/5 border border-cream-300 dark:border-transparent text-gray-600 dark:text-gray-400 hover:text-paymint-red hover:border-paymint-red/30">
-                                  <Trash2 size={16} />
+                                <button onClick={() => handleDeleteMaterial(m.id, m.name)} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-red-500 transition-colors">
+                                  <Trash2 size={14} />
                                 </button>
                               </div>
                             </td>
@@ -329,26 +340,26 @@ export function MaterialsPage() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {paginatedItems.map((r: any) => (
-                  <div key={r.id} className="group bg-cream-50 dark:bg-[#0A0A0A] p-8 rounded-[2.5rem] border border-cream-200 dark:border-white/5 shadow-md hover:shadow-xl hover:border-cream-300 dark:hover:border-white/10 transition-all duration-300">
-                    <div className="flex justify-between items-start mb-8">
-                      <div className="w-14 h-14 rounded-2xl bg-paymint-green/10 text-paymint-green flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                        <Package size={24} />
+                  <div key={r.id} className="group bg-white dark:bg-[#1E293B] p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/30 transition-all shadow-sm">
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center transition-transform group-hover:scale-110">
+                        <Package size={20} />
                       </div>
-                      <button onClick={() => navigate('/dashboard/recipes')} className="p-2 rounded-xl bg-cream-100 dark:bg-white/5 border border-cream-300 dark:border-transparent text-gray-600 dark:text-gray-400 hover:text-paymint-green hover:border-paymint-green/30 opacity-0 group-hover:opacity-100 transition-all">
-                        <Edit2 size={18} />
+                      <button onClick={() => navigate('/dashboard/recipes')} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green opacity-0 group-hover:opacity-100 transition-all">
+                        <Edit2 size={16} />
                       </button>
                     </div>
-                    <h3 className="text-xl font-black text-gray-900 dark:text-white truncate uppercase tracking-tight">{r.name}</h3>
-                    <p className="text-sm font-medium text-gray-500 mt-1 line-clamp-1">{r.description || 'Custom preparation formula.'}</p>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate">{r.name}</h3>
+                    <p className="text-xs text-gray-500 mt-1 line-clamp-1">{r.description || 'Custom preparation formula.'}</p>
 
-                    <div className="mt-8 pt-6 border-t border-cream-200 dark:border-white/5 grid grid-cols-2 gap-4">
+                    <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1">Batch Yield</p>
-                        <p className="font-black text-gray-900 dark:text-white">{r.yield} <span className="text-[10px] opacity-50">{r.yieldUnit}</span></p>
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Yield</p>
+                        <p className="font-bold text-gray-900 dark:text-white text-sm">{r.yield} <span className="text-[10px] text-gray-500 uppercase">{r.yieldUnit}</span></p>
                       </div>
                       <div className="text-right">
-                        <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1">Stock Level</p>
-                        <p className="font-black text-paymint-green">{r.quantity.toFixed(2)} <span className="text-[10px] opacity-50">{r.yieldUnit}</span></p>
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Stock</p>
+                        <p className="font-bold text-paymint-green text-sm">{r.quantity.toFixed(2)} <span className="text-[10px] uppercase">{r.yieldUnit}</span></p>
                       </div>
                     </div>
                   </div>
@@ -359,18 +370,18 @@ export function MaterialsPage() {
             {/* Pagination */}
             {totalPages > 1 && (
               <div className="flex items-center justify-center gap-2 pt-4">
-                <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-3 rounded-xl bg-cream-50 dark:bg-[#0A0A0A] border border-cream-300 dark:border-white/10 text-gray-600 dark:text-gray-500 hover:text-paymint-green hover:border-paymint-green/30 disabled:opacity-30 transition-all">
-                  <ChevronLeft size={20} />
+                <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2.5 rounded-xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-500 hover:text-paymint-green disabled:opacity-30 transition-all">
+                  <ChevronLeft size={18} />
                 </button>
                 <div className="flex items-center gap-1">
                   {[...Array(totalPages)].map((_, i) => (
-                    <button key={i} onClick={() => setPage(i + 1)} className={`w-10 h-10 rounded-xl text-xs font-black transition-all ${page === i + 1 ? 'bg-paymint-green text-black shadow-lg' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>
+                    <button key={i} onClick={() => setPage(i + 1)} className={`w-9 h-9 rounded-xl text-xs font-bold transition-all ${page === i + 1 ? 'bg-paymint-green text-black' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>
                       {i + 1}
                     </button>
                   ))}
                 </div>
-                <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-3 rounded-xl bg-cream-50 dark:bg-[#0A0A0A] border border-cream-300 dark:border-white/10 text-gray-600 dark:text-gray-500 hover:text-paymint-green hover:border-paymint-green/30 disabled:opacity-30 transition-all">
-                  <ChevronRight size={20} />
+                <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2.5 rounded-xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-500 hover:text-paymint-green disabled:opacity-30 transition-all">
+                  <ChevronRight size={18} />
                 </button>
               </div>
             )}
@@ -382,17 +393,18 @@ export function MaterialsPage() {
       <AnimatePresence>
         {showMaterialModal && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-cream-50 dark:bg-[#0A0A0A] rounded-[2.5rem] border border-cream-300 dark:border-white/5 w-full max-w-md shadow-2xl overflow-visible">
-              <div className="p-8 border-b border-cream-200 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Material Registry</h2>
-                <button onClick={() => setShowMaterialModal(false)} className="p-2 text-gray-400 hover:text-white transition-colors">
-                  <X size={24} />
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md overflow-hidden shadow-2xl">
+              <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+                <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Material Registry</h2>
+                <button onClick={() => setShowMaterialModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
+                  <X size={20} />
                 </button>
               </div>
               <form onSubmit={handleMaterialSubmit} className="p-8 space-y-6">
                 <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">
-                    Material Identity <span className="text-red-500">*</span>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 flex items-center">
+                    Material Identity <span className="text-paymint-red mx-1">*</span>
+                    <QuickInfo text="Unique name for this raw material (e.g., 'Flour Type 00')." />
                   </label>
                   <input
                     type="text"
@@ -401,9 +413,9 @@ export function MaterialsPage() {
                       setMaterialForm({ ...materialForm, name: e.target.value });
                       if (errors.name) setErrors({ ...errors, name: '' });
                     }}
-                    className={`w-full px-5 py-4 bg-cream-100 dark:bg-[#1a1a1a] border ${errors.name ? 'border-red-500 ring-2 ring-red-500/20' : 'border-cream-300 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-black focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
+                    className={`w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
                   />
-                  {errors.name && <p className="mt-1 text-xs font-bold text-red-500">{errors.name}</p>}
+                  {errors.name && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -415,13 +427,63 @@ export function MaterialsPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Cost per Unit</label>
-                    <input type="number" step="0.01" value={materialForm.costPerUnit} onChange={(e) => setMaterialForm({ ...materialForm, costPerUnit: parseFloat(e.target.value) || 0 })} className="w-full px-5 py-4 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white font-black focus:ring-2 focus:ring-paymint-green/20 transition-all" />
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 flex items-center">
+                      Cost per Unit
+                      <QuickInfo text="The cost to acquire one unit of this material." />
+                    </label>
+                    <div className="relative group">
+                      <div className="absolute left-3 top-1/2 -translate-y-1/2 px-2 py-0.5 bg-gray-200 dark:bg-white/10 rounded-md">
+                        <span className="text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase">JOD</span>
+                      </div>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        value={materialForm.costPerUnit === 0 ? '' : materialForm.costPerUnit.toFixed(2)}
+                        placeholder="0.00"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, '');
+                          const numericValue = parseInt(val || '0', 10) / 100;
+                          setMaterialForm({ ...materialForm, costPerUnit: numericValue });
+                        }}
+                        className="w-full pl-14 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all"
+                      />
+                    </div>
                   </div>
                 </div>
-                <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] shadow-xl shadow-paymint-green/20 uppercase tracking-widest text-xs flex items-center justify-center gap-2">
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 flex items-center">
+                      Current Stock
+                      <QuickInfo text="Total quantity currently available in inventory." />
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={materialForm.quantity === 0 ? '' : materialForm.quantity}
+                      placeholder="0"
+                      onChange={(e) => setMaterialForm({ ...materialForm, quantity: Number(e.target.value) })}
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 flex items-center">
+                      Low Stock Alert
+                      <QuickInfo text="Threshold to trigger a reorder warning." />
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={materialForm.lowStockThreshold === 0 ? '' : materialForm.lowStockThreshold}
+                      placeholder="0"
+                      onChange={(e) => setMaterialForm({ ...materialForm, lowStockThreshold: Number(e.target.value) })}
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all"
+                    />
+                  </div>
+                </div>
+                <button type="submit" disabled={isSubmitting} className="w-full py-3.5 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 transition-all shadow-sm text-sm flex items-center justify-center gap-2">
                   {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
-                  Finalize Registry
+                  Save Material
                 </button>
               </form>
             </motion.div>
@@ -433,22 +495,24 @@ export function MaterialsPage() {
       <AnimatePresence>
         {showRestockModal && restockMaterial && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-cream-50 dark:bg-[#0A0A0A] rounded-[2.5rem] border border-cream-300 dark:border-white/5 w-full max-w-sm shadow-2xl overflow-hidden">
-              <div className="p-8 text-center border-b border-cream-200 dark:border-white/5">
-                <div className="w-20 h-20 bg-paymint-green/10 text-paymint-green rounded-[2rem] flex items-center justify-center mx-auto mb-6">
-                  <Package size={40} />
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl">
+              <div className="p-8 text-center border-b border-gray-100 dark:border-white/5">
+                <div className="w-16 h-16 bg-paymint-green/10 text-paymint-green rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Package size={32} />
                 </div>
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight uppercase">{restockMaterial.name}</h2>
+                <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight uppercase">{restockMaterial.name}</h2>
                 <p className="text-gray-500 font-bold mt-1 uppercase text-[10px] tracking-widest">Available: {restockMaterial.quantity.toFixed(2)} {restockMaterial.unit}</p>
               </div>
-              <div className="p-8 space-y-8">
+              <div className="p-8 space-y-6">
                 <div>
-                  <input type="number" step="0.01" value={restockAmount} onChange={(e) => setRestockAmount(Number(e.target.value))} className="w-full bg-transparent text-center text-6xl font-black text-paymint-green focus:outline-none" placeholder="0.00" autoFocus />
-                  <p className="text-center text-[10px] font-black text-gray-400 uppercase tracking-widest mt-4">Volume to Add ({restockMaterial.unit})</p>
+                  <input type="number" step="0.01" value={restockAmount} onChange={(e) => setRestockAmount(Number(e.target.value))} className="w-full bg-transparent text-center text-5xl font-black text-paymint-green focus:outline-none placeholder-gray-300" placeholder="0.00" autoFocus />
+                  <div className="flex items-center justify-center mt-2 gap-1">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Volume to Add ({restockMaterial.unit})</p>
+                  </div>
                 </div>
-                <button onClick={handleRestock} disabled={isSubmitting || restockAmount <= 0} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] shadow-xl shadow-paymint-green/20 uppercase tracking-widest text-xs flex items-center justify-center gap-2">
+                <button onClick={handleRestock} disabled={isSubmitting || restockAmount <= 0} className="w-full py-3.5 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 transition-all text-sm flex items-center justify-center gap-2">
                   {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
-                  Confirm Settlement
+                  Confirm Restock
                 </button>
               </div>
             </motion.div>

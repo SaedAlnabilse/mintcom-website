@@ -1,10 +1,11 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ProtectedRoute, EstablishmentRequiredRoute } from './components/ProtectedRoute';
 import { DashboardLayout } from './components/DashboardLayout';
 import { OwnerLayout } from './components/OwnerLayout';
+import { Outlet } from 'react-router-dom';
 
 // Public Pages
 import { LandingPage } from './pages/LandingPage';
@@ -17,7 +18,6 @@ import { ResetPasswordPage } from './pages/ResetPasswordPage';
 
 // Onboarding
 import { OnboardingPage } from './pages/OnboardingPage';
-
 import { SelectEstablishmentPage } from './pages/SelectEstablishmentPage';
 
 // Owner Portal Pages
@@ -53,74 +53,113 @@ import { EstablishmentsPage } from './pages/dashboard/EstablishmentsPage';
 import { BillingPage } from './pages/dashboard/BillingPage';
 import { AdminUsersPage } from './pages/dashboard/AdminUsersPage';
 
+const router = createBrowserRouter([
+  {
+    element: (
+      <>
+        <Outlet />
+      </>
+    ),
+    children: [
+      {
+        path: "/",
+        element: <LandingPage />,
+      },
+      {
+        path: "/demo",
+        element: <DemoPage />,
+      },
+      {
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
+        path: "/signup",
+        element: <SignUpPage />,
+      },
+      {
+        path: "/verify-email",
+        element: <VerifyEmailPage />,
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPasswordPage />,
+      },
+      {
+        path: "/reset-password",
+        element: <ResetPasswordPage />,
+      },
+      {
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: "/onboarding",
+            element: <OnboardingPage />,
+          },
+          {
+            path: "/select-establishment",
+            element: <SelectEstablishmentPage />,
+          },
+          {
+            path: "/owner",
+            element: <OwnerLayout />,
+            children: [
+              { index: true, element: <OwnerOverviewPage /> },
+              { path: "establishments", element: <OwnerEstablishmentsPage /> },
+              { path: "brands", element: <OwnerBrandsPage /> },
+              { path: "employees", element: <OwnerEmployeesPage /> },
+              { path: "billing", element: <OwnerBillingPage /> },
+              { path: "merge", element: <OwnerMergePage /> },
+            ],
+          },
+          {
+            path: "/brand/:brandId",
+            element: <BrandLayout />,
+            children: [
+              { index: true, element: <BrandDashboardPage /> },
+              { path: "locations", element: <BrandLocationsPage /> },
+              { path: "team", element: <BrandTeamPage /> },
+            ],
+          },
+        ],
+      },
+      {
+        element: <EstablishmentRequiredRoute />,
+        children: [
+          {
+            path: "/dashboard",
+            element: <DashboardLayout />,
+            children: [
+              { index: true, element: <DashboardPage /> },
+              { path: "orders", element: <OrdersPage /> },
+              { path: "products", element: <ProductsPage /> },
+              { path: "categories", element: <CategoriesPage /> },
+              { path: "staff", element: <StaffPage /> },
+              { path: "customers", element: <CustomersPage /> },
+              { path: "reports", element: <ReportsPage /> },
+              { path: "discounts", element: <DiscountsPage /> },
+              { path: "payment-methods", element: <PaymentMethodsPage /> },
+              { path: "settings", element: <SettingsPage /> },
+              { path: "activity-logs", element: <ActivityLogsPage /> },
+              { path: "addons", element: <AddonsPage /> },
+              { path: "materials", element: <MaterialsPage /> },
+              { path: "recipes", element: <RecipesPage /> },
+              { path: "establishments", element: <EstablishmentsPage /> },
+              { path: "billing", element: <BillingPage /> },
+              { path: "admin-users", element: <AdminUsersPage /> },
+            ],
+          },
+        ],
+      },
+    ]
+  }
+]);
+
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="paymint-ui-theme">
       <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/demo" element={<DemoPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignUpPage />} />
-            <Route path="/verify-email" element={<VerifyEmailPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
-
-            {/* Protected Onboarding Route */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/onboarding" element={<OnboardingPage />} />
-              <Route path="/select-establishment" element={<SelectEstablishmentPage />} />
-            </Route>
-
-            {/* Owner Portal Routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/owner" element={<OwnerLayout />}>
-                <Route index element={<OwnerOverviewPage />} />
-                <Route path="establishments" element={<OwnerEstablishmentsPage />} />
-                <Route path="brands" element={<OwnerBrandsPage />} />
-                <Route path="employees" element={<OwnerEmployeesPage />} />
-                <Route path="billing" element={<OwnerBillingPage />} />
-                <Route path="merge" element={<OwnerMergePage />} />
-              </Route>
-            </Route>
-
-            {/* Brand Dashboard Routes (opens in new tab) */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/brand/:brandId" element={<BrandLayout />}>
-                <Route index element={<BrandDashboardPage />} />
-                <Route path="locations" element={<BrandLocationsPage />} />
-                <Route path="team" element={<BrandTeamPage />} />
-              </Route>
-            </Route>
-
-            {/* Protected Dashboard Routes (Establishment-specific) */}
-            <Route element={<EstablishmentRequiredRoute />}>
-              <Route path="/dashboard" element={<DashboardLayout />}>
-                <Route index element={<DashboardPage />} />
-                <Route path="orders" element={<OrdersPage />} />
-                <Route path="products" element={<ProductsPage />} />
-                <Route path="categories" element={<CategoriesPage />} />
-                <Route path="staff" element={<StaffPage />} />
-                <Route path="customers" element={<CustomersPage />} />
-                <Route path="reports" element={<ReportsPage />} />
-                <Route path="discounts" element={<DiscountsPage />} />
-                <Route path="payment-methods" element={<PaymentMethodsPage />} />
-                <Route path="settings" element={<SettingsPage />} />
-                <Route path="activity-logs" element={<ActivityLogsPage />} />
-                <Route path="addons" element={<AddonsPage />} />
-                <Route path="materials" element={<MaterialsPage />} />
-                <Route path="recipes" element={<RecipesPage />} />
-                <Route path="establishments" element={<EstablishmentsPage />} />
-                <Route path="billing" element={<BillingPage />} />
-                <Route path="admin-users" element={<AdminUsersPage />} />
-              </Route>
-            </Route>
-          </Routes>
-        </BrowserRouter>
-
-        {/* Toast Notifications */}
+        <RouterProvider router={router} />
         <Toaster
           position="top-right"
           toastOptions={{
@@ -147,6 +186,7 @@ function App() {
     </ThemeProvider>
   );
 }
+
 export default App;
 
 

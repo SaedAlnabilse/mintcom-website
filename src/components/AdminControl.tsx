@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Smartphone, Laptop, BarChart2 } from 'lucide-react';
-import WhiteLogo from '../assets/White Green Full Logo.png';
-import GreenLogo from '../assets/Green Full Logo.png';
+import WhiteLogo from '../assets/white-green-full-logo.png';
+import GreenLogo from '../assets/green-full-logo.png';
 
 export const AdminControl = () => {
   return (
@@ -33,9 +33,9 @@ export const AdminControl = () => {
               >
                 Your browser does not support the video tag.
               </video>
-              
+
               {/* Floating Badge */}
-              <motion.div 
+              <motion.div
                 initial={{ y: 20, opacity: 0 }}
                 whileInView={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5 }}
@@ -93,7 +93,7 @@ export const AdminControl = () => {
 
             <ul className="space-y-4">
               {['Real-time sales analytics', 'Employee shift management', 'Inventory tracking & alerts'].map((item, i) => (
-                <motion.li 
+                <motion.li
                   key={i}
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}

@@ -5,10 +5,8 @@ import {
   History,
   X,
   Shield,
-  Clock,
   ChevronLeft,
   ChevronRight,
-  Filter,
   FileText,
   Download
 } from 'lucide-react';
@@ -16,6 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { exportToCSV } from '../../utils/export';
+import { CustomSelect } from '../../components/CustomSelect';
 
 interface ActivityLog {
   id: string;
@@ -32,19 +31,35 @@ interface ActivityLog {
 }
 
 const actionColors: Record<string, string> = {
-  LOGIN: 'bg-paymint-green/10 text-paymint-green border-paymint-green/20',
-  LOGOUT: 'bg-gray-500/10 text-gray-500 border-gray-500/20',
-  CREATE_ORDER: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
-  REFUND_ORDER: 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
-  START_SHIFT: 'bg-paymint-green/10 text-paymint-green border-paymint-green/20',
-  OPEN_SHIFT: 'bg-paymint-green/10 text-paymint-green border-paymint-green/20',
-  END_SHIFT: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
-  UPDATE_SETTINGS: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
-  CREATE_CUSTOMER: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
-  ADDED_PRODUCT: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
-  UPDATED_PRODUCT: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
-  DELETED_PRODUCT: 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
-  PRINT_RECEIPT: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20',
+  // Inventory
+  'Added product': 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
+  'Updated product': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
+  'Deleted product': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
+  'Removed product image': 'bg-orange-500/10 text-orange-500 border-orange-500/20',
+  'Deleted all products': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
+  'Added category': 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
+  'Updated category': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
+  'Deleted category': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
+
+  // Staff
+  'Added employee': 'bg-purple-500/10 text-purple-500 border-purple-500/20',
+  'Deleted employee': 'bg-gray-500/10 text-gray-500 border-gray-500/20',
+
+  // Settings
+  'Updated restaurant name': 'bg-amber-500/10 text-amber-500 border-amber-500/20',
+  'Updated working hours': 'bg-amber-500/10 text-amber-500 border-amber-500/20',
+  'Updated farewell message': 'bg-amber-500/10 text-amber-500 border-amber-500/20',
+  'Updated restaurant logo': 'bg-amber-500/10 text-amber-500 border-amber-500/20',
+  'Updated tax rate': 'bg-amber-500/10 text-amber-500 border-amber-500/20',
+  'Updated loyalty program': 'bg-pink-500/10 text-pink-500 border-pink-500/20',
+
+  // Payments & Discounts
+  'Added discount': 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20',
+  'Updated discount': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
+  'Deleted discount': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
+  'Added payment method': 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20',
+  'Updated payment method': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
+  'Deleted payment method': 'bg-paymint-red/10 text-paymint-red border-paymint-red/20',
 };
 
 export function ActivityLogsPage() {
@@ -52,7 +67,14 @@ export function ActivityLogsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [actionFilter, setActionFilter] = useState('all');
-  const [dateFilter, setDateFilter] = useState('week');
+
+  // Date Filters State
+  const [dateRange, setDateRange] = useState<{ start: string; end: string }>({
+    start: new Date().toISOString().split('T')[0],
+    end: new Date().toISOString().split('T')[0]
+  });
+  const [activePreset, setActivePreset] = useState('today');
+
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalLogs, setTotalLogs] = useState(0);
@@ -63,30 +85,68 @@ export function ActivityLogsPage() {
       fetchLogs();
     }, 500);
     return () => clearTimeout(timer);
-  }, [page, actionFilter, dateFilter, searchQuery]);
+  }, [page, actionFilter, dateRange, searchQuery]);
+
+  const handlePresetChange = (preset: string) => {
+    setActivePreset(preset);
+    const now = new Date();
+    let start = new Date();
+    let end = new Date();
+
+    switch (preset) {
+      case 'today':
+        // Start/End are already now
+        break;
+      case 'yesterday':
+        start.setDate(now.getDate() - 1);
+        end.setDate(now.getDate() - 1);
+        break;
+      case 'week':
+        const day = now.getDay(); // 0 is Sunday
+        const diff = now.getDate() - day; // adjust when day is sunday
+        start.setDate(diff);
+        break;
+      case 'month': // This Month
+        start.setDate(1);
+        break;
+      case 'custom':
+        return; // Don't change dates on click if custom
+    }
+
+    setDateRange({
+      start: start.toISOString().split('T')[0],
+      end: end.toISOString().split('T')[0]
+    });
+    setPage(1);
+  };
+
+  const handleCustomDateChange = (type: 'start' | 'end', value: string) => {
+    setActivePreset('custom');
+    setDateRange(prev => ({ ...prev, [type]: value }));
+    setPage(1);
+  };
 
   const fetchLogs = async () => {
     try {
       setIsLoading(true);
       const params: any = {
         page,
-        limit: 15,
+        limit: 10,
         search: searchQuery,
       };
 
       if (actionFilter !== 'all') params.action = actionFilter;
 
-      const now = new Date();
-      if (dateFilter === 'today') {
-        params.startDate = new Date(now.setHours(0, 0, 0, 0)).toISOString();
-      } else if (dateFilter === 'week') {
-        const weekAgo = new Date();
-        weekAgo.setDate(weekAgo.getDate() - 7);
-        params.startDate = weekAgo.toISOString();
-      } else if (dateFilter === 'month') {
-        const monthAgo = new Date();
-        monthAgo.setMonth(monthAgo.getMonth() - 1);
-        params.startDate = monthAgo.toISOString();
+      if (dateRange.start) {
+        const start = new Date(dateRange.start);
+        start.setHours(0, 0, 0, 0);
+        params.startDate = start.toISOString();
+      }
+
+      if (dateRange.end) {
+        const end = new Date(dateRange.end);
+        end.setHours(23, 59, 59, 999);
+        params.endDate = end.toISOString();
       }
 
       const response = await api.get('/activity-log', { params });
@@ -133,130 +193,158 @@ export function ActivityLogsPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-120px)] flex flex-col space-y-6">
-      {/* Header - Fixed */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-cream-50 via-cream-100 to-cream-50 dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-cream-300 dark:border-white/5 shadow-sm shrink-0">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+    <div className="max-w-7xl mx-auto space-y-8 pb-10">
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+              Audit & Compliance
+            </span>
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">System Activity</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">
+            Detailed audit trail of all administrative operations
+          </p>
+        </div>
 
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/30">
-              <History size={28} className="text-black" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">System Activity</h1>
-              <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Audit trail of all administrative operations</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleExport}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-cream-100 dark:bg-white/5 border border-cream-300 dark:border-white/10 text-gray-900 dark:text-gray-300 font-bold text-sm hover:scale-105 hover:bg-cream-50 dark:hover:bg-white/10 transition-all shadow-sm"
-            >
-              <Download size={18} />
-              <span>Export CSV</span>
-            </button>
-            <button
-              onClick={() => { setPage(1); fetchLogs(); }}
-              className="p-3.5 rounded-xl bg-cream-50 dark:bg-white/5 border border-cream-300 dark:border-white/10 text-gray-500 hover:text-paymint-green shadow-sm hover:shadow-md transition-all hover:scale-105"
-            >
-              <RefreshCw size={20} className={isLoading ? 'animate-spin' : ''} />
-            </button>
-          </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
+          >
+            <Download size={18} />
+            <span>Export CSV</span>
+          </button>
+          <button
+            onClick={() => { setPage(1); fetchLogs(); }}
+            className="p-3 rounded-xl bg-paymint-green text-black hover:bg-emerald-400 transition-all shadow-sm"
+            title="Refresh"
+          >
+            <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
+          </button>
         </div>
       </div>
 
-      {/* Control Panel - Fixed */}
-      <div className="shrink-0 p-4 bg-cream-50 dark:bg-[#0A0A0A] rounded-[2rem] border border-cream-200 dark:border-white/5 shadow-sm">
-        <div className="flex flex-col lg:flex-row gap-4">
-          <div className="flex-1 relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-paymint-green transition-colors" />
+      {/* Control Panel */}
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm">
+        <div className="flex flex-col xl:flex-row items-start xl:items-center gap-4 w-full">
+          <div className="flex-1 w-full xl:w-auto relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-              placeholder="Search operative, protocol, or event..."
-              className="w-full pl-12 pr-4 py-3 bg-cream-100 dark:bg-white/5 border-none rounded-2xl text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-paymint-green/20 transition-all font-medium"
+              placeholder="Search by action, user, or description..."
+              className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
             />
           </div>
 
-          <div className="flex gap-2">
-            <div className="relative">
-              <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <select
+          <div className="flex flex-col md:flex-row items-center gap-4 w-full xl:w-auto">
+            {/* Action Filter */}
+            <div className="w-full md:w-64">
+              <CustomSelect
                 value={actionFilter}
-                onChange={(e) => { setActionFilter(e.target.value); setPage(1); }}
-                className="pl-11 pr-8 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white font-bold text-xs cursor-pointer appearance-none min-w-[140px] focus:ring-2 focus:ring-paymint-green/20"
-              >
-                <option value="all">All Operations</option>
-                <optgroup label="Authentication" className="bg-white dark:bg-[#1a1a1a]">
-                  <option value="LOGIN">Sign In</option>
-                  <option value="LOGOUT">Sign Out</option>
-                </optgroup>
-                <optgroup label="Inventory" className="bg-white dark:bg-[#1a1a1a]">
-                  <option value="ADDED_PRODUCT">Product: Added</option>
-                  <option value="UPDATED_PRODUCT">Product: Updated</option>
-                  <option value="DELETED_PRODUCT">Product: Deleted</option>
-                </optgroup>
-                <optgroup label="Sales & Terminal" className="bg-white dark:bg-[#1a1a1a]">
-                  <option value="CREATE_ORDER">Order: Created</option>
-                  <option value="PRINT_RECEIPT">Receipt: Printed</option>
-                  <option value="OPEN_SHIFT">Terminal: Shift Open</option>
-                  <option value="END_SHIFT">Terminal: Shift End</option>
-                </optgroup>
-                <optgroup label="CRM" className="bg-white dark:bg-[#1a1a1a]">
-                  <option value="CREATE_CUSTOMER">Customer: Created</option>
-                </optgroup>
-              </select>
+                onChange={(val) => { setActionFilter(val as string); setPage(1); }}
+                options={[
+                  { label: 'All Operations', value: 'all' },
+                  ...[
+                    { label: 'Product: Added', value: 'Added product' },
+                    { label: 'Product: Updated', value: 'Updated product' },
+                    { label: 'Product: Deleted', value: 'Deleted product' },
+                    { label: 'Product: Image Removed', value: 'Removed product image' },
+                    { label: 'Category: Added', value: 'Added category' },
+                    { label: 'Category: Updated', value: 'Updated category' },
+                    { label: 'Category: Deleted', value: 'Deleted category' },
+                    { label: 'Employee: Added', value: 'Added employee' },
+                    { label: 'Employee: Deleted', value: 'Deleted employee' },
+                    { label: 'Update: Name', value: 'Updated restaurant name' },
+                    { label: 'Update: Hours', value: 'Updated working hours' },
+                    { label: 'Update: Message', value: 'Updated farewell message' },
+                    { label: 'Update: Logo', value: 'Updated restaurant logo' },
+                    { label: 'Update: Tax', value: 'Updated tax rate' },
+                    { label: 'Update: Loyalty', value: 'Updated loyalty program' },
+                    { label: 'Discount: Added', value: 'Added discount' },
+                    { label: 'Discount: Updated', value: 'Updated discount' },
+                    { label: 'Discount: Deleted', value: 'Deleted discount' },
+                    { label: 'Payment Method: Added', value: 'Added payment method' },
+                    { label: 'Payment Method: Updated', value: 'Updated payment method' },
+                    { label: 'Payment Method: Deleted', value: 'Deleted payment method' },
+                  ]
+                ]}
+              />
             </div>
 
-            <div className="relative">
-              <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <select
-                value={dateFilter}
-                onChange={(e) => { setDateFilter(e.target.value); setPage(1); }}
-                className="pl-11 pr-8 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white font-bold text-xs cursor-pointer appearance-none min-w-[140px] focus:ring-2 focus:ring-paymint-green/20"
-              >
-                <option value="today">Today</option>
-                <option value="week">Past 7d</option>
-                <option value="month">Past 30d</option>
-                <option value="all">Full Hist.</option>
-              </select>
+            {/* Date Filters Container */}
+            <div className="flex items-center gap-3 bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/10 w-full md:w-auto overflow-x-auto">
+              <div className="flex items-center gap-1">
+                {['today', 'yesterday', 'week'].map((preset) => (
+                  <button
+                    key={preset}
+                    onClick={() => handlePresetChange(preset)}
+                    className={`
+                      px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all whitespace-nowrap
+                      ${activePreset === preset
+                        ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm'
+                        : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}
+                    `}
+                  >
+                    {preset === 'week' ? 'This Week' : preset}
+                  </button>
+                ))}
+              </div>
+
+              <div className="w-px h-6 bg-gray-200 dark:bg-white/10" />
+
+              <div className="flex items-center gap-2 px-2">
+                <input
+                  type="date"
+                  value={dateRange.start}
+                  onChange={(e) => handleCustomDateChange('start', e.target.value)}
+                  className="bg-transparent border-none text-gray-900 dark:text-white font-bold text-xs p-0 focus:ring-0 cursor-pointer w-[85px]"
+                />
+                <span className="text-gray-400 text-xs">-</span>
+                <input
+                  type="date"
+                  value={dateRange.end}
+                  onChange={(e) => handleCustomDateChange('end', e.target.value)}
+                  className="bg-transparent border-none text-gray-900 dark:text-white font-bold text-xs p-0 focus:ring-0 cursor-pointer w-[85px]"
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Logs Area - Flexible and Scrollable */}
-      <div className="flex-1 bg-cream-50 dark:bg-[#0A0A0A] rounded-[2.5rem] border border-cream-200 dark:border-white/5 shadow-sm overflow-hidden flex flex-col min-h-0">
-        <div className="overflow-y-auto flex-1 custom-scrollbar">
+      {/* Main Logs Area */}
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col min-h-[500px]">
+        <div className="overflow-x-auto flex-1">
           <table className="w-full">
-            <thead className="sticky top-0 z-10 bg-cream-50 dark:bg-[#0A0A0A] border-b border-cream-200 dark:border-white/5">
-              <tr className="border-b border-cream-200 dark:border-white/5">
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Execution Time</th>
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Operative</th>
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Protocol</th>
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Event Description</th>
-                <th className="px-8 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Payload</th>
+            <thead className="bg-gray-50 dark:bg-white/[0.02]">
+              <tr className="border-b border-gray-200 dark:border-white/5">
+                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Execution Time</th>
+                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Operative</th>
+                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Protocol</th>
+                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Event Description</th>
+                <th className="px-8 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Payload</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-cream-200 dark:divide-white/5">
+            <tbody className="divide-y divide-gray-100 dark:divide-white/5">
               <AnimatePresence mode='popLayout'>
                 {isLoading ? (
                   <tr>
-                    <td colSpan={5} className="py-20 text-center">
+                    <td colSpan={5} className="py-32 text-center">
                       <div className="flex flex-col items-center gap-4">
                         <div className="w-10 h-10 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin" />
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Syncing Intelligence...</p>
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Syncing Intelligence...</p>
                       </div>
                     </td>
                   </tr>
                 ) : logs.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="py-20 text-center">
+                    <td colSpan={5} className="py-32 text-center">
                       <div className="flex flex-col items-center gap-4">
-                        <div className="w-16 h-16 bg-cream-100 dark:bg-white/5 rounded-[2rem] flex items-center justify-center">
+                        <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center">
                           <History size={24} className="text-gray-300" />
                         </div>
                         <p className="text-gray-500 font-bold uppercase text-[10px] tracking-widest">No matching sequences found.</p>
@@ -269,11 +357,11 @@ export function ActivityLogsPage() {
                       key={log.id}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="group hover:bg-cream-100 dark:hover:bg-white/[0.02] transition-colors"
+                      className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
                     >
                       <td className="px-8 py-4">
                         <div className="flex flex-col">
-                          <span className="text-sm font-black text-gray-900 dark:text-white whitespace-nowrap">{formatDate(log.timestamp).split(',')[1]}</span>
+                          <span className="text-sm font-bold text-gray-900 dark:text-white whitespace-nowrap">{formatDate(log.timestamp).split(',')[1]}</span>
                           <span className="text-[10px] font-bold text-gray-400 uppercase">{formatDate(log.timestamp).split(',')[0]}</span>
                         </div>
                       </td>
@@ -283,7 +371,7 @@ export function ActivityLogsPage() {
                             {log.performedBy?.username?.charAt(0).toUpperCase() || 'A'}
                           </div>
                           <div>
-                            <p className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight truncate max-w-[100px]">{log.performedBy?.username || 'Owner'}</p>
+                            <p className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-tight truncate max-w-[100px]">{log.performedBy?.username || 'Owner'}</p>
                             <p className="text-[9px] text-gray-400 font-black uppercase">{log.ipAddress || 'Internal'}</p>
                           </div>
                         </div>
@@ -302,7 +390,7 @@ export function ActivityLogsPage() {
                         {log.metadata ? (
                           <button
                             onClick={() => setSelectedLog(log)}
-                            className="p-2 rounded-lg bg-cream-100 dark:bg-white/5 text-gray-400 hover:text-paymint-green transition-all"
+                            className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green transition-all"
                           >
                             <FileText size={16} />
                           </button>
@@ -318,48 +406,36 @@ export function ActivityLogsPage() {
           </table>
         </div>
 
-        {/* Pagination - Fixed at bottom of area */}
-        <div className="shrink-0 px-8 py-4 border-t border-cream-200 dark:border-white/5 bg-cream-100/50 dark:bg-[#0A0A0A] flex items-center justify-between">
-          <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">
-            Sequence <span className="text-gray-900 dark:text-white">{(page - 1) * 15 + 1} - {Math.min(page * 15, totalLogs)}</span> of {totalLogs}
-          </p>
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="shrink-0 px-8 py-4 border-t border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-[#1E293B] flex items-center justify-between">
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+              Showing <span className="text-gray-900 dark:text-white">{(page - 1) * 10 + 1} - {Math.min(page * 10, totalLogs)}</span> of {totalLogs}
+            </p>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setPage(p => Math.max(1, p - 1))}
-              disabled={page === 1 || isLoading}
-              className="p-2 rounded-xl bg-cream-50 dark:bg-white/5 border border-cream-300 dark:border-white/10 text-gray-500 hover:text-paymint-green disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-            >
-              <ChevronLeft size={16} />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1 || isLoading}
+                className="p-2 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-white/10 transition-colors"
+              >
+                <ChevronLeft size={16} />
+              </button>
 
-            <div className="flex items-center gap-1">
-              {[...Array(Math.min(3, totalPages))].map((_, i) => {
-                const pageNum = i + 1;
-                return (
-                  <button
-                    key={pageNum}
-                    onClick={() => setPage(pageNum)}
-                    className={`w-8 h-8 rounded-lg text-[10px] font-black transition-all ${page === pageNum
-                      ? 'bg-paymint-green text-black shadow-md'
-                      : 'text-gray-400 hover:text-gray-900'
-                      }`}
-                  >
-                    {pageNum}
-                  </button>
-                );
-              })}
+              <span className="text-xs font-black text-gray-900 dark:text-white px-2">
+                Page {page} of {totalPages}
+              </span>
+
+              <button
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages || isLoading}
+                className="p-2 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-white/10 transition-colors"
+              >
+                <ChevronRight size={16} />
+              </button>
             </div>
-
-            <button
-              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-              disabled={page === totalPages || isLoading}
-              className="p-2 rounded-xl bg-cream-50 dark:bg-white/5 border border-cream-300 dark:border-white/10 text-gray-500 hover:text-paymint-green disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-            >
-              <ChevronRight size={16} />
-            </button>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Detail Modal */}
@@ -370,9 +446,9 @@ export function ActivityLogsPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-cream-50 dark:bg-[#0A0A0A] rounded-[2.5rem] border border-cream-200 dark:border-white/5 w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
+              className="bg-white dark:bg-[#1E293B] rounded-[2.5rem] border border-gray-200 dark:border-white/5 w-full max-w-2xl overflow-hidden flex flex-col max-h-[85vh] shadow-2xl"
             >
-              <div className="p-8 border-b border-cream-200 dark:border-white/5 flex items-center justify-between">
+              <div className="p-8 border-b border-gray-200 dark:border-white/5 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-[1.25rem] bg-paymint-green/10 text-paymint-green flex items-center justify-center">
                     <Shield size={24} />
@@ -382,7 +458,7 @@ export function ActivityLogsPage() {
                     <p className="text-[10px] font-black text-paymint-green uppercase tracking-widest">{selectedLog.action}</p>
                   </div>
                 </div>
-                <button onClick={() => setSelectedLog(null)} className="p-3 rounded-2xl bg-cream-100 dark:bg-white/5 text-gray-400 hover:text-white transition-colors">
+                <button onClick={() => setSelectedLog(null)} className="p-3 rounded-2xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-black dark:hover:text-white transition-colors">
                   <X size={24} />
                 </button>
               </div>
@@ -401,14 +477,14 @@ export function ActivityLogsPage() {
 
                 <div>
                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Structured Metadata</p>
-                  <pre className="bg-gray-900 p-6 rounded-[1.5rem] overflow-x-auto text-xs text-paymint-green font-mono leading-relaxed shadow-inner">
+                  <pre className="bg-gray-50 dark:bg-black/40 p-6 rounded-[1.5rem] overflow-x-auto text-xs text-gray-700 dark:text-paymint-green font-mono leading-relaxed border border-gray-200 dark:border-white/5">
                     {JSON.stringify(selectedLog.metadata, null, 2)}
                   </pre>
                 </div>
               </div>
 
-              <div className="p-8 border-t border-cream-200 dark:border-white/5 bg-cream-100/50 dark:bg-transparent">
-                <button onClick={() => setSelectedLog(null)} className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl uppercase tracking-widest text-xs shadow-xl">
+              <div className="p-8 border-t border-gray-200 dark:border-white/5">
+                <button onClick={() => setSelectedLog(null)} className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl uppercase tracking-widest text-xs hover:scale-[1.02] transition-transform">
                   Dismiss Protocol
                 </button>
               </div>

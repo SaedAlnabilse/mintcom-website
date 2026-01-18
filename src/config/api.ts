@@ -19,20 +19,25 @@ api.interceptors.request.use(
     // Check for accountToken (new system) first, then authToken (legacy)
     const token = localStorage.getItem('accountToken') || localStorage.getItem('authToken');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.set('Authorization', `Bearer ${token}`);
     }
 
     // Add current establishment ID for account owner requests
-    const currentEstablishment = localStorage.getItem('currentEstablishment');
+    // This is CRITICAL for multi-establishment isolation
+    // Use sessionStorage to support multiple tabs with different establishments
+    const currentEstablishment = sessionStorage.getItem('currentEstablishment');
     if (currentEstablishment) {
       try {
         const est = JSON.parse(currentEstablishment);
         if (est?.id) {
-          config.headers['X-Establishment-Id'] = est.id;
+          // Use .set() method for proper header setting in axios v1.x+
+          config.headers.set('X-Establishment-Id', est.id);
         }
       } catch (e) {
-        // Ignore parse errors
+        console.warn('[API] Failed to parse currentEstablishment from sessionStorage:', e);
       }
+    } else {
+      console.warn('[API] No currentEstablishment found in sessionStorage - API calls may not be scoped to an establishment');
     }
 
     return config;
@@ -50,7 +55,7 @@ api.interceptors.response.use(
       // Clear all auth data (both new and legacy keys) and redirect to login
       localStorage.removeItem('accountToken');
       localStorage.removeItem('account');
-      localStorage.removeItem('currentEstablishment');
+      sessionStorage.removeItem('currentEstablishment'); // Use sessionStorage for per-tab isolation
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
       localStorage.removeItem('tenant');

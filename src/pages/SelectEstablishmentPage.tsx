@@ -6,8 +6,10 @@ import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
 // Paymint Logo imports
-import PaymintLogoGreen from '../assets/Green Full Logo.png';
-import PaymintLogoWhite from '../assets/White Green Full Logo.png';
+import PaymintLogoGreen from '../assets/green-full-logo.png';
+import PaymintLogoWhite from '../assets/white-green-full-logo.png';
+
+import { ConfirmModal } from '../components/ConfirmModal';
 
 export function SelectEstablishmentPage() {
   const { establishments, setCurrentEstablishment, logout, account } = useAuth();
@@ -101,7 +103,7 @@ export function SelectEstablishmentPage() {
               onMouseEnter={() => setHoveredId(est.id)}
               onMouseLeave={() => setHoveredId(null)}
               onClick={() => handleSelect(est)}
-              className="group relative bg-white dark:bg-[#0A0A0A] rounded-[3rem] border-2 border-gray-100 dark:border-white/[0.05] p-10 cursor-pointer hover:border-paymint-green shadow-xl shadow-gray-200/50 dark:shadow-none transition-all flex flex-col items-center text-center"
+              className="group relative bg-white dark:bg-[#1E293B] rounded-[3rem] border-2 border-gray-100 dark:border-white/[0.05] p-10 cursor-pointer hover:border-paymint-green shadow-xl shadow-gray-200/50 dark:shadow-none transition-all flex flex-col items-center text-center"
             >
               <div className="w-24 h-24 bg-gray-50 dark:bg-white/[0.03] rounded-[2rem] flex items-center justify-center mb-8 border border-gray-100 dark:border-white/5 transition-transform duration-500 group-hover:scale-110 group-hover:bg-paymint-green/10">
                 <Store size={40} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
@@ -144,7 +146,7 @@ export function SelectEstablishmentPage() {
 
       {/* Footer Info */}
       <div className="p-12 text-center relative z-10">
-        <div className="inline-flex items-center gap-3 px-6 py-3 bg-white dark:bg-[#0A0A0A] rounded-2xl border border-gray-100 dark:border-white/5 text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] shadow-sm">
+        <div className="inline-flex items-center gap-3 px-6 py-3 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-100 dark:border-white/5 text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] shadow-sm">
           <CheckCircle2 size={14} className="text-paymint-green" />
           PayMint Enterprise Protocol v2.0
         </div>

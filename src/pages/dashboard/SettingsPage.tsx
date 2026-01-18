@@ -1,38 +1,50 @@
 import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import { motion } from 'framer-motion';
-import { Store, Save, CreditCard, Receipt, Award, Shield, Trash2, AlertTriangle } from 'lucide-react';
+import { useBlocker } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Store, Save, CreditCard, Receipt, Award, Trash2, AlertTriangle, Clock, RefreshCw, Plus, Edit2, DollarSign } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { EstablishmentDeletionWizard, PendingDeletionBanner } from '../../components/EstablishmentDeletionWizard';
+import { CustomSelect } from '../../components/CustomSelect';
+import { RewardFormModal } from '../../components/forms/RewardFormModal';
 
 interface AppSettings {
   id?: string;
   restaurantName: string;
-  description?: string;
-  address?: string;
+  restaurantDescription?: string;
+  restaurantAddress?: string;
   phone?: string;
   email?: string;
-  logoUrl?: string;
+  logo?: string;
   taxRate: number;
-  taxId?: string;
+  taxIdNumber?: string;
   currency: string;
   showLogoOnReceipt: boolean;
   receiptHeader?: string;
-  receiptFooter?: string;
+  farewellMessage?: string;
   // Receipt display options
   showRestaurantName?: boolean;
   showDescription?: boolean;
   showAddress?: boolean;
   showTaxId?: boolean;
   showFarewellMessage?: boolean;
+  openingTime?: string;
+  closingTime?: string;
+  operatingSchedule?: {
+    [key: string]: {
+      isOpen: boolean;
+      open: string;
+      close: string;
+    };
+  };
 }
 
 interface LoyaltyConfig {
   enabled: boolean;
-  pointsPerCurrency: number;  // Points customer gets per currency unit spent
-  currencyPerPoint: number;   // Currency amount required to earn 1 point
+  pointsPerCurrency: number;
+  currencyPerPoint: number;
   rewards?: LoyaltyReward[];
 }
 
@@ -49,14 +61,6 @@ interface LoyaltyReward {
 interface Category {
   id: string;
   name: string;
-}
-
-interface RewardFormState {
-  type: 'DISCOUNT' | 'FREE_ITEM';
-  pointsRequired: string;
-  discountPercentage: string;
-  freeCategoryId: string;
-  freeCategoryName: string;
 }
 
 type SettingsTab = 'profile' | 'sales' | 'receipt' | 'loyalty' | 'danger';
@@ -79,6 +83,7 @@ interface EstablishmentInfo {
 
 export function SettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
+  const [selectedDays, setSelectedDays] = useState<string[]>(['monday']);
   const [, setSettings] = useState<AppSettings | null>(null);
   const [loyaltyConfig, setLoyaltyConfig] = useState<LoyaltyConfig | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -86,12 +91,22 @@ export function SettingsPage() {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
   const [initialSettings, setInitialSettings] = useState<AppSettings | null>(null);
+  const [initialLoyaltyConfig, setInitialLoyaltyConfig] = useState<LoyaltyConfig | null>(null);
+  const [initialRewards, setInitialRewards] = useState<LoyaltyReward[]>([]);
+  const [rewards, setRewards] = useState<LoyaltyReward[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [showRewardModal, setShowRewardModal] = useState(false);
+  const [editingReward, setEditingReward] = useState<LoyaltyReward | null>(null);
+
   const [confirmConfig, setConfirmConfig] = useState<{
     isOpen: boolean;
     title: string;
     message: string;
     onConfirm: () => void;
-    type?: 'danger' | 'success' | 'warning';
+    onClose?: () => void;
+    type?: 'danger' | 'success' | 'warning' | 'info';
+    confirmText?: string;
+    showCancel?: boolean;
   }>({
     isOpen: false,
     title: '',
@@ -99,46 +114,49 @@ export function SettingsPage() {
     onConfirm: () => { },
   });
 
-  const { register, handleSubmit, reset, watch, formState: { isDirty } } = useForm<AppSettings>();
+  const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm<AppSettings>();
+
+  // Watch all form values for dirty state comparison
+  const watchedValues = watch();
 
   // Watch receipt display options
   const showRestaurantName = watch('showRestaurantName');
-  const showDescription = watch('showDescription');
+
   const showAddress = watch('showAddress');
   const showTaxId = watch('showTaxId');
   const showFarewellMessage = watch('showFarewellMessage');
-
-  // Rewards state
-  const [rewards, setRewards] = useState<LoyaltyReward[]>([]);
-  const [initialRewards, setInitialRewards] = useState<LoyaltyReward[]>([]);
-  const [initialLoyaltyConfig, setInitialLoyaltyConfig] = useState<LoyaltyConfig | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [showRewardModal, setShowRewardModal] = useState(false);
-  const [editingReward, setEditingReward] = useState<LoyaltyReward | null>(null);
-  const [rewardForm, setRewardForm] = useState<RewardFormState>({
-    type: 'DISCOUNT',
-    pointsRequired: '',
-    discountPercentage: '',
-    freeCategoryId: '',
-    freeCategoryName: '',
-  });
 
   // ATM-style input state for currencyPerPoint (stores value in cents)
   const [currencyPerPointCents, setCurrencyPerPointCents] = useState(0);
   const lastSyncedCurrencyPerPoint = useRef<number | null>(null);
 
-  // ATM display value (formatted as decimal)
-  const currencyPerPointDisplay = (currencyPerPointCents / 100).toFixed(2);
+  // ATM-style input state for pointsPerCurrency
+  const [pointsPerCurrencyRaw, setPointsPerCurrencyRaw] = useState(0);
+  const lastSyncedPointsPerCurrency = useRef<number | null>(null);
 
-  // ATM-style input handler
+  // ATM display values
+  const currencyPerPointDisplay = (currencyPerPointCents / 100).toFixed(2);
+  const pointsPerCurrencyDisplay = (pointsPerCurrencyRaw / 100).toFixed(2);
+
+  // ATM-style input handler for spend amount
   const handleCurrencyPerPointChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const digitsOnly = e.target.value.replace(/[^0-9]/g, '');
     const cents = parseInt(digitsOnly, 10) || 0;
     if (cents <= 999999999) {
       setCurrencyPerPointCents(cents);
       lastSyncedCurrencyPerPoint.current = cents / 100;
-      // Update loyalty config with the actual value
       setLoyaltyConfig(prev => prev ? { ...prev, currencyPerPoint: cents / 100 } : null);
+    }
+  };
+
+  // ATM-style input handler for points awarded
+  const handlePointsPerCurrencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const digitsOnly = e.target.value.replace(/[^0-9]/g, '');
+    const raw = parseInt(digitsOnly, 10) || 0;
+    if (raw <= 999999999) {
+      setPointsPerCurrencyRaw(raw);
+      lastSyncedPointsPerCurrency.current = raw / 100;
+      setLoyaltyConfig(prev => prev ? { ...prev, pointsPerCurrency: raw / 100 } : null);
     }
   };
 
@@ -147,10 +165,62 @@ export function SettingsPage() {
     JSON.stringify(loyaltyConfig) !== JSON.stringify(initialLoyaltyConfig) ||
     JSON.stringify(rewards) !== JSON.stringify(initialRewards);
 
-  // Combined dirty state
-  const hasUnsavedChanges = isDirty || hasLoyaltyChanges;
+  // Check if form has changes by comparing watched values with initial settings
+  const hasFormChanges = (() => {
+    if (!initialSettings) return false;
+    // Compare relevant form fields that are actually in the form
+    const fieldsToCompare = [
+      'restaurantName', 'restaurantDescription', 'restaurantAddress', 'phone', 'email',
+      'taxIdNumber', 'taxRate', 'currency', 'showLogoOnReceipt', 'receiptHeader',
+      'farewellMessage', 'showRestaurantName', 'showDescription', 'showAddress',
+      'showTaxId', 'showFarewellMessage'
+    ];
+    for (const field of fieldsToCompare) {
+      const watchedVal = watchedValues[field as keyof AppSettings];
+      const initialVal = initialSettings[field as keyof AppSettings];
 
-  // Sync ATM cents state when loyalty config is loaded from API (only if not from our own update)
+      // Normalize values for comparison (handle null/undefined/empty string)
+      const normWatched = (watchedVal === undefined || watchedVal === null) ? '' : watchedVal;
+      const normInitial = (initialVal === undefined || initialVal === null) ? '' : initialVal;
+
+      if (normWatched !== normInitial) return true;
+    }
+    // Compare operating schedule separately with deep equality
+    if (JSON.stringify(watchedValues.operatingSchedule) !== JSON.stringify(initialSettings.operatingSchedule)) {
+      return true;
+    }
+    return false;
+  })();
+
+  // Combined dirty state
+  const hasUnsavedChanges = hasFormChanges || hasLoyaltyChanges || !!selectedLogo;
+
+  // Navigation blocker with proper dependency tracking
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      hasUnsavedChanges && currentLocation.pathname !== nextLocation.pathname
+  );
+
+  useEffect(() => {
+    if (blocker.state === 'blocked') {
+      setConfirmConfig({
+        isOpen: true,
+        title: 'Unsaved Changes',
+        message: 'You have unsaved changes. Leaving this page will discard them. Are you sure you want to proceed?',
+        type: 'warning',
+        onConfirm: () => {
+          blocker.proceed();
+        },
+        onClose: () => {
+          blocker.reset();
+          setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+        }
+      });
+    } else if (blocker.state === 'unblocked') {
+      setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+    }
+  }, [blocker.state]);
+
   useEffect(() => {
     if (loyaltyConfig?.currencyPerPoint !== undefined &&
       loyaltyConfig.currencyPerPoint !== lastSyncedCurrencyPerPoint.current) {
@@ -160,35 +230,94 @@ export function SettingsPage() {
   }, [loyaltyConfig?.currencyPerPoint]);
 
   useEffect(() => {
+    if (loyaltyConfig?.pointsPerCurrency !== undefined &&
+      loyaltyConfig.pointsPerCurrency !== lastSyncedPointsPerCurrency.current) {
+      lastSyncedPointsPerCurrency.current = loyaltyConfig.pointsPerCurrency;
+      setPointsPerCurrencyRaw(Math.round(loyaltyConfig.pointsPerCurrency * 100));
+    }
+  }, [loyaltyConfig?.pointsPerCurrency]);
+
+  useEffect(() => {
     fetchSettings();
     fetchLoyaltyConfig();
     fetchCategories();
   }, []);
 
-  const fetchSettings = async () => {
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedChanges]);
+
+  const fetchSettings = async (showLoading = true) => {
     try {
-      setIsLoading(true);
+      if (showLoading) setIsLoading(true);
       const response = await api.get('/app-settings');
       const data = response.data;
+
+      // Initialize schedule if missing from backend
+      if (!data.operatingSchedule || Object.keys(data.operatingSchedule).length === 0) {
+        const defaultSchedule: any = {};
+        ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].forEach(day => {
+          defaultSchedule[day] = {
+            isOpen: true,
+            open: data.openingTime || '09:00',
+            close: data.closingTime || '22:00'
+          };
+        });
+        data.operatingSchedule = defaultSchedule;
+      }
+
+      const displayData = {
+        ...data,
+        restaurantName: data.restaurantName || '',
+        restaurantDescription: data.restaurantDescription || '',
+        restaurantAddress: data.restaurantAddress || '',
+        phone: data.phone || '',
+        email: data.email || '',
+        taxIdNumber: data.taxIdNumber || '',
+        receiptHeader: data.receiptHeader || '',
+        farewellMessage: data.farewellMessage || '',
+        openingTime: data.openingTime || '09:00',
+        closingTime: data.closingTime || '22:00',
+        taxRate: data.taxRate !== undefined ? parseFloat((data.taxRate * 100).toFixed(5)) : 0,
+        showLogoOnReceipt: data.showLogoOnReceipt ?? false,
+        showRestaurantName: data.showRestaurantName ?? false,
+        showDescription: data.showDescription ?? false,
+        showAddress: data.showAddress ?? false,
+        showTaxId: data.showTaxId ?? false,
+        showFarewellMessage: data.showFarewellMessage ?? false,
+      };
+
       setSettings(data);
-      setInitialSettings(data);
-      reset(data);
-      if (data.logoUrl) {
-        setPreviewImage(data.logoUrl);
+      setInitialSettings(displayData);
+      reset(displayData);
+      if (data.logo) {
+        setPreviewImage(data.logo);
       }
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to load settings');
     } finally {
-      setIsLoading(false);
+      if (showLoading) setIsLoading(false);
     }
   };
 
   const fetchLoyaltyConfig = async () => {
     try {
       const response = await api.get('/app-settings/loyalty-config');
-      setLoyaltyConfig(response.data);
-      setInitialLoyaltyConfig(JSON.parse(JSON.stringify(response.data)));
-      // Set rewards from loyalty config
+      const config = {
+        pointsPerCurrency: 1,
+        currencyPerPoint: 1,
+        ...response.data,
+        enabled: true
+      };
+      setLoyaltyConfig(config);
+      setInitialLoyaltyConfig(JSON.parse(JSON.stringify(config)));
       if (response.data?.rewards) {
         setRewards(response.data.rewards);
         setInitialRewards(JSON.parse(JSON.stringify(response.data.rewards)));
@@ -212,65 +341,56 @@ export function SettingsPage() {
     }
   };
 
-  // Reward handlers
   const handleEditReward = (reward: LoyaltyReward) => {
     setEditingReward(reward);
-    setRewardForm({
-      type: reward.type,
-      pointsRequired: String(reward.pointsRequired),
-      discountPercentage: reward.discountPercentage ? String(reward.discountPercentage) : '',
-      freeCategoryId: reward.freeCategoryId || '',
-      freeCategoryName: reward.freeCategoryName || '',
-    });
     setShowRewardModal(true);
   };
 
-  const handleDeleteReward = async (rewardId: string) => {
-    const updatedRewards = rewards.filter(r => r.id !== rewardId);
-    try {
-      await api.put('/app-settings/loyalty-config', {
-        ...loyaltyConfig,
-        rewards: updatedRewards,
-      });
-      setRewards(updatedRewards);
-      toast.success('Reward deleted successfully');
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to delete reward');
-    }
+  const handleDeleteReward = (rewardId: string) => {
+    setConfirmConfig({
+      isOpen: true,
+      title: 'Terminate Reward Tier',
+      message: 'Are you sure you want to permanently remove this reward from the loyalty catalog? This action cannot be reversed.',
+      type: 'danger',
+      confirmText: 'Delete Protocol',
+      onConfirm: async () => {
+        const updatedRewards = rewards.filter(r => r.id !== rewardId);
+        try {
+          await api.put('/app-settings/loyalty-config', {
+            ...loyaltyConfig,
+            rewards: updatedRewards,
+          });
+          setRewards(updatedRewards);
+          setInitialRewards(JSON.parse(JSON.stringify(updatedRewards)));
+          setConfirmConfig({
+            isOpen: true,
+            title: 'Reward Deleted',
+            message: 'Reward deleted successfully',
+            type: 'success',
+            confirmText: 'OK',
+            showCancel: false,
+            onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+          });
+        } catch (err: any) {
+          toast.error(err.response?.data?.message || 'Failed to delete reward');
+        }
+      },
+      onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+    });
   };
 
-  const handleSaveReward = async () => {
-    // Validation
-    const pointsValue = parseInt(rewardForm.pointsRequired, 10);
-    if (!rewardForm.pointsRequired || pointsValue < 1) {
-      toast.error('Points required must be at least 1');
-      return;
-    }
-
-    if (rewardForm.type === 'FREE_ITEM' && !rewardForm.freeCategoryId) {
-      toast.error('Please select a category for free item reward');
-      return;
-    }
-
-    if (rewardForm.type === 'DISCOUNT') {
-      const discountValue = parseFloat(rewardForm.discountPercentage);
-      if (!rewardForm.discountPercentage || discountValue <= 0 || discountValue > 100) {
-        toast.error('Discount percentage must be between 1 and 100');
-        return;
-      }
-    }
-
+  const handleSaveReward = async (rewardData: any) => {
     // Create reward object
     const newReward: LoyaltyReward = {
       id: editingReward?.id || `reward_${Date.now()}`,
-      type: rewardForm.type,
-      name: rewardForm.type === 'DISCOUNT'
-        ? `Discount ${parseFloat(rewardForm.discountPercentage)}%`
+      type: rewardData.type,
+      name: rewardData.type === 'DISCOUNT'
+        ? `Discount ${rewardData.discountPercentage}%`
         : 'Free Item',
-      pointsRequired: pointsValue,
-      discountPercentage: rewardForm.type === 'DISCOUNT' ? parseFloat(rewardForm.discountPercentage) : undefined,
-      freeCategoryId: rewardForm.type === 'FREE_ITEM' ? rewardForm.freeCategoryId : undefined,
-      freeCategoryName: rewardForm.type === 'FREE_ITEM' ? rewardForm.freeCategoryName : undefined,
+      pointsRequired: parseInt(rewardData.pointsRequired, 10),
+      discountPercentage: rewardData.type === 'DISCOUNT' ? parseFloat(rewardData.discountPercentage) : undefined,
+      freeCategoryId: rewardData.type === 'FREE_ITEM' ? rewardData.freeCategoryId : undefined,
+      freeCategoryName: rewardData.type === 'FREE_ITEM' ? rewardData.freeCategoryName : undefined,
     };
 
     let updatedRewards: LoyaltyReward[];
@@ -286,10 +406,18 @@ export function SettingsPage() {
         rewards: updatedRewards,
       });
       setRewards(updatedRewards);
+      setInitialRewards(JSON.parse(JSON.stringify(updatedRewards)));
       setShowRewardModal(false);
       setEditingReward(null);
-      setRewardForm({ type: 'DISCOUNT', pointsRequired: '', discountPercentage: '', freeCategoryId: '', freeCategoryName: '' });
-      toast.success(editingReward ? 'Reward updated successfully' : 'Reward added successfully');
+      setConfirmConfig({
+        isOpen: true,
+        title: editingReward ? 'Reward Updated' : 'Reward Added',
+        message: editingReward ? 'Reward updated successfully' : 'Reward added successfully',
+        type: 'success',
+        confirmText: 'OK',
+        showCancel: false,
+        onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+      });
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to save reward');
     }
@@ -335,34 +463,225 @@ export function SettingsPage() {
           const uploadRes = await api.post('/files/upload', formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
           });
-          data.logoUrl = uploadRes.data.url;
+          data.logo = uploadRes.data.url;
         } catch (err) {
           console.error('Logo upload failed');
         }
       }
 
-      // Save app settings
-      await api.put('/app-settings', data);
+      const submissionData = {
+        ...data,
+        taxRate: Number(data.taxRate) / 100
+      };
 
-      // If on loyalty tab, also save loyalty config
-      if (activeTab === 'loyalty' && loyaltyConfig) {
+      await api.put('/app-settings', submissionData);
+
+      // Save loyalty changes regardless of active tab if they exist
+      if (hasLoyaltyChanges && loyaltyConfig) {
         await api.put('/app-settings/loyalty-config', {
           ...loyaltyConfig,
           rewards: rewards,
         });
       }
 
-      toast.success('Settings saved successfully');
+      setConfirmConfig({
+        isOpen: true,
+        title: 'Settings Saved',
+        message: 'Settings saved successfully',
+        type: 'success',
+        confirmText: 'OK',
+        showCancel: false,
+        onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+      });
       setSelectedLogo(null);
-      fetchSettings();
-      if (activeTab === 'loyalty') {
-        fetchLoyaltyConfig();
-      }
+
+      // Refresh data without showing loading spinner to keep form mounted for proper reset
+      await Promise.all([
+        fetchSettings(false),
+        fetchLoyaltyConfig()
+      ]);
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to save settings');
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const to12Hour = (time24?: string) => {
+    if (!time24) return { hour: '09', minute: '00', period: 'AM' };
+    const [h, m] = time24.split(':');
+    const hr = parseInt(h, 10);
+    const period = hr >= 12 ? 'PM' : 'AM';
+    const displayHr = hr % 12 || 12;
+    return {
+      hour: displayHr.toString().padStart(2, '0'),
+      minute: m.padStart(2, '0'),
+      period
+    };
+  };
+
+  const to24Hour = (hour: string, minute: string, period: string) => {
+    let hr = parseInt(hour, 10);
+    const hNum = isNaN(hr) ? 9 : hr;
+    let finalHr = hNum;
+    if (period === 'PM' && hNum < 12) finalHr += 12;
+    if (period === 'AM' && hNum === 12) finalHr = 0;
+    return `${finalHr.toString().padStart(2, '0')}:${minute}`;
+  };
+
+  const TimeSelector = ({ label, subLabel, value, onChange, colorClass = 'paymint-green', compact = false }: any) => {
+    const { hour, minute, period } = to12Hour(value);
+    const [isOpen, setIsOpen] = useState(false);
+    const [pendingTime, setPendingTime] = useState<{ h: string; m: string; p: string }>({ h: hour, m: minute, p: period });
+
+    const hours = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'));
+    const minutes = ['00', '15', '30', '45'];
+
+    const hourScrollRef = useRef<HTMLDivElement>(null);
+    const minScrollRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      if (isOpen) {
+        const timer = setTimeout(() => {
+          const activeH = hourScrollRef.current?.querySelector(`[id="hour-${pendingTime.h}"]`);
+          const activeM = minScrollRef.current?.querySelector(`[id="min-${pendingTime.m}"]`);
+          activeH?.scrollIntoView({ block: 'center', behavior: 'auto' });
+          activeM?.scrollIntoView({ block: 'center', behavior: 'auto' });
+        }, 100);
+        return () => clearTimeout(timer);
+      }
+    }, [isOpen]);
+
+    const handleOpen = () => {
+      const current = to12Hour(value);
+      setPendingTime({ h: current.hour, m: current.minute, p: current.period });
+      setIsOpen(true);
+    };
+
+    const handleApply = () => {
+      onChange(to24Hour(pendingTime.h, pendingTime.m, pendingTime.p));
+      setIsOpen(false);
+    };
+
+    return (
+      <div className={`relative group ${compact ? 'w-full' : ''}`}>
+        {!compact && (
+          <div className="flex flex-col gap-1 mb-4 px-6">
+            <label className={`text-[10px] font-black uppercase tracking-widest transition-colors ${colorClass === 'paymint-green' ? 'text-paymint-green/60' : 'text-orange-500/60'}`}>
+              {label}
+            </label>
+            <label className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-tight">
+              {subLabel}
+            </label>
+          </div>
+        )}
+
+        <div
+          onClick={handleOpen}
+          className={`${compact ? 'h-12 px-4 rounded-xl' : 'h-16 px-6 rounded-2xl'} bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 group-hover:border-paymint-green/50 transition-all cursor-pointer flex items-center relative overflow-hidden justify-between`}
+        >
+          <div className="flex items-baseline gap-1.5 translate-x-0">
+            <span className={`${compact ? 'text-sm' : 'text-2xl'} font-bold text-gray-900 dark:text-white tracking-tighter`}>
+              {hour}:{minute}
+            </span>
+            <span className={`${compact ? 'text-[10px]' : 'text-xs'} font-black text-gray-400 uppercase`}>{period}</span>
+          </div>
+
+          <div className={`text-gray-400 group-hover:text-paymint-green transition-colors ${compact ? '' : 'absolute right-6 top-1/2 -translate-y-1/2'}`}>
+            <Clock size={compact ? 16 : 20} className={isOpen ? 'rotate-12 scale-110' : ''} />
+          </div>
+
+          <div className={`absolute bottom-0 left-0 h-1 transition-all duration-300 ${isOpen ? 'w-full' : 'w-0'} ${colorClass === 'paymint-green' ? 'bg-paymint-green' : 'bg-orange-500'}`} />
+        </div>
+
+        <AnimatePresence>
+          {isOpen && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[60] bg-black/20 backdrop-blur-sm"
+                onClick={() => setIsOpen(false)}
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                className="absolute z-[70] top-full mt-4 left-0 right-0 bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl p-6 overflow-hidden min-w-[320px]"
+              >
+                <div className="grid grid-cols-3 gap-4 mb-6">
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black text-gray-400 uppercase text-center mb-2">Hour</p>
+                    <div ref={hourScrollRef} className="h-40 overflow-y-auto no-scrollbar space-y-1 scroll-smooth">
+                      {hours.map(h => (
+                        <button
+                          key={h}
+                          type="button"
+                          id={`hour-${h}`}
+                          onClick={() => setPendingTime(prev => ({ ...prev, h }))}
+                          className={`w-full py-2 rounded-xl font-bold transition-all ${pendingTime.h === h ? 'bg-paymint-green text-black' : 'hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500'}`}
+                        >
+                          {h}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black text-gray-400 uppercase text-center mb-2">Min</p>
+                    <div ref={minScrollRef} className="h-40 overflow-y-auto no-scrollbar space-y-1 scroll-smooth">
+                      {minutes.map(m => (
+                        <button
+                          key={m}
+                          type="button"
+                          id={`min-${m}`}
+                          onClick={() => setPendingTime(prev => ({ ...prev, m }))}
+                          className={`w-full py-2 rounded-xl font-bold transition-all ${pendingTime.m === m ? 'bg-paymint-green text-black' : 'hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500'}`}
+                        >
+                          {m}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black text-gray-400 uppercase text-center mb-2">Period</p>
+                    <div className="space-y-1">
+                      {['AM', 'PM'].map(p => (
+                        <button
+                          key={p}
+                          type="button"
+                          onClick={() => setPendingTime(prev => ({ ...prev, p }))}
+                          className={`w-full py-3 rounded-xl font-bold transition-all ${pendingTime.p === p ? 'bg-paymint-green text-black' : 'hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500'}`}
+                        >
+                          {p}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setIsOpen(false)}
+                    className="flex-1 py-3 bg-gray-100 dark:bg-white/5 text-gray-500 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleApply}
+                    className="flex-[2] py-3 bg-paymint-green text-black rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-paymint-green/20"
+                  >
+                    Apply Changes
+                  </button>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+      </div>
+    );
   };
 
   const triggerTwoStepConfirm = (title: string, message: string, onConfirm: () => void) => {
@@ -386,18 +705,54 @@ export function SettingsPage() {
   };
 
   const updateTaxRate = async () => {
-    const taxRate = watch('taxRate');
-    const isChanged = initialSettings && Number(taxRate) !== initialSettings.taxRate;
+    const rawValue = watch('taxRate');
+    const rateNum = Number(rawValue);
+
+    if (isNaN(rateNum) || rawValue === undefined || rawValue === null || String(rawValue).trim() === '') {
+      setConfirmConfig({
+        isOpen: true,
+        title: 'Entry Error',
+        message: 'Please enter a valid numeric tax rate to proceed with the update.',
+        type: 'warning',
+        onConfirm: () => { },
+        onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+      });
+      return;
+    }
+
+    if (rateNum < 0 || rateNum > 100) {
+      setConfirmConfig({
+        isOpen: true,
+        title: 'Invalid Tax Rate',
+        message: 'Tax rate must be between 0 and 100%',
+        type: 'danger',
+        confirmText: 'Got it',
+        showCancel: false,
+        onConfirm: () => { },
+        onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+      });
+      return;
+    }
+
+    const isChanged = initialSettings && rateNum !== Number(initialSettings.taxRate);
 
     if (isChanged) {
       triggerTwoStepConfirm(
         'Update Tax Rate',
-        `You are changing the tax rate from ${initialSettings?.taxRate}% to ${taxRate}%.`,
+        `You are changing the tax rate from ${initialSettings?.taxRate}% to ${rateNum}%. This action will trigger a recalculation of all historical data.`,
         async () => {
           try {
-            await api.put('/app-settings/tax-rate', { taxRate: Number(taxRate) });
-            toast.success('Tax rate updated');
-            fetchSettings();
+            await api.put('/app-settings/tax-rate', { taxRate: rateNum / 100 });
+            setConfirmConfig({
+              isOpen: true,
+              title: 'Tax Rate Updated',
+              message: 'Tax rate updated successfully',
+              type: 'success',
+              confirmText: 'OK',
+              showCancel: false,
+              onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+            });
+            fetchSettings(false);
           } catch (err: any) {
             toast.error(err.response?.data?.message || 'Failed to update tax rate');
           }
@@ -415,19 +770,16 @@ export function SettingsPage() {
   const [establishmentInfo, setEstablishmentInfo] = useState<EstablishmentInfo | null>(null);
   const [isCancellingDeletion, setIsCancellingDeletion] = useState(false);
 
-  // Fetch establishment info and deletion status
   useEffect(() => {
     fetchEstablishmentInfo();
   }, []);
 
   const fetchEstablishmentInfo = async () => {
     try {
-      // Get current establishment from localStorage or context
-      const currentEstablishment = localStorage.getItem('currentEstablishment');
+      const currentEstablishment = sessionStorage.getItem('currentEstablishment');
       if (currentEstablishment) {
         const parsed = JSON.parse(currentEstablishment);
         setEstablishmentInfo({ id: parsed.id, name: parsed.name });
-        // Fetch deletion status
         const response = await api.get(`/api/establishments/${parsed.id}/deletion-status`);
         setDeletionStatus(response.data);
       }
@@ -441,7 +793,15 @@ export function SettingsPage() {
     try {
       setIsCancellingDeletion(true);
       await api.post(`/api/establishments/${establishmentInfo.id}/cancel-deletion`);
-      toast.success('Deletion cancelled successfully!');
+      setConfirmConfig({
+        isOpen: true,
+        title: 'Action Cancelled',
+        message: 'Deletion cancelled successfully!',
+        type: 'success',
+        confirmText: 'OK',
+        showCancel: false,
+        onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+      });
       fetchEstablishmentInfo();
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to cancel deletion');
@@ -450,747 +810,696 @@ export function SettingsPage() {
     }
   };
 
+  const handleTabChange = (newTab: SettingsTab) => {
+    setActiveTab(newTab);
+  };
+
   const tabs = [
     { id: 'profile', label: 'Restaurant Profile', icon: Store },
     { id: 'sales', label: 'Sales Settings', icon: CreditCard },
     { id: 'receipt', label: 'Receipt Design', icon: Receipt },
     { id: 'loyalty', label: 'Loyalty Program', icon: Award },
-    { id: 'danger', label: 'Danger Zone', icon: Trash2, isDanger: true },
+    { id: 'danger', label: 'Delete Establishment', icon: Trash2, isDanger: true },
   ];
 
   if (isLoading) {
     return (
-      <div className="h-full flex items-center justify-center bg-cream-50 dark:bg-paymint-dark">
-        <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin" />
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
+          <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
+        </div>
+        <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Loading settings...</p>
       </div>
     );
   }
 
   return (
-    <div className="relative z-10 p-4 lg:p-10 bg-cream-50 dark:bg-paymint-dark transition-colors duration-300 min-h-full">
-      <div className="w-full">
-        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-cream-50 via-cream-100 to-cream-50 dark:from-[#0A0A0A] dark:via-[#111] dark:to-[#0A0A0A] p-8 border border-cream-300 dark:border-white/5 shadow-sm mb-10">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/30">
-                <Store size={28} className="text-black" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Settings</h1>
-                <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Manage your restaurant profile, sales configurations, and loyalty program</p>
-              </div>
+    <div className="max-w-7xl mx-auto space-y-8 pb-10">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+              System Configuration
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
+              </span>
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Live</span>
             </div>
           </div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Establishment Settings</h1>
+          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">
+            Manage your profile, sales logic, and operational parameters
+          </p>
         </div>
 
-        {/* Tabs */}
-        <div className="flex flex-wrap gap-2 p-1 bg-cream-100 dark:bg-white/5 rounded-2xl w-fit mb-10 border border-cream-300 dark:border-white/10 shadow-sm">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id as SettingsTab)}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === tab.id
-                ? tab.isDanger
-                  ? 'bg-red-50 dark:bg-red-500/10 text-red-500 shadow-md border border-red-200 dark:border-red-500/20'
-                  : 'bg-cream-50 dark:bg-white/10 text-paymint-green shadow-md border border-cream-200 dark:border-white/10'
-                : tab.isDanger
-                  ? 'text-red-400 hover:text-red-500 dark:hover:text-red-400'
-                  : 'text-gray-500 hover:text-gray-700 dark:hover:text-white'
-                }`}
-            >
-              <tab.icon size={18} />
-              {tab.label}
-            </button>
-          ))}
-        </div>
+        <button
+          type="button"
+          onClick={handleSubmit(onSubmit, (errs) => {
+            if (errs.taxRate) {
+              setConfirmConfig({
+                isOpen: true,
+                title: 'Validation Error',
+                message: errs.taxRate.message as string || 'Tax rate must be between 0 and 100%',
+                type: 'danger',
+                confirmText: 'Got it',
+                showCancel: false,
+                onConfirm: () => { },
+                onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+              });
+            } else {
+              toast.error('Please check the form for errors');
+            }
+          })}
+          disabled={isSaving || !hasUnsavedChanges}
+          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 disabled:scale-100 disabled:shadow-none"
+        >
+          {isSaving ? <RefreshCw size={18} className="animate-spin" /> : <Save size={18} />}
+          <span>Save Changes</span>
+        </button>
+      </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pb-20">
-          {/* Restaurant Profile */}
-          {activeTab === 'profile' && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-cream-50 dark:bg-white/5 rounded-3xl border border-cream-300 dark:border-white/10 p-8 shadow-sm dark:shadow-none space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300"
-            >
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Restaurant Profile</h3>
+      <div className="flex flex-wrap gap-1 p-1.5 bg-gray-100 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.1] w-fit relative isolate shadow-2xl backdrop-blur-xl ring-1 ring-black/20">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => handleTabChange(tab.id as SettingsTab)}
+            className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wide transition-all duration-300 ${activeTab === tab.id
+              ? tab.isDanger
+                ? 'text-paymint-red'
+                : 'text-black'
+              : tab.isDanger
+                ? 'text-paymint-red hover:bg-paymint-red/10'
+                : 'text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
+              }`}
+          >
+            {activeTab === tab.id && (
+              <motion.div
+                layoutId="active-settings-tab"
+                className={`absolute inset-0 rounded-xl -z-10 shadow-[0_8px_20px_-4px_rgba(124,195,159,0.3)] ${tab.isDanger ? 'bg-paymint-red/10 border border-paymint-red/20' : 'bg-paymint-green'
+                  }`}
+                transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+              />
+            )}
+            <tab.icon size={16} />
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-              {/* Logo */}
-              <div>
-                <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-4 uppercase tracking-wider">Logo</label>
-                <div className="flex items-center gap-8">
-                  <div className="w-32 h-32 bg-cream-100 dark:bg-black/20 rounded-2xl overflow-hidden flex items-center justify-center border border-cream-300 dark:border-white/5 shadow-inner">
-                    {previewImage ? (
-                      <img src={previewImage} alt="Logo" className="w-full h-full object-cover" />
-                    ) : (
-                      <Store className="w-12 h-12 text-gray-300 dark:text-gray-600" />
-                    )}
-                  </div>
-                  <label className="px-6 py-2.5 bg-cream-50 dark:bg-white/5 border border-cream-300 dark:border-white/10 text-gray-900 dark:text-white rounded-xl hover:bg-cream-100 dark:hover:bg-white/10 cursor-pointer font-bold shadow-sm transition-all">
-                    Change Logo
-                    <input type="file" accept="image/*" onChange={handleLogoChange} className="hidden" />
-                  </label>
+      <form onSubmit={handleSubmit(onSubmit, (errs) => {
+        if (errs.taxRate) {
+          setConfirmConfig({
+            isOpen: true,
+            title: 'Validation Error',
+            message: errs.taxRate.message as string || 'Tax rate must be between 0 and 100%',
+            type: 'danger',
+            confirmText: 'Got it',
+            showCancel: false,
+            onConfirm: () => { },
+            onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+          });
+        }
+      })} className="space-y-8">
+        {activeTab === 'profile' && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Restaurant Profile</h3>
+            <div>
+              <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-4 uppercase tracking-wider">Brand Logo</label>
+              <div className="flex items-center gap-8">
+                <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-2xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
+                  {previewImage ? <img src={previewImage} alt="Logo" className="w-full h-full object-cover" /> : <Store className="w-12 h-12 text-gray-300 dark:text-gray-600" />}
                 </div>
+                <label className="px-5 py-3 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/[0.03] rounded-xl text-gray-900 dark:text-white font-bold text-sm shadow-sm transition-all">
+                  Change Logo
+                  <input type="file" accept="image/*" onChange={handleLogoChange} className="hidden" />
+                </label>
               </div>
-
-              {/* Restaurant Name */}
+            </div>
+            <div>
+              <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Restaurant Name</label>
+              <input type="text" {...register('restaurantName')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
+            </div>
+            <div>
+              <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Description</label>
+              <textarea {...register('restaurantDescription')} rows={3} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium resize-none" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Restaurant Name</label>
-                <input
-                  type="text"
-                  {...register('restaurantName')}
-                  className="w-full px-4 py-3 bg-cream-100 dark:bg-[#2a2a2a] border border-cream-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-colors font-medium"
-                />
+                <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Address</label>
+                <input type="text" {...register('restaurantAddress')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
-
-              {/* Description */}
               <div>
-                <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Description</label>
-                <textarea
-                  {...register('description')}
-                  rows={3}
-                  className="w-full px-4 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-colors font-medium resize-none"
-                />
+                <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Phone</label>
+                <input type="text" {...register('phone')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
-
-              {/* Address & Phone */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Email</label>
+                <input type="email" {...register('email')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
+              </div>
+              <div>
+                <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Tax ID / TRN</label>
+                <input type="text" {...register('taxIdNumber')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
+              </div>
+            </div>
+            <div className="pt-8 border-t border-gray-100 dark:border-white/5">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm">
+                  <Clock size={18} />
+                </div>
                 <div>
-                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Address</label>
-                  <input
-                    type="text"
-                    {...register('address')}
-                    className="w-full px-4 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-colors font-medium"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Phone</label>
-                  <input
-                    type="text"
-                    {...register('phone')}
-                    className="w-full px-4 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-colors font-medium"
-                  />
+                  <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest px-1">Operational Schedule</h4>
+                  <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Configure service windows</p>
                 </div>
               </div>
-            </motion.div>
-          )}
-
-          {activeTab === 'sales' && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-cream-50 dark:bg-white/5 rounded-3xl border border-cream-300 dark:border-white/10 p-8 shadow-sm dark:shadow-none space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300"
-            >
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sales & Logic</h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Tax Rate */}
-                <div className="flex flex-col">
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-sm font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider">Tax Rate (%)</label>
-                    <button
-                      type="button"
-                      onClick={updateTaxRate}
-                      className="text-xs font-black text-paymint-green hover:underline uppercase tracking-widest"
-                    >
-                      Update Ledger
+              <div className="flex flex-wrap gap-2 mb-6">
+                {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => {
+                  const currentSchedule = watch('operatingSchedule') || {};
+                  const dayConfig = currentSchedule[day];
+                  const isOpen = dayConfig ? dayConfig.isOpen : !!watch('openingTime');
+                  const isSelected = selectedDays.includes(day);
+                  return (
+                    <button key={day} type="button" onClick={() => setSelectedDays(prev => prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day])} className={`relative flex-1 min-w-[3.5rem] h-14 rounded-xl flex flex-col items-center justify-center gap-1 transition-all duration-300 border ${isSelected ? 'bg-gray-900 dark:bg-white text-white dark:text-black border-transparent shadow-lg scale-105 z-10' : 'bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 shadow-sm'}`}>
+                      <span className="text-[10px] font-black uppercase tracking-widest">{day.slice(0, 3)}</span>
+                      <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? (isOpen ? 'bg-paymint-green' : 'bg-gray-500') : (isOpen ? 'bg-paymint-green' : 'bg-gray-300 dark:bg-white/20')}`} />
                     </button>
-                  </div>
-                  <input
-                    type="number"
-                    step="0.01"
-                    {...register('taxRate')}
-                    className="w-full px-4 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-colors font-medium"
-                  />
-                  <p className="text-[10px] text-gray-400 mt-2 font-bold uppercase tracking-widest">Updating this affects historical revenue calculation.</p>
-                </div>
-
-                {/* Currency */}
-                <div>
-                  <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">Currency</label>
-                  <select
-                    {...register('currency')}
-                    className="w-full px-4 py-3 bg-cream-100 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-green transition-colors"
-                  >
-                    <option value="JOD">JOD - Jordanian Dinar</option>
-                    <option value="USD">USD - US Dollar</option>
-                    <option value="SAR">SAR - Saudi Riyal</option>
-                    <option value="AED">AED - UAE Dirham</option>
-                  </select>
-                </div>
+                  );
+                })}
               </div>
-            </motion.div>
-          )}
-
-          {/* Receipt Settings */}
-          {activeTab === 'receipt' && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-cream-50 dark:bg-white/5 rounded-3xl border border-cream-300 dark:border-white/10 p-8 shadow-sm dark:shadow-none space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300"
-            >
-              {/* Header */}
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-paymint-green/10 flex items-center justify-center">
-                  <Receipt className="w-7 h-7 text-paymint-green" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Receipt Design</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Customize what appears on printed receipts</p>
-                </div>
-              </div>
-
-              {/* Display Options Section */}
-              <div className="border-t border-cream-300 dark:border-white/10 pt-6">
-                <h4 className="text-sm font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <svg className="w-4 h-4 text-paymint-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  Display Options
-                </h4>
-                <div className="space-y-4">
-                  {/* Show Logo */}
-                  <div className="p-4 bg-cream-100 dark:bg-white/5 rounded-2xl border border-cream-300 dark:border-white/10">
-                    <div className="flex items-center space-x-3">
-                      <input
-                        type="checkbox"
-                        id="showLogoOnReceipt"
-                        {...register('showLogoOnReceipt')}
-                        className="w-5 h-5 rounded border-gray-300 text-paymint-green focus:ring-paymint-green cursor-pointer"
-                      />
-                      <div>
-                        <label htmlFor="showLogoOnReceipt" className="text-sm font-bold text-gray-700 dark:text-gray-300 cursor-pointer">Show Logo</label>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Display your restaurant logo on receipts (set logo in Restaurant Profile)</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Restaurant Name */}
-                  <div className="p-4 bg-cream-100 dark:bg-white/5 rounded-2xl border border-cream-300 dark:border-white/10">
-                    <div className="flex items-center space-x-3 mb-3">
-                      <input
-                        type="checkbox"
-                        id="showRestaurantName"
-                        {...register('showRestaurantName')}
-                        className="w-5 h-5 rounded border-gray-300 text-paymint-green focus:ring-paymint-green cursor-pointer"
-                      />
-                      <label htmlFor="showRestaurantName" className="text-sm font-bold text-gray-700 dark:text-gray-300 cursor-pointer">Show Restaurant Name</label>
-                    </div>
-                    <input
-                      type="text"
-                      {...register('restaurantName')}
-                      disabled={!showRestaurantName}
-                      placeholder="Enter restaurant name"
-                      className={`w-full px-4 py-3 bg-cream-50 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-all font-medium ${!showRestaurantName ? 'opacity-50 grayscale cursor-not-allowed bg-gray-100 dark:bg-gray-800/30' : ''}`}
-                    />
-                  </div>
-
-                  {/* Description */}
-                  <div className="p-4 bg-cream-100 dark:bg-white/5 rounded-2xl border border-cream-300 dark:border-white/10">
-                    <div className="flex items-center space-x-3 mb-3">
-                      <input
-                        type="checkbox"
-                        id="showDescription"
-                        {...register('showDescription')}
-                        className="w-5 h-5 rounded border-gray-300 text-paymint-green focus:ring-paymint-green cursor-pointer"
-                      />
-                      <label htmlFor="showDescription" className="text-sm font-bold text-gray-700 dark:text-gray-300 cursor-pointer">Show Description</label>
-                    </div>
-                    <textarea
-                      {...register('description')}
-                      disabled={!showDescription}
-                      rows={2}
-                      placeholder="Enter restaurant description"
-                      className={`w-full px-4 py-3 bg-cream-50 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-all font-medium resize-none ${!showDescription ? 'opacity-50 grayscale cursor-not-allowed bg-gray-100 dark:bg-gray-800/30' : ''}`}
-                    />
-                  </div>
-
-                  {/* Address */}
-                  <div className="p-4 bg-cream-100 dark:bg-white/5 rounded-2xl border border-cream-300 dark:border-white/10">
-                    <div className="flex items-center space-x-3 mb-3">
-                      <input
-                        type="checkbox"
-                        id="showAddress"
-                        {...register('showAddress')}
-                        className="w-5 h-5 rounded border-gray-300 text-paymint-green focus:ring-paymint-green cursor-pointer"
-                      />
-                      <label htmlFor="showAddress" className="text-sm font-bold text-gray-700 dark:text-gray-300 cursor-pointer">Show Address</label>
-                    </div>
-                    <input
-                      type="text"
-                      {...register('address')}
-                      disabled={!showAddress}
-                      placeholder="Enter restaurant address"
-                      className={`w-full px-4 py-3 bg-cream-50 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-all font-medium ${!showAddress ? 'opacity-50 grayscale cursor-not-allowed bg-gray-100 dark:bg-gray-800/30' : ''}`}
-                    />
-                  </div>
-
-                  {/* Tax ID */}
-                  <div className="p-4 bg-cream-100 dark:bg-white/5 rounded-2xl border border-cream-300 dark:border-white/10">
-                    <div className="flex items-center space-x-3 mb-3">
-                      <input
-                        type="checkbox"
-                        id="showTaxId"
-                        {...register('showTaxId')}
-                        className="w-5 h-5 rounded border-gray-300 text-paymint-green focus:ring-paymint-green cursor-pointer"
-                      />
-                      <label htmlFor="showTaxId" className="text-sm font-bold text-gray-700 dark:text-gray-300 cursor-pointer">Show Tax ID</label>
-                    </div>
-                    <input
-                      type="text"
-                      {...register('taxId')}
-                      disabled={!showTaxId}
-                      placeholder="Enter tax ID number (e.g. 123-456-789)"
-                      className={`w-full px-4 py-3 bg-cream-50 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-all font-medium ${!showTaxId ? 'opacity-50 grayscale cursor-not-allowed bg-gray-100 dark:bg-gray-800/30' : ''}`}
-                    />
-                  </div>
-
-                  {/* Farewell Message */}
-                  <div className="p-4 bg-cream-100 dark:bg-white/5 rounded-2xl border border-cream-300 dark:border-white/10">
-                    <div className="flex items-center space-x-3 mb-3">
-                      <input
-                        type="checkbox"
-                        id="showFarewellMessage"
-                        {...register('showFarewellMessage')}
-                        className="w-5 h-5 rounded border-gray-300 text-paymint-green focus:ring-paymint-green cursor-pointer"
-                      />
-                      <label htmlFor="showFarewellMessage" className="text-sm font-bold text-gray-700 dark:text-gray-300 cursor-pointer">Show Farewell Message</label>
-                    </div>
-                    <textarea
-                      {...register('receiptFooter')}
-                      disabled={!showFarewellMessage}
-                      rows={2}
-                      placeholder="Enter farewell message (e.g. Thank you for visiting!)"
-                      className={`w-full px-4 py-3 bg-cream-50 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-all font-medium resize-none ${!showFarewellMessage ? 'opacity-50 grayscale cursor-not-allowed bg-gray-100 dark:bg-gray-800/30' : ''}`}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Header Message Section */}
-              <div className="border-t border-cream-300 dark:border-white/10 pt-6">
-                <h4 className="text-sm font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <svg className="w-4 h-4 text-paymint-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                  </svg>
-                  Header Message
-                </h4>
-                <div className="bg-cream-100 dark:bg-white/5 rounded-2xl border border-cream-300 dark:border-white/10 p-6">
-                  <textarea
-                    {...register('receiptHeader')}
-                    rows={2}
-                    className="w-full px-4 py-3 bg-cream-50 dark:bg-[#1a1a1a] border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green transition-colors font-medium resize-none"
-                    placeholder="e.g. Welcome to our Restaurant"
-                  />
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">This message appears at the top of the receipt, below the restaurant info</p>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Loyalty Program */}
-          {activeTab === 'loyalty' && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-cream-50 dark:bg-white/5 rounded-3xl border border-cream-300 dark:border-white/10 p-8 shadow-sm dark:shadow-none space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300"
-            >
-              {/* Header */}
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-paymint-green/10 flex items-center justify-center">
-                  <Award size={24} className="text-paymint-green" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Loyalty Program</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Configure how customers earn and redeem points</p>
-                </div>
-              </div>
-
-              {/* Earning Rule Section */}
-              <div className="border-t border-cream-300 dark:border-white/10 pt-6">
-                <h4 className="text-sm font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <svg className="w-4 h-4 text-paymint-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                  </svg>
-                  Earning Rule
-                </h4>
-                <div className="bg-cream-100 dark:bg-white/5 rounded-2xl border border-cream-300 dark:border-white/10 p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">For every</label>
-                      <div className="flex items-stretch rounded-xl border border-cream-300 dark:border-white/10 overflow-hidden bg-cream-50 dark:bg-[#1a1a1a]">
-                        <div className="px-4 bg-paymint-green/10 flex items-center justify-center border-r border-cream-300 dark:border-white/10">
-                          <span className="text-sm font-bold text-paymint-green">{watch('currency') || 'JOD'}</span>
-                        </div>
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          value={currencyPerPointDisplay}
-                          onChange={handleCurrencyPerPointChange}
-                          placeholder="0.00"
-                          className="flex-1 px-4 py-3 bg-transparent text-gray-900 dark:text-white font-semibold focus:outline-none text-right"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Customer gets</label>
-                      <div className="flex items-stretch rounded-xl border border-cream-300 dark:border-white/10 overflow-hidden bg-cream-50 dark:bg-[#1a1a1a]">
-                        <div className="px-4 bg-paymint-green/10 flex items-center justify-center border-r border-cream-300 dark:border-white/10">
-                          <span className="text-xs font-bold text-paymint-green">PTS</span>
-                        </div>
-                        <input
-                          type="text"
-                          inputMode="numeric"
-                          value={Math.max(0, loyaltyConfig?.pointsPerCurrency ?? 0)}
-                          onChange={(e) => {
-                            const digitsOnly = e.target.value.replace(/[^0-9]/g, '');
-                            const value = parseInt(digitsOnly, 10) || 0;
-                            setLoyaltyConfig(prev => prev ? { ...prev, pointsPerCurrency: value } : null);
-                          }}
-                          placeholder="0"
-                          className="flex-1 px-4 py-3 bg-transparent text-gray-900 dark:text-white font-semibold focus:outline-none text-right"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Rewards Section */}
-              <div className="border-t border-cream-300 dark:border-white/10 pt-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-sm font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wider flex items-center gap-2">
-                    <svg className="w-4 h-4 text-paymint-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                    </svg>
-                    Rewards
-                  </h4>
-                  <button
-                    type="button"
-                    onClick={() => setShowRewardModal(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-paymint-green text-black rounded-xl font-bold text-sm hover:bg-paymint-green/90 transition-colors shadow-lg shadow-paymint-green/20"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                    Add Reward
-                  </button>
-                </div>
-
-                {/* Rewards List */}
-                {(!rewards || rewards.length === 0) ? (
-                  <div className="bg-cream-100 dark:bg-white/5 rounded-2xl border border-cream-300 dark:border-white/10 p-8 text-center">
-                    <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                      </svg>
-                    </div>
-                    <p className="text-gray-500 dark:text-gray-400 font-medium">No rewards yet</p>
-                    <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">Add rewards to let customers redeem their points</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {rewards.map((reward) => (
-                      <div key={reward.id} className="flex items-center gap-4 bg-cream-100 dark:bg-white/5 rounded-xl border border-cream-300 dark:border-white/10 p-4">
-                        <div className="w-11 h-11 rounded-full bg-paymint-green/10 flex items-center justify-center">
-                          {reward.type === 'DISCOUNT' ? (
-                            <svg className="w-5 h-5 text-paymint-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                            </svg>
+              <AnimatePresence mode="wait">
+                {selectedDays.length > 0 ? (
+                  <motion.div key="config-panel" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
+                    {(() => {
+                      const referenceDay = selectedDays[0];
+                      const currentSchedule = watch('operatingSchedule') || {};
+                      const refConfig = currentSchedule[referenceDay] || { isOpen: !!watch('openingTime'), open: watch('openingTime') || '09:00', close: watch('closingTime') || '22:00' };
+                      const updateSelectedDays = (key: string, val: any) => {
+                        const newSchedule = { ...currentSchedule };
+                        selectedDays.forEach(day => {
+                          const existing = newSchedule[day] || { isOpen: !!watch('openingTime'), open: watch('openingTime') || '09:00', close: watch('closingTime') || '22:00' };
+                          newSchedule[day] = { ...existing, [key]: val };
+                          if (key === 'isOpen' && val === true) {
+                            if (!newSchedule[day].open) newSchedule[day].open = '09:00';
+                            if (!newSchedule[day].close) newSchedule[day].close = '22:00';
+                          }
+                        });
+                        setValue('operatingSchedule', newSchedule, { shouldDirty: true });
+                      };
+                      return (
+                        <div className="space-y-8">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-[10px] font-black text-paymint-green uppercase tracking-[0.2em] mb-1">Session Logic</p>
+                              <p className="text-sm font-bold text-gray-900 dark:text-white truncate max-w-[200px] md:max-w-md">{selectedDays.length === 7 ? 'Entire Week' : selectedDays.map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ')}</p>
+                            </div>
+                            <div className="flex items-center gap-4 bg-white dark:bg-white/[0.03] px-5 py-3 rounded-2xl border border-gray-200 dark:border-white/[0.08] shadow-sm">
+                              <span className={`text-[10px] font-black uppercase tracking-widest ${refConfig.isOpen ? 'text-paymint-green' : 'text-gray-400'}`}>{refConfig.isOpen ? 'Active' : 'Offline'}</span>
+                              <label className="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" checked={refConfig.isOpen} onChange={(e) => updateSelectedDays('isOpen', e.target.checked)} className="sr-only peer" />
+                                <div className="w-11 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-sm"></div>
+                              </label>
+                            </div>
+                          </div>
+                          {refConfig.isOpen ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <TimeSelector label="Commencement" subLabel="Service Start" value={refConfig.open} onChange={(val: string) => updateSelectedDays('open', val)} compact={false} />
+                              <TimeSelector label="Termination" subLabel="Service End" value={refConfig.close} onChange={(val: string) => updateSelectedDays('close', val)} compact={false} colorClass="orange" />
+                            </div>
                           ) : (
-                            <svg className="w-5 h-5 text-paymint-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                            </svg>
+                            <div className="h-32 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 dark:border-white/10 bg-white/50 dark:bg-white/[0.02]">
+                              <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center mb-3 shadow-sm border border-gray-200 dark:border-white/5">
+                                <Clock className="w-6 h-6 text-gray-400" />
+                              </div>
+                              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Protocol: Establishment Closed</span>
+                            </div>
                           )}
                         </div>
-                        <div className="flex-1">
-                          <p className="font-semibold text-gray-900 dark:text-white">{reward.name}</p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {reward.type === 'DISCOUNT' ? `${reward.discountPercentage}% off` : `Free item from ${reward.freeCategoryName}`} • {reward.pointsRequired} pts
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => handleEditReward(reward)}
-                            className="p-2 text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"
-                          >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                            </svg>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteReward(reward.id)}
-                            className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                          >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          )}
-
-          {/* Add/Edit Reward Modal */}
-          {showRewardModal && (
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="bg-cream-50 dark:bg-[#1a1a1a] rounded-3xl border border-cream-300 dark:border-white/10 p-8 w-full max-w-md mx-4 shadow-2xl"
-              >
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
-                  {editingReward ? 'Edit Reward' : 'Add Reward'}
-                </h3>
-
-                {/* Reward Type */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Reward Type</label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setRewardForm({ ...rewardForm, type: 'DISCOUNT' })}
-                      className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border font-semibold transition-all ${rewardForm.type === 'DISCOUNT'
-                        ? 'bg-paymint-green text-black border-paymint-green'
-                        : 'bg-cream-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 border-cream-300 dark:border-white/10 hover:border-paymint-green'
-                        }`}
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                      </svg>
-                      Discount
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setRewardForm({ ...rewardForm, type: 'FREE_ITEM' })}
-                      className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl border font-semibold transition-all ${rewardForm.type === 'FREE_ITEM'
-                        ? 'bg-paymint-green text-black border-paymint-green'
-                        : 'bg-cream-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 border-cream-300 dark:border-white/10 hover:border-paymint-green'
-                        }`}
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-                      </svg>
-                      Free Item
-                    </button>
-                  </div>
-                </div>
-
-                {/* Points Required */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Points Required</label>
-                  <div className="flex items-stretch rounded-xl border border-cream-300 dark:border-white/10 overflow-hidden bg-cream-100 dark:bg-white/5">
-                    <div className="px-4 bg-paymint-green/10 flex items-center justify-center border-r border-cream-300 dark:border-white/10">
-                      <span className="text-xs font-bold text-paymint-green">PTS</span>
+                      );
+                    })()}
+                  </motion.div>
+                ) : (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl bg-gray-50/50 dark:bg-black/5">
+                    <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-gray-400 shadow-sm">
+                      <Plus size={24} />
                     </div>
+                    <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Initialization Required</p>
+                    <p className="text-[10px] font-black text-gray-400 mt-1 uppercase tracking-widest">Select one or more days to edit schedule metadata</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        )}
+
+        {activeTab === 'sales' && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <div className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 shadow-sm">
+                  <DollarSign size={20} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sales & Tax Logic</h3>
+                  <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Configure financial processing rules</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all hover:border-paymint-green/20 group/card">
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <p className="text-[10px] font-black text-paymint-green uppercase tracking-[0.2em] mb-1">Taxation Protocol</p>
+                      <h4 className="text-sm font-bold text-gray-900 dark:text-white">Active Tax Rate (%)</h4>
+                    </div>
+                    <button type="button" onClick={updateTaxRate} className="px-4 py-2 bg-paymint-green text-black text-[10px] font-black uppercase tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md shadow-paymint-green/10">Update</button>
+                  </div>
+                  <div className={`relative group transition-all`}>
                     <input
                       type="number"
-                      value={rewardForm.pointsRequired}
-                      onChange={(e) => setRewardForm({ ...rewardForm, pointsRequired: e.target.value })}
-                      placeholder="0"
-                      className="flex-1 px-4 py-3 bg-transparent text-gray-900 dark:text-white font-semibold focus:outline-none"
+                      step="0.01"
+                      min="0"
+                      onInput={(e: React.FormEvent<HTMLInputElement>) => {
+                        const target = e.target as HTMLInputElement;
+                        if (Number(target.value) < 0) {
+                          target.value = '0';
+                        }
+                        // Limit to 5 decimal places to allow high-precision entry (e.g., .11111 -> 11.111)
+                        if (target.value.includes('.')) {
+                          const parts = target.value.split('.');
+                          if (parts[1].length > 5) {
+                            target.value = `${parts[0]}.${parts[1].slice(0, 5)}`;
+                          }
+                        }
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === '-' || e.key === 'e' || e.key === 'E') {
+                          e.preventDefault();
+                        }
+                      }}
+                      {...register('taxRate', {
+                        required: true,
+                        valueAsNumber: true,
+                        max: { value: 100, message: 'Tax rate must be between 0 and 100%' },
+                        min: { value: 0, message: 'Tax rate must be between 0 and 100%' },
+                        onBlur: (e) => {
+                          const val = parseFloat(e.target.value);
+                          if (val > 0 && val < 1) {
+                            setValue('taxRate', parseFloat((val * 100).toFixed(5)), { shouldDirty: true });
+                          } else if (!isNaN(val)) {
+                            setValue('taxRate', parseFloat(val.toFixed(5)), { shouldDirty: true });
+                          }
+                        }
+                      })}
+                      className={`w-full h-16 bg-white dark:bg-white/[0.03] border ${errors.taxRate ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl px-6 font-bold text-3xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${errors.taxRate ? 'focus:ring-red-500/20' : 'focus:ring-paymint-green/20'} transition-all pr-16 group-hover:border-paymint-green/50 shadow-sm`}
+                    />
+                    <div className={`absolute right-6 top-1/2 -translate-y-1/2 font-bold text-xl transition-colors ${errors.taxRate ? 'text-red-500' : 'text-gray-400 group-focus-within:text-paymint-green'}`}>%</div>
+                  </div>
+                  {errors.taxRate && (
+                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
+                        <AlertTriangle size={18} className="text-red-500" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black text-red-500 uppercase tracking-widest leading-none mb-1">Constraint Violation</p>
+                        <p className="text-[10px] font-bold text-red-500/80 uppercase tracking-tight">{errors.taxRate.message as string || 'Tax rate error'}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                  <p className="text-[9px] font-black text-gray-400 mt-6 leading-relaxed uppercase tracking-tight flex items-start gap-2">
+                    <span className="text-paymint-green">•</span>
+                    Modifying this will affect future transactions and net revenue calculations.
+                  </p>
+                </div>
+
+                <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all hover:border-paymint-green/20 group/card">
+                  <div className="mb-6">
+                    <p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.2em] mb-1">Financial Standard</p>
+                    <h4 className="text-sm font-bold text-gray-900 dark:text-white">System Currency</h4>
+                  </div>
+                  <div className="relative">
+                    <input type="hidden" {...register('currency')} />
+                    <CustomSelect
+                      value={watch('currency')}
+                      onChange={(val) => { setValue('currency', val, { shouldDirty: true }); }}
+                      options={[
+                        { label: 'JOD - Jordanian Dinar', value: 'JOD' },
+                        { label: 'USD - US Dollar', value: 'USD' },
+                        { label: 'SAR - Saudi Riyal', value: 'SAR' },
+                        { label: 'AED - UAE Dirham', value: 'AED' },
+                      ]}
                     />
                   </div>
+                  <p className="text-[9px] font-black text-gray-400 mt-6 leading-relaxed uppercase tracking-tight flex items-start gap-2">
+                    <span className="text-blue-500">•</span>
+                    Primary currency for transactions, global pricing, and reporting metrics.
+                  </p>
                 </div>
-
-                {/* Discount Percentage (for DISCOUNT type) */}
-                {rewardForm.type === 'DISCOUNT' && (
-                  <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Discount Percentage</label>
-                    <div className="flex items-stretch rounded-xl border border-cream-300 dark:border-white/10 overflow-hidden bg-cream-100 dark:bg-white/5">
-                      <div className="px-4 bg-paymint-green/10 flex items-center justify-center border-r border-cream-300 dark:border-white/10">
-                        <span className="text-lg font-bold text-paymint-green">%</span>
-                      </div>
-                      <input
-                        type="number"
-                        value={rewardForm.discountPercentage}
-                        onChange={(e) => setRewardForm({ ...rewardForm, discountPercentage: e.target.value })}
-                        placeholder="0"
-                        max="100"
-                        className="flex-1 px-4 py-3 bg-transparent text-gray-900 dark:text-white font-semibold focus:outline-none"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* Category Selection (for FREE_ITEM type) */}
-                {rewardForm.type === 'FREE_ITEM' && (
-                  <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Select Category</label>
-                    <select
-                      value={rewardForm.freeCategoryId}
-                      onChange={(e) => {
-                        const cat = categories.find(c => c.id === e.target.value);
-                        setRewardForm({
-                          ...rewardForm,
-                          freeCategoryId: e.target.value,
-                          freeCategoryName: cat?.name || ''
-                        });
-                      }}
-                      className="w-full px-4 py-3 bg-cream-100 dark:bg-white/5 border border-cream-300 dark:border-white/10 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-green"
-                    >
-                      <option value="">Select a category</option>
-                      {categories.map(cat => (
-                        <option key={cat.id} value={cat.id}>{cat.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-
-                {/* Modal Actions */}
-                <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowRewardModal(false);
-                      setEditingReward(null);
-                      setRewardForm({ type: 'DISCOUNT', pointsRequired: '', discountPercentage: '', freeCategoryId: '', freeCategoryName: '' });
-                    }}
-                    className="flex-1 px-4 py-3 bg-cream-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 rounded-xl font-bold border border-cream-300 dark:border-white/10 hover:bg-cream-200 dark:hover:bg-white/10 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleSaveReward}
-                    className="flex-1 px-4 py-3 bg-paymint-green text-black rounded-xl font-bold hover:bg-paymint-green/90 transition-colors shadow-lg shadow-paymint-green/20"
-                  >
-                    Save
-                  </button>
-                </div>
-              </motion.div>
+              </div>
             </div>
-          )}
+          </motion.div>
+        )}
 
-          {/* Danger Zone */}
-          {activeTab === 'danger' && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300"
-            >
-              {/* Pending Deletion Banner */}
-              {deletionStatus && (
-                <PendingDeletionBanner
-                  deletionStatus={deletionStatus}
-                  onCancelDeletion={handleCancelDeletion}
-                  isCancelling={isCancellingDeletion}
-                />
-              )}
-
-              {/* Delete Establishment Card */}
-              <div className="bg-red-50 dark:bg-red-500/5 rounded-3xl border-2 border-red-200 dark:border-red-500/20 p-8 shadow-sm dark:shadow-none">
-                {/* Header */}
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-red-100 dark:bg-red-500/10 flex items-center justify-center">
-                    <Trash2 className="w-7 h-7 text-red-500" />
+        {activeTab === 'receipt' && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center">
+                <Receipt className="w-6 h-6 text-paymint-green" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Receipt Design</h3>
+                <p className="text-sm text-gray-500 font-medium">Customize customer proof of purchase</p>
+              </div>
+            </div>
+            <div className="space-y-8">
+              <div className="space-y-4 p-6 bg-gray-50 dark:bg-white/[0.02] rounded-2xl border border-gray-200 dark:border-white/5">
+                <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest mb-6 px-1">Display Controls</h4>
+                <div className="space-y-4">
+                  {/* Identity Visibility */}
+                  <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 uppercase tracking-tight">Identity Visibility</span>
+                        <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Display restaurant name & header text</span>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" {...register('showRestaurantName')} className="sr-only peer" />
+                        <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
+                      </label>
+                    </div>
+                    <AnimatePresence>
+                      {showRestaurantName && (
+                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden space-y-3">
+                          <input type="text" {...register('restaurantName')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all" placeholder="Enter Restaurant Name" />
+                          <input type="text" {...register('receiptHeader')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all" placeholder="Header Text (Optional)" />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-red-700 dark:text-red-400">Delete Establishment</h3>
-                    <p className="text-sm text-red-600 dark:text-red-300/80">Permanently delete this establishment and all its data</p>
+
+                  {/* Branding Protocol */}
+                  <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 uppercase tracking-tight">Branding Protocol</span>
+                        <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Include brand logo at the top</span>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" {...register('showLogoOnReceipt')} className="sr-only peer" />
+                        <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
+                      </label>
+                    </div>
+                    <AnimatePresence>
+                      {watch('showLogoOnReceipt') && (
+                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                          <div className="flex items-center gap-6 p-2">
+                            <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
+                              {previewImage ? <img src={previewImage} alt="Logo" className="w-full h-full object-cover" /> : <Store className="w-8 h-8 text-gray-300 dark:text-gray-600" />}
+                            </div>
+                            <label className="px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl hover:opacity-90 cursor-pointer text-xs font-black uppercase tracking-widest transition-all">
+                              Upload Logo
+                              <input type="file" accept="image/*" onChange={handleLogoChange} className="hidden" />
+                            </label>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Location Metadata */}
+                  <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 uppercase tracking-tight">Location Metadata</span>
+                        <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Print full establishment address</span>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" {...register('showAddress')} className="sr-only peer" />
+                        <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
+                      </label>
+                    </div>
+                    <AnimatePresence>
+                      {showAddress && (
+                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                          <input type="text" {...register('restaurantAddress')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all" placeholder="Enter Address" />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Regulatory Data */}
+                  <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 uppercase tracking-tight">Regulatory Data</span>
+                        <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Show Tax ID / TRN on footer</span>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" {...register('showTaxId')} className="sr-only peer" />
+                        <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
+                      </label>
+                    </div>
+                    <AnimatePresence>
+                      {showTaxId && (
+                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                          <input type="text" {...register('taxIdNumber')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all" placeholder="Enter Tax ID / TRN" />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Client Relations */}
+                  <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 uppercase tracking-tight">Client Relations</span>
+                        <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Include custom footer message</span>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" {...register('showFarewellMessage')} className="sr-only peer" />
+                        <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
+                      </label>
+                    </div>
+                    <AnimatePresence>
+                      {showFarewellMessage && (
+                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                          <textarea {...register('farewellMessage')} rows={2} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all resize-none" placeholder="Enter custom footer message" />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
-                {/* Warning Box */}
-                <div className="bg-white dark:bg-red-500/5 rounded-2xl p-6 border border-red-200 dark:border-red-500/10 mb-6">
-                  <div className="flex items-start gap-3">
-                    <AlertTriangle className="text-red-500 flex-shrink-0 mt-0.5" size={20} />
-                    <div>
-                      <h4 className="font-bold text-red-700 dark:text-red-400 mb-2">Before you proceed, understand that:</h4>
-                      <ul className="space-y-2 text-sm text-red-600 dark:text-red-300/80">
-                        <li className="flex items-start gap-2">
-                          <span className="text-red-400 mt-1">•</span>
-                          <span>All orders, customers, products, and employee records will be permanently deleted</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-red-400 mt-1">•</span>
-                          <span>You'll have a 30-day grace period to cancel the deletion</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-red-400 mt-1">•</span>
-                          <span>Data exports will be sent to your email before deletion</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-red-400 mt-1">•</span>
-                          <span>This action cannot be undone after the grace period</span>
-                        </li>
-                      </ul>
+        {activeTab === 'loyalty' && loyaltyConfig && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-8 space-y-10 shadow-sm">
+            <div className="flex items-center justify-between border-b border-gray-100 dark:border-white/5 pb-8">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm">
+                  <Award className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Loyalty Protocol</h3>
+                  <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Customer Retention Infrastructure</p>
+                </div>
+              </div>
+            </div>
+
+
+            <div className="space-y-5 pt-4">
+              <div className="flex items-center gap-2">
+                <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
+                <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest px-1">Earning Algorithm</h4>
+              </div>
+              <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
+
+                <div className="flex flex-col lg:flex-row items-center gap-8">
+                  {/* Points Input Section */}
+                  <div className="flex-1 w-full lg:w-auto space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-7 h-7 rounded-lg bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+                        <Award size={16} />
+                      </div>
+                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Points Awarded</span>
+                    </div>
+                    <div className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl px-6 py-4 flex flex-col items-center gap-1 shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
+                      <input
+                        type="text"
+                        value={pointsPerCurrencyDisplay}
+                        onChange={handlePointsPerCurrencyChange}
+                        className="w-full bg-transparent font-bold text-3xl text-paymint-green focus:outline-none transition-all text-center"
+                      />
+                      <div className="text-[9px] font-black text-gray-300 dark:text-gray-500 uppercase tracking-widest">LOYALTY UNITS</div>
+                    </div>
+                  </div>
+
+                  {/* Connector */}
+                  <div className="flex flex-col items-center justify-center py-4 lg:py-0">
+                    <div className="w-12 h-12 rounded-full bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] flex items-center justify-center shadow-md relative z-20">
+                      <RefreshCw size={18} className="text-gray-400" />
+                    </div>
+                  </div>
+
+                  {/* Spend Input Section */}
+                  <div className="flex-1 w-full lg:w-auto space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500">
+                        <DollarSign size={16} />
+                      </div>
+                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Required Spend</span>
+                    </div>
+                    <div className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl px-6 py-4 flex flex-col items-center gap-1 shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
+                      <input
+                        type="text"
+                        value={currencyPerPointDisplay}
+                        onChange={handleCurrencyPerPointChange}
+                        className="w-full bg-transparent font-bold text-3xl text-gray-900 dark:text-white focus:outline-none transition-all text-center"
+                      />
+                      <div className="text-[9px] font-black text-gray-300 dark:text-gray-500 uppercase tracking-widest">{watch('currency')} VALUE</div>
                     </div>
                   </div>
                 </div>
 
-                {/* Delete Button */}
+                <div className="mt-8 pt-8 border-t border-gray-200 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
+                  <div className="flex items-center gap-4 bg-white dark:bg-[#0B1120] px-6 py-4 rounded-2xl border border-gray-100 dark:border-white/[0.03] shadow-sm">
+                    <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
+                    <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                      Active Rule: <span className="text-gray-900 dark:text-white">Customers earn {pointsPerCurrencyDisplay} points for every {currencyPerPointDisplay} {watch('currency')} spent</span>
+                    </p>
+                  </div>
+                  <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-right max-w-xs hidden md:block">
+                    Points are calculated in real-time during checkout.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Rewards List */}
+
+            <div className="space-y-6 pt-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
+                  <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest px-1">Rewards Catalog</h4>
+                </div>
+                <button type="button" onClick={() => { setEditingReward(null); setShowRewardModal(true); }} className="flex items-center gap-2 px-4 py-2 bg-paymint-green/10 text-paymint-green rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-paymint-green/20 transition-all border border-paymint-green/20">
+                  <Plus size={14} /> Add Protocol
+                </button>
+              </div>
+              {rewards.length === 0 ? (
+                <div className="text-center py-16 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl bg-gray-50/50 dark:bg-black/5">
+                  <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-paymint-green shadow-sm">
+                    <Award size={24} />
+                  </div>
+                  <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Catalog Empty</p>
+                  <p className="text-[10px] font-black text-gray-400 mt-1 uppercase tracking-widest">Initialize reward tiers to activate redemption</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {rewards.map((reward) => (
+                    <div key={reward.id} className="flex items-center justify-between p-5 bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/5 group hover:border-paymint-green/30 transition-all shadow-sm">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/[0.08] flex items-center justify-center text-paymint-green shadow-sm group-hover:scale-110 transition-transform">
+                          <Award size={24} />
+                        </div>
+                        <div>
+                          <p className="font-bold text-gray-900 dark:text-white text-sm">{reward.name}</p>
+                          <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">{reward.pointsRequired} Points Required</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
+                        <button type="button" onClick={() => handleEditReward(reward)} className="p-2 rounded-lg bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-green border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
+                          <Edit2 size={16} />
+                        </button>
+                        <button type="button" onClick={() => handleDeleteReward(reward.id)} className="p-2 rounded-lg bg-white dark:bg-white/5 text-gray-400 hover:text-red-500 border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+
+        {activeTab === 'danger' && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-red-50/30 dark:bg-red-900/5 rounded-2xl border border-red-200/50 dark:border-red-900/20 p-8 space-y-10 shadow-sm">
+
+            <div className="flex items-center justify-between border-b border-red-100 dark:border-red-900/10 pb-8">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400 shadow-sm">
+                  <Trash2 className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Terminal Deletion</h3>
+                  <p className="text-[10px] text-red-600/80 dark:text-red-400/80 font-black uppercase tracking-widest px-1">Critical Administrative Action</p>
+                </div>
+              </div>
+              <span className="px-3 py-1 rounded-lg bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-[10px] font-black uppercase tracking-widest border border-red-200 dark:border-red-900/30">
+                High Risk
+              </span>
+            </div>
+
+            {deletionStatus?.status === 'pending_deletion' ? (
+              <div>
+                <PendingDeletionBanner deletionStatus={deletionStatus} onCancelDeletion={handleCancelDeletion} isCancelling={isCancellingDeletion} />
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-red-200/50 dark:border-red-900/20 shadow-sm">
+                  <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
+                    This action will initiate the permanent removal of <span className="font-bold text-gray-900 dark:text-white">"{establishmentInfo?.name || 'this establishment'}"</span>.
+                    All associated data including order history, product catalogs, and customer metrics will be purged from our production clusters.
+                  </p>
+                  <div className="mt-6 flex flex-col gap-3">
+                    <div className="flex items-center gap-2 text-[10px] font-black text-red-500 uppercase tracking-tight">
+                      <AlertTriangle size={14} />
+                      This action cannot be reversed after the cooling-off period.
+                    </div>
+                  </div>
+                </div>
                 <button
                   type="button"
                   onClick={() => setShowDeletionWizard(true)}
-                  disabled={deletionStatus?.status === 'pending_deletion'}
-                  className="px-8 py-4 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-colors flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full md:w-auto px-8 py-4 bg-red-600 text-white font-black uppercase tracking-widest text-xs rounded-xl hover:bg-red-700 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-red-600/20"
                 >
-                  <Trash2 size={20} />
-                  {deletionStatus?.status === 'pending_deletion'
-                    ? 'Deletion Already Scheduled'
-                    : 'Delete This Establishment'
-                  }
+                  Start Termination Protocol
                 </button>
               </div>
-            </motion.div>
-          )}
-
-          {/* Save Button */}
-          {activeTab !== 'danger' && (
-            <div className="flex justify-end gap-3 sticky bottom-8 z-20">
-            {hasUnsavedChanges && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 border border-amber-200 dark:border-amber-900/50 shadow-xl"
-              >
-                <Shield size={14} /> UNSAVED MODIFICATIONS
-              </motion.div>
             )}
-            <button
-              type="submit"
-              disabled={isSaving}
-              className="px-10 py-4 bg-paymint-green text-black font-black rounded-2xl shadow-xl shadow-paymint-green/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-3 uppercase tracking-widest text-xs disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSaving ? (
-                <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-              ) : (
-                <Save size={20} />
-              )}
-              Save All Settings
-            </button>
-          </div>
-          )}
-        </form>
-      </div>
+          </motion.div>
+        )}
+      </form>
+
+      {showRewardModal && (
+        <RewardFormModal
+          isOpen={showRewardModal}
+          onClose={() => setShowRewardModal(false)}
+          onSave={handleSaveReward}
+          initialData={editingReward}
+          categories={categories}
+        />
+      )}
 
       <ConfirmModal
         isOpen={confirmConfig.isOpen}
-        onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
+        onClose={() => confirmConfig.onClose ? confirmConfig.onClose() : setConfirmConfig({ ...confirmConfig, isOpen: false })}
         onConfirm={confirmConfig.onConfirm}
         title={confirmConfig.title}
         message={confirmConfig.message}
         type={confirmConfig.type}
+        confirmText={confirmConfig.confirmText}
+        showCancel={confirmConfig.showCancel}
       />
-
-      {/* Deletion Wizard Modal */}
       {showDeletionWizard && establishmentInfo && (
-        <EstablishmentDeletionWizard
-          establishmentId={establishmentInfo.id}
-          establishmentName={establishmentInfo.name}
-          onClose={() => setShowDeletionWizard(false)}
-          onDeletionRequested={fetchEstablishmentInfo}
-        />
+        <EstablishmentDeletionWizard establishmentId={establishmentInfo.id} establishmentName={establishmentInfo.name} onClose={() => setShowDeletionWizard(false)} onDeletionRequested={() => { fetchEstablishmentInfo(); setShowDeletionWizard(false); }} />
       )}
     </div>
   );
