@@ -15,7 +15,6 @@ import {
   ArrowLeft,
   Loader2,
   CreditCard,
-  CheckCircle2,
   Building2,
   UtensilsCrossed,
   Coffee,
@@ -27,7 +26,10 @@ import {
   ChevronDown,
   Copy,
   Box,
-  Tags
+  Tags,
+  Eye,
+  EyeOff,
+  LayoutDashboard
 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
@@ -83,6 +85,10 @@ export function OnboardingPage() {
   const [selectedCountry, setSelectedCountry] = useState({ code: 'JO', name: 'Jordan', dialCode: '+962', flag: '🇯🇴' });
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [countrySearch, setCountrySearch] = useState('');
+
+  // Password Visibility State
+  const [showEstablishmentPassword, setShowEstablishmentPassword] = useState(false);
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
 
   // Duplication State
   const [duplicateFromId, setDuplicateFromId] = useState<string>('');
@@ -856,11 +862,18 @@ export function OnboardingPage() {
                     <div className="relative group">
                       <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                       <input
-                        type="password"
+                        type={showEstablishmentPassword ? "text" : "password"}
                         {...form3.register('establishmentPassword')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.establishmentPassword ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.establishmentPassword ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                         placeholder="••••••••"
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowEstablishmentPassword(!showEstablishmentPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                      >
+                        {showEstablishmentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
                     </div>
                     {form3.formState.errors.establishmentPassword && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form3.formState.errors.establishmentPassword.message as string}</p>}
                   </div>
@@ -959,11 +972,18 @@ export function OnboardingPage() {
                     <div className="relative group">
                       <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                       <input
-                        type="password"
+                        type={showAdminPassword ? "text" : "password"}
                         {...form4.register('password')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.password ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.password ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                         placeholder="••••••••"
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowAdminPassword(!showAdminPassword)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                      >
+                        {showAdminPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
                     </div>
                     {form4.formState.errors.password && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form4.formState.errors.password.message as string}</p>}
                   </div>
@@ -1000,36 +1020,44 @@ export function OnboardingPage() {
                   <span className="text-gray-900 dark:text-white font-bold">{formData.name}</span> is now active on the PayMint network.
                 </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-                  <div className="p-6 bg-gray-50 dark:bg-black/20 rounded-3xl border border-gray-100 dark:border-white/5 text-left">
-                    <div className="w-10 h-10 bg-paymint-green/10 rounded-xl flex items-center justify-center mb-4">
-                      <ShieldCheck size={20} className="text-paymint-green" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 mt-12">
+                  {/* Option 1: Go to Dashboard */}
+                  <button
+                    onClick={() => {
+                      // Find and select the newly created establishment
+                      const newEstablishment = establishments.find(e => e.id === formData.establishmentId);
+                      if (newEstablishment) {
+                        setCurrentEstablishment(newEstablishment);
+                      }
+                      navigate('/dashboard');
+                    }}
+                    className="p-8 bg-paymint-green text-black rounded-[2rem] text-left hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-paymint-green/20 group flex flex-col h-full"
+                  >
+                    <div className="w-14 h-14 bg-black/10 rounded-2xl flex items-center justify-center mb-6 group-hover:rotate-6 transition-transform">
+                      <LayoutDashboard size={28} className="text-black" />
                     </div>
-                    <h4 className="text-gray-900 dark:text-white font-bold mb-1">Standard Plan</h4>
-                    <p className="text-gray-500 text-xs font-medium">Free for 7 days</p>
-                  </div>
-                  <div className="p-6 bg-gray-50 dark:bg-black/20 rounded-3xl border border-gray-100 dark:border-white/5 text-left">
-                    <div className="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center mb-4">
-                      <CheckCircle2 size={20} className="text-blue-500" />
+                    <h3 className="text-2xl font-black mb-2 tracking-tight">Enter Dashboard</h3>
+                    <p className="text-sm font-bold opacity-70">Manage orders, menu, and operations for this location.</p>
+                    <div className="mt-auto pt-6 flex items-center font-black text-sm uppercase tracking-widest gap-2">
+                      Launch System <ArrowRight size={16} />
                     </div>
-                    <h4 className="text-gray-900 dark:text-white font-bold mb-1">Data Isolated</h4>
-                    <p className="text-gray-500 text-xs font-medium">Secure encryption</p>
-                  </div>
-                </div>
+                  </button>
 
-                <button
-                  onClick={() => {
-                    // Find and select the newly created establishment
-                    const newEstablishment = establishments.find(e => e.id === formData.establishmentId);
-                    if (newEstablishment) {
-                      setCurrentEstablishment(newEstablishment);
-                    }
-                    navigate('/dashboard');
-                  }}
-                  className="w-full py-5 bg-gray-900 dark:bg-white text-white dark:text-black font-black text-xl rounded-2xl hover:scale-105 transition-all shadow-xl active:scale-[0.98]"
-                >
-                  Enter Dashboard
-                </button>
+                  {/* Option 2: Go to Owner Page */}
+                  <button
+                    onClick={() => navigate('/owner')}
+                    className="p-8 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-[2rem] text-left hover:bg-gray-50 dark:hover:bg-white/10 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-gray-200/50 dark:shadow-none flex flex-col h-full"
+                  >
+                    <div className="w-14 h-14 bg-gray-100 dark:bg-white/10 rounded-2xl flex items-center justify-center mb-6">
+                      <Building2 size={28} className="text-gray-900 dark:text-white" />
+                    </div>
+                    <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2 tracking-tight">Owner Portal</h3>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">View all your establishments, billing, and global settings.</p>
+                    <div className="mt-auto pt-6 flex items-center font-black text-gray-900 dark:text-white text-sm uppercase tracking-widest gap-2">
+                      Go to Overview <ArrowRight size={16} />
+                    </div>
+                  </button>
+                </div>
               </div>
             </motion.div>
           )}
