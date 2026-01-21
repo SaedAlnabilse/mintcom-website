@@ -11,17 +11,12 @@ export const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Required for HttpOnly cookie authentication
 });
 
-// Request interceptor to add auth token and establishment ID
+// Request interceptor to add establishment ID
 api.interceptors.request.use(
   (config) => {
-    // Check for accountToken (new system) first, then authToken (legacy)
-    const token = localStorage.getItem('accountToken') || localStorage.getItem('authToken');
-    if (token) {
-      config.headers.set('Authorization', `Bearer ${token}`);
-    }
-
     // Add current establishment ID for account owner requests
     // This is CRITICAL for multi-establishment isolation
     // Use sessionStorage to support multiple tabs with different establishments
@@ -36,8 +31,6 @@ api.interceptors.request.use(
       } catch (e) {
         console.warn('[API] Failed to parse currentEstablishment from sessionStorage:', e);
       }
-    } else {
-      console.warn('[API] No currentEstablishment found in sessionStorage - API calls may not be scoped to an establishment');
     }
 
     return config;
@@ -52,13 +45,10 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Clear all auth data (both new and legacy keys) and redirect to login
-      localStorage.removeItem('accountToken');
+      // Clear local auth data and redirect to login
+      // The HttpOnly cookie will be cleared by calling the logout endpoint
       localStorage.removeItem('account');
-      sessionStorage.removeItem('currentEstablishment'); // Use sessionStorage for per-tab isolation
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('user');
-      localStorage.removeItem('tenant');
+      sessionStorage.removeItem('currentEstablishment');
       window.location.href = '/login';
     }
     return Promise.reject(error);

@@ -407,41 +407,125 @@ export function OrdersPage() {
         </div>
       </div>
 
-      {/* Orders Table */}
+      {/* Orders List Container */}
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col min-h-[400px]">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-white/[0.02]">
-              <tr className="border-b border-gray-200 dark:border-white/5">
-                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Order Details</th>
-                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Customer</th>
-                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Amount</th>
-                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
-                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-              {isLoading && orders.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="py-20 text-center">
-                    <div className="flex flex-col items-center justify-center">
-                      <div className="w-12 h-12 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
-                      <p className="text-xs font-black uppercase text-gray-400">Loading Orders...</p>
-                    </div>
-                  </td>
-                </tr>
-              ) : orders.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="py-20 text-center">
-                    <div className="flex flex-col items-center justify-center">
-                      <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4">
-                        <ShoppingCart className="w-8 h-8 text-gray-300" />
+
+        {/* Loading State */}
+        {isLoading && orders.length === 0 && (
+          <div className="py-20 text-center">
+            <div className="flex flex-col items-center justify-center">
+              <div className="w-12 h-12 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
+              <p className="text-xs font-black uppercase text-gray-400">Loading Orders...</p>
+            </div>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && orders.length === 0 && (
+          <div className="py-20 text-center">
+            <div className="flex flex-col items-center justify-center">
+              <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4">
+                <ShoppingCart className="w-8 h-8 text-gray-300" />
+              </div>
+              <p className="text-sm font-bold text-gray-500">No orders found</p>
+            </div>
+          </div>
+        )}
+
+        {/* Mobile Card View (visible on small screens) */}
+        {orders.length > 0 && (
+          <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+            <AnimatePresence mode='popLayout'>
+              {orders.map((order) => (
+                <motion.div
+                  key={order.id}
+                  data-order-id={order.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  onClick={() => setSelectedOrder(order)}
+                  className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer active:bg-gray-100 dark:active:bg-white/[0.04]"
+                >
+                  {/* Card Header: Order # and Status */}
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500">
+                        <ShoppingCart size={16} />
                       </div>
-                      <p className="text-sm font-bold text-gray-500">No orders found</p>
+                      <div>
+                        <p className="font-bold text-gray-900 dark:text-white text-sm">#{order.orderNumber}</p>
+                        <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">
+                          {formatDate(order.createdAt)}
+                        </p>
+                      </div>
                     </div>
-                  </td>
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
+                      {order.paymentStatus || order.status}
+                    </span>
+                  </div>
+
+                  {/* Card Body: Customer and Amount */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-gray-800 dark:text-gray-300 text-sm truncate">
+                        {order.customer?.name || 'Walk-in Customer'}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {order.user?.username ? `Staff: ${order.user.username}` : 'POS'} • {order.paymentMethod}
+                      </p>
+                    </div>
+                    <div className="text-right ml-4 flex-shrink-0">
+                      <p className="font-bold text-gray-900 dark:text-white text-lg">{formatCurrency(order.total)}</p>
+                    </div>
+                  </div>
+
+                  {/* Card Footer: Actions */}
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100 dark:border-white/5">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedOrder(order);
+                      }}
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                    >
+                      <Eye size={14} />
+                      View Details
+                    </button>
+
+                    {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRefund(order);
+                        }}
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-paymint-red hover:bg-paymint-red/10 transition-colors"
+                      >
+                        <Undo2 size={14} />
+                        Refund
+                      </button>
+                    )}
+
+                    <ChevronRight size={16} className="text-gray-400" />
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
+
+        {/* Desktop Table View (hidden on small screens) */}
+        {orders.length > 0 && (
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 dark:bg-white/[0.02]">
+                <tr className="border-b border-gray-200 dark:border-white/5">
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Order Details</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Customer</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Amount</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
+                  <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Actions</th>
                 </tr>
-              ) : (
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                 <AnimatePresence mode='popLayout'>
                   {orders.map((order) => (
                     <motion.tr
@@ -548,10 +632,10 @@ export function OrdersPage() {
                     </motion.tr>
                   ))}
                 </AnimatePresence>
-              )}
-            </tbody>
-          </table>
-        </div>
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Pagination Controls */}

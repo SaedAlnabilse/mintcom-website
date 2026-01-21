@@ -1,58 +1,105 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { LoadingFallback } from './components/LoadingFallback';
+
+// ============================================================================
+// EAGER IMPORTS (Critical path - always needed)
+// ============================================================================
+// These are loaded immediately as they're needed for the auth flow
 import { ProtectedRoute, EstablishmentRequiredRoute } from './components/ProtectedRoute';
-import { DashboardLayout } from './components/DashboardLayout';
-import { OwnerLayout } from './components/OwnerLayout';
-import { Outlet } from 'react-router-dom';
 
-// Public Pages
-import { LandingPage } from './pages/LandingPage';
-import { DemoPage } from './pages/DemoPage';
-import { LoginPage } from './pages/LoginPage';
-import { SignUpPage } from './pages/SignUpPage';
-import { VerifyEmailPage } from './pages/VerifyEmailPage';
-import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
-import { ResetPasswordPage } from './pages/ResetPasswordPage';
+// ============================================================================
+// LAZY IMPORTS - PUBLIC PAGES
+// ============================================================================
+// Landing page is the entry point - consider preloading for better UX
+const LandingPage = lazy(() => import('./pages/LandingPage').then(m => ({ default: m.LandingPage })));
+const DemoPage = lazy(() => import('./pages/DemoPage').then(m => ({ default: m.DemoPage })));
+const LoginPage = lazy(() => import('./pages/LoginPage').then(m => ({ default: m.LoginPage })));
+const SignUpPage = lazy(() => import('./pages/SignUpPage').then(m => ({ default: m.SignUpPage })));
+const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage').then(m => ({ default: m.VerifyEmailPage })));
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage').then(m => ({ default: m.ForgotPasswordPage })));
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage').then(m => ({ default: m.ResetPasswordPage })));
 
-// Onboarding
-import { OnboardingPage } from './pages/OnboardingPage';
-import { SelectEstablishmentPage } from './pages/SelectEstablishmentPage';
+// ============================================================================
+// LAZY IMPORTS - ONBOARDING
+// ============================================================================
+const OnboardingPage = lazy(() => import('./pages/OnboardingPage').then(m => ({ default: m.OnboardingPage })));
+const SelectEstablishmentPage = lazy(() => import('./pages/SelectEstablishmentPage').then(m => ({ default: m.SelectEstablishmentPage })));
 
-// Owner Portal Pages
-import { OwnerOverviewPage } from './pages/owner/OwnerOverviewPage';
-import { OwnerEstablishmentsPage } from './pages/owner/OwnerEstablishmentsPage';
-import { OwnerEmployeesPage } from './pages/owner/OwnerEmployeesPage';
-import { OwnerBillingPage } from './pages/owner/OwnerBillingPage';
-import { OwnerMergePage } from './pages/owner/OwnerMergePage';
-import { OwnerBrandsPage } from './pages/owner/OwnerBrandsPage';
+// ============================================================================
+// LAZY IMPORTS - LAYOUTS (Loaded when entering each section)
+// ============================================================================
+const DashboardLayout = lazy(() => import('./components/DashboardLayout').then(m => ({ default: m.DashboardLayout })));
+const OwnerLayout = lazy(() => import('./components/OwnerLayout').then(m => ({ default: m.OwnerLayout })));
+const BrandLayout = lazy(() => import('./components/BrandLayout').then(m => ({ default: m.BrandLayout })));
 
-// Brand Dashboard
-import { BrandLayout } from './components/BrandLayout';
-import { BrandDashboardPage } from './pages/brand/BrandDashboardPage';
-import { BrandLocationsPage } from './pages/brand/BrandLocationsPage';
-import { BrandTeamPage } from './pages/brand/BrandTeamPage';
+// ============================================================================
+// LAZY IMPORTS - OWNER PORTAL PAGES
+// ============================================================================
+const OwnerOverviewPage = lazy(() => import('./pages/owner/OwnerOverviewPage').then(m => ({ default: m.OwnerOverviewPage })));
+const OwnerEstablishmentsPage = lazy(() => import('./pages/owner/OwnerEstablishmentsPage').then(m => ({ default: m.OwnerEstablishmentsPage })));
+const OwnerEmployeesPage = lazy(() => import('./pages/owner/OwnerEmployeesPage').then(m => ({ default: m.OwnerEmployeesPage })));
+const OwnerBillingPage = lazy(() => import('./pages/owner/OwnerBillingPage').then(m => ({ default: m.OwnerBillingPage })));
+const OwnerMergePage = lazy(() => import('./pages/owner/OwnerMergePage').then(m => ({ default: m.OwnerMergePage })));
+const OwnerBrandsPage = lazy(() => import('./pages/owner/OwnerBrandsPage').then(m => ({ default: m.OwnerBrandsPage })));
 
-// Dashboard Pages
-import { DashboardPage } from './pages/dashboard/DashboardPage';
-import { OrdersPage } from './pages/dashboard/OrdersPage';
-import { ProductsPage } from './pages/dashboard/ProductsPage';
-import { CategoriesPage } from './pages/dashboard/CategoriesPage';
-import { StaffPage } from './pages/dashboard/StaffPage';
-import { CustomersPage } from './pages/dashboard/CustomersPage';
-import { ReportsPage } from './pages/dashboard/ReportsPage';
-import { DiscountsPage } from './pages/dashboard/DiscountsPage';
-import { PaymentMethodsPage } from './pages/dashboard/PaymentMethodsPage';
-import { SettingsPage } from './pages/dashboard/SettingsPage';
-import { ActivityLogsPage } from './pages/dashboard/ActivityLogsPage';
-import { AddonsPage } from './pages/dashboard/AddonsPage';
-import { MaterialsPage } from './pages/dashboard/MaterialsPage';
-import { RecipesPage } from './pages/dashboard/RecipesPage';
-import { EstablishmentsPage } from './pages/dashboard/EstablishmentsPage';
-import { BillingPage } from './pages/dashboard/BillingPage';
-import { AdminUsersPage } from './pages/dashboard/AdminUsersPage';
+// ============================================================================
+// LAZY IMPORTS - BRAND PORTAL PAGES
+// ============================================================================
+const BrandDashboardPage = lazy(() => import('./pages/brand/BrandDashboardPage').then(m => ({ default: m.BrandDashboardPage })));
+const BrandLocationsPage = lazy(() => import('./pages/brand/BrandLocationsPage').then(m => ({ default: m.BrandLocationsPage })));
+const BrandTeamPage = lazy(() => import('./pages/brand/BrandTeamPage').then(m => ({ default: m.BrandTeamPage })));
 
+// ============================================================================
+// LAZY IMPORTS - DASHBOARD PAGES (Largest chunk - most features)
+// ============================================================================
+const DashboardPage = lazy(() => import('./pages/dashboard/DashboardPage').then(m => ({ default: m.DashboardPage })));
+const OrdersPage = lazy(() => import('./pages/dashboard/OrdersPage').then(m => ({ default: m.OrdersPage })));
+const ProductsPage = lazy(() => import('./pages/dashboard/ProductsPage').then(m => ({ default: m.ProductsPage })));
+const CategoriesPage = lazy(() => import('./pages/dashboard/CategoriesPage').then(m => ({ default: m.CategoriesPage })));
+const StaffPage = lazy(() => import('./pages/dashboard/StaffPage').then(m => ({ default: m.StaffPage })));
+const CustomersPage = lazy(() => import('./pages/dashboard/CustomersPage').then(m => ({ default: m.CustomersPage })));
+const ReportsPage = lazy(() => import('./pages/dashboard/ReportsPage').then(m => ({ default: m.ReportsPage })));
+const DiscountsPage = lazy(() => import('./pages/dashboard/DiscountsPage').then(m => ({ default: m.DiscountsPage })));
+const PaymentMethodsPage = lazy(() => import('./pages/dashboard/PaymentMethodsPage').then(m => ({ default: m.PaymentMethodsPage })));
+const SettingsPage = lazy(() => import('./pages/dashboard/SettingsPage').then(m => ({ default: m.SettingsPage })));
+const ActivityLogsPage = lazy(() => import('./pages/dashboard/ActivityLogsPage').then(m => ({ default: m.ActivityLogsPage })));
+const AddonsPage = lazy(() => import('./pages/dashboard/AddonsPage').then(m => ({ default: m.AddonsPage })));
+const MaterialsPage = lazy(() => import('./pages/dashboard/MaterialsPage').then(m => ({ default: m.MaterialsPage })));
+const RecipesPage = lazy(() => import('./pages/dashboard/RecipesPage').then(m => ({ default: m.RecipesPage })));
+const EstablishmentsPage = lazy(() => import('./pages/dashboard/EstablishmentsPage').then(m => ({ default: m.EstablishmentsPage })));
+const BillingPage = lazy(() => import('./pages/dashboard/BillingPage').then(m => ({ default: m.BillingPage })));
+const AdminUsersPage = lazy(() => import('./pages/dashboard/AdminUsersPage').then(m => ({ default: m.AdminUsersPage })));
+
+// ============================================================================
+// SUSPENSE WRAPPER COMPONENTS
+// ============================================================================
+// These wrap lazy components with appropriate loading states
+
+/** Wrapper for full-page lazy components */
+function PageSuspense({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={<LoadingFallback message="Loading..." />}>
+      {children}
+    </Suspense>
+  );
+}
+
+/** Wrapper for layout components (shows loading while layout chunk loads) */
+function LayoutSuspense({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={<LoadingFallback message="Loading..." />}>
+      {children}
+    </Suspense>
+  );
+}
+
+// ============================================================================
+// ROUTER CONFIGURATION
+// ============================================================================
 const router = createBrowserRouter([
   {
     element: (
@@ -61,100 +108,342 @@ const router = createBrowserRouter([
       </>
     ),
     children: [
+      // ========== PUBLIC ROUTES ==========
       {
         path: "/",
-        element: <LandingPage />,
+        element: (
+          <PageSuspense>
+            <LandingPage />
+          </PageSuspense>
+        ),
       },
       {
         path: "/demo",
-        element: <DemoPage />,
+        element: (
+          <PageSuspense>
+            <DemoPage />
+          </PageSuspense>
+        ),
       },
       {
         path: "/login",
-        element: <LoginPage />,
+        element: (
+          <PageSuspense>
+            <LoginPage />
+          </PageSuspense>
+        ),
       },
       {
         path: "/signup",
-        element: <SignUpPage />,
+        element: (
+          <PageSuspense>
+            <SignUpPage />
+          </PageSuspense>
+        ),
       },
       {
         path: "/verify-email",
-        element: <VerifyEmailPage />,
+        element: (
+          <PageSuspense>
+            <VerifyEmailPage />
+          </PageSuspense>
+        ),
       },
       {
         path: "/forgot-password",
-        element: <ForgotPasswordPage />,
+        element: (
+          <PageSuspense>
+            <ForgotPasswordPage />
+          </PageSuspense>
+        ),
       },
       {
         path: "/reset-password",
-        element: <ResetPasswordPage />,
+        element: (
+          <PageSuspense>
+            <ResetPasswordPage />
+          </PageSuspense>
+        ),
       },
+
+      // ========== PROTECTED ROUTES (Require Authentication) ==========
       {
         element: <ProtectedRoute />,
         children: [
           {
             path: "/onboarding",
-            element: <OnboardingPage />,
+            element: (
+              <PageSuspense>
+                <OnboardingPage />
+              </PageSuspense>
+            ),
           },
           {
             path: "/select-establishment",
-            element: <SelectEstablishmentPage />,
+            element: (
+              <PageSuspense>
+                <SelectEstablishmentPage />
+              </PageSuspense>
+            ),
           },
+
+          // ========== OWNER PORTAL ==========
           {
             path: "/owner",
-            element: <OwnerLayout />,
+            element: (
+              <LayoutSuspense>
+                <OwnerLayout />
+              </LayoutSuspense>
+            ),
             children: [
-              { index: true, element: <OwnerOverviewPage /> },
-              { path: "establishments", element: <OwnerEstablishmentsPage /> },
-              { path: "brands", element: <OwnerBrandsPage /> },
-              { path: "employees", element: <OwnerEmployeesPage /> },
-              { path: "billing", element: <OwnerBillingPage /> },
-              { path: "merge", element: <OwnerMergePage /> },
+              {
+                index: true,
+                element: (
+                  <PageSuspense>
+                    <OwnerOverviewPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "establishments",
+                element: (
+                  <PageSuspense>
+                    <OwnerEstablishmentsPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "brands",
+                element: (
+                  <PageSuspense>
+                    <OwnerBrandsPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "employees",
+                element: (
+                  <PageSuspense>
+                    <OwnerEmployeesPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "billing",
+                element: (
+                  <PageSuspense>
+                    <OwnerBillingPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "merge",
+                element: (
+                  <PageSuspense>
+                    <OwnerMergePage />
+                  </PageSuspense>
+                ),
+              },
             ],
           },
+
+          // ========== BRAND PORTAL ==========
           {
             path: "/brand/:brandId",
-            element: <BrandLayout />,
+            element: (
+              <LayoutSuspense>
+                <BrandLayout />
+              </LayoutSuspense>
+            ),
             children: [
-              { index: true, element: <BrandDashboardPage /> },
-              { path: "locations", element: <BrandLocationsPage /> },
-              { path: "team", element: <BrandTeamPage /> },
+              {
+                index: true,
+                element: (
+                  <PageSuspense>
+                    <BrandDashboardPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "locations",
+                element: (
+                  <PageSuspense>
+                    <BrandLocationsPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "team",
+                element: (
+                  <PageSuspense>
+                    <BrandTeamPage />
+                  </PageSuspense>
+                ),
+              },
             ],
           },
         ],
       },
+
+      // ========== ESTABLISHMENT-REQUIRED ROUTES ==========
       {
         element: <EstablishmentRequiredRoute />,
         children: [
           {
             path: "/dashboard",
-            element: <DashboardLayout />,
+            element: (
+              <LayoutSuspense>
+                <DashboardLayout />
+              </LayoutSuspense>
+            ),
             children: [
-              { index: true, element: <DashboardPage /> },
-              { path: "orders", element: <OrdersPage /> },
-              { path: "products", element: <ProductsPage /> },
-              { path: "categories", element: <CategoriesPage /> },
-              { path: "staff", element: <StaffPage /> },
-              { path: "customers", element: <CustomersPage /> },
-              { path: "reports", element: <ReportsPage /> },
-              { path: "discounts", element: <DiscountsPage /> },
-              { path: "payment-methods", element: <PaymentMethodsPage /> },
-              { path: "settings", element: <SettingsPage /> },
-              { path: "activity-logs", element: <ActivityLogsPage /> },
-              { path: "addons", element: <AddonsPage /> },
-              { path: "materials", element: <MaterialsPage /> },
-              { path: "recipes", element: <RecipesPage /> },
-              { path: "establishments", element: <EstablishmentsPage /> },
-              { path: "billing", element: <BillingPage /> },
-              { path: "admin-users", element: <AdminUsersPage /> },
+              {
+                index: true,
+                element: (
+                  <PageSuspense>
+                    <DashboardPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "orders",
+                element: (
+                  <PageSuspense>
+                    <OrdersPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "products",
+                element: (
+                  <PageSuspense>
+                    <ProductsPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "categories",
+                element: (
+                  <PageSuspense>
+                    <CategoriesPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "staff",
+                element: (
+                  <PageSuspense>
+                    <StaffPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "customers",
+                element: (
+                  <PageSuspense>
+                    <CustomersPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "reports",
+                element: (
+                  <PageSuspense>
+                    <ReportsPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "discounts",
+                element: (
+                  <PageSuspense>
+                    <DiscountsPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "payment-methods",
+                element: (
+                  <PageSuspense>
+                    <PaymentMethodsPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "settings",
+                element: (
+                  <PageSuspense>
+                    <SettingsPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "activity-logs",
+                element: (
+                  <PageSuspense>
+                    <ActivityLogsPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "addons",
+                element: (
+                  <PageSuspense>
+                    <AddonsPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "materials",
+                element: (
+                  <PageSuspense>
+                    <MaterialsPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "recipes",
+                element: (
+                  <PageSuspense>
+                    <RecipesPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "establishments",
+                element: (
+                  <PageSuspense>
+                    <EstablishmentsPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "billing",
+                element: (
+                  <PageSuspense>
+                    <BillingPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "admin-users",
+                element: (
+                  <PageSuspense>
+                    <AdminUsersPage />
+                  </PageSuspense>
+                ),
+              },
             ],
           },
         ],
       },
-    ]
-  }
+    ],
+  },
 ]);
 
+// ============================================================================
+// APP COMPONENT
+// ============================================================================
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="paymint-ui-theme">
@@ -188,6 +477,3 @@ function App() {
 }
 
 export default App;
-
-
-

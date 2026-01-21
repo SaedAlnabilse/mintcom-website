@@ -39,7 +39,7 @@ interface AuthContextType {
   // Account auth methods
   register: (data: RegisterData) => Promise<AuthResult>;
   login: (email: string, password: string) => Promise<AuthResult>;
-  logout: () => void;
+  logout: () => Promise<void>;
 
   // Verification methods
   verifyEmail: (token: string) => Promise<AuthResult>;
@@ -86,12 +86,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const initializeAuth = async () => {
     try {
-      const token = localStorage.getItem('accountToken');
       const savedAccount = localStorage.getItem('account');
       // Use sessionStorage for currentEstablishment - this is per-tab, allowing multiple tabs with different establishments
       const savedEstablishment = sessionStorage.getItem('currentEstablishment');
 
-      if (token && savedAccount) {
+      if (savedAccount) {
         const accountData = JSON.parse(savedAccount);
         setAccount(accountData);
 
@@ -99,12 +98,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setCurrentEstablishmentState(JSON.parse(savedEstablishment));
         }
 
-        // Fetch fresh data
+        // Fetch fresh data - this will validate the HttpOnly cookie
         await refreshEstablishments();
       }
     } catch (error) {
       console.error('Failed to initialize auth:', error);
-      localStorage.removeItem('accountToken');
       localStorage.removeItem('account');
     } finally {
       setIsLoading(false);
@@ -134,19 +132,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await api.post('/api/accounts/login', { email, password });
 
-      if (response.data.accessToken) {
-        const { accessToken, account: accountData, establishments: estList } = response.data;
+      // The accessToken is now set as an HttpOnly cookie by the server
+      // We only receive account and establishments data in the response body
+      if (response.data.account) {
+        const { account: accountData, establishments: estList } = response.data;
 
-        // Save auth data
-        localStorage.setItem('accountToken', accessToken);
+        // Save account data to localStorage (for UI state persistence only, not for auth)
         localStorage.setItem('account', JSON.stringify(accountData));
 
         setAccount(accountData);
         setEstablishments(estList || []);
-
-        // We do NOT set default establishment automatically anymore
-        // This forces the user to go through the selection screen
-        // unless they are re-logging in and we restore from localStorage (handled in initializeAuth)
 
         return { success: true };
       }
@@ -159,15 +154,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('accountToken');
-    localStorage.removeItem('account');
-    // Clear sessionStorage for current tab
-    sessionStorage.removeItem('currentEstablishment');
-    setAccount(null);
-    setEstablishments([]);
-    setCurrentEstablishmentState(null);
-    window.location.href = '/login';
+  const logout = async () => {
+    try {
+      // Call the logout endpoint to clear the HttpOnly cookie
+      await api.post('/api/accounts/logout');
+    } catch (error) {
+      console.error('Logout request failed:', error);
+    } finally {
+      // Clear local state regardless of API call result
+      localStorage.removeItem('account');
+      sessionStorage.removeItem('currentEstablishment');
+      setAccount(null);
+      setEstablishments([]);
+      setCurrentEstablishmentState(null);
+      window.location.href = '/login';
+    }
   };
 
   const verifyEmail = async (token: string): Promise<AuthResult> => {
@@ -238,12 +239,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshEstablishments = async () => {
     try {
-      const token = localStorage.getItem('accountToken');
-      if (!token) return;
-
-      const response = await api.get('/api/establishments', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      // The HttpOnly cookie will be sent automatically with the request
+      const response = await api.get('/api/establishments');
 
       setEstablishments(response.data || []);
 
@@ -305,6 +302,3 @@ export function useAuth() {
   }
   return context;
 }
-
-
-
