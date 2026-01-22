@@ -455,7 +455,7 @@ const router = createBrowserRouter([
 // ============================================================================
 function App() {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="paymint-ui-theme">
+    <ThemeProvider defaultTheme="system" storageKey="paymint-ui-theme">
       <AuthProvider>
         <div id="global-blocking-overlay" />
         <RouterProvider router={router} />
