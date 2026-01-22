@@ -21,7 +21,7 @@ import {
   PieChart,
   HelpCircle
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, PieChart as RechartsPie, Pie, Cell, BarChart, Bar } from 'recharts';
 import { format, startOfDay, endOfDay, isSameDay } from 'date-fns';
 import api from '../../config/api';

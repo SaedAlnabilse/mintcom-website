@@ -39,20 +39,6 @@ interface AccountDetails {
     defaultCardId?: string;
 }
 
-interface EstablishmentCredential {
-    id: string;
-    name: string;
-    establishmentLoginId: string;
-    type: string;
-    currency: string;
-    subscriptionStatus: string;
-    createdAt: string;
-    brand?: {
-        id: string;
-        name: string;
-    };
-}
-
 interface BrandCredential {
     id: string;
     name: string;
