@@ -15,6 +15,7 @@ import {
     ChevronRight,
     PanelLeftClose,
     PanelLeft,
+    KeyRound,
 } from 'lucide-react';
 
 // Paymint Logo imports
@@ -28,6 +29,7 @@ const menuItems = [
     { path: '/owner/brands', label: 'Brands', icon: Building2 },
     { path: '/owner/employees', label: 'Employees', icon: Users },
     { path: '/owner/billing', label: 'Billing', icon: CreditCard },
+    { path: '/owner/account', label: 'Account Management', icon: KeyRound },
 ];
 
 export function OwnerLayout() {

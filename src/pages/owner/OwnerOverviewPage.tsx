@@ -398,14 +398,16 @@ export function OwnerOverviewPage() {
                                 </AreaChart>
                             </ResponsiveContainer>
                         ) : (
-                            <div className="h-full w-full flex flex-col items-center justify-center space-y-3 bg-gray-50/50 dark:bg-white/[0.02] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
-                                <div className="p-4 rounded-full bg-gray-100 dark:bg-white/5">
-                                    <Activity size={32} className="text-gray-400 dark:text-gray-600" />
+                            <div className="h-full w-full flex flex-col items-center justify-center">
+                                <div className="w-20 h-20 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-4">
+                                    <Activity size={32} className="text-gray-400 dark:text-gray-500" />
                                 </div>
-                                <div className="text-center">
-                                    <p className="text-sm font-bold text-gray-900 dark:text-white">No Revenue Data</p>
-                                    <p className="text-xs text-gray-500">There are no sales recorded for the selected period.</p>
-                                </div>
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                                    No Revenue Data
+                                </h3>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
+                                    There are no sales recorded for the selected period.
+                                </p>
                             </div>
                         )}
                     </div>

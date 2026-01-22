@@ -94,9 +94,10 @@ export function PaymentMethodsPage() {
     try {
       setIsLoading(true);
       const response = await api.get('/app-settings/payment-methods');
-      setPaymentMethods(response.data || []);
+      setPaymentMethods(Array.isArray(response.data) ? response.data : []);
     } catch (err: any) {
       toast.error('Failed to load payment methods');
+      setPaymentMethods([]);
     } finally {
       setIsLoading(false);
     }
@@ -105,7 +106,7 @@ export function PaymentMethodsPage() {
   const fetchCardTypes = async () => {
     try {
       const response = await api.get('/card-types');
-      setCardTypes(response.data || []);
+      setCardTypes(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
       console.error('Failed to load card types');
     }
@@ -311,7 +312,7 @@ export function PaymentMethodsPage() {
               <p className="text-gray-400 font-black uppercase tracking-widest text-[10px]">No card networks configured yet.</p>
             </div>
           ) : (
-            cardTypes.map((card) => (
+            Array.isArray(cardTypes) && cardTypes.map((card) => (
               <motion.div
                 layout
                 key={card.id}
@@ -380,7 +381,7 @@ export function PaymentMethodsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {paymentMethods.map((method) => (
+            {Array.isArray(paymentMethods) && paymentMethods.map((method) => (
               <motion.div
                 layout
                 key={method.id}

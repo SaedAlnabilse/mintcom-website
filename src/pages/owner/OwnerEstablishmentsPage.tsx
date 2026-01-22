@@ -305,7 +305,7 @@ export function OwnerEstablishmentsPage() {
                         <div className="col-span-2">Type</div>
                         <div className="col-span-2">Status</div>
                         <div className="col-span-2">Currency</div>
-                        <div className="col-span-2 text-right">Actions</div>
+                        <div className="col-span-2 text-center">Actions</div>
                     </div>
 
                     {/* Table Body */}
@@ -358,7 +358,7 @@ export function OwnerEstablishmentsPage() {
                                     </div>
 
                                     {/* Actions */}
-                                    <div className="col-span-2 flex items-center justify-end gap-2">
+                                    <div className="col-span-2 flex items-center justify-center gap-2">
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -366,14 +366,7 @@ export function OwnerEstablishmentsPage() {
                                             }}
                                             className="px-4 py-2 rounded-lg bg-paymint-green text-black text-xs font-bold uppercase tracking-wide hover:bg-emerald-400 transition-all flex items-center gap-2"
                                         >
-                                            <Eye size={14} />
-                                            View
-                                        </button>
-                                        <button
-                                            onClick={(e) => e.stopPropagation()}
-                                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
-                                        >
-                                            <MoreVertical size={18} />
+                                            Enter Dashboard
                                         </button>
                                     </div>
                                 </motion.div>

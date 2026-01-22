@@ -14,9 +14,32 @@ export const api = axios.create({
   withCredentials: true, // Required for HttpOnly cookie authentication
 });
 
+// Global loading state management
+let activeRequests = 0;
+
+const updateLoadingState = () => {
+  if (activeRequests > 0) {
+    document.body.classList.add('app-loading');
+  } else {
+    document.body.classList.remove('app-loading');
+  }
+};
+
+export const startGlobalLoading = () => {
+  activeRequests++;
+  updateLoadingState();
+};
+
+export const stopGlobalLoading = () => {
+  if (activeRequests > 0) activeRequests--;
+  updateLoadingState();
+};
+
 // Request interceptor to add establishment ID
 api.interceptors.request.use(
   (config) => {
+    activeRequests++;
+    updateLoadingState();
     // Add current establishment ID for account owner requests
     // This is CRITICAL for multi-establishment isolation
     // Use sessionStorage to support multiple tabs with different establishments
@@ -36,13 +59,19 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    activeRequests--;
+    updateLoadingState();
     return Promise.reject(error);
   }
 );
 
 // Response interceptor to handle auth errors
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    activeRequests--;
+    updateLoadingState();
+    return response;
+  },
   (error) => {
     if (error.response?.status === 401) {
       // Clear local auth data and redirect to login
@@ -51,6 +80,8 @@ api.interceptors.response.use(
       sessionStorage.removeItem('currentEstablishment');
       window.location.href = '/login';
     }
+    activeRequests--;
+    updateLoadingState();
     return Promise.reject(error);
   }
 );

@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
+import { TourGuide, type TourStep } from '../components/TourGuide';
 import {
   Store,
   MapPin,
@@ -29,7 +30,16 @@ import {
   Tags,
   Eye,
   EyeOff,
-  LayoutDashboard
+  LayoutDashboard,
+  Smartphone,
+  Tablet,
+  Download,
+  Monitor,
+  BookOpen,
+  Settings,
+  PlayCircle,
+  ExternalLink,
+  Sparkles
 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
@@ -95,6 +105,43 @@ export function OnboardingPage() {
   const [duplicateInventory, setDuplicateInventory] = useState(true);
   const [duplicateDiscounts, setDuplicateDiscounts] = useState(true);
   const [duplicatePaymentMethods, setDuplicatePaymentMethods] = useState(true);
+
+  // Tour Guide State for Step 5
+  const [isTourOpen, setIsTourOpen] = useState(false);
+
+  const launchCenterTourSteps: TourStep[] = [
+    {
+      targetId: 'tour-portal-section',
+      title: 'Owner Portal',
+      description: 'This is your command center. Click here to open the Owner Portal in your browser where you can manage everything - employees, menu, analytics, and billing.'
+    },
+    {
+      targetId: 'tour-pos-app',
+      title: 'POS App for Staff',
+      description: 'Download this app on tablets or phones for your staff. They will use it to take orders and process payments at your establishment.'
+    },
+    {
+      targetId: 'tour-owner-app',
+      title: 'Owner App for You',
+      description: 'This is the same Owner Portal, but as a mobile app. Monitor your sales and manage your business on the go. Use your same login credentials.'
+    },
+    {
+      targetId: 'tour-resources',
+      title: 'Guides & Tutorials',
+      description: 'Download the User Manual for software help, Setup Manual for hardware/printers, or watch our 7-minute video tutorial to get started quickly.'
+    }
+  ];
+
+  // Auto-start tour when reaching Step 5
+  useEffect(() => {
+    if (step === 5) {
+      // Small delay to let the UI render before starting tour
+      const timer = setTimeout(() => {
+        setIsTourOpen(true);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [step]);
 
   // Country codes list
   const countries = [
@@ -295,36 +342,38 @@ export function OnboardingPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex flex-col transition-colors duration-300">
-      {/* Navbar */}
-      <div className="p-6 flex justify-between items-center border-b border-gray-200 dark:border-white/5 bg-white dark:bg-transparent shadow-sm">
-        <div className="flex items-center">
-          <img
-            src={PaymintLogoGreen}
-            alt="PayMint"
-            className="h-8 w-auto object-contain dark:hidden"
-          />
-          <img
-            src={PaymintLogoWhite}
-            alt="PayMint"
-            className="h-8 w-auto object-contain hidden dark:block"
-          />
-        </div>
-
-        {step <= totalSteps && (
-          <div className="flex items-center gap-4">
-            <div className="flex gap-1.5">
-              {[1, 2, 3, 4].map((s) => (
-                <div
-                  key={s}
-                  className={`h-1.5 rounded-full transition-all duration-500 ${step >= s ? 'w-8 bg-paymint-green' : 'w-4 bg-gray-200 dark:bg-white/10'
-                    }`}
-                />
-              ))}
-            </div>
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Step {step} of {totalSteps}</span>
+      {/* Navbar - Hidden on Step 5 (Launch Center) */}
+      {step !== 5 && (
+        <div className="p-6 flex justify-between items-center border-b border-gray-200 dark:border-white/5 bg-white dark:bg-transparent shadow-sm">
+          <div className="flex items-center">
+            <img
+              src={PaymintLogoGreen}
+              alt="PayMint"
+              className="h-8 w-auto object-contain dark:hidden"
+            />
+            <img
+              src={PaymintLogoWhite}
+              alt="PayMint"
+              className="h-8 w-auto object-contain hidden dark:block"
+            />
           </div>
-        )}
-      </div>
+
+          {step <= totalSteps && (
+            <div className="flex items-center gap-4">
+              <div className="flex gap-1.5">
+                {[1, 2, 3, 4].map((s) => (
+                  <div
+                    key={s}
+                    className={`h-1.5 rounded-full transition-all duration-500 ${step >= s ? 'w-8 bg-paymint-green' : 'w-4 bg-gray-200 dark:bg-white/10'
+                      }`}
+                  />
+                ))}
+              </div>
+              <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Step {step} of {totalSteps}</span>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="flex-1 flex items-center justify-center p-6">
         <AnimatePresence mode="wait">
@@ -1003,62 +1052,221 @@ export function OnboardingPage() {
             </motion.div>
           )}
 
-          {/* STEP 5: Success */}
+          {/* STEP 5: Launch Center */}
           {step === 5 && (
             <motion.div
               key="step5"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="max-w-2xl w-full"
+              className="max-w-5xl w-full"
             >
-              <div className="bg-white dark:bg-white/5 rounded-[3rem] border border-gray-200 dark:border-white/10 p-12 lg:p-16 shadow-2xl text-center">
-                <div className="w-24 h-24 bg-paymint-green rounded-full flex items-center justify-center mx-auto mb-10 shadow-xl shadow-paymint-green/20">
-                  <Check size={48} className="text-black" />
+              <div className="bg-white dark:bg-white/5 rounded-[3rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl">
+                {/* Header */}
+                <div className="text-center mb-10">
+                  <div className="w-20 h-20 bg-paymint-green rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-paymint-green/20">
+                    <Sparkles size={40} className="text-black" />
+                  </div>
+                  <h2 className="text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-3 tracking-tight">Welcome to PayMint!</h2>
+                  <p className="text-gray-600 dark:text-gray-400 text-lg font-medium max-w-xl mx-auto">
+                    <span className="text-gray-900 dark:text-white font-bold">{formData.name}</span> is ready. Here's everything you need to get started.
+                  </p>
                 </div>
-                <h2 className="text-4xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">System Ready!</h2>
-                <p className="text-gray-600 dark:text-gray-400 text-xl font-medium mb-12">
-                  <span className="text-gray-900 dark:text-white font-bold">{formData.name}</span> is now active on the PayMint network.
-                </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 mt-12">
-                  {/* Option 1: Go to Dashboard */}
+                {/* Section 1: Access Your Portal */}
+                <div id="tour-portal-section" className="mb-8">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 bg-paymint-green/10 rounded-lg flex items-center justify-center">
+                      <Monitor size={18} className="text-paymint-green" />
+                    </div>
+                    <h3 className="text-sm font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">Access Your Portal</h3>
+                  </div>
+
                   <button
                     onClick={() => {
-                      // Find and select the newly created establishment
                       const newEstablishment = establishments.find(e => e.id === formData.establishmentId);
                       if (newEstablishment) {
                         setCurrentEstablishment(newEstablishment);
                       }
-                      navigate('/dashboard');
+                      window.open('/owner', '_blank');
                     }}
-                    className="p-8 bg-paymint-green text-black rounded-[2rem] text-left hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-paymint-green/20 group flex flex-col h-full"
+                    className="w-full p-6 bg-paymint-green text-black rounded-2xl text-left hover:scale-[1.01] active:scale-[0.99] transition-all shadow-xl shadow-paymint-green/20 group flex items-center gap-5"
                   >
-                    <div className="w-14 h-14 bg-black/10 rounded-2xl flex items-center justify-center mb-6 group-hover:rotate-6 transition-transform">
-                      <LayoutDashboard size={28} className="text-black" />
+                    <div className="w-14 h-14 bg-black/10 rounded-2xl flex items-center justify-center group-hover:rotate-6 transition-transform flex-shrink-0">
+                      <Building2 size={28} className="text-black" />
                     </div>
-                    <h3 className="text-2xl font-black mb-2 tracking-tight">Enter Dashboard</h3>
-                    <p className="text-sm font-bold opacity-70">Manage orders, menu, and operations for this location.</p>
-                    <div className="mt-auto pt-6 flex items-center font-black text-sm uppercase tracking-widest gap-2">
-                      Launch System <ArrowRight size={16} />
+                    <div className="flex-1">
+                      <h3 className="text-xl font-black mb-1 tracking-tight">Open Owner Portal in Browser</h3>
+                      <p className="text-sm font-bold opacity-70">Manage your establishments, employees, menu, analytics, and billing from any browser.</p>
                     </div>
-                  </button>
-
-                  {/* Option 2: Go to Owner Page */}
-                  <button
-                    onClick={() => navigate('/owner')}
-                    className="p-8 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-[2rem] text-left hover:bg-gray-50 dark:hover:bg-white/10 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-gray-200/50 dark:shadow-none flex flex-col h-full"
-                  >
-                    <div className="w-14 h-14 bg-gray-100 dark:bg-white/10 rounded-2xl flex items-center justify-center mb-6">
-                      <Building2 size={28} className="text-gray-900 dark:text-white" />
-                    </div>
-                    <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2 tracking-tight">Owner Portal</h3>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">View all your establishments, billing, and global settings.</p>
-                    <div className="mt-auto pt-6 flex items-center font-black text-gray-900 dark:text-white text-sm uppercase tracking-widest gap-2">
-                      Go to Overview <ArrowRight size={16} />
+                    <div className="flex items-center gap-2 font-black text-sm uppercase tracking-widest opacity-80">
+                      <ExternalLink size={18} />
                     </div>
                   </button>
                 </div>
+
+                {/* Section 2: Download Apps */}
+                <div className="mb-8">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                      <Download size={18} className="text-blue-500" />
+                    </div>
+                    <h3 className="text-sm font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">Download Apps</h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {/* POS App Card */}
+                    <div id="tour-pos-app" className="p-5 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl">
+                      <div className="flex items-start gap-4 mb-4">
+                        <div className="w-12 h-12 bg-orange-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <Tablet size={24} className="text-orange-500" />
+                        </div>
+                        <div>
+                          <h4 className="text-lg font-black text-gray-900 dark:text-white mb-1">POS App</h4>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">For tablets and phones. Your staff uses this to take orders and process payments.</p>
+                        </div>
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <a
+                          href="https://play.google.com/store/apps/details?id=com.paymint.pos"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity"
+                        >
+                          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 010 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z"/>
+                          </svg>
+                          Google Play
+                        </a>
+                        <a
+                          href="https://apps.apple.com/app/paymint-pos/id0000000000"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity"
+                        >
+                          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                          </svg>
+                          App Store
+                        </a>
+                      </div>
+                    </div>
+
+                    {/* Owner Portal App Card */}
+                    <div id="tour-owner-app" className="p-5 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl">
+                      <div className="flex items-start gap-4 mb-4">
+                        <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <Smartphone size={24} className="text-purple-500" />
+                        </div>
+                        <div>
+                          <h4 className="text-lg font-black text-gray-900 dark:text-white mb-1">Owner Portal App</h4>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">Same portal, on your phone. Monitor sales and manage on the go. Uses your main account login.</p>
+                        </div>
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <a
+                          href="https://play.google.com/store/apps/details?id=com.paymint.owner"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity"
+                        >
+                          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 010 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z"/>
+                          </svg>
+                          Google Play
+                        </a>
+                        <a
+                          href="https://apps.apple.com/app/paymint-owner/id0000000001"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity"
+                        >
+                          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                          </svg>
+                          App Store
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section 3: Resources & Help */}
+                <div id="tour-resources" className="mb-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 bg-emerald-500/10 rounded-lg flex items-center justify-center">
+                      <BookOpen size={18} className="text-emerald-500" />
+                    </div>
+                    <h3 className="text-sm font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">Resources & Help</h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {/* User Manual */}
+                    <a
+                      href="/docs/paymint-user-manual.md"
+                      download="Paymint_User_Manual.md"
+                      className="p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group flex items-center gap-4"
+                    >
+                      <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <BookOpen size={20} className="text-blue-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">User Manual</h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Complete software guide</p>
+                      </div>
+                      <Download size={16} className="text-gray-400 flex-shrink-0" />
+                    </a>
+
+                    {/* Setup Manual */}
+                    <a
+                      href="/docs/paymint-setup-manual.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group flex items-center gap-4"
+                    >
+                      <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <Settings size={20} className="text-amber-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">Setup Manual</h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Hardware & printer setup</p>
+                      </div>
+                      <Download size={16} className="text-gray-400 flex-shrink-0" />
+                    </a>
+
+                    {/* Video Tutorial */}
+                    <a
+                      href="https://www.youtube.com/watch?v=YOUR_VIDEO_ID"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group flex items-center gap-4"
+                    >
+                      <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <PlayCircle size={20} className="text-red-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">Video Tutorial</h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">7-min quick start guide</p>
+                      </div>
+                      <ExternalLink size={16} className="text-gray-400 flex-shrink-0" />
+                    </a>
+                  </div>
+                </div>
+
+                {/* Footer Note */}
+                <div className="text-center pt-6 border-t border-gray-100 dark:border-white/5">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Need help? Contact us at <a href="mailto:support@paymint.com" className="text-paymint-green font-bold hover:underline">support@paymint.com</a>
+                  </p>
+                </div>
               </div>
+
+              {/* Tour Guide for Launch Center */}
+              <TourGuide
+                steps={launchCenterTourSteps}
+                isOpen={isTourOpen}
+                onClose={() => setIsTourOpen(false)}
+                onComplete={() => setIsTourOpen(false)}
+              />
             </motion.div>
           )}
         </AnimatePresence>

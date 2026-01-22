@@ -45,6 +45,7 @@ const OwnerEmployeesPage = lazy(() => import('./pages/owner/OwnerEmployeesPage')
 const OwnerBillingPage = lazy(() => import('./pages/owner/OwnerBillingPage').then(m => ({ default: m.OwnerBillingPage })));
 const OwnerMergePage = lazy(() => import('./pages/owner/OwnerMergePage').then(m => ({ default: m.OwnerMergePage })));
 const OwnerBrandsPage = lazy(() => import('./pages/owner/OwnerBrandsPage').then(m => ({ default: m.OwnerBrandsPage })));
+const OwnerAccountManagementPage = lazy(() => import('./pages/owner/OwnerAccountManagementPage').then(m => ({ default: m.OwnerAccountManagementPage })));
 
 // ============================================================================
 // LAZY IMPORTS - BRAND PORTAL PAGES
@@ -241,6 +242,14 @@ const router = createBrowserRouter([
                 element: (
                   <PageSuspense>
                     <OwnerMergePage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "account",
+                element: (
+                  <PageSuspense>
+                    <OwnerAccountManagementPage />
                   </PageSuspense>
                 ),
               },
@@ -448,6 +457,7 @@ function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="paymint-ui-theme">
       <AuthProvider>
+        <div id="global-blocking-overlay" />
         <RouterProvider router={router} />
         <Toaster
           position="top-right"

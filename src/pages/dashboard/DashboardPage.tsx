@@ -18,14 +18,16 @@ import {
   Wallet,
   Activity,
   Zap,
-  PieChart
+  PieChart,
+  HelpCircle
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, PieChart as RechartsPie, Pie, Cell, BarChart, Bar } from 'recharts';
 import { format, startOfDay, endOfDay, isSameDay } from 'date-fns';
 import api from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
+import { TourGuide, type TourStep } from '../../components/TourGuide';
 
 interface DashboardStats {
   totalRevenue: number;
@@ -60,6 +62,37 @@ export const DashboardPage = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
   const [peakHours, setPeakHours] = useState<any[]>([]);
+
+  // Tour State
+  const [isTourOpen, setIsTourOpen] = useState(false);
+
+  const tourSteps: TourStep[] = [
+    {
+      targetId: 'tour-kpi-cards',
+      title: "Today's Pulse",
+      description: "Get an instant snapshot of your day's performance, including Net Revenue, Total Transactions, and Average Basket Size."
+    },
+    {
+      targetId: 'tour-revenue-chart',
+      title: "Real-time Revenue",
+      description: "Track your sales momentum hour-by-hour to spot trends and peak performance times immediately."
+    },
+    {
+      targetId: 'tour-capital-sources',
+      title: "Payment Breakdown",
+      description: "Understand exactly how your customers are paying, visualized in a clear distribution chart."
+    },
+    {
+      targetId: 'tour-top-products',
+      title: "Top Performers",
+      description: "See which items are driving your revenue today so you can manage inventory effectively."
+    },
+    {
+      targetId: 'tour-quick-actions',
+      title: "Command Center",
+      description: "Jump straight to managing Products, Orders, Staff, or detailed Reports with a single click."
+    }
+  ];
 
   useEffect(() => {
     fetchDashboardData();
@@ -195,6 +228,13 @@ export const DashboardPage = () => {
 
         <div className="flex items-center gap-3">
           <button
+            onClick={() => setIsTourOpen(true)}
+            className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-green border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
+            title="Start Tour"
+          >
+            <HelpCircle size={18} />
+          </button>
+          <button
             onClick={() => navigate('/dashboard/reports')}
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
           >
@@ -212,7 +252,7 @@ export const DashboardPage = () => {
       </div>
 
       {/* Primary KPIs */}
-      <div className="space-y-3">
+      <div id="tour-kpi-cards" className="space-y-3">
         <div className="flex items-center gap-2">
           <span className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-500 text-[9px] font-black uppercase tracking-widest border border-blue-500/20">
             Today's Metrics
@@ -278,7 +318,7 @@ export const DashboardPage = () => {
       {/* Revenue Chart & Payment Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Revenue Momentum Chart */}
-        <div className="lg:col-span-2 p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
+        <div id="tour-revenue-chart" className="lg:col-span-2 p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
@@ -361,7 +401,7 @@ export const DashboardPage = () => {
         </div>
 
         {/* Payment Methods Breakdown */}
-        <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col">
+        <div id="tour-capital-sources" className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
               <Wallet size={20} />
@@ -501,7 +541,7 @@ export const DashboardPage = () => {
       {/* Top Products & Peak Hours */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Top Products */}
-        <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
+        <div id="tour-top-products" className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
           <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
@@ -602,7 +642,7 @@ export const DashboardPage = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="p-6 bg-white dark:bg-[#0B1120] bg-gradient-to-r from-paymint-green/5 via-blue-500/5 to-purple-500/5 rounded-2xl border border-gray-200 dark:border-white/[0.03]">
+      <div id="tour-quick-actions" className="p-6 bg-white dark:bg-[#0B1120] bg-gradient-to-r from-paymint-green/5 via-blue-500/5 to-purple-500/5 rounded-2xl border border-gray-200 dark:border-white/[0.03]">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
           <div>
             <h3 className="text-lg font-bold text-gray-900 dark:text-white">Quick Actions</h3>
@@ -627,6 +667,14 @@ export const DashboardPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Tour Guide */}
+      <TourGuide
+        steps={tourSteps}
+        isOpen={isTourOpen}
+        onClose={() => setIsTourOpen(false)}
+        onComplete={() => setIsTourOpen(false)}
+      />
     </div>
   );
 };

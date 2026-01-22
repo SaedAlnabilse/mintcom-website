@@ -150,9 +150,13 @@ export function ActivityLogsPage() {
       }
 
       const response = await api.get('/activity-log', { params });
-      setLogs(response.data.logs || response.data || []);
+
+      const logsData = response.data.logs || response.data;
+      const validLogs = Array.isArray(logsData) ? logsData : [];
+
+      setLogs(validLogs);
       setTotalPages(response.data.totalPages || 1);
-      setTotalLogs(response.data.total || (response.data.logs?.length || 0));
+      setTotalLogs(response.data.total || validLogs.length);
     } catch (err: any) {
       toast.error('Failed to sync logs');
     } finally {
@@ -175,6 +179,7 @@ export function ActivityLogsPage() {
   };
 
   const handleExport = () => {
+    if (!Array.isArray(logs)) return;
     const exportData = logs.map(l => ({
       time: formatDate(l.timestamp),
       user: l.performedBy?.username || 'Owner',
@@ -352,7 +357,7 @@ export function ActivityLogsPage() {
                     </td>
                   </tr>
                 ) : (
-                  logs.map((log) => (
+                  Array.isArray(logs) && logs.map((log) => (
                     <motion.tr
                       key={log.id}
                       initial={{ opacity: 0 }}

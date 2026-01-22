@@ -87,7 +87,7 @@ export function OwnerBrandsPage() {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [selectedEstablishments, setSelectedEstablishments] = useState<string[]>([]);
     const [isCreating, setIsCreating] = useState(false);
-    const [viewMode, setViewMode] = useState<ViewMode>('grid');
+    const [viewMode, setViewMode] = useState<ViewMode>('list');
     const [sortBy, setSortBy] = useState<SortOption>('name');
     const [sortOrder] = useState<'asc' | 'desc'>('asc');
     const [activeMenu, setActiveMenu] = useState<string | null>(null);

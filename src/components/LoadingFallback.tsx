@@ -1,4 +1,6 @@
 import { motion } from 'framer-motion';
+import { useEffect } from 'react';
+import { startGlobalLoading, stopGlobalLoading } from '../config/api';
 
 interface LoadingFallbackProps {
   /** Optional message to display below the spinner */
@@ -15,6 +17,11 @@ export function LoadingFallback({
   message = 'Loading...',
   fullScreen = true
 }: LoadingFallbackProps) {
+  useEffect(() => {
+    startGlobalLoading();
+    return () => stopGlobalLoading();
+  }, []);
+
   const content = (
     <motion.div
       initial={{ opacity: 0 }}

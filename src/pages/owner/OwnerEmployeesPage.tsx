@@ -17,13 +17,16 @@ import {
     Grid3X3,
     List,
     MoreVertical,
-    UserCheck
+    UserCheck,
+    HelpCircle
 } from 'lucide-react';
+import { QuickInfo } from '../../components/QuickInfo';
 import api from '../../config/api';
 import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { CustomSelect } from '../../components/CustomSelect';
+import { TourGuide, type TourStep } from '../../components/TourGuide';
 
 interface EmployeeAssignment {
     establishmentId: string;
@@ -43,6 +46,7 @@ interface Employee {
     accessLevel: string;
     establishments: string[];
     assignments: EmployeeAssignment[];
+    hasActiveShift?: boolean;
 }
 
 type ViewMode = 'grid' | 'list';
@@ -67,6 +71,37 @@ export function OwnerEmployeesPage() {
     const [showDeletePassword, setShowDeletePassword] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState('');
+
+    // Tour state
+    const [isTourOpen, setIsTourOpen] = useState(false);
+
+    const tourSteps: TourStep[] = [
+        {
+            targetId: 'tour-stats-grid',
+            title: 'Workforce Overview',
+            description: 'Get a quick snapshot of your total employees, active staff, and role distribution across all locations.'
+        },
+        {
+            targetId: 'tour-search-input',
+            title: 'Smart Search',
+            description: 'Quickly find any employee by name, email, or username. The list updates instantly as you type.'
+        },
+        {
+            targetId: 'tour-filters',
+            title: 'Filter by Role',
+            description: 'Focus on specific groups like Admins or Staff to manage permissions more effectively.'
+        },
+        {
+            targetId: 'tour-view-toggle',
+            title: 'Flexible Views',
+            description: 'Switch between a detailed list view for management or a grid card view for a visual overview.'
+        },
+        {
+            targetId: 'tour-add-employee-btn',
+            title: 'Induct Personnel',
+            description: 'Ready to grow? Click here to add new team members and assign them to specific locations.'
+        }
+    ];
 
     useEffect(() => {
         fetchEmployees();
@@ -201,7 +236,7 @@ export function OwnerEmployeesPage() {
         total: employees.length,
         admins: employees.filter(e => e.role === 'ADMIN').length,
         staff: employees.filter(e => e.role !== 'ADMIN').length,
-        active: employees.length // Assuming all returned are active for now
+        active: employees.filter(e => e.hasActiveShift).length
     }), [employees]);
 
 
@@ -224,6 +259,14 @@ export function OwnerEmployeesPage() {
 
                 <div className="flex items-center gap-3">
                     <button
+                        onClick={() => setIsTourOpen(true)}
+                        className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-green border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
+                        title="Start Tour"
+                    >
+                        <HelpCircle size={18} />
+                    </button>
+                    <button
+                        id="tour-refresh-btn"
                         onClick={fetchEmployees}
                         className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
                         title="Refresh"
@@ -231,6 +274,7 @@ export function OwnerEmployeesPage() {
                         <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
                     </button>
                     <button
+                        id="tour-add-employee-btn"
                         onClick={() => { setEditingEmployee(null); setIsFormModalOpen(true); }}
                         className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20"
                     >
@@ -241,12 +285,12 @@ export function OwnerEmployeesPage() {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div id="tour-stats-grid" className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                    { label: 'Total Workforce', value: stats.total, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: 'Active Now', value: stats.active, icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-                    { label: 'Administrators', value: stats.admins, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-                    { label: 'Staff Members', value: stats.staff, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+                    { label: 'Total Workforce', info: 'Total number of registered employees across all locations.', value: stats.total, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                    { label: 'Active Now', info: 'Employees currently clocked in or managing active sessions.', value: stats.active, icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+                    { label: 'Administrators', info: 'Users with full system access and configuration privileges.', value: stats.admins, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+                    { label: 'Staff Members', info: 'Standard users with restricted access based on assigned roles.', value: stats.staff, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
                 ].map((stat, i) => (
                     <div key={i} className="p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm">
                         <div className="flex items-center gap-3 mb-3">
@@ -254,17 +298,21 @@ export function OwnerEmployeesPage() {
                                 <stat.icon size={20} />
                             </div>
                         </div>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">{stat.label}</p>
+                        <div className="flex items-center gap-1 mb-1">
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">{stat.label}</p>
+                            <QuickInfo text={stat.info} />
+                        </div>
                         <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                     </div>
-                ))}
+                ))
+                }
             </div>
 
             {/* Filters Bar */}
             <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm">
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                     {/* Search */}
-                    <div className="relative flex-1 min-w-[300px]">
+                    <div id="tour-search-input" className="relative flex-1 min-w-[300px]">
                         <Search
                             size={18}
                             className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-300 ${searchQuery ? 'text-paymint-green' : 'text-gray-400'}`}
@@ -280,7 +328,7 @@ export function OwnerEmployeesPage() {
 
                     {/* Filter Controls */}
                     <div className="flex items-center gap-3 flex-wrap lg:ml-auto">
-                        <div className="w-44">
+                        <div id="tour-filters" className="w-44">
                             <CustomSelect
                                 value={roleFilter}
                                 onChange={(val) => setRoleFilter(val as string)}
@@ -293,7 +341,7 @@ export function OwnerEmployeesPage() {
                         </div>
 
                         {/* View Mode Toggle */}
-                        <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[52px]">
+                        <div id="tour-view-toggle" className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[52px]">
                             <button
                                 onClick={() => setViewMode('grid')}
                                 className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
@@ -527,26 +575,7 @@ export function OwnerEmployeesPage() {
                 </div>
             )}
 
-            {/* Footer Action */}
-            <div className="p-8 bg-gradient-to-r from-gray-900 to-black rounded-3xl border border-white/5 shadow-2xl relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none group-hover:scale-150 transition-transform duration-1000" />
 
-                <div className="flex flex-col lg:flex-row items-center justify-between gap-8 relative z-10 text-center lg:text-left">
-                    <div>
-                        <h3 className="text-2xl font-black text-white tracking-tight uppercase leading-none mb-2">Force Scale</h3>
-                        <p className="text-sm font-medium text-gray-400 uppercase tracking-widest">
-                            Scale your operational workforce with unified access control.
-                        </p>
-                    </div>
-                    <button
-                        onClick={() => { setEditingEmployee(null); setIsFormModalOpen(true); }}
-                        className="group/btn flex items-center gap-3 px-8 py-4 rounded-2xl bg-paymint-green text-black font-black text-xs uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-paymint-green/20"
-                    >
-                        <span>Initiate Induction</span>
-                        <ArrowUpRight size={18} className="group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
-                    </button>
-                </div>
-            </div>
 
             <EmployeeFormModal
                 isOpen={isFormModalOpen}
@@ -636,6 +665,17 @@ export function OwnerEmployeesPage() {
                     </div>
                 )}
             </AnimatePresence>
+
+            {/* Tour Guide */}
+            <TourGuide
+                steps={tourSteps}
+                isOpen={isTourOpen}
+                onClose={() => setIsTourOpen(false)}
+                onComplete={() => {
+                    setIsTourOpen(false);
+                    toast.success("You're all set! Enjoy managing your workforce.");
+                }}
+            />
         </div>
     );
 }
