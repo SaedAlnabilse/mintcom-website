@@ -72,9 +72,7 @@ export function OwnerRolesPage() {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredRoles.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredRoles.length / itemsPerPage);
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const handleCreateNew = () => {
     setEditingRole(null);

@@ -92,7 +92,20 @@ export function CustomRoleFormModal({
         setPosAccess(initialData.posAccess !== false); // Default true
         setBackofficeAccess(initialData.backofficeAccess || false);
         setPermissions(initialData.permissions || []);
-        setBackofficePermissions(initialData.backofficePermissions || []);
+        
+        // Handle Backoffice Permissions (with legacy mapping)
+        const initialBackofficePerms = [...(initialData.backofficePermissions || [])];
+        if (initialBackofficePerms.includes('manage_items') && !initialBackofficePerms.includes('manage_inventory')) {
+          initialBackofficePerms.push('manage_inventory');
+        }
+        if (initialBackofficePerms.includes('view_cost') && !initialBackofficePerms.includes('view_costs')) {
+          initialBackofficePerms.push('view_costs');
+        }
+        if (initialBackofficePerms.includes('manage_payment_types') && !initialBackofficePerms.includes('manage_payment_methods')) {
+          initialBackofficePerms.push('manage_payment_methods');
+        }
+        
+        setBackofficePermissions(initialBackofficePerms);
         setAllowedDiscounts(initialData.allowedDiscounts || []);
         setAllDiscountsSelected(initialData.allowedDiscounts?.length === 0);
       } else {
