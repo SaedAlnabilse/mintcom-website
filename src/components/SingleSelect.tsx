@@ -24,8 +24,9 @@ export function SingleSelect({
     options = [],
     placeholder = 'All',
     className = '',
-    allOptionLabel = 'All'
-}: SingleSelectProps) {
+    allOptionLabel = 'All',
+    buttonClassName = ''
+}: SingleSelectProps & { buttonClassName?: string }) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const containerRef = useRef<HTMLDivElement>(null);
@@ -85,10 +86,10 @@ export function SingleSelect({
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
                 className={`w-full px-4 py-3 bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 rounded-xl text-left flex items-center justify-between transition-all outline-none ${isOpen ? 'ring-2 ring-paymint-green/20 border-paymint-green/50' : ''
-                    }`}
+                    } ${buttonClassName}`}
             >
                 <div className="flex items-center gap-2 overflow-hidden">
-                    <span className={`font-bold text-xs truncate ${value ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
+                    <span className={`font-bold text-sm truncate ${value ? 'text-paymint-green' : 'text-gray-400'}`}>
                         {getDisplayValue()}
                     </span>
                     {value && (
@@ -128,7 +129,7 @@ export function SingleSelect({
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder="Search..."
-                                    className="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-white/5 border-none rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 placeholder-gray-400 outline-none focus:ring-1 focus:ring-paymint-green/30 transition-all"
+                                    className="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-white/5 border-none rounded-lg text-sm font-bold text-gray-700 dark:text-gray-300 placeholder-gray-400 outline-none focus:ring-1 focus:ring-paymint-green/30 transition-all"
                                 />
                                 {searchQuery && (
                                     <button
@@ -150,7 +151,7 @@ export function SingleSelect({
                                     className={`w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${!value ? 'bg-paymint-green/5' : ''
                                         }`}
                                 >
-                                    <span className={`text-xs ${!value ? 'font-black text-paymint-green' : 'font-bold text-gray-700 dark:text-gray-300'}`}>
+                                    <span className={`text-sm ${!value ? 'font-black text-paymint-green' : 'font-bold text-gray-700 dark:text-gray-300'}`}>
                                         {allOptionLabel}
                                     </span>
                                     {!value && <Check size={14} className="text-paymint-green" />}
@@ -172,7 +173,7 @@ export function SingleSelect({
                                             className={`w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${isSelected ? 'bg-paymint-green/5' : ''
                                                 }`}
                                         >
-                                            <span className={`text-xs ${isSelected ? 'font-black text-paymint-green' : 'font-bold text-gray-700 dark:text-gray-300'}`}>{opt.label}</span>
+                                            <span className={`text-sm ${isSelected ? 'font-black text-paymint-green' : 'font-bold text-gray-700 dark:text-gray-300'}`}>{opt.label}</span>
                                             {isSelected && <Check size={14} className="text-paymint-green" />}
                                         </button>
                                     );

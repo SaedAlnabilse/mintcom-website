@@ -4,8 +4,7 @@ import {
   Plus,
   Search,
   Package,
-  CheckCircle2,
-  Grid,
+
   Edit2,
   Trash2,
   ChevronDown,
@@ -14,7 +13,9 @@ import {
   ChevronRight,
   RefreshCw,
   Layers,
-  DollarSign
+  DollarSign,
+  MousePointerClick,
+  CheckSquare
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -117,8 +118,9 @@ export function AddonsPage() {
       const matchesSelection = filterSelection === 'ALL' || attr.inputType === filterSelection;
       const matchesRequirement = filterRequirement === 'ALL' || (filterRequirement === 'MANDATORY' ? attr.isRequired : !attr.isRequired);
 
-      const isPaid = attr.subAttributes?.some(sub => sub.price > 0);
-      const matchesPricing = filterPricing === 'ALL' || (filterPricing === 'PAID' ? isPaid : !isPaid);
+      const hasPaid = attr.subAttributes?.some(sub => sub.price > 0);
+      const hasFree = attr.subAttributes?.some(sub => sub.price === 0);
+      const matchesPricing = filterPricing === 'ALL' || (filterPricing === 'PAID' ? hasPaid : hasFree);
 
       return matchesSearch && matchesSelection && matchesRequirement && matchesPricing;
     });
@@ -284,6 +286,46 @@ export function AddonsPage() {
     });
   };
 
+  const handleQuickFilter = (
+    priceType: 'ALL' | 'FREE' | 'PAID',
+    findLargestInfo?: boolean
+  ) => {
+    // 1. Set Filter
+    setFilterPricing(priceType);
+    setPage(1); // Reset to first page
+    setSearchQuery(''); // Clear search to ensure we find hits
+
+    // 2. Find relevant group to auto-expand
+    let targetGroup = null;
+
+    if (findLargestInfo) {
+      // Logic for "Total Options" card: Scroll to largest group
+      targetGroup = stats.topGroup;
+    } else {
+      // Logic for Pricing: Find first group matching the priceType
+      targetGroup = attributes.find(attr => {
+        const hasPaid = attr.subAttributes?.some(sub => sub.price > 0);
+        const hasFree = attr.subAttributes?.some(sub => sub.price === 0);
+
+        if (priceType === 'PAID') return hasPaid;
+        if (priceType === 'FREE') return hasFree;
+        return true; // ALL
+      });
+    }
+
+    // 3. Expand & Scroll
+    if (targetGroup) {
+      setExpandedId(targetGroup.id);
+      setTimeout(() => {
+        const element = document.getElementById(`group-${targetGroup.id}`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Highlight effect?
+        }
+      }, 100);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-10">
       {/* Header */}
@@ -319,14 +361,16 @@ export function AddonsPage() {
             value: stats.totalGroups,
             icon: Layers,
             color: 'text-blue-500',
-            bg: 'bg-blue-500/10'
+            bg: 'bg-blue-500/10',
+            action: () => handleQuickFilter('ALL')
           },
           {
             label: 'Total Options',
             value: stats.totalOptions,
             icon: Package,
             color: 'text-paymint-green',
-            bg: 'bg-paymint-green/10'
+            bg: 'bg-paymint-green/10',
+            action: () => handleQuickFilter('ALL', true)
           },
           {
             label: 'Paid Modifiers',
@@ -334,7 +378,8 @@ export function AddonsPage() {
             sub: 'With pricing',
             icon: DollarSign,
             color: 'text-orange-500',
-            bg: 'bg-orange-500/10'
+            bg: 'bg-orange-500/10',
+            action: () => handleQuickFilter('PAID')
           },
         ].map((stat, i) => (
           <motion.div
@@ -342,15 +387,18 @@ export function AddonsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm flex items-center gap-4"
+            className="group relative p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
           >
-            <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
-              <stat.icon size={20} />
-            </div>
-            <div>
-              <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-0.5">{stat.label}</p>
-              <p className="text-xl font-black text-gray-900 dark:text-white">{stat.value}</p>
-              {stat.sub && <p className="text-[10px] font-bold text-paymint-green uppercase tracking-wide mt-1">{stat.sub}</p>}
+            <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
+            <div className="relative z-10 flex items-center gap-4">
+              <div className={`p-3 rounded-xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform duration-300`}>
+                <stat.icon size={20} />
+              </div>
+              <div>
+                <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-0.5">{stat.label}</p>
+                <p className="text-xl font-black text-gray-900 dark:text-white">{stat.value}</p>
+                {stat.sub && <p className="text-[10px] font-bold text-paymint-green uppercase tracking-wide mt-1">{stat.sub}</p>}
+              </div>
             </div>
           </motion.div>
         ))}
@@ -416,7 +464,7 @@ export function AddonsPage() {
               {['ALL', 'FREE', 'PAID'].map((f) => (
                 <button
                   key={f}
-                  onClick={() => { setFilterPricing(f as any); setPage(1); }}
+                  onClick={() => handleQuickFilter(f as any)}
                   className={`flex-1 py-2 text-[9px] font-black uppercase tracking-tight rounded-lg transition-all ${filterPricing === f
                     ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm'
                     : 'text-gray-400 hover:text-gray-600'
@@ -465,8 +513,11 @@ export function AddonsPage() {
             <motion.div
               layout
               key={attr.id}
-              className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden hover:border-paymint-green/30 transition-all shadow-sm"
+              id={`group-${attr.id}`}
+              className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden hover:shadow-xl transition-all duration-300"
             >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="absolute left-0 top-0 h-full w-1 bg-paymint-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div
                 className="flex items-center justify-between p-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors group"
                 onClick={() => setExpandedId(expandedId === attr.id ? null : attr.id)}
@@ -489,11 +540,11 @@ export function AddonsPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                    <button onClick={(e) => { e.stopPropagation(); openAttributeModal(attr); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green hover:border-paymint-green/30">
+                  <div className="flex gap-3">
+                    <button onClick={(e) => { e.stopPropagation(); openAttributeModal(attr); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green hover:border-paymint-green/30 transition-colors">
                       <Edit2 size={16} />
                     </button>
-                    <button onClick={(e) => { e.stopPropagation(); handleDeleteAttribute(attr.id); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-red hover:border-paymint-red/30">
+                    <button onClick={(e) => { e.stopPropagation(); handleDeleteAttribute(attr.id); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-red hover:border-paymint-red/30 transition-colors">
                       <Trash2 size={16} />
                     </button>
                   </div>
@@ -520,24 +571,30 @@ export function AddonsPage() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                      {attr.subAttributes?.map((sub) => (
-                        <div key={sub.id} className="flex items-center justify-between p-4 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 group/sub hover:border-paymint-green/30 transition-all shadow-sm">
-                          <div>
-                            <p className="font-bold text-gray-900 dark:text-white text-base">{sub.name}</p>
-                            <p className="text-xs font-black text-paymint-green mt-1">
-                              {sub.price > 0 ? `+${sub.price.toFixed(2)} JOD` : 'COMPLIMENTARY'}
-                            </p>
+                      {attr.subAttributes
+                        ?.filter(sub => {
+                          if (filterPricing === 'PAID') return sub.price > 0;
+                          if (filterPricing === 'FREE') return sub.price === 0;
+                          return true;
+                        })
+                        .map((sub) => (
+                          <div key={sub.id} className="flex items-center justify-between p-4 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 group/sub hover:border-paymint-green/30 transition-all shadow-sm">
+                            <div>
+                              <p className="font-bold text-gray-900 dark:text-white text-base">{sub.name}</p>
+                              <p className="text-xs font-black text-paymint-green mt-1">
+                                {sub.price > 0 ? `+${sub.price.toFixed(2)} JOD` : 'COMPLIMENTARY'}
+                              </p>
+                            </div>
+                            <div className="flex gap-1 opacity-0 group-hover/sub:opacity-100 transition-opacity">
+                              <button onClick={() => openSubAttributeModal(attr.id, sub)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10">
+                                <Edit2 size={14} />
+                              </button>
+                              <button onClick={() => handleDeleteSubAttribute(sub.id)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10">
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
                           </div>
-                          <div className="flex gap-1 opacity-0 group-hover/sub:opacity-100 transition-opacity">
-                            <button onClick={() => openSubAttributeModal(attr.id, sub)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10">
-                              <Edit2 size={14} />
-                            </button>
-                            <button onClick={() => handleDeleteSubAttribute(sub.id)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10">
-                              <Trash2 size={14} />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                        ))}
                     </div>
                   </motion.div>
                 )}
@@ -597,18 +654,47 @@ export function AddonsPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <button
+                    type="button"
                     onClick={() => setAttributeForm({ ...attributeForm, inputType: 'SINGLE_SELECT' })}
-                    className={`p-5 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 ${attributeForm.inputType === 'SINGLE_SELECT' ? 'border-paymint-green bg-paymint-green/5 text-paymint-green' : 'border-gray-200 dark:border-white/5 text-gray-400'}`}
+                    className={`p-4 rounded-2xl border-2 transition-all flex flex-col gap-3 text-left relative overflow-hidden group ${attributeForm.inputType === 'SINGLE_SELECT'
+                      ? 'bg-paymint-green/10 border-paymint-green'
+                      : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-paymint-green/30'
+                      }`}
                   >
-                    <CheckCircle2 size={24} />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-center">Single Selection</span>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${attributeForm.inputType === 'SINGLE_SELECT' ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                      <MousePointerClick size={20} strokeWidth={2.5} />
+                    </div>
+                    <div>
+                      <p className={`text-sm font-bold ${attributeForm.inputType === 'SINGLE_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>Single Select</p>
+                      <p className="text-[10px] font-medium text-gray-400 mt-1">Customer picks exactly one option.</p>
+                    </div>
+                    {attributeForm.inputType === 'SINGLE_SELECT' && (
+                      <div className="absolute top-4 right-4 text-paymint-green">
+                        <div className="w-2 h-2 rounded-full bg-paymint-green shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                      </div>
+                    )}
                   </button>
+
                   <button
+                    type="button"
                     onClick={() => setAttributeForm({ ...attributeForm, inputType: 'MULTI_SELECT' })}
-                    className={`p-5 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 ${attributeForm.inputType === 'MULTI_SELECT' ? 'border-paymint-green bg-paymint-green/5 text-paymint-green' : 'border-gray-200 dark:border-white/5 text-gray-400'}`}
+                    className={`p-4 rounded-2xl border-2 transition-all flex flex-col gap-3 text-left relative overflow-hidden group ${attributeForm.inputType === 'MULTI_SELECT'
+                      ? 'bg-paymint-green/10 border-paymint-green'
+                      : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-paymint-green/30'
+                      }`}
                   >
-                    <Grid size={24} />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-center">Multiple Selection</span>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${attributeForm.inputType === 'MULTI_SELECT' ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                      <CheckSquare size={20} strokeWidth={2.5} />
+                    </div>
+                    <div>
+                      <p className={`text-sm font-bold ${attributeForm.inputType === 'MULTI_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>Multi Select</p>
+                      <p className="text-[10px] font-medium text-gray-400 mt-1">Customer can pick multiple options.</p>
+                    </div>
+                    {attributeForm.inputType === 'MULTI_SELECT' && (
+                      <div className="absolute top-4 right-4 text-paymint-green">
+                        <div className="w-2 h-2 rounded-full bg-paymint-green shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                      </div>
+                    )}
                   </button>
                 </div>
 

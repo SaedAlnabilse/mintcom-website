@@ -25,11 +25,11 @@ export const Navbar = () => {
   return (
     <nav
       className={`fixed w-full z-50 transition-all duration-500 ease-in-out ${isScrolled
-          ? 'bg-white/80 dark:bg-[#050505]/80 backdrop-blur-xl py-4 border-b border-gray-200 dark:border-white/5 shadow-sm'
-          : 'bg-transparent py-6'
+        ? 'bg-white/80 dark:bg-[#050505]/80 backdrop-blur-xl py-4 border-b border-gray-200 dark:border-white/5 shadow-sm'
+        : 'bg-transparent py-6'
         }`}
     >
-      <div className="container mx-auto px-6 flex justify-between items-center">
+      <div className="container mx-auto px-8 md:px-16 lg:px-24 flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="flex items-center group">
           <Logo size="lg" className="transition-transform duration-500 group-hover:scale-105" />
@@ -54,12 +54,16 @@ export const Navbar = () => {
           <div className="flex items-center gap-6">
             <Link
               to="/login"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-sm font-black text-gray-900 dark:text-white hover:text-paymint-green dark:hover:text-paymint-green transition-colors uppercase tracking-widest"
             >
               Log In
             </Link>
             <Link
               to="/signup"
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-gray-900 dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-[0.15em] hover:scale-105 transition-all active:scale-95 shadow-lg shadow-gray-900/20 dark:shadow-white/10"
             >
               Get Started
@@ -108,6 +112,8 @@ export const Navbar = () => {
               <div className="flex flex-col gap-4">
                 <Link
                   to="/login"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="w-full py-5 border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white rounded-[2rem] font-black text-xl text-center"
                 >
@@ -115,6 +121,8 @@ export const Navbar = () => {
                 </Link>
                 <Link
                   to="/signup"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="w-full py-5 bg-paymint-green text-black rounded-[2rem] font-black text-xl text-center shadow-xl shadow-paymint-green/20"
                 >

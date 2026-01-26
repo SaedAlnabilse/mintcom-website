@@ -307,27 +307,30 @@ export function OwnerOverviewPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow"
+                        className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
                     >
-                        <div className="flex items-center justify-between mb-4">
-                            <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center`}>
-                                <stat.icon size={24} />
-                            </div>
-                            {stat.change !== undefined && !stat.hideChange && (
-                                <div className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${stat.change >= 0
-                                    ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
-                                    : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
-                                    }`}>
-                                    {stat.change >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-                                    {stat.change >= 0 ? '+' : ''}{stat.change}%
+                        <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
+                        <div className="relative z-10">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                                    <stat.icon size={24} />
                                 </div>
+                                {stat.change !== undefined && !stat.hideChange && (
+                                    <div className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${stat.change >= 0
+                                        ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
+                                        : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
+                                        }`}>
+                                        {stat.change >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                                        {stat.change >= 0 ? '+' : ''}{stat.change}%
+                                    </div>
+                                )}
+                            </div>
+                            <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">{stat.label}</p>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
+                            {stat.sub && (
+                                <p className="text-xs font-medium text-gray-500 mt-1">{stat.sub}</p>
                             )}
                         </div>
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">{stat.label}</p>
-                        <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
-                        {stat.sub && (
-                            <p className="text-xs font-medium text-gray-500 mt-1">{stat.sub}</p>
-                        )}
                     </motion.div>
                 ))}
             </div>
@@ -445,33 +448,36 @@ export function OwnerOverviewPage() {
                         </div>
                     </div>
 
-                    <div className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm">
-                        <h4 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide mb-4">Quick Management</h4>
-                        <div className="space-y-3">
-                            <button
-                                onClick={() => navigate('/owner/employees')}
-                                className="w-full flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-all group"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
-                                        <UserPlus size={16} />
+                    <div className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 group relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gray-100 dark:bg-white/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                        <div className="relative z-10">
+                            <h4 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide mb-4">Quick Management</h4>
+                            <div className="space-y-3">
+                                <button
+                                    onClick={() => navigate('/owner/employees')}
+                                    className="w-full flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-all group/btn"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
+                                            <UserPlus size={16} />
+                                        </div>
+                                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Staff Management</span>
                                     </div>
-                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Staff Management</span>
-                                </div>
-                                <Activity size={14} className="text-gray-400 group-hover:text-blue-500 transition-colors" />
-                            </button>
-                            <button
-                                onClick={() => navigate('/owner/establishments')}
-                                className="w-full flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-all group"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-                                        <Store size={16} />
+                                    <Activity size={14} className="text-gray-400 group-hover/btn:text-blue-500 transition-colors" />
+                                </button>
+                                <button
+                                    onClick={() => navigate('/owner/establishments')}
+                                    className="w-full flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-all group/btn"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+                                            <Store size={16} />
+                                        </div>
+                                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Manage Establishments</span>
                                     </div>
-                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Manage Establishments</span>
-                                </div>
-                                <Activity size={14} className="text-gray-400 group-hover:text-emerald-500 transition-colors" />
-                            </button>
+                                    <Activity size={14} className="text-gray-400 group-hover/btn:text-emerald-500 transition-colors" />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </motion.div>

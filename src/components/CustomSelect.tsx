@@ -16,6 +16,7 @@ interface CustomSelectProps {
     className?: string;
     error?: string;
     required?: boolean;
+    direction?: 'up' | 'down';
 }
 
 export function CustomSelect({
@@ -26,12 +27,15 @@ export function CustomSelect({
     placeholder = 'Select...',
     className = '',
     error,
-    required
+    required,
+    direction = 'down'
 }: CustomSelectProps) {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    // Close when clicking outside and handle scroll into view
+    const [smartDirection, setSmartDirection] = useState<'up' | 'down'>(direction);
+
+    // Close when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -39,14 +43,18 @@ export function CustomSelect({
             }
         };
 
-        if (isOpen) {
-            // Wait for anim to start
-            setTimeout(() => {
-                const element = containerRef.current;
-                if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }
-            }, 50);
+        if (isOpen && containerRef.current) {
+            // Smart positioning logic
+            const rect = containerRef.current.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom;
+            const spaceAbove = rect.top;
+            const dropdownHeight = 320; // Approx max height (max-h-80 is 20rem = 320px)
+
+            if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
+                setSmartDirection('up');
+            } else {
+                setSmartDirection('down');
+            }
         }
 
         document.addEventListener('mousedown', handleClickOutside);
@@ -98,11 +106,11 @@ export function CustomSelect({
                 {isOpen && (
                     <motion.div
                         ref={listRef}
-                        initial={{ opacity: 0, y: 5, scale: 0.98 }}
+                        initial={{ opacity: 0, y: smartDirection === 'up' ? 5 : -5, scale: 0.98 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 5, scale: 0.98 }}
+                        exit={{ opacity: 0, y: smartDirection === 'up' ? 5 : -5, scale: 0.98 }}
                         transition={{ duration: 0.15, ease: "easeOut" }}
-                        className="absolute top-full left-0 right-0 mt-3 z-[100] bg-white/95 dark:bg-[#0B1120]/95 backdrop-blur-xl border border-gray-100 dark:border-white/[0.08] rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden max-h-60 overflow-y-auto custom-scrollbar ring-1 ring-black/5"
+                        className={`absolute ${smartDirection === 'up' ? 'bottom-full mb-2 origin-bottom' : 'top-full mt-2 origin-top'} left-0 right-0 z-[100] bg-white/95 dark:bg-[#0B1120]/95 backdrop-blur-xl border border-gray-100 dark:border-white/[0.08] rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden max-h-80 overflow-y-auto custom-scrollbar ring-1 ring-black/5`}
                     >
                         {formattedOptions.length === 0 ? (
                             <div className="px-5 py-4 text-sm text-gray-400 font-bold italic text-center">No options available</div>

@@ -2,13 +2,14 @@ import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBlocker } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Store, Save, CreditCard, Receipt, Award, Trash2, AlertTriangle, Clock, RefreshCw, Plus, Edit2, DollarSign } from 'lucide-react';
+import { Store, Save, CreditCard, Receipt, Award, Trash2, AlertTriangle, Clock, RefreshCw, Plus, Edit2, DollarSign, Percent, Gift, Database } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { EstablishmentDeletionWizard, PendingDeletionBanner } from '../../components/EstablishmentDeletionWizard';
 import { CustomSelect } from '../../components/CustomSelect';
 import { RewardFormModal } from '../../components/forms/RewardFormModal';
+import { DemoDataGeneratorComponent } from '../../components/DemoDataGenerator';
 
 interface AppSettings {
   id?: string;
@@ -18,6 +19,7 @@ interface AppSettings {
   phone?: string;
   email?: string;
   logo?: string;
+  receiptLogo?: string;
   taxRate: number;
   taxIdNumber?: string;
   currency: string;
@@ -63,7 +65,7 @@ interface Category {
   name: string;
 }
 
-type SettingsTab = 'profile' | 'sales' | 'receipt' | 'loyalty' | 'danger';
+type SettingsTab = 'profile' | 'sales' | 'receipt' | 'loyalty' | 'danger' | 'demo';
 
 interface DeletionStatus {
   id: string;
@@ -90,6 +92,8 @@ export function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
+  const [receiptLogoPreview, setReceiptLogoPreview] = useState<string | null>(null);
+  const [selectedReceiptLogo, setSelectedReceiptLogo] = useState<File | null>(null);
   const [initialSettings, setInitialSettings] = useState<AppSettings | null>(null);
   const [initialLoyaltyConfig, setInitialLoyaltyConfig] = useState<LoyaltyConfig | null>(null);
   const [initialRewards, setInitialRewards] = useState<LoyaltyReward[]>([]);
@@ -121,6 +125,7 @@ export function SettingsPage() {
 
   // Watch receipt display options
   const showRestaurantName = watch('showRestaurantName');
+  const showDescription = watch('showDescription');
 
   const showAddress = watch('showAddress');
   const showTaxId = watch('showTaxId');
@@ -130,13 +135,13 @@ export function SettingsPage() {
   const [currencyPerPointCents, setCurrencyPerPointCents] = useState(0);
   const lastSyncedCurrencyPerPoint = useRef<number | null>(null);
 
-  // ATM-style input state for pointsPerCurrency
-  const [pointsPerCurrencyRaw, setPointsPerCurrencyRaw] = useState(0);
+  // Input state for pointsPerCurrency (Integer)
+  const [pointsPerCurrency, setPointsPerCurrency] = useState(0);
   const lastSyncedPointsPerCurrency = useRef<number | null>(null);
 
-  // ATM display values
+  // Display values
   const currencyPerPointDisplay = (currencyPerPointCents / 100).toFixed(2);
-  const pointsPerCurrencyDisplay = (pointsPerCurrencyRaw / 100).toFixed(2);
+  const pointsPerCurrencyDisplay = String(pointsPerCurrency);
 
   // ATM-style input handler for spend amount
   const handleCurrencyPerPointChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -149,14 +154,14 @@ export function SettingsPage() {
     }
   };
 
-  // ATM-style input handler for points awarded
+  // Integer input handler for points awarded
   const handlePointsPerCurrencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const digitsOnly = e.target.value.replace(/[^0-9]/g, '');
-    const raw = parseInt(digitsOnly, 10) || 0;
-    if (raw <= 999999999) {
-      setPointsPerCurrencyRaw(raw);
-      lastSyncedPointsPerCurrency.current = raw / 100;
-      setLoyaltyConfig(prev => prev ? { ...prev, pointsPerCurrency: raw / 100 } : null);
+    const points = parseInt(digitsOnly, 10) || 0;
+    if (points <= 999999) {
+      setPointsPerCurrency(points);
+      lastSyncedPointsPerCurrency.current = points;
+      setLoyaltyConfig(prev => prev ? { ...prev, pointsPerCurrency: points } : null);
     }
   };
 
@@ -193,7 +198,7 @@ export function SettingsPage() {
   })();
 
   // Combined dirty state
-  const hasUnsavedChanges = hasFormChanges || hasLoyaltyChanges || !!selectedLogo;
+  const hasUnsavedChanges = hasFormChanges || hasLoyaltyChanges || !!selectedLogo || !!selectedReceiptLogo;
 
   // Navigation blocker with proper dependency tracking
   const blocker = useBlocker(
@@ -233,7 +238,7 @@ export function SettingsPage() {
     if (loyaltyConfig?.pointsPerCurrency !== undefined &&
       loyaltyConfig.pointsPerCurrency !== lastSyncedPointsPerCurrency.current) {
       lastSyncedPointsPerCurrency.current = loyaltyConfig.pointsPerCurrency;
-      setPointsPerCurrencyRaw(Math.round(loyaltyConfig.pointsPerCurrency * 100));
+      setPointsPerCurrency(loyaltyConfig.pointsPerCurrency);
     }
   }, [loyaltyConfig?.pointsPerCurrency]);
 
@@ -299,6 +304,13 @@ export function SettingsPage() {
       reset(displayData);
       if (data.logo) {
         setPreviewImage(data.logo);
+      } else {
+        setPreviewImage(null);
+      }
+      if (data.receiptLogo) {
+        setReceiptLogoPreview(data.receiptLogo);
+      } else {
+        setReceiptLogoPreview(null);
       }
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to load settings');
@@ -313,8 +325,8 @@ export function SettingsPage() {
       const config = {
         pointsPerCurrency: 1,
         currencyPerPoint: 1,
-        ...response.data,
-        enabled: true
+        enabled: false,
+        ...response.data
       };
       setLoyaltyConfig(config);
       setInitialLoyaltyConfig(JSON.parse(JSON.stringify(config)));
@@ -435,6 +447,18 @@ export function SettingsPage() {
     }
   };
 
+  const handleReceiptLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedReceiptLogo(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setReceiptLogoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const onSubmit = async (data: AppSettings) => {
     const isCurrencyChanged = initialSettings && data.currency !== initialSettings.currency;
 
@@ -469,6 +493,21 @@ export function SettingsPage() {
         }
       }
 
+      if (selectedReceiptLogo) {
+        const formData = new FormData();
+        formData.append('file', selectedReceiptLogo);
+        formData.append('type', 'receipt-logo');
+
+        try {
+          const uploadRes = await api.post('/files/upload', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          });
+          data.receiptLogo = uploadRes.data.url;
+        } catch (err) {
+          console.error('Receipt Logo upload failed');
+        }
+      }
+
       const submissionData = {
         ...data,
         taxRate: Number(data.taxRate) / 100
@@ -494,6 +533,7 @@ export function SettingsPage() {
         onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
       });
       setSelectedLogo(null);
+      setSelectedReceiptLogo(null);
 
       // Refresh data without showing loading spinner to keep form mounted for proper reset
       await Promise.all([
@@ -811,6 +851,45 @@ export function SettingsPage() {
   };
 
   const handleTabChange = (newTab: SettingsTab) => {
+    if (activeTab === newTab) return;
+
+    if (hasUnsavedChanges) {
+      setConfirmConfig({
+        isOpen: true,
+        title: 'Unsaved Changes',
+        message: 'You have unsaved changes. Leaving this page will discard them. Are you sure you want to proceed?',
+        type: 'warning',
+        onConfirm: () => {
+          // Reset form data to initial state
+          if (initialSettings) reset(initialSettings);
+
+          // Reset loyalty config and rewards to initial state
+          if (initialLoyaltyConfig) setLoyaltyConfig(JSON.parse(JSON.stringify(initialLoyaltyConfig)));
+          if (initialRewards) setRewards(JSON.parse(JSON.stringify(initialRewards)));
+
+          // Reset image preview if it was changed
+          if (initialSettings?.logo) {
+            setPreviewImage(initialSettings.logo);
+          } else {
+            setPreviewImage(null);
+          }
+          if (initialSettings?.receiptLogo) {
+            setReceiptLogoPreview(initialSettings.receiptLogo);
+          } else {
+            setReceiptLogoPreview(null);
+          }
+          setSelectedLogo(null);
+          setSelectedReceiptLogo(null);
+
+          setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+          setActiveTab(newTab);
+        },
+        showCancel: true,
+        onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+      });
+      return;
+    }
+
     setActiveTab(newTab);
   };
 
@@ -819,6 +898,7 @@ export function SettingsPage() {
     { id: 'sales', label: 'Sales Settings', icon: CreditCard },
     { id: 'receipt', label: 'Receipt Design', icon: Receipt },
     { id: 'loyalty', label: 'Loyalty Program', icon: Award },
+    { id: 'demo', label: 'Demo Data', icon: Database },
     { id: 'danger', label: 'Delete Establishment', icon: Trash2, isDanger: true },
   ];
 
@@ -882,13 +962,13 @@ export function SettingsPage() {
         </button>
       </div>
 
-      <div className="flex flex-wrap gap-1 p-1.5 bg-gray-100 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.1] w-fit relative isolate shadow-2xl backdrop-blur-xl ring-1 ring-black/20">
+      <div className="flex flex-wrap gap-1 p-1.5 bg-gray-100 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.1] w-full relative isolate shadow-2xl backdrop-blur-xl ring-1 ring-black/20">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => handleTabChange(tab.id as SettingsTab)}
-            className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wide transition-all duration-300 ${activeTab === tab.id
+            className={`relative flex-1 flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wide transition-all duration-300 ${activeTab === tab.id
               ? tab.isDanger
                 ? 'text-paymint-red'
                 : 'text-black'
@@ -906,7 +986,8 @@ export function SettingsPage() {
               />
             )}
             <tab.icon size={16} />
-            {tab.label}
+            <span className="hidden md:inline">{tab.label}</span>
+            <span className="md:hidden">{tab.label.split(' ')[0]}</span>
           </button>
         ))}
       </div>
@@ -1180,24 +1261,49 @@ export function SettingsPage() {
                 <div className="space-y-4">
                   {/* Identity Visibility */}
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
-                    <div className="flex items-center justify-between">
+                    <div className="space-y-4">
+                      {/* Restaurant Name */}
                       <div>
-                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 uppercase tracking-tight">Identity Visibility</span>
-                        <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Display restaurant name & header text</span>
+                        <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 uppercase tracking-tight">Restaurant Name</span>
+                            <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Display business name on header</span>
+                          </div>
+                          <label className="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" {...register('showRestaurantName')} className="sr-only peer" />
+                            <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
+                          </label>
+                        </div>
+                        <input
+                          type="text"
+                          {...register('restaurantName')}
+                          disabled={!showRestaurantName}
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                          placeholder="Enter Restaurant Name"
+                        />
                       </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" {...register('showRestaurantName')} className="sr-only peer" />
-                        <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
-                      </label>
+
+                      {/* Description / Tagline */}
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 uppercase tracking-tight">Description / Tagline</span>
+                            <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Display secondary text (e.g. Specialty Coffee)</span>
+                          </div>
+                          <label className="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" {...register('showDescription')} className="sr-only peer" />
+                            <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
+                          </label>
+                        </div>
+                        <input
+                          type="text"
+                          {...register('restaurantDescription')}
+                          disabled={!showDescription}
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                          placeholder="Enter Restaurant Description"
+                        />
+                      </div>
                     </div>
-                    <AnimatePresence>
-                      {showRestaurantName && (
-                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden space-y-3">
-                          <input type="text" {...register('restaurantName')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all" placeholder="Enter Restaurant Name" />
-                          <input type="text" {...register('receiptHeader')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all" placeholder="Header Text (Optional)" />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
                   </div>
 
                   {/* Branding Protocol */}
@@ -1212,21 +1318,17 @@ export function SettingsPage() {
                         <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
                       </label>
                     </div>
-                    <AnimatePresence>
-                      {watch('showLogoOnReceipt') && (
-                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                          <div className="flex items-center gap-6 p-2">
-                            <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
-                              {previewImage ? <img src={previewImage} alt="Logo" className="w-full h-full object-cover" /> : <Store className="w-8 h-8 text-gray-300 dark:text-gray-600" />}
-                            </div>
-                            <label className="px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl hover:opacity-90 cursor-pointer text-xs font-black uppercase tracking-widest transition-all">
-                              Upload Logo
-                              <input type="file" accept="image/*" onChange={handleLogoChange} className="hidden" />
-                            </label>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                    <div className={`overflow-hidden transition-all duration-300 ${watch('showLogoOnReceipt') ? 'opacity-100' : 'opacity-50 pointer-events-none grayscale'}`}>
+                      <div className="flex items-center gap-6 p-2">
+                        <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
+                          {receiptLogoPreview ? <img src={receiptLogoPreview} alt="Receipt Logo" className="w-full h-full object-cover" /> : <Store className="w-8 h-8 text-gray-300 dark:text-gray-600" />}
+                        </div>
+                        <label className="px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl hover:opacity-90 cursor-pointer text-xs font-black uppercase tracking-widest transition-all">
+                          Upload Logo
+                          <input type="file" accept="image/*" onChange={handleReceiptLogoChange} className="hidden" disabled={!watch('showLogoOnReceipt')} />
+                        </label>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Location Metadata */}
@@ -1241,13 +1343,13 @@ export function SettingsPage() {
                         <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
                       </label>
                     </div>
-                    <AnimatePresence>
-                      {showAddress && (
-                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                          <input type="text" {...register('restaurantAddress')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all" placeholder="Enter Address" />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                    <input
+                      type="text"
+                      {...register('restaurantAddress')}
+                      disabled={!showAddress}
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                      placeholder="Enter Address"
+                    />
                   </div>
 
                   {/* Regulatory Data */}
@@ -1262,13 +1364,13 @@ export function SettingsPage() {
                         <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
                       </label>
                     </div>
-                    <AnimatePresence>
-                      {showTaxId && (
-                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                          <input type="text" {...register('taxIdNumber')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all" placeholder="Enter Tax ID / TRN" />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                    <input
+                      type="text"
+                      {...register('taxIdNumber')}
+                      disabled={!showTaxId}
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                      placeholder="Enter Tax ID / TRN"
+                    />
                   </div>
 
                   {/* Client Relations */}
@@ -1283,13 +1385,13 @@ export function SettingsPage() {
                         <div className="w-10 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-4 shadow-sm"></div>
                       </label>
                     </div>
-                    <AnimatePresence>
-                      {showFarewellMessage && (
-                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                          <textarea {...register('farewellMessage')} rows={2} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all resize-none" placeholder="Enter custom footer message" />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                    <textarea
+                      {...register('farewellMessage')}
+                      rows={2}
+                      disabled={!showFarewellMessage}
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                      placeholder="Enter custom footer message"
+                    />
                   </div>
                 </div>
               </div>
@@ -1309,123 +1411,150 @@ export function SettingsPage() {
                   <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Customer Retention Infrastructure</p>
                 </div>
               </div>
-            </div>
 
-
-            <div className="space-y-5 pt-4">
-              <div className="flex items-center gap-2">
-                <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
-                <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest px-1">Earning Algorithm</h4>
-              </div>
-              <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
-
-                <div className="flex flex-col lg:flex-row items-center gap-8">
-                  {/* Points Input Section */}
-                  <div className="flex-1 w-full lg:w-auto space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-7 h-7 rounded-lg bg-paymint-green/10 flex items-center justify-center text-paymint-green">
-                        <Award size={16} />
-                      </div>
-                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Points Awarded</span>
-                    </div>
-                    <div className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl px-6 py-4 flex flex-col items-center gap-1 shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
-                      <input
-                        type="text"
-                        value={pointsPerCurrencyDisplay}
-                        onChange={handlePointsPerCurrencyChange}
-                        className="w-full bg-transparent font-bold text-3xl text-paymint-green focus:outline-none transition-all text-center"
-                      />
-                      <div className="text-[9px] font-black text-gray-300 dark:text-gray-500 uppercase tracking-widest">LOYALTY UNITS</div>
-                    </div>
-                  </div>
-
-                  {/* Connector */}
-                  <div className="flex flex-col items-center justify-center py-4 lg:py-0">
-                    <div className="w-12 h-12 rounded-full bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] flex items-center justify-center shadow-md relative z-20">
-                      <RefreshCw size={18} className="text-gray-400" />
-                    </div>
-                  </div>
-
-                  {/* Spend Input Section */}
-                  <div className="flex-1 w-full lg:w-auto space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500">
-                        <DollarSign size={16} />
-                      </div>
-                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Required Spend</span>
-                    </div>
-                    <div className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl px-6 py-4 flex flex-col items-center gap-1 shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
-                      <input
-                        type="text"
-                        value={currencyPerPointDisplay}
-                        onChange={handleCurrencyPerPointChange}
-                        className="w-full bg-transparent font-bold text-3xl text-gray-900 dark:text-white focus:outline-none transition-all text-center"
-                      />
-                      <div className="text-[9px] font-black text-gray-300 dark:text-gray-500 uppercase tracking-widest">{watch('currency')} VALUE</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-8 pt-8 border-t border-gray-200 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-                  <div className="flex items-center gap-4 bg-white dark:bg-[#0B1120] px-6 py-4 rounded-2xl border border-gray-100 dark:border-white/[0.03] shadow-sm">
-                    <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
-                    <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
-                      Active Rule: <span className="text-gray-900 dark:text-white">Customers earn {pointsPerCurrencyDisplay} points for every {currencyPerPointDisplay} {watch('currency')} spent</span>
-                    </p>
-                  </div>
-                  <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-right max-w-xs hidden md:block">
-                    Points are calculated in real-time during checkout.
-                  </div>
-                </div>
+              <div className="flex items-center gap-4 bg-gray-50 dark:bg-white/[0.03] px-5 py-3 rounded-2xl border border-gray-200 dark:border-white/[0.08] shadow-sm">
+                <span className={`text-[10px] font-black uppercase tracking-widest ${loyaltyConfig.enabled ? 'text-paymint-green' : 'text-gray-400'}`}>{loyaltyConfig.enabled ? 'Active' : 'Disabled'}</span>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={loyaltyConfig.enabled}
+                    onChange={(e) => setLoyaltyConfig({ ...loyaltyConfig, enabled: e.target.checked })}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-sm"></div>
+                </label>
               </div>
             </div>
 
-            {/* Rewards List */}
-
-            <div className="space-y-6 pt-4">
-              <div className="flex items-center justify-between">
+            <div className={`space-y-10 transition-all duration-500 ${loyaltyConfig.enabled ? 'opacity-100' : 'opacity-40 grayscale pointer-events-none'}`}>
+              <div className="space-y-5 pt-4">
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
-                  <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest px-1">Rewards Catalog</h4>
+                  <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest px-1">Earning Algorithm</h4>
                 </div>
-                <button type="button" onClick={() => { setEditingReward(null); setShowRewardModal(true); }} className="flex items-center gap-2 px-4 py-2 bg-paymint-green/10 text-paymint-green rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-paymint-green/20 transition-all border border-paymint-green/20">
-                  <Plus size={14} /> Add Protocol
-                </button>
-              </div>
-              {rewards.length === 0 ? (
-                <div className="text-center py-16 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl bg-gray-50/50 dark:bg-black/5">
-                  <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-paymint-green shadow-sm">
-                    <Award size={24} />
-                  </div>
-                  <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Catalog Empty</p>
-                  <p className="text-[10px] font-black text-gray-400 mt-1 uppercase tracking-widest">Initialize reward tiers to activate redemption</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {rewards.map((reward) => (
-                    <div key={reward.id} className="flex items-center justify-between p-5 bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/5 group hover:border-paymint-green/30 transition-all shadow-sm">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/[0.08] flex items-center justify-center text-paymint-green shadow-sm group-hover:scale-110 transition-transform">
-                          <Award size={24} />
-                        </div>
-                        <div>
-                          <p className="font-bold text-gray-900 dark:text-white text-sm">{reward.name}</p>
-                          <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">{reward.pointsRequired} Points Required</p>
-                        </div>
+                <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
+                  <div className="flex flex-col lg:flex-row items-center gap-8">
+                    {/* Spend Input Section */}
+                    <div className="flex-1 w-full lg:w-auto space-y-4">
+                      <div className="flex items-center gap-3">
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">For Every</span>
                       </div>
-                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                        <button type="button" onClick={() => handleEditReward(reward)} className="p-2 rounded-lg bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-green border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
-                          <Edit2 size={16} />
-                        </button>
-                        <button type="button" onClick={() => handleDeleteReward(reward.id)} className="p-2 rounded-lg bg-white dark:bg-white/5 text-gray-400 hover:text-red-500 border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
-                          <Trash2 size={16} />
-                        </button>
+                      <div className="flex items-stretch bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
+                        <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
+                          <span className="text-sm font-black text-paymint-green uppercase">{watch('currency')}</span>
+                        </div>
+                        <input
+                          type="text"
+                          value={currencyPerPointDisplay}
+                          onChange={handleCurrencyPerPointChange}
+                          className="flex-1 w-full bg-transparent font-bold text-3xl text-gray-900 dark:text-white focus:outline-none transition-all px-6 py-4"
+                        />
                       </div>
                     </div>
-                  ))}
+
+                    {/* Connector */}
+                    <div className="flex flex-col items-center justify-center py-4 lg:py-0 self-end lg:pb-5">
+                      <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Customer Gets</div>
+                    </div>
+
+                    {/* Points Input Section */}
+                    <div className="flex-1 w-full lg:w-auto space-y-4">
+                      <div className="flex items-center gap-3">
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] opacity-0 lg:block hidden">Spacer</span>
+                      </div>
+                      <div className="flex items-stretch bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
+                        <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
+                          <span className="text-sm font-black text-paymint-green uppercase">PTS</span>
+                        </div>
+                        <input
+                          type="text"
+                          value={pointsPerCurrencyDisplay}
+                          onChange={handlePointsPerCurrencyChange}
+                          className="flex-1 w-full bg-transparent font-bold text-3xl text-paymint-green focus:outline-none transition-all px-6 py-4"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8 pt-8 border-t border-gray-200 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="flex items-center gap-4 bg-white dark:bg-[#0B1120] px-6 py-4 rounded-2xl border border-gray-100 dark:border-white/[0.03] shadow-sm">
+                      <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
+                      <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                        Active Rule: <span className="text-gray-900 dark:text-white">Customers earn {pointsPerCurrencyDisplay} points for every {currencyPerPointDisplay} {watch('currency')} spent</span>
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              )}
+              </div>
+
+              {/* Rewards List */}
+              <div className="space-y-6 pt-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
+                    <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest px-1">Rewards Catalog</h4>
+                  </div>
+                  <button type="button" onClick={() => { setEditingReward(null); setShowRewardModal(true); }} className="flex items-center gap-2 px-4 py-2 bg-paymint-green/10 text-paymint-green rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-paymint-green/20 transition-all border border-paymint-green/20">
+                    <Plus size={14} /> Add Protocol
+                  </button>
+                </div>
+                {rewards.length === 0 ? (
+                  <div className="text-center py-16 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl bg-gray-50/50 dark:bg-black/5">
+                    <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-paymint-green shadow-sm">
+                      <Award size={24} />
+                    </div>
+                    <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Catalog Empty</p>
+                    <p className="text-[10px] font-black text-gray-400 mt-1 uppercase tracking-widest">Initialize reward tiers to activate redemption</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {rewards.map((reward) => (
+                      <motion.div
+                        layout
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        key={reward.id}
+                        className="group relative flex items-center justify-between p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/5 transition-all duration-300 hover:shadow-lg overflow-hidden"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-br from-paymint-green/0 via-transparent to-paymint-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                        <div className="relative z-10 flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm group-hover:scale-110 transition-transform duration-300">
+                            {reward.type === 'DISCOUNT' ? <Percent size={22} /> : <Gift size={22} />}
+                          </div>
+                          <div>
+                            <p className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-paymint-green transition-colors">{reward.name}</p>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                              <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">{reward.pointsRequired} Points</span>
+                              <span className="text-[10px] text-gray-300 dark:text-gray-600">•</span>
+                              <span className="text-[10px] text-paymint-green font-black uppercase tracking-widest">
+                                {reward.type === 'DISCOUNT'
+                                  ? `${reward.discountPercentage}% Off`
+                                  : reward.freeCategoryName ? `Free from ${reward.freeCategoryName}` : 'Free Product'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="relative z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                          <button type="button" onClick={() => handleEditReward(reward)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
+                            <Edit2 size={16} />
+                          </button>
+                          <button type="button" onClick={() => handleDeleteReward(reward.id)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-red-500 border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
+          </motion.div>
+        )}
+
+        {activeTab === 'demo' && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <DemoDataGeneratorComponent />
           </motion.div>
         )}
 

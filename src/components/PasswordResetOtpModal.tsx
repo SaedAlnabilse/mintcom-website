@@ -28,6 +28,7 @@ export function PasswordResetOtpModal({
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [maskedEmail, setMaskedEmail] = useState('');
     const [error, setError] = useState('');
@@ -350,17 +351,24 @@ export function PasswordResetOtpModal({
                                         </button>
                                     </div>
 
-                                    <div>
+                                    <div className="relative">
                                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
                                             Confirm Password
                                         </label>
                                         <input
-                                            type={showPassword ? 'text' : 'password'}
+                                            type={showConfirmPassword ? 'text' : 'password'}
                                             value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
-                                            className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/[0.1] bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
+                                            className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 dark:border-white/[0.1] bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
                                             placeholder="Confirm new password"
                                         />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            className="absolute right-3 top-9 text-gray-400 hover:text-gray-600"
+                                        >
+                                            {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                        </button>
                                     </div>
                                 </div>
 

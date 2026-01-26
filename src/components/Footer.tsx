@@ -86,7 +86,7 @@ export const Footer = () => {
   return (
     <>
       <footer className="bg-gray-50 dark:bg-[#050505] border-t border-gray-200 dark:border-white/10 pt-20 pb-10 transition-colors duration-300">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-8 md:px-16 lg:px-24">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
             {/* Brand */}
             <div className="space-y-8">
@@ -113,7 +113,7 @@ export const Footer = () => {
               <ul className="space-y-4">
                 {productLinks.map((link) => (
                   <li key={link.name}>
-                    <button 
+                    <button
                       onClick={link.action}
                       className="text-gray-600 dark:text-gray-400 font-bold hover:text-paymint-green transition-colors"
                     >
@@ -130,7 +130,7 @@ export const Footer = () => {
               <ul className="space-y-4">
                 {companyLinks.map((link) => (
                   <li key={link.name}>
-                    <button 
+                    <button
                       onClick={link.action}
                       className="text-gray-600 dark:text-gray-400 font-bold hover:text-paymint-green transition-colors"
                     >
@@ -219,11 +219,10 @@ export const Footer = () => {
                       <button
                         key={item.id}
                         onClick={() => setSelectedHardware(item)}
-                        className={`flex items-center gap-3 p-3 rounded-xl transition-all whitespace-nowrap md:whitespace-normal w-full text-left ${
-                          selectedHardware.id === item.id
+                        className={`flex items-center gap-3 p-3 rounded-xl transition-all whitespace-nowrap md:whitespace-normal w-full text-left ${selectedHardware.id === item.id
                             ? 'bg-paymint-green text-black'
                             : 'bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'
-                        }`}
+                          }`}
                       >
                         <item.icon size={20} />
                         <span className="font-bold text-sm">{item.name}</span>

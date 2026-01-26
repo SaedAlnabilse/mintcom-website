@@ -340,29 +340,39 @@ export function MaterialsPage() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {paginatedItems.map((r: any) => (
-                  <div key={r.id} className="group bg-white dark:bg-[#1E293B] p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/30 transition-all shadow-sm">
-                    <div className="flex justify-between items-start mb-6">
-                      <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center transition-transform group-hover:scale-110">
-                        <Package size={20} />
-                      </div>
-                      <button onClick={() => navigate('/dashboard/recipes')} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green opacity-0 group-hover:opacity-100 transition-all">
-                        <Edit2 size={16} />
-                      </button>
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate">{r.name}</h3>
-                    <p className="text-xs text-gray-500 mt-1 line-clamp-1">{r.description || 'Custom preparation formula.'}</p>
+                  <motion.div
+                    layout
+                    key={r.id}
+                    className="group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:shadow-xl transition-all duration-300 overflow-hidden"
+                  >
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                    <div className="absolute left-0 top-0 h-full w-1 bg-paymint-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                    <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Yield</p>
-                        <p className="font-bold text-gray-900 dark:text-white text-sm">{r.yield} <span className="text-[10px] text-gray-500 uppercase">{r.yieldUnit}</span></p>
+                    <div className="relative z-10">
+                      <div className="flex justify-between items-start mb-6">
+                        <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm">
+                          <Package size={20} />
+                        </div>
+                        <button onClick={() => navigate('/dashboard/recipes')} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green opacity-0 group-hover:opacity-100 transition-all">
+                          <Edit2 size={16} />
+                        </button>
                       </div>
-                      <div className="text-right">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Stock</p>
-                        <p className="font-bold text-paymint-green text-sm">{r.quantity.toFixed(2)} <span className="text-[10px] uppercase">{r.yieldUnit}</span></p>
+
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate group-hover:text-paymint-green transition-colors">{r.name}</h3>
+                      <p className="text-xs text-gray-500 mt-1 line-clamp-1">{r.description || 'Custom preparation formula.'}</p>
+
+                      <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Yield</p>
+                          <p className="font-bold text-gray-900 dark:text-white text-sm">{r.yield} <span className="text-[10px] text-gray-500 uppercase">{r.yieldUnit}</span></p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Stock</p>
+                          <p className="font-bold text-paymint-green text-sm">{r.quantity.toFixed(2)} <span className="text-[10px] uppercase">{r.yieldUnit}</span></p>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             )}

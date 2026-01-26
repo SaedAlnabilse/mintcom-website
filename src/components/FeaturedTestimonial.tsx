@@ -30,7 +30,7 @@ export const FeaturedTestimonial = () => {
 
   return (
     <section className="py-24 lg:py-32 bg-gray-50 dark:bg-[#050505] transition-colors duration-300 overflow-hidden">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-8 md:px-16 lg:px-24">
         <div className="max-w-6xl mx-auto">
           <div className="relative">
             <AnimatePresence mode="wait">
@@ -45,9 +45,9 @@ export const FeaturedTestimonial = () => {
                 <div className="lg:w-1/2 relative group">
                   <div className="absolute inset-0 bg-paymint-green rounded-[3rem] rotate-3 opacity-10 group-hover:rotate-6 transition-transform duration-500" />
                   <div className="relative aspect-square rounded-[3rem] overflow-hidden shadow-2xl">
-                    <img 
-                      src={testimonial.image} 
-                      alt={testimonial.author} 
+                    <img
+                      src={testimonial.image}
+                      alt={testimonial.author}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                   </div>
@@ -67,7 +67,7 @@ export const FeaturedTestimonial = () => {
                   <div className="w-16 h-16 bg-paymint-green/10 rounded-2xl flex items-center justify-center mx-auto lg:mx-0">
                     <Quote size={32} className="text-paymint-green" fill="currentColor" />
                   </div>
-                  
+
                   <blockquote className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white leading-tight">
                     "{testimonial.text}"
                   </blockquote>
@@ -79,13 +79,13 @@ export const FeaturedTestimonial = () => {
 
                   {/* Navigation */}
                   <div className="flex items-center justify-center lg:justify-start gap-4 pt-4">
-                    <button 
+                    <button
                       onClick={prev}
                       className="w-12 h-12 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-900 dark:text-white hover:bg-paymint-green hover:text-black hover:border-paymint-green transition-all shadow-sm active:scale-90"
                     >
                       <ChevronLeft size={24} />
                     </button>
-                    <button 
+                    <button
                       onClick={next}
                       className="w-12 h-12 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-900 dark:text-white hover:bg-paymint-green hover:text-black hover:border-paymint-green transition-all shadow-sm active:scale-90"
                     >
@@ -93,9 +93,9 @@ export const FeaturedTestimonial = () => {
                     </button>
                     <div className="ml-4 flex gap-2">
                       {testimonials.map((_, i) => (
-                        <div 
-                          key={i} 
-                          className={`h-1.5 rounded-full transition-all duration-500 ${index === i ? 'w-8 bg-paymint-green' : 'w-2 bg-gray-200 dark:bg-white/10'}`} 
+                        <div
+                          key={i}
+                          className={`h-1.5 rounded-full transition-all duration-500 ${index === i ? 'w-8 bg-paymint-green' : 'w-2 bg-gray-200 dark:bg-white/10'}`}
                         />
                       ))}
                     </div>

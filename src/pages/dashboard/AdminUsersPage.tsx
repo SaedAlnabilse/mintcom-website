@@ -222,59 +222,71 @@ export function AdminUsersPage() {
                         </p>
                     </div>
                 ) : (
-                    <div className="divide-y divide-gray-100 dark:divide-white/5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
                         {adminUsers.map((admin) => (
                             <motion.div
+                                layout
                                 key={admin.id}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                className="p-6 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="group relative p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/5 hover:shadow-xl transition-all duration-300 overflow-hidden"
                             >
-                                <div className="flex items-center gap-4">
-                                    <div className="w-14 h-14 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center font-bold text-xl shadow-sm">
-                                        {admin.firstName.charAt(0)}{admin.lastName.charAt(0)}
+                                <div className="absolute inset-0 bg-gradient-to-br from-paymint-green/0 via-transparent to-paymint-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                                <div className="relative z-10 flex items-start justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-14 h-14 rounded-2xl bg-purple-500/10 text-purple-500 border border-purple-500/20 flex items-center justify-center font-black text-xl shadow-sm group-hover:scale-110 transition-transform duration-300">
+                                            {admin.firstName.charAt(0)}{admin.lastName.charAt(0)}
+                                        </div>
+                                        <div>
+                                            <p className="font-bold text-gray-900 dark:text-white text-lg tracking-tight group-hover:text-paymint-green transition-colors">
+                                                {admin.firstName} {admin.lastName}
+                                            </p>
+                                            <div className="flex flex-col gap-1 mt-1">
+                                                <span className="flex items-center gap-1.5 text-xs text-gray-500 font-medium">
+                                                    <Mail size={12} className="text-gray-400" />
+                                                    {admin.email}
+                                                </span>
+                                                {admin.phone && (
+                                                    <span className="flex items-center gap-1.5 text-xs text-gray-500 font-medium">
+                                                        <Phone size={12} className="text-gray-400" />
+                                                        {admin.phone}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="font-bold text-gray-900 dark:text-white text-lg tracking-tight">
-                                            {admin.firstName} {admin.lastName}
-                                        </p>
-                                        <div className="flex items-center gap-3 mt-1">
-                                            <span className="flex items-center gap-1 text-xs text-gray-500 font-medium">
-                                                <Mail size={12} />
-                                                {admin.email}
-                                            </span>
-                                            {admin.phone && (
-                                                <span className="flex items-center gap-1 text-xs text-gray-500 font-medium">
-                                                    <Phone size={12} />
-                                                    {admin.phone}
-                                                </span>
-                                            )}
-                                        </div>
-                                        <div className="flex flex-wrap gap-1 mt-3">
-                                            {admin.establishments.map((est) => (
-                                                <span
-                                                    key={est.id}
-                                                    className="px-2 py-0.5 bg-paymint-green/5 text-paymint-green text-[9px] font-black uppercase tracking-widest rounded-md border border-paymint-green/10"
-                                                >
-                                                    {est.name}
-                                                </span>
-                                            ))}
-                                        </div>
+                                    <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                                        <button
+                                            onClick={() => openEditModal(admin)}
+                                            className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-all border border-gray-200 dark:border-white/10 shadow-sm"
+                                        >
+                                            <Edit2 size={16} />
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(admin)}
+                                            className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 transition-all border border-gray-200 dark:border-white/10 shadow-sm"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                                    <button
-                                        onClick={() => openEditModal(admin)}
-                                        className="p-2.5 rounded-xl bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-green transition-all border border-gray-200 dark:border-white/10 shadow-sm"
-                                    >
-                                        <Edit2 size={16} />
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(admin)}
-                                        className="p-2.5 rounded-xl bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-red transition-all border border-gray-200 dark:border-white/10 shadow-sm"
-                                    >
-                                        <Trash2 size={16} />
-                                    </button>
+
+                                <div className="relative z-10 mt-6 pt-4 border-t border-gray-100 dark:border-white/5">
+                                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2">Access Nodes</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {admin.establishments.map((est) => (
+                                            <span
+                                                key={est.id}
+                                                className="px-2.5 py-1 bg-paymint-green/5 text-paymint-green text-[9px] font-black uppercase tracking-widest rounded-lg border border-paymint-green/10"
+                                            >
+                                                {est.name}
+                                            </span>
+                                        ))}
+                                        {admin.establishments.length === 0 && (
+                                            <span className="text-[10px] text-gray-400 italic">No nodes assigned</span>
+                                        )}
+                                    </div>
                                 </div>
                             </motion.div>
                         ))}

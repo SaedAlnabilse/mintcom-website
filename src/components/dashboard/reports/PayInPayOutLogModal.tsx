@@ -10,6 +10,7 @@ interface PayInPayOutLogModalProps {
     onClose: () => void;
     startDate: string;
     endDate: string;
+    employeeId?: string | null;
 }
 
 interface CashLog {
@@ -27,6 +28,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
     onClose,
     startDate,
     endDate,
+    employeeId,
 }) => {
     const [logs, setLogs] = useState<CashLog[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -36,20 +38,22 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
         if (isOpen) {
             fetchLogs();
         }
-    }, [isOpen, startDate, endDate]);
+    }, [isOpen, startDate, endDate, employeeId]);
 
     const fetchLogs = async () => {
         try {
             setIsLoading(true);
             const limit = "100"; // Fetch enough logs
             const start = new Date(startDate).toISOString();
-            // Ensure end date covers the full day
-            const endObj = new Date(endDate);
-            endObj.setHours(23, 59, 59, 999);
-            const end = endObj.toISOString();
+            const end = new Date(endDate).toISOString();
+
+            const params: any = { startDate: start, endDate: end, limit };
+            if (employeeId) {
+                params.employeeId = employeeId;
+            }
 
             const response = await api.get('/reports/pay-in-pay-out', {
-                params: { startDate: start, endDate: end, limit },
+                params,
             });
 
             const entries = response.data.entries || [];

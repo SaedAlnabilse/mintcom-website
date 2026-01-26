@@ -168,7 +168,7 @@ export function OnboardingPage() {
 
   // Check if user has a saved payment method
   // If user has existing establishments, they must have a payment method on file
-  const hasSavedCard = !!account?.defaultPaymentMethod || establishments.length > 0;
+  const hasSavedCard = !!account?.defaultCardId || !!account?.defaultPaymentMethod || establishments.length > 0;
   const savedCardLast4 = account?.defaultPaymentMethod || '****';
 
   // Forms
@@ -237,28 +237,61 @@ export function OnboardingPage() {
     // Handle payment method
     if (hasSavedCard && useSavedCard) {
       // Use existing saved card - no need to update
-      setFormData((prev: any) => ({ ...prev, paymentMethodToken: 'use_saved_card', useSavedCard: true }));
+      setFormData((prev: any) => ({
+        ...prev,
+        paymentMethodToken: 'use_saved_card',
+        useSavedCard: true,
+        savedCardId: account?.defaultCardId // Ensure we capture the existing default card ID
+      }));
     } else {
-      // New card - save the last 4 digits
+      // New card - save the card to the account
       const cardNumber = data.cardNumber?.replace(/\s/g, '') || '';
       const last4Digits = cardNumber.slice(-4);
+      const expiry = data.expiryDate || '';
+      const [expMonthStr, expYearStr] = expiry.split('/');
+      const expMonth = parseInt(expMonthStr, 10);
+      const expYear = parseInt('20' + expYearStr, 10); // Assume 20XX
+
+      // Simple brand detection
+      let brand = 'Unknown';
+      if (cardNumber.startsWith('4')) brand = 'Visa';
+      else if (cardNumber.startsWith('5')) brand = 'Mastercard';
+      else if (cardNumber.startsWith('3')) brand = 'Amex';
 
       try {
-        // Save the last 4 digits to the account
-        const response = await api.post('/api/accounts/payment-method', { last4Digits });
+        // Save the card to the account
+        const response = await api.post('/api/accounts/cards', {
+          last4: last4Digits,
+          brand: brand,
+          expMonth: expMonth,
+          expYear: expYear,
+          cardholderName: data.cardName,
+          setAsDefault: true
+        });
+
+        const newCardId = response.data.card?.id;
+        const newDefaultPaymentMethod = response.data.card?.last4 || last4Digits;
 
         // Update local account state
-        if (response.data?.defaultPaymentMethod) {
-          updateAccount({ defaultPaymentMethod: response.data.defaultPaymentMethod });
+        if (newCardId) {
+          updateAccount({
+            defaultCardId: newCardId,
+            defaultPaymentMethod: newDefaultPaymentMethod // For legacy/UI compatibility
+          });
         }
 
-        // In a real app, we would tokenize the card here via Stripe/Payment Provider
-        // For now, we just mock it and generate a fake token
-        setFormData((prev: any) => ({ ...prev, paymentMethodToken: 'tok_mock_' + Date.now(), useSavedCard: false }));
+        // Save for next step
+        setFormData((prev: any) => ({
+          ...prev,
+          paymentMethodToken: 'tok_mock_' + Date.now(),
+          useSavedCard: false,
+          savedCardId: newCardId
+        }));
+
       } catch (err: any) {
         console.error('Failed to save payment method:', err);
-        // Continue anyway - non-critical
-        setFormData((prev: any) => ({ ...prev, paymentMethodToken: 'tok_mock_' + Date.now(), useSavedCard: false }));
+        toast.error('Failed to save card. Please try again.');
+        return; // Stop execution if card save fails
       }
     }
 
@@ -287,6 +320,7 @@ export function OnboardingPage() {
         establishmentLoginId: formData.establishmentLoginId, // User-provided unique ID for this establishment
         establishmentPassword: formData.establishmentPassword, // User-provided password
         paymentMethodToken: formData.paymentMethodToken,
+        savedCardId: formData.savedCardId,
         // Duplication params
         duplicateFromId: formData.duplicateFromId,
         duplicateInventory: formData.duplicateInventory,
@@ -341,7 +375,7 @@ export function OnboardingPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex flex-col transition-colors duration-300">
       {/* Navbar - Hidden on Step 5 (Launch Center) */}
       {step !== 5 && (
-        <div className="p-6 flex justify-between items-center border-b border-gray-200 dark:border-white/5 bg-white dark:bg-transparent shadow-sm">
+        <div className="sticky top-0 z-50 p-6 flex justify-between items-center border-b border-gray-200 dark:border-white/5 bg-white dark:bg-[#050505] shadow-sm">
           <div className="flex items-center">
             <img
               src={PaymintLogoGreen}
@@ -448,7 +482,7 @@ export function OnboardingPage() {
                             className={`flex items-center gap-2 bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 px-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all min-w-[130px]`}
                           >
                             <span className="text-xl">{selectedCountry.flag}</span>
-                            <span className="text-sm">{selectedCountry.dialCode}</span>
+                            <span className="text-base">{selectedCountry.dialCode}</span>
                             <ChevronDown size={16} className="text-gray-400" />
                           </button>
                           <AnimatePresence>
@@ -539,6 +573,15 @@ export function OnboardingPage() {
                           <option value="JOD">JOD - Jordanian Dinar</option>
                           <option value="USD">USD - US Dollar</option>
                           <option value="AED">AED - UAE Dirham</option>
+                          <option value="SAR">SAR - Saudi Riyal</option>
+                          <option value="KWD">KWD - Kuwaiti Dinar</option>
+                          <option value="QAR">QAR - Qatari Riyal</option>
+                          <option value="BHD">BHD - Bahraini Dinar</option>
+                          <option value="OMR">OMR - Omani Rial</option>
+                          <option value="EGP">EGP - Egyptian Pound</option>
+                          <option value="GBP">GBP - British Pound</option>
+                          <option value="EUR">EUR - Euro</option>
+                          <option value="TRY">TRY - Turkish Lira</option>
                         </select>
                       </div>
                       {form1.formState.errors.currency && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form1.formState.errors.currency.message as string}</p>}
@@ -877,7 +920,7 @@ export function OnboardingPage() {
                   </button>
                   <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Create Establishment Login</h2>
                   <p className="text-gray-600 dark:text-gray-400 font-medium">This ID will be used to log into the POS app for this establishment.</p>
-                  <div className="mt-4 p-3 bg-paymint-green/10 text-paymint-green text-xs rounded-xl font-medium border border-paymint-green/20">
+                  <div className="mt-4 p-3 bg-paymint-green/10 text-paymint-green text-sm rounded-xl font-medium border border-paymint-green/20">
                     <p>✨ <strong>Unique access:</strong> Each establishment has its own ID and password for secure POS login.</p>
                   </div>
                 </div>
@@ -1078,27 +1121,77 @@ export function OnboardingPage() {
                     <h3 className="text-sm font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">Access Your Portal</h3>
                   </div>
 
-                  <button
-                    onClick={() => {
-                      const newEstablishment = establishments.find(e => e.id === formData.establishmentId);
-                      if (newEstablishment) {
-                        setCurrentEstablishment(newEstablishment);
-                      }
-                      window.open('/owner', '_blank');
-                    }}
-                    className="w-full p-6 bg-paymint-green text-black rounded-2xl text-left hover:scale-[1.01] active:scale-[0.99] transition-all shadow-xl shadow-paymint-green/20 group flex items-center gap-5"
-                  >
-                    <div className="w-14 h-14 bg-black/10 rounded-2xl flex items-center justify-center group-hover:rotate-6 transition-transform flex-shrink-0">
-                      <Building2 size={28} className="text-black" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-black mb-1 tracking-tight">Open Owner Portal in Browser</h3>
-                      <p className="text-sm font-bold opacity-70">Manage your establishments, employees, menu, analytics, and billing from any browser.</p>
-                    </div>
-                    <div className="flex items-center gap-2 font-black text-sm uppercase tracking-widest opacity-80">
-                      <ExternalLink size={18} />
-                    </div>
-                  </button>
+                  <div className="relative">
+                    <motion.div
+                      animate={{ y: [0, -10, 0] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                      className="absolute -top-12 left-1/2 -translate-x-1/2 z-20"
+                    >
+                      <div className="bg-black dark:bg-white text-white dark:text-black font-black text-xs px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 whitespace-nowrap">
+                        <span className="relative flex h-2 w-2">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
+                        </span>
+                        START HERE
+                        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div>
+                      </div>
+                    </motion.div>
+
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      animate={{
+                        boxShadow: [
+                          "0 15px 30px -5px rgba(74, 222, 128, 0.4)",
+                          "0 15px 40px -5px rgba(74, 222, 128, 0.6)",
+                          "0 15px 30px -5px rgba(74, 222, 128, 0.4)"
+                        ],
+                        borderColor: [
+                          "rgba(74, 222, 128, 0)",
+                          "rgba(74, 222, 128, 0.8)",
+                          "rgba(74, 222, 128, 0)"
+                        ]
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                      onClick={() => {
+                        const newEstablishment = establishments.find(e => e.id === formData.establishmentId);
+                        if (newEstablishment) {
+                          setCurrentEstablishment(newEstablishment);
+                        }
+                        window.open(`/owner/establishments?highlight=${formData.establishmentId}`, '_blank');
+                      }}
+                      className="relative w-full p-6 bg-paymint-green text-black rounded-2xl text-left border-2 border-transparent overflow-hidden group flex items-center gap-5 z-10"
+                    >
+                      {/* Shimmer Effect */}
+                      <motion.div
+                        initial={{ x: "-100%" }}
+                        animate={{ x: "200%" }}
+                        transition={{
+                          repeat: Infinity,
+                          repeatType: "loop",
+                          duration: 3,
+                          ease: "linear",
+                          repeatDelay: 1
+                        }}
+                        className="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -skew-x-12"
+                      />
+
+                      <div className="relative z-10 w-14 h-14 bg-black/10 rounded-2xl flex items-center justify-center group-hover:rotate-6 transition-transform flex-shrink-0">
+                        <Building2 size={28} className="text-black" />
+                      </div>
+                      <div className="relative z-10 flex-1">
+                        <h3 className="text-xl font-black mb-1 tracking-tight">Open Owner Portal in Browser</h3>
+                        <p className="text-sm font-bold opacity-70">Manage your establishments, employees, menu, analytics, and billing from any browser.</p>
+                      </div>
+                      <div className="relative z-10 flex items-center gap-2 font-black text-sm uppercase tracking-widest opacity-80">
+                        <ExternalLink size={18} />
+                      </div>
+                    </motion.button>
+                  </div>
                 </div>
 
                 {/* Section 2: Download Apps */}
@@ -1130,7 +1223,7 @@ export function OnboardingPage() {
                           className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity"
                         >
                           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 010 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z"/>
+                            <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 010 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z" />
                           </svg>
                           Google Play
                         </a>
@@ -1141,7 +1234,7 @@ export function OnboardingPage() {
                           className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity"
                         >
                           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
                           </svg>
                           App Store
                         </a>
@@ -1167,7 +1260,7 @@ export function OnboardingPage() {
                           className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity"
                         >
                           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 010 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z"/>
+                            <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 010 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z" />
                           </svg>
                           Google Play
                         </a>
@@ -1178,7 +1271,7 @@ export function OnboardingPage() {
                           className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity"
                         >
                           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
                           </svg>
                           App Store
                         </a>

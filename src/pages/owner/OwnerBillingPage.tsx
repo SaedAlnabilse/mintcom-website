@@ -4,6 +4,7 @@ import { Plus, CreditCard, DollarSign, Trash2, Star, AlertCircle, Calendar, Chec
 import api from '../../config/api';
 import { AddPaymentMethodModal } from '../../components/AddPaymentMethodModal';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
+import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 
 interface SavedCard {
@@ -46,7 +47,7 @@ export function OwnerBillingPage() {
         isOpen: boolean,
         targetId: string,
         targetName: string,
-        mode: 'cancel' | 'stop-trial' | 'delete-card' | 'dissolve-brand'
+        mode: 'cancel' | 'stop-trial' | 'delete-card' | 'dissolve-brand' | 'reactivate'
     }>({
         isOpen: false,
         targetId: '',
@@ -56,6 +57,8 @@ export function OwnerBillingPage() {
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
 
+
+    const { refreshEstablishments } = useAuth();
 
     useEffect(() => {
         fetchBillingInfo();
@@ -70,16 +73,49 @@ export function OwnerBillingPage() {
         }
     }, [activeMenu]);
 
-    const fetchBillingInfo = async () => {
+    const fetchBillingInfo = async (silent = false) => {
         try {
-            setIsLoading(true);
+            if (!silent) setIsLoading(true);
             const response = await api.get('/api/accounts/billing');
             setBillingData(response.data);
         } catch (err) {
             console.error('Failed to fetch billing info:', err);
-            toast.error('Failed to load billing information');
+            if (!silent) toast.error('Failed to load billing information');
         } finally {
-            setIsLoading(false);
+            if (!silent) setIsLoading(false);
+        }
+    };
+
+    const handleSecuritySuccess = async () => {
+        const targetId = securityModal.targetId;
+        const mode = securityModal.mode;
+
+        // Optimistic update for cancellation
+        if (mode === 'cancel') {
+            setBillingData(prev => {
+                if (!prev) return prev;
+                return {
+                    ...prev,
+                    establishments: prev.establishments.map(est =>
+                        est.id === targetId
+                            ? { ...est, subscriptionStatus: 'CANCELED', cancelAtPeriodEnd: false }
+                            : est
+                    )
+                };
+            });
+        }
+
+        // Close modal immediately for better UX
+        setSecurityModal(prev => ({ ...prev, isOpen: false }));
+
+        // Refresh billing data and global establishments in background
+        try {
+            await Promise.all([
+                fetchBillingInfo(true),
+                refreshEstablishments()
+            ]);
+        } catch (err) {
+            console.error('Failed to refresh after security action:', err);
         }
     };
 
@@ -111,13 +147,22 @@ export function OwnerBillingPage() {
         });
     };
 
-    const handleResumeSubscription = async (establishmentId: string) => {
-        try {
-            const res = await api.post(`/api/accounts/subscriptions/${establishmentId}/resume`);
-            toast.success(res.data.message);
-            fetchBillingInfo();
-        } catch (err: any) {
-            toast.error(err.response?.data?.message || 'Failed to resume subscription');
+    const handleResumeSubscription = async (establishmentId: string, name: string, isPendingCancel: boolean) => {
+        if (isPendingCancel) {
+            try {
+                const res = await api.post(`/api/accounts/subscriptions/${establishmentId}/resume`);
+                toast.success(res.data.message);
+                fetchBillingInfo();
+            } catch (err: any) {
+                toast.error(err.response?.data?.message || 'Failed to resume subscription');
+            }
+        } else {
+            setSecurityModal({
+                isOpen: true,
+                targetId: establishmentId,
+                targetName: name,
+                mode: 'reactivate'
+            });
         }
     };
 
@@ -223,15 +268,24 @@ export function OwnerBillingPage() {
                         bg: 'bg-purple-500/10'
                     },
                 ].map((stat, i) => (
-                    <div key={i} className="p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 flex items-center gap-4 shadow-sm">
-                        <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center`}>
-                            <stat.icon size={20} />
+                    <motion.div
+                        key={i}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.1 }}
+                        className="group relative p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 flex items-center gap-4 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
+                    >
+                        <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
+                        <div className="relative z-10 flex items-center gap-4 w-full">
+                            <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300`}>
+                                <stat.icon size={20} />
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-0.5">{stat.label}</p>
+                                <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
+                            </div>
                         </div>
-                        <div>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-0.5">{stat.label}</p>
-                            <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
-                        </div>
-                    </div>
+                    </motion.div>
                 ))}
             </div>
 
@@ -269,11 +323,14 @@ export function OwnerBillingPage() {
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: index * 0.1 }}
-                                    className={`relative p-6 h-48 rounded-2xl flex flex-col justify-between overflow-hidden group shadow-sm transition-all border ${card.isDefault
+                                    className={`group relative p-6 h-48 rounded-2xl flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-lg transition-all border ${card.isDefault
                                         ? 'bg-white dark:bg-[#1E293B] border-paymint-green/30 ring-1 ring-paymint-green/10'
-                                        : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/5'
+                                        : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/5 hover:border-paymint-green/30'
                                         }`}
                                 >
+                                    {/* Gradient Blob */}
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
                                     <div className="relative z-10 flex justify-between items-start">
                                         <div className="space-y-1.5">
                                             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Secured Card</p>
@@ -313,7 +370,7 @@ export function OwnerBillingPage() {
                                         {!card.isDefault && (
                                             <button
                                                 onClick={() => handleSetDefaultCard(card.id)}
-                                                className="w-12 h-12 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-400 hover:text-paymint-green hover:border-paymint-green/50 flex items-center justify-center transition-all shadow-xl"
+                                                className="w-12 h-12 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-400 hover:text-paymint-green hover:border-paymint-green/50 flex items-center justify-center transition-all shadow-xl hover:scale-110"
                                                 title="Set as Default"
                                             >
                                                 <Star size={20} />
@@ -322,7 +379,7 @@ export function OwnerBillingPage() {
                                         {card.canDelete ? (
                                             <button
                                                 onClick={() => handleDeleteCard(card.id, card.last4)}
-                                                className="w-12 h-12 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-400 hover:text-red-500 hover:border-red-500/50 flex items-center justify-center transition-all shadow-xl"
+                                                className="w-12 h-12 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-400 hover:text-red-500 hover:border-red-500/50 flex items-center justify-center transition-all shadow-xl hover:scale-110"
                                                 title="Delete Card"
                                             >
                                                 <Trash2 size={20} />
@@ -346,13 +403,13 @@ export function OwnerBillingPage() {
                         Active Subscriptions
                     </h2>
 
-                    <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+                    <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-visible shadow-sm">
                         {/* Table Header */}
                         <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 uppercase tracking-wide">
                             <div className="col-span-4">Service</div>
                             <div className="col-span-3">Status</div>
                             <div className="col-span-2">Cost</div>
-                            <div className="col-span-3 text-right">Payment</div>
+                            <div className="col-span-3 text-center">Payment</div>
                         </div>
 
                         {isLoading ? (
@@ -398,14 +455,17 @@ export function OwnerBillingPage() {
                                         </div>
 
                                         {/* Payment & Actions */}
-                                        <div className="col-span-3 flex items-center justify-end gap-4 relative">
+                                        <div className="col-span-3 flex items-center justify-center relative">
                                             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
                                                 {est.paymentCard ? `•••• ${est.paymentCard.last4}` : 'No Card'}
                                             </span>
 
-                                            <div className="relative">
+                                            <div className="absolute right-0">
                                                 <button
-                                                    onClick={() => setActiveMenu(activeMenu === est.id ? null : est.id)}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setActiveMenu(activeMenu === est.id ? null : est.id);
+                                                    }}
                                                     className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                                                 >
                                                     <MoreVertical size={16} />
@@ -417,6 +477,7 @@ export function OwnerBillingPage() {
                                                             initial={{ opacity: 0, scale: 0.95, y: 5 }}
                                                             animate={{ opacity: 1, scale: 1, y: 0 }}
                                                             exit={{ opacity: 0, scale: 0.95, y: 5 }}
+                                                            onClick={(e) => e.stopPropagation()}
                                                             className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
                                                         >
                                                             {est.subscriptionStatus === 'TRIAL' && !est.cancelAtPeriodEnd && (
@@ -430,17 +491,17 @@ export function OwnerBillingPage() {
                                                             {est.subscriptionStatus === 'ACTIVE' && !est.cancelAtPeriodEnd && (
                                                                 <button
                                                                     onClick={() => handleCancelSubscription(est.id, est.name)}
-                                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-500/10 uppercase tracking-wide transition-colors"
+                                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 uppercase tracking-wide transition-colors"
                                                                 >
                                                                     Cancel Sub
                                                                 </button>
                                                             )}
-                                                            {est.cancelAtPeriodEnd && (
+                                                            {(est.cancelAtPeriodEnd || est.subscriptionStatus === 'CANCELED') && (
                                                                 <button
-                                                                    onClick={() => handleResumeSubscription(est.id)}
+                                                                    onClick={() => handleResumeSubscription(est.id, est.name, est.cancelAtPeriodEnd)}
                                                                     className="w-full px-4 py-3 text-left text-xs font-bold text-paymint-green hover:bg-paymint-green/10 uppercase tracking-wide transition-colors"
                                                                 >
-                                                                    Resume
+                                                                    {est.subscriptionStatus === 'CANCELED' ? 'Reactivate ($20)' : 'Resume'}
                                                                 </button>
                                                             )}
                                                             <button
@@ -485,7 +546,7 @@ export function OwnerBillingPage() {
             <SecurityVerificationModal
                 isOpen={securityModal.isOpen}
                 onClose={() => setSecurityModal({ ...securityModal, isOpen: false })}
-                onSuccess={fetchBillingInfo}
+                onSuccess={handleSecuritySuccess}
                 targetId={securityModal.targetId}
                 targetName={securityModal.targetName}
                 mode={securityModal.mode}

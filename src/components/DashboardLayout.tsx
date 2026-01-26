@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { ThemeToggle } from './ThemeToggle';
+import { DeletionRestorationBanner } from './DeletionRestorationBanner';
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -12,13 +13,18 @@ import {
   Percent,
   CreditCard,
   Settings,
+  Shield,
   History,
   Store,
   LogOut,
   ChevronRight,
   PanelLeftClose,
   Menu,
-  X
+  X,
+  Smartphone,
+  Apple,
+  Play,
+  Clock
 } from 'lucide-react';
 
 // Paymint Logo imports
@@ -47,19 +53,34 @@ const isMenuGroup = (item: MenuItemOrGroup): item is MenuGroup => {
 
 const menuStructure: MenuItemOrGroup[] = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  {
+    label: 'Reports',
+    icon: FileBarChart,
+    items: [
+      { path: '/dashboard/reports/sales', label: 'Sales summary', icon: FileBarChart },
+      { path: '/dashboard/reports/items', label: 'Sales by item', icon: Package },
+      { path: '/dashboard/reports/categories', label: 'Sales by category', icon: LayoutDashboard },
+      { path: '/dashboard/reports/employees', label: 'Sales by employee', icon: Users },
+      { path: '/dashboard/reports/payments', label: 'Sales by payment type', icon: CreditCard },
+      { path: '/dashboard/orders', label: 'Receipts', icon: History },
+      { path: '/dashboard/reports/modifiers', label: 'Sales by modifier', icon: Package },
+      { path: '/dashboard/reports/discounts', label: 'Discounts', icon: Percent },
+      { path: '/dashboard/reports/taxes', label: 'Taxes', icon: Percent },
+      { path: '/dashboard/reports/shifts', label: 'Shifts', icon: Clock },
+    ],
+  },
   { path: '/dashboard/orders', label: 'Orders', icon: ShoppingCart },
   {
     label: 'Inventory',
     icon: Package,
     items: [
-      { path: '/dashboard/products', label: 'Products', icon: Package },
       { path: '/dashboard/categories', label: 'Categories', icon: LayoutDashboard },
+      { path: '/dashboard/products', label: 'Products', icon: Package },
       { path: '/dashboard/addons', label: 'Add-ons', icon: Package },
       { path: '/dashboard/materials', label: 'Materials', icon: Package },
       { path: '/dashboard/recipes', label: 'Recipes', icon: FileBarChart },
     ],
   },
-  { path: '/dashboard/reports', label: 'Reports', icon: FileBarChart },
   {
     label: 'Sales & Growth',
     icon: Percent,
@@ -73,6 +94,7 @@ const menuStructure: MenuItemOrGroup[] = [
     icon: Users,
     items: [
       { path: '/dashboard/staff', label: 'Team', icon: Users },
+      { path: '/dashboard/roles', label: 'Roles', icon: Shield },
       { path: '/dashboard/customers', label: 'Customers', icon: Users },
     ],
   },
@@ -85,6 +107,43 @@ const menuStructure: MenuItemOrGroup[] = [
     ],
   },
 ];
+
+// Define permission requirements for each path
+const REQUIRED_PERMISSIONS: Record<string, string[]> = {
+  // Reports
+  '/dashboard/reports/sales': ['view_reports', 'reports'],
+  '/dashboard/reports/items': ['view_reports', 'reports'],
+  '/dashboard/reports/categories': ['view_reports', 'reports'],
+  '/dashboard/reports/employees': ['view_reports', 'reports'],
+  '/dashboard/reports/payments': ['view_reports', 'reports'],
+  '/dashboard/reports/modifiers': ['view_reports', 'reports'],
+  '/dashboard/reports/discounts': ['view_reports', 'reports'],
+  '/dashboard/reports/taxes': ['view_reports', 'reports'],
+  '/dashboard/reports/shifts': ['view_reports', 'reports'],
+
+  // Orders
+  '/dashboard/orders': ['view_orders'], // Strictly requires view_orders
+
+  // Inventory
+  '/dashboard/categories': ['manage_inventory', 'items'],
+  '/dashboard/products': ['manage_inventory', 'items'],
+  '/dashboard/addons': ['manage_inventory', 'items'],
+  '/dashboard/materials': ['manage_inventory', 'items'],
+  '/dashboard/recipes': ['manage_inventory', 'items'],
+
+  // Sales & Growth
+  '/dashboard/discounts': ['manage_discounts', 'manage_settings', 'settings'],
+  '/dashboard/payment-methods': ['manage_payment_methods', 'manage_settings', 'settings'],
+
+  // Community
+  '/dashboard/staff': ['manage_employees', 'employees'],
+  '/dashboard/roles': ['manage_employees', 'employees'],
+  '/dashboard/customers': ['manage_customers', 'manage_employees', 'employees'],
+
+  // Settings
+  '/dashboard/settings': ['manage_settings', 'settings'],
+  '/dashboard/activity-logs': ['view_activity_logs', 'view_reports', 'reports'], // Specific or fallback to reports
+};
 
 const SIDEBAR_STATE_KEY = 'dashboard_sidebar_expanded';
 
@@ -101,6 +160,39 @@ export function DashboardLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
+
+  // Filter menu based on permissions
+  const filteredMenu = useMemo(() => {
+    if (!account) return [];
+    // If user is owner or not marked as secondary admin, show everything
+    if (!account.isSecondaryAdmin) return menuStructure;
+
+    const userPerms = new Set(account.permissions || []);
+
+    const hasAccess = (path: string) => {
+      // Root dashboard always accessible if logged in
+      if (path === '/dashboard') return true;
+      
+      const required = REQUIRED_PERMISSIONS[path];
+      // If no specific permission required, default to accessible (or restricted, depending on policy)
+      // For safety, if not listed, assume it's public/common unless we want strict whitelist
+      if (!required) return true; 
+
+      // Check if user has ANY of the required permissions (OR logic)
+      return required.some(p => userPerms.has(p));
+    };
+
+    return menuStructure.map(item => {
+      if (isMenuGroup(item)) {
+        const visibleItems = item.items.filter(subItem => hasAccess(subItem.path));
+        if (visibleItems.length > 0) {
+          return { ...item, items: visibleItems };
+        }
+        return null;
+      }
+      return hasAccess(item.path) ? item : null;
+    }).filter((item): item is MenuItemOrGroup => item !== null);
+  }, [account]);
 
   useEffect(() => {
     localStorage.setItem(SIDEBAR_STATE_KEY, String(sidebarOpen));
@@ -119,7 +211,7 @@ export function DashboardLayout() {
   }, [sidebarOpen]);
 
   const handleLogout = () => setIsLogoutModalOpen(true);
-  const confirmLogout = () => { logout(); navigate('/login'); };
+  const confirmLogout = () => { logout(); };
 
   const sidebarNavRef = useRef<HTMLElement>(null);
   const prevSidebarOpen = useRef(sidebarOpen);
@@ -127,7 +219,7 @@ export function DashboardLayout() {
   // 1. Auto-expand group when location changes OR sidebar opens
   useEffect(() => {
     if (sidebarOpen) {
-      const currentGroup = menuStructure.find(
+      const currentGroup = filteredMenu.find(
         (item) => isMenuGroup(item) && isGroupActive(item.items)
       ) as MenuGroup | undefined;
 
@@ -135,7 +227,7 @@ export function DashboardLayout() {
         setExpandedGroup(currentGroup.label);
       }
     }
-  }, [location.pathname, sidebarOpen]);
+  }, [location.pathname, sidebarOpen, filteredMenu]);
 
   // 2. Handle scroll ONLY when the sidebar actually opens
   useEffect(() => {
@@ -212,8 +304,8 @@ export function DashboardLayout() {
                 className="flex items-center gap-4 cursor-pointer"
                 onClick={() => navigate('/dashboard')}
               >
-                <img src={PaymintLogoGreen} className="h-7 w-auto dark:hidden" alt="PayMint" />
-                <img src={PaymintLogoWhite} className="h-7 w-auto hidden dark:block" alt="PayMint" />
+                <img src={PaymintLogoGreen} className="h-10 w-auto dark:hidden" alt="PayMint" />
+                <img src={PaymintLogoWhite} className="h-10 w-auto hidden dark:block" alt="PayMint" />
               </motion.div>
             ) : (
               <motion.div
@@ -245,31 +337,31 @@ export function DashboardLayout() {
 
         {/* Current Establishment Card */}
         {sidebarOpen ? (
-          <div className="px-2 py-4">
+          <div className="px-2 pb-2 pt-0">
             <div
-              className="p-5 bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm relative overflow-hidden group cursor-pointer transition-all duration-300 hover:border-paymint-green/30"
+              className="p-3.5 bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm relative overflow-hidden group cursor-pointer transition-all duration-300 hover:border-paymint-green/30"
               onClick={() => navigate('/select-establishment')}
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 dark:bg-paymint-green/10 rounded-full blur-3xl pointer-events-none group-hover:scale-150 transition-transform duration-1000" />
               <div className="relative z-10">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center flex-shrink-0">
-                    <Store size={22} className="text-paymint-green" />
+                <div className="flex items-center gap-3 mb-2.5">
+                  <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center flex-shrink-0">
+                    <Store size={18} className="text-paymint-green" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[10px] font-bold text-paymint-green uppercase tracking-[0.15em] mb-1">Active Location</p>
-                    <h2 className="text-base font-bold text-gray-900 dark:text-white tracking-tight leading-[1.2] font-sans">
+                    <p className="text-[9px] font-bold text-paymint-green uppercase tracking-[0.15em] mb-0.5">Active Location</p>
+                    <h2 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight leading-[1.2] font-sans truncate">
                       {currentEstablishment?.name || 'Loading...'}
                     </h2>
                   </div>
                 </div>
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100 dark:border-white/10">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] dark:shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                    <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Online</span>
+                <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-gray-100 dark:border-white/10">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] dark:shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                    <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400">Online</span>
                   </div>
-                  <div className="flex items-center gap-1 text-xs font-bold text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
-                    Switch <ChevronRight size={12} className="mt-0.5" />
+                  <div className="flex items-center gap-1 text-[10px] font-bold text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                    Switch <ChevronRight size={10} className="mt-0.5" />
                   </div>
                 </div>
               </div>
@@ -296,7 +388,7 @@ export function DashboardLayout() {
             <p className="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Main Menu</p>
           )}
 
-          {menuStructure.map((item, index) => {
+          {filteredMenu.map((item, index) => {
             if (isMenuGroup(item)) {
               const isExpanded = expandedGroup === item.label;
               const isActive = isGroupActive(item.items);
@@ -414,54 +506,110 @@ export function DashboardLayout() {
           })}
         </nav>
 
-        {/* Theme Toggle */}
-        <div className="px-3 py-3 border-t border-gray-100 dark:border-white/5">
+        {/* POS App Download */}
+        {/* POS App Download - Compact */}
+        <div className="px-3 mt-auto mb-2">
           {sidebarOpen ? (
-            <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-white/[0.03] rounded-xl">
-              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider pl-1">Theme</span>
-              <ThemeToggle dropdownDirection="up" />
+            <div className="bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/5 rounded-xl p-2.5 flex items-center justify-between group">
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-orange-500/10 text-orange-500 shrink-0">
+                  <Smartphone size={16} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xs font-bold text-gray-900 dark:text-white leading-none mb-0.5">POS App</span>
+                  <span className="text-[9px] text-gray-500 dark:text-gray-400 leading-none">Download</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <button className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-900 dark:bg-white/10 text-white hover:bg-gray-800 dark:hover:bg-white/20 transition-all border border-gray-800 dark:border-white/5" title="Get it on Google Play">
+                  <Play size={10} fill="currentColor" />
+                </button>
+                <button className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-900 dark:bg-white/10 text-white hover:bg-gray-800 dark:hover:bg-white/20 transition-all border border-gray-800 dark:border-white/5" title="Download on the App Store">
+                  <Apple size={12} fill="currentColor" />
+                </button>
+              </div>
             </div>
           ) : (
-            <div className="flex justify-center">
-              <ThemeToggle dropdownDirection="up" />
+            <div className="relative group flex justify-center">
+              <button
+                className="w-10 h-10 flex items-center justify-center rounded-xl bg-orange-50 dark:bg-orange-500/10 text-orange-500 border border-orange-200 dark:border-orange-500/20 shadow-sm hover:scale-105 transition-all"
+              >
+                <Smartphone size={18} />
+              </button>
+              {/* Compact Popover */}
+              <div className="absolute left-full bottom-0 ml-3 bg-gray-900/95 backdrop-blur-md rounded-xl p-3 border border-white/10 shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[70] translate-x-1 group-hover:translate-x-0 w-max">
+                <div className="flex items-center gap-3">
+                  <span className="text-white font-bold text-xs whitespace-nowrap">POS App</span>
+                  <div className="h-4 w-px bg-white/20" />
+                  <div className="flex gap-2">
+                    <button className="w-7 h-7 flex items-center justify-center rounded-lg bg-white text-black hover:opacity-90">
+                      <Play size={10} fill="currentColor" />
+                    </button>
+                    <button className="w-7 h-7 flex items-center justify-center rounded-lg bg-white/10 text-white hover:bg-white/20">
+                      <Apple size={12} fill="currentColor" />
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>
 
         {/* Footer User Profile */}
-        <div className="p-4 border-t border-gray-100 dark:border-white/5">
+        <div className="p-3 border-t border-gray-100 dark:border-white/5">
           <div className={`flex items-center gap-3 ${!sidebarOpen ? 'flex-col' : ''}`}>
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-paymint-green/20">
-              <span className="text-black font-bold text-sm">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-paymint-green/20 outline outline-2 outline-white dark:outline-black">
+              <span className="text-black font-bold text-xs">
                 {account?.firstName?.charAt(0).toUpperCase()}
               </span>
             </div>
 
             {sidebarOpen && (
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
+                <p className="text-xs font-bold text-gray-900 dark:text-white truncate">
                   {account?.firstName} {account?.lastName}
                 </p>
                 <p className="text-[10px] text-gray-500 truncate">Manager</p>
               </div>
             )}
 
-            <button
-              onClick={handleLogout}
-              className={`
-                flex items-center justify-center rounded-xl text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all
-                ${sidebarOpen ? 'p-2.5' : 'w-10 h-10 mt-2'}
-              `}
-              title="Sign Out"
-            >
-              <LogOut size={18} />
-            </button>
+            {/* Actions: Theme & Logout */}
+            <div className={`flex items-center gap-1 ${!sidebarOpen ? 'flex-col gap-2 mt-1' : ''}`}>
+              {sidebarOpen ? (
+                <div className="flex items-center gap-1">
+                  <ThemeToggle dropdownDirection="up" />
+                  <button
+                    onClick={handleLogout}
+                    className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all"
+                    title="Sign Out"
+                  >
+                    <LogOut size={16} />
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="relative group">
+                    <ThemeToggle dropdownDirection="up" />
+                  </div>
+                  <div className="relative group">
+                    <button
+                      onClick={handleLogout}
+                      className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all"
+                    >
+                      <LogOut size={16} />
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </motion.aside>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
+        <DeletionRestorationBanner />
         {/* Top Bar (Mobile) */}
         <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-[#1E293B] border-b border-gray-200 dark:border-white/5">
           <button

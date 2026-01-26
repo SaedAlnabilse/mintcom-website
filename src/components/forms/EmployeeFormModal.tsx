@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trash2, Eye, EyeOff, ShieldCheck, ChevronDown, Check, Tag } from 'lucide-react';
+import { X, Trash2, Eye, EyeOff, ChevronDown, Check } from 'lucide-react';
+import api from '../../config/api';
+import { useAuth } from '../../context/AuthContext';
 
 interface StaffMember {
   id: string;
@@ -13,6 +15,24 @@ interface StaffMember {
   permissions?: string[];
   allowedDiscounts?: string[];
   establishmentIds?: string[];
+  customRoleId?: string;
+  // Platform access control
+  posAccess?: boolean;
+  backofficeAccess?: boolean;
+  backofficePermissions?: string[];
+}
+
+interface CustomRole {
+  id: string;
+  name: string;
+  role: string;
+  permissions: string[];
+  allowedDiscounts: string[];
+  allDiscounts: boolean;
+  // Access Control
+  posAccess: boolean;
+  backofficeAccess: boolean;
+  backofficePermissions: string[];
 }
 
 interface Discount {
@@ -33,15 +53,32 @@ interface EmployeeFormModalProps {
   isSubmitting?: boolean;
 }
 
-const AVAILABLE_PERMISSIONS = [
-  { id: 'pos', label: 'POS System', description: 'Access to sales screen' },
-  { id: 'dashboard', label: 'Dashboard', description: 'View sales summary & analytics' },
-  { id: 'reports', label: 'Reports', description: 'View sales reports' },
-  { id: 'settings', label: 'Settings', description: 'App configuration' },
-  { id: 'inventory', label: 'Inventory', description: 'Manage stock' },
-  { id: 'refunds', label: 'Refunds', description: 'Process refunds' },
-  { id: 'discounts', label: 'Discounts', description: 'Apply discounts' },
-  { id: 'employees', label: 'Manage Employees', description: 'Add/Edit users' },
+const POS_PERMISSIONS = [
+  { id: 'accept_payments', label: 'Accept payments', description: 'Process payment transactions' },
+  { id: 'apply_discounts', label: 'Apply discounts with restricted access', description: 'Allow applying discounts during sale' },
+  { id: 'change_taxes', label: 'Change taxes in a sale', description: 'Modify tax rate during checkout' },
+  { id: 'open_cash_drawer', label: 'Open cash drawer without making a sale', description: 'Manual drawer access' },
+  { id: 'view_all_receipts', label: 'View all receipts', description: 'When disabled, can only view last 5 receipts' },
+  { id: 'refunds', label: 'Perform refunds', description: 'Process order refunds' },
+  { id: 'reprint_receipts', label: 'Reprint and resend receipts', description: 'Print receipts for past orders' },
+  { id: 'inventory', label: 'Manage items', description: 'Add, edit, delete menu items' },
+  { id: 'view_item_cost', label: 'View cost of items', description: 'See cost prices and margins' },
+  { id: 'settings', label: 'Change settings', description: 'Access app settings' },
+  { id: 'live_chat', label: 'Access to live chat support', description: 'Contact support via chat' },
+];
+
+const BACKOFFICE_PERMISSIONS = [
+  { id: 'view_reports', label: 'View sales reports', description: 'Access dashboard and analytics' },
+  { id: 'manage_items', label: 'Manage items', description: 'Create and edit products and inventory' },
+  { id: 'view_cost', label: 'View cost of items', description: 'See profit margins and costs' },
+  { id: 'manage_employees', label: 'Manage employees', description: 'Add/edit staff and roles' },
+  { id: 'manage_customers', label: 'Manage customers', description: 'View and edit customer database' },
+  { id: 'manage_settings', label: 'Manage feature settings', description: 'General store configuration' },
+  { id: 'manage_billing', label: 'Manage billing', description: 'Subscription and payment methods' },
+  { id: 'manage_payment_types', label: 'Manage payment types', description: 'Configure payment options' },
+  { id: 'manage_loyalty', label: 'Manage loyalty program', description: 'Configure points and rewards' },
+  { id: 'manage_taxes', label: 'Manage taxes', description: 'Tax rates and settings' },
+  { id: 'manage_devices', label: 'Manage POS devices', description: 'Add or remove POS registers' },
 ];
 
 export function EmployeeFormModal({
@@ -50,10 +87,12 @@ export function EmployeeFormModal({
   onSubmit,
   onDelete,
   initialData,
-  availableDiscounts = [],
   establishments,
   isSubmitting = false,
 }: EmployeeFormModalProps) {
+  // Get current establishment from context (for dashboard-level pages)
+  const { currentEstablishment } = useAuth();
+
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -64,6 +103,7 @@ export function EmployeeFormModal({
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [permissions, setPermissions] = useState<string[]>([]);
+  const [backofficePermissions, setBackofficePermissions] = useState<string[]>([]); // New state
   const [allowedDiscounts, setAllowedDiscounts] = useState<string[]>([]);
   const [allDiscountsSelected, setAllDiscountsSelected] = useState(true);
 
@@ -72,11 +112,46 @@ export function EmployeeFormModal({
   const [establishmentSearch, setEstablishmentSearch] = useState('');
   const [showEstablishmentDropdown, setShowEstablishmentDropdown] = useState(false);
 
-  const [showPermissionsDropdown, setShowPermissionsDropdown] = useState(false); // Default closed on web to save space
-  const [showDiscountsDropdown, setShowDiscountsDropdown] = useState(false);
+  // Custom Roles
+  const [customRoles, setCustomRoles] = useState<CustomRole[]>([]);
+  const [selectedCustomRoleId, setSelectedCustomRoleId] = useState<string>('');
+  const [lastAppliedTemplate, setLastAppliedTemplate] = useState<CustomRole | null>(null);
+  const [showRolesDropdown, setShowRolesDropdown] = useState(false);
+
+  // Platform Access Control
+  const [posAccess, setPosAccess] = useState(true);
+  const [backofficeAccess, setBackofficeAccess] = useState(false);
+
+  const fetchCustomRoles = async () => {
+    // Determine establishment ID - from prop or from context
+    let estId: string | undefined;
+
+    // 1. If editing, use the employee's assigned establishment
+    if (initialData?.establishmentIds && initialData.establishmentIds.length > 0) {
+      estId = initialData.establishmentIds[0];
+    }
+    // 2. If in Dashboard mode, use current establishment
+    else if (currentEstablishment) {
+      estId = currentEstablishment.id;
+    }
+    // 3. Fallback for new employee in Owner mode (use first available)
+    else if (establishments && establishments.length > 0) {
+      estId = establishments[0].id;
+    }
+
+    if (!estId) return;
+
+    try {
+      const response = await api.get(`/api/custom-roles/${estId}`);
+      setCustomRoles(response.data || []);
+    } catch (error) {
+      console.error('Error fetching custom roles:', error);
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
+      fetchCustomRoles();
       if (initialData) {
         setName(initialData.name || '');
         setUsername(initialData.username || '');
@@ -85,7 +160,12 @@ export function EmployeeFormModal({
         setRole(initialData.role.toUpperCase() === 'ADMIN' ? 'ADMIN' : 'USER');
         setPassword('');
         setConfirmPassword('');
-        setPermissions(initialData.permissions || ['pos', 'discounts', 'refunds']);
+        setPermissions(initialData.permissions || ['accept_payments', 'apply_discounts', 'refunds']);
+        setBackofficePermissions(initialData.backofficePermissions || []);
+        setSelectedCustomRoleId(initialData.customRoleId || '');
+        // Platform access control
+        setPosAccess(initialData.posAccess !== false); // Default to true
+        setBackofficeAccess(initialData.backofficeAccess || false);
 
         if (initialData.allowedDiscounts && initialData.allowedDiscounts.length > 0) {
           setAllDiscountsSelected(false);
@@ -113,9 +193,15 @@ export function EmployeeFormModal({
         setRole('USER');
         setPassword('');
         setConfirmPassword('');
-        setPermissions(['pos', 'discounts', 'refunds']);
+        setPermissions(['accept_payments', 'apply_discounts', 'refunds']);
+        setBackofficePermissions([]);
         setAllDiscountsSelected(true);
         setAllowedDiscounts([]);
+        setSelectedCustomRoleId('');
+        setLastAppliedTemplate(null);
+        // Platform access control - defaults for new employees
+        setPosAccess(true);
+        setBackofficeAccess(false);
 
         // If creating new and there's only one establishment, select it by default
         if (establishments && establishments.length === 1) {
@@ -124,32 +210,47 @@ export function EmployeeFormModal({
           setSelectedEstablishmentIds([]);
         }
       }
-      setShowPermissionsDropdown(false);
-      setShowDiscountsDropdown(false);
       setShowEstablishmentDropdown(false);
+      setShowRolesDropdown(false);
     }
   }, [isOpen, initialData]);
 
-  const togglePermission = (permissionId: string) => {
-    setPermissions(prev => {
-      const isRemoving = prev.includes(permissionId);
-      let newPermissions = isRemoving
-        ? prev.filter(id => id !== permissionId)
-        : [...prev, permissionId];
+  const handleTemplateSelect = (roleTemplate: CustomRole) => {
+    // Safely determine the role type
+    const roleType = roleTemplate.role && roleTemplate.role.toUpperCase() === 'ADMIN' ? 'ADMIN' : 'USER';
+    setRole(roleType);
 
-      if (!isRemoving && (permissionId === 'discounts' || permissionId === 'refunds')) {
-        if (!newPermissions.includes('pos')) newPermissions.push('pos');
-      }
-      return newPermissions;
-    });
+    setPermissions(roleTemplate.permissions || []);
+    setBackofficePermissions(roleTemplate.backofficePermissions || []);
+    setAllDiscountsSelected(roleTemplate.allDiscounts);
+    setAllowedDiscounts(roleTemplate.allowedDiscounts || []);
+    setSelectedCustomRoleId(roleTemplate.id);
+    setLastAppliedTemplate(roleTemplate);
+
+    // Sync access control from template
+    setPosAccess(roleTemplate.posAccess !== false);
+    setBackofficeAccess(roleTemplate.backofficeAccess || false);
+
+    setShowRolesDropdown(false);
   };
 
-  const toggleDiscount = (discountId: string) => {
-    setAllowedDiscounts(prev =>
-      prev.includes(discountId)
-        ? prev.filter(id => id !== discountId)
-        : [...prev, discountId]
-    );
+  const isModifiedFromTemplate = () => {
+    if (!lastAppliedTemplate) return false;
+
+    const permissionsMatch = JSON.stringify([...permissions].sort()) === JSON.stringify([...lastAppliedTemplate.permissions].sort());
+    const backofficePermissionsMatch = JSON.stringify([...backofficePermissions].sort()) === JSON.stringify([...(lastAppliedTemplate.backofficePermissions || [])].sort());
+    const discountsMatch = allDiscountsSelected === lastAppliedTemplate.allDiscounts &&
+      JSON.stringify([...allowedDiscounts].sort()) === JSON.stringify([...(lastAppliedTemplate.allowedDiscounts || [])].sort());
+
+    // Safety check for role match
+    const templateRole = lastAppliedTemplate.role ? lastAppliedTemplate.role.toUpperCase() : 'USER';
+    const currentRole = role ? role.toUpperCase() : 'USER';
+    const roleMatch = currentRole === templateRole;
+
+    const accessMatch = posAccess === (lastAppliedTemplate.posAccess !== false) &&
+      backofficeAccess === (lastAppliedTemplate.backofficeAccess || false);
+
+    return !permissionsMatch || !backofficePermissionsMatch || !discountsMatch || !roleMatch || !accessMatch;
   };
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -168,6 +269,11 @@ export function EmployeeFormModal({
     if (!name.trim()) newErrors.name = 'Required';
     if (!username.trim()) newErrors.username = 'Required';
     if (role === 'ADMIN' && !email.trim()) newErrors.email = 'Required';
+
+    // Validate role selection - must be ADMIN or have a custom role selected
+    if (role !== 'ADMIN' && !selectedCustomRoleId) {
+      newErrors.role = 'Please select a role';
+    }
 
     if (!initialData && !password) newErrors.password = 'Required';
     if (password && password.length < 5) newErrors.password = 'Min 5 chars';
@@ -199,10 +305,14 @@ export function EmployeeFormModal({
       email: email || undefined,
       phone: phone || undefined,
       role: role.toUpperCase(),
-      permissions: role === 'ADMIN' ? AVAILABLE_PERMISSIONS.map(p => p.id) : permissions,
-
+      permissions: role === 'ADMIN' ? POS_PERMISSIONS.map(p => p.id) : permissions,
+      customRoleId: selectedCustomRoleId || undefined,
       allowedDiscounts: allDiscountsSelected ? [] : allowedDiscounts,
       establishmentIds: establishments ? selectedEstablishmentIds : undefined,
+      // Platform access control
+      posAccess,
+      backofficeAccess,
+      backofficePermissions: backofficeAccess ? backofficePermissions : [],
     };
 
     if (password) {
@@ -216,10 +326,6 @@ export function EmployeeFormModal({
 
     await onSubmit(payload);
   };
-
-  const discountsForUser = role === 'ADMIN'
-    ? availableDiscounts
-    : availableDiscounts.filter(d => !d.adminOnly);
 
   if (!isOpen) return null;
 
@@ -381,126 +487,97 @@ export function EmployeeFormModal({
                 </div>
               )}
 
-              {/* Role Selection */}
-              <div>
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block flex items-center gap-1">
-                  Role <span className="text-paymint-red">*</span>
-                </label>
-                <div className="flex bg-gray-50 dark:bg-white/5 rounded-xl overflow-hidden border border-gray-200 dark:border-white/10 p-1">
-                  <button
-                    type="button"
-                    onClick={() => setRole('ADMIN')}
-                    className={`flex-1 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${role === 'ADMIN' ? 'bg-paymint-green text-black shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
-                  >
-                    Admin
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setRole('USER')}
-                    className={`flex-1 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${role === 'USER' ? 'bg-paymint-green text-black shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
-                  >
-                    User
-                  </button>
-                </div>
-              </div>
-
-              {/* Permissions */}
-              {role === 'USER' && (
-                <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden transition-colors">
-                  <button
-                    type="button"
-                    onClick={() => setShowPermissionsDropdown(!showPermissionsDropdown)}
-                    className="w-full flex items-center justify-between p-4 text-left"
-                  >
-                    <div className="flex items-center gap-2">
-                      <ShieldCheck size={18} className="text-paymint-green" />
-                      <span className="text-xs font-black uppercase tracking-wide text-gray-900 dark:text-white">Permissions</span>
-                      <span className="bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-[10px] font-bold px-2 py-0.5 rounded-md ml-2">
-                        {permissions.length} selected
-                      </span>
-                    </div>
-                    <ChevronDown size={16} className={`text-gray-400 transition-transform ${showPermissionsDropdown ? 'rotate-180' : ''}`} />
-                  </button>
-
-                  {showPermissionsDropdown && (
-                    <div className="px-4 pb-4 space-y-1">
-                      {AVAILABLE_PERMISSIONS.map(perm => {
-                        const isLocked = perm.id === 'pos' && (permissions.includes('refunds') || permissions.includes('discounts'));
-                        return (
-                          <button
-                            key={perm.id}
-                            type="button"
-                            disabled={isLocked}
-                            onClick={() => togglePermission(perm.id)}
-                            className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${permissions.includes(perm.id) ? 'bg-paymint-green/10' : 'hover:bg-white dark:hover:bg-white/5'} ${isLocked ? 'opacity-50 cursor-not-allowed' : ''}`}
-                          >
-                            <div>
-                              <p className={`text-xs font-bold ${permissions.includes(perm.id) ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>{perm.label}</p>
-                              <p className="text-[10px] text-gray-500 font-medium">{perm.description}</p>
-                            </div>
-                            {permissions.includes(perm.id) && <Check size={14} className="text-paymint-green" />}
-                          </button>
-                        );
-                      })}
-                    </div>
+              {/* Role Selection - Now uses Role Template dropdown */}
+              <div className="relative">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block flex items-center justify-between">
+                  <span className="flex items-center gap-1">Role <span className="text-paymint-red">*</span></span>
+                  {isModifiedFromTemplate() && (
+                    <span className="text-paymint-red lowercase font-bold tracking-normal">(Modified)</span>
                   )}
-                </div>
-              )}
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setShowRolesDropdown(!showRolesDropdown)}
+                  className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-left flex items-center justify-between transition-colors"
+                >
+                  <span className={`text-sm font-bold ${(selectedCustomRoleId || role === 'ADMIN') ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}>
+                    {role === 'ADMIN'
+                      ? 'Admin (Full Access)'
+                      : selectedCustomRoleId
+                        ? customRoles.find(r => r.id === selectedCustomRoleId)?.name || 'Select role...'
+                        : 'Select role...'}
+                  </span>
+                  <ChevronDown size={16} className={`text-gray-400 transition-transform ${showRolesDropdown ? 'rotate-180' : ''}`} />
+                </button>
 
-              {/* Discounts */}
-              {role === 'USER' && permissions.includes('discounts') && discountsForUser.length > 0 && (
-                <div className="bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden transition-colors">
-                  <button
-                    type="button"
-                    onClick={() => setAllDiscountsSelected(!allDiscountsSelected)}
-                    className="w-full flex items-center justify-between p-4 text-left border-b border-gray-200 dark:border-white/5"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Tag size={18} className="text-paymint-green" />
-                      <span className="text-xs font-black uppercase tracking-wide text-gray-900 dark:text-white">Allowed Discounts</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{allDiscountsSelected ? 'All Allowed' : 'Custom'}</span>
-                      {allDiscountsSelected && <Check size={14} className="text-paymint-green" />}
-                    </div>
-                  </button>
-
-                  {!allDiscountsSelected && (
-                    <div>
+                {showRolesDropdown && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-xl z-30 max-h-60 overflow-y-auto custom-scrollbar shadow-2xl">
+                    <div className="p-2">
+                      {/* Admin Option */}
                       <button
                         type="button"
-                        onClick={() => setShowDiscountsDropdown(!showDiscountsDropdown)}
-                        className="w-full flex items-center justify-between p-3 text-[10px] font-bold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white px-4 transition-colors uppercase tracking-wide"
+                        onClick={() => {
+                          setRole('ADMIN');
+                          setSelectedCustomRoleId('');
+                          setLastAppliedTemplate(null);
+                          setPermissions(POS_PERMISSIONS.map(p => p.id));
+                          setBackofficePermissions(BACKOFFICE_PERMISSIONS.map(p => p.id));
+                          setAllDiscountsSelected(true);
+                          setShowRolesDropdown(false);
+                          setPosAccess(true);
+                          setBackofficeAccess(true);
+                        }}
+                        className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${role === 'ADMIN' ? 'bg-purple-500/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
                       >
-                        <span>Select Specific Discounts ({allowedDiscounts.length})</span>
-                        <ChevronDown size={14} className={`transition-transform ${showDiscountsDropdown ? 'rotate-180' : ''}`} />
+                        <div>
+                          <span className={`text-xs font-bold ${role === 'ADMIN' ? 'text-purple-500' : 'text-gray-700 dark:text-gray-300'}`}>
+                            Admin (Full Access)
+                          </span>
+                          <p className="text-[10px] text-gray-500 mt-0.5">All permissions enabled</p>
+                        </div>
+                        {role === 'ADMIN' && <Check size={14} className="text-purple-500" />}
                       </button>
 
-                      {showDiscountsDropdown && (
-                        <div className="px-4 pb-4 space-y-1">
-                          {discountsForUser.map(discount => (
-                            <button
-                              key={discount.id}
-                              type="button"
-                              onClick={() => toggleDiscount(discount.id)}
-                              className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${allowedDiscounts.includes(discount.id) ? 'bg-paymint-green/10' : 'hover:bg-white dark:hover:bg-white/5'}`}
-                            >
-                              <div>
-                                <p className={`text-sm font-medium ${allowedDiscounts.includes(discount.id) ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>{discount.name}</p>
-                                <p className="text-xs text-gray-500">{(discount.percentage * 100).toFixed(0)}% Off</p>
-                              </div>
-                              {allowedDiscounts.includes(discount.id) && <Check size={16} className="text-paymint-green" />}
-                            </button>
-                          ))}
+                      {/* Divider */}
+                      {customRoles.length > 0 && (
+                        <div className="border-t border-gray-100 dark:border-white/5 my-2" />
+                      )}
+
+                      {/* Custom Roles */}
+                      {customRoles.map(customRole => (
+                        <button
+                          key={customRole.id}
+                          type="button"
+                          onClick={() => handleTemplateSelect(customRole)}
+                          className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'bg-paymint-green/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                        >
+                          <div>
+                            <span className={`text-xs font-bold ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
+                              {customRole.name}
+                            </span>
+                            <p className="text-[10px] text-gray-500 mt-0.5">{customRole.permissions.length} permissions</p>
+                          </div>
+                          {selectedCustomRoleId === customRole.id && role !== 'ADMIN' && <Check size={14} className="text-paymint-green" />}
+                        </button>
+                      ))}
+
+                      {/* No custom roles message */}
+                      {customRoles.length === 0 && (
+                        <div className="p-3 text-center">
+                          <p className="text-xs text-gray-500">No custom roles created yet</p>
+                          <p className="text-[10px] text-gray-400 mt-1">Create roles in Settings → Roles</p>
                         </div>
                       )}
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
+                {errors.role && (
+                  <p className="text-paymint-red text-xs font-bold mt-2">{errors.role}</p>
+                )}
+              </div>
 
-              {/* Password */}
-              <div>
+              {/* Password wrapper start (to match existing indentation/structure) */}
+              <div className="pt-4 border-t border-gray-100 dark:border-white/5">
                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block flex items-center gap-1">
                   {initialData ? 'New Password (Optional)' : 'Password'} {(!initialData) && <span className="text-paymint-red">*</span>}
                 </label>
@@ -585,7 +662,3 @@ export function EmployeeFormModal({
     </AnimatePresence>
   );
 }
-
-
-
-

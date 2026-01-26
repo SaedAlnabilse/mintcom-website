@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Check, X, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
 
 const plans = [
   {
@@ -47,7 +46,6 @@ const plans = [
 
 export const Pricing = () => {
   const [selectedPlan, setSelectedPlan] = useState<typeof plans[0] | null>(null);
-  const navigate = useNavigate();
 
   const handlePlanAction = (plan: typeof plans[0]) => {
     if (plan.type === 'custom') {
@@ -57,8 +55,8 @@ export const Pricing = () => {
       }
       setSelectedPlan(null);
     } else {
-      // Direct navigation to signup for the main plan
-      navigate('/signup');
+      // Open signup in a new tab for the main plan
+      window.open('/signup', '_blank');
     }
   };
 
@@ -67,8 +65,8 @@ export const Pricing = () => {
       {/* Background Decor */}
       <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-paymint-green/5 rounded-full blur-[150px] -z-10" />
 
-      <div className="container mx-auto px-6 max-w-7xl">
-        <motion.div 
+      <div className="container mx-auto px-8 md:px-16 lg:px-24 max-w-7xl">
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -85,18 +83,17 @@ export const Pricing = () => {
         {/* Grid centered with max-width adjustment for 2 columns */}
         <div className="grid md:grid-cols-2 gap-8 relative z-10 max-w-4xl mx-auto">
           {plans.map((plan, index) => (
-            <motion.div 
+            <motion.div
               key={index}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1, duration: 0.5 }}
               whileHover={{ y: -10 }}
-              className={`rounded-3xl p-8 border relative flex flex-col transition-all duration-300 ${
-                plan.highlight 
-                  ? 'border-paymint-green bg-white dark:bg-[#1a1a1a] shadow-2xl shadow-paymint-green/10 dark:shadow-none' 
-                  : 'border-gray-200 dark:border-white/10 bg-white dark:bg-[#151515] hover:border-paymint-green/30 shadow-lg shadow-gray-200/50 dark:shadow-none'
-              }`}
+              className={`rounded-3xl p-8 border relative flex flex-col transition-all duration-300 ${plan.highlight
+                ? 'border-paymint-green bg-white dark:bg-[#1a1a1a] shadow-2xl shadow-paymint-green/10 dark:shadow-none'
+                : 'border-gray-200 dark:border-white/10 bg-white dark:bg-[#151515] hover:border-paymint-green/30 shadow-lg shadow-gray-200/50 dark:shadow-none'
+                }`}
             >
               {plan.highlight && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-paymint-green text-black px-6 py-1.5 rounded-full text-sm font-bold shadow-lg shadow-paymint-green/20">
@@ -113,7 +110,7 @@ export const Pricing = () => {
                 <span className="text-5xl font-bold text-gray-900 dark:text-white tracking-tight">{plan.price}</span>
                 <span className="text-gray-500 dark:text-gray-400 font-medium">{plan.period}</span>
               </div>
-              
+
               <ul className="space-y-4 mb-8 flex-1">
                 {plan.features.map((feature, i) => (
                   <li key={i} className="flex items-start gap-3 text-gray-700 dark:text-gray-300 text-sm">
@@ -125,19 +122,18 @@ export const Pricing = () => {
                 ))}
               </ul>
 
-              <button 
+              <button
                 onClick={() => handlePlanAction(plan)}
-                className={`w-full py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 group ${
-                  plan.highlight 
-                    ? 'bg-paymint-green text-black hover:bg-paymint-green/90 shadow-lg shadow-paymint-green/20' 
-                    : 'bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10'
-                }`}
+                className={`w-full py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 group ${plan.highlight
+                  ? 'bg-paymint-green text-black hover:bg-paymint-green/90 shadow-lg shadow-paymint-green/20'
+                  : 'bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10'
+                  }`}
               >
                 {plan.cta}
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </button>
-              
-              <button 
+
+              <button
                 onClick={() => setSelectedPlan(plan)}
                 className="mt-4 text-sm text-gray-500 hover:text-paymint-green transition-colors text-center font-medium"
               >
@@ -152,14 +148,14 @@ export const Pricing = () => {
       <AnimatePresence>
         {selectedPlan && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedPlan(null)}
               className="absolute inset-0 bg-black/20 dark:bg-black/60 backdrop-blur-md transition-colors"
             />
-            
+
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -168,14 +164,14 @@ export const Pricing = () => {
             >
               <div className="p-6 border-b border-gray-100 dark:border-white/5 flex justify-between items-center bg-gray-50/50 dark:bg-transparent">
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">Plan Details</h3>
-                <button 
+                <button
                   onClick={() => setSelectedPlan(null)}
                   className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                 >
                   <X size={20} className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-white" />
                 </button>
               </div>
-              
+
               <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
                 <div className="text-center mb-8">
                   <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{selectedPlan.name}</h2>
@@ -198,7 +194,7 @@ export const Pricing = () => {
                   </ul>
                 </div>
 
-                <button 
+                <button
                   onClick={() => handlePlanAction(selectedPlan)}
                   className="w-full bg-paymint-green text-black py-4 rounded-xl font-bold hover:shadow-lg hover:shadow-paymint-green/20 transition-all"
                 >

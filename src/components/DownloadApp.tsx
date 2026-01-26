@@ -8,11 +8,11 @@ export const DownloadApp = () => {
       <div className="absolute top-1/2 right-[-10%] w-[600px] h-[600px] bg-paymint-green/5 rounded-full blur-[120px] -z-10" />
       <div className="absolute bottom-0 left-[-10%] w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] -z-10" />
 
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-8 md:px-16 lg:px-24 max-w-7xl">
         <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
-          
+
           {/* Left Side: Content */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -28,7 +28,7 @@ export const DownloadApp = () => {
               Take PayMint <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-emerald-400">Wherever You Go</span>
             </h2>
-            
+
             <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
               Manage your restaurant from anywhere. Whether you're on the floor taking orders or checking sales from home, our universal app keeps you connected.
             </p>
@@ -48,8 +48,8 @@ export const DownloadApp = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <a 
-                href="/paymint-universal.apk" 
+              <a
+                href="/paymint-universal.apk"
                 download
                 className="flex items-center justify-center gap-3 bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 py-4 px-8 rounded-xl transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 group"
               >
@@ -68,14 +68,14 @@ export const DownloadApp = () => {
                 </div>
               </div>
             </div>
-            
+
             <p className="mt-6 text-sm text-gray-500 dark:text-gray-400 italic">
               * Supports Android 8.0+ and iOS 17+
             </p>
           </motion.div>
 
           {/* Right Side: Visuals */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -83,7 +83,7 @@ export const DownloadApp = () => {
             className="w-full lg:w-1/2 relative h-[600px] flex items-center justify-center"
           >
             {/* Tablet Mockup */}
-            <motion.div 
+            <motion.div
               animate={{ y: [0, -15, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               className="absolute right-0 top-1/2 -translate-y-1/2 w-[80%] aspect-[4/3] bg-gray-900 rounded-[2rem] border-[12px] border-gray-800 shadow-2xl overflow-hidden z-10 hidden md:block"
@@ -91,11 +91,11 @@ export const DownloadApp = () => {
               {/* Screen Content */}
               <div className="w-full h-full bg-[#1a1a1a] p-6 relative">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-4 bg-gray-800 rounded-b-xl" />
-                
+
                 {/* Mock UI: POS Grid */}
                 <div className="grid grid-cols-3 gap-4 h-full mt-4">
                   <div className="col-span-2 grid grid-cols-3 gap-3">
-                    {[1,2,3,4,5,6,7,8,9].map(i => (
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => (
                       <div key={i} className="bg-gray-800/50 rounded-xl animate-pulse" />
                     ))}
                   </div>
@@ -112,27 +112,27 @@ export const DownloadApp = () => {
             </motion.div>
 
             {/* Phone Mockup */}
-            <motion.div 
+            <motion.div
               animate={{ y: [0, -20, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
               className="absolute left-4 md:left-10 bottom-0 md:bottom-10 w-[280px] h-[550px] bg-black rounded-[3rem] border-[8px] border-gray-800 shadow-2xl overflow-hidden z-20"
             >
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-gray-800 rounded-b-2xl z-30" />
-              
+
               {/* Mock UI: Mobile Dashboard */}
               <div className="w-full h-full bg-[#151515] p-6 pt-12 flex flex-col gap-4">
                 <div className="flex justify-between items-center mb-2">
                   <div className="w-8 h-8 bg-gray-800 rounded-full" />
                   <div className="w-8 h-8 bg-gray-800 rounded-full" />
                 </div>
-                
+
                 <div className="bg-gradient-to-br from-paymint-green/20 to-transparent p-6 rounded-2xl border border-paymint-green/10">
                   <div className="text-gray-400 text-xs mb-1">Total Sales</div>
                   <div className="text-white text-2xl font-bold">$1,240.50</div>
                 </div>
 
                 <div className="space-y-3">
-                  {[1,2,3].map(i => (
+                  {[1, 2, 3].map(i => (
                     <div key={i} className="flex items-center gap-3 p-3 bg-gray-800/30 rounded-xl">
                       <div className="w-10 h-10 bg-gray-800 rounded-lg" />
                       <div className="flex-1">
@@ -146,7 +146,7 @@ export const DownloadApp = () => {
             </motion.div>
 
             {/* Floating Elements */}
-            <motion.div 
+            <motion.div
               animate={{ y: [0, 15, 0], rotate: [0, 5, 0] }}
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
               className="absolute top-20 left-0 bg-white dark:bg-[#252525] p-4 rounded-2xl shadow-xl z-30 flex items-center gap-3 border border-gray-100 dark:border-white/5"

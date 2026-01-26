@@ -1,5 +1,8 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import api from '../config/api';
+import { LogoutOverlay } from '../components/LogoutOverlay';
+import { LoginOverlay } from '../components/LoginOverlay';
 
 // Types for the new account-based authentication
 interface Account {
@@ -14,6 +17,10 @@ interface Account {
   trialEndDate?: string;
   establishmentLoginId?: string; // Account-level Owner POS ID
   defaultPaymentMethod?: string; // Last 4 digits of saved card (e.g., "4242")
+  defaultCardId?: string; // ID of the default saved card
+  deletionRequestedAt?: string; // ISO date string if deletion is pending
+  permissions?: string[]; // Admin permissions
+  isSecondaryAdmin?: boolean; // Flag for secondary admin users
 }
 
 interface Establishment {
@@ -67,6 +74,7 @@ interface AuthResult {
   success: boolean;
   error?: string;
   message?: string;
+  isSecondaryAdmin?: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -76,6 +84,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [establishments, setEstablishments] = useState<Establishment[]>([]);
   const [currentEstablishment, setCurrentEstablishmentState] = useState<Establishment | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   // Check if user needs to complete onboarding (no establishments)
   const needsOnboarding = account !== null && establishments.length === 0;
@@ -129,12 +140,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const login = async (email: string, password: string): Promise<AuthResult> => {
+    setIsLoggingIn(true);
+    setLoginSuccess(false);
+
     try {
+      // 1. Initial "signing in" state
+      // Run API call
       const response = await api.post('/api/accounts/login', { email, password });
 
       // The accessToken is now set as an HttpOnly cookie by the server
       // We only receive account and establishments data in the response body
       if (response.data.account) {
+        // 2. Success state
+        setLoginSuccess(true);
+        
+        // Wait for success animation to play
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
         const { account: accountData, establishments: estList } = response.data;
 
         // Save account data to localStorage (for UI state persistence only, not for auth)
@@ -142,11 +164,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         setAccount(accountData);
         setEstablishments(estList || []);
+        
+        // Auto-select the first establishment if available
+        // This ensures the X-Establishment-Id header is set for subsequent requests
+        if (estList && estList.length > 0) {
+          const defaultEst = estList[0];
+          setCurrentEstablishmentState(defaultEst);
+          sessionStorage.setItem('currentEstablishment', JSON.stringify(defaultEst));
+        }
+        
+        // Keep overlay on until navigation completes
+        setTimeout(() => {
+          setIsLoggingIn(false);
+          setLoginSuccess(false);
+        }, 500);
 
-        return { success: true };
+        return { 
+          success: true, 
+          isSecondaryAdmin: !!accountData.isSecondaryAdmin 
+        };
       }
+      
+      setIsLoggingIn(false);
       return { success: false, error: 'Login failed' };
     } catch (error: any) {
+      // Short delay so the user at least sees the spinner if the error is instant
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setIsLoggingIn(false);
       return {
         success: false,
         error: error.response?.data?.message || 'Invalid email or password',
@@ -155,18 +199,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
+    setIsLoggingOut(true);
     try {
       // Call the logout endpoint to clear the HttpOnly cookie
-      await api.post('/api/accounts/logout');
+      // Add a minimum delay to show the animation
+      await Promise.all([
+        api.post('/api/accounts/logout').catch(e => console.error('Logout API failed:', e)),
+        new Promise(resolve => setTimeout(resolve, 1500))
+      ]);
     } catch (error) {
-      console.error('Logout request failed:', error);
+      console.error('Logout process error:', error);
     } finally {
       // Clear local state regardless of API call result
       localStorage.removeItem('account');
       sessionStorage.removeItem('currentEstablishment');
-      setAccount(null);
-      setEstablishments([]);
-      setCurrentEstablishmentState(null);
+      
+      // IMPORTANT: We do NOT call setAccount(null) here.
+      // Calling setAccount(null) triggers ProtectedRoute to redirect to /login via React Router.
+      // Then window.location.href reloads the page.
+      // This causes the "double login screen" or "flicker" effect.
+      // By skipping setAccount(null), the user stays on the current screen (covered by the overlay)
+      // until the hard reload happens.
+      
       window.location.href = '/login';
     }
   };
@@ -242,18 +296,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // The HttpOnly cookie will be sent automatically with the request
       const response = await api.get('/api/establishments');
 
-      setEstablishments(response.data || []);
+      const finalEstablishments = response.data || [];
+      setEstablishments(finalEstablishments);
 
-      // Update current establishment if it exists (use sessionStorage for per-tab isolation)
-      const savedEst = sessionStorage.getItem('currentEstablishment');
-      if (savedEst) {
-        const parsed = JSON.parse(savedEst);
-        const updated = response.data?.find((e: Establishment) => e.id === parsed.id);
+      // Update current establishment (priority: sessionStorage -> localStorage -> default first)
+      const sessionEst = sessionStorage.getItem('currentEstablishment');
+      const localEstId = localStorage.getItem('selectedEstablishmentId');
+
+      if (sessionEst) {
+        const parsed = JSON.parse(sessionEst);
+        const updated = finalEstablishments.find((e: Establishment) => e.id === parsed.id);
         if (updated) {
           setCurrentEstablishment(updated);
+          return;
         }
-      } else if (response.data?.length > 0) {
-        setCurrentEstablishment(response.data[0]);
+      }
+
+      if (localEstId) {
+        const updated = finalEstablishments.find((e: Establishment) => e.id === localEstId);
+        if (updated) {
+          setCurrentEstablishment(updated);
+          return;
+        }
+      }
+
+      if (finalEstablishments.length > 0) {
+        setCurrentEstablishment(finalEstablishments[0]);
       }
     } catch (error) {
       console.error('Failed to refresh establishments:', error);
@@ -291,6 +359,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }}
     >
       {children}
+      <AnimatePresence>
+        {isLoggingOut && <LogoutOverlay key="logout-overlay" />}
+        {isLoggingIn && <LoginOverlay key="login-overlay" isSuccess={loginSuccess} />}
+      </AnimatePresence>
     </AuthContext.Provider>
   );
 }

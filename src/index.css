@@ -93,13 +93,16 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 99999; /* Highest priority */
+  z-index: 99999;
+  /* Highest priority */
   cursor: url('./assets/not-allowed-cursor.png') 16 16, not-allowed;
-  pointer-events: auto; /* Catch all clicks */
+  pointer-events: auto;
+  /* Catch all clicks */
 }
 
 body.app-loading {
-  overflow: hidden; /* Prevent scrolling while loading */
+  overflow: hidden;
+  /* Prevent scrolling while loading */
 }
 
 body.app-loading #global-blocking-overlay {

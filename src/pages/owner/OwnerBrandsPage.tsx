@@ -399,10 +399,11 @@ export function OwnerBrandsPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm"
+                        className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
                     >
-                        <div className="flex items-center gap-4">
-                            <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center`}>
+                        <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
+                        <div className="relative z-10 flex items-center gap-4">
+                            <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
                                 <stat.icon size={24} />
                             </div>
                             <div>
@@ -509,145 +510,144 @@ export function OwnerBrandsPage() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: index * 0.05 }}
-                                className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl border p-6 transition-all shadow-sm hover:shadow-lg ${brand.id === 'cmkek5eme0001vjjqvfm3wjwa'
+                                className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl border p-6 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden ${brand.id === 'cmkek5eme0001vjjqvfm3wjwa'
                                     ? 'border-paymint-green bg-paymint-green/[0.02]'
-                                    : 'border-gray-200 dark:border-white/5 hover:border-paymint-green/40'
+                                    : 'border-gray-200 dark:border-white/5 hover:border-purple-500/30'
                                     }`}
                             >
                                 {/* Hover gradient */}
-                                <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
-                                    <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                </div>
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                                {/* Header */}
-                                <div className="relative z-20 flex items-start justify-between mb-6">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center shadow-lg shadow-paymint-green/20 group-hover:scale-110 transition-transform">
-                                            <Building2 size={28} className="text-black" />
+                                <div className="relative z-10">
+                                    {/* Header */}
+                                    <div className="flex items-start justify-between mb-6">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-14 h-14 rounded-xl bg-purple-500/10 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
+                                                <Building2 size={28} className="text-purple-500" />
+                                            </div>
+                                            <div>
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-purple-500 transition-colors">
+                                                        {brand.name}
+                                                    </h3>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-[9px] font-black uppercase tracking-wide">
+                                                        Active
+                                                    </span>
+                                                    <span className="text-xs text-gray-500">
+                                                        {brand.establishmentCount} Locations
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
-                                                    {brand.name}
-                                                </h3>
 
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-[9px] font-black uppercase tracking-wide">
-                                                    Active
-                                                </span>
-                                                <span className="text-xs text-gray-500">
-                                                    {brand.establishmentCount} Locations
-                                                </span>
-                                            </div>
+                                        <div className="relative">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setActiveMenu(activeMenu === brand.id ? null : brand.id);
+                                                }}
+                                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                            >
+                                                <MoreVertical size={18} />
+                                            </button>
+
+                                            <AnimatePresence>
+                                                {activeMenu === brand.id && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, scale: 0.95, y: -5 }}
+                                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                        exit={{ opacity: 0, scale: 0.95, y: -5 }}
+                                                        className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                                    >
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                window.open(`/brand/${brand.id}`, '_blank');
+                                                            }}
+                                                            className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                        >
+                                                            <Eye size={16} />
+                                                            View Dashboard
+                                                        </button>
+
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setActiveMenu(null);
+                                                                setSecurityModal({
+                                                                    isOpen: true,
+                                                                    targetId: brand.id,
+                                                                    targetName: brand.name,
+                                                                    mode: 'dissolve-brand'
+                                                                });
+                                                            }}
+                                                            className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                            Dissolve Brand
+                                                        </button>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
                                         </div>
                                     </div>
 
-                                    <div className="relative">
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setActiveMenu(activeMenu === brand.id ? null : brand.id);
-                                            }}
-                                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
-                                        >
-                                            <MoreVertical size={18} />
-                                        </button>
+                                    {/* Details */}
+                                    <div className="grid grid-cols-2 gap-4 mb-6 relative z-10">
+                                        <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Hash size={14} className="text-purple-500" />
+                                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">POS ID</span>
+                                            </div>
+                                            <p className="text-sm font-mono font-bold text-gray-900 dark:text-white truncate">
+                                                {brand.establishmentLoginId}
+                                            </p>
+                                        </div>
+                                        <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Calendar size={14} className="text-blue-500" />
+                                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Created</span>
+                                            </div>
+                                            <p className="text-sm font-bold text-gray-900 dark:text-white">
+                                                {formatDate(brand.createdAt)}
+                                            </p>
+                                        </div>
+                                    </div>
 
-                                        <AnimatePresence>
-                                            {activeMenu === brand.id && (
-                                                <motion.div
-                                                    initial={{ opacity: 0, scale: 0.95, y: -5 }}
-                                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                    exit={{ opacity: 0, scale: 0.95, y: -5 }}
-                                                    className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
-                                                >
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            window.open(`/brand/${brand.id}`, '_blank');
-                                                        }}
-                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                                    >
-                                                        <Eye size={16} />
-                                                        View Dashboard
-                                                    </button>
-
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setActiveMenu(null);
-                                                            setSecurityModal({
-                                                                isOpen: true,
-                                                                targetId: brand.id,
-                                                                targetName: brand.name,
-                                                                mode: 'dissolve-brand'
-                                                            });
-                                                        }}
-                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
-                                                    >
-                                                        <Trash2 size={16} />
-                                                        Dissolve Brand
-                                                    </button>
-                                                </motion.div>
+                                    {/* Establishments */}
+                                    <div className="space-y-3 relative z-10">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Fleet Composition</span>
+                                        </div>
+                                        <div className="flex flex-wrap gap-2">
+                                            {brand.establishments.slice(0, 4).map((est) => (
+                                                <div key={est.id} className="px-3 py-2 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-lg flex items-center gap-2 hover:border-purple-500/30 transition-all">
+                                                    <Store size={12} className="text-gray-400" />
+                                                    <span className="text-[11px] font-bold text-gray-600 dark:text-gray-400 truncate max-w-[100px]">{est.name}</span>
+                                                </div>
+                                            ))}
+                                            {brand.establishments.length > 4 && (
+                                                <div className="px-3 py-2 bg-gray-100 dark:bg-white/5 rounded-lg">
+                                                    <span className="text-[11px] font-bold text-gray-500">
+                                                        +{brand.establishments.length - 4} more
+                                                    </span>
+                                                </div>
                                             )}
-                                        </AnimatePresence>
-                                    </div>
-                                </div>
-
-                                {/* Details */}
-                                <div className="grid grid-cols-2 gap-4 mb-6 relative z-10">
-                                    <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <Hash size={14} className="text-paymint-green" />
-                                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">POS ID</span>
                                         </div>
-                                        <p className="text-sm font-mono font-bold text-gray-900 dark:text-white truncate">
-                                            {brand.establishmentLoginId}
-                                        </p>
                                     </div>
-                                    <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <Calendar size={14} className="text-blue-500" />
-                                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Created</span>
-                                        </div>
-                                        <p className="text-sm font-bold text-gray-900 dark:text-white">
-                                            {formatDate(brand.createdAt)}
-                                        </p>
-                                    </div>
-                                </div>
 
-                                {/* Establishments */}
-                                <div className="space-y-3 relative z-10">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Fleet Composition</span>
+                                    {/* Action */}
+                                    <div className="mt-6 pt-6 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
+                                        <button
+                                            onClick={() => window.open(`/brand/${brand.id}`, '_blank')}
+                                            className="flex-1 py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wide hover:bg-purple-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-purple-500 shadow-sm hover:shadow-purple-500/20"
+                                        >
+                                            <span>Open Dashboard</span>
+                                            <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
+                                        </button>
                                     </div>
-                                    <div className="flex flex-wrap gap-2">
-                                        {brand.establishments.slice(0, 4).map((est) => (
-                                            <div key={est.id} className="px-3 py-2 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-lg flex items-center gap-2 hover:border-paymint-green/30 transition-all">
-                                                <Store size={12} className="text-gray-400" />
-                                                <span className="text-[11px] font-bold text-gray-600 dark:text-gray-400 truncate max-w-[100px]">{est.name}</span>
-                                            </div>
-                                        ))}
-                                        {brand.establishments.length > 4 && (
-                                            <div className="px-3 py-2 bg-gray-100 dark:bg-white/5 rounded-lg">
-                                                <span className="text-[11px] font-bold text-gray-500">
-                                                    +{brand.establishments.length - 4} more
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Action */}
-                                <div className="mt-6 pt-6 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
-                                    <button
-                                        onClick={() => window.open(`/brand/${brand.id}`, '_blank')}
-                                        className="flex-1 py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wide hover:bg-paymint-green hover:text-black transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-paymint-green"
-                                    >
-                                        <span>Open Dashboard</span>
-                                        <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
-                                    </button>
                                 </div>
                             </motion.div>
                         ))}

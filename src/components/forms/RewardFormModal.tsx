@@ -161,6 +161,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                       ...categories.map(c => ({ label: c.name, value: c.id }))
                     ]}
                     placeholder="Select category..."
+                    direction="up"
                   />
                 </motion.div>
               )}

@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useMemo, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Plus,
@@ -22,6 +22,7 @@ const STATUS_OPTIONS = [
     { label: 'All Statuses', value: 'all' },
     { label: 'Active', value: 'ACTIVE' },
     { label: 'Trial', value: 'TRIAL' },
+    { label: 'Canceled', value: 'CANCELED' },
     { label: 'Expired', value: 'EXPIRED' }
 ];
 
@@ -37,6 +38,9 @@ type ViewMode = 'grid' | 'list';
 export function OwnerEstablishmentsPage() {
     const navigate = useNavigate();
     const { establishments, setCurrentEstablishment } = useAuth();
+    const [searchParams] = useSearchParams();
+    const highlightId = searchParams.get('highlight');
+
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [typeFilter, setTypeFilter] = useState('all');
@@ -69,6 +73,7 @@ export function OwnerEstablishmentsPage() {
                 return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
             case 'TRIAL':
                 return 'bg-amber-500/10 text-amber-500 border-amber-500/20';
+            case 'CANCELED':
             case 'EXPIRED':
                 return 'bg-red-500/10 text-red-500 border-red-500/20';
             default:
@@ -76,6 +81,15 @@ export function OwnerEstablishmentsPage() {
         }
     };
 
+    // Auto-scroll to highlighted item
+    useEffect(() => {
+        if (highlightId && filteredEstablishments.some(e => e.id === highlightId)) {
+            const element = document.getElementById(`establishment-${highlightId}`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    }, [highlightId, filteredEstablishments]);
 
 
     return (
@@ -110,6 +124,66 @@ export function OwnerEstablishmentsPage() {
                         <span>Add New Node</span>
                     </button>
                 </div>
+            </div>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
+                >
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                    <div className="relative z-10 flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <Store size={24} />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Total Inventory</p>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white">{establishments.length}</p>
+                        </div>
+                    </div>
+                </motion.div>
+
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
+                >
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-paymint-green/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                    <div className="relative z-10 flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <Zap size={24} />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Active Nodes</p>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                                {establishments.filter(e => e.subscriptionStatus === 'ACTIVE').length}
+                            </p>
+                        </div>
+                    </div>
+                </motion.div>
+
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
+                >
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                    <div className="relative z-10 flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <Settings size={24} />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Trial Instances</p>
+                            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                                {establishments.filter(e => e.subscriptionStatus === 'TRIAL').length}
+                            </p>
+                        </div>
+                    </div>
+                </motion.div>
             </div>
 
             {/* Filters Bar */}
@@ -184,114 +258,130 @@ export function OwnerEstablishmentsPage() {
                         {filteredEstablishments.map((est, index) => (
                             <motion.div
                                 key={est.id}
+                                id={`establishment-${est.id}`}
                                 layout
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 transition={{ delay: index * 0.03 }}
-                                className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 p-6 cursor-pointer transition-all shadow-sm hover:shadow-lg overflow-hidden"
+                                className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl border p-6 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer ${est.id === highlightId
+                                    ? 'border-paymint-green ring-2 ring-paymint-green/50 shadow-xl shadow-paymint-green/20'
+                                    : 'border-gray-200 dark:border-white/5 hover:border-blue-500/30'
+                                    }`}
                                 onClick={() => handleEstablishmentClick(est)}
                             >
                                 {/* Hover gradient */}
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                                {/* Header */}
-                                <div className="flex items-start justify-between mb-6 relative z-10">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-14 h-14 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-center justify-center text-gray-500 group-hover:text-paymint-green group-hover:border-paymint-green/30 transition-all">
-                                            <Store size={28} />
-                                        </div>
-                                        <div>
-                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors truncate max-w-[180px]">
-                                                {est.name}
-                                            </h3>
-                                            <div className="flex items-center gap-2 mt-1">
-                                                <span className="text-xs font-medium text-gray-500">{est.type || 'Standard'}</span>
-                                                <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                                                <span className="text-xs font-medium text-gray-500">{est.currency || 'JOD'}</span>
+                                {est.id === highlightId && (
+                                    <div className="absolute top-0 right-0 p-2">
+                                        <span className="bg-paymint-green text-black text-[10px] font-black px-2 py-1 rounded-bl-xl rounded-tr-xl uppercase tracking-widest shadow-sm">New</span>
+                                    </div>
+                                )}
+
+                                {/* Content Container */}
+                                <div className="relative z-10">
+                                    {/* Header */}
+                                    <div className="flex items-start justify-between mb-6">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform duration-300">
+                                                <Store size={28} />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors truncate max-w-[180px]">
+                                                    {est.name}
+                                                </h3>
+                                                <div className="flex items-center gap-2 mt-1">
+                                                    <span className="text-xs font-medium text-gray-500">{est.type || 'Standard'}</span>
+                                                    <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
+                                                    <span className="text-xs font-medium text-gray-500">{est.currency || 'JOD'}</span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div className="relative">
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setActiveMenu(activeMenu === est.id ? null : est.id);
-                                            }}
-                                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
-                                        >
-                                            <MoreVertical size={18} />
-                                        </button>
+                                        <div className="relative">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setActiveMenu(activeMenu === est.id ? null : est.id);
+                                                }}
+                                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                            >
+                                                <MoreVertical size={18} />
+                                            </button>
 
-                                        <AnimatePresence>
-                                            {activeMenu === est.id && (
-                                                <motion.div
-                                                    initial={{ opacity: 0, scale: 0.95, y: -5 }}
-                                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                    exit={{ opacity: 0, scale: 0.95, y: -5 }}
-                                                    className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
-                                                >
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleEstablishmentClick(est);
-                                                        }}
-                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                            <AnimatePresence>
+                                                {activeMenu === est.id && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, scale: 0.95, y: -5 }}
+                                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                        exit={{ opacity: 0, scale: 0.95, y: -5 }}
+                                                        className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
                                                     >
-                                                        <Eye size={16} />
-                                                        Enter Dashboard
-                                                    </button>
-                                                    <button
-                                                        onClick={(e) => e.stopPropagation()}
-                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                                    >
-                                                        <Settings size={16} />
-                                                        Settings
-                                                    </button>
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
-                                    </div>
-                                </div>
-
-                                {/* Status Badge */}
-                                <div className="mb-6">
-                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border ${getStatusColor(est.subscriptionStatus)}`}>
-                                        <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' : 'bg-gray-400'}`} />
-                                        {est.subscriptionStatus}
-                                    </span>
-                                </div>
-
-                                {/* Quick Stats */}
-                                <div className="grid grid-cols-2 gap-3 mb-6">
-                                    <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <div className="flex items-center gap-2 mb-1 text-gray-400">
-                                            <DollarSign size={12} />
-                                            <p className="text-[10px] font-bold uppercase tracking-wide">Currency</p>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleEstablishmentClick(est);
+                                                            }}
+                                                            className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                        >
+                                                            <Eye size={16} />
+                                                            Enter Dashboard
+                                                        </button>
+                                                        <button
+                                                            onClick={(e) => e.stopPropagation()}
+                                                            className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                        >
+                                                            <Settings size={16} />
+                                                            Settings
+                                                        </button>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
                                         </div>
-                                        <p className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'JOD'}</p>
                                     </div>
-                                    <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <div className="flex items-center gap-2 mb-1 text-gray-400">
-                                            <Zap size={12} />
-                                            <p className="text-[10px] font-bold uppercase tracking-wide">Status</p>
-                                        </div>
-                                        <p className="text-sm font-bold text-emerald-500">Online</p>
-                                    </div>
-                                </div>
 
-                                {/* Action Button */}
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleEstablishmentClick(est);
-                                    }}
-                                    className="w-full py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wide hover:bg-paymint-green hover:text-black transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-paymint-green"
-                                >
-                                    <span>Open Terminal</span>
-                                    <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
-                                </button>
+                                    {/* Status Badge */}
+                                    <div className="mb-6">
+                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border ${getStatusColor(est.subscriptionStatus)}`}>
+                                            <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' :
+                                                est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
+                                                    'bg-red-500'
+                                                }`} />
+                                            {est.subscriptionStatus}
+                                        </span>
+                                    </div>
+
+                                    {/* Quick Stats */}
+                                    <div className="grid grid-cols-2 gap-3 mb-6">
+                                        <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5 group-hover:border-blue-500/10 transition-colors">
+                                            <div className="flex items-center gap-2 mb-1 text-gray-400">
+                                                <DollarSign size={12} />
+                                                <p className="text-[10px] font-bold uppercase tracking-wide">Currency</p>
+                                            </div>
+                                            <p className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'JOD'}</p>
+                                        </div>
+                                        <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5 group-hover:border-blue-500/10 transition-colors">
+                                            <div className="flex items-center gap-2 mb-1 text-gray-400">
+                                                <Zap size={12} />
+                                                <p className="text-[10px] font-bold uppercase tracking-wide">Status</p>
+                                            </div>
+                                            <p className="text-sm font-bold text-emerald-500">Online</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Action Button */}
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleEstablishmentClick(est);
+                                        }}
+                                        className="w-full py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wide hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-blue-500 shadow-sm hover:shadow-blue-500/20"
+                                    >
+                                        <span>Open Terminal</span>
+                                        <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
+                                    </button>
+                                </div>
                             </motion.div>
                         ))}
                     </AnimatePresence>
@@ -314,12 +404,16 @@ export function OwnerEstablishmentsPage() {
                             {filteredEstablishments.map((est, index) => (
                                 <motion.div
                                     key={est.id}
+                                    id={`establishment-${est.id}`}
                                     layout
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, x: -10 }}
                                     transition={{ delay: index * 0.02 }}
-                                    className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group"
+                                    className={`grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group ${est.id === highlightId
+                                        ? 'bg-paymint-green/5 ring-1 ring-paymint-green inset-0 z-10'
+                                        : ''
+                                        }`}
                                     onClick={() => handleEstablishmentClick(est)}
                                 >
                                     {/* Info */}
@@ -332,6 +426,9 @@ export function OwnerEstablishmentsPage() {
                                                 {est.name}
                                             </h3>
                                             <p className="text-xs text-gray-500 mt-0.5 md:hidden">{est.type}</p>
+                                            {est.id === highlightId && (
+                                                <span className="text-[10px] text-paymint-green font-bold uppercase tracking-wider ml-2">New</span>
+                                            )}
                                         </div>
                                     </div>
 
@@ -345,7 +442,10 @@ export function OwnerEstablishmentsPage() {
                                     {/* Status */}
                                     <div className="col-span-2 flex items-center">
                                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border ${getStatusColor(est.subscriptionStatus)}`}>
-                                            <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                                            <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' :
+                                                est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
+                                                    'bg-red-500'
+                                                }`} />
                                             {est.subscriptionStatus}
                                         </span>
                                     </div>

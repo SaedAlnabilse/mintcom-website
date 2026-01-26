@@ -73,7 +73,13 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response?.status === 401) {
+    // Check if the error is 401 and NOT from the login or logout endpoint
+    // We don't want to redirect if the user failed to log in (wrong password)
+    // We only want to redirect if the user's session expired while using the app
+    const isLoginRequest = error.config?.url?.includes('/api/accounts/login');
+    const isLogoutRequest = error.config?.url?.includes('/api/accounts/logout');
+
+    if (error.response?.status === 401 && !isLoginRequest && !isLogoutRequest) {
       // Clear local auth data and redirect to login
       // The HttpOnly cookie will be cleared by calling the logout endpoint
       localStorage.removeItem('account');

@@ -28,7 +28,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
         />
       </div>
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-8 md:px-16 lg:px-24 relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
 
           {/* Text Content */}
@@ -63,7 +63,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => window.location.href = '/signup'}
+                onClick={() => window.open('/signup', '_blank')}
                 className="bg-paymint-green text-black px-8 py-4 rounded-xl font-bold text-lg hover:shadow-lg hover:shadow-paymint-green/25 transition-all flex items-center justify-center gap-2 group"
               >
                 Get Started Free

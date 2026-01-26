@@ -202,22 +202,26 @@ export function CategoriesPage() {
           { label: 'Total Products', value: stats.products, icon: Package, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
           { label: 'Most Popular', value: stats.top?.name || 'N/A', sub: `${stats.top?._count?.items || 0} items`, icon: TrendingUp, color: 'text-purple-500', bg: 'bg-purple-500/10' },
         ].map((stat, i) => (
+
           <motion.div
             key={i}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm flex items-center gap-4"
+            className="group relative p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
           >
-            <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
-              <stat.icon size={20} />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-0.5">{stat.label}</p>
-              <p className="text-xl font-black text-gray-900 dark:text-white truncate">{stat.value}</p>
-              {stat.sub && (
-                <p className="text-[10px] font-bold text-paymint-green uppercase tracking-wide mt-1">{stat.sub}</p>
-              )}
+            <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
+            <div className="relative z-10 flex items-center gap-4">
+              <div className={`p-3 rounded-xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform duration-300`}>
+                <stat.icon size={20} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-0.5">{stat.label}</p>
+                <p className="text-xl font-black text-gray-900 dark:text-white truncate">{stat.value}</p>
+                {stat.sub && (
+                  <p className="text-[10px] font-bold text-paymint-green uppercase tracking-wide mt-1">{stat.sub}</p>
+                )}
+              </div>
             </div>
           </motion.div>
         ))}
@@ -247,19 +251,20 @@ export function CategoriesPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: idx * 0.05 }}
                 onClick={() => setViewingCategory(category)}
-                className="group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-lg transition-all cursor-pointer overflow-hidden"
+                className="group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl transition-all cursor-pointer overflow-hidden duration-300"
               >
                 <div
                   className="absolute top-0 left-0 w-1 h-full bg-paymint-green opacity-0 group-hover:opacity-100 transition-all duration-300"
                 />
+                <div className="absolute -right-6 -top-6 w-24 h-24 bg-paymint-green/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-                <div className="flex justify-between items-start mb-6">
+                <div className="flex justify-between items-start mb-6 relative z-10">
                   <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-50 dark:bg-white/5 text-gray-500 group-hover:bg-paymint-green group-hover:text-black transition-all duration-300"
+                    className="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-50 dark:bg-white/5 text-gray-500 group-hover:bg-paymint-green group-hover:text-black transition-all duration-300 shadow-sm group-hover:shadow-paymint-green/20"
                   >
                     <IconComponent size={24} />
                   </div>
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0">
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
                     <button
                       onClick={(e) => openEditModal(e, category)}
                       className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-green transition-colors"
@@ -275,14 +280,14 @@ export function CategoriesPage() {
                   </div>
                 </div>
 
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors leading-tight truncate">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors leading-tight truncate relative z-10">
                   {category.name}
                 </h3>
 
-                <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
+                <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between relative z-10">
                   <div className="flex items-center gap-2">
-                    <Package size={14} className="text-gray-400" />
-                    <span className="text-xs font-bold text-gray-500">{category._count?.items || 0} Items</span>
+                    <Package size={14} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
+                    <span className="text-xs font-bold text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">{category._count?.items || 0} Items</span>
                   </div>
                   <ChevronRight size={16} className="text-gray-300 group-hover:text-paymint-green group-hover:translate-x-1 transition-all" />
                 </div>
@@ -321,12 +326,21 @@ export function CategoriesPage() {
                     <p className="text-xs font-black text-paymint-green uppercase tracking-widest">{categoryProducts.length} Products Assigned</p>
                   </div>
                 </div>
-                <button
-                  onClick={() => setViewingCategory(null)}
-                  className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-                >
-                  <X size={20} />
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => navigate('/dashboard/products', { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
+                    className="p-2 rounded-xl hover:bg-paymint-green/10 text-paymint-green hover:scale-105 transition-all"
+                    title="Add Product"
+                  >
+                    <Plus size={20} />
+                  </button>
+                  <button
+                    onClick={() => setViewingCategory(null)}
+                    className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
               </div>
 
               <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
@@ -370,6 +384,19 @@ export function CategoriesPage() {
                         </div>
                       </div>
                     ))}
+
+                    {/* Add New Product Card */}
+                    <button
+                      onClick={() => navigate('/dashboard/products', { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
+                      className="p-4 bg-gray-50 dark:bg-white/[0.02] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-xl group hover:border-paymint-green hover:bg-paymint-green/5 transition-all cursor-pointer active:scale-[0.98] flex items-center justify-center gap-3 h-full min-h-[80px]"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-white dark:bg-white/5 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                        <Plus size={20} className="text-gray-400 group-hover:text-paymint-green" />
+                      </div>
+                      <span className="text-sm font-bold text-gray-400 group-hover:text-paymint-green">
+                        Add New Item
+                      </span>
+                    </button>
                   </div>
                 )}
               </div>

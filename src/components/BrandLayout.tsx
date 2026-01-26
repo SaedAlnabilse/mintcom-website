@@ -3,17 +3,22 @@ import { NavLink, Outlet, useNavigate, useLocation, useParams } from 'react-rout
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { ThemeToggle } from './ThemeToggle';
+import { DeletionRestorationBanner } from './DeletionRestorationBanner';
 import {
     LayoutDashboard,
     Store,
     Users,
     LogOut,
     PanelLeftClose,
+    PanelLeft,
     ArrowLeft,
     Building2,
     ChevronRight,
     Menu,
-    X
+    X,
+    Smartphone,
+    Play,
+    Apple
 } from 'lucide-react';
 
 import api from '../config/api';
@@ -86,9 +91,8 @@ export function BrandLayout() {
         }
     };
 
-    const handleLogout = () => setIsLogoutModalOpen(true);
-    const confirmLogout = () => { logout(); navigate('/login'); };
-
+      const handleLogout = () => setIsLogoutModalOpen(true);
+      const confirmLogout = () => { logout(); };
     const goBackToOwner = () => {
         navigate('/owner/brands');
     };
@@ -135,7 +139,7 @@ export function BrandLayout() {
                 `}
             >
                 {/* Logo Section */}
-                <div className="flex items-center justify-between h-20 px-6 border-b border-gray-100 dark:border-white/5">
+                <div className={`h-20 flex items-center justify-between mb-2 relative shrink-0 ${sidebarOpen ? 'px-6' : 'px-2'}`}>
                     <AnimatePresence mode="wait">
                         {sidebarOpen ? (
                             <motion.div
@@ -143,10 +147,10 @@ export function BrandLayout() {
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -10 }}
-                                className="flex items-center gap-4"
+                                className="flex items-center gap-4 px-4"
                             >
-                                <img src={PaymintLogoGreen} className="h-7 w-auto dark:hidden" alt="PayMint" />
-                                <img src={PaymintLogoWhite} className="h-7 w-auto hidden dark:block" alt="PayMint" />
+                                <img src={PaymintLogoGreen} className="h-10 w-auto dark:hidden" alt="PayMint" />
+                                <img src={PaymintLogoWhite} className="h-10 w-auto hidden dark:block" alt="PayMint" />
                             </motion.div>
                         ) : (
                             <motion.div
@@ -156,17 +160,27 @@ export function BrandLayout() {
                                 exit={{ opacity: 0, scale: 0.8 }}
                                 className="mx-auto"
                             >
-                                <img src={PaymintLeafIcon} className="w-8 h-8 object-contain" alt="P" />
+                                <div
+                                    className="w-12 h-12 rounded-2xl flex items-center justify-center cursor-pointer overflow-hidden bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 hover:border-paymint-green/40 transition-all hover:scale-105 group relative"
+                                    onClick={() => setSidebarOpen(true)}
+                                >
+                                    <img src={PaymintLeafIcon} className="w-7 h-7 object-contain scale-110" alt="P" />
+                                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
+                                        Expand Sidebar
+                                    </div>
+                                </div>
                             </motion.div>
                         )}
                     </AnimatePresence>
 
-                    <button
-                        onClick={() => setSidebarOpen(!sidebarOpen)}
-                        className={`p-2 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all ${!sidebarOpen ? 'mx-auto' : ''}`}
-                    >
-                        <PanelLeftClose size={18} className={!sidebarOpen ? 'rotate-180' : ''} />
-                    </button>
+                    {sidebarOpen && (
+                        <button
+                            onClick={() => setSidebarOpen(!sidebarOpen)}
+                            className="p-2 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                        >
+                            <PanelLeftClose size={18} />
+                        </button>
+                    )}
                 </div>
 
                 {/* Back Link */}
@@ -181,11 +195,13 @@ export function BrandLayout() {
                         </button>
                     ) : (
                         <button
-                            onClick={goBackToOwner}
-                            className="w-full flex justify-center p-3 rounded-xl bg-gray-50 dark:bg-white/[0.03] text-gray-500 dark:text-gray-400 hover:text-paymint-green hover:bg-paymint-green/5 transition-all"
-                            title="Back to Brands"
+                            onClick={() => setSidebarOpen(true)}
+                            className="w-12 h-12 mx-auto flex items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/[0.03] text-gray-600 dark:text-gray-400 hover:text-paymint-green transition-all border border-gray-200 dark:border-white/[0.05] hover:border-paymint-green/30 group relative"
                         >
-                            <ArrowLeft size={18} />
+                            <PanelLeft size={20} />
+                            <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
+                                Expand Sidebar
+                            </div>
                         </button>
                     )}
                 </div>
@@ -272,54 +288,106 @@ export function BrandLayout() {
                     })}
                 </nav>
 
-                {/* Theme Toggle */}
-                <div className="px-4 py-4 border-t border-gray-100 dark:border-white/5">
+                {/* Owner Portal App Download - Compact */}
+                <div className="px-3 mt-auto mb-2">
                     {sidebarOpen ? (
-                        <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/[0.03] rounded-xl">
-                            <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">Theme</span>
-                            <ThemeToggle dropdownDirection="up" />
+                        <div className="bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/5 rounded-xl p-2.5 flex items-center justify-between group">
+                            <div className="flex items-center gap-2.5">
+                                <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-500 shrink-0">
+                                    <Smartphone size={16} />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-xs font-bold text-gray-900 dark:text-white leading-none mb-0.5">Owner App</span>
+                                    <span className="text-[9px] text-gray-500 dark:text-gray-400 leading-none">Download</span>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-1.5">
+                                <button className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-900 dark:bg-white/10 text-white hover:bg-gray-800 dark:hover:bg-white/20 transition-all border border-gray-800 dark:border-white/5" title="Get it on Google Play">
+                                    <Play size={10} fill="currentColor" />
+                                </button>
+                                <button className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-900 dark:bg-white/10 text-white hover:bg-gray-800 dark:hover:bg-white/20 transition-all border border-gray-800 dark:border-white/5" title="Download on the App Store">
+                                    <Apple size={12} fill="currentColor" />
+                                </button>
+                            </div>
                         </div>
                     ) : (
-                        <div className="flex justify-center">
-                            <ThemeToggle dropdownDirection="up" />
+                        <div className="relative group flex justify-center">
+                            <button
+                                className="w-10 h-10 flex items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500 border border-indigo-200 dark:border-indigo-500/20 shadow-sm hover:scale-105 transition-all"
+                            >
+                                <Smartphone size={18} />
+                            </button>
+                            {/* Compact Popover */}
+                            <div className="absolute left-full bottom-0 ml-3 bg-gray-900/95 backdrop-blur-md rounded-xl p-3 border border-white/10 shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[70] translate-x-1 group-hover:translate-x-0 w-max">
+                                <div className="flex items-center gap-3">
+                                    <span className="text-white font-bold text-xs whitespace-nowrap">Owner App</span>
+                                    <div className="h-4 w-px bg-white/20" />
+                                    <div className="flex gap-2">
+                                        <button className="w-7 h-7 flex items-center justify-center rounded-lg bg-white text-black hover:opacity-90">
+                                            <Play size={10} fill="currentColor" />
+                                        </button>
+                                        <button className="w-7 h-7 flex items-center justify-center rounded-lg bg-white/10 text-white hover:bg-white/20">
+                                            <Apple size={12} fill="currentColor" />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     )}
                 </div>
 
                 {/* Footer User Profile */}
-                <div className="p-4 border-t border-gray-100 dark:border-white/5">
-                    <div className={`flex items-center gap-3 ${!sidebarOpen ? 'flex-col' : ''}`}>
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-paymint-green/20">
-                            <span className="text-black font-bold text-sm">
-                                {account?.firstName?.charAt(0).toUpperCase()}
-                            </span>
-                        </div>
+                <div className="p-3 border-t border-gray-100 dark:border-white/5">
+                    {sidebarOpen ? (
+                        <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-paymint-green/20 outline outline-2 outline-white dark:outline-black">
+                                <span className="text-black font-bold text-xs">
+                                    {account?.firstName?.charAt(0).toUpperCase()}
+                                </span>
+                            </div>
 
-                        {sidebarOpen && (
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
+                                <p className="text-xs font-bold text-gray-900 dark:text-white truncate">
                                     {account?.firstName} {account?.lastName}
                                 </p>
                                 <p className="text-[10px] text-gray-500 truncate">Brand Administrator</p>
                             </div>
-                        )}
 
-                        <button
-                            onClick={handleLogout}
-                            className={`
-                                flex items-center justify-center rounded-xl text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all
-                                ${sidebarOpen ? 'p-2.5' : 'w-10 h-10 mt-2'}
-                            `}
-                            title="Sign Out"
-                        >
-                            <LogOut size={18} />
-                        </button>
-                    </div>
+                            <div className="flex items-center gap-1">
+                                <ThemeToggle dropdownDirection="up" />
+                                <button
+                                    onClick={handleLogout}
+                                    className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all"
+                                    title="Sign Out"
+                                >
+                                    <LogOut size={16} />
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col items-center gap-2">
+                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-paymint-green/20 outline outline-2 outline-white dark:outline-black mb-1">
+                                <span className="text-black font-bold text-xs">
+                                    {account?.firstName?.charAt(0).toUpperCase()}
+                                </span>
+                            </div>
+                            <div className="relative group">
+                                <ThemeToggle dropdownDirection="up" />
+                            </div>
+                            <div className="relative group">
+                                <button onClick={handleLogout} className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all">
+                                    <LogOut size={16} />
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </motion.aside>
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col overflow-hidden">
+                <DeletionRestorationBanner />
                 {/* Top Bar (Mobile) */}
                 <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-[#1E293B] border-b border-gray-200 dark:border-white/5">
                     <button

@@ -21,6 +21,7 @@ import api, { API_BASE_URL } from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { QuickInfo } from '../../components/QuickInfo';
+import { useAuth } from '../../context/AuthContext';
 
 const paymentMethodSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -45,6 +46,7 @@ interface CardType {
 }
 
 export function PaymentMethodsPage() {
+  const { currentEstablishment } = useAuth();
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [cardTypes, setCardTypes] = useState<CardType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -88,7 +90,7 @@ export function PaymentMethodsPage() {
   useEffect(() => {
     fetchPaymentMethods();
     fetchCardTypes();
-  }, []);
+  }, [currentEstablishment]);
 
   const fetchPaymentMethods = async () => {
     try {
@@ -154,6 +156,7 @@ export function PaymentMethodsPage() {
   const onSubmit = async (data: PaymentMethodFormData) => {
     try {
       setIsSubmitting(true);
+
       let imageUrl = imagePreview ? (editingMethod?.imageUrl || null) : null;
       let imageKey = imagePreview ? ((editingMethod as any)?.imageKey || null) : null;
 
@@ -215,6 +218,7 @@ export function PaymentMethodsPage() {
     }
     try {
       setIsSubmitting(true);
+
       let imageUrl = cardImagePreview ? (editingCard?.imageUrl || null) : null;
       let imageKey = cardImagePreview ? (editingCard?.imageKey || null) : null;
 

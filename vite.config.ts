@@ -38,6 +38,7 @@ export default defineConfig({
   },
 
   server: {
+    port: 5174,
     proxy: {
       '/api': {
         target: 'https://grateful-liberation-production-d036.up.railway.app',
@@ -55,6 +56,11 @@ export default defineConfig({
         secure: false,
       },
       '/files': {
+        target: 'https://grateful-liberation-production-d036.up.railway.app',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/customers': {
         target: 'https://grateful-liberation-production-d036.up.railway.app',
         changeOrigin: true,
         secure: false,

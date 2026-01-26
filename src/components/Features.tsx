@@ -30,11 +30,11 @@ export const Features = () => {
       {/* Background Decor */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-paymint-green/5 rounded-full blur-[120px] -z-10" />
 
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-8 md:px-16 lg:px-24">
         <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
-          
+
           {/* Left Side: Video Preview */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -53,10 +53,10 @@ export const Features = () => {
               >
                 Your browser does not support the video tag.
               </video>
-              
+
               {/* Overlay Gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
-              
+
               <div className="absolute bottom-6 left-6 text-white">
                 <p className="font-bold text-lg">See PayMint in Action</p>
                 <p className="text-sm text-white/80">Real-time sync across all devices</p>
@@ -82,7 +82,7 @@ export const Features = () => {
 
             <div className="grid gap-6">
               {features.map((feature, index) => (
-                <motion.div 
+                <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}

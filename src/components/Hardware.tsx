@@ -69,7 +69,7 @@ export const Hardware = () => {
         {/* Background Decor */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-paymint-green/5 rounded-full blur-[120px] -z-10" />
 
-        <div className="container mx-auto px-6 max-w-6xl">
+        <div className="container mx-auto px-8 md:px-16 lg:px-24 max-w-6xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -189,11 +189,10 @@ export const Hardware = () => {
                     <button
                       key={item.id}
                       onClick={() => setSelectedHardware(item)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all ${
-                        selectedHardware.id === item.id
+                      className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all ${selectedHardware.id === item.id
                           ? 'bg-paymint-green text-black'
                           : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10'
-                      }`}
+                        }`}
                     >
                       <item.icon size={16} />
                       {item.name}

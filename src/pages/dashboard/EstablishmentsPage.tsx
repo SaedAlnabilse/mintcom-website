@@ -49,13 +49,16 @@ export function EstablishmentsPage() {
   });
 
   const getStatusColor = (status: string) => {
-    switch (status) {
+    switch (status?.toLowerCase()) {
       case 'active':
         return 'text-paymint-green bg-paymint-green/10 border-paymint-green/20';
       case 'trial':
+      case 'trialing':
         return 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20';
       case 'past_due':
         return 'text-paymint-red bg-paymint-red/10 border-paymint-red/20';
+      case 'canceled':
+        return 'text-red-500 bg-red-500/10 border-red-500/20';
       default:
         return 'text-gray-500 bg-gray-500/10 border-gray-100 dark:border-white/5';
     }
@@ -114,20 +117,24 @@ export function EstablishmentsPage() {
           <motion.div
             layout
             key={est.id}
-            className={`bg-white dark:bg-[#1E293B] rounded-2xl p-8 border-2 transition-all group relative shadow-sm ${currentEstablishment?.id === est.id
+            className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl p-8 border-2 transition-all duration-300 overflow-hidden shadow-sm ${currentEstablishment?.id === est.id
               ? 'border-paymint-green ring-4 ring-paymint-green/5'
-              : 'border-gray-100 dark:border-white/5 hover:border-paymint-green/30'
+              : 'border-gray-100 dark:border-white/5 hover:shadow-xl'
               }`}
           >
+            {/* Background Effects */}
+            <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${currentEstablishment?.id === est.id ? 'bg-paymint-green/10 opacity-100' : 'bg-paymint-green/5'
+              }`} />
+
             {/* Card Header */}
-            <div className="flex items-start justify-between mb-8">
+            <div className="relative z-10 flex items-start justify-between mb-8">
               <div className="flex items-center gap-4">
                 <div className={`w-14 h-14 rounded-xl flex items-center justify-center border transition-all duration-500 group-hover:scale-110 ${currentEstablishment?.id === est.id ? 'bg-paymint-green text-black border-paymint-green shadow-lg shadow-paymint-green/20' : 'bg-gray-50 dark:bg-white/[0.03] text-gray-400 border-gray-100 dark:border-white/10'
                   }`}>
                   <Store size={24} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white uppercase tracking-tight leading-tight">{est.name}</h3>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white uppercase tracking-tight leading-tight group-hover:text-paymint-green transition-colors">{est.name}</h3>
                   <span className={`inline-flex items-center px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.2em] rounded-md mt-2 border transition-colors ${getStatusColor(est.subscriptionStatus)}`}>
                     {est.subscriptionStatus}
                   </span>
@@ -161,7 +168,7 @@ export function EstablishmentsPage() {
             </div>
 
             {/* Details List */}
-            <div className="space-y-3 mb-8 px-1">
+            <div className="relative z-10 space-y-3 mb-8 px-1">
               <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest">
                 <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center border border-gray-100 dark:border-white/10">
                   <DollarSign size={14} className="text-paymint-green" />
@@ -177,19 +184,21 @@ export function EstablishmentsPage() {
             </div>
 
             {/* Action Button */}
-            {currentEstablishment?.id === est.id ? (
-              <div className="flex items-center justify-center gap-2 py-4 px-6 rounded-xl bg-paymint-green text-black shadow-lg shadow-paymint-green/20">
-                <CheckCircle size={18} strokeWidth={3} />
-                <span className="font-black text-[10px] uppercase tracking-[0.2em]">Active Enterprise Node</span>
-              </div>
-            ) : (
-              <button
-                onClick={() => handleSelectEstablishment(est)}
-                className="w-full py-4 px-6 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl hover:scale-[1.02] transition-all active:scale-95 text-[10px] uppercase tracking-[0.2em] shadow-md"
-              >
-                Initialize Switch
-              </button>
-            )}
+            <div className="relative z-10">
+              {currentEstablishment?.id === est.id ? (
+                <div className="flex items-center justify-center gap-2 py-4 px-6 rounded-xl bg-paymint-green text-black shadow-lg shadow-paymint-green/20">
+                  <CheckCircle size={18} strokeWidth={3} />
+                  <span className="font-black text-[10px] uppercase tracking-[0.2em]">Active Enterprise Node</span>
+                </div>
+              ) : (
+                <button
+                  onClick={() => handleSelectEstablishment(est)}
+                  className="w-full py-4 px-6 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl hover:scale-[1.02] transition-all active:scale-95 text-[10px] uppercase tracking-[0.2em] shadow-md"
+                >
+                  Initialize Switch
+                </button>
+              )}
+            </div>
           </motion.div>
         ))}
 

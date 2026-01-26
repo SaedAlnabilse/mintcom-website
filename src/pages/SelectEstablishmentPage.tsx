@@ -11,12 +11,15 @@ import PaymintLogoWhite from '../assets/white-green-full-logo.png';
 
 
 
+import { ConfirmModal } from '../components/ConfirmModal';
+
 export function SelectEstablishmentPage() {
   const { establishments, setCurrentEstablishment, logout, account } = useAuth();
   const navigate = useNavigate();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [isSwitching, setIsSwitching] = useState(false);
   const [selectedName, setSelectedName] = useState('');
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const handleSelect = (est: any) => {
     setIsSwitching(true);
@@ -30,7 +33,11 @@ export function SelectEstablishmentPage() {
     }, 800);
   };
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  const confirmLogout = async () => {
     await logout();
     navigate('/login');
   };
@@ -185,6 +192,17 @@ export function SelectEstablishmentPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <ConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={confirmLogout}
+        title="Sign Out"
+        message="Are you sure you want to sign out?"
+        confirmText="Sign Out"
+        cancelText="Cancel"
+        type="danger"
+      />
     </div>
   );
 }

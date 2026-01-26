@@ -35,6 +35,7 @@ export function ProtectedRoute() {
 // Separate component for routes that require an establishment
 export function EstablishmentRequiredRoute() {
   const { isAuthenticated, isLoading, needsOnboarding, currentEstablishment } = useAuth();
+  const location = useLocation();
 
   if (isLoading) {
     return (
@@ -60,6 +61,13 @@ export function EstablishmentRequiredRoute() {
 
   if (!currentEstablishment) {
     return <Navigate to="/dashboard/establishments" replace />;
+  }
+
+  // Lock access if subscription is canceled
+  // Except for the billing page so they can reactivate
+  const isBillingPage = location.pathname.includes('/billing');
+  if (currentEstablishment.subscriptionStatus === 'CANCELED' && !isBillingPage) {
+    return <Navigate to="/dashboard/billing" replace />;
   }
 
   return <Outlet />;

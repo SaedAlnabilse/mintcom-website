@@ -9,6 +9,7 @@ import { LoadingFallback } from './components/LoadingFallback';
 // EAGER IMPORTS (Critical path - always needed)
 // ============================================================================
 // These are loaded immediately as they're needed for the auth flow
+import { ErrorPage } from './components/ErrorPage';
 import { ProtectedRoute, EstablishmentRequiredRoute } from './components/ProtectedRoute';
 
 // ============================================================================
@@ -45,6 +46,7 @@ const OwnerEmployeesPage = lazy(() => import('./pages/owner/OwnerEmployeesPage')
 const OwnerBillingPage = lazy(() => import('./pages/owner/OwnerBillingPage').then(m => ({ default: m.OwnerBillingPage })));
 const OwnerMergePage = lazy(() => import('./pages/owner/OwnerMergePage').then(m => ({ default: m.OwnerMergePage })));
 const OwnerBrandsPage = lazy(() => import('./pages/owner/OwnerBrandsPage').then(m => ({ default: m.OwnerBrandsPage })));
+const OwnerRolesPage = lazy(() => import('./pages/owner/OwnerRolesPage').then(m => ({ default: m.OwnerRolesPage })));
 const OwnerAccountManagementPage = lazy(() => import('./pages/owner/OwnerAccountManagementPage').then(m => ({ default: m.OwnerAccountManagementPage })));
 
 // ============================================================================
@@ -74,6 +76,7 @@ const RecipesPage = lazy(() => import('./pages/dashboard/RecipesPage').then(m =>
 const EstablishmentsPage = lazy(() => import('./pages/dashboard/EstablishmentsPage').then(m => ({ default: m.EstablishmentsPage })));
 const BillingPage = lazy(() => import('./pages/dashboard/BillingPage').then(m => ({ default: m.BillingPage })));
 const AdminUsersPage = lazy(() => import('./pages/dashboard/AdminUsersPage').then(m => ({ default: m.AdminUsersPage })));
+const CustomRolesPage = lazy(() => import('./pages/dashboard/CustomRolesPage').then(m => ({ default: m.CustomRolesPage })));
 
 // ============================================================================
 // SUSPENSE WRAPPER COMPONENTS
@@ -103,6 +106,7 @@ function LayoutSuspense({ children }: { children: React.ReactNode }) {
 // ============================================================================
 const router = createBrowserRouter([
   {
+    errorElement: <ErrorPage />,
     element: (
       <>
         <Outlet />
@@ -218,6 +222,14 @@ const router = createBrowserRouter([
                 element: (
                   <PageSuspense>
                     <OwnerBrandsPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "roles",
+                element: (
+                  <PageSuspense>
+                    <OwnerRolesPage />
                   </PageSuspense>
                 ),
               },
@@ -355,7 +367,7 @@ const router = createBrowserRouter([
                 ),
               },
               {
-                path: "reports",
+                path: "reports/:type?",
                 element: (
                   <PageSuspense>
                     <ReportsPage />
@@ -439,6 +451,14 @@ const router = createBrowserRouter([
                 element: (
                   <PageSuspense>
                     <AdminUsersPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "roles",
+                element: (
+                  <PageSuspense>
+                    <CustomRolesPage />
                   </PageSuspense>
                 ),
               },

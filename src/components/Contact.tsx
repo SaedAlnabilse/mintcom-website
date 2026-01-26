@@ -19,10 +19,10 @@ export const Contact = () => {
 
   return (
     <section id="contact" className="py-24 lg:py-32 bg-white dark:bg-[#050505] relative overflow-hidden transition-colors duration-300">
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-8 md:px-16 lg:px-24 relative z-10">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col lg:flex-row items-stretch bg-gray-50 dark:bg-white/5 rounded-[3rem] border border-gray-200 dark:border-white/10 overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none">
-            
+
             {/* Contact Info Sidebar */}
             <div className="lg:w-2/5 bg-gray-900 p-12 lg:p-16 text-white relative overflow-hidden flex flex-col justify-between">
               <div className="relative z-10">
@@ -59,7 +59,7 @@ export const Contact = () => {
             <div className="lg:w-3/5 p-12 lg:p-16 bg-white dark:bg-transparent">
               <AnimatePresence mode="wait">
                 {isSuccess ? (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     className="h-full flex flex-col items-center justify-center text-center space-y-6"
@@ -71,7 +71,7 @@ export const Contact = () => {
                       <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Message Sent!</h3>
                       <p className="text-gray-600 dark:text-gray-400 font-medium">We'll get back to you within 24 hours.</p>
                     </div>
-                    <button 
+                    <button
                       onClick={() => setIsSuccess(false)}
                       className="text-paymint-green font-bold uppercase tracking-widest text-xs hover:underline"
                     >
@@ -79,27 +79,27 @@ export const Contact = () => {
                     </button>
                   </motion.div>
                 ) : (
-                  <motion.form 
+                  <motion.form
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    onSubmit={handleSubmit} 
+                    onSubmit={handleSubmit}
                     className="space-y-6"
                   >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1">Full Name</label>
-                        <input 
+                        <input
                           required
-                          type="text" 
+                          type="text"
                           className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-2xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
                           placeholder="John Doe"
                         />
                       </div>
                       <div className="space-y-2">
                         <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1">Business Name</label>
-                        <input 
+                        <input
                           required
-                          type="text" 
+                          type="text"
                           className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-2xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
                           placeholder="Acme Corp"
                         />
@@ -108,9 +108,9 @@ export const Contact = () => {
 
                     <div className="space-y-2">
                       <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1">Email Address</label>
-                      <input 
+                      <input
                         required
-                        type="email" 
+                        type="email"
                         className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-2xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
                         placeholder="john@example.com"
                       />
@@ -118,7 +118,7 @@ export const Contact = () => {
 
                     <div className="space-y-2">
                       <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1">Your Message</label>
-                      <textarea 
+                      <textarea
                         required
                         rows={4}
                         className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-2xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none"
@@ -127,10 +127,10 @@ export const Contact = () => {
                     </div>
 
                     <div className="flex items-start gap-3 py-2">
-                      <input 
+                      <input
                         required
                         id="terms"
-                        type="checkbox" 
+                        type="checkbox"
                         className="mt-1.5 w-4 h-4 rounded border-gray-300 dark:border-white/20 text-paymint-green focus:ring-paymint-green cursor-pointer"
                       />
                       <label htmlFor="terms" className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
@@ -158,14 +158,14 @@ export const Contact = () => {
       <AnimatePresence>
         {activeModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setActiveModal(null)}
               className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             />
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -175,7 +175,7 @@ export const Contact = () => {
                 <h3 className="text-2xl font-black text-gray-900 dark:text-white capitalize">
                   {activeModal} Policy
                 </h3>
-                <button 
+                <button
                   onClick={() => setActiveModal(null)}
                   className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors text-gray-400"
                 >
@@ -188,7 +188,7 @@ export const Contact = () => {
                 <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
               </div>
               <div className="p-8 border-t border-gray-100 dark:border-white/10 flex justify-end">
-                <button 
+                <button
                   onClick={() => setActiveModal(null)}
                   className="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl hover:scale-105 transition-all"
                 >

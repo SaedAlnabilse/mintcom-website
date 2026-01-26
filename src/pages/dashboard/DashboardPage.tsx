@@ -28,6 +28,7 @@ import api from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { TourGuide, type TourStep } from '../../components/TourGuide';
+import { QuickInfo } from '../../components/QuickInfo';
 
 interface DashboardStats {
   totalRevenue: number;
@@ -38,6 +39,7 @@ interface DashboardStats {
   activeEmployees: number;
   taxCollected: number;
   totalRefunds: number;
+  grossProfit: number;
   totalPayIn: number;
   totalPayOut: number;
   paymentMethodBreakdown: { name: string; value: number }[];
@@ -69,28 +71,28 @@ export const DashboardPage = () => {
   const tourSteps: TourStep[] = [
     {
       targetId: 'tour-kpi-cards',
-      title: "Today's Pulse",
-      description: "Get an instant snapshot of your day's performance, including Net Revenue, Total Transactions, and Average Basket Size."
+      title: "Financial Pulse",
+      description: "Track your Settlement Value, Net Capital, Taxes, and Profit in real-time."
     },
     {
       targetId: 'tour-revenue-chart',
-      title: "Real-time Revenue",
-      description: "Track your sales momentum hour-by-hour to spot trends and peak performance times immediately."
+      title: "Revenue Trends",
+      description: "Monitor sales performance throughout the day to identify peak periods."
     },
     {
       targetId: 'tour-capital-sources',
-      title: "Payment Breakdown",
-      description: "Understand exactly how your customers are paying, visualized in a clear distribution chart."
+      title: "Payment Methods",
+      description: "See a breakdown of how your customers are paying."
     },
     {
       targetId: 'tour-top-products',
-      title: "Top Performers",
-      description: "See which items are driving your revenue today so you can manage inventory effectively."
+      title: "Top Items",
+      description: "Identify your best-selling products."
     },
     {
       targetId: 'tour-quick-actions',
-      title: "Command Center",
-      description: "Jump straight to managing Products, Orders, Staff, or detailed Reports with a single click."
+      title: "Quick Navigation",
+      description: "Fast access to essential management tools."
     }
   ];
 
@@ -135,6 +137,7 @@ export const DashboardPage = () => {
         activeEmployees: summaryData.activeEmployees || 0,
         taxCollected: summaryData.taxCollected || 0,
         totalRefunds: summaryData.totalRefunds || 0,
+        grossProfit: summaryData.grossProfit || 0,
         totalPayIn: summaryData.totalPayIn || 0,
         totalPayOut: summaryData.totalPayOut || 0,
         paymentMethodBreakdown: summaryData.paymentMethodBreakdown || [],
@@ -164,8 +167,8 @@ export const DashboardPage = () => {
     return new Intl.NumberFormat('en-JO', {
       style: 'currency',
       currency: 'JOD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+      minimumFractionDigits: 3,
+      maximumFractionDigits: 3
     }).format(value);
   };
 
@@ -255,42 +258,58 @@ export const DashboardPage = () => {
       <div id="tour-kpi-cards" className="space-y-3">
         <div className="flex items-center gap-2">
           <span className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-500 text-[9px] font-black uppercase tracking-widest border border-blue-500/20">
-            Today's Metrics
+            Financial Overview
           </span>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {[
             {
-              label: 'Net Revenue',
+              label: 'Settlement Value',
+              value: formatCurrency((stats?.totalRevenue || 0) + (stats?.taxCollected || 0)),
+              sub: 'Total Sales (Inc. Tax)',
+              icon: Wallet,
+              color: 'text-blue-500',
+              bg: 'bg-blue-500/10'
+            },
+            {
+              label: 'Net Capital',
               value: formatCurrency(stats?.totalRevenue || 0),
-              sub: 'Today\'s gross inflow',
+              sub: 'Net Revenue (Excl. Tax)',
               icon: DollarSign,
               color: 'text-paymint-green',
               bg: 'bg-paymint-green/10'
             },
             {
-              label: 'Transactions',
-              value: stats?.totalOrders?.toString() || '0',
-              sub: 'Today\'s orders',
-              icon: Receipt,
-              color: 'text-blue-500',
-              bg: 'bg-blue-500/10'
-            },
-            {
-              label: 'Avg. Basket',
-              value: formatCurrency(stats?.averageOrderValue || 0),
-              sub: 'Per transaction',
-              icon: ShoppingBag,
+              label: 'Estimated Profit',
+              value: formatCurrency(stats?.grossProfit || 0),
+              sub: 'Net Capital - Item Costs',
+              icon: TrendingUp,
               color: 'text-purple-500',
               bg: 'bg-purple-500/10'
             },
             {
-              label: 'Tax Collected',
+              label: 'Tax Calculated',
               value: formatCurrency(stats?.taxCollected || 0),
-              sub: 'Today\'s tax',
+              sub: 'Total Tax Liability',
               icon: Percent,
               color: 'text-orange-500',
               bg: 'bg-orange-500/10'
+            },
+            {
+              label: 'Transactions',
+              value: stats?.totalOrders?.toString() || '0',
+              sub: "Today's orders",
+              icon: Receipt,
+              color: 'text-indigo-500',
+              bg: 'bg-indigo-500/10'
+            },
+            {
+              label: 'Avg. Basket',
+              value: formatCurrency(stats?.averageOrderValue || 0),
+              sub: 'Net Capital / Total Orders',
+              icon: ShoppingBag,
+              color: 'text-pink-500',
+              bg: 'bg-pink-500/10'
             }
           ].map((stat, index) => (
             <motion.div
@@ -298,18 +317,21 @@ export const DashboardPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm hover:border-paymint-green/30 transition-all group"
+              className="group relative p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform group-hover:scale-110`}>
-                  <stat.icon size={20} />
+              <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300 group-hover:scale-110`}>
+                    <stat.icon size={20} />
+                  </div>
+                  <QuickInfo text={stat.sub} />
                 </div>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1 flex items-center gap-1">
+                  {stat.label}
+                </p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{stat.value}</p>
               </div>
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">{stat.label}</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{stat.value}</p>
-              <p className="text-[10px] font-medium text-gray-400 mt-1 opacity-70">
-                {stat.sub}
-              </p>
             </motion.div>
           ))}
         </div>
@@ -318,179 +340,197 @@ export const DashboardPage = () => {
       {/* Revenue Chart & Payment Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Revenue Momentum Chart */}
-        <div id="tour-revenue-chart" className="lg:col-span-2 p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <TrendingUp className="text-paymint-green" size={20} />
-                Today's Revenue
-              </h3>
-              <p className="text-xs text-gray-500 mt-1">Today's hourly performance breakdown</p>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-              <Activity size={12} className="text-paymint-green" />
-              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Real-time</span>
-            </div>
-          </div>
-
-          <div className="h-[300px]">
-            {stats?.dailyBreakdown && stats.dailyBreakdown.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart
-                  data={stats.dailyBreakdown.map((d: any) => ({ ...d, revenue: Number(d.revenue) || 0 }))}
-                  margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-                >
-                  <defs>
-                    <linearGradient id="colorRevenueDash" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#7CC39F" stopOpacity={0.2} />
-                      <stop offset="95%" stopColor="#7CC39F" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#ffffff10" : "#00000005"} vertical={false} />
-                  <XAxis
-                    dataKey="date"
-                    stroke={isDark ? "#525252" : "#e5e5e5"}
-                    fontSize={10}
-                    tickLine={false}
-                    axisLine={false}
-                    tick={{ fill: "#9ca3af" }}
-                    tickFormatter={(val) => {
-                      const date = new Date(val);
-                      return val.includes(':') ? format(date, 'HH:00') : format(date, 'MMM d');
-                    }}
-                    dy={10}
-                  />
-                  <YAxis
-                    hide
-                    domain={[0, 'auto']}
-                  />
-                  <Tooltip
-                    cursor={{ stroke: '#7CC39F', strokeWidth: 1, strokeDasharray: '4 4' }}
-                    contentStyle={{
-                      backgroundColor: isDark ? '#0B1120' : '#fff',
-                      borderRadius: '12px',
-                      border: '1px solid rgba(124, 195, 159, 0.2)',
-                      boxShadow: '0 10px 30px -10px rgba(0,0,0,0.3)',
-                      padding: '12px'
-                    }}
-                    itemStyle={{ color: '#7CC39F', fontWeight: 'bold', fontSize: '12px' }}
-                    labelStyle={{ color: isDark ? '#fff' : '#000', marginBottom: '4px', fontSize: '10px', fontWeight: 'bold' }}
-                    formatter={(val) => [formatCurrency(val as number), 'Revenue']}
-                    labelFormatter={(val) => {
-                      const date = new Date(val);
-                      return val.includes(':') ? format(date, 'MMM d, HH:00') : format(date, 'MMM d, yyyy');
-                    }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="revenue"
-                    stroke="#7CC39F"
-                    strokeWidth={2}
-                    fillOpacity={1}
-                    fill="url(#colorRevenueDash)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                <Zap size={32} className="mb-3 opacity-20" />
-                <p className="text-xs font-bold uppercase tracking-wide">No revenue data</p>
+        <div id="tour-revenue-chart" className="lg:col-span-2 p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-md transition-all duration-300 group relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                  <TrendingUp className="text-paymint-green" size={20} />
+                  Today's Revenue
+                </h3>
+                <p className="text-xs text-gray-500 mt-1">Today's hourly performance breakdown</p>
               </div>
-            )}
+              <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                <Activity size={12} className="text-paymint-green" />
+                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Real-time</span>
+              </div>
+            </div>
+
+            <div className="h-[300px]">
+              {stats?.dailyBreakdown && stats.dailyBreakdown.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart
+                    data={stats.dailyBreakdown.map((d: any) => ({ ...d, revenue: Number(d.revenue) || 0 }))}
+                    margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                  >
+                    <defs>
+                      <linearGradient id="colorRevenueDash" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#7CC39F" stopOpacity={0.2} />
+                        <stop offset="95%" stopColor="#7CC39F" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#ffffff10" : "#00000005"} vertical={false} />
+                    <XAxis
+                      dataKey="date"
+                      stroke={isDark ? "#525252" : "#e5e5e5"}
+                      fontSize={10}
+                      tickLine={false}
+                      axisLine={false}
+                      tick={{ fill: "#9ca3af" }}
+                      tickFormatter={(val) => {
+                        const date = new Date(val);
+                        return val.includes(':') ? format(date, 'HH:00') : format(date, 'MMM d');
+                      }}
+                      dy={10}
+                    />
+                    <YAxis
+                      hide
+                      domain={[0, 'auto']}
+                    />
+                    <Tooltip
+                      cursor={{ stroke: '#7CC39F', strokeWidth: 1, strokeDasharray: '4 4' }}
+                      contentStyle={{
+                        backgroundColor: isDark ? '#0B1120' : '#fff',
+                        borderRadius: '12px',
+                        border: '1px solid rgba(124, 195, 159, 0.2)',
+                        boxShadow: '0 10px 30px -10px rgba(0,0,0,0.3)',
+                        padding: '12px'
+                      }}
+                      itemStyle={{ color: '#7CC39F', fontWeight: 'bold', fontSize: '12px' }}
+                      labelStyle={{ color: isDark ? '#fff' : '#000', marginBottom: '4px', fontSize: '10px', fontWeight: 'bold' }}
+                      formatter={(val) => [formatCurrency(val as number), 'Revenue']}
+                      labelFormatter={(val) => {
+                        const date = new Date(val);
+                        return val.includes(':') ? format(date, 'MMM d, HH:00') : format(date, 'MMM d, yyyy');
+                      }}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="revenue"
+                      stroke="#7CC39F"
+                      strokeWidth={2}
+                      fillOpacity={1}
+                      fill="url(#colorRevenueDash)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                  <Zap size={32} className="mb-3 opacity-20" />
+                  <p className="text-xs font-bold uppercase tracking-wide">No revenue data</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Payment Methods Breakdown */}
-        <div id="tour-capital-sources" className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
-              <Wallet size={20} />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">Capital Sources</h3>
-              <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Today's Payment Distribution</p>
-            </div>
-          </div>
-
-          <div className="flex-1 flex flex-col justify-center">
-            {stats?.paymentMethodBreakdown && stats.paymentMethodBreakdown.length > 0 ? (
-              <>
-                <div className="h-[160px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <RechartsPie>
-                      <Pie
-                        data={stats.paymentMethodBreakdown}
-                        innerRadius={45}
-                        outerRadius={70}
-                        paddingAngle={4}
-                        dataKey="value"
-                        stroke="none"
-                      >
-                        {stats.paymentMethodBreakdown.map((_, index) => (
-                          <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: isDark ? '#0B1120' : '#fff',
-                          borderRadius: '12px',
-                          border: 'none',
-                          boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
-                          fontSize: '12px'
-                        }}
-                        itemStyle={{ color: isDark ? '#fff' : '#111', fontWeight: 'bold' }}
-                      />
-                    </RechartsPie>
-                  </ResponsiveContainer>
-                </div>
-                <div className="space-y-2 mt-4">
-                  {stats.paymentMethodBreakdown.slice(0, 3).map((item, i) => (
-                    <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                        <span className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase">{item.name}</span>
-                      </div>
-                      <span className="text-xs font-bold text-gray-900 dark:text-white">{formatCurrency(item.value)}</span>
-                    </div>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                <CreditCard size={32} className="mb-3 opacity-20" />
-                <p className="text-xs font-bold uppercase tracking-wide">No payment data</p>
+        <div id="tour-capital-sources" className="group relative p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform duration-300">
+                <Wallet size={20} />
               </div>
-            )}
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Capital Sources</h3>
+                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Today's Payment Distribution</p>
+              </div>
+            </div>
+
+            <div className="flex-1 flex flex-col justify-center">
+              {stats?.paymentMethodBreakdown && stats.paymentMethodBreakdown.length > 0 ? (
+                <>
+                  <div className="h-[160px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RechartsPie>
+                        <Pie
+                          data={stats.paymentMethodBreakdown}
+                          innerRadius={45}
+                          outerRadius={70}
+                          paddingAngle={4}
+                          dataKey="value"
+                          stroke="none"
+                        >
+                          {stats.paymentMethodBreakdown.map((_, index) => (
+                            <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: isDark ? '#0B1120' : '#fff',
+                            borderRadius: '12px',
+                            border: 'none',
+                            boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+                            fontSize: '12px'
+                          }}
+                          itemStyle={{ color: isDark ? '#fff' : '#111', fontWeight: 'bold' }}
+                        />
+                      </RechartsPie>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="space-y-2 mt-4">
+                    {stats.paymentMethodBreakdown.slice(0, 3).map((item, i) => (
+                      <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                          <span className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase">{item.name}</span>
+                        </div>
+                        <span className="text-xs font-bold text-gray-900 dark:text-white">{formatCurrency(item.value)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                  <CreditCard size={32} className="mb-3 opacity-20" />
+                  <p className="text-xs font-bold uppercase tracking-wide">No payment data</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Secondary Insights Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Cash Flow Card */}
+        {/* Pay In / Pay Out Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className={`p-6 rounded-2xl border relative overflow-hidden ${netCashFlow >= 0
-            ? 'bg-paymint-green/5 border-paymint-green/20'
-            : 'bg-red-500/5 border-red-500/20'
-            }`}
+          onClick={() => navigate('/dashboard/reports', { state: { showPayInOut: true, dateRange: 'today' } })}
+          className="p-6 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 group cursor-pointer relative overflow-hidden"
         >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${netCashFlow >= 0 ? 'text-paymint-green' : 'text-red-500'}`}>Net Cash Flow</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                {netCashFlow >= 0 ? '+' : ''}{formatCurrency(netCashFlow)}
-              </p>
-              <p className="text-[10px] font-medium text-gray-400 mt-1">Today's Inflow - Outflow</p>
+          {/* Background decoration */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+
+          <div className="relative z-10 w-full">
+            <div className="flex items-start justify-between mb-4">
+              <p className="text-[10px] font-black uppercase tracking-widest text-cyan-600 dark:text-cyan-400">Pay In / Pay Out</p>
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-500 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-white transition-all duration-300">
+                <ArrowUpRight size={20} />
+              </div>
             </div>
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${netCashFlow >= 0 ? 'bg-paymint-green/10' : 'bg-red-500/10'}`}>
-              {netCashFlow >= 0 ? (
-                <ArrowUpRight size={20} className="text-paymint-green" />
-              ) : (
-                <ArrowDownRight size={20} className="text-red-500" />
-              )}
+
+            <div className="space-y-3 mb-4">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase font-bold text-gray-400">Pay In</span>
+                <span className="text-sm font-bold text-paymint-green tracking-tight">+{formatCurrency(stats?.totalPayIn || 0).replace('JOD', '').trim()} JOD</span>
+              </div>
+              <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase font-bold text-gray-400">Pay Out</span>
+                <span className="text-sm font-bold text-red-500 tracking-tight">-{formatCurrency(stats?.totalPayOut || 0).replace('JOD', '').trim()} JOD</span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-2 border-t border-dashed border-gray-200 dark:border-white/10">
+              <span className="text-[10px] font-bold text-gray-400">Net Flow</span>
+              <span className={`text-sm font-bold ${netCashFlow >= 0 ? 'text-paymint-green' : 'text-red-500'}`}>
+                {netCashFlow >= 0 ? '+' : ''}{formatCurrency(netCashFlow).replace('JOD', '').trim()} JOD
+              </span>
             </div>
           </div>
         </motion.div>
@@ -500,15 +540,16 @@ export const DashboardPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="p-6 rounded-2xl bg-orange-500/5 border border-orange-500/10"
+          className="group relative p-6 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
         >
-          <div className="flex items-center justify-between">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          <div className="relative z-10 flex items-center justify-between">
             <div>
               <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-1">Refunds</p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(stats?.totalRefunds || 0)}</p>
               <p className="text-[10px] font-medium text-gray-400 mt-1">Today's Returned Value</p>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
               <ArrowDownRight size={20} className="text-orange-500" />
             </div>
           </div>
@@ -519,9 +560,10 @@ export const DashboardPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="p-6 rounded-2xl bg-purple-500/5 border border-purple-500/10"
+          className="group relative p-6 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
         >
-          <div className="flex items-center justify-between">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          <div className="relative z-10 flex items-center justify-between">
             <div>
               <p className="text-[10px] font-black text-purple-500 uppercase tracking-widest mb-1">Top Category</p>
               <p className="text-xl font-bold text-gray-900 dark:text-white truncate max-w-[150px]">
@@ -531,7 +573,7 @@ export const DashboardPage = () => {
                 {stats?.categoryBreakdown?.[0] ? formatCurrency(stats.categoryBreakdown[0].value) : 'Today\'s performer'}
               </p>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
               <PieChart size={20} className="text-purple-500" />
             </div>
           </div>
@@ -541,109 +583,116 @@ export const DashboardPage = () => {
       {/* Top Products & Peak Hours */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Top Products */}
-        <div id="tour-top-products" className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
-          <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
-                <Package size={20} />
+        <div id="tour-top-products" className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          <div className="relative z-10">
+            <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green group-hover:scale-110 transition-transform duration-300">
+                  <Package size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white">Top Performers</h3>
+                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Today's best selling items</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-base font-bold text-gray-900 dark:text-white">Top Performers</h3>
-                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Today's best selling items</p>
-              </div>
-            </div>
-            <button
-              onClick={() => navigate('/dashboard/reports')}
-              className="text-xs font-bold text-paymint-green hover:underline uppercase tracking-wide"
-            >
-              View All
-            </button>
-          </div>
-          <div className="p-4 space-y-3">
-            {topProducts.length > 0 ? topProducts.map((item, index) => (
-              <motion.div
-                key={item.name}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="p-4 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex items-center justify-between group hover:border-paymint-green/30 transition-all"
+              <button
+                onClick={() => navigate('/dashboard/reports')}
+                className="text-xs font-bold text-paymint-green hover:underline uppercase tracking-wide"
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-8 h-8 rounded-lg bg-white dark:bg-white/10 flex items-center justify-center text-sm font-black text-gray-500 group-hover:text-paymint-green transition-colors border border-gray-100 dark:border-white/5">
-                    {index + 1}
+                View All
+              </button>
+            </div>
+            <div className="p-4 space-y-3">
+              {topProducts.length > 0 ? topProducts.map((item, index) => (
+                <motion.div
+                  key={item.name}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="p-4 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex items-center justify-between group/item hover:bg-white dark:hover:bg-white/5 hover:border-paymint-green/30 hover:shadow-md transition-all"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-8 h-8 rounded-lg bg-white dark:bg-white/10 flex items-center justify-center text-sm font-black text-gray-500 group-hover/item:text-paymint-green transition-colors border border-gray-100 dark:border-white/5">
+                      {index + 1}
+                    </div>
+                    <div>
+                      <p className="font-bold text-sm text-gray-900 dark:text-white group-hover/item:text-paymint-green transition-colors">{item.name}</p>
+                      <p className="text-[10px] text-gray-500 font-medium">{item.orders} sold</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-bold text-sm text-gray-900 dark:text-white">{item.name}</p>
-                    <p className="text-[10px] text-gray-500 font-medium">{item.orders} sold</p>
+                  <div className="text-right">
+                    <p className="font-bold text-sm text-gray-900 dark:text-white">{formatCurrency(item.revenue)}</p>
                   </div>
+                </motion.div>
+              )) : (
+                <div className="text-center py-12">
+                  <Package className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+                  <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">No products data</p>
                 </div>
-                <div className="text-right">
-                  <p className="font-bold text-sm text-gray-900 dark:text-white">{formatCurrency(item.revenue)}</p>
-                </div>
-              </motion.div>
-            )) : (
-              <div className="text-center py-12">
-                <Package className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">No products data</p>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
 
         {/* Peak Hours */}
-        <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
-          <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
-                <Clock size={20} />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-gray-900 dark:text-white">Traffic Heatmap</h3>
-                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Today's hourly distribution</p>
+        <div className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-orange-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          <div className="relative z-10">
+            <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 group-hover:scale-110 transition-transform duration-300">
+                  <Clock size={20} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white">Traffic Heatmap</h3>
+                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Today's hourly distribution</p>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="p-6">
-            {peakHours.length > 0 && peakHours.some((h: any) => Number(h.total) > 0) ? (
-              <div className="h-[250px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={peakHours.map(h => ({ ...h, hour: `${h.hour}:00` }))}>
-                    <defs>
-                      <linearGradient id="barGradientDash" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#7CC39F" stopOpacity={1} />
-                        <stop offset="100%" stopColor="#10b981" stopOpacity={0.8} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#ffffff05" : "#00000005"} vertical={false} />
-                    <XAxis dataKey="hour" stroke="#94a3b8" fontSize={10} tickLine={false} axisLine={false} dy={10} />
-                    <Tooltip
-                      cursor={{ fill: 'transparent' }}
-                      contentStyle={{ backgroundColor: isDark ? '#111' : '#fff', borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}
-                      itemStyle={{ fontWeight: 'bold', fontSize: '10px', textTransform: 'uppercase' }}
-                      labelStyle={{ color: '#7CC39F', fontWeight: 'bold', marginBottom: '4px', fontSize: '10px' }}
-                    />
-                    <Bar dataKey="total" name="Revenue" fill="url(#barGradientDash)" radius={[4, 4, 0, 0]} barSize={20} animationDuration={1500} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            ) : (
-              <div className="h-[250px] flex flex-col items-center justify-center space-y-3 bg-gray-50/50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-200 dark:border-white/5">
-                <div className="p-4 rounded-full bg-gray-100 dark:bg-black/20">
-                  <Clock size={28} className="text-gray-400 dark:text-gray-600" />
+            <div className="p-6">
+              {peakHours.length > 0 && peakHours.some((h: any) => Number(h.total) > 0) ? (
+                <div className="h-[250px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={peakHours.map(h => ({ ...h, hour: `${h.hour}:00` }))}>
+                      <defs>
+                        <linearGradient id="barGradientDash" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#7CC39F" stopOpacity={1} />
+                          <stop offset="100%" stopColor="#10b981" stopOpacity={0.8} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#ffffff05" : "#00000005"} vertical={false} />
+                      <XAxis dataKey="hour" stroke="#94a3b8" fontSize={10} tickLine={false} axisLine={false} dy={10} />
+                      <Tooltip
+                        cursor={{ fill: 'transparent' }}
+                        contentStyle={{ backgroundColor: isDark ? '#111' : '#fff', borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}
+                        itemStyle={{ fontWeight: 'bold', fontSize: '10px', textTransform: 'uppercase' }}
+                        labelStyle={{ color: '#7CC39F', fontWeight: 'bold', marginBottom: '4px', fontSize: '10px' }}
+                      />
+                      <Bar dataKey="total" name="Revenue" fill="url(#barGradientDash)" radius={[4, 4, 0, 0]} barSize={20} animationDuration={1500} />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
-                <div className="text-center">
-                  <p className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide">No Traffic Data</p>
-                  <p className="text-xs text-gray-500 mt-1">There is no transaction activity recorded today.</p>
+              ) : (
+                <div className="h-[250px] flex flex-col items-center justify-center space-y-3 bg-gray-50/50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-200 dark:border-white/5">
+                  <div className="p-4 rounded-full bg-gray-100 dark:bg-black/20">
+                    <Clock size={28} className="text-gray-400 dark:text-gray-600" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide">No Traffic Data</p>
+                    <p className="text-xs text-gray-500 mt-1">There is no transaction activity recorded today.</p>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div id="tour-quick-actions" className="p-6 bg-white dark:bg-[#0B1120] bg-gradient-to-r from-paymint-green/5 via-blue-500/5 to-purple-500/5 rounded-2xl border border-gray-200 dark:border-white/[0.03]">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+      <div id="tour-quick-actions" className="group relative p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-paymint-green/5 via-blue-500/5 to-purple-500/5 opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6">
           <div>
             <h3 className="text-lg font-bold text-gray-900 dark:text-white">Quick Actions</h3>
             <p className="text-xs font-medium text-gray-500 mt-1">Jump to frequently used sections</p>
@@ -658,7 +707,7 @@ export const DashboardPage = () => {
               <button
                 key={action.label}
                 onClick={() => navigate(action.path)}
-                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-white/10 border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white font-bold text-xs hover:bg-paymint-green hover:text-black hover:border-paymint-green transition-all shadow-sm"
+                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-white/10 border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white font-bold text-xs hover:bg-paymint-green hover:text-black hover:border-paymint-green hover:scale-105 transition-all shadow-sm"
               >
                 <action.icon size={16} />
                 {action.label}

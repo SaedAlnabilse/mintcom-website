@@ -15,7 +15,9 @@ import {
     Target,
     Award,
     ArrowRight,
-    ChevronRight
+    ChevronRight,
+    Calendar,
+    X
 } from 'lucide-react';
 import {
     AreaChart,
@@ -58,13 +60,14 @@ interface RevenueDataPoint {
     orders: number;
 }
 
-type TimeRange = '24h' | '7d' | '30d' | '90d';
+type TimeRange = '24h' | '7d' | '30d' | '90d' | 'custom';
 
 const TIME_RANGES: { value: TimeRange; label: string }[] = [
     { value: '24h', label: 'Today' },
     { value: '7d', label: '7 Days' },
     { value: '30d', label: '30 Days' },
     { value: '90d', label: '90 Days' },
+    { value: 'custom', label: 'Custom' },
 ];
 
 const CHART_COLORS = ['#7CC39F', '#8B5CF6', '#F59E0B', '#EF4444', '#3B82F6', '#EC4899'];
@@ -79,10 +82,26 @@ export function BrandDashboardPage() {
     const [locations, setLocations] = useState<LocationPerformance[]>([]);
     const [timeRange, setTimeRange] = useState<TimeRange>('7d');
     const [revenueData, setRevenueData] = useState<RevenueDataPoint[]>([]);
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [customStartDate, setCustomStartDate] = useState<string>('');
+    const [customEndDate, setCustomEndDate] = useState<string>('');
+    // Temporary state for the date picker modal
+    const [tempStartDate, setTempStartDate] = useState<string>('');
+    const [tempEndDate, setTempEndDate] = useState<string>('');
+
+    // Get today's date in YYYY-MM-DD format for max date constraint
+    const today = new Date().toISOString().split('T')[0];
 
     useEffect(() => {
-        fetchBrandData();
-    }, [brandId, timeRange]);
+        // For custom range, only fetch when both dates are set
+        if (timeRange === 'custom') {
+            if (customStartDate && customEndDate) {
+                fetchBrandData();
+            }
+        } else {
+            fetchBrandData();
+        }
+    }, [brandId, timeRange, customStartDate, customEndDate]);
 
     const fetchBrandData = async (refresh = false) => {
         try {
@@ -93,9 +112,15 @@ export function BrandDashboardPage() {
             }
 
             // Fetch real dashboard stats from the backend
+            const params: any = { timeRange };
+            if (timeRange === 'custom' && customStartDate && customEndDate) {
+                params.startDate = customStartDate;
+                params.endDate = customEndDate;
+            }
+
             const [brandResponse, statsResponse] = await Promise.all([
                 api.get(`/api/brands/${brandId}`),
-                api.get(`/api/brands/${brandId}/dashboard-stats`, { params: { timeRange } })
+                api.get(`/api/brands/${brandId}/dashboard-stats`, { params })
             ]);
 
             setBrandName(brandResponse.data?.name || 'Brand Overview');
@@ -167,6 +192,35 @@ export function BrandDashboardPage() {
             case '90d':
                 points = 12;
                 labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8', 'Week 9', 'Week 10', 'Week 11', 'Week 12'];
+                break;
+            case 'custom':
+                if (customStartDate && customEndDate) {
+                    const start = new Date(customStartDate);
+                    const end = new Date(customEndDate);
+                    const diffTime = Math.abs(end.getTime() - start.getTime());
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+                    if (diffDays <= 7) {
+                        points = diffDays;
+                        labels = Array.from({ length: diffDays }, (_, i) => {
+                            const date = new Date(start);
+                            date.setDate(date.getDate() + i);
+                            return date.toLocaleDateString('en-US', { weekday: 'short' });
+                        });
+                    } else if (diffDays <= 31) {
+                        points = diffDays;
+                        labels = Array.from({ length: diffDays }, (_, i) => {
+                            const date = new Date(start);
+                            date.setDate(date.getDate() + i);
+                            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                        });
+                    } else {
+                        // Group by weeks for longer periods
+                        const weeks = Math.ceil(diffDays / 7);
+                        points = Math.min(weeks, 12);
+                        labels = Array.from({ length: points }, (_, i) => `Week ${i + 1}`);
+                    }
+                }
                 break;
         }
 
@@ -260,19 +314,50 @@ export function BrandDashboardPage() {
 
                 <div className="flex items-center gap-3">
                     {/* Time Range Selector */}
-                    <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl">
-                        {TIME_RANGES.map((range) => (
+                    <div className="flex items-center gap-2">
+                        <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl">
+                            {TIME_RANGES.map((range) => (
+                                <button
+                                    key={range.value}
+                                    onClick={() => {
+                                        if (range.value === 'custom') {
+                                            setTempStartDate(customStartDate);
+                                            setTempEndDate(customEndDate);
+                                            setShowDatePicker(true);
+                                            // Don't set timeRange to custom yet if we don't have dates
+                                            if (customStartDate && customEndDate) {
+                                                setTimeRange('custom');
+                                            }
+                                        } else {
+                                            setTimeRange(range.value);
+                                            setShowDatePicker(false);
+                                        }
+                                    }}
+                                    className={`px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wide transition-all flex items-center gap-1.5 ${timeRange === range.value
+                                        ? 'bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm'
+                                        : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
+                                        }`}
+                                >
+                                    {range.value === 'custom' && <Calendar size={14} />}
+                                    {range.label}
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Custom Date Range Display */}
+                        {timeRange === 'custom' && customStartDate && customEndDate && !showDatePicker && (
                             <button
-                                key={range.value}
-                                onClick={() => setTimeRange(range.value)}
-                                className={`px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wide transition-all ${timeRange === range.value
-                                    ? 'bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm'
-                                    : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
-                                    }`}
+                                onClick={() => {
+                                    setTempStartDate(customStartDate);
+                                    setTempEndDate(customEndDate);
+                                    setShowDatePicker(true);
+                                }}
+                                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-medium border border-paymint-green/20 hover:bg-paymint-green/20 transition-all"
                             >
-                                {range.label}
+                                <Calendar size={14} />
+                                <span>{new Date(customStartDate).toLocaleDateString()} - {new Date(customEndDate).toLocaleDateString()}</span>
                             </button>
-                        ))}
+                        )}
                     </div>
 
                     <button
@@ -285,6 +370,90 @@ export function BrandDashboardPage() {
                     </button>
                 </div>
             </div>
+
+            {/* Custom Date Range Picker Modal */}
+            {showDatePicker && (
+                <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/10 shadow-xl p-6"
+                >
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Select Date Range</h3>
+                        <button
+                            onClick={() => setShowDatePicker(false)}
+                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                        >
+                            <X size={18} className="text-gray-500" />
+                        </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">
+                                Start Date
+                            </label>
+                            <input
+                                type="date"
+                                value={tempStartDate}
+                                max={tempEndDate || today}
+                                onChange={(e) => setTempStartDate(e.target.value)}
+                                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50 focus:border-paymint-green transition-all"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">
+                                End Date
+                            </label>
+                            <input
+                                type="date"
+                                value={tempEndDate}
+                                min={tempStartDate}
+                                max={today}
+                                onChange={(e) => setTempEndDate(e.target.value)}
+                                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50 focus:border-paymint-green transition-all"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-6">
+                        <div className="flex gap-2">
+                            {/* Quick select buttons */}
+                            {[
+                                { label: 'Last 7 Days', days: 7 },
+                                { label: 'Last 14 Days', days: 14 },
+                                { label: 'Last 30 Days', days: 30 },
+                            ].map((option) => (
+                                <button
+                                    key={option.days}
+                                    onClick={() => {
+                                        const end = new Date();
+                                        const start = new Date();
+                                        start.setDate(start.getDate() - option.days);
+                                        setTempStartDate(start.toISOString().split('T')[0]);
+                                        setTempEndDate(end.toISOString().split('T')[0]);
+                                    }}
+                                    className="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 text-xs font-medium hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                                >
+                                    {option.label}
+                                </button>
+                            ))}
+                        </div>
+                        <button
+                            onClick={() => {
+                                setCustomStartDate(tempStartDate);
+                                setCustomEndDate(tempEndDate);
+                                setTimeRange('custom');
+                                setShowDatePicker(false);
+                            }}
+                            disabled={!tempStartDate || !tempEndDate}
+                            className="px-6 py-2.5 rounded-xl bg-paymint-green text-white font-bold text-sm hover:bg-paymint-green/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Apply Filter
+                        </button>
+                    </div>
+                </motion.div>
+            )}
 
             {/* KPI Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -327,28 +496,31 @@ export function BrandDashboardPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className={`p-6 rounded-2xl bg-white dark:bg-[#1E293B] border transition-all duration-500 shadow-sm hover:shadow-xl ${isTopBrand
+                        className={`group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border transition-all duration-500 shadow-sm hover:shadow-xl overflow-hidden ${isTopBrand
                             ? 'border-paymint-green/30 shadow-paymint-green/5'
                             : 'border-gray-200 dark:border-white/5'
                             }`}
                     >
-                        <div className="flex items-center justify-between mb-4">
-                            <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center ${isTopBrand ? 'shadow-lg shadow-current/10' : ''
-                                }`}>
-                                <stat.icon size={24} />
-                            </div>
-                            {stat.change !== null && (
-                                <div className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${stat.change >= 0
-                                    ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
-                                    : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
+                        <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
+                        <div className="relative z-10">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center ${isTopBrand ? 'shadow-lg shadow-current/10' : ''
                                     }`}>
-                                    {stat.change >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-                                    {stat.change >= 0 ? '+' : ''}{stat.change}%
+                                    <stat.icon size={24} />
                                 </div>
-                            )}
+                                {stat.change !== null && (
+                                    <div className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${stat.change >= 0
+                                        ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
+                                        : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
+                                        }`}>
+                                        {stat.change >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                                        {stat.change >= 0 ? '+' : ''}{stat.change}%
+                                    </div>
+                                )}
+                            </div>
+                            <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">{stat.label}</p>
+                            <p className={`text-2xl font-bold text-gray-900 dark:text-white ${isTopBrand ? 'tracking-tight' : ''}`}>{stat.value}</p>
                         </div>
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">{stat.label}</p>
-                        <p className={`text-2xl font-bold text-gray-900 dark:text-white ${isTopBrand ? 'tracking-tight' : ''}`}>{stat.value}</p>
                     </motion.div>
                 ))}
             </div>

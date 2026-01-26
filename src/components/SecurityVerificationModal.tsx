@@ -9,7 +9,9 @@ import {
     AlertTriangle,
     ShieldCheck,
     CreditCard,
-    Building2
+    Building2,
+    Eye,
+    EyeOff
 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
@@ -21,7 +23,7 @@ interface SecurityVerificationModalProps {
     onSuccess: () => void;
     targetId: string;
     targetName: string;
-    mode: 'cancel' | 'stop-trial' | 'delete-card' | 'dissolve-brand' | 'delete-employee';
+    mode: 'cancel' | 'stop-trial' | 'delete-card' | 'dissolve-brand' | 'delete-employee' | 'dissolve-establishment' | 'reactivate';
 }
 
 export function SecurityVerificationModal({
@@ -34,6 +36,7 @@ export function SecurityVerificationModal({
 }: SecurityVerificationModalProps) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
 
@@ -43,7 +46,7 @@ export function SecurityVerificationModal({
             case 'cancel':
                 return {
                     title: 'Cancel Subscription',
-                    warning: `You are about to cancel the subscription for "${targetName}". Access will remain until the end of the current billing period.`,
+                    warning: `Canceling will lock access immediately. Your data for "${targetName}" will be permanently deleted in 30 days.`,
                     buttonText: 'Confirm Cancellation',
                     icon: ShieldAlert,
                     color: 'text-red-500',
@@ -84,6 +87,16 @@ export function SecurityVerificationModal({
                     endpoint: `/api/brands/${targetId}/dissolve`,
                     method: 'delete'
                 };
+                return {
+                    title: 'Delete Team Member',
+                    warning: `You are about to permanently remove "${targetName}" from the team. This will revoke all their access permissions immediately.`,
+                    buttonText: 'Delete Member',
+                    icon: ShieldAlert,
+                    color: 'text-red-500',
+                    bg: 'bg-red-500/10',
+                    endpoint: `/api/users/${targetId}`,
+                    method: 'delete'
+                };
             case 'delete-employee':
                 return {
                     title: 'Delete Team Member',
@@ -95,6 +108,30 @@ export function SecurityVerificationModal({
                     endpoint: `/api/users/${targetId}`,
                     method: 'delete'
                 };
+            case 'dissolve-establishment':
+                return {
+                    title: 'Dissolve Establishment',
+                    warning: `You are about to dissolve "${targetName}". This will permanently remove the establishment and all associated data from the brand. This action cannot be undone.`,
+                    buttonText: 'Dissolve Establishment',
+                    icon: Building2,
+                    color: 'text-red-500',
+                    bg: 'bg-red-500/10',
+                    endpoint: `/api/establishments/${targetId}/dissolve`,
+                    method: 'delete'
+                };
+            case 'reactivate':
+                return {
+                    title: 'Reactivate Subscription',
+                    warning: `This will immediately charge your default card $20.00 to start a new billing cycle for "${targetName}".`,
+                    buttonText: 'Reactivate Now',
+                    icon: ShieldCheck,
+                    color: 'text-paymint-green',
+                    bg: 'bg-paymint-green/10',
+                    endpoint: `/api/accounts/subscriptions/${targetId}/resume`,
+                    method: 'post'
+                };
+            default:
+                throw new Error('Invalid mode');
         }
     };
 
@@ -198,13 +235,20 @@ export function SecurityVerificationModal({
                                     <div className="relative group">
                                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-paymint-green opacity-50 group-focus-within:opacity-100 transition-opacity" size={16} />
                                         <input
-                                            type="password"
+                                            type={showPassword ? 'text' : 'password'}
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                             placeholder="••••••••"
-                                            className="w-full bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-xl py-3 pl-12 pr-4 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-paymint-green/10 transition-all placeholder-gray-300 dark:placeholder-gray-700"
+                                            className="w-full bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-xl py-3 pl-12 pr-10 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-paymint-green/10 transition-all placeholder-gray-300 dark:placeholder-gray-700"
                                             disabled={isSubmitting}
                                         />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                                        >
+                                            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                        </button>
                                     </div>
                                 </div>
                             </div>

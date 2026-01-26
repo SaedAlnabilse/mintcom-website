@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle, XCircle, Loader2 } from 'lucide-react';
@@ -9,6 +9,7 @@ export function VerifyEmailPage() {
   const token = searchParams.get('token');
   const [status, setStatus] = useState<'verifying' | 'success' | 'error'>('verifying');
   const [message, setMessage] = useState('');
+  const verificationAttempted = useRef(false);
 
   useEffect(() => {
     if (!token) {
@@ -16,6 +17,9 @@ export function VerifyEmailPage() {
       setMessage('Missing verification token.');
       return;
     }
+
+    if (verificationAttempted.current) return;
+    verificationAttempted.current = true;
 
     const verifyEmail = async () => {
       try {
@@ -69,16 +73,18 @@ export function VerifyEmailPage() {
             <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto">
               <XCircle className="w-10 h-10 text-accent" />
             </div>
-            <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Verification Failed</h2>
-            <p className="text-gray-600 dark:text-gray-400 font-medium">{message}</p>
+            <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Verification Link Expired</h2>
+            <p className="text-gray-600 dark:text-gray-400 font-medium">
+              This link is invalid or has already been used. If you've already verified your account, you can log in now.
+            </p>
             <div className="flex flex-col gap-3">
-              <Link 
-                to="/signup"
+              <Link
+                to="/login"
                 className="inline-flex items-center justify-center w-full bg-gray-900 dark:bg-white text-white dark:text-black font-black py-4 px-6 rounded-2xl hover:scale-105 transition-all active:scale-95 shadow-lg"
               >
-                Try Signing Up Again
+                Go to Login
               </Link>
-              <Link 
+              <Link
                 to="/"
                 className="text-gray-500 hover:text-gray-900 dark:hover:text-white font-bold text-sm uppercase tracking-widest transition-colors"
               >

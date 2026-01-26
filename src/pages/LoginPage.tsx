@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { motion } from 'framer-motion';
-import { Eye, EyeOff, ArrowLeft, Mail, Lock } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Eye, EyeOff, ArrowLeft, Mail, Lock, X, AlertTriangle, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 
@@ -22,8 +22,11 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [unverifiedEmail, setUnverifiedEmail] = useState('');
+  const [isResending, setIsResending] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, resendVerification } = useAuth();
 
   const {
     register,
@@ -41,16 +44,43 @@ export function LoginPage() {
 
       if (result.success) {
         toast.success('Welcome back!');
-        navigate('/owner');
+        // Redirect based on user type
+        if (result.isSecondaryAdmin) {
+          navigate('/dashboard');
+        } else {
+          navigate('/owner');
+        }
       } else {
-        toast.error(result.error || 'Login failed');
-        setError('email', { type: 'manual' });
-        setError('password', { type: 'manual' });
+        if (result.error === 'Email not verified') {
+          setUnverifiedEmail(data.email);
+          setShowVerifyModal(true);
+        } else {
+          toast.error(result.error || 'Login failed');
+          setError('email', { type: 'manual' });
+          setError('password', { type: 'manual' });
+        }
       }
     } catch {
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    setIsResending(true);
+    try {
+      const result = await resendVerification(unverifiedEmail);
+      if (result.success) {
+        toast.success('Verification email sent! Please check your inbox.');
+        setShowVerifyModal(false);
+      } else {
+        toast.error(result.error || 'Failed to resend email');
+      }
+    } catch {
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -165,6 +195,65 @@ export function LoginPage() {
           </div>
         </div>
       </motion.div>
+
+      {/* Verification Required Modal */}
+      <AnimatePresence>
+        {showVerifyModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-md relative border border-gray-100 dark:border-gray-700"
+            >
+              <button
+                onClick={() => setShowVerifyModal(false)}
+                className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <AlertTriangle className="w-8 h-8 text-yellow-600 dark:text-yellow-500" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  Verify Your Email
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Please verify your email address to access your account. Check your inbox for the verification link.
+                </p>
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-200 mt-2">
+                  {unverifiedEmail}
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={handleResendVerification}
+                  disabled={isResending}
+                  className="w-full flex items-center justify-center bg-paymint-green text-black font-bold py-3 px-4 rounded-lg hover:bg-paymint-green/90 transition-colors disabled:opacity-50"
+                >
+                  {isResending ? (
+                    'Sending...'
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4 mr-2" />
+                      Resend Verification Email
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => setShowVerifyModal(false)}
+                  className="w-full py-3 px-4 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
+                >
+                  Close
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

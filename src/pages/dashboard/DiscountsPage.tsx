@@ -179,24 +179,36 @@ export function DiscountsPage() {
       {/* Summary Stats */}
       {!isLoading && discounts.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex items-center justify-between transition-colors shadow-sm">
-            <div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex items-center justify-between transition-all hover:shadow-lg overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            <div className="relative z-10">
               <p className="text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest">Total Discounts</p>
               <p className="text-3xl font-black text-gray-900 dark:text-white mt-1">{stats.total}</p>
             </div>
-            <div className="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center relative z-10 group-hover:scale-110 transition-transform">
               <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" />
             </div>
-          </div>
-          <div className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex items-center justify-between transition-colors shadow-sm">
-            <div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex items-center justify-between transition-all hover:shadow-lg overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            <div className="relative z-10">
               <p className="text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest">Restricted</p>
               <p className="text-3xl font-black text-amber-600 dark:text-yellow-400 mt-1">{stats.adminOnly}</p>
             </div>
-            <div className="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center relative z-10 group-hover:scale-110 transition-transform">
               <ShieldAlert className="w-6 h-6 text-amber-600 dark:text-yellow-400" />
             </div>
-          </div>
+          </motion.div>
         </div>
       )}
 
@@ -233,14 +245,13 @@ export function DiscountsPage() {
               key={discount.id}
               variants={itemVariants}
               whileHover={{ y: -5 }}
-              className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 hover:border-paymint-green/50 dark:hover:border-paymint-green/30 transition-all group relative overflow-hidden shadow-sm"
+              className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 overflow-hidden"
             >
-              {/* Background gradient hint */}
-              <div className="absolute -right-10 -top-10 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-br from-paymint-green/0 via-transparent to-paymint-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-              <div className="flex justify-between items-start mb-6">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 ${discount.type === 'percentage' ? 'bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400' : 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'
-                  }`}>
+              <div className="flex justify-between items-start mb-6 relative z-10">
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 ${discount.type === 'percentage' ? 'bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400' : 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'}`}>
                   {discount.type === 'percentage' ? <Percent size={20} /> : <DollarSign size={20} />}
                 </div>
 
@@ -260,18 +271,20 @@ export function DiscountsPage() {
                 </div>
               </div>
 
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 truncate group-hover:text-paymint-green transition-colors" title={discount.name}>{discount.name}</h3>
-              <p className="text-3xl font-black text-paymint-green mb-4 tracking-tight">{formatValue(discount)} <span className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">OFF</span></p>
+              <div className="relative z-10">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 truncate group-hover:text-paymint-green transition-colors" title={discount.name}>{discount.name}</h3>
+                <p className="text-3xl font-black text-paymint-green mb-4 tracking-tight">{formatValue(discount)} <span className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">OFF</span></p>
 
-              <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100 dark:border-white/5">
-                <span className="px-2.5 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-[10px] text-gray-600 dark:text-gray-400 font-bold uppercase tracking-wider">
-                  {discount.type === 'percentage' ? 'Percentage' : 'Fixed Amount'}
-                </span>
-                {discount.adminOnly && (
-                  <span className="px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-yellow-500/10 border border-amber-200 dark:border-yellow-500/20 text-[10px] text-amber-700 dark:text-yellow-500 font-bold uppercase tracking-wider">
-                    Manager Only
+                <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100 dark:border-white/5">
+                  <span className="px-2.5 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-[10px] text-gray-600 dark:text-gray-400 font-bold uppercase tracking-wider">
+                    {discount.type === 'percentage' ? 'Percentage' : 'Fixed Amount'}
                   </span>
-                )}
+                  {discount.adminOnly && (
+                    <span className="px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-yellow-500/10 border border-amber-200 dark:border-yellow-500/20 text-[10px] text-amber-700 dark:text-yellow-500 font-bold uppercase tracking-wider">
+                      Manager Only
+                    </span>
+                  )}
+                </div>
               </div>
             </motion.div>
           ))}

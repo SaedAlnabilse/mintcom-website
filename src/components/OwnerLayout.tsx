@@ -4,11 +4,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { ThemeToggle } from './ThemeToggle';
 import { ConfirmModal } from './ConfirmModal';
+import { DeletionRestorationBanner } from './DeletionRestorationBanner';
 import {
     LayoutDashboard,
     Store,
     Users,
     CreditCard,
+    Shield,
     LogOut,
     Smartphone,
     Building2,
@@ -16,6 +18,8 @@ import {
     PanelLeftClose,
     PanelLeft,
     KeyRound,
+    Apple,
+    Play
 } from 'lucide-react';
 
 // Paymint Logo imports
@@ -28,6 +32,7 @@ const menuItems = [
     { path: '/owner/establishments', label: 'Establishments', icon: Store },
     { path: '/owner/brands', label: 'Brands', icon: Building2 },
     { path: '/owner/employees', label: 'Employees', icon: Users },
+    { path: '/owner/roles', label: 'Global Roles', icon: Shield },
     { path: '/owner/billing', label: 'Billing', icon: CreditCard },
     { path: '/owner/account', label: 'Account Management', icon: KeyRound },
 ];
@@ -133,29 +138,11 @@ export function OwnerLayout() {
                 )}
 
                 {/* User Profile Summary - Only when open */}
-                {sidebarOpen && (
-                    <div className="px-2 mb-6 relative z-10">
-                        <div className="p-4 rounded-2xl bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/5">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-paymint-green flex items-center justify-center font-black text-black shrink-0">
-                                    {account?.firstName?.charAt(0).toUpperCase()}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-black text-gray-900 dark:text-white truncate">
-                                        {account?.firstName} {account?.lastName}
-                                    </p>
-                                    <p className="text-[10px] font-bold text-paymint-green uppercase tracking-widest">
-                                        Enterprise Owner
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
+
 
                 {/* Navigation Section */}
-                <div className={`flex-1 ${sidebarOpen ? 'overflow-y-auto' : 'overflow-visible'} px-2 space-y-1.5 scrollbar-none scroll-smooth pb-4 relative z-10`}>
-                    {sidebarOpen && <p className="px-4 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 mt-2">Main Menu</p>}
+                <div className={`flex-1 ${sidebarOpen ? 'overflow-y-auto' : 'overflow-visible'} px-3 space-y-1.5 scrollbar-none scroll-smooth pb-4 relative z-10`}>
+                    {sidebarOpen && <p className="px-3 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4 mt-2">Main Menu</p>}
                     {menuItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = item.path === '/owner'
@@ -167,14 +154,14 @@ export function OwnerLayout() {
                                 key={item.path}
                                 to={item.path}
                                 end={item.path === '/owner'}
-                                className={`group flex items-center gap-3 p-3.5 rounded-xl font-bold text-sm transition-all duration-300 relative ${isActive
-                                    ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
-                                    : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/[0.05] hover:text-gray-900 dark:hover:text-white'
-                                    } ${!sidebarOpen ? 'justify-center' : ''}`}
+                                className={`group flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 relative ${isActive
+                                    ? 'bg-paymint-green text-black shadow-md shadow-paymint-green/20'
+                                    : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/[0.03] hover:text-gray-900 dark:hover:text-white'
+                                    } ${!sidebarOpen ? 'justify-center px-3' : ''}`}
                             >
-                                <Icon size={20} className={`${isActive ? 'text-black' : 'text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors'}`} />
-                                {sidebarOpen && <span className="flex-1">{item.label}</span>}
-                                {sidebarOpen && isActive && <ChevronRight size={14} className="opacity-50" />}
+                                <Icon size={20} strokeWidth={2.5} className={`${isActive ? 'text-black' : 'text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors'}`} />
+                                {sidebarOpen && <span className="flex-1 tracking-wide">{item.label}</span>}
+                                {sidebarOpen && isActive && <ChevronRight size={14} strokeWidth={3} className="opacity-40" />}
 
                                 {!sidebarOpen && (
                                     <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
@@ -186,77 +173,103 @@ export function OwnerLayout() {
                     })}
                 </div>
 
-                {/* POS Simulator */}
-                <div className="p-2 relative z-10 mt-auto">
+                {/* Owner Portal App Download */}
+                {/* Owner Portal App Download - Compact */}
+                <div className="px-3 mt-auto mb-2">
                     {sidebarOpen ? (
-                        <div className="bg-gradient-to-br from-indigo-600 to-violet-700 dark:from-paymint-green dark:to-emerald-600 rounded-xl p-3.5 shadow-xl shadow-indigo-500/10 dark:shadow-paymint-green/5 relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl group-hover:scale-150 transition-transform duration-700" />
-                            <div className="relative z-10">
-                                <p className="text-[8px] font-black text-white/60 dark:text-black/60 uppercase tracking-[0.2em] mb-0.5">POS Simulator</p>
-                                <h4 className="text-xs font-black text-white dark:text-black mb-2.5 tracking-tight">Terminal Access</h4>
-                                <button
-                                    onClick={() => window.open('/pos-simulator', '_blank')}
-                                    className="w-full py-2 px-3 bg-white/20 hover:bg-white/30 dark:bg-black/20 dark:hover:bg-black/30 backdrop-blur-md text-white dark:text-black rounded-lg font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all border border-white/10 dark:border-black/5"
-                                >
-                                    <Smartphone size={12} />
-                                    Launch System
+                        <div className="bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/5 rounded-xl p-2.5 flex items-center justify-between group">
+                            <div className="flex items-center gap-2.5">
+                                <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-500 shrink-0">
+                                    <Smartphone size={16} />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-xs font-bold text-gray-900 dark:text-white leading-none mb-0.5">Owner App</span>
+                                    <span className="text-[9px] text-gray-500 dark:text-gray-400 leading-none">Download</span>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-1.5">
+                                <button className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-900 dark:bg-white/10 text-white hover:bg-gray-800 dark:hover:bg-white/20 transition-all border border-gray-800 dark:border-white/5" title="Get it on Google Play">
+                                    <Play size={10} fill="currentColor" />
+                                </button>
+                                <button className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-900 dark:bg-white/10 text-white hover:bg-gray-800 dark:hover:bg-white/20 transition-all border border-gray-800 dark:border-white/5" title="Download on the App Store">
+                                    <Apple size={12} fill="currentColor" />
                                 </button>
                             </div>
                         </div>
                     ) : (
-                        <button
-                            onClick={() => window.open('/pos-simulator', '_blank')}
-                            className="w-12 h-12 mx-auto flex items-center justify-center rounded-2xl bg-indigo-600 dark:bg-paymint-green text-white dark:text-black shadow-lg hover:scale-105 transition-all group relative"
-                        >
-                            <Smartphone size={20} />
-                            <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
-                                POS Simulator
+                        <div className="relative group flex justify-center">
+                            <button
+                                className="w-10 h-10 flex items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500 border border-indigo-200 dark:border-indigo-500/20 shadow-sm hover:scale-105 transition-all"
+                            >
+                                <Smartphone size={18} />
+                            </button>
+                            {/* Compact Popover */}
+                            <div className="absolute left-full bottom-0 ml-3 bg-gray-900/95 backdrop-blur-md rounded-xl p-3 border border-white/10 shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[70] translate-x-1 group-hover:translate-x-0 w-max">
+                                <div className="flex items-center gap-3">
+                                    <span className="text-white font-bold text-xs whitespace-nowrap">Owner App</span>
+                                    <div className="h-4 w-px bg-white/20" />
+                                    <div className="flex gap-2">
+                                        <button className="w-7 h-7 flex items-center justify-center rounded-lg bg-white text-black hover:opacity-90">
+                                            <Play size={10} fill="currentColor" />
+                                        </button>
+                                        <button className="w-7 h-7 flex items-center justify-center rounded-lg bg-white/10 text-white hover:bg-white/20">
+                                            <Apple size={12} fill="currentColor" />
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                        </button>
+                        </div>
                     )}
                 </div>
 
-                {/* Footer Section */}
-                <div className="p-2 relative z-10">
-                    <div className="bg-gray-50 dark:bg-[#111111] border border-gray-200 dark:border-white/[0.05] rounded-2xl p-3 space-y-4 shadow-sm">
-                        {sidebarOpen ? (
-                            <div className="flex items-center justify-between gap-2 px-1">
-                                <div className="flex items-center gap-1">
-                                    <ThemeToggle dropdownDirection="up" />
-                                </div>
+                {/* Footer User Profile */}
+                <div className="p-3 border-t border-gray-100 dark:border-white/5">
+                    {sidebarOpen ? (
+                        <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-full bg-paymint-green flex items-center justify-center font-black text-black shrink-0 outline outline-2 outline-white dark:outline-black">
+                                {account?.firstName?.charAt(0).toUpperCase()}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-xs font-bold text-gray-900 dark:text-white truncate">
+                                    {account?.firstName} {account?.lastName}
+                                </p>
+                                <p className="text-[10px] text-gray-500 truncate">Enterprise Owner</p>
+                            </div>
+
+                            <div className="flex items-center gap-1">
+                                <ThemeToggle dropdownDirection="up" />
                                 <button
                                     onClick={handleLogout}
-                                    className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-paymint-red/10 hover:text-paymint-red transition-all font-bold text-xs"
+                                    className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-paymint-red/10 hover:text-paymint-red transition-all"
+                                    title="Sign Out"
                                 >
                                     <LogOut size={16} />
-                                    <span>Log Out</span>
                                 </button>
                             </div>
-                        ) : (
-                            <div className="flex flex-col items-center gap-3">
-                                <div className="relative group">
-                                    <ThemeToggle dropdownDirection="up" />
-                                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
-                                        Theme
-                                    </div>
-                                </div>
-                                <div className="relative group">
-                                    <button onClick={handleLogout} className="p-3 rounded-2xl bg-paymint-red/10 text-paymint-red hover:bg-paymint-red hover:text-white transition-all">
-                                        <LogOut size={20} />
-                                    </button>
-                                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
-                                        Log Out
-                                    </div>
-                                </div>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col items-center gap-2">
+                            <div className="w-9 h-9 rounded-full bg-paymint-green flex items-center justify-center font-black text-black shrink-0 outline outline-2 outline-white dark:outline-black mb-1">
+                                {account?.firstName?.charAt(0).toUpperCase()}
                             </div>
-                        )}
-                    </div>
+                            <div className="relative group">
+                                <ThemeToggle dropdownDirection="up" />
+                            </div>
+                            <div className="relative group">
+                                <button onClick={handleLogout} className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-paymint-red/10 hover:text-paymint-red transition-all">
+                                    <LogOut size={16} />
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </motion.aside>
 
             {/* Main Content Area */}
-            <main className="flex-1 relative overflow-hidden bg-gray-100 dark:bg-paymint-dark transition-all duration-500 border-l border-gray-200 dark:border-white/[0.05]">
-                <div className="h-full overflow-y-auto custom-scrollbar relative p-4 lg:px-10 lg:pt-10 lg:pb-6">
+            <main className="flex-1 relative overflow-hidden bg-gray-100 dark:bg-paymint-dark transition-all duration-500 border-l border-gray-200 dark:border-white/[0.05] flex flex-col">
+                <DeletionRestorationBanner />
+                <div className="flex-1 overflow-y-auto custom-scrollbar relative p-4 lg:px-10 lg:pt-10 lg:pb-6">
                     <Outlet />
                 </div>
             </main>
@@ -268,7 +281,7 @@ export function OwnerLayout() {
                 title="Sign Out"
                 message="Are you sure you want to sign out of your account?"
                 confirmText="Sign Out"
-                cancelText="Stay Logged In"
+                cancelText="Cancel"
                 type="danger"
             />
         </div>
