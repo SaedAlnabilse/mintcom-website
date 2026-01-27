@@ -105,6 +105,7 @@ export function ProductFormModal({
   const [localCategories, setLocalCategories] = useState<Category[]>([]);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [isCategorySubmitting, setIsCategorySubmitting] = useState(false);
+  const isInitialLoad = useRef(true);
 
   useEffect(() => {
     setLocalCategories(categories);
@@ -213,7 +214,14 @@ export function ProductFormModal({
 
   useEffect(() => {
     if (isOpen) {
+      isInitialLoad.current = true;
       fetchAddonsAndSettings();
+
+
+      // Allow initial render effects to pass before enabling auto-scroll
+      setTimeout(() => {
+        isInitialLoad.current = false;
+      }, 500);
       if (initialData) {
         setName(initialData.name || '');
         setPrice(initialData.price == null || initialData.price === 0 ? '' : initialData.price.toFixed(2));
@@ -351,7 +359,7 @@ export function ProductFormModal({
   };
 
   useEffect(() => {
-    if (trackStock && stockRef.current) {
+    if (trackStock && stockRef.current && !isInitialLoad.current) {
       const timer = setTimeout(() => {
         stockRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 50);
@@ -969,7 +977,7 @@ export function ProductFormModal({
                 <button
                   type="button"
                   onClick={() => onDelete(initialData.id!)}
-                  className="flex-1 py-4 px-6 border border-paymint-red/20 text-paymint-red font-black text-xs rounded-2xl hover:bg-paymint-red/5 transition-all uppercase tracking-widest flex items-center justify-center gap-2"
+                  className="flex-1 h-14 border border-paymint-red/20 text-paymint-red font-black text-xs rounded-2xl hover:bg-paymint-red/5 transition-all uppercase tracking-widest flex items-center justify-center gap-2"
                 >
                   <Trash2 size={16} />
                   <span>Delete Product</span>
@@ -989,7 +997,7 @@ export function ProductFormModal({
                 type="submit"
                 form="product-form"
                 disabled={isSubmitting || isGeneratingImage || Object.keys(errors).length > 0}
-                className="flex-[2] h-14 bg-paymint-green text-black font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+                className="flex-1 h-14 bg-paymint-green text-black font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
               >
                 {isSubmitting ? (
                   <RefreshCw size={18} className="animate-spin" />

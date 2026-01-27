@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -12,7 +12,7 @@ import {
     Trash2,
     Edit2,
     Package,
-    Layers,
+
     ArrowUpDown,
     AlertCircle
 } from 'lucide-react';
@@ -21,6 +21,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { ProductFormModal } from '../../components/forms/ProductFormModal';
 import { LoadingFallback } from '../../components/LoadingFallback';
+import { QuickInfo } from '../../components/QuickInfo';
 
 interface Category {
     id: string;
@@ -51,10 +52,27 @@ export function ProductsPage() {
     const [products, setProducts] = useState<Product[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+    const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategoryId, setSelectedCategoryId] = useState<string>('all');
     const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+    const [categorySearchQuery, setCategorySearchQuery] = useState('');
+    const categoryDropdownRef = useRef<HTMLDivElement>(null);
+    const [sortConfig, setSortConfig] = useState<{ key: keyof Product | 'category'; direction: 'asc' | 'desc' } | null>(null);
+
+    // Click outside handler for category dropdown
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target as Node)) {
+                setShowCategoryDropdown(false);
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     // Modal states
     const [showModal, setShowModal] = useState(false);
@@ -152,15 +170,23 @@ export function ProductsPage() {
         });
     };
 
+    const REMOTE_IMAGE_BASE_URL = 'https://grateful-liberation-production-d036.up.railway.app';
+
     // Used by ProductFormModal
     const onSubmit = async (formData: FormData) => {
         try {
             setIsSubmitting(true);
+            const config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            };
+
             if (editingProduct) {
-                await api.patch(`/api/items/${editingProduct.id}`, formData);
+                await api.patch(`/api/items/${editingProduct.id}`, formData, config);
                 toast.success('Product updated successfully');
             } else {
-                await api.post('/api/items', formData);
+                await api.post('/api/items', formData, config);
                 toast.success('Product created successfully');
             }
             setShowModal(false);
@@ -194,8 +220,16 @@ export function ProductsPage() {
         document.body.removeChild(link);
     };
 
+    const handleSort = (key: keyof Product | 'category') => {
+        let direction: 'asc' | 'desc' = 'asc';
+        if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
     const filteredProducts = useMemo(() => {
-        let result = products;
+        let result = [...products];
 
         // Filter by Category
         if (selectedCategoryId !== 'all') {
@@ -211,16 +245,46 @@ export function ProductsPage() {
             );
         }
 
+        // Sorting
+        if (sortConfig) {
+            result.sort((a, b) => {
+                let aValue: any = a[sortConfig.key as keyof Product];
+                let bValue: any = b[sortConfig.key as keyof Product];
+
+                // Handle special case for category sorting
+                if (sortConfig.key === 'category') {
+                    aValue = categories.find(c => c.id === a.categoryId)?.name || '';
+                    bValue = categories.find(c => c.id === b.categoryId)?.name || '';
+                }
+
+                // Handle string comparison
+                if (typeof aValue === 'string' && typeof bValue === 'string') {
+                    return sortConfig.direction === 'asc'
+                        ? aValue.localeCompare(bValue)
+                        : bValue.localeCompare(aValue);
+                }
+
+                // Handle number comparison
+                if (aValue < bValue) {
+                    return sortConfig.direction === 'asc' ? -1 : 1;
+                }
+                if (aValue > bValue) {
+                    return sortConfig.direction === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
+
         return result;
-    }, [products, selectedCategoryId, searchQuery]);
+    }, [products, selectedCategoryId, searchQuery, sortConfig, categories]);
 
     // Statistics
     const stats = useMemo(() => ({
-        total: products.length,
-        lowStock: products.filter(p => p.trackStock && (p.availableStock || 0) <= (p.lowStockThresholdYellow || 5)).length,
-        totalValue: products.reduce((acc, curr) => acc + (curr.price * (curr.availableStock || 0)), 0),
+        total: filteredProducts.length,
+        lowStock: filteredProducts.filter(p => p.trackStock && (p.availableStock || 0) <= (p.lowStockThresholdYellow || 5)).length,
+        totalValue: filteredProducts.reduce((acc, curr) => acc + (curr.price * (curr.availableStock || 0)), 0),
         categories: categories.length
-    }), [products, categories]);
+    }), [filteredProducts, categories]);
 
     if (isLoading) return <LoadingFallback message="Loading Inventory..." />;
 
@@ -241,10 +305,11 @@ export function ProductsPage() {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={handleExport}
-                        className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm group"
+                        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm group"
                         title="Export CSV"
                     >
                         <Download size={18} className="group-hover:text-paymint-green transition-colors" />
+                        <span className="font-bold text-sm">Export CSV</span>
                     </button>
                     <button
                         onClick={handleCreateNew}
@@ -256,45 +321,10 @@ export function ProductsPage() {
                 </div>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 rounded-lg bg-blue-500/10 text-blue-500"><Package size={18} /></div>
-                        <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Total Items</span>
-                    </div>
-                    <p className="text-2xl font-black text-gray-900 dark:text-white">{stats.total}</p>
-                </div>
-                <div className="bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 rounded-lg bg-yellow-500/10 text-yellow-500"><AlertCircle size={18} /></div>
-                        <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Low Stock</span>
-                    </div>
-                    <p className="text-2xl font-black text-gray-900 dark:text-white">{stats.lowStock}</p>
-                </div>
-                <div className="bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 rounded-lg bg-purple-500/10 text-purple-500"><Layers size={18} /></div>
-                        <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Categories</span>
-                    </div>
-                    <p className="text-2xl font-black text-gray-900 dark:text-white">{stats.categories}</p>
-                </div>
-                <div className="bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 rounded-lg bg-paymint-green/10 text-paymint-green"><ArrowUpDown size={18} /></div>
-                        <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Stock Value</span>
-                    </div>
-                    <p className="text-xl font-black text-gray-900 dark:text-white truncate">
-                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JOD' }).format(stats.totalValue).replace('JOD', '').trim()} <span className="text-xs text-gray-400 font-normal">JOD</span>
-                    </p>
-                </div>
-            </div>
-
-
             {/* Filters */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 {/* Search */}
-                <div className="relative flex-1 max-w-md">
+                <div className="relative flex-1">
                     <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
                         type="text"
@@ -307,10 +337,9 @@ export function ProductsPage() {
 
                 {/* Category Filter (Dropdown) */}
                 <div className="flex items-center gap-3">
-                    <div className="relative min-w-[200px]">
+                    <div className="relative min-w-[200px]" ref={categoryDropdownRef}>
                         <button
                             onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
-                            onBlur={() => setTimeout(() => setShowCategoryDropdown(false), 200)}
                             className="w-full bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-sm font-bold rounded-xl px-4 py-3 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm"
                         >
                             <span>
@@ -333,6 +362,20 @@ export function ProductsPage() {
                                     transition={{ duration: 0.15 }}
                                     className="absolute top-[calc(100%+8px)] left-0 right-0 bg-white dark:bg-[#0f172a] border border-gray-200 dark:border-white/10 rounded-xl shadow-xl z-50 overflow-hidden"
                                 >
+                                    <div className="p-2 border-b border-gray-100 dark:border-white/5 bg-white dark:bg-[#0f172a]">
+                                        <div className="relative">
+                                            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" size={12} />
+                                            <input
+                                                type="text"
+                                                placeholder="Search..."
+                                                value={categorySearchQuery}
+                                                onChange={(e) => setCategorySearchQuery(e.target.value)}
+                                                onClick={(e) => e.stopPropagation()}
+                                                className="w-full pl-8 pr-3 py-1.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg text-xs font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green"
+                                                autoFocus
+                                            />
+                                        </div>
+                                    </div>
                                     <div className="max-h-60 overflow-y-auto custom-scrollbar p-1.5 space-y-1">
                                         <button
                                             onClick={() => {
@@ -340,30 +383,33 @@ export function ProductsPage() {
                                                 setShowCategoryDropdown(false);
                                             }}
                                             className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold flex items-center justify-between transition-colors ${selectedCategoryId === 'all'
-                                                    ? 'bg-paymint-green/10 text-paymint-green'
-                                                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5'
+                                                ? 'bg-paymint-green/10 text-paymint-green'
+                                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5'
                                                 }`}
                                         >
                                             All Items
                                             {selectedCategoryId === 'all' && <Check size={14} />}
                                         </button>
 
-                                        {categories.map((cat) => (
-                                            <button
-                                                key={cat.id || `cat-${Math.random()}`}
-                                                onClick={() => {
-                                                    setSelectedCategoryId(cat.id);
-                                                    setShowCategoryDropdown(false);
-                                                }}
-                                                className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold flex items-center justify-between transition-colors ${selectedCategoryId === cat.id
+                                        {categories
+                                            .filter(cat => cat.name.toLowerCase().includes(categorySearchQuery.toLowerCase()))
+                                            .map((cat) => (
+                                                <button
+                                                    key={cat.id || `cat-${Math.random()}`}
+                                                    onClick={() => {
+                                                        setSelectedCategoryId(cat.id);
+                                                        setShowCategoryDropdown(false);
+                                                        setCategorySearchQuery('');
+                                                    }}
+                                                    className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold flex items-center justify-between transition-colors ${selectedCategoryId === cat.id
                                                         ? 'bg-paymint-green/10 text-paymint-green'
                                                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5'
-                                                    }`}
-                                            >
-                                                {cat.name}
-                                                {selectedCategoryId === cat.id && <Check size={14} />}
-                                            </button>
-                                        ))}
+                                                        }`}
+                                                >
+                                                    {cat.name}
+                                                    {selectedCategoryId === cat.id && <Check size={14} />}
+                                                </button>
+                                            ))}
                                     </div>
                                 </motion.div>
                             )}
@@ -388,6 +434,44 @@ export function ProductsPage() {
                 </div>
             </div>
 
+            {/* Stats Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 rounded-lg bg-blue-500/10 text-blue-500"><Package size={18} /></div>
+                        <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
+                            Total Items
+                            <QuickInfo text="Total count of unique products in your catalog." />
+                        </span>
+                    </div>
+                    <p className="text-2xl font-black text-gray-900 dark:text-white">{stats.total}</p>
+                </div>
+                <div className="bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 rounded-lg bg-yellow-500/10 text-yellow-500"><AlertCircle size={18} /></div>
+                        <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
+                            Low Stock
+                            <QuickInfo text="Items with inventory levels below their warning threshold." />
+                        </span>
+                    </div>
+                    <p className="text-2xl font-black text-gray-900 dark:text-white">{stats.lowStock}</p>
+                </div>
+
+                <div className="bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="p-2 rounded-lg bg-paymint-green/10 text-paymint-green"><ArrowUpDown size={18} /></div>
+                        <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
+                            Stock Value
+                            <QuickInfo text="Total retail value of currently held inventory. Calculated as: Sum of (Product Price × Available Stock)." />
+                        </span>
+                    </div>
+                    <p className="text-xl font-black text-gray-900 dark:text-white truncate">
+                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JOD' }).format(stats.totalValue).replace('JOD', '').trim()} <span className="text-xs text-gray-400 font-normal">JOD</span>
+                    </p>
+                </div>
+            </div>
+
+
             {/* Content */}
             {filteredProducts.length === 0 ? (
                 <div className="py-24 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
@@ -407,7 +491,7 @@ export function ProductsPage() {
             ) : (
                 <>
                     {viewMode === 'grid' ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             <AnimatePresence mode="popLayout">
                                 {filteredProducts.map((p, idx) => (
                                     <motion.div
@@ -417,41 +501,42 @@ export function ProductsPage() {
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0, scale: 0.95 }}
                                         transition={{ delay: idx * 0.05 }}
-                                        className="group bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl transition-all overflow-hidden flex flex-col"
+                                        className="group bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl transition-all overflow-hidden flex flex-col cursor-pointer"
+                                        onClick={() => handleEdit(p)}
                                     >
                                         <div className="aspect-[4/3] bg-gray-50 dark:bg-black/20 relative overflow-hidden">
                                             {p.image ? (
-                                                <img src={p.image.startsWith('http') ? p.image : `https://grateful-liberation-production-d036.up.railway.app${p.image.startsWith('/') ? '' : '/'}${p.image}`} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                                <img src={p.image.startsWith('http') ? p.image : `${REMOTE_IMAGE_BASE_URL}${p.image.startsWith('/') ? '' : '/'}${p.image}`} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-gray-300">
                                                     <Package size={32} />
                                                 </div>
                                             )}
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-4">
-                                                <button onClick={() => handleEdit(p)} className="p-2 bg-white rounded-lg text-gray-900 hover:bg-paymint-green hover:text-black transition-colors"><Edit2 size={16} /></button>
-                                                <button onClick={() => handleDelete(p.id)} className="p-2 bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors"><Trash2 size={16} /></button>
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-3">
+                                                <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} className="p-1.5 bg-white rounded-lg text-gray-900 hover:bg-paymint-green hover:text-black transition-colors"><Edit2 size={14} /></button>
+                                                <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} className="p-1.5 bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors"><Trash2 size={14} /></button>
                                             </div>
                                         </div>
-                                        <div className="p-5 flex-1 flex flex-col">
-                                            <div className="flex items-start justify-between mb-2">
-                                                <h3 className="font-bold text-gray-900 dark:text-white leading-tight">{p.name}</h3>
-                                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-md whitespace-nowrap">
+                                        <div className="p-3 flex-1 flex flex-col">
+                                            <div className="flex items-start justify-between mb-2 gap-2">
+                                                <h3 className="font-bold text-sm text-gray-900 dark:text-white leading-tight line-clamp-2">{p.name}</h3>
+                                                <span className="text-[9px] font-black uppercase tracking-widest text-gray-400 bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded-md whitespace-nowrap shrink-0">
                                                     {categories.find(c => c.id === p.categoryId)?.name || 'Uncategorized'}
                                                 </span>
                                             </div>
-                                            {p.description && <p className="text-xs text-gray-500 line-clamp-2 mb-4 flex-1">{p.description}</p>}
-                                            <div className="border-t border-gray-100 dark:border-white/5 pt-4 flex items-center justify-between mt-auto">
+                                            {p.description && <p className="text-[10px] text-gray-500 line-clamp-2 mb-3 flex-1">{p.description}</p>}
+                                            <div className="border-t border-gray-100 dark:border-white/5 pt-3 flex items-center justify-between mt-auto">
                                                 <div>
-                                                    <p className="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-0.5">Price</p>
-                                                    <p className="text-lg font-black text-paymint-green">
-                                                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JOD' }).format(p.price).replace('JOD', '').trim()} <span className="text-xs opacity-60">JOD</span>
+                                                    <p className="text-[9px] font-black uppercase text-gray-400 tracking-widest mb-0.5">Price</p>
+                                                    <p className="text-sm font-black text-paymint-green">
+                                                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JOD' }).format(p.price).replace('JOD', '').trim()} <span className="text-[10px] opacity-60">JOD</span>
                                                     </p>
                                                 </div>
                                                 {p.trackStock && (
                                                     <div className="text-right">
-                                                        <p className="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-0.5">Stock</p>
-                                                        <div className={`text-sm font-bold flex items-center justify-end gap-1 ${(p.availableStock || 0) <= (p.lowStockThresholdYellow || 0) ? 'text-amber-500' : 'text-gray-900 dark:text-white'}`}>
-                                                            {(p.availableStock || 0) <= (p.lowStockThresholdYellow || 0) && <AlertCircle size={12} />}
+                                                        <p className="text-[9px] font-black uppercase text-gray-400 tracking-widest mb-0.5">Stock</p>
+                                                        <div className={`text-xs font-bold flex items-center justify-end gap-1 ${(p.availableStock || 0) <= (p.lowStockThresholdYellow || 0) ? 'text-amber-500' : 'text-gray-900 dark:text-white'}`}>
+                                                            {(p.availableStock || 0) <= (p.lowStockThresholdYellow || 0) && <AlertCircle size={10} />}
                                                             {p.availableStock}
                                                         </div>
                                                     </div>
@@ -469,20 +554,52 @@ export function ProductsPage() {
                                     <thead className="bg-gray-50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
                                         <tr>
                                             <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest w-16">Image</th>
-                                            <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Product Name</th>
-                                            <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Category</th>
-                                            <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Stock</th>
-                                            <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Price</th>
+                                            <th
+                                                className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                                                onClick={() => handleSort('name')}
+                                            >
+                                                <div className="flex items-center gap-1">
+                                                    Product Name
+                                                    {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                                                </div>
+                                            </th>
+                                            <th
+                                                className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                                                onClick={() => handleSort('category')}
+                                            >
+                                                <div className="flex items-center gap-1">
+                                                    Category
+                                                    {sortConfig?.key === 'category' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                                                </div>
+                                            </th>
+                                            <th
+                                                className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                                                onClick={() => handleSort('availableStock')}
+                                            >
+                                                <div className="flex items-center gap-1">
+                                                    Stock
+                                                    {sortConfig?.key === 'availableStock' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                                                </div>
+                                            </th>
+                                            <th
+                                                className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                                                onClick={() => handleSort('price')}
+                                            >
+                                                <div className="flex items-center justify-end gap-1">
+                                                    Price
+                                                    {sortConfig?.key === 'price' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                                                </div>
+                                            </th>
                                             <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest w-24">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                                         {filteredProducts.map((p, idx) => (
-                                            <tr key={p.id || `table-row-${idx}`} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+                                            <tr key={p.id || `table-row-${idx}`} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer" onClick={() => handleEdit(p)}>
                                                 <td className="px-6 py-4">
                                                     <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 overflow-hidden">
                                                         {p.image ? (
-                                                            <img src={p.image.startsWith('http') ? p.image : `https://grateful-liberation-production-d036.up.railway.app${p.image.startsWith('/') ? '' : '/'}${p.image}`} alt="" className="w-full h-full object-cover" />
+                                                            <img src={p.image.startsWith('http') ? p.image : `${REMOTE_IMAGE_BASE_URL}${p.image.startsWith('/') ? '' : '/'}${p.image}`} alt="" className="w-full h-full object-cover" />
                                                         ) : (
                                                             <div className="w-full h-full flex items-center justify-center text-gray-300"><Package size={16} /></div>
                                                         )}
@@ -511,9 +628,9 @@ export function ProductsPage() {
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
-                                                    <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <button onClick={() => handleEdit(p)} className="p-2 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"><Edit2 size={16} /></button>
-                                                        <button onClick={() => handleDelete(p.id)} className="p-2 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"><Trash2 size={16} /></button>
+                                                    <div className="flex items-center justify-center gap-2">
+                                                        <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} className="p-2 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"><Edit2 size={16} /></button>
+                                                        <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} className="p-2 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"><Trash2 size={16} /></button>
                                                     </div>
                                                 </td>
                                             </tr>
