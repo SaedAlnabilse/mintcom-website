@@ -174,7 +174,7 @@ export function CategoriesPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
               Menu Management
             </span>
           </div>
@@ -216,10 +216,10 @@ export function CategoriesPage() {
                 <stat.icon size={20} />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-0.5">{stat.label}</p>
+                <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
                 <p className="text-xl font-black text-gray-900 dark:text-white truncate">{stat.value}</p>
                 {stat.sub && (
-                  <p className="text-[10px] font-bold text-paymint-green uppercase tracking-wide mt-1">{stat.sub}</p>
+                  <p className="text-[10px] font-bold text-paymint-green tracking-wide mt-1">{stat.sub}</p>
                 )}
               </div>
             </div>
@@ -230,14 +230,14 @@ export function CategoriesPage() {
       {isLoading ? (
         <div className="py-24 flex flex-col items-center">
           <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
-          <p className="text-xs font-black uppercase text-gray-400">Loading Categories...</p>
+          <p className="text-xs font-black text-gray-400">Loading Categories...</p>
         </div>
       ) : categories.length === 0 ? (
         <div className="py-24 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
           <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
             <Layers className="w-10 h-10 text-gray-300" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No categories yet</h3>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Categories Yet</h3>
           <p className="text-gray-500 max-w-xs text-sm">Create your first category to start organizing your menu items.</p>
         </div>
       ) : (
@@ -323,7 +323,7 @@ export function CategoriesPage() {
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{viewingCategory.name}</h2>
-                    <p className="text-xs font-black text-paymint-green uppercase tracking-widest">{categoryProducts.length} Products Assigned</p>
+                    <p className="text-xs font-black text-paymint-green tracking-widest">{categoryProducts.length} Products Assigned</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -349,11 +349,11 @@ export function CategoriesPage() {
                     <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 shadow-sm">
                       <Package size={40} strokeWidth={1.5} className="text-gray-300" />
                     </div>
-                    <p className="font-bold text-gray-900 dark:text-white uppercase tracking-tight text-lg mb-2">No items in this category</p>
+                    <p className="font-bold text-gray-900 dark:text-white tracking-tight text-lg mb-2">No items in this category</p>
                     <p className="text-sm text-gray-500 font-medium max-w-xs mx-auto mb-8">Start building your menu by adding products to this category.</p>
                     <button
                       onClick={() => navigate('/dashboard/products', { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
-                      className="flex items-center gap-2 px-6 py-3.5 bg-paymint-green text-black font-black text-xs rounded-xl hover:scale-[1.02] transition-all shadow-lg active:scale-95 uppercase tracking-widest"
+                      className="flex items-center gap-2 px-6 py-3.5 bg-paymint-green text-black font-black text-xs rounded-xl hover:scale-[1.02] transition-all shadow-lg active:scale-95 tracking-widest"
                     >
                       <Plus size={18} strokeWidth={3} />
                       <span>Create Your First Product</span>
@@ -452,7 +452,7 @@ export function CategoriesPage() {
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{deleteBlockedCategory.name}</h2>
-                    <p className="text-xs font-black text-red-500 uppercase tracking-widest">{categoryProducts.length} PRODUCTS ASSIGNED</p>
+                    <p className="text-xs font-black text-red-500 tracking-widest">{categoryProducts.length} PRODUCTS ASSIGNED</p>
                   </div>
                 </div>
                 <button

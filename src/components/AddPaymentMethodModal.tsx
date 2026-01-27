@@ -116,8 +116,8 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                             <div className="p-8">
                                 <div className="flex items-center justify-between mb-8">
                                     <div>
-                                        <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight uppercase">New Card</h2>
-                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Secure Payment Vault</p>
+                                        <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">New Card</h2>
+                                        <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">Secure Payment Vault</p>
                                     </div>
                                     <button
                                         onClick={onClose}
@@ -130,7 +130,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                 <form onSubmit={handleSubmit} className="space-y-6">
                                     {/* Card Number */}
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">Card Number</label>
+                                        <label className="text-[10px] font-black text-gray-400 tracking-widest block pl-1">Card Number</label>
                                         <div className="relative group">
                                             <input
                                                 type="text"
@@ -142,7 +142,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                             <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                                             <div className="absolute right-4 top-1/2 -translate-y-1/2">
                                                 {getCardBrand(cardNumber) !== 'UNKNOWN' && (
-                                                    <span className="text-[10px] font-black text-paymint-green uppercase tracking-wider bg-paymint-green/10 px-2 py-1 rounded-md border border-paymint-green/20">
+                                                    <span className="text-[10px] font-black text-paymint-green tracking-wider bg-paymint-green/10 px-2 py-1 rounded-md border border-paymint-green/20">
                                                         {getCardBrand(cardNumber)}
                                                     </span>
                                                 )}
@@ -153,7 +153,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                     {/* Expiry & CVC */}
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">Expiry</label>
+                                            <label className="text-[10px] font-black text-gray-400 tracking-widest block pl-1">Expiry</label>
                                             <input
                                                 type="text"
                                                 value={expiry}
@@ -164,7 +164,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">CVC</label>
+                                            <label className="text-[10px] font-black text-gray-400 tracking-widest block pl-1">CVC</label>
                                             <div className="relative group">
                                                 <input
                                                     type="password"
@@ -181,20 +181,20 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
 
                                     {/* Cardholder Name */}
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block pl-1">Cardholder Name</label>
+                                        <label className="text-[10px] font-black text-gray-400 tracking-widest block pl-1">Cardholder Name</label>
                                         <input
                                             type="text"
                                             value={name}
                                             onChange={(e) => setName(e.target.value)}
-                                            placeholder="JOHN DOE"
-                                            className="w-full h-14 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all uppercase"
+                                            placeholder="John Doe"
+                                            className="w-full h-14 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all"
                                         />
                                     </div>
 
                                     <button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="w-full h-14 bg-paymint-green text-black rounded-xl font-black text-xs uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-paymint-green/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none"
+                                        className="w-full h-14 bg-paymint-green text-black rounded-xl font-black text-xs tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-paymint-green/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none"
                                     >
                                         {isSubmitting ? (
                                             <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
@@ -206,7 +206,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                         )}
                                     </button>
 
-                                    <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                                    <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-gray-400 tracking-wider">
                                         <Lock size={10} />
                                         <span>256-Bit SSL Encrypted</span>
                                     </div>

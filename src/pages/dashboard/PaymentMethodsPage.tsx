@@ -282,7 +282,7 @@ export function PaymentMethodsPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
               Settlement
             </span>
             <div className="flex items-center gap-2">
@@ -290,7 +290,7 @@ export function PaymentMethodsPage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
               </span>
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Active</span>
+              <span className="text-[10px] font-bold text-gray-400 tracking-widest">Active</span>
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Payment Methods</h1>
@@ -305,7 +305,7 @@ export function PaymentMethodsPage() {
             <CreditCard size={24} />
           </div>
           <div className="flex flex-col gap-1">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight uppercase">Accepted Card Networks</h2>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Accepted Card Networks</h2>
             <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Specify which card providers are visually supported at your terminals.</p>
           </div>
         </div>
@@ -313,7 +313,7 @@ export function PaymentMethodsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {cardTypes.length === 0 ? (
             <div className="col-span-full py-12 text-center">
-              <p className="text-gray-400 font-black uppercase tracking-widest text-[10px]">No card networks configured yet.</p>
+              <p className="text-gray-400 font-black tracking-widest text-[10px]">No card networks configured yet.</p>
             </div>
           ) : (
             Array.isArray(cardTypes) && cardTypes.map((card) => (
@@ -359,7 +359,7 @@ export function PaymentMethodsPage() {
               <Plus size={20} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
             </div>
             <h3 className="text-base font-bold text-gray-900 dark:text-white">Add Network</h3>
-            <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mt-1">Expand Reach</p>
+            <p className="text-gray-500 text-[10px] font-black tracking-widest mt-1">Expand Reach</p>
           </motion.div>
         </div>
       </section>
@@ -371,7 +371,7 @@ export function PaymentMethodsPage() {
             <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
               <Wallet size={20} />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white uppercase tracking-tight">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
               Other Payments
             </h2>
           </div>
@@ -419,7 +419,7 @@ export function PaymentMethodsPage() {
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate">{method.name}</h3>
                 {method.isDefault && (
                   <div className="mt-4 flex items-center justify-between">
-                    <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest flex items-center gap-1">
+                    <span className="text-[10px] font-black text-blue-500 tracking-widest flex items-center gap-1">
                       <Star size={10} fill="currentColor" /> System
                     </span>
                   </div>
@@ -437,7 +437,7 @@ export function PaymentMethodsPage() {
                 <Plus size={20} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
               </div>
               <h3 className="text-base font-bold text-gray-900 dark:text-white">Add Method</h3>
-              <p className="text-gray-500 text-[10px] font-black uppercase tracking-widest mt-1">New Protocol</p>
+              <p className="text-gray-500 text-[10px] font-black tracking-widest mt-1">New Protocol</p>
             </motion.div>
           </div>
         )}
@@ -482,13 +482,13 @@ export function PaymentMethodsPage() {
                   </div>
 
                   <div className="flex items-center">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Branded Icon (Optional)</p>
+                    <p className="text-[10px] font-black text-gray-400 tracking-widest">Branded Icon (Optional)</p>
                     <QuickInfo text="Visual icon displayed for this payment method on the checkout screen." />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 px-1 flex items-center">
+                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
                     Legal Name <span className="text-paymint-red mx-1">*</span>
                     <QuickInfo text="The official name used for reporting and receipts." />
                   </label>
@@ -496,13 +496,13 @@ export function PaymentMethodsPage() {
                     type="text"
                     {...register('name')}
                     className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-none'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
-                    placeholder="e.g. DIGITAL WALLET"
+                    placeholder="e.g. Digital Wallet"
                   />
-                  {errors.name && <p className="text-paymint-red text-[10px] font-black uppercase mt-2 px-1">{errors.name.message}</p>}
+                  {errors.name && <p className="text-paymint-red text-[10px] font-black mt-2 px-1">{errors.name.message}</p>}
                 </div>
 
 
-                <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-2">
+                <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2">
                   {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
                   {editingMethod ? 'Update' : 'Add Method'}
                 </button>
@@ -548,13 +548,13 @@ export function PaymentMethodsPage() {
                   </div>
 
                   <div className="flex items-center">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Provider Logo</p>
+                    <p className="text-[10px] font-black text-gray-400 tracking-widest">Provider Logo</p>
                     <QuickInfo text="Logo displayed to customers to indicate accepted card networks." />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 px-1 flex items-center">
+                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
                     Network Name <span className="text-paymint-red mx-1">*</span>
                     <QuickInfo text="The name of the card network (e.g. Visa, MasterCard)." />
                   </label>
@@ -566,15 +566,15 @@ export function PaymentMethodsPage() {
                       if (cardErrors.cardName) setCardErrors({ ...cardErrors, cardName: '' });
                     }}
                     className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${cardErrors.cardName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-none'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
-                    placeholder="e.g. MASTERCARD"
+                    placeholder="e.g. Mastercard"
                   />
-                  {cardErrors.cardName && <p className="text-paymint-red text-[10px] font-black uppercase mt-2 px-1">{cardErrors.cardName}</p>}
+                  {cardErrors.cardName && <p className="text-paymint-red text-[10px] font-black mt-2 px-1">{cardErrors.cardName}</p>}
                 </div>
 
                 <button
                   onClick={handleAddCardType}
                   disabled={isSubmitting || !newCardName.trim()}
-                  className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl hover:scale-[1.02] transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl hover:scale-[1.02] transition-all tracking-widest text-xs flex items-center justify-center gap-2"
                 >
                   {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
                   {editingCard ? 'Update Network' : 'Register Network'}

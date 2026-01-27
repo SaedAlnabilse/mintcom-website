@@ -4,6 +4,7 @@
     "assets": {
         "directory": "./dist"
     },
+    "main": "src/worker.ts",
     "observability": {
         "enabled": true
     }

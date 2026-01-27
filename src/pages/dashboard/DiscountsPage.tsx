@@ -222,7 +222,7 @@ export function DiscountsPage() {
           <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-[2rem] flex items-center justify-center mb-6">
             <Tag className="w-10 h-10 text-gray-300 dark:text-gray-600" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No discounts found</h3>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Discounts Found</h3>
           <p className="text-gray-600 dark:text-gray-400 text-sm max-w-sm mb-8 mx-auto font-medium">
             Create your first discount to start running promotions and rewarding your customers.
           </p>

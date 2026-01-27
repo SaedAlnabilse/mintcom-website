@@ -129,7 +129,7 @@ export function PasswordResetOtpModal({
         }
 
         if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(newPassword)) {
-            setError('Password must contain uppercase, lowercase, and a number');
+            setError('Password must contain, lowercase, and a number');
             return;
         }
 
@@ -332,7 +332,7 @@ export function PasswordResetOtpModal({
 
                                 <div className="space-y-4">
                                     <div className="relative">
-                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
+                                        <label className="text-[10px] font-bold text-gray-400 tracking-widest mb-2 block">
                                             New Password
                                         </label>
                                         <input
@@ -352,7 +352,7 @@ export function PasswordResetOtpModal({
                                     </div>
 
                                     <div className="relative">
-                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">
+                                        <label className="text-[10px] font-bold text-gray-400 tracking-widest mb-2 block">
                                             Confirm Password
                                         </label>
                                         <input
