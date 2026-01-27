@@ -28,7 +28,7 @@ export function DeletionRestorationBanner() {
       const response = await api.post('/api/accounts/me/restore');
       
       if (response.data.success) {
-        toast.success('Account successfully restored!');
+        toast.success('Account restored!');
         updateAccount({ deletionRequestedAt: undefined });
       }
     } catch (error: any) {
@@ -50,7 +50,7 @@ export function DeletionRestorationBanner() {
       <button
         onClick={handleRestore}
         disabled={isRestoring}
-        className="flex items-center gap-2 px-4 py-1.5 bg-white text-red-600 rounded-lg text-xs font-black uppercase tracking-widest hover:bg-gray-100 transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-sm"
+        className="flex items-center gap-2 px-4 py-1.5 bg-white text-red-600 rounded-lg text-xs font-black tracking-widest hover:bg-gray-100 transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-sm"
       >
         {isRestoring ? (
           <>

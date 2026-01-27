@@ -482,7 +482,7 @@ export class DemoDataGenerator {
       this.progressFn(85);
 
       // 9. Simulate Live Shift Cycle (Shift -> Cash Logs -> Orders -> Close -> New Shift)
-      this.logFn('Simulating live shift operations...');
+      this.logFn('Simulating shift...');
       await this.simulateShiftCycle(products, customers, attributes);
       this.progressFn(95);
 
@@ -661,8 +661,8 @@ export class DemoDataGenerator {
       total,
       discount: { amount: 0 },
       paymentMethod: getWeightedPaymentMethod(),
-      paymentStatus: 'COMPLETED',
-      status: 'COMPLETED',
+      paymentStatus: 'Completed',
+      status: 'Completed',
       customerId: customer?.id,
     };
   }
@@ -856,7 +856,7 @@ export class DemoDataGenerator {
       } catch (e: any) {
         const errorMsg = e.response?.data?.message || e.message || 'Unknown error';
         if (e.response?.status === 403) {
-          this.logFn(`Skipping discount "${d.name}": You do not have permission to manage discounts.`);
+          this.logFn(`Skipping discount "${d.name}": No permission.`);
         } else {
           this.logFn(`Failed to create discount "${d.name}": ${errorMsg}`);
         }
@@ -908,7 +908,7 @@ export class DemoDataGenerator {
              cashExpected,
              cashActual,
              discrepancy: variance,
-             status: 'CLOSED'
+             status: 'Closed'
           });
         } catch (e: any) {
           // Log specific error for shifts to help debugging

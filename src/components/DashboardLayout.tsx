@@ -58,12 +58,12 @@ const menuStructure: MenuItemOrGroup[] = [
     icon: FileBarChart,
     items: [
       { path: '/dashboard/reports/sales', label: 'Sales Summary', icon: FileBarChart },
-      { path: '/dashboard/reports/items', label: 'Sales By Item', icon: Package },
-      { path: '/dashboard/reports/categories', label: 'Sales By Category', icon: LayoutDashboard },
-      { path: '/dashboard/reports/employees', label: 'Sales By Staff', icon: Users },
-      { path: '/dashboard/reports/payments', label: 'Sales By Payment Type', icon: CreditCard },
-      { path: '/dashboard/orders', label: 'Receipts', icon: History },
-      { path: '/dashboard/reports/modifiers', label: 'Sales By Add-On', icon: Package },
+      { path: '/dashboard/reports/items', label: 'Item Sales', icon: Package },
+      { path: '/dashboard/reports/categories', label: 'Category Sales', icon: LayoutDashboard },
+      { path: '/dashboard/reports/employees', label: 'Staff Sales', icon: Users },
+      { path: '/dashboard/reports/payments', label: 'Payment Sales', icon: CreditCard },
+      { path: '/dashboard/reports/receipts', label: 'Receipts', icon: History },
+      { path: '/dashboard/reports/modifiers', label: 'Add-on Sales', icon: Package },
       { path: '/dashboard/reports/discounts', label: 'Discounts', icon: Percent },
       { path: '/dashboard/reports/taxes', label: 'Taxes', icon: Percent },
       { path: '/dashboard/reports/shifts', label: 'Shifts', icon: Clock },
@@ -506,8 +506,8 @@ export function DashboardLayout() {
           })}
         </nav>
 
-        {/* POS App Download */}
-        {/* POS App Download - Compact */}
+        {/* Pos App Download */}
+        {/* Pos App Download - Compact */}
         <div className="px-3 mt-auto mb-2">
           {sidebarOpen ? (
             <div className="bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/5 rounded-xl p-2.5 flex items-center justify-between group">
@@ -516,7 +516,7 @@ export function DashboardLayout() {
                   <Smartphone size={16} />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-xs font-bold text-gray-900 dark:text-white leading-none mb-0.5">POS App</span>
+                  <span className="text-xs font-bold text-gray-900 dark:text-white leading-none mb-0.5">Pos App</span>
                   <span className="text-[9px] text-gray-500 dark:text-gray-400 leading-none">Download</span>
                 </div>
               </div>
@@ -540,7 +540,7 @@ export function DashboardLayout() {
               {/* Compact Popover */}
               <div className="absolute left-full bottom-0 ml-3 bg-gray-900/95 backdrop-blur-md rounded-xl p-3 border border-white/10 shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[70] translate-x-1 group-hover:translate-x-0 w-max">
                 <div className="flex items-center gap-3">
-                  <span className="text-white font-bold text-xs whitespace-nowrap">POS App</span>
+                  <span className="text-white font-bold text-xs whitespace-nowrap">Pos App</span>
                   <div className="h-4 w-px bg-white/20" />
                   <div className="flex gap-2">
                     <button className="w-7 h-7 flex items-center justify-center rounded-lg bg-white text-black hover:opacity-90">

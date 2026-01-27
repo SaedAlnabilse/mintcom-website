@@ -69,13 +69,13 @@ export function ResetPasswordPage() {
           </div>
           <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">Invalid Link</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-            This password reset link is invalid or has expired. Please request a new one.
+            This link is invalid or expired.
           </p>
-          <Link 
+          <Link
             to="/forgot-password"
             className="inline-flex items-center justify-center w-full bg-paymint-green text-black font-black py-4 px-6 rounded-2xl hover:bg-paymint-green/90 transition-all active:scale-95 shadow-lg shadow-paymint-green/20"
           >
-            Request New Link
+            Get New Link
           </Link>
         </motion.div>
       </div>
@@ -93,9 +93,9 @@ export function ResetPasswordPage() {
           <div className="w-20 h-20 bg-paymint-green/10 rounded-full flex items-center justify-center mx-auto mb-8">
             <CheckCircle className="w-10 h-10 text-paymint-green" />
           </div>
-          <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">Success!</h2>
+          <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">Success</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-            Your password has been reset successfully. You can now log in with your new password.
+            Password updated.
           </p>
           <Link 
             to="/login"
@@ -119,12 +119,12 @@ export function ResetPasswordPage() {
           <h1 className="text-4xl font-black text-gray-900 dark:text-white mb-3 tracking-tight">
             Reset <span className="text-paymint-green">Password</span>
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">Create a secure new password for your account.</p>
+          <p className="text-gray-600 dark:text-gray-400">Enter your new password.</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">New Password</label>
+            <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">Password</label>
             <div className="relative group">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
               <input
@@ -145,7 +145,7 @@ export function ResetPasswordPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">Confirm Password</label>
+            <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">Confirm</label>
             <div className="relative group">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
               <input
@@ -172,7 +172,7 @@ export function ResetPasswordPage() {
               className="w-full bg-paymint-green text-black font-black py-4 px-6 rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95"
             >
               {isLoading ? <Loader2 className="animate-spin" size={20} /> : null}
-              Update Password
+              Reset
             </button>
           </div>
         </form>

@@ -158,8 +158,8 @@ export function StaffPage() {
       username: s.username,
       name: s.name,
       role: s.role,
-      email: s.email || 'N/A',
-      phone: s.phone || 'N/A',
+      email: s.email || 'N/a',
+      phone: s.phone || 'N/a',
       status: s.isActive ? 'Active' : 'Inactive',
       joined: new Date(s.createdAt).toLocaleDateString()
     }));
@@ -220,7 +220,7 @@ export function StaffPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-              Human Capital
+              Team
             </span>
             <div className="flex items-center gap-2">
               <div className="relative flex h-2 w-2">
@@ -230,8 +230,8 @@ export function StaffPage() {
               <span className="text-[10px] font-bold text-paymint-green tracking-widest">Live</span>
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Team Management</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm font-medium">Orchestrate staff access and operational permissions</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Staff</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm font-medium">Manage your team</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -247,7 +247,7 @@ export function StaffPage() {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm"
           >
             <Download size={18} />
-            <span>Export CSV</span>
+            <span>Export Csv</span>
           </button>
           <button
             onClick={() => { setEditingStaff(null); setShowModal(true); }}
@@ -262,10 +262,10 @@ export function StaffPage() {
       {/* Quick Stats Summary */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
-          { label: 'Total Team', value: staff.length, icon: Users, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
-          { label: 'Online Now', value: staff.filter(s => s.isClockedIn).length, icon: CheckCircle2, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-          { label: 'Administrators', value: staff.filter(s => s.role === 'ADMIN').length, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-          { label: 'Team Members', value: staff.filter(s => s.role !== 'ADMIN').length, icon: Users, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+          { label: 'Total Staff', value: staff.length, icon: Users, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+          { label: 'Online', value: staff.filter(s => s.isClockedIn).length, icon: CheckCircle2, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+          { label: 'Admins', value: staff.filter(s => s.role === 'ADMIN').length, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+          { label: 'Staff', value: staff.filter(s => s.role !== 'ADMIN').length, icon: Users, color: 'text-orange-500', bg: 'bg-orange-500/10' },
         ].map((stat, i) => (
           <motion.div
             key={i}
@@ -309,7 +309,7 @@ export function StaffPage() {
           <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            placeholder="Search by name, username or email..."
+            placeholder="Search staff..."
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
             className="w-full pl-11 pr-4 py-2.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
@@ -330,23 +330,23 @@ export function StaffPage() {
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-32">
             <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-xs font-black tracking-widest text-gray-400">Loading Team Data...</p>
+            <p className="text-xs font-black tracking-widest text-gray-400">Loading Staff...</p>
           </div>
         ) : filteredStaff.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center p-32 text-center bg-gray-50/30 dark:bg-black/10">
             <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
               <Users size={40} className="text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Registry Empty</h3>
-            <p className="text-gray-500 max-w-xs text-sm font-medium mx-auto">Initialize your first team member to build the operational workforce.</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">No Staff Found</h3>
+            <p className="text-gray-500 max-w-xs text-sm font-medium mx-auto">Add a team member to get started.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-white/[0.02]">
                 <tr className="border-b border-gray-200 dark:border-white/5">
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Member Details</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Role & Access</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Name</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Role</th>
                   <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Contact</th>
                   <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Status</th>
                   <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 tracking-widest">Actions</th>
@@ -412,7 +412,7 @@ export function StaffPage() {
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
                               </div>
-                              <span>Active Now</span>
+                              <span>Online</span>
                             </>
                           ) : (
                             <>
@@ -454,14 +454,14 @@ export function StaffPage() {
                                     className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black tracking-widest text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
                                   >
                                     <Key size={14} className="text-paymint-green" />
-                                    <span>Reset Access</span>
+                                    <span>Reset Password</span>
                                   </button>
                                   <button
                                     onClick={() => { setActiveDropdown(null); handleDelete(member.id, member.username); }}
                                     className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black tracking-widest text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
                                   >
                                     <Trash2 size={14} />
-                                    <span>Purge Member</span>
+                                    <span>Delete</span>
                                   </button>
                                 </motion.div>
                               )}
@@ -542,7 +542,7 @@ export function StaffPage() {
         isOpen={securityModal.isOpen}
         onClose={() => setSecurityModal(prev => ({ ...prev, isOpen: false }))}
         onSuccess={() => {
-          toast.success('Member removed successfully');
+          toast.success('Member removed');
           fetchStaff();
         }}
         targetId={securityModal.memberId}

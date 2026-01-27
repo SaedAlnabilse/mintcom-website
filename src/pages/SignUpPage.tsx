@@ -61,7 +61,7 @@ export function SignUpPage() {
       if (result.success) {
         setRegisteredEmail(data.email);
         setRegistrationSuccess(true);
-        toast.success('Account created successfully!');
+        toast.success('Account created!');
       } else {
         toast.error(result.error || 'Registration failed');
       }
@@ -142,7 +142,7 @@ export function SignUpPage() {
             className="inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white mb-8 transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to home
+            Back
           </Link>
 
           <div className="mb-8">
@@ -158,8 +158,8 @@ export function SignUpPage() {
                 className="h-12 w-auto object-contain hidden dark:block"
               />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Create your account</h2>
-            <p className="text-gray-600 dark:text-gray-400">Start your 7-day free trial.</p>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Sign up</h2>
+            <p className="text-gray-600 dark:text-gray-400">Start free trial.</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -292,16 +292,16 @@ export function SignUpPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-paymint-green text-black font-bold hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-not-allowed py-3 px-4 rounded-lg transition-colors shadow-lg shadow-paymint-green/20"
+              className="w-full bg-paymint-green text-black font-bold hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-paymint-wait py-3 px-4 rounded-lg transition-colors shadow-lg shadow-paymint-green/20"
             >
-              {isSubmitting ? 'Creating Account...' : 'Create Account'}
+              {isSubmitting ? 'Creating...' : 'Sign Up'}
             </button>
           </form>
 
           <p className="mt-6 text-center text-gray-600 dark:text-gray-400">
-            Already have an account?{' '}
+            Have an account?{' '}
             <Link to="/login" className="text-paymint-green hover:underline font-medium">
-              Sign in
+              Log in
             </Link>
           </p>
         </motion.div>
@@ -310,7 +310,7 @@ export function SignUpPage() {
       {/* Right Side - Benefits */}
       <div className="hidden lg:flex flex-1 bg-paymint-green/5 dark:bg-gradient-to-br dark:from-paymint-green/20 dark:to-paymint-green/5 items-center justify-center p-8 transition-colors duration-300">
         <div className="max-w-md">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Everything you need to run your business</h2>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">All features included</h2>
           <div className="space-y-6">
             {[
               { title: '7-Day Free Trial', desc: 'Try all features with no commitment' },

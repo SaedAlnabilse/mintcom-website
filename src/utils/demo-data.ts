@@ -79,7 +79,7 @@ export const DEMO_DATA = {
       { name: "Chicken Panini", price: 8.50, cost: 3.20, category: "Sandwiches" },
       { name: "Veggie Wrap", price: 7.50, cost: 2.50, category: "Sandwiches" },
       { name: "Tuna Melt", price: 8.00, cost: 3.00, category: "Sandwiches" },
-      { name: "BLT", price: 7.50, cost: 2.80, category: "Sandwiches" },
+      { name: "Blt", price: 7.50, cost: 2.80, category: "Sandwiches" },
       { name: "Grilled Cheese", price: 6.50, cost: 2.00, category: "Sandwiches" },
       { name: "Caprese Panini", price: 8.00, cost: 2.90, category: "Sandwiches" },
       { name: "Turkey & Cheese", price: 8.50, cost: 3.30, category: "Sandwiches" },
@@ -327,7 +327,7 @@ export const DEMO_DATA = {
     ],
     rawMaterials: [
       { name: "Ribeye Beef", unit: "kg", cost: 22.00, stock: 40 },
-      { name: "NY Strip Beef", unit: "kg", cost: 20.00, stock: 35 },
+      { name: "Ny Strip Beef", unit: "kg", cost: 20.00, stock: 35 },
       { name: "Filet Beef", unit: "kg", cost: 28.00, stock: 25 },
       { name: "Ground Beef", unit: "kg", cost: 8.00, stock: 50 },
       { name: "Chicken Breast", unit: "kg", cost: 6.00, stock: 60 },
@@ -434,8 +434,8 @@ export const DEMO_DATA = {
     ],
     products: [
       // Smartphones (8 items)
-      { name: "iPhone 15 Pro", price: 999.00, cost: 750.00, category: "Smartphones" },
-      { name: "iPhone 15", price: 799.00, cost: 600.00, category: "Smartphones" },
+      { name: "Iphone 15 Pro", price: 999.00, cost: 750.00, category: "Smartphones" },
+      { name: "Iphone 15", price: 799.00, cost: 600.00, category: "Smartphones" },
       { name: "Samsung S24 Ultra", price: 1199.00, cost: 900.00, category: "Smartphones" },
       { name: "Samsung S24", price: 899.00, cost: 680.00, category: "Smartphones" },
       { name: "Google Pixel 8 Pro", price: 899.00, cost: 650.00, category: "Smartphones" },
@@ -444,9 +444,9 @@ export const DEMO_DATA = {
       { name: "Xiaomi 14 Pro", price: 699.00, cost: 480.00, category: "Smartphones" },
 
       // Tablets (6 items)
-      { name: "iPad Pro 12.9\"", price: 1099.00, cost: 800.00, category: "Tablets" },
-      { name: "iPad Air", price: 599.00, cost: 420.00, category: "Tablets" },
-      { name: "iPad Mini", price: 499.00, cost: 350.00, category: "Tablets" },
+      { name: "Ipad Pro 12.9\"", price: 1099.00, cost: 800.00, category: "Tablets" },
+      { name: "Ipad Air", price: 599.00, cost: 420.00, category: "Tablets" },
+      { name: "Ipad Mini", price: 499.00, cost: 350.00, category: "Tablets" },
       { name: "Samsung Tab S9", price: 849.00, cost: 600.00, category: "Tablets" },
       { name: "Samsung Tab A9", price: 349.00, cost: 220.00, category: "Tablets" },
       { name: "Lenovo Tab P12", price: 399.00, cost: 260.00, category: "Tablets" },
@@ -454,18 +454,18 @@ export const DEMO_DATA = {
       // Laptops (6 items)
       { name: "MacBook Pro 14\"", price: 1999.00, cost: 1500.00, category: "Laptops" },
       { name: "MacBook Air M3", price: 1099.00, cost: 800.00, category: "Laptops" },
-      { name: "Dell XPS 15", price: 1499.00, cost: 1100.00, category: "Laptops" },
-      { name: "HP Spectre x360", price: 1299.00, cost: 950.00, category: "Laptops" },
+      { name: "Dell Xps 15", price: 1499.00, cost: 1100.00, category: "Laptops" },
+      { name: "Hp Spectre x360", price: 1299.00, cost: 950.00, category: "Laptops" },
       { name: "Lenovo ThinkPad X1", price: 1599.00, cost: 1200.00, category: "Laptops" },
       { name: "ASUS ZenBook 14", price: 899.00, cost: 650.00, category: "Laptops" },
 
       // Audio (10 items)
       { name: "AirPods Pro 2", price: 249.00, cost: 170.00, category: "Audio" },
       { name: "AirPods 3", price: 169.00, cost: 110.00, category: "Audio" },
-      { name: "Sony WH-1000XM5", price: 349.00, cost: 240.00, category: "Audio" },
+      { name: "Sony Wh-1000xm5", price: 349.00, cost: 240.00, category: "Audio" },
       { name: "Bose QC45", price: 329.00, cost: 220.00, category: "Audio" },
       { name: "Samsung Buds2 Pro", price: 199.00, cost: 130.00, category: "Audio" },
-      { name: "JBL Flip 6", price: 129.00, cost: 80.00, category: "Audio" },
+      { name: "Jbl Flip 6", price: 129.00, cost: 80.00, category: "Audio" },
       { name: "Sonos One", price: 219.00, cost: 150.00, category: "Audio" },
       { name: "HomePod Mini", price: 99.00, cost: 65.00, category: "Audio" },
       { name: "Beats Studio Pro", price: 349.00, cost: 230.00, category: "Audio" },
@@ -484,48 +484,48 @@ export const DEMO_DATA = {
       { name: "USB-C Cable 2m", price: 20.00, cost: 4.00, category: "Cables" },
       { name: "Lightning Cable 1m", price: 19.00, cost: 4.50, category: "Cables" },
       { name: "Lightning Cable 2m", price: 25.00, cost: 5.50, category: "Cables" },
-      { name: "HDMI Cable 2m", price: 25.00, cost: 6.00, category: "Cables" },
+      { name: "Hdmi Cable 2m", price: 25.00, cost: 6.00, category: "Cables" },
       { name: "DisplayPort Cable", price: 30.00, cost: 8.00, category: "Cables" },
       { name: "USB-C to Lightning", price: 25.00, cost: 5.00, category: "Cables" },
       { name: "Thunderbolt 4 Cable", price: 79.00, cost: 35.00, category: "Cables" },
 
       // Cases (8 items)
-      { name: "iPhone Clear Case", price: 25.00, cost: 5.00, category: "Cases" },
-      { name: "iPhone Leather Case", price: 59.00, cost: 18.00, category: "Cases" },
-      { name: "iPhone Silicone Case", price: 35.00, cost: 8.00, category: "Cases" },
+      { name: "Iphone Clear Case", price: 25.00, cost: 5.00, category: "Cases" },
+      { name: "Iphone Leather Case", price: 59.00, cost: 18.00, category: "Cases" },
+      { name: "Iphone Silicone Case", price: 35.00, cost: 8.00, category: "Cases" },
       { name: "Samsung Clear Case", price: 22.00, cost: 4.50, category: "Cases" },
       { name: "Samsung Leather Case", price: 49.00, cost: 15.00, category: "Cases" },
-      { name: "iPad Folio Case", price: 79.00, cost: 25.00, category: "Cases" },
+      { name: "Ipad Folio Case", price: 79.00, cost: 25.00, category: "Cases" },
       { name: "MacBook Sleeve", price: 49.00, cost: 15.00, category: "Cases" },
       { name: "AirPods Case", price: 19.00, cost: 4.00, category: "Cases" },
 
       // Chargers (8 items)
-      { name: "20W USB-C Charger", price: 25.00, cost: 8.00, category: "Chargers" },
-      { name: "67W USB-C Charger", price: 59.00, cost: 20.00, category: "Chargers" },
+      { name: "20w Usb-c Charger", price: 25.00, cost: 8.00, category: "Chargers" },
+      { name: "67w Usb-c Charger", price: 59.00, cost: 20.00, category: "Chargers" },
       { name: "MagSafe Charger", price: 39.00, cost: 12.00, category: "Chargers" },
       { name: "Wireless Pad", price: 35.00, cost: 10.00, category: "Chargers" },
       { name: "Car Charger", price: 25.00, cost: 7.00, category: "Chargers" },
-      { name: "Power Bank 10000mAh", price: 45.00, cost: 15.00, category: "Chargers" },
-      { name: "Power Bank 20000mAh", price: 65.00, cost: 22.00, category: "Chargers" },
+      { name: "Power Bank 10000mah", price: 45.00, cost: 15.00, category: "Chargers" },
+      { name: "Power Bank 20000mah", price: 65.00, cost: 22.00, category: "Chargers" },
       { name: "3-in-1 Charging Stand", price: 99.00, cost: 35.00, category: "Chargers" },
 
       // Storage (6 items)
-      { name: "SanDisk 128GB USB", price: 25.00, cost: 10.00, category: "Storage" },
-      { name: "SanDisk 256GB USB", price: 40.00, cost: 16.00, category: "Storage" },
-      { name: "Samsung T7 1TB SSD", price: 129.00, cost: 75.00, category: "Storage" },
-      { name: "Samsung T7 2TB SSD", price: 199.00, cost: 120.00, category: "Storage" },
-      { name: "WD 4TB External HDD", price: 109.00, cost: 65.00, category: "Storage" },
-      { name: "MicroSD 256GB", price: 35.00, cost: 15.00, category: "Storage" },
+      { name: "SanDisk 128gb Usb", price: 25.00, cost: 10.00, category: "Storage" },
+      { name: "SanDisk 256gb Usb", price: 40.00, cost: 16.00, category: "Storage" },
+      { name: "Samsung T7 1tb Ssd", price: 129.00, cost: 75.00, category: "Storage" },
+      { name: "Samsung T7 2tb Ssd", price: 199.00, cost: 120.00, category: "Storage" },
+      { name: "Wd 4tb External Hdd", price: 109.00, cost: 65.00, category: "Storage" },
+      { name: "Microsd 256gb", price: 35.00, cost: 15.00, category: "Storage" },
 
       // Gaming (8 items)
-      { name: "PS5 Controller", price: 69.00, cost: 45.00, category: "Gaming" },
+      { name: "Ps5 Controller", price: 69.00, cost: 45.00, category: "Gaming" },
       { name: "Xbox Controller", price: 59.00, cost: 38.00, category: "Gaming" },
       { name: "Nintendo Switch Pro Controller", price: 69.00, cost: 42.00, category: "Gaming" },
       { name: "Gaming Mouse", price: 79.00, cost: 35.00, category: "Gaming" },
       { name: "Gaming Keyboard", price: 129.00, cost: 55.00, category: "Gaming" },
       { name: "Gaming Headset", price: 99.00, cost: 45.00, category: "Gaming" },
       { name: "Mouse Pad XL", price: 35.00, cost: 10.00, category: "Gaming" },
-      { name: "Webcam HD", price: 89.00, cost: 40.00, category: "Gaming" }
+      { name: "Webcam Hd", price: 89.00, cost: 40.00, category: "Gaming" }
     ],
     rawMaterials: [],
     recipes: [],
@@ -557,9 +557,9 @@ export const DEMO_DATA = {
         isRequired: false,
         options: [
           { name: "Base", price: 0 },
-          { name: "+128GB", price: 100.00 },
-          { name: "+256GB", price: 200.00 },
-          { name: "+512GB", price: 400.00 }
+          { name: "+128gb", price: 100.00 },
+          { name: "+256gb", price: 200.00 },
+          { name: "+512gb", price: 400.00 }
         ]
       }
     ]
@@ -575,7 +575,7 @@ export const DEMO_DATA = {
     { name: "Loyalty Reward", percentage: 10, adminOnly: false },
     { name: "Birthday Special", percentage: 25, adminOnly: false },
     { name: "First Visit", percentage: 10, adminOnly: false },
-    { name: "VIP Member", percentage: 20, adminOnly: true }
+    { name: "Vip Member", percentage: 20, adminOnly: true }
   ],
 
   customRoles: [
@@ -661,9 +661,9 @@ export const DEMO_DATA = {
 
   customers: [
     // Regular Customers (High Value)
-    { name: "Mohammad Al-Ahmad", phone: "+962790000001", email: "mohammad.ahmad@gmail.com", tier: "VIP", visits: 85, spent: 2450.00 },
-    { name: "Sarah Johnson", phone: "+962790000002", email: "sarah.j@gmail.com", tier: "VIP", visits: 72, spent: 1890.00 },
-    { name: "Amir Rashid", phone: "+962790000003", email: "amir.r@gmail.com", tier: "VIP", visits: 68, spent: 1650.00 },
+    { name: "Mohammad Al-Ahmad", phone: "+962790000001", email: "mohammad.ahmad@gmail.com", tier: "Vip", visits: 85, spent: 2450.00 },
+    { name: "Sarah Johnson", phone: "+962790000002", email: "sarah.j@gmail.com", tier: "Vip", visits: 72, spent: 1890.00 },
+    { name: "Amir Rashid", phone: "+962790000003", email: "amir.r@gmail.com", tier: "Vip", visits: 68, spent: 1650.00 },
 
     // Regular Customers (Medium Value)
     { name: "Emily Davis", phone: "+962790000004", email: "emily.d@gmail.com", tier: "Gold", visits: 45, spent: 980.00 },

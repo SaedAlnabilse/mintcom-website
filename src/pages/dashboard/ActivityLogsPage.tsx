@@ -193,7 +193,7 @@ export function ActivityLogsPage() {
       user: 'Operative',
       action: 'Protocol',
       desc: 'Event Description',
-      ip: 'IP Address'
+      ip: 'Ip Address'
     });
   };
 
@@ -204,12 +204,12 @@ export function ActivityLogsPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-              Audit & Compliance
+              System Logs
             </span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">System Activity</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Activity Log</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-2">
-            Detailed audit trail of all administrative operations
+            Track changes and updates
           </p>
         </div>
 
@@ -219,7 +219,7 @@ export function ActivityLogsPage() {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
           >
             <Download size={18} />
-            <span>Export CSV</span>
+            <span>Export</span>
           </button>
           <button
             onClick={() => { setPage(1); fetchLogs(); }}
@@ -240,7 +240,7 @@ export function ActivityLogsPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-              placeholder="Search by action, user, or description..."
+              placeholder="Search logs..."
               className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
             />
           </div>
@@ -252,29 +252,29 @@ export function ActivityLogsPage() {
                 value={actionFilter}
                 onChange={(val) => { setActionFilter(val as string); setPage(1); }}
                 options={[
-                  { label: 'All Operations', value: 'all' },
+                  { label: 'All Actions', value: 'all' },
                   ...[
-                    { label: 'Product: Added', value: 'Added product' },
-                    { label: 'Product: Updated', value: 'Updated product' },
-                    { label: 'Product: Deleted', value: 'Deleted product' },
-                    { label: 'Product: Image Removed', value: 'Removed product image' },
-                    { label: 'Category: Added', value: 'Added category' },
-                    { label: 'Category: Updated', value: 'Updated category' },
-                    { label: 'Category: Deleted', value: 'Deleted category' },
-                    { label: 'Employee: Added', value: 'Added employee' },
-                    { label: 'Employee: Deleted', value: 'Deleted employee' },
+                    { label: 'Product: Add', value: 'Added product' },
+                    { label: 'Product: Update', value: 'Updated product' },
+                    { label: 'Product: Delete', value: 'Deleted product' },
+                    { label: 'Product: Remove Image', value: 'Removed product image' },
+                    { label: 'Category: Add', value: 'Added category' },
+                    { label: 'Category: Update', value: 'Updated category' },
+                    { label: 'Category: Delete', value: 'Deleted category' },
+                    { label: 'Staff: Add', value: 'Added employee' },
+                    { label: 'Staff: Delete', value: 'Deleted employee' },
                     { label: 'Update: Name', value: 'Updated restaurant name' },
                     { label: 'Update: Hours', value: 'Updated working hours' },
                     { label: 'Update: Message', value: 'Updated farewell message' },
                     { label: 'Update: Logo', value: 'Updated restaurant logo' },
                     { label: 'Update: Tax', value: 'Updated tax rate' },
                     { label: 'Update: Loyalty', value: 'Updated loyalty program' },
-                    { label: 'Discount: Added', value: 'Added discount' },
-                    { label: 'Discount: Updated', value: 'Updated discount' },
-                    { label: 'Discount: Deleted', value: 'Deleted discount' },
-                    { label: 'Payment Method: Added', value: 'Added payment method' },
-                    { label: 'Payment Method: Updated', value: 'Updated payment method' },
-                    { label: 'Payment Method: Deleted', value: 'Deleted payment method' },
+                    { label: 'Discount: Add', value: 'Added discount' },
+                    { label: 'Discount: Update', value: 'Updated discount' },
+                    { label: 'Discount: Delete', value: 'Deleted discount' },
+                    { label: 'Payment: Add', value: 'Added payment method' },
+                    { label: 'Payment: Update', value: 'Updated payment method' },
+                    { label: 'Payment: Delete', value: 'Deleted payment method' },
                   ]
                 ]}
               />
@@ -327,11 +327,11 @@ export function ActivityLogsPage() {
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-white/[0.02]">
               <tr className="border-b border-gray-200 dark:border-white/5">
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Execution Time</th>
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Operative</th>
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Protocol</th>
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Event Description</th>
-                <th className="px-8 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Payload</th>
+                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Time</th>
+                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">User</th>
+                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Action</th>
+                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Details</th>
+                <th className="px-8 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Data</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -341,7 +341,7 @@ export function ActivityLogsPage() {
                     <td colSpan={5} className="py-32 text-center">
                       <div className="flex flex-col items-center gap-4">
                         <div className="w-10 h-10 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin" />
-                        <p className="text-[10px] font-black text-gray-400 tracking-widest">Syncing Intelligence...</p>
+                        <p className="text-[10px] font-black text-gray-400 tracking-widest">Loading logs...</p>
                       </div>
                     </td>
                   </tr>
@@ -352,7 +352,7 @@ export function ActivityLogsPage() {
                         <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center">
                           <History size={24} className="text-gray-300" />
                         </div>
-                        <p className="text-gray-500 font-bold text-[10px] tracking-widest">No matching sequences found.</p>
+                        <p className="text-gray-500 font-bold text-[10px] tracking-widest">No logs found.</p>
                       </div>
                     </td>
                   </tr>
@@ -383,7 +383,7 @@ export function ActivityLogsPage() {
                       </td>
                       <td className="px-8 py-4">
                         <span className={`inline-flex px-2 py-0.5 rounded-lg text-[9px] font-black tracking-widest border ${getActionColor(log.action)}`}>
-                          {log.action?.replace(/_/g, ' ')}
+                          {log.action?.replace(/_/g, ' ').charAt(0).toUpperCase() + log.action?.replace(/_/g, ' ').slice(1).toLowerCase()}
                         </span>
                       </td>
                       <td className="px-8 py-4">
@@ -459,8 +459,8 @@ export function ActivityLogsPage() {
                     <Shield size={24} />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Event Details</h2>
-                    <p className="text-[10px] font-black text-paymint-green tracking-widest">{selectedLog.action}</p>
+                    <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Log Details</h2>
+                    <p className="text-[10px] font-black text-paymint-green tracking-widest">{selectedLog.action ? selectedLog.action.replace(/_/g, ' ').charAt(0).toUpperCase() + selectedLog.action.replace(/_/g, ' ').slice(1).toLowerCase() : ''}</p>
                   </div>
                 </div>
                 <button onClick={() => setSelectedLog(null)} className="p-3 rounded-2xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-black dark:hover:text-white transition-colors">
@@ -471,17 +471,17 @@ export function ActivityLogsPage() {
               <div className="p-8 overflow-y-auto custom-scrollbar space-y-8">
                 <div className="grid grid-cols-2 gap-8">
                   <div>
-                    <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2">Timestamp</p>
+                    <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2">Time</p>
                     <p className="font-bold text-gray-900 dark:text-white">{formatDate(selectedLog.timestamp)}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2">User Context</p>
+                    <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2">User</p>
                     <p className="font-bold text-gray-900 dark:text-white">{selectedLog.performedBy?.name || 'Administrative Account'}</p>
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-[10px] font-black text-gray-400 tracking-widest mb-3">Structured Metadata</p>
+                  <p className="text-[10px] font-black text-gray-400 tracking-widest mb-3">Data</p>
                   <pre className="bg-gray-50 dark:bg-black/40 p-6 rounded-[1.5rem] overflow-x-auto text-xs text-gray-700 dark:text-paymint-green font-mono leading-relaxed border border-gray-200 dark:border-white/5">
                     {JSON.stringify(selectedLog.metadata, null, 2)}
                   </pre>
@@ -490,7 +490,7 @@ export function ActivityLogsPage() {
 
               <div className="p-8 border-t border-gray-200 dark:border-white/5">
                 <button onClick={() => setSelectedLog(null)} className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl tracking-widest text-xs hover:scale-[1.02] transition-transform">
-                  Dismiss Protocol
+                  Close
                 </button>
               </div>
             </motion.div>

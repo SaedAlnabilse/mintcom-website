@@ -43,7 +43,7 @@ const SIDEBAR_STATE_KEY = 'brand_sidebar_expanded';
 
 const getMenuItems = (brandId: string) => [
     { path: `/brand/${brandId}`, label: 'Overview', icon: LayoutDashboard, description: 'Dashboard & Analytics' },
-    { path: `/brand/${brandId}/locations`, label: 'Locations', icon: Store, description: 'Manage Establishments' },
+    { path: `/brand/${brandId}/locations`, label: 'Locations', icon: Store, description: 'Manage Locations' },
     { path: `/brand/${brandId}/team`, label: 'Team', icon: Users, description: 'Staff Management' },
 ];
 

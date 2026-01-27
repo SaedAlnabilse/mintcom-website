@@ -42,7 +42,7 @@ export const Navbar = () => {
               <a
                 key={link.name}
                 href={link.href}
-                className="text-sm font-bold text-gray-600 dark:text-gray-400 hover:text-paymint-green dark:hover:text-paymint-green transition-colors uppercase tracking-widest"
+                className="text-sm font-bold text-gray-600 dark:text-gray-400 hover:text-paymint-green dark:hover:text-paymint-green transition-colors tracking-widest"
               >
                 {link.name}
               </a>
@@ -56,7 +56,7 @@ export const Navbar = () => {
               to="/login"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-black text-gray-900 dark:text-white hover:text-paymint-green dark:hover:text-paymint-green transition-colors uppercase tracking-widest"
+              className="text-sm font-black text-gray-900 dark:text-white hover:text-paymint-green dark:hover:text-paymint-green transition-colors tracking-widest"
             >
               Log In
             </Link>
@@ -64,7 +64,7 @@ export const Navbar = () => {
               to="/signup"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-gray-900 dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-[0.15em] hover:scale-105 transition-all active:scale-95 shadow-lg shadow-gray-900/20 dark:shadow-white/10"
+              className="bg-gray-900 dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-xl font-black text-xs tracking-[0.15em] hover:scale-105 transition-all active:scale-95 shadow-lg shadow-gray-900/20 dark:shadow-white/10"
             >
               Get Started
             </Link>
@@ -136,7 +136,7 @@ export const Navbar = () => {
                   <Globe size={20} className="text-gray-900 dark:text-white" />
                   <Laptop size={20} className="text-gray-900 dark:text-white" />
                 </div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">PayMint Enterprise v2.0</p>
+                <p className="text-[10px] font-bold tracking-widest text-gray-500">Paymint Enterprise v2.0</p>
               </div>
             </div>
           </motion.div>

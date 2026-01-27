@@ -48,7 +48,7 @@ export const DemoPage = () => {
 
     try {
       const response = await fetch(apiUrl, {
-        method: 'POST',
+        method: 'Post',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -210,9 +210,9 @@ export const DemoPage = () => {
         <h2 className="text-3xl font-black mb-4 text-gray-900 dark:text-white tracking-tight">Setting Up Your Environment</h2>
         <div className="space-y-4 text-left max-w-xs mx-auto">
           {[
-            { delay: 0.5, text: "Creating Tenant Database..." },
-            { delay: 1.5, text: `Configuring ${formData.restaurantName}...` },
-            { delay: 2.5, text: "Generating Access Keys..." },
+            { delay: 0.5, text: "Creating Database..." },
+            { delay: 1.5, text: `Setting up ${formData.restaurantName}...` },
+            { delay: 2.5, text: "Creating Access Keys..." },
           ].map((item, i) => (
             <motion.div
               key={i}
@@ -248,7 +248,7 @@ export const DemoPage = () => {
 
           <div className="max-w-lg mx-auto bg-paymint-green/10 border border-paymint-green/20 p-6 rounded-3xl text-center mb-12">
             <p className="text-paymint-green font-black">
-              📧 Check your email for your credentials and the PayMint User Manual
+              📧 Check your email for your login info and the Paymint User Manual
             </p>
           </div>
         </div>
@@ -258,9 +258,9 @@ export const DemoPage = () => {
             <div className="mb-6 bg-white dark:bg-white/5 w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm">
               <Store className="text-paymint-green" size={28} />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-paymint-green transition-colors">Launch POS Demo</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-paymint-green transition-colors">Try Pos App</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 font-medium">
-              Experience the point of sale interface used by cashiers and waiters.
+              Try the cashier interface.
             </p>
             <span className="text-paymint-green font-black text-sm tracking-widest flex items-center gap-2">
               Launch App <ArrowRight size={18} />
@@ -271,9 +271,9 @@ export const DemoPage = () => {
             <div className="mb-6 bg-white dark:bg-white/5 w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm">
               <Database className="text-blue-500" size={28} />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-paymint-green transition-colors">Open Dashboard</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-paymint-green transition-colors">Open Admin</h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 font-medium">
-              Manage your menu, inventory, employees and view detailed reports.
+              Manage your business.
             </p>
             <span className="text-paymint-green font-black text-sm tracking-widest flex items-center gap-2">
               Go to Dashboard <ArrowRight size={18} />

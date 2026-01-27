@@ -71,7 +71,7 @@ export function AttributeFormModal({
                         <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
                         <div>
                             <div className="flex items-center gap-2 mb-1">
-                                <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Modifier Details</span>
+                                <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Modifier</span>
                                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
                                 <span className="text-[10px] font-black text-paymint-green tracking-widest">Active</span>
                             </div>
@@ -93,8 +93,8 @@ export function AttributeFormModal({
                             {/* Name */}
                             <div className="space-y-3">
                                 <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
-                                    Modifier Name <span className="text-paymint-red mx-1">*</span>
-                                    <QuickInfo text="The name of this modifier group (e.g. 'Size', 'Toppings')." />
+                                    Name <span className="text-paymint-red mx-1">*</span>
+                                    <QuickInfo text="Name (e.g. Size)." />
                                 </label>
                                 <input
                                     type="text"
@@ -109,8 +109,8 @@ export function AttributeFormModal({
                             {/* Input Type Selection */}
                             <div className="space-y-4">
                                 <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
-                                    Selection Type
-                                    <QuickInfo text="Determines how many options the customer can select." />
+                                    Type
+                                    <QuickInfo text="Single or multiple choice?" />
                                 </label>
                                 <div className="grid grid-cols-2 gap-4">
                                     <button
@@ -125,8 +125,8 @@ export function AttributeFormModal({
                                             <MousePointerClick size={20} strokeWidth={2.5} />
                                         </div>
                                         <div>
-                                            <p className={`text-sm font-bold ${inputType === 'SINGLE_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>Single Select</p>
-                                            <p className="text-[10px] font-medium text-gray-400 mt-1">Customer picks exactly one option.</p>
+                                            <p className={`text-sm font-bold ${inputType === 'SINGLE_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>Single</p>
+                                            <p className="text-[10px] font-medium text-gray-400 mt-1">Pick one.</p>
                                         </div>
                                         {inputType === 'SINGLE_SELECT' && (
                                             <div className="absolute top-4 right-4 text-paymint-green">
@@ -147,8 +147,8 @@ export function AttributeFormModal({
                                             <CheckSquare size={20} strokeWidth={2.5} />
                                         </div>
                                         <div>
-                                            <p className={`text-sm font-bold ${inputType === 'MULTI_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>Multi Select</p>
-                                            <p className="text-[10px] font-medium text-gray-400 mt-1">Customer can pick multiple options.</p>
+                                            <p className={`text-sm font-bold ${inputType === 'MULTI_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>Multiple</p>
+                                            <p className="text-[10px] font-medium text-gray-400 mt-1">Pick many.</p>
                                         </div>
                                         {inputType === 'MULTI_SELECT' && (
                                             <div className="absolute top-4 right-4 text-paymint-green">
@@ -163,7 +163,7 @@ export function AttributeFormModal({
                             <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
                                 <div>
                                     <p className="text-sm font-bold text-gray-900 dark:text-white">Required</p>
-                                    <p className="text-[10px] text-gray-500 font-bold mt-0.5">Customer must select an option</p>
+                                    <p className="text-[10px] text-gray-500 font-bold mt-0.5">Selection mandatory</p>
                                 </div>
                                 <label className="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" checked={isRequired} onChange={() => setIsRequired(!isRequired)} className="sr-only peer" />
@@ -174,9 +174,9 @@ export function AttributeFormModal({
                             <div className="bg-blue-50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-500/10 rounded-xl p-4 flex gap-3">
                                 <AlertCircle size={18} className="text-blue-500 shrink-0 mt-0.5" />
                                 <div>
-                                    <p className="text-[10px] font-black tracking-widest text-blue-500 mb-1">Note</p>
+                                    <p className="text-[10px] font-black tracking-widest text-blue-500 mb-1">Info</p>
                                     <p className="text-xs text-blue-900/70 dark:text-blue-200/70 font-medium leading-relaxed">
-                                        After creating the modifier group, you can add specific options (like 'Small', 'Medium', 'Large') from the main Attributes page.
+                                        Add options like 'Small' or 'Large' after saving.
                                     </p>
                                 </div>
                             </div>
@@ -211,7 +211,7 @@ export function AttributeFormModal({
                             {isSubmitting ? (
                                 <RefreshCw size={18} className="animate-spin" />
                             ) : (
-                                initialData ? 'Save Changes' : 'Add Modifier'
+                                initialData ? 'Save' : 'Create'
                             )}
                         </button>
                     </div>

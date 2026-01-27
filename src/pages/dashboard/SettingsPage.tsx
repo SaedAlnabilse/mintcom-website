@@ -377,7 +377,7 @@ export function SettingsPage() {
           setConfirmConfig({
             isOpen: true,
             title: 'Reward Deleted',
-            message: 'Reward deleted successfully',
+            message: 'Reward deleted',
             type: 'success',
             confirmText: 'OK',
             showCancel: false,
@@ -424,7 +424,7 @@ export function SettingsPage() {
       setConfirmConfig({
         isOpen: true,
         title: editingReward ? 'Reward Updated' : 'Reward Added',
-        message: editingReward ? 'Reward updated successfully' : 'Reward added successfully',
+        message: editingReward ? 'Reward updated' : 'Reward added',
         type: 'success',
         confirmText: 'OK',
         showCancel: false,
@@ -526,7 +526,7 @@ export function SettingsPage() {
       setConfirmConfig({
         isOpen: true,
         title: 'Settings Saved',
-        message: 'Settings saved successfully',
+        message: 'Settings saved',
         type: 'success',
         confirmText: 'OK',
         showCancel: false,
@@ -548,10 +548,10 @@ export function SettingsPage() {
   };
 
   const to12Hour = (time24?: string) => {
-    if (!time24) return { hour: '09', minute: '00', period: 'AM' };
+    if (!time24) return { hour: '09', minute: '00', period: 'Am' };
     const [h, m] = time24.split(':');
     const hr = parseInt(h, 10);
-    const period = hr >= 12 ? 'PM' : 'AM';
+    const period = hr >= 12 ? 'Pm' : 'Am';
     const displayHr = hr % 12 || 12;
     return {
       hour: displayHr.toString().padStart(2, '0'),
@@ -564,8 +564,8 @@ export function SettingsPage() {
     let hr = parseInt(hour, 10);
     const hNum = isNaN(hr) ? 9 : hr;
     let finalHr = hNum;
-    if (period === 'PM' && hNum < 12) finalHr += 12;
-    if (period === 'AM' && hNum === 12) finalHr = 0;
+    if (period === 'Pm' && hNum < 12) finalHr += 12;
+    if (period === 'Am' && hNum === 12) finalHr = 0;
     return `${finalHr.toString().padStart(2, '0')}:${minute}`;
   };
 
@@ -686,7 +686,7 @@ export function SettingsPage() {
                   <div className="space-y-2">
                     <p className="text-[10px] font-black text-gray-400 text-center mb-2">Period</p>
                     <div className="space-y-1">
-                      {['AM', 'PM'].map(p => (
+                      {['Am', 'Pm'].map(p => (
                         <button
                           key={p}
                           type="button"
@@ -786,7 +786,7 @@ export function SettingsPage() {
             setConfirmConfig({
               isOpen: true,
               title: 'Tax Rate Updated',
-              message: 'Tax rate updated successfully',
+              message: 'Tax rate updated',
               type: 'success',
               confirmText: 'OK',
               showCancel: false,
@@ -836,7 +836,7 @@ export function SettingsPage() {
       setConfirmConfig({
         isOpen: true,
         title: 'Action Cancelled',
-        message: 'Deletion cancelled successfully!',
+        message: 'Deletion cancelled!',
         type: 'success',
         confirmText: 'OK',
         showCancel: false,
@@ -894,12 +894,12 @@ export function SettingsPage() {
   };
 
   const tabs = [
-    { id: 'profile', label: 'Restaurant Profile', icon: Store },
-    { id: 'sales', label: 'Sales Settings', icon: CreditCard },
-    { id: 'receipt', label: 'Receipt Design', icon: Receipt },
-    { id: 'loyalty', label: 'Loyalty Program', icon: Award },
-    { id: 'demo', label: 'Demo Data', icon: Database },
-    { id: 'danger', label: 'Delete Establishment', icon: Trash2, isDanger: true },
+    { id: 'profile', label: 'Profile', icon: Store },
+    { id: 'sales', label: 'Sales', icon: CreditCard },
+    { id: 'receipt', label: 'Receipts', icon: Receipt },
+    { id: 'loyalty', label: 'Loyalty', icon: Award },
+    { id: 'demo', label: 'Demo', icon: Database },
+    { id: 'danger', label: 'Delete', icon: Trash2, isDanger: true },
   ];
 
   if (isLoading) {
@@ -920,7 +920,7 @@ export function SettingsPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-              System Configuration
+              Config
             </span>
             <div className="flex items-center gap-2">
               <span className="relative flex h-2 w-2">
@@ -930,9 +930,9 @@ export function SettingsPage() {
               <span className="text-[10px] font-bold text-gray-400 tracking-widest">Live</span>
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Establishment Settings</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Settings</h1>
           <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">
-            Manage your profile, sales logic, and operational parameters
+            Manage your store settings
           </p>
         </div>
 
@@ -1008,9 +1008,9 @@ export function SettingsPage() {
       })} className="space-y-8">
         {activeTab === 'profile' && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Restaurant Profile</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Profile</h3>
             <div>
-              <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-4 tracking-wider">Brand Logo</label>
+              <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-4 tracking-wider">Logo</label>
               <div className="flex items-center gap-8">
                 <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-2xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
                   {previewImage ? <img src={previewImage} alt="Logo" className="w-full h-full object-cover" /> : <Store className="w-12 h-12 text-gray-300 dark:text-gray-600" />}
@@ -1022,11 +1022,11 @@ export function SettingsPage() {
               </div>
             </div>
             <div>
-              <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Restaurant Name</label>
+              <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Name</label>
               <input type="text" {...register('restaurantName')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
             </div>
             <div>
-              <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Description</label>
+              <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">About</label>
               <textarea {...register('restaurantDescription')} rows={3} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium resize-none" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1043,7 +1043,7 @@ export function SettingsPage() {
                 <input type="email" {...register('email')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
               <div>
-                <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Tax ID / TRN</label>
+                <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Tax Id / Trn</label>
                 <input type="text" {...register('taxIdNumber')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
             </div>
@@ -1053,8 +1053,8 @@ export function SettingsPage() {
                   <Clock size={18} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">Operational Schedule</h4>
-                  <p className="text-[10px] text-gray-400 font-black tracking-widest px-1">Configure service windows</p>
+                  <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">Opening Hours</h4>
+                  <p className="text-[10px] text-gray-400 font-black tracking-widest px-1">Set service times</p>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2 mb-6">
@@ -1094,8 +1094,8 @@ export function SettingsPage() {
                         <div className="space-y-8">
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-[10px] font-black text-paymint-green tracking-[0.2em] mb-1">Session Logic</p>
-                              <p className="text-sm font-bold text-gray-900 dark:text-white truncate max-w-[200px] md:max-w-md">{selectedDays.length === 7 ? 'Entire Week' : selectedDays.map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ')}</p>
+                              <p className="text-[10px] font-black text-paymint-green tracking-[0.2em] mb-1">Days</p>
+                              <p className="text-sm font-bold text-gray-900 dark:text-white truncate max-w-[200px] md:max-w-md">{selectedDays.length === 7 ? 'Every Day' : selectedDays.map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ')}</p>
                             </div>
                             <div className="flex items-center gap-4 bg-white dark:bg-white/[0.03] px-5 py-3 rounded-2xl border border-gray-200 dark:border-white/[0.08] shadow-sm">
                               <span className={`text-[10px] font-black tracking-widest ${refConfig.isOpen ? 'text-paymint-green' : 'text-gray-400'}`}>{refConfig.isOpen ? 'Active' : 'Offline'}</span>
@@ -1115,7 +1115,7 @@ export function SettingsPage() {
                               <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center mb-3 shadow-sm border border-gray-200 dark:border-white/5">
                                 <Clock className="w-6 h-6 text-gray-400" />
                               </div>
-                              <span className="text-[10px] font-black text-gray-400 tracking-widest">Protocol: Establishment Closed</span>
+                              <span className="text-[10px] font-black text-gray-400 tracking-widest">Status: Closed</span>
                             </div>
                           )}
                         </div>
@@ -1127,8 +1127,8 @@ export function SettingsPage() {
                     <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-gray-400 shadow-sm">
                       <Plus size={24} />
                     </div>
-                    <p className="text-xs font-black text-gray-400 tracking-widest">Initialization Required</p>
-                    <p className="text-[10px] font-black text-gray-400 mt-1 tracking-widest">Select one or more days to edit schedule metadata</p>
+                    <p className="text-xs font-black text-gray-400 tracking-widest">Select a day</p>
+                    <p className="text-[10px] font-black text-gray-400 mt-1 tracking-widest">Choose days to edit hours</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -1144,8 +1144,8 @@ export function SettingsPage() {
                   <DollarSign size={20} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sales & Tax Logic</h3>
-                  <p className="text-[10px] text-gray-400 font-black tracking-widest px-1">Configure financial processing rules</p>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sales Setup</h3>
+                  <p className="text-[10px] text-gray-400 font-black tracking-widest px-1">Configure tax and currency</p>
                 </div>
               </div>
 
@@ -1153,8 +1153,8 @@ export function SettingsPage() {
                 <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all hover:border-paymint-green/20 group/card">
                   <div className="flex items-center justify-between mb-6">
                     <div>
-                      <p className="text-[10px] font-black text-paymint-green tracking-[0.2em] mb-1">Taxation Protocol</p>
-                      <h4 className="text-sm font-bold text-gray-900 dark:text-white">Active Tax Rate (%)</h4>
+                      <p className="text-[10px] font-black text-paymint-green tracking-[0.2em] mb-1">Tax</p>
+                      <h4 className="text-sm font-bold text-gray-900 dark:text-white">Tax Rate (%)</h4>
                     </div>
                     <button type="button" onClick={updateTaxRate} className="px-4 py-2 bg-paymint-green text-black text-[10px] font-black tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md shadow-paymint-green/10">Update</button>
                   </div>
@@ -1218,7 +1218,7 @@ export function SettingsPage() {
 
                 <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all hover:border-paymint-green/20 group/card">
                   <div className="mb-6">
-                    <p className="text-[10px] font-black text-blue-500 tracking-[0.2em] mb-1">Financial Standard</p>
+                    <p className="text-[10px] font-black text-blue-500 tracking-[0.2em] mb-1">Currency</p>
                     <h4 className="text-sm font-bold text-gray-900 dark:text-white">System Currency</h4>
                   </div>
                   <div className="relative">
@@ -1228,9 +1228,9 @@ export function SettingsPage() {
                       onChange={(val) => { setValue('currency', val, { shouldDirty: true }); }}
                       options={[
                         { label: 'Jod - Jordanian Dinar', value: 'Jod' },
-                        { label: 'USD - US Dollar', value: 'USD' },
-                        { label: 'SAR - Saudi Riyal', value: 'SAR' },
-                        { label: 'AED - UAE Dirham', value: 'AED' },
+                        { label: 'Usd - Us Dollar', value: 'Usd' },
+                        { label: 'Sar - Saudi Riyal', value: 'Sar' },
+                        { label: 'Aed - Uae Dirham', value: 'Aed' },
                       ]}
                     />
                   </div>
@@ -1251,13 +1251,13 @@ export function SettingsPage() {
                 <Receipt className="w-6 h-6 text-paymint-green" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Receipt Design</h3>
-                <p className="text-sm text-gray-500 font-medium">Customize customer proof of purchase</p>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Receipts</h3>
+                <p className="text-sm text-gray-500 font-medium">Edit receipt look</p>
               </div>
             </div>
             <div className="space-y-8">
               <div className="space-y-4 p-6 bg-gray-50 dark:bg-white/[0.02] rounded-2xl border border-gray-200 dark:border-white/5">
-                <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest mb-6 px-1">Display Controls</h4>
+                <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest mb-6 px-1">Options</h4>
                 <div className="space-y-4">
                   {/* Identity Visibility */}
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
@@ -1266,8 +1266,8 @@ export function SettingsPage() {
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <div>
-                            <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Restaurant Name</span>
-                            <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Display business name on header</span>
+                            <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Name</span>
+                            <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Show business name</span>
                           </div>
                           <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" {...register('showRestaurantName')} className="sr-only peer" />
@@ -1287,8 +1287,8 @@ export function SettingsPage() {
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <div>
-                            <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Description / Tagline</span>
-                            <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Display secondary text (e.g. Specialty Coffee)</span>
+                            <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Tagline</span>
+                            <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Show secondary text</span>
                           </div>
                           <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" {...register('showDescription')} className="sr-only peer" />
@@ -1310,8 +1310,8 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Branding Protocol</span>
-                        <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Include brand logo at the top</span>
+                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Logo</span>
+                        <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Show logo at top</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" {...register('showLogoOnReceipt')} className="sr-only peer" />
@@ -1335,8 +1335,8 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Location Metadata</span>
-                        <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Print full establishment address</span>
+                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Address</span>
+                        <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Show full address</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" {...register('showAddress')} className="sr-only peer" />
@@ -1356,8 +1356,8 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Regulatory Data</span>
-                        <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Show Tax ID / TRN on footer</span>
+                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Tax ID</span>
+                        <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Show Tax ID on footer</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" {...register('showTaxId')} className="sr-only peer" />
@@ -1369,7 +1369,7 @@ export function SettingsPage() {
                       {...register('taxIdNumber')}
                       disabled={!showTaxId}
                       className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                      placeholder="Enter Tax ID / TRN"
+                      placeholder="Enter Tax Id / Trn"
                     />
                   </div>
 
@@ -1377,8 +1377,8 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Client Relations</span>
-                        <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Include custom footer message</span>
+                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Footer Message</span>
+                        <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Show custom message</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" {...register('showFarewellMessage')} className="sr-only peer" />
@@ -1407,13 +1407,13 @@ export function SettingsPage() {
                   <Award className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Loyalty Protocol</h3>
-                  <p className="text-[10px] text-gray-400 font-black tracking-widest px-1">Customer Retention Infrastructure</p>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Loyalty</h3>
+                  <p className="text-[10px] text-gray-400 font-black tracking-widest px-1">Points and rewards</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-4 bg-gray-50 dark:bg-white/[0.03] px-5 py-3 rounded-2xl border border-gray-200 dark:border-white/[0.08] shadow-sm">
-                <span className={`text-[10px] font-black tracking-widest ${loyaltyConfig.enabled ? 'text-paymint-green' : 'text-gray-400'}`}>{loyaltyConfig.enabled ? 'Active' : 'Disabled'}</span>
+                <span className={`text-[10px] font-black tracking-widest ${loyaltyConfig.enabled ? 'text-paymint-green' : 'text-gray-400'}`}>{loyaltyConfig.enabled ? 'Active' : 'Off'}</span>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
@@ -1430,7 +1430,7 @@ export function SettingsPage() {
               <div className="space-y-5 pt-4">
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
-                  <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">Earning Algorithm</h4>
+                  <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">Earning Rules</h4>
                 </div>
                 <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
                   <div className="flex flex-col lg:flex-row items-center gap-8">
@@ -1454,7 +1454,7 @@ export function SettingsPage() {
 
                     {/* Connector */}
                     <div className="flex flex-col items-center justify-center py-4 lg:py-0 self-end lg:pb-5">
-                      <div className="text-[10px] font-black text-gray-400 tracking-widest">Customer Gets</div>
+                      <div className="text-[10px] font-black text-gray-400 tracking-widest">Equals</div>
                     </div>
 
                     {/* Points Input Section */}
@@ -1464,7 +1464,7 @@ export function SettingsPage() {
                       </div>
                       <div className="flex items-stretch bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
                         <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
-                          <span className="text-sm font-black text-paymint-green">PTS</span>
+                          <span className="text-sm font-black text-paymint-green">Pts</span>
                         </div>
                         <input
                           type="text"
@@ -1492,10 +1492,10 @@ export function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
-                    <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">Rewards Catalog</h4>
+                    <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">Rewards</h4>
                   </div>
                   <button type="button" onClick={() => { setEditingReward(null); setShowRewardModal(true); }} className="flex items-center gap-2 px-4 py-2 bg-paymint-green/10 text-paymint-green rounded-xl text-[10px] font-black tracking-widest hover:bg-paymint-green/20 transition-all border border-paymint-green/20">
-                    <Plus size={14} /> Add Protocol
+                    <Plus size={14} /> Add
                   </button>
                 </div>
                 {rewards.length === 0 ? (
@@ -1567,12 +1567,12 @@ export function SettingsPage() {
                   <Trash2 className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Terminal Deletion</h3>
-                  <p className="text-[10px] text-red-600/80 dark:text-red-400/80 font-black tracking-widest px-1">Critical Administrative Action</p>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Delete Location</h3>
+                  <p className="text-[10px] text-red-600/80 dark:text-red-400/80 font-black tracking-widest px-1">Danger Zone</p>
                 </div>
               </div>
               <span className="px-3 py-1 rounded-lg bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-[10px] font-black tracking-widest border border-red-200 dark:border-red-900/30">
-                High Risk
+                Warning
               </span>
             </div>
 

@@ -83,8 +83,8 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat('en-US', {
             style: 'currency',
-            currency: 'JOD',
-        }).format(value).replace('JOD', '').trim() + ' JOD';
+            currency: 'Jod',
+        }).format(value).replace('Jod', '').trim() + ' Jod';
     };
 
     return (

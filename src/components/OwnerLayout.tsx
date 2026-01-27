@@ -29,7 +29,7 @@ import PaymintLeafIcon from '../assets/small-logo.png';
 
 const menuItems = [
     { path: '/owner', label: 'Overview', icon: LayoutDashboard },
-    { path: '/owner/establishments', label: 'Establishments', icon: Store },
+    { path: '/owner/establishments', label: 'Locations', icon: Store },
     { path: '/owner/brands', label: 'Brands', icon: Building2 },
     { path: '/owner/employees', label: 'Employees', icon: Users },
     { path: '/owner/roles', label: 'Global Roles', icon: Shield },

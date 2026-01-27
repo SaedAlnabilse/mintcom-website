@@ -54,31 +54,31 @@ interface EmployeeFormModalProps {
 }
 
 const POS_PERMISSIONS = [
-  { id: 'accept_payments', label: 'Accept Payments', description: 'Process Payment Transactions' },
-  { id: 'apply_discounts', label: 'Apply Discounts With Restricted Access', description: 'Allow Applying Discounts During Sale' },
-  { id: 'change_taxes', label: 'Change Taxes In A Sale', description: 'Modify Tax Rate During Checkout' },
-  { id: 'open_cash_drawer', label: 'Open Cash Drawer Without Making A Sale', description: 'Manual Drawer Access' },
-  { id: 'view_all_receipts', label: 'View All Receipts', description: 'When Disabled, Can Only View Last 5 Receipts' },
-  { id: 'refunds', label: 'Perform Refunds', description: 'Process Order Refunds' },
-  { id: 'reprint_receipts', label: 'Reprint And Resend Receipts', description: 'Print Receipts For Past Orders' },
-  { id: 'inventory', label: 'Manage Items', description: 'Add, Edit, Delete Menu Items' },
-  { id: 'view_item_cost', label: 'View Cost Of Items', description: 'See Cost Prices And Margins' },
-  { id: 'settings', label: 'Change Settings', description: 'Access App Settings' },
-  { id: 'live_chat', label: 'Access To Live Chat Support', description: 'Contact Support Via Chat' },
+  { id: 'accept_payments', label: 'Accept Payments', description: 'Process payments' },
+  { id: 'apply_discounts', label: 'Apply Discounts', description: 'Apply discounts to orders' },
+  { id: 'change_taxes', label: 'Change Tax', description: 'Change tax rate at checkout' },
+  { id: 'open_cash_drawer', label: 'Open Drawer', description: 'Open cash drawer manually' },
+  { id: 'view_all_receipts', label: 'View Receipts', description: 'View all past receipts' },
+  { id: 'refunds', label: 'Refunds', description: 'Process refunds' },
+  { id: 'reprint_receipts', label: 'Reprint', description: 'Reprint receipts' },
+  { id: 'inventory', label: 'Manage Items', description: 'Edit menu items' },
+  { id: 'view_item_cost', label: 'View Costs', description: 'See item costs' },
+  { id: 'settings', label: 'Settings', description: 'Change app settings' },
+  { id: 'live_chat', label: 'Support', description: 'Chat with support' },
 ];
 
 const BACKOFFICE_PERMISSIONS = [
-  { id: 'view_reports', label: 'View Sales Reports', description: 'Access Dashboard And Analytics' },
-  { id: 'manage_items', label: 'Manage Items', description: 'Create And Edit Products And Inventory' },
-  { id: 'view_cost', label: 'View Cost Of Items', description: 'See Profit Margins And Costs' },
-  { id: 'manage_employees', label: 'Manage Employees', description: 'Add/Edit Staff And Roles' },
-  { id: 'manage_customers', label: 'Manage Customers', description: 'View And Edit Customer Database' },
-  { id: 'manage_settings', label: 'Manage Feature Settings', description: 'General Store Configuration' },
-  { id: 'manage_billing', label: 'Manage Billing', description: 'Subscription And Payment Methods' },
-  { id: 'manage_payment_types', label: 'Manage Payment Types', description: 'Configure Payment Options' },
-  { id: 'manage_loyalty', label: 'Manage Loyalty Program', description: 'Configure Points And Rewards' },
-  { id: 'manage_taxes', label: 'Manage Taxes', description: 'Tax Rates And Settings' },
-  { id: 'manage_devices', label: 'Manage POS Devices', description: 'Add Or Remove POS Registers' },
+  { id: 'view_reports', label: 'View Reports', description: 'See sales and data' },
+  { id: 'manage_items', label: 'Manage Items', description: 'Edit products and inventory' },
+  { id: 'view_cost', label: 'View Costs', description: 'See costs and profits' },
+  { id: 'manage_employees', label: 'Manage Staff', description: 'Add/edit staff' },
+  { id: 'manage_customers', label: 'Manage Customers', description: 'Edit customer info' },
+  { id: 'manage_settings', label: 'Settings', description: 'Store settings' },
+  { id: 'manage_billing', label: 'Billing', description: 'Payments and plans' },
+  { id: 'manage_payment_types', label: 'Payments', description: 'Edit payment methods' },
+  { id: 'manage_loyalty', label: 'Loyalty', description: 'Edit loyalty program' },
+  { id: 'manage_taxes', label: 'Taxes', description: 'Edit tax rates' },
+  { id: 'manage_devices', label: 'Devices', description: 'Manage registers' },
 ];
 
 export function EmployeeFormModal({
@@ -344,7 +344,7 @@ export function EmployeeFormModal({
               <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
                 {initialData ? 'Edit Employee' : 'New Employee'}
               </h2>
-              <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">Staff Details</p>
+              <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">Staff</p>
             </div>
             <button
               onClick={onClose}
@@ -360,7 +360,7 @@ export function EmployeeFormModal({
               {/* Name */}
               <div>
                 <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                  Full Name <span className="text-paymint-red">*</span>
+                  Name <span className="text-paymint-red">*</span>
                 </label>
                 <input
                   type="text"
@@ -396,7 +396,7 @@ export function EmployeeFormModal({
                   type="email"
                   value={email}
                   onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors({ ...errors, email: '' }); }}
-                  placeholder="E.g. john@example.com"
+                  placeholder="E.g. name@email.com"
                   className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.email ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
                 />
                 {errors.email && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.email}</p>}
@@ -429,10 +429,10 @@ export function EmployeeFormModal({
                   >
                     <span className={`text-sm font-bold ${selectedEstablishmentIds.length ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}>
                       {selectedEstablishmentIds.length === 0
-                        ? 'Select establishments...'
+                        ? 'Select location...'
                         : selectedEstablishmentIds.length === establishments.length
-                          ? 'All Establishments'
-                          : `${selectedEstablishmentIds.length} Location${selectedEstablishmentIds.length === 1 ? '' : 's'} Selected`}
+                          ? 'All Locations'
+                          : `${selectedEstablishmentIds.length} Location${selectedEstablishmentIds.length === 1 ? '' : 's'}`}
                     </span>
                     <ChevronDown size={16} className={`text-gray-400 transition-transform ${showEstablishmentDropdown ? 'rotate-180' : ''}`} />
                   </button>
@@ -564,8 +564,8 @@ export function EmployeeFormModal({
                       {/* No custom roles message */}
                       {customRoles.length === 0 && (
                         <div className="p-3 text-center">
-                          <p className="text-xs text-gray-500">No Custom Roles Created Yet</p>
-                          <p className="text-[10px] text-gray-400 mt-1">Create Roles In Settings → Roles</p>
+                          <p className="text-xs text-gray-500">No Roles</p>
+                          <p className="text-[10px] text-gray-400 mt-1">Create roles in settings</p>
                         </div>
                       )}
                     </div>
@@ -653,7 +653,7 @@ export function EmployeeFormModal({
               {isSubmitting ? (
                 <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
               ) : (
-                initialData ? 'Save Changes' : 'Add Employee'
+                initialData ? 'Save' : 'Add'
               )}
             </button>
           </div>

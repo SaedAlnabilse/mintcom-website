@@ -45,7 +45,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-paymint-green/10 text-paymint-green font-medium text-sm mb-8 border border-paymint-green/20"
             >
               <Zap size={14} fill="currentColor" />
-              <span>The Future of Restaurant POS</span>
+              <span>Modern Restaurant Pos</span>
             </motion.div>
 
             <h1 className="text-5xl lg:text-7xl font-bold font-sans text-gray-900 dark:text-white mb-8 leading-[1.1] tracking-tight">
@@ -56,7 +56,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
             </h1>
 
             <p className="text-xl text-gray-600 dark:text-gray-400 mb-10 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-light">
-              The all-in-one POS platform designed to streamline your operations, empower your staff, and delight your customers from day one.
+              The complete Pos system to run your business, help your team, and serve customers better.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">

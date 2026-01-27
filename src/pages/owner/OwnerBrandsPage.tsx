@@ -72,8 +72,8 @@ type SortOption = 'name' | 'date' | 'locations';
 const createBrandSchema = z.object({
     name: z.string().min(2, 'Brand name must be at least 2 characters'),
     establishmentLoginId: z.string()
-        .min(4, 'POS ID must be at least 4 characters')
-        .regex(/^[a-zA-Z0-9_-]+$/, 'POS ID can only contain letters, numbers, underscores, and hyphens'),
+        .min(4, 'Pos Id must be at least 4 characters')
+        .regex(/^[a-zA-Z0-9_-]+$/, 'Pos Id can only contain letters, numbers, underscores, and hyphens'),
     establishmentPassword: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
@@ -317,7 +317,7 @@ export function OwnerBrandsPage() {
                 establishmentIds: selectedEstablishments,
                 mergeEmployeeIds: selectedEmployees,
             });
-            toast.success('Brand created successfully!');
+            toast.success('Brand created!');
             handleCloseModal();
             fetchBrands();
             refreshEstablishments();
@@ -358,12 +358,12 @@ export function OwnerBrandsPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-                            Brand Engine
+                            Brand Management
                         </span>
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Brand Portfolio</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Brands</h1>
                     <p className="text-gray-500 dark:text-gray-400 mt-2">
-                        Unified control plane for multi-establishment entities
+                        Manage multiple locations under one brand
                     </p>
                 </div>
 
@@ -391,8 +391,8 @@ export function OwnerBrandsPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
                     { label: 'Active Brands', value: stats.totalBrands, icon: Building2, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: 'Merged Locations', value: stats.totalMerged, icon: Link2, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-                    { label: 'Available Nodes', value: stats.availableNodes, icon: Store, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+                    { label: 'Linked Locations', value: stats.totalMerged, icon: Link2, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+                    { label: 'Available Locations', value: stats.availableNodes, icon: Store, color: 'text-orange-500', bg: 'bg-orange-500/10' },
                 ].map((stat, i) => (
                     <motion.div
                         key={i}
@@ -426,7 +426,7 @@ export function OwnerBrandsPage() {
                         />
                         <input
                             type="text"
-                            placeholder="Search brands by name or POS ID..."
+                            placeholder="Search brands by name or Pos Id..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm hover:shadow-md focus:shadow-lg"
@@ -484,10 +484,10 @@ export function OwnerBrandsPage() {
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Building2 size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
                     <p className="text-lg font-medium text-gray-900 dark:text-white">
-                        {hasActiveFilters ? 'No brands found' : 'Portfolio Empty'}
+                        {hasActiveFilters ? 'No brands found' : 'No Brands'}
                     </p>
                     <p className="text-sm text-gray-500 mt-1">
-                        {hasActiveFilters ? 'Try adjusting your search' : 'Create a brand to merge multiple establishments'}
+                        {hasActiveFilters ? 'Try adjusting your search' : 'Create a brand to group locations'}
                     </p>
                     {!hasActiveFilters && availableEstablishments.length >= 2 && (
                         <button
@@ -586,7 +586,7 @@ export function OwnerBrandsPage() {
                                                             className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
                                                         >
                                                             <Trash2 size={16} />
-                                                            Dissolve Brand
+                                                            Delete Brand
                                                         </button>
                                                     </motion.div>
                                                 )}
@@ -599,7 +599,7 @@ export function OwnerBrandsPage() {
                                         <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <Hash size={14} className="text-purple-500" />
-                                                <span className="text-[9px] font-black text-gray-400 tracking-widest">POS ID</span>
+                                                <span className="text-[9px] font-black text-gray-400 tracking-widest">Login Id</span>
                                             </div>
                                             <p className="text-sm font-mono font-bold text-gray-900 dark:text-white truncate">
                                                 {brand.establishmentLoginId}
@@ -619,7 +619,7 @@ export function OwnerBrandsPage() {
                                     {/* Establishments */}
                                     <div className="space-y-3 relative z-10">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-[10px] font-black text-gray-400 tracking-widest">Fleet Composition</span>
+                                            <span className="text-[10px] font-black text-gray-400 tracking-widest">Locations</span>
                                         </div>
                                         <div className="flex flex-wrap gap-2">
                                             {brand.establishments.slice(0, 4).map((est) => (
@@ -659,7 +659,7 @@ export function OwnerBrandsPage() {
                     {/* Table Header */}
                     <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
                         <div className="col-span-4">Brand</div>
-                        <div className="col-span-2">POS ID</div>
+                        <div className="col-span-2">Login Id</div>
                         <div className="col-span-2">Locations</div>
                         <div className="col-span-2">Created</div>
                         <div className="col-span-2 text-right">Actions</div>
@@ -700,7 +700,7 @@ export function OwnerBrandsPage() {
                                         </div>
                                     </div>
 
-                                    {/* POS ID */}
+                                    {/* Pos Id */}
                                     <div className="col-span-2 flex items-center">
                                         <span className="font-mono text-sm font-bold text-gray-900 dark:text-white">
                                             {brand.establishmentLoginId}
@@ -789,7 +789,7 @@ export function OwnerBrandsPage() {
                                         <Link2 size={28} className="text-black" />
                                     </div>
                                     <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none mb-3">Create Brand</h3>
-                                    <p className="text-sm text-gray-500 leading-relaxed">Merge multiple establishments into a unified brand entity.</p>
+                                    <p className="text-sm text-gray-500 leading-relaxed">Group multiple locations under one brand.</p>
                                 </div>
 
                                 <div className="space-y-4 mt-8 hidden md:block">
@@ -800,7 +800,7 @@ export function OwnerBrandsPage() {
                                             </div>
                                             <div>
                                                 <p className={`text-xs font-bold ${wizardStep === step ? 'text-paymint-green' : 'text-gray-400'}`}>
-                                                    {step === 1 ? 'Brand Details' : step === 2 ? 'Select Locations' : 'Merge Staff'}
+                                                    {step === 1 ? 'Brand Details' : step === 2 ? 'Select Locations' : 'Link Staff'}
                                                 </p>
                                             </div>
                                         </div>
@@ -833,7 +833,7 @@ export function OwnerBrandsPage() {
 
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                         <div className="space-y-2">
-                                                            <label className="text-xs font-bold text-gray-500 tracking-wide block">POS Login ID</label>
+                                                            <label className="text-xs font-bold text-gray-500 tracking-wide block">Login Id</label>
                                                             <div className="relative">
                                                                 <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                                                                 <input
@@ -863,8 +863,8 @@ export function OwnerBrandsPage() {
                                                 <div className="p-5 bg-blue-50 dark:bg-blue-500/10 rounded-xl border border-blue-100 dark:border-blue-500/20 flex gap-4">
                                                     <Shield size={20} className="text-blue-500 shrink-0 mt-0.5" />
                                                     <div>
-                                                        <h4 className="font-bold text-gray-900 dark:text-white text-sm mb-1">Unified Credentials</h4>
-                                                        <p className="text-xs text-gray-600 dark:text-gray-400">These credentials will act as the master access for all merged establishments.</p>
+                                                        <h4 className="font-bold text-gray-900 dark:text-white text-sm mb-1">Master Login</h4>
+                                                        <p className="text-xs text-gray-600 dark:text-gray-400">Use this to log in to all locations.</p>
                                                     </div>
                                                 </div>
                                             </motion.div>
@@ -879,8 +879,8 @@ export function OwnerBrandsPage() {
                                                 className="space-y-6"
                                             >
                                                 <div>
-                                                    <h4 className="text-xs font-bold text-gray-500 tracking-wide mb-4">Select Establishments to Merge</h4>
-                                                    <p className="text-sm text-gray-500 mb-4">Select at least 2 establishments to create a brand.</p>
+                                                    <h4 className="text-xs font-bold text-gray-500 tracking-wide mb-4">Select Locations</h4>
+                                                    <p className="text-sm text-gray-500 mb-4">Choose locations to group under this brand.</p>
                                                     <div className="grid grid-cols-1 gap-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                                                         {availableEstablishments.map((est: any) => (
                                                             <div
@@ -918,12 +918,12 @@ export function OwnerBrandsPage() {
                                             >
                                                 <div>
                                                     <div className="flex items-center justify-between mb-4">
-                                                        <h4 className="text-xs font-bold text-gray-500 tracking-wide">Merge Staff (Optional)</h4>
+                                                        <h4 className="text-xs font-bold text-gray-500 tracking-wide">Link Staff (Optional)</h4>
                                                         <span className="px-3 py-1 bg-paymint-green/10 rounded-lg text-xs font-bold text-paymint-green">
                                                             {selectedEmployees.length} selected
                                                         </span>
                                                     </div>
-                                                    <p className="text-sm text-gray-500 mb-4">Select employees who should have access across all brand locations.</p>
+                                                    <p className="text-sm text-gray-500 mb-4">Choose staff who can access all locations.</p>
 
                                                     {loadingEmployees ? (
                                                         <div className="py-16 flex flex-col items-center justify-center space-y-4">

@@ -26,7 +26,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
         }
     };
 
-    // Format expiry as MM/YY
+    // Format expiry as Mm/Yy
     const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.replace(/\D/g, '');
         if (value.length <= 4) {
@@ -40,11 +40,11 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
 
     const getCardBrand = (number: string) => {
         const clean = number.replace(/\D/g, '');
-        if (clean.match(/^4/)) return 'VISA';
-        if (clean.match(/^5[1-5]/)) return 'MASTERCARD';
-        if (clean.match(/^3[47]/)) return 'AMEX';
-        if (clean.match(/^6/)) return 'DISCOVER';
-        return 'UNKNOWN';
+        if (clean.match(/^4/)) return 'Visa';
+        if (clean.match(/^5[1-5]/)) return 'Mastercard';
+        if (clean.match(/^3[47]/)) return 'Amex';
+        if (clean.match(/^6/)) return 'Discover';
+        return 'Unknown';
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -76,7 +76,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                 setAsDefault: true,
             });
 
-            toast.success('Payment method added successfully');
+            toast.success('Payment method added');
             onSuccess();
             onClose();
 
@@ -141,7 +141,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                             />
                                             <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                                             <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                                                {getCardBrand(cardNumber) !== 'UNKNOWN' && (
+                                                {getCardBrand(cardNumber) !== 'Unknown' && (
                                                     <span className="text-[10px] font-black text-paymint-green tracking-wider bg-paymint-green/10 px-2 py-1 rounded-md border border-paymint-green/20">
                                                         {getCardBrand(cardNumber)}
                                                     </span>
@@ -150,7 +150,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                         </div>
                                     </div>
 
-                                    {/* Expiry & CVC */}
+                                    {/* Expiry & Cvc */}
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
                                             <label className="text-[10px] font-black text-gray-400 tracking-widest block pl-1">Expiry</label>
@@ -158,13 +158,13 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                                 type="text"
                                                 value={expiry}
                                                 onChange={handleExpiryChange}
-                                                placeholder="MM/YY"
+                                                placeholder="Mm/Yy"
                                                 maxLength={5}
                                                 className="w-full h-14 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all text-center font-mono"
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-gray-400 tracking-widest block pl-1">CVC</label>
+                                            <label className="text-[10px] font-black text-gray-400 tracking-widest block pl-1">Cvc</label>
                                             <div className="relative group">
                                                 <input
                                                     type="password"
@@ -208,7 +208,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
 
                                     <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-gray-400 tracking-wider">
                                         <Lock size={10} />
-                                        <span>256-Bit SSL Encrypted</span>
+                                        <span>256-Bit Ssl Encrypted</span>
                                     </div>
                                 </form>
                             </div>

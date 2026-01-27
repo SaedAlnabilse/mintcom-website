@@ -14,7 +14,7 @@ export function VerifyEmailPage() {
   useEffect(() => {
     if (!token) {
       setStatus('error');
-      setMessage('Missing verification token.');
+      setMessage('Missing link.');
       return;
     }
 
@@ -25,10 +25,10 @@ export function VerifyEmailPage() {
       try {
         const response = await api.post('/api/accounts/verify-email', { token });
         setStatus('success');
-        setMessage(response.data.message || 'Your email has been verified successfully.');
+        setMessage(response.data.message || 'Email verified.');
       } catch (err: any) {
         setStatus('error');
-        setMessage(err.response?.data?.message || 'Verification failed. The link may have expired.');
+        setMessage(err.response?.data?.message || 'Verification failed. Link expired.');
       }
     };
 
@@ -48,7 +48,7 @@ export function VerifyEmailPage() {
               <Loader2 className="w-10 h-10 text-paymint-green animate-spin" />
             </div>
             <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Verifying Email</h2>
-            <p className="text-gray-600 dark:text-gray-400 font-medium">Please wait while we verify your account...</p>
+            <p className="text-gray-600 dark:text-gray-400 font-medium">Verifying your account...</p>
           </div>
         )}
 
@@ -73,9 +73,9 @@ export function VerifyEmailPage() {
             <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto">
               <XCircle className="w-10 h-10 text-accent" />
             </div>
-            <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Verification Link Expired</h2>
+            <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Link Expired</h2>
             <p className="text-gray-600 dark:text-gray-400 font-medium">
-              This link is invalid or has already been used. If you've already verified your account, you can log in now.
+              Link invalid or expired.
             </p>
             <div className="flex flex-col gap-3">
               <Link

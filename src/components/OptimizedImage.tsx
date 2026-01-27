@@ -7,9 +7,9 @@ interface OptimizedImageProps {
   alt: string;
   /** Optional CSS classes */
   className?: string;
-  /** Optional explicit width (helps prevent CLS) */
+  /** Optional explicit width (helps prevent Cls) */
   width?: number | string;
-  /** Optional explicit height (helps prevent CLS) */
+  /** Optional explicit height (helps prevent Cls) */
   height?: number | string;
   /**
    * Loading strategy:
@@ -32,13 +32,13 @@ interface OptimizedImageProps {
 }
 
 /**
- * Optimized image component that improves Core Web Vitals (LCP, CLS).
+ * Optimized image component that improves Core Web Vitals (Lcp, Cls).
  *
  * Features:
  * - Lazy loading by default (eager for priority/hero images)
  * - Async decoding to prevent main thread blocking
  * - Fade-in animation on load
- * - Optional placeholder to prevent CLS
+ * - Optional placeholder to prevent Cls
  * - Explicit width/height support for CLS prevention
  *
  * Usage:
@@ -49,7 +49,7 @@ interface OptimizedImageProps {
  * // Hero/above-fold image (eager loaded)
  * <OptimizedImage src="/hero.png" alt="Hero" priority />
  *
- * // With explicit dimensions (prevents CLS)
+ * // With explicit dimensions (prevents Cls)
  * <OptimizedImage src="/product.png" alt="Product" width={200} height={200} />
  * ```
  */

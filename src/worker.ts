@@ -9,7 +9,7 @@ export default {
                 return new Response("Internal Error: env.ASSETS is broken/missing. Please define assets in wrangler.jsonc", { status: 500 });
             }
 
-            // 0. API Proxy (Forward /api requests to Railway)
+            // 0. Api Proxy (Forward /api requests to Railway)
             if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/reports/') || url.pathname.startsWith('/app-settings/') || url.pathname.startsWith('/files/') || url.pathname.startsWith('/customers/') || url.pathname.startsWith('/uploads/')) {
                 // @ts-ignore
                 const targetBase = env.API_TARGET || 'https://grateful-liberation-production-d036.up.railway.app';
@@ -28,7 +28,7 @@ export default {
             // 1. Try to fetch the asset
             let response = await env.ASSETS.fetch(request);
 
-            // 2. SPA Fallback
+            // 2. Spa Fallback
             if (response.status === 404) {
                 const path = url.pathname;
 

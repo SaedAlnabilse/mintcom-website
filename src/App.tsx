@@ -6,14 +6,14 @@ import { ThemeProvider } from './context/ThemeContext';
 import { LoadingFallback } from './components/LoadingFallback';
 
 // ============================================================================
-// EAGER IMPORTS (Critical path - always needed)
+// Eager Imports (Critical path - always needed)
 // ============================================================================
 // These are loaded immediately as they're needed for the auth flow
 import { ErrorPage } from './components/ErrorPage';
 import { ProtectedRoute, EstablishmentRequiredRoute } from './components/ProtectedRoute';
 
 // ============================================================================
-// LAZY IMPORTS - PUBLIC PAGES
+// Lazy Imports - Public Pages
 // ============================================================================
 // Landing page is the entry point - consider preloading for better UX
 const LandingPage = lazy(() => import('./pages/LandingPage').then(m => ({ default: m.LandingPage })));
@@ -25,20 +25,20 @@ const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage').then(
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage').then(m => ({ default: m.ResetPasswordPage })));
 
 // ============================================================================
-// LAZY IMPORTS - ONBOARDING
+// Lazy Imports - Onboarding
 // ============================================================================
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage').then(m => ({ default: m.OnboardingPage })));
 const SelectEstablishmentPage = lazy(() => import('./pages/SelectEstablishmentPage').then(m => ({ default: m.SelectEstablishmentPage })));
 
 // ============================================================================
-// LAZY IMPORTS - LAYOUTS (Loaded when entering each section)
+// Lazy Imports - Layouts (Loaded when entering each section)
 // ============================================================================
 const DashboardLayout = lazy(() => import('./components/DashboardLayout').then(m => ({ default: m.DashboardLayout })));
 const OwnerLayout = lazy(() => import('./components/OwnerLayout').then(m => ({ default: m.OwnerLayout })));
 const BrandLayout = lazy(() => import('./components/BrandLayout').then(m => ({ default: m.BrandLayout })));
 
 // ============================================================================
-// LAZY IMPORTS - OWNER PORTAL PAGES
+// Lazy Imports - Owner Portal Pages
 // ============================================================================
 const OwnerOverviewPage = lazy(() => import('./pages/owner/OwnerOverviewPage').then(m => ({ default: m.OwnerOverviewPage })));
 const OwnerEstablishmentsPage = lazy(() => import('./pages/owner/OwnerEstablishmentsPage').then(m => ({ default: m.OwnerEstablishmentsPage })));
@@ -50,14 +50,14 @@ const OwnerRolesPage = lazy(() => import('./pages/owner/OwnerRolesPage').then(m 
 const OwnerAccountManagementPage = lazy(() => import('./pages/owner/OwnerAccountManagementPage').then(m => ({ default: m.OwnerAccountManagementPage })));
 
 // ============================================================================
-// LAZY IMPORTS - BRAND PORTAL PAGES
+// Lazy Imports - Brand Portal Pages
 // ============================================================================
 const BrandDashboardPage = lazy(() => import('./pages/brand/BrandDashboardPage').then(m => ({ default: m.BrandDashboardPage })));
 const BrandLocationsPage = lazy(() => import('./pages/brand/BrandLocationsPage').then(m => ({ default: m.BrandLocationsPage })));
 const BrandTeamPage = lazy(() => import('./pages/brand/BrandTeamPage').then(m => ({ default: m.BrandTeamPage })));
 
 // ============================================================================
-// LAZY IMPORTS - DASHBOARD PAGES (Largest chunk - most features)
+// Lazy Imports - Dashboard Pages (Largest chunk - most features)
 // ============================================================================
 const DashboardPage = lazy(() => import('./pages/dashboard/DashboardPage').then(m => ({ default: m.DashboardPage })));
 const OrdersPage = lazy(() => import('./pages/dashboard/OrdersPage').then(m => ({ default: m.OrdersPage })));
@@ -79,7 +79,7 @@ const AdminUsersPage = lazy(() => import('./pages/dashboard/AdminUsersPage').the
 const CustomRolesPage = lazy(() => import('./pages/dashboard/CustomRolesPage').then(m => ({ default: m.CustomRolesPage })));
 
 // ============================================================================
-// SUSPENSE WRAPPER COMPONENTS
+// Suspense Wrapper Components
 // ============================================================================
 // These wrap lazy components with appropriate loading states
 
@@ -102,7 +102,7 @@ function LayoutSuspense({ children }: { children: React.ReactNode }) {
 }
 
 // ============================================================================
-// ROUTER CONFIGURATION
+// Router Configuration
 // ============================================================================
 const router = createBrowserRouter([
   {
@@ -113,7 +113,7 @@ const router = createBrowserRouter([
       </>
     ),
     children: [
-      // ========== PUBLIC ROUTES ==========
+      // ========== Public Routes ==========
       {
         path: "/",
         element: (
@@ -171,7 +171,7 @@ const router = createBrowserRouter([
         ),
       },
 
-      // ========== PROTECTED ROUTES (Require Authentication) ==========
+      // ========== Protected Routes (Require Authentication) ==========
       {
         element: <ProtectedRoute />,
         children: [
@@ -192,7 +192,7 @@ const router = createBrowserRouter([
             ),
           },
 
-          // ========== OWNER PORTAL ==========
+          // ========== Owner Portal ==========
           {
             path: "/owner",
             element: (
@@ -268,7 +268,7 @@ const router = createBrowserRouter([
             ],
           },
 
-          // ========== BRAND PORTAL ==========
+          // ========== Brand Portal ==========
           {
             path: "/brand/:brandId",
             element: (
@@ -306,7 +306,7 @@ const router = createBrowserRouter([
         ],
       },
 
-      // ========== ESTABLISHMENT-REQUIRED ROUTES ==========
+      // ========== Establishment-Required Routes ==========
       {
         element: <EstablishmentRequiredRoute />,
         children: [
@@ -471,7 +471,7 @@ const router = createBrowserRouter([
 ]);
 
 // ============================================================================
-// APP COMPONENT
+// App Component
 // ============================================================================
 function App() {
   return (

@@ -92,11 +92,11 @@ export function EstablishmentsPage() {
             <div>
               <div className="flex items-center gap-3 mb-1">
                 <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-                  Global Network
+                  Network
                 </span>
               </div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Establishments Registry</h1>
-              <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Multi-location enterprise asset management</p>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Locations</h1>
+              <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Manage your locations</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -105,7 +105,7 @@ export function EstablishmentsPage() {
               className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20"
             >
               <Plus size={18} />
-              <span>Add Establishment</span>
+              <span>Add Location</span>
             </button>
           </div>
         </div>
@@ -157,10 +157,10 @@ export function EstablishmentsPage() {
                       className="absolute right-0 mt-3 w-56 bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/[0.1] rounded-2xl z-50 overflow-hidden py-2 shadow-2xl"
                     >
                       <button onClick={() => { handleSelectEstablishment(est); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-[10px] font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green hover:text-black transition-all flex items-center gap-3 tracking-widest">
-                        <CheckCircle size={14} /> Switch Identity
+                        <CheckCircle size={14} /> Switch
                       </button>
-                      <button onClick={() => { navigate('/dashboard/settings'); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-[10px] font-black text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-all tracking-widest">Settings</button>
-                      <button onClick={() => { navigate('/dashboard/staff'); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-[10px] font-black text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-all tracking-widest">Team Access</button>
+                      <button onClick={() => { navigate('/dashboard/settings'); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-[10px] font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green/10 transition-all tracking-widest">Settings</button>
+                      <button onClick={() => { navigate('/dashboard/staff'); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-[10px] font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green/10 transition-all tracking-widest">Staff</button>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -179,7 +179,7 @@ export function EstablishmentsPage() {
                 <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center border border-gray-100 dark:border-white/10">
                   <ShieldCheck size={14} className="text-blue-500" />
                 </div>
-                <span className="truncate">{est.type.replace('_', ' ')} Registry</span>
+                <span className="truncate">{est.type.replace('_', ' ')}</span>
               </div>
             </div>
 
@@ -188,14 +188,14 @@ export function EstablishmentsPage() {
               {currentEstablishment?.id === est.id ? (
                 <div className="flex items-center justify-center gap-2 py-4 px-6 rounded-xl bg-paymint-green text-black shadow-lg shadow-paymint-green/20">
                   <CheckCircle size={18} strokeWidth={3} />
-                  <span className="font-black text-[10px] tracking-[0.2em]">Active Enterprise Node</span>
+                  <span className="font-black text-[10px] tracking-[0.2em]">Current Location</span>
                 </div>
               ) : (
                 <button
                   onClick={() => handleSelectEstablishment(est)}
                   className="w-full py-4 px-6 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl hover:scale-[1.02] transition-all active:scale-95 text-[10px] tracking-[0.2em] shadow-md"
                 >
-                  Initialize Switch
+                  Switch
                 </button>
               )}
             </div>
@@ -211,8 +211,8 @@ export function EstablishmentsPage() {
             <Plus size={40} className="text-gray-300 group-hover:text-paymint-green transition-colors" />
           </div>
           <div className="text-center">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Expand Node</h3>
-            <p className="text-gray-500 dark:text-gray-400 text-[10px] font-black tracking-[0.2em] max-w-[200px] leading-loose">Deploy New Enterprise Location Profile</p>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Add Location</h3>
+            <p className="text-gray-500 dark:text-gray-400 text-[10px] font-black tracking-[0.2em] max-w-[200px] leading-loose">Create a new location</p>
           </div>
         </motion.button>
       </div>
@@ -230,7 +230,7 @@ export function EstablishmentsPage() {
               <Loader2 size={40} className="text-paymint-green animate-spin" />
               <div className="absolute inset-0 bg-paymint-green/20 rounded-2xl animate-ping" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Syncing Node</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Switching</h2>
             <p className="text-paymint-green font-black tracking-[0.3em] text-sm mt-4">{selectedName}</p>
 
             <div className="mt-12 w-48 h-1 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">

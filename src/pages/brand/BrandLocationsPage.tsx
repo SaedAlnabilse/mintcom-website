@@ -102,7 +102,7 @@ export function BrandLocationsPage() {
                     return {
                         ...loc,
                         type: loc.type || 'Restaurant',
-                        currency: loc.currency || 'USD',
+                        currency: loc.currency || 'Usd',
                         subscriptionStatus: loc.subscriptionStatus || 'ACTIVE',
                         employeeCount: stats.employees || 0,
                         orderCount: stats.orders || 0,
@@ -214,7 +214,7 @@ export function BrandLocationsPage() {
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat('en-US', {
             style: 'currency',
-            currency: 'USD',
+            currency: 'Usd',
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
         }).format(value);
@@ -463,9 +463,9 @@ export function BrandLocationsPage() {
                                                 {loc.name}
                                             </h3>
                                             <div className="flex items-center gap-2 mt-1">
-                                                <span className="text-xs font-medium text-gray-500">{loc.type}</span>
+                                                <span className="text-xs font-medium text-gray-500">{loc.type ? loc.type.charAt(0).toUpperCase() + loc.type.slice(1).toLowerCase() : 'Restaurant'}</span>
                                                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                                                <span className="text-xs font-medium text-gray-500">{loc.currency}</span>
+                                                <span className="text-xs font-medium text-gray-500">{loc.currency ? loc.currency.charAt(0).toUpperCase() + loc.currency.slice(1).toLowerCase() : 'Usd'}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -524,7 +524,7 @@ export function BrandLocationsPage() {
                                 <div className="mb-6">
                                     <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold tracking-wide border ${getStatusColor(loc.subscriptionStatus)}`}>
                                         <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
-                                        {loc.subscriptionStatus}
+                                        {loc.subscriptionStatus ? loc.subscriptionStatus.charAt(0).toUpperCase() + loc.subscriptionStatus.slice(1).toLowerCase() : ''}
                                     </span>
                                 </div>
 
@@ -596,7 +596,7 @@ export function BrandLocationsPage() {
                                             <h3 className="font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
                                                 {loc.name}
                                             </h3>
-                                            <p className="text-xs text-gray-500 mt-0.5">{loc.type} - {loc.currency}</p>
+                                            <p className="text-xs text-gray-500 mt-0.5">{loc.type ? loc.type.charAt(0).toUpperCase() + loc.type.slice(1).toLowerCase() : 'Restaurant'} - {loc.currency ? loc.currency.charAt(0).toUpperCase() + loc.currency.slice(1).toLowerCase() : 'Usd'}</p>
                                         </div>
                                     </div>
 
@@ -604,7 +604,7 @@ export function BrandLocationsPage() {
                                     <div className="col-span-2 flex items-center">
                                         <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold tracking-wide border ${getStatusColor(loc.subscriptionStatus)}`}>
                                             <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
-                                            {loc.subscriptionStatus}
+                                            {loc.subscriptionStatus ? loc.subscriptionStatus.charAt(0).toUpperCase() + loc.subscriptionStatus.slice(1).toLowerCase() : ''}
                                         </span>
                                     </div>
 

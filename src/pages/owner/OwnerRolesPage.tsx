@@ -95,7 +95,7 @@ export function OwnerRolesPage() {
   const handleDeleteConfirm = async () => {
     try {
       await api.delete(`/api/custom-roles/${confirmConfig.roleId}`);
-      toast.success('Global role deleted successfully');
+      toast.success('Role deleted');
       fetchRoles();
     } catch (err) {
       toast.error('Failed to delete role');
@@ -110,10 +110,10 @@ export function OwnerRolesPage() {
 
       if (editingRole) {
         await api.put(`/api/custom-roles/${editingRole.id}`, payload);
-        toast.success('Global role updated successfully');
+        toast.success('Role updated');
       } else {
         await api.post('/api/custom-roles/owner/global', payload);
-        toast.success('Global role created successfully');
+        toast.success('Role created');
       }
       setShowModal(false);
       fetchRoles();
@@ -144,11 +144,11 @@ export function OwnerRolesPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-indigo-500/10 text-indigo-500 text-[10px] font-black tracking-widest border border-indigo-500/20">
-              Enterprise Control
+              Role Management
             </span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Global Roles</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm font-medium">Define roles that propagate to all your establishments</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Company Roles</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm font-medium">Create roles that apply to all locations</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -164,7 +164,7 @@ export function OwnerRolesPage() {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-indigo-500/20"
           >
             <Plus size={18} />
-            <span>Create Global Role</span>
+            <span>Create Role</span>
           </button>
         </div>
       </div>
@@ -175,7 +175,7 @@ export function OwnerRolesPage() {
           <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            placeholder="Search global roles..."
+            placeholder="Search roles..."
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
             className="w-full pl-11 pr-4 py-2.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
@@ -203,7 +203,7 @@ export function OwnerRolesPage() {
             <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
               <Globe size={40} className="text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">No Global Roles</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">No Roles Found</h3>
             <p className="text-gray-500 max-w-xs text-sm font-medium mx-auto">Create a role here to share it across all your locations.</p>
           </div>
         ) : (
@@ -212,9 +212,9 @@ export function OwnerRolesPage() {
               <thead className="bg-gray-50 dark:bg-white/[0.02]">
                 <tr className="border-b border-gray-200 dark:border-white/5">
                   <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Role Name</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Base Identity</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Role Type</th>
                   <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Permissions</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Scope</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Applied To</th>
                   <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 tracking-widest">Actions</th>
                 </tr>
               </thead>
@@ -296,8 +296,8 @@ export function OwnerRolesPage() {
         isOpen={confirmConfig.isOpen}
         onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
         onConfirm={handleDeleteConfirm}
-        title="Delete Global Role"
-        message={`Are you sure you want to delete the "${confirmConfig.roleName}" role? It will be removed from all establishments.`}
+        title="Delete Role"
+        message={`Are you sure you want to delete the "${confirmConfig.roleName}" role? It will be removed from all locations.`}
         type="danger"
         confirmText="Delete Role"
       />

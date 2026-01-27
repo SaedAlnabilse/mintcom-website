@@ -14,7 +14,9 @@ import {
     Package,
 
     ArrowUpDown,
-    AlertCircle
+    AlertCircle,
+    ChevronLeft,
+    ChevronRight,
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -59,6 +61,8 @@ export function ProductsPage() {
     const [categorySearchQuery, setCategorySearchQuery] = useState('');
     const categoryDropdownRef = useRef<HTMLDivElement>(null);
     const [sortConfig, setSortConfig] = useState<{ key: keyof Product | 'category'; direction: 'asc' | 'desc' } | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
 
     // Click outside handler for category dropdown
     useEffect(() => {
@@ -96,6 +100,11 @@ export function ProductsPage() {
     useEffect(() => {
         fetchData();
     }, []);
+
+    // Reset pagination when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, selectedCategoryId, sortConfig]);
 
     // Handle navigation state opening modal automatically
     useEffect(() => {
@@ -157,7 +166,7 @@ export function ProductsPage() {
             onConfirm: async () => {
                 try {
                     await api.delete(`/api/items/${id}`);
-                    toast.success('Product deleted successfully');
+                    toast.success('Product deleted');
                     fetchData(); // Refresh list
                     setShowModal(false); // Close modal if open
                 } catch (err) {
@@ -184,10 +193,10 @@ export function ProductsPage() {
 
             if (editingProduct) {
                 await api.patch(`/api/items/${editingProduct.id}`, formData, config);
-                toast.success('Product updated successfully');
+                toast.success('Product updated');
             } else {
                 await api.post('/api/items', formData, config);
-                toast.success('Product created successfully');
+                toast.success('Product created');
             }
             setShowModal(false);
             fetchData();
@@ -278,6 +287,14 @@ export function ProductsPage() {
         return result;
     }, [products, selectedCategoryId, searchQuery, sortConfig, categories]);
 
+    const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+    const paginatedProducts = useMemo(() => {
+        return filteredProducts.slice(
+            (currentPage - 1) * ITEMS_PER_PAGE,
+            currentPage * ITEMS_PER_PAGE
+        );
+    }, [filteredProducts, currentPage]);
+
     // Statistics
     const stats = useMemo(() => ({
         total: filteredProducts.length,
@@ -306,7 +323,7 @@ export function ProductsPage() {
                     <button
                         onClick={handleExport}
                         className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm group"
-                        title="Export CSV"
+                        title="Export Csv"
                     >
                         <Download size={18} className="group-hover:text-paymint-green transition-colors" />
                         <span className="font-bold text-sm">Export</span>
@@ -440,7 +457,7 @@ export function ProductsPage() {
                     <div className="flex items-center gap-3 mb-2">
                         <div className="p-2 rounded-lg bg-blue-500/10 text-blue-500"><Package size={18} /></div>
                         <span className="text-[10px] font-black text-gray-400 tracking-widest flex items-center gap-2">
-                            Total Items
+                            Total
                             <QuickInfo text="Total count of unique products." />
                         </span>
                     </div>
@@ -461,12 +478,12 @@ export function ProductsPage() {
                     <div className="flex items-center gap-3 mb-2">
                         <div className="p-2 rounded-lg bg-paymint-green/10 text-paymint-green"><ArrowUpDown size={18} /></div>
                         <span className="text-[10px] font-black text-gray-400 tracking-widest flex items-center gap-2">
-                            Stock Value
+                            Value
                             <QuickInfo text="Total value of your current inventory." />
                         </span>
                     </div>
                     <p className="text-xl font-black text-gray-900 dark:text-white truncate">
-                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JOD' }).format(stats.totalValue).replace('JOD', '').trim()} <span className="text-xs text-gray-400 font-normal">JOD</span>
+                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'Jod' }).format(stats.totalValue).replace('Jod', '').trim()} <span className="text-xs text-gray-400 font-normal">Jod</span>
                     </p>
                 </div>
             </div>
@@ -493,7 +510,7 @@ export function ProductsPage() {
                     {viewMode === 'grid' ? (
                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             <AnimatePresence mode="popLayout">
-                                {filteredProducts.map((p, idx) => (
+                                {paginatedProducts.map((p, idx) => (
                                     <motion.div
                                         key={p.id || `prod-${idx}`}
                                         layout
@@ -529,7 +546,7 @@ export function ProductsPage() {
                                                 <div>
                                                     <p className="text-[9px] font-black text-gray-400 tracking-widest mb-0.5">Price</p>
                                                     <p className="text-sm font-black text-paymint-green">
-                                                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JOD' }).format(p.price).replace('JOD', '').trim()} <span className="text-[10px] opacity-60">JOD</span>
+                                                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'Jod' }).format(p.price).replace('Jod', '').trim()} <span className="text-[10px] opacity-60">Jod</span>
                                                     </p>
                                                 </div>
                                                 {p.trackStock && (
@@ -559,7 +576,7 @@ export function ProductsPage() {
                                                 onClick={() => handleSort('name')}
                                             >
                                                 <div className="flex items-center gap-1">
-                                                    Product Name
+                                                    Name
                                                     {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                                                 </div>
                                             </th>
@@ -594,7 +611,7 @@ export function ProductsPage() {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                                        {filteredProducts.map((p, idx) => (
+                                        {paginatedProducts.map((p, idx) => (
                                             <tr key={p.id || `table-row-${idx}`} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer" onClick={() => handleEdit(p)}>
                                                 <td className="px-6 py-4">
                                                     <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 overflow-hidden">
@@ -624,7 +641,7 @@ export function ProductsPage() {
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
                                                     <span className="font-bold text-gray-900 dark:text-white">
-                                                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JOD' }).format(p.price).replace('JOD', '').trim()} JOD
+                                                        {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'Jod' }).format(p.price).replace('Jod', '').trim()} Jod
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
@@ -641,6 +658,31 @@ export function ProductsPage() {
                         </div>
                     )}
                 </>
+            )}
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex justify-center mt-8">
+                    <div className="flex items-center gap-2 p-1 rounded-xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm">
+                        <button
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                            disabled={currentPage === 1}
+                            className="p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500 disabled:opacity-30 transition-colors"
+                        >
+                            <ChevronLeft size={18} />
+                        </button>
+                        <span className="px-4 text-xs font-bold text-gray-600 dark:text-gray-400">
+                            Page {currentPage} of {totalPages}
+                        </span>
+                        <button
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                            disabled={currentPage === totalPages}
+                            className="p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500 disabled:opacity-30 transition-colors"
+                        >
+                            <ChevronRight size={18} />
+                        </button>
+                    </div>
+                </div>
             )}
 
             {/* Modals */}

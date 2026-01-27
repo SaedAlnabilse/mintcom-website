@@ -68,7 +68,7 @@ export function BillingPage() {
 
     // Refresh global state
     await refreshEstablishments();
-    toast.success('Subscription canceled successfully');
+    toast.success('Subscription canceled');
   };
 
   // Calculate billing info from establishments
@@ -81,7 +81,7 @@ export function BillingPage() {
   ];
 
   const getStatusBadge = () => {
-    const status = billingInfo?.subscriptionStatus?.toUpperCase();
+    const status = billingInfo?.subscriptionStatus;
     if (billingInfo?.cancelAtPeriodEnd) {
       return (
         <span className="px-3 py-1 rounded-lg bg-amber-500/10 text-amber-500 text-[10px] font-black tracking-widest border border-amber-500/20 flex items-center gap-2">
@@ -91,7 +91,7 @@ export function BillingPage() {
       );
     }
 
-    switch (status) {
+    switch (status?.toUpperCase()) {
       case 'ACTIVE':
         return (
           <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20 flex items-center gap-2">
@@ -116,7 +116,7 @@ export function BillingPage() {
       default:
         return (
           <span className="px-3 py-1 rounded-lg bg-gray-500/10 text-gray-500 text-[10px] font-black tracking-widest border border-gray-500/20">
-            {status || 'Unknown'}
+            {status ? status.charAt(0).toUpperCase() + status.slice(1).toLowerCase() : 'Unknown'}
           </span>
         );
     }
@@ -129,13 +129,13 @@ export function BillingPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-              Financial
+              Billing
             </span>
             {!isLoading && getStatusBadge()}
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Billing & Subscription</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Billing</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-2">
-            Manage your plan, payments, and invoices for {currentEstablishment?.name}
+            Manage payments for {currentEstablishment?.name}
           </p>
         </div>
       </div>
@@ -152,35 +152,35 @@ export function BillingPage() {
                   <DollarSign className="w-8 h-8 text-paymint-green" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-black text-white tracking-tight">Current Plan</h3>
-                  <p className="text-gray-400 text-sm font-bold tracking-widest mt-1">Enterprise Tier</p>
+                  <h3 className="text-2xl font-black text-white tracking-tight">Plan</h3>
+                  <p className="text-gray-400 text-sm font-bold tracking-widest mt-1">Enterprise</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-paymint-green/20 border border-paymint-green/30 backdrop-blur-sm">
                 <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
-                <span className="text-[10px] font-black text-paymint-green tracking-[0.2em]">Active License</span>
+                <span className="text-[10px] font-black text-paymint-green tracking-[0.2em]">Active</span>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 relative z-10">
               <div className="p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-colors">
-                <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2">Monthly Fee</p>
+                <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2">Cost</p>
                 <div className="flex items-baseline gap-2">
                   <span className="text-4xl font-black text-white">{totalMonthly.toFixed(2)}</span>
                   <span className="text-sm font-bold text-paymint-green">Jod</span>
                 </div>
               </div>
               <div className="p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-colors">
-                <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2">Service Node</p>
+                <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2">Location</p>
                 <p className="text-xl font-bold text-white truncate max-w-[200px]">{currentEstablishment?.name}</p>
-                <p className="text-[10px] text-gray-500 mt-1 tracking-wide">Primary Endpoint</p>
+                <p className="text-[10px] text-gray-500 mt-1 tracking-wide">Main</p>
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 relative z-10">
               <button className="flex-1 px-8 py-4 bg-paymint-green text-black font-black text-xs rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20 tracking-widest flex items-center justify-center gap-2">
-                <Zap size={16} /> Upgrade Plan
+                <Zap size={16} /> Upgrade
               </button>
 
               {!isLoading && billingInfo?.subscriptionStatus === 'ACTIVE' && !billingInfo?.cancelAtPeriodEnd && (
@@ -189,7 +189,7 @@ export function BillingPage() {
                   className="flex-1 px-8 py-4 bg-red-500/10 text-red-400 border border-red-500/20 font-black text-xs rounded-xl hover:bg-red-500 hover:text-white transition-all tracking-widest flex items-center justify-center gap-2"
                 >
                   <ShieldAlert size={16} />
-                  Cancel Subscription
+                  Cancel
                 </button>
               )}
             </div>
@@ -240,7 +240,7 @@ export function BillingPage() {
         {/* Payment Method */}
         <div className="space-y-8">
           <div className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 shadow-sm">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Payment Method</h3>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Payment</h3>
 
             <div className="space-y-4">
               <div className="p-4 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-200 dark:border-white/5 flex items-center justify-between group hover:border-paymint-green/30 transition-colors">
@@ -250,7 +250,7 @@ export function BillingPage() {
                   </div>
                   <div>
                     <p className="text-sm font-bold text-gray-900 dark:text-white">•••• 4242</p>
-                    <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 tracking-wide">Expires 12/26</p>
+                    <p className="text--[10px] font-bold text-gray-500 dark:text-gray-400 tracking-wide">Expires 12/26</p>
                   </div>
                 </div>
                 <button className="text-[10px] font-black text-paymint-green tracking-widest opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Edit</button>
@@ -260,7 +260,7 @@ export function BillingPage() {
                 <div className="w-10 h-10 bg-white dark:bg-white/5 rounded-full flex items-center justify-center transition-transform group-hover:scale-110 border border-gray-200 dark:border-white/5">
                   <CreditCard className="w-5 h-5 text-gray-400 group-hover:text-paymint-green transition-colors" />
                 </div>
-                <span className="text-[10px] font-black text-gray-500 dark:text-gray-400 tracking-widest group-hover:text-paymint-green transition-colors">Add New Method</span>
+                <span className="text-[10px] font-black text-gray-500 dark:text-gray-400 tracking-widest group-hover:text-paymint-green transition-colors">Add Card</span>
               </button>
             </div>
           </div>
@@ -269,7 +269,7 @@ export function BillingPage() {
           <div className="bg-paymint-green/5 border border-paymint-green/20 rounded-2xl p-6">
             <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-2">Need Help?</h4>
             <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
-              Have questions about your billing or subscription? Our dedicated support team is ready to assist you.
+              Questions about billing?
             </p>
             <button className="w-full py-3 bg-white dark:bg-white/5 border border-paymint-green/20 text-paymint-green font-bold rounded-xl text-xs tracking-widest hover:bg-paymint-green hover:text-black transition-all shadow-sm">
               Contact Support

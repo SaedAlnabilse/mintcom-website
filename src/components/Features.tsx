@@ -10,17 +10,17 @@ const features = [
   {
     icon: <Zap className="w-6 h-6 text-white" />,
     title: "Lightning Fast",
-    description: "Built for speed with an interface your staff will love."
+    description: "Fast and easy for your team to use."
   },
   {
     icon: <Settings className="w-6 h-6 text-white" />,
     title: "Highly Customizable",
-    description: "Adapt workflows, menus, and receipts to your brand."
+    description: "Customize menus and receipts easily."
   },
   {
     icon: <ShieldCheck className="w-6 h-6 text-white" />,
     title: "Secure & Reliable",
-    description: "Enterprise-grade encryption keeps your business safe."
+    description: "Top-tier security keeps your business safe."
   }
 ];
 
@@ -76,7 +76,7 @@ export const Features = () => {
                 Why Choose <span className="text-paymint-green">PayMint?</span>
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-400 mb-12 leading-relaxed">
-                We've stripped away the complexity of traditional POS systems. No clunky hardware, no confusing menus—just powerful tools that work.
+                We've removed the complexity. No clunky hardware, no confusing menus—just tools that work.
               </p>
             </motion.div>
 

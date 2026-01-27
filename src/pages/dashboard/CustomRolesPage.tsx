@@ -102,7 +102,7 @@ export function CustomRolesPage() {
   const handleDeleteConfirm = async () => {
     try {
       await api.delete(`/api/custom-roles/${confirmConfig.roleId}`);
-      toast.success('Role deleted successfully');
+      toast.success('Role deleted');
       fetchRoles();
     } catch (err) {
       toast.error('Failed to delete role');
@@ -124,10 +124,10 @@ export function CustomRolesPage() {
 
       if (editingRole) {
         await api.put(`/api/custom-roles/${editingRole.id}`, payload);
-        toast.success('Role updated successfully');
+        toast.success('Role updated');
       } else {
         await api.post(`/api/custom-roles/${establishmentId}`, payload);
-        toast.success('Role created successfully');
+        toast.success('Role created');
       }
       setShowModal(false);
       fetchRoles();
@@ -158,18 +158,18 @@ export function CustomRolesPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-              Access Control
+              Security
             </span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Custom Roles</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm font-medium">Define and manage granular permissions for your team</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Roles</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm font-medium">Manage team access</p>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={fetchRoles}
             className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm"
-            title="Refresh Roles"
+            title="Refresh"
           >
             <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
           </button>
@@ -178,7 +178,7 @@ export function CustomRolesPage() {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20"
           >
             <Plus size={18} />
-            <span>Create New Role</span>
+            <span>Add Role</span>
           </button>
         </div>
       </div>
@@ -189,7 +189,7 @@ export function CustomRolesPage() {
           <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            placeholder="Search roles by name or type..."
+            placeholder="Search roles..."
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
             className="w-full pl-11 pr-4 py-2.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
@@ -218,17 +218,17 @@ export function CustomRolesPage() {
               <Shield size={40} className="text-gray-300" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">No Roles Found</h3>
-            <p className="text-gray-500 max-w-xs text-sm font-medium mx-auto">Create your first custom role to start managing team permissions.</p>
+            <p className="text-gray-500 max-w-xs text-sm font-medium mx-auto">Create a role to manage permissions.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-white/[0.02]">
                 <tr className="border-b border-gray-200 dark:border-white/5">
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Role Name</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Base Identity</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Permissions</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Created</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Name</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Type</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Access</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Date</th>
                   <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 tracking-widest">Actions</th>
                 </tr>
               </thead>
@@ -257,7 +257,7 @@ export function CustomRolesPage() {
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                           <UserCheck size={10} />
-                          {role.baseRole}
+                          {role.baseRole ? role.baseRole.charAt(0).toUpperCase() + role.baseRole.slice(1).toLowerCase() : ''}
                         </span>
                       </td>
                       <td className="px-6 py-4">

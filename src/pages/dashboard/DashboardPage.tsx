@@ -210,14 +210,14 @@ export const DashboardPage = () => {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-              Live Operations
+              Live
             </span>
             <div className="flex items-center gap-2">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
               </span>
-              <span className="text-[10px] font-bold text-gray-400 tracking-widest">System Active</span>
+              <span className="text-[10px] font-bold text-gray-400 tracking-widest">Active</span>
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{getGreeting()}</h1>
@@ -258,55 +258,55 @@ export const DashboardPage = () => {
       <div id="tour-kpi-cards" className="space-y-3">
         <div className="flex items-center gap-2">
           <span className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-500 text-[9px] font-black tracking-widest border border-blue-500/20">
-            Financial Overview
+            Overview
           </span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {[
             {
-              label: 'Settlement Value',
+              label: 'Total Sales',
               value: formatCurrency((stats?.totalRevenue || 0) + (stats?.taxCollected || 0)),
-              sub: 'Total Sales (Inc. Tax)',
+              sub: 'Including Tax',
               icon: Wallet,
               color: 'text-blue-500',
               bg: 'bg-blue-500/10'
             },
             {
-              label: 'Net Capital',
+              label: 'Net Sales',
               value: formatCurrency(stats?.totalRevenue || 0),
-              sub: 'Net Revenue (Excl. Tax)',
+              sub: 'Excluding Tax',
               icon: DollarSign,
               color: 'text-paymint-green',
               bg: 'bg-paymint-green/10'
             },
             {
-              label: 'Estimated Profit',
+              label: 'Profit',
               value: formatCurrency(stats?.grossProfit || 0),
-              sub: 'Net Capital - Item Costs',
+              sub: 'Net Sales - Costs',
               icon: TrendingUp,
               color: 'text-purple-500',
               bg: 'bg-purple-500/10'
             },
             {
-              label: 'Tax Calculated',
+              label: 'Tax',
               value: formatCurrency(stats?.taxCollected || 0),
-              sub: 'Total Tax Liability',
+              sub: 'Total Tax',
               icon: Percent,
               color: 'text-orange-500',
               bg: 'bg-orange-500/10'
             },
             {
-              label: 'Transactions',
+              label: 'Orders',
               value: stats?.totalOrders?.toString() || '0',
-              sub: "Today's orders",
+              sub: "Today",
               icon: Receipt,
               color: 'text-indigo-500',
               bg: 'bg-indigo-500/10'
             },
             {
-              label: 'Avg. Basket',
+              label: 'Avg Order',
               value: formatCurrency(stats?.averageOrderValue || 0),
-              sub: 'Net Capital / Total Orders',
+              sub: 'Average Value',
               icon: ShoppingBag,
               color: 'text-pink-500',
               bg: 'bg-pink-500/10'
@@ -347,9 +347,9 @@ export const DashboardPage = () => {
               <div>
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                   <TrendingUp className="text-paymint-green" size={20} />
-                  Today's Revenue
+                  Today's Sales
                 </h3>
-                <p className="text-xs text-gray-500 mt-1">Today's hourly performance breakdown</p>
+                <p className="text-xs text-gray-500 mt-1">Hourly sales breakdown</p>
               </div>
               <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
                 <Activity size={12} className="text-paymint-green" />
@@ -434,8 +434,8 @@ export const DashboardPage = () => {
                 <Wallet size={20} />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Capital Sources</h3>
-                <p className="text-[10px] font-bold text-gray-500 tracking-widest">Today's Payment Distribution</p>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Payment Methods</h3>
+                <p className="text-[10px] font-bold text-gray-500 tracking-widest">Today's Distribution</p>
               </div>
             </div>
 
@@ -527,7 +527,7 @@ export const DashboardPage = () => {
             </div>
 
             <div className="flex items-center justify-between pt-2 border-t border-dashed border-gray-200 dark:border-white/10">
-              <span className="text-[10px] font-bold text-gray-400">Net Flow</span>
+              <span className="text-[10px] font-bold text-gray-400">Total</span>
               <span className={`text-sm font-bold ${netCashFlow >= 0 ? 'text-paymint-green' : 'text-red-500'}`}>
                 {netCashFlow >= 0 ? '+' : ''}{formatCurrency(netCashFlow).replace('Jod', '').trim()} Jod
               </span>
@@ -547,7 +547,7 @@ export const DashboardPage = () => {
             <div>
               <p className="text-[10px] font-black text-orange-500 tracking-widest mb-1">Refunds</p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(stats?.totalRefunds || 0)}</p>
-              <p className="text-[10px] font-medium text-gray-400 mt-1">Today's Returned Value</p>
+              <p className="text-[10px] font-medium text-gray-400 mt-1">Today's Total</p>
             </div>
             <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
               <ArrowDownRight size={20} className="text-orange-500" />
@@ -570,7 +570,7 @@ export const DashboardPage = () => {
                 {stats?.categoryBreakdown?.[0]?.name || 'No data'}
               </p>
               <p className="text-[10px] font-medium text-gray-400 mt-1">
-                {stats?.categoryBreakdown?.[0] ? formatCurrency(stats.categoryBreakdown[0].value) : 'Today\'s performer'}
+                {stats?.categoryBreakdown?.[0] ? formatCurrency(stats.categoryBreakdown[0].value) : 'Today'}
               </p>
             </div>
             <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -592,8 +592,8 @@ export const DashboardPage = () => {
                   <Package size={20} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-gray-900 dark:text-white">Top Performers</h3>
-                  <p className="text-[10px] font-bold text-gray-500 tracking-widest">Today's best selling items</p>
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white">Top Items</h3>
+                  <p className="text-[10px] font-bold text-gray-500 tracking-widest">Best sellers today</p>
                 </div>
               </div>
               <button
@@ -645,8 +645,8 @@ export const DashboardPage = () => {
                   <Clock size={20} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-gray-900 dark:text-white">Traffic Heatmap</h3>
-                  <p className="text-[10px] font-bold text-gray-500 tracking-widest">Today's hourly distribution</p>
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white">Busy Hours</h3>
+                  <p className="text-[10px] font-bold text-gray-500 tracking-widest">Hourly traffic</p>
                 </div>
               </div>
             </div>
@@ -666,7 +666,7 @@ export const DashboardPage = () => {
                       <Tooltip
                         cursor={{ fill: 'transparent' }}
                         contentStyle={{ backgroundColor: isDark ? '#111' : '#fff', borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}
-                        itemStyle={{ fontWeight: 'bold', fontSize: '10px', textTransform: 'uppercase' }}
+                        itemStyle={{ fontWeight: 'bold', fontSize: '10px' }}
                         labelStyle={{ color: '#7CC39F', fontWeight: 'bold', marginBottom: '4px', fontSize: '10px' }}
                       />
                       <Bar dataKey="total" name="Revenue" fill="url(#barGradientDash)" radius={[4, 4, 0, 0]} barSize={20} animationDuration={1500} />
@@ -694,8 +694,8 @@ export const DashboardPage = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-paymint-green/5 via-blue-500/5 to-purple-500/5 opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
         <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Quick Actions</h3>
-            <p className="text-xs font-medium text-gray-500 mt-1">Jump to frequently used sections</p>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Quick Links</h3>
+            <p className="text-xs font-medium text-gray-500 mt-1">Frequently used</p>
           </div>
           <div className="flex flex-wrap gap-3">
             {[

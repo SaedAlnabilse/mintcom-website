@@ -117,7 +117,7 @@ export function EstablishmentDeletionWizard({
 
     const handleRequestDeletion = async () => {
         if (!establishmentLoginId) {
-            toast.error('Please enter Establishment ID');
+            toast.error('Please enter Establishment Id');
             return;
         }
 
@@ -210,7 +210,7 @@ export function EstablishmentDeletionWizard({
                             <Trash2 size={28} />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold">Delete Establishment</h2>
+                            <h2 className="text-xl font-bold">Delete Location</h2>
                             <p className="text-white/80 text-sm">{establishmentName}</p>
                         </div>
                     </div>
@@ -259,10 +259,10 @@ export function EstablishmentDeletionWizard({
                                         <AlertTriangle className="text-paymint-red flex-shrink-0 mt-0.5" size={20} />
                                         <div>
                                             <h3 className="font-bold text-red-700 dark:text-paymint-red">
-                                                This action is irreversible
+                                                This cannot be undone
                                             </h3>
                                             <p className="text-paymint-red dark:text-red-300 text-sm mt-1">
-                                                After the 30-day grace period, all data will be permanently deleted.
+                                                All data will be gone forever after 30 days.
                                             </p>
                                         </div>
                                     </div>
@@ -271,7 +271,7 @@ export function EstablishmentDeletionWizard({
                                 <div>
                                     <h3 className="text-[10px] font-black text-gray-400 dark:text-gray-500 tracking-[0.2em] mb-4 flex items-center gap-2 px-1">
                                         <Package size={14} className="text-paymint-red" />
-                                        Inventory & Audit Purge List
+                                        Data to be Deleted
                                     </h3>
                                     <div className="grid grid-cols-2 gap-3">
                                         <StatCard
@@ -329,10 +329,10 @@ export function EstablishmentDeletionWizard({
                                         <Mail className="text-blue-500 flex-shrink-0 mt-0.5" size={20} />
                                         <div>
                                             <h3 className="font-bold text-blue-700 dark:text-blue-400">
-                                                Export your data before deletion
+                                                Save your data first
                                             </h3>
                                             <p className="text-blue-600 dark:text-blue-300 text-sm mt-1">
-                                                Selected exports will be sent to your email as CSV files.
+                                                We'll email you these files.
                                             </p>
                                         </div>
                                     </div>
@@ -340,8 +340,8 @@ export function EstablishmentDeletionWizard({
 
                                 <div className="space-y-3">
                                     <ExportOption
-                                        label="Financial Report"
-                                        description="All orders, revenue, tax summary"
+                                        label="Sales & Revenue"
+                                        description="Sales, revenue, and tax info"
                                         checked={exportOptions.exportFinancial}
                                         onChange={(v) => setExportOptions({ ...exportOptions, exportFinancial: v })}
                                         onDownload={() => handleDownloadExport('financial')}
@@ -349,8 +349,8 @@ export function EstablishmentDeletionWizard({
                                         countLabel="orders"
                                     />
                                     <ExportOption
-                                        label="Customer Data"
-                                        description="Names, points, contact info"
+                                        label="Customers"
+                                        description="Customer lists and points"
                                         checked={exportOptions.exportCustomers}
                                         onChange={(v) => setExportOptions({ ...exportOptions, exportCustomers: v })}
                                         onDownload={() => handleDownloadExport('customers')}
@@ -358,8 +358,8 @@ export function EstablishmentDeletionWizard({
                                         countLabel="customers"
                                     />
                                     <ExportOption
-                                        label="Product Catalog"
-                                        description="Items, categories, recipes"
+                                        label="Products"
+                                        description="Menu items and inventory"
                                         checked={exportOptions.exportInventory}
                                         onChange={(v) => setExportOptions({ ...exportOptions, exportInventory: v })}
                                         onDownload={() => handleDownloadExport('inventory')}
@@ -367,8 +367,8 @@ export function EstablishmentDeletionWizard({
                                         countLabel="products"
                                     />
                                     <ExportOption
-                                        label="Employee Records"
-                                        description="Staff, roles, permissions"
+                                        label="Staff"
+                                        description="Team members and roles"
                                         checked={exportOptions.exportEmployees}
                                         onChange={(v) => setExportOptions({ ...exportOptions, exportEmployees: v })}
                                         onDownload={() => handleDownloadExport('employees')}
@@ -376,8 +376,8 @@ export function EstablishmentDeletionWizard({
                                         countLabel="employees"
                                     />
                                     <ExportOption
-                                        label="Shift History"
-                                        description="Shifts, cash logs, discrepancies"
+                                        label="Shifts"
+                                        description="Work shifts and cash logs"
                                         checked={exportOptions.exportShifts}
                                         onChange={(v) => setExportOptions({ ...exportOptions, exportShifts: v })}
                                         onDownload={() => handleDownloadExport('shifts')}
@@ -402,10 +402,10 @@ export function EstablishmentDeletionWizard({
                                         <Calendar className="text-purple-500 flex-shrink-0 mt-0.5" size={20} />
                                         <div>
                                             <h3 className="font-bold text-purple-700 dark:text-purple-400">
-                                                30-Day Grace Period
+                                                30 Days to Cancel
                                             </h3>
                                             <p className="text-purple-600 dark:text-purple-300 text-sm mt-1">
-                                                You can cancel the deletion at any time during this period.
+                                                You can stop this anytime in the next 30 days.
                                             </p>
                                         </div>
                                     </div>
@@ -413,7 +413,7 @@ export function EstablishmentDeletionWizard({
 
                                 <div className="bg-gray-100 dark:bg-white/5 rounded-2xl p-6 text-center">
                                     <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">
-                                        Permanent deletion scheduled for:
+                                        Deletion date:
                                     </p>
                                     <p className="text-2xl font-bold text-paymint-red">
                                         {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', {
@@ -427,14 +427,14 @@ export function EstablishmentDeletionWizard({
 
                                 <div>
                                     <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center">
-                                        Establishment ID
-                                        <QuickInfo text="The unique ID you use to log into this establishment's POS." />
+                                        Location Id
+                                        <QuickInfo text="The Id used for Pos login." />
                                     </label>
                                     <input
                                         type="text"
                                         value={establishmentLoginId}
                                         onChange={(e) => setEstablishmentLoginId(e.target.value)}
-                                        placeholder="Enter establishment ID"
+                                        placeholder="Enter location Id"
                                         className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-red transition-colors"
                                     />
                                 </div>
@@ -444,16 +444,16 @@ export function EstablishmentDeletionWizard({
                                     <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center gap-2">
                                         <div className="flex items-center gap-2">
                                             <Lock size={14} className="text-paymint-red" />
-                                            Establishment Password
+                                            Location Password
                                         </div>
-                                        <QuickInfo text="The master password used by staff to access this location." />
+                                        <QuickInfo text="The main password for this location." />
                                     </label>
                                     <div className="relative">
                                         <input
                                             type={showEstablishmentPassword ? 'text' : 'password'}
                                             value={establishmentPassword}
                                             onChange={(e) => setEstablishmentPassword(e.target.value)}
-                                            placeholder="Establishment password"
+                                            placeholder="Location password"
                                             className="w-full px-4 py-3 pr-12 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-red transition-colors"
                                         />
                                         <button
@@ -471,15 +471,15 @@ export function EstablishmentDeletionWizard({
                                     <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center gap-2">
                                         <div className="flex items-center gap-2">
                                             <Mail size={14} className="text-paymint-red" />
-                                            Account Email
+                                            Your Email
                                         </div>
-                                        <QuickInfo text="Your main owner account email address for confirmation." />
+                                        <QuickInfo text="Your login email." />
                                     </label>
                                     <input
                                         type="email"
                                         value={accountEmail}
                                         onChange={(e) => setAccountEmail(e.target.value)}
-                                        placeholder="Enter account email"
+                                        placeholder="Enter your email"
                                         className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-red transition-colors"
                                     />
                                 </div>
@@ -489,9 +489,9 @@ export function EstablishmentDeletionWizard({
                                     <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center gap-2">
                                         <div className="flex items-center gap-2">
                                             <Lock size={14} className="text-paymint-red" />
-                                            Enter your account password
+                                            Your Password
                                         </div>
-                                        <QuickInfo text="Security verification to authorize this deletion request." />
+                                        <QuickInfo text="To confirm it's you." />
                                     </label>
                                     <div className="relative">
                                         <input

@@ -198,7 +198,7 @@ export function CustomersPage() {
       const exportData = allCustomers.map((c: Customer) => ({
         name: c.name,
         phone: c.phone,
-        email: c.email || 'N/A',
+        email: c.email || 'N/a',
         tier: c.tier,
         points: c.points,
         totalSpent: c.totalSpent,
@@ -235,7 +235,7 @@ export function CustomersPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-              CRM Core
+              Loyalty
             </span>
             <div className="flex items-center gap-2">
               <div className="relative flex h-2 w-2">
@@ -245,8 +245,8 @@ export function CustomersPage() {
               <span className="text-[10px] font-bold text-paymint-green tracking-widest">Live</span>
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Customer Intelligence</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm font-medium">Nurture relationships and manage enterprise loyalty</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Customers</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm font-medium">Manage customer data</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -255,14 +255,14 @@ export function CustomersPage() {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm"
           >
             <Download size={18} />
-            <span>Export CSV</span>
+            <span>Export</span>
           </button>
           <button
             onClick={() => { setEditingCustomer(null); reset({ name: '', phone: '', email: '', address: '', notes: '' }); setShowModal(true); }}
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20"
           >
             <Plus size={18} />
-            <span>Add Partner</span>
+            <span>Add Customer</span>
           </button>
         </div>
       </div>
@@ -280,7 +280,7 @@ export function CustomersPage() {
               <User size={24} />
             </div>
             <div>
-              <p className="text-[10px] font-black text-gray-400 tracking-widest">Total Partners</p>
+              <p className="text-[10px] font-black text-gray-400 tracking-widest">Total Customers</p>
               <p className="text-2xl font-black text-gray-900 dark:text-white mt-0.5">{customers.length}</p>
             </div>
           </div>
@@ -298,7 +298,7 @@ export function CustomersPage() {
               <Award size={24} />
             </div>
             <div>
-              <p className="text-[10px] font-black text-gray-400 tracking-widest">Points Circulating</p>
+              <p className="text-[10px] font-black text-gray-400 tracking-widest">Total Points</p>
               <p className="text-2xl font-black text-gray-900 dark:text-white mt-0.5">
                 {customers.reduce((acc, curr) => acc + curr.points, 0).toLocaleString()}
               </p>
@@ -318,7 +318,7 @@ export function CustomersPage() {
               <ShoppingBag size={24} />
             </div>
             <div>
-              <p className="text-[10px] font-black text-gray-400 tracking-widest">Total Volume</p>
+              <p className="text-[10px] font-black text-gray-400 tracking-widest">Total Spent</p>
               <p className="text-2xl font-black text-gray-900 dark:text-white mt-0.5">
                 {formatCurrency(customers.reduce((acc, curr) => acc + curr.totalSpent, 0))}
               </p>
@@ -335,7 +335,7 @@ export function CustomersPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search By Name, Phone Number, Or Email Address..."
+            placeholder="Search customers..."
             className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
           />
         </div>
@@ -346,25 +346,25 @@ export function CustomersPage() {
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-32">
             <div className="w-12 h-12 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-[10px] font-black tracking-widest text-gray-400">Syncing CRM Registry...</p>
+            <p className="text-[10px] font-black tracking-widest text-gray-400">Loading customers...</p>
           </div>
         ) : customers.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center p-32 text-center bg-gray-50/30 dark:bg-black/10">
             <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
               <User size={40} className="text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Registry Empty</h3>
-            <p className="text-gray-500 max-w-xs text-sm font-medium mx-auto">Initialize your first customer node to build the intelligence database.</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Customers</h3>
+            <p className="text-gray-500 max-w-xs text-sm font-medium mx-auto">Add a customer to get started.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-white/[0.02]">
                 <tr className="border-b border-gray-200 dark:border-white/5">
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Customer Identity</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Name</th>
                   <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Points</th>
                   <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Contact</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Lifetime Value</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Total Spent</th>
                   <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 tracking-widest">Actions</th>
                 </tr>
               </thead>
@@ -409,7 +409,7 @@ export function CustomersPage() {
                     </td>
                     <td className="px-6 py-4">
                       <p className="font-black text-gray-900 dark:text-white text-sm">{formatCurrency(customer.totalSpent)}</p>
-                      <p className="text-[10px] text-paymint-green font-black tracking-widest">Active Partner</p>
+                      <p className="text-[10px] text-paymint-green font-black tracking-widest">Active</p>
                     </td>
                     <td className="px-6 py-4 text-center" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-center gap-2">
@@ -521,7 +521,7 @@ export function CustomersPage() {
             >
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                  {editingCustomer ? 'Refine Profile' : 'New Identity'}
+                  {editingCustomer ? 'Edit Customer' : 'New Customer'}
                 </h2>
                 <button
                   onClick={() => setShowModal(false)}
@@ -533,7 +533,7 @@ export function CustomersPage() {
               <form onSubmit={handleSubmit(handleSaveCustomer)} className="p-8 space-y-8">
                 <div className="space-y-3">
                   <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
-                    Full Legal Name <span className="text-paymint-red mx-1">*</span>
+                    Name <span className="text-paymint-red mx-1">*</span>
                   </label>
                   <div className="relative group">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-paymint-green transition-colors" />
@@ -550,7 +550,7 @@ export function CustomersPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-3">
                     <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1">
-                      Phone Line
+                      Phone
                     </label>
                     <input
                       type="tel"
@@ -561,11 +561,11 @@ export function CustomersPage() {
                     {errors.phone && <p className="text-paymint-red text-[10px] px-1 font-black tracking-widest mt-1.5">{errors.phone.message}</p>}
                   </div>
                   <div className="space-y-3">
-                    <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1">Email Access</label>
+                    <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1">Email</label>
                     <input
                       type="email"
                       {...register('email')}
-                      placeholder="client@enterprise.com"
+                      placeholder="client@example.com"
                       className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                     />
                     {errors.email && <p className="text-paymint-red text-[10px] px-1 font-black tracking-widest mt-1.5">{errors.email.message}</p>}
@@ -573,11 +573,11 @@ export function CustomersPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1">Delivery Address</label>
+                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1">Address</label>
                   <input
                     type="text"
                     {...register('address')}
-                    placeholder="Enter Physical Location Metadata..."
+                    placeholder="Enter address..."
                     className="w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white font-bold focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm"
                   />
                 </div>
@@ -588,14 +588,14 @@ export function CustomersPage() {
                     onClick={() => setShowModal(false)}
                     className="flex-1 py-4 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black tracking-[0.2em] text-[10px] rounded-2xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm"
                   >
-                    Abort
+                    Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
                     className="flex-[2] py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 tracking-[0.2em] text-[10px] shadow-lg shadow-paymint-green/20"
                   >
-                    {editingCustomer ? 'Update Identity' : 'Commit Registry'}
+                    {editingCustomer ? 'Update Customer' : 'Save Customer'}
                   </button>
                 </div>
               </form>
@@ -721,9 +721,9 @@ export function CustomersPage() {
 
                 <div className="grid grid-cols-3 gap-6">
                   {[
-                    { label: 'Total Volume', value: formatCurrency(selectedCustomer.totalSpent), icon: ShoppingBag },
-                    { label: 'Visit Frequency', value: `${selectedCustomer.totalVisits} Orders`, icon: Calendar },
-                    { label: 'Loyalty Balance', value: `${selectedCustomer.points} Pts`, icon: Award },
+                    { label: 'Total Spent', value: formatCurrency(selectedCustomer.totalSpent), icon: ShoppingBag },
+                    { label: 'Visits', value: `${selectedCustomer.totalVisits} Orders`, icon: Calendar },
+                    { label: 'Points', value: `${selectedCustomer.points} Pts`, icon: Award },
                   ].map((stat, i) => (
                     <div key={i} className="p-5 bg-white dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
                       <p className="text-[10px] font-black text-gray-400 tracking-widest mb-3">{stat.label}</p>
@@ -737,28 +737,28 @@ export function CustomersPage() {
                 <div className="grid grid-cols-2 gap-10">
                   <div className="space-y-6">
                     <h3 className="text-[10px] font-black text-gray-400 tracking-[0.2em] flex items-center gap-2">
-                      <Mail size={12} className="text-paymint-green" /> Contact Protocol
+                      <Mail size={12} className="text-paymint-green" /> Contact Info
                     </h3>
                     <div className="space-y-4">
                       <div className="flex items-center gap-3 text-sm font-bold text-gray-700 dark:text-gray-300">
                         <Phone size={14} className="opacity-30" /> {selectedCustomer.phone}
                       </div>
                       <div className="flex items-center gap-3 text-sm font-bold text-gray-700 dark:text-gray-300">
-                        <Mail size={14} className="opacity-30" /> {selectedCustomer.email || 'No registry entry'}
+                        <Mail size={14} className="opacity-30" /> {selectedCustomer.email || 'No email'}
                       </div>
                       <div className="flex items-center gap-3 text-sm font-bold text-gray-700 dark:text-gray-300">
-                        <MapPin size={14} className="opacity-30" /> {selectedCustomer.address || 'No location defined'}
+                        <MapPin size={14} className="opacity-30" /> {selectedCustomer.address || 'No address'}
                       </div>
                     </div>
                   </div>
                   <div className="space-y-6">
                     <h3 className="text-[10px] font-black text-gray-400 tracking-[0.2em] flex items-center gap-2">
-                      <History size={12} className="text-paymint-green" /> Intelligence Profile
+                      <History size={12} className="text-paymint-green" /> Insights
                     </h3>
                     <div className="p-6 bg-paymint-green/5 border border-paymint-green/10 rounded-2xl">
-                      <p className="text-[10px] font-black text-paymint-green tracking-widest mb-2">Internal Analytics</p>
+                      <p className="text-[10px] font-black text-paymint-green tracking-widest mb-2">Notes</p>
                       <p className="text-sm font-medium text-gray-600 dark:text-gray-400 leading-relaxed">
-                        {selectedCustomer.notes || "No behavioral notes recorded for this partner."}
+                        {selectedCustomer.notes || "No notes."}
                       </p>
                     </div>
                   </div>
@@ -769,10 +769,10 @@ export function CustomersPage() {
                     <Trash2 size={18} />
                   </button>
                   <button onClick={() => { setShowDetailModal(false); openEditModal(selectedCustomer); }} className="flex-1 py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl text-[10px] tracking-[0.2em] transition-all hover:scale-[1.02] shadow-lg active:scale-95">
-                    Edit Identity
+                    Edit
                   </button>
                   <button onClick={() => { setShowDetailModal(false); setShowPointsModal(true); setPointsAmount(0); }} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl text-[10px] tracking-[0.2em] transition-all hover:scale-[1.02] shadow-lg shadow-paymint-green/20 active:scale-95">
-                    Adjust Loyalty
+                    Points
                   </button>
                 </div>
               </div>

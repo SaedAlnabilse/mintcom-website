@@ -73,7 +73,7 @@ export const AdminControl = () => {
             </div>
 
             <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-8 tracking-tight leading-tight">
-              Control Your Business from <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-blue-500">Anywhere</span>
+              Manage <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-blue-500">Anywhere</span>
             </h2>
 
             {/* Logo Lockup */}
@@ -88,11 +88,11 @@ export const AdminControl = () => {
             </div>
 
             <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
-              Stay connected to your business 24/7. Monitor live sales, manage inventory, adjust schedules, and receive instant alerts—all from the palm of your hand.
+              Monitor sales, inventory, and staff from your phone. Anytime, anywhere.
             </p>
 
             <ul className="space-y-4">
-              {['Real-time sales analytics', 'Employee shift management', 'Inventory tracking & alerts'].map((item, i) => (
+              {['Live Sales Data', 'Staff Management', 'Stock Alerts'].map((item, i) => (
                 <motion.li
                   key={i}
                   initial={{ opacity: 0, x: -20 }}

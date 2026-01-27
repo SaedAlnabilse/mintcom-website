@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, Quote, Star } from 'lucide-react';
 const testimonials = [
   {
     id: 1,
-    text: "PayMint has completely changed how we handle our rush hours. The interface is so intuitive that our new staff members are up to speed in less than 15 minutes. It's the most reliable system we've ever used.",
+    text: "Paymint makes rush hours easy. New staff learn it in 15 minutes. It's very reliable.",
     author: "Omar Khaled",
     role: "Founder, Terra Cafe",
     rating: 5,
@@ -13,9 +13,9 @@ const testimonials = [
   },
   {
     id: 2,
-    text: "The multi-location management is a game changer. I can monitor all three of my branches in real-time from my phone. The analytics provided helped us reduce waste by 25% in the first two months.",
+    text: "Managing multiple locations is easy. I can see all my branches on my phone. The reports helped us cut waste by 25% quickly.",
     author: "Sara Ibrahim",
-    role: "CEO, Ibrahim Retail Group",
+    role: "Ceo, Ibrahim Retail Group",
     rating: 5,
     image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop"
   }

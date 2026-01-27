@@ -24,7 +24,7 @@ export function DemoDataGeneratorComponent() {
     }
 
     const confirmMessage = clearFirst
-      ? "⚠️ WARNING: This will DELETE ALL EXISTING DATA (Products, Customers, Staff, etc.) and replace it with demo data. Sales history cannot be deleted. Are you sure?"
+      ? "⚠️ Warning: This will Delete All Existing Data (Products, Customers, Staff, etc.) and replace it with demo data. Sales history cannot be deleted. Are you sure?"
       : "This will add sample data to your establishment. Are you sure?";
 
     if (!confirm(confirmMessage)) {
@@ -168,7 +168,7 @@ export function DemoDataGeneratorComponent() {
             <div className="bg-gray-900 text-gray-200 p-4 rounded-xl font-mono text-xs max-h-60 overflow-y-auto border border-gray-800 shadow-inner custom-scrollbar">
               <div className="flex items-center gap-2 mb-3 text-gray-500 border-b border-gray-800 pb-2">
                 <Terminal size={12} />
-                <span className="uppercase tracking-widest font-bold">System Log</span>
+                <span className="tracking-widest font-bold">System Log</span>
               </div>
               <div className="space-y-1">
                 {logs.map((log, i) => (

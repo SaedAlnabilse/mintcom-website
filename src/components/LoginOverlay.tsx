@@ -65,7 +65,7 @@ export function LoginOverlay({ isSuccess = false }: { isSuccess?: boolean }) {
           transition={{ delay: 0.3 }}
           className="text-gray-500 dark:text-gray-400"
         >
-          {showSuccess ? 'Redirecting to your dashboard' : 'Verifying your credentials'}
+          {showSuccess ? 'Redirecting to your dashboard' : 'Checking your login info'}
         </motion.p>
       </div>
     </div>

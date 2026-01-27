@@ -210,7 +210,7 @@ export function OwnerBillingPage() {
             default:
                 return (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-500/10 border border-gray-500/20 rounded-lg text-[10px] font-bold tracking-widest text-gray-500">
-                        {est.subscriptionStatus || 'Unknown'}
+                        {est.subscriptionStatus ? est.subscriptionStatus.charAt(0).toUpperCase() + est.subscriptionStatus.slice(1).toLowerCase() : 'Unknown'}
                     </span>
                 );
         }
@@ -225,18 +225,18 @@ export function OwnerBillingPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-                            Financial Command
+                            Finance
                         </span>
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Billing & Subscriptions</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Billing</h1>
                     <p className="text-gray-500 dark:text-gray-400 mt-2">
-                        Manage payment infrastructure and operational costs
+                        Manage payments and subscriptions
                     </p>
                 </div>
 
                 <div className="flex items-center gap-6">
                     <div className="text-right hidden sm:block">
-                        <p className="text-[10px] font-bold text-gray-400 tracking-widest mb-1">Monthly Burn Rate</p>
+                        <p className="text-[10px] font-bold text-gray-400 tracking-widest mb-1">Monthly Cost</p>
                         <div className="flex items-baseline justify-end gap-1">
                             <span className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">${totalMonthlyCost.toFixed(2)}</span>
                             <span className="text-xs font-bold text-gray-400">/mo</span>
@@ -253,16 +253,16 @@ export function OwnerBillingPage() {
                 </div>
             </div>
 
-            {/* KPI Strip */}
+            {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
-                    { label: 'Payment Methods', value: billingData?.savedCards.length || 0, icon: CreditCard, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: 'Active Subs', value: billingData?.establishments.filter(e => e.subscriptionStatus === 'ACTIVE' || e.subscriptionStatus === 'TRIAL').length || 0, icon: Zap, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+                    { label: 'Cards', value: billingData?.savedCards.length || 0, icon: CreditCard, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                    { label: 'Subscriptions', value: billingData?.establishments.filter(e => e.subscriptionStatus === 'ACTIVE' || e.subscriptionStatus === 'TRIAL').length || 0, icon: Zap, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
                     {
-                        label: 'Next Invoice',
+                        label: 'Next Bill',
                         value: billingData?.nextInvoiceDate
                             ? new Date(billingData.nextInvoiceDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                            : 'No Invoice',
+                            : 'No Bill',
                         icon: Calendar,
                         color: 'text-purple-500',
                         bg: 'bg-purple-500/10'
@@ -294,7 +294,7 @@ export function OwnerBillingPage() {
                 <div className="lg:col-span-1 space-y-6">
                     <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <CreditCard size={18} className="text-paymint-green" />
-                        Payment Methods
+                        Cards
                     </h2>
 
                     {isLoading ? (
@@ -313,7 +313,7 @@ export function OwnerBillingPage() {
                             <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center">
                                 <Plus size={24} />
                             </div>
-                            <span className="text-xs font-bold tracking-wide">Add Your First Card</span>
+                            <span className="text-xs font-bold tracking-wide">Add Card</span>
                         </motion.button>
                     ) : (
                         <div className="space-y-4">
@@ -348,7 +348,7 @@ export function OwnerBillingPage() {
                                             )}
                                             {card.brand === 'VISA' && (
                                                 <div className="w-12 h-12 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center">
-                                                    <span className="font-black italic text-sm text-gray-900 dark:text-white">VISA</span>
+                                                    <span className="font-black italic text-sm text-gray-900 dark:text-white">Visa</span>
                                                 </div>
                                             )}
                                         </div>
@@ -357,7 +357,7 @@ export function OwnerBillingPage() {
                                     <div className="relative z-10 flex justify-between items-end">
                                         <div className="space-y-1">
                                             <p className="text-[9px] font-black tracking-[0.2em] text-gray-400">Card Holder</p>
-                                            <p className="font-bold tracking-wider text-xs text-gray-800 dark:text-gray-200">{card.cardholderName || 'USER'}</p>
+                                            <p className="font-bold tracking-wider text-xs text-gray-800 dark:text-gray-200">{card.cardholderName || 'User'}</p>
                                         </div>
                                         <div className="text-right space-y-1">
                                             <p className="text-[9px] font-black tracking-[0.2em] text-gray-400">Expires</p>
@@ -400,7 +400,7 @@ export function OwnerBillingPage() {
                 <div className="lg:col-span-2 space-y-6">
                     <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <DollarSign size={18} className="text-paymint-green" />
-                        Active Subscriptions
+                        Subscriptions
                     </h2>
 
                     <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-visible shadow-sm">
@@ -439,7 +439,7 @@ export function OwnerBillingPage() {
                                             </div>
                                             <div>
                                                 <h3 className="font-bold text-gray-900 dark:text-white text-sm">{est.name}</h3>
-                                                <p className="text-xs text-gray-500">Enterprise Plan</p>
+                                                <p className="text-xs text-gray-500">Standard Plan</p>
                                             </div>
                                         </div>
 
@@ -527,9 +527,9 @@ export function OwnerBillingPage() {
                         <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-3">
                             <AlertCircle size={18} className="text-amber-500 shrink-0 mt-0.5" />
                             <div>
-                                <h4 className="text-sm font-bold text-amber-500 tracking-wide mb-1">Scheduled Cancellations</h4>
+                                <h4 className="text-sm font-bold text-amber-500 tracking-wide mb-1">Ending Soon</h4>
                                 <p className="text-xs font-medium text-amber-600/80 dark:text-amber-500/80 leading-relaxed">
-                                    Some subscriptions are set to cancel at the end of the billing period. Service will continue until the listed end date.
+                                    Some subscriptions will end after this billing cycle.
                                 </p>
                             </div>
                         </div>

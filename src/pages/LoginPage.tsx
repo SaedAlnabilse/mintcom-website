@@ -113,8 +113,8 @@ export function LoginPage() {
                 className="h-10 w-auto object-contain hidden dark:block"
               />
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Welcome back</h2>
-            <p className="text-gray-600 dark:text-gray-400">Sign in to access your dashboard</p>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Welcome</h2>
+            <p className="text-gray-600 dark:text-gray-400">Sign in to your account</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -169,7 +169,7 @@ export function LoginPage() {
                   type="checkbox"
                   className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green bg-gray-50 dark:bg-gray-700"
                 />
-                <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Remember me</span>
+                <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Keep me logged in</span>
               </label>
               <Link to="/forgot-password" className="text-sm text-paymint-green hover:underline">
                 Forgot password?
@@ -179,17 +179,17 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-paymint-green text-black font-bold hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-not-allowed py-3 px-4 rounded-lg transition-colors shadow-lg shadow-paymint-green/20"
+              className="w-full bg-paymint-green text-black font-bold hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-paymint-wait py-3 px-4 rounded-lg transition-colors shadow-lg shadow-paymint-green/20"
             >
-              {isSubmitting ? 'Signing in...' : 'Sign In'}
+              {isSubmitting ? 'Signing in...' : 'Log In'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-gray-600 dark:text-gray-400">
-              Don't have an account?{' '}
+              No account?{' '}
               <Link to="/signup" className="text-paymint-green hover:underline font-medium">
-                Sign up free
+                Sign up
               </Link>
             </p>
           </div>
@@ -221,7 +221,7 @@ export function LoginPage() {
                   Verify Your Email
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400">
-                  Please verify your email address to access your account. Check your inbox for the verification link.
+                  Please confirm your email to log in. Check your inbox.
                 </p>
                 <p className="text-sm font-medium text-gray-900 dark:text-gray-200 mt-2">
                   {unverifiedEmail}

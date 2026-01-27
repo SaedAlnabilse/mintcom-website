@@ -4,98 +4,98 @@ import { useState } from 'react';
 
 const workflowFeatures = [
   {
-    title: "Sales Processing",
-    description: "Complete transaction management with multiple payment methods",
+    title: "Sales",
+    description: "Fast and easy checkout.",
     icon: CreditCard,
     details: {
-      overview: "Our advanced sales processing system handles everything from simple cash transactions to complex multi-payment splits.",
+      overview: "Process payments quickly and easily.",
       features: [
-        "Accept cash, credit/debit cards, mobile payments, and gift cards",
-        "Split payments across multiple methods",
-        "Quick refund and exchange processing",
-        "Automatic tax calculations",
-        "Custom discount and promotion management",
-        "Receipt printing and email options"
+        "Accept all payment types",
+        "Split payments easily",
+        "Fast refunds",
+        "Auto tax calculation",
+        "Manage discounts",
+        "Digital receipts"
       ]
     }
   },
   {
-    title: "Inventory Management",
-    description: "Real-time stock tracking and automated reorder alerts",
+    title: "Inventory",
+    description: "Track stock in real-time.",
     icon: Package,
     details: {
-      overview: "Keep perfect track of your inventory with real-time updates and intelligent automation.",
+      overview: "Know exactly what you have in stock.",
       features: [
-        "Live stock level monitoring across all locations",
-        "Automated low-stock alerts and reorder suggestions",
-        "Barcode scanning and label printing",
-        "Batch and serial number tracking",
-        "Supplier management and purchase orders",
-        "Inventory reports and analytics"
+        "Live stock tracking",
+        "Low stock alerts",
+        "Barcode scanning",
+        "Batch tracking",
+        "Supplier management",
+        "Stock reports"
       ]
     }
   },
   {
-    title: "Employee Permissions",
-    description: "Role-based access control and staff performance tracking",
+    title: "Staff Roles",
+    description: "Control staff access.",
     icon: Users,
     details: {
-      overview: "Manage your team effectively with granular permissions and comprehensive performance tracking.",
+      overview: "Manage what your team can see and do.",
       features: [
-        "Customizable role-based access levels",
-        "Individual sales performance tracking",
-        "Time clock and shift management",
-        "Commission calculations",
-        "Activity logs and audit trails",
-        "Staff scheduling and notifications"
+        "Custom access roles",
+        "Sales tracking per staff",
+        "Shift management",
+        "Commission tracking",
+        "Activity logs",
+        "Staff scheduling"
       ]
     }
   },
   {
-    title: "Real-time Dashboards",
-    description: "Live analytics and business insights at your fingertips",
+    title: "Dashboards",
+    description: "See live business data.",
     icon: BarChart3,
     details: {
-      overview: "Make data-driven decisions with live dashboards that update in real-time.",
+      overview: "Get real-time insights into your business.",
       features: [
-        "Live sales and revenue tracking",
-        "Top-selling products and categories",
-        "Customer traffic patterns",
-        "Staff performance metrics",
-        "Customizable widgets and views",
-        "Export reports in multiple formats"
+        "Live sales tracking",
+        "Top selling items",
+        "Customer trends",
+        "Staff performance",
+        "Custom widgets",
+        "Export reports"
       ]
     }
   },
   {
-    title: "Multi-branch Support",
-    description: "Centralized management across multiple locations",
+    title: "Multi-Location",
+    description: "Manage all locations together.",
     icon: Building2,
     details: {
-      overview: "Manage multiple store locations from a single, unified platform.",
+      overview: "Control all your stores from one place.",
       features: [
-        "Centralized inventory across all branches",
-        "Transfer stock between locations",
-        "Location-specific pricing and promotions",
-        "Consolidated reporting and analytics",
-        "Branch performance comparisons",
-        "Remote access and management"
+        "Centralized inventory",
+        "Stock transfers",
+        "Location-based pricing",
+        "Combined reporting",
+        "Branch comparison",
+        "Remote management"
       ]
     }
   },
   {
     title: "Cloud Sync",
-    description: "Automatic data backup and cross-device synchronization",
+    description: "Data backed up automatically.",
     icon: Cloud,
     details: {
-      overview: "Your data is always safe, backed up, and accessible from anywhere.",
+      overview: "Your data is safe and accessible anywhere.",
       features: [
-        "Automatic cloud backups every hour",
-        "Real-time sync across all devices",
-        "Access from desktop, tablet, or mobile",
-        "99.9% uptime guarantee",
-        "Bank-level encryption",
-        "Easy data recovery and restore"
+        "Automatic backups",
+        "Real-time sync",
+        "Access on any device",
+        "99.9% uptime",
+        "Secure encryption",
+        "Easy recovery"
       ]
     }
   }
@@ -130,10 +130,10 @@ export const WorkflowSupport = () => {
                 className="mb-12"
               >
                 <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-6 tracking-tight">
-                  Built to Support <span className="text-paymint-green">Every Part</span> of Your Workflow
+                  Everything You Need <span className="text-paymint-green">to Grow</span>
                 </h2>
                 <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                  From the front counter to the back office, PayMint provides the tools you need to run your business smoothly.
+                  Tools for every part of your restaurant.
                 </p>
               </motion.div>
 

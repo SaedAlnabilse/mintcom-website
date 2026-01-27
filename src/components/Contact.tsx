@@ -10,7 +10,7 @@ export const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate API call
+    // Simulate Api call
     await new Promise(resolve => setTimeout(resolve, 1500));
     setIsSubmitting(false);
     setIsSuccess(true);
@@ -28,7 +28,7 @@ export const Contact = () => {
               <div className="relative z-10">
                 <h2 className="text-4xl font-black tracking-tight mb-6">Let's <span className="text-paymint-green">Connect.</span></h2>
                 <p className="text-gray-400 text-lg leading-relaxed mb-12">
-                  Ready to transform your business? Our team is here to help you get started with PayMint.
+                  Ready to grow? We're here to help you get started.
                 </p>
 
                 <div className="space-y-8">
@@ -122,7 +122,7 @@ export const Contact = () => {
                         required
                         rows={4}
                         className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-2xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none"
-                        placeholder="How can we help you?"
+                        placeholder="How can we help?"
                       />
                     </div>
 

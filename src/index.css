@@ -95,7 +95,7 @@
   height: 100vh;
   z-index: 99999;
   /* Highest priority */
-  cursor: url('./assets/not-allowed-cursor.png') 16 16, not-allowed;
+  cursor: url('./assets/green-loading-cursor.svg') 16 16, wait;
   pointer-events: auto;
   /* Catch all clicks */
 }
@@ -107,4 +107,8 @@ body.app-loading {
 
 body.app-loading #global-blocking-overlay {
   display: block;
+}
+
+.cursor-paymint-wait {
+  cursor: url('./assets/green-loading-cursor.svg') 16 16, wait;
 }

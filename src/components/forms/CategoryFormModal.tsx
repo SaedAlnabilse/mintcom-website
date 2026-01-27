@@ -105,7 +105,7 @@ export function CategoryFormModal({
             <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Category Details</span>
+                <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Category</span>
                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
                 <span className="text-[10px] font-black text-paymint-green tracking-widest">Active</span>
               </div>
@@ -137,8 +137,8 @@ export function CategoryFormModal({
               {/* Name */}
               <div className="space-y-3">
                 <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
-                  Category Name <span className="text-paymint-red mx-1">*</span>
-                  <QuickInfo text="The unique name that will appear on the POS for this group." />
+                  Name <span className="text-paymint-red mx-1">*</span>
+                  <QuickInfo text="Name for the menu." />
                 </label>
                 <input
                   type="text"
@@ -153,8 +153,8 @@ export function CategoryFormModal({
               {/* Icon Grid */}
               <div className="space-y-4">
                 <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
-                  Category Icon
-                  <QuickInfo text="Visual symbol to represent this category on the POS grid." />
+                  Icon
+                  <QuickInfo text="Icon for the menu." />
                 </label>
                 <div className="grid grid-cols-5 gap-3">
                   {ICONS.map(icon => {
@@ -211,7 +211,7 @@ export function CategoryFormModal({
               {isSubmitting ? (
                 <RefreshCw size={18} className="animate-spin" />
               ) : (
-                initialData ? 'Save Changes' : 'Add Category'
+                initialData ? 'Save' : 'Add'
               )}
             </button>
           </div>

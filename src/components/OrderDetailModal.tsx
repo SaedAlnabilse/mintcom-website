@@ -65,7 +65,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                     await api.post(`/api/orders/${order.id}/refund`, {
                         reason: 'Refunded via web dashboard',
                     });
-                    toast.success('Order reversed successfully');
+                    toast.success('Order reversed');
                     if (onRefundSuccess) onRefundSuccess();
                     onClose();
                 } catch (err: any) {
@@ -121,7 +121,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                                     order.paymentStatus || order.status,
                                 )}`}
                             >
-                                {order.paymentStatus || order.status}
+                                {order.paymentStatus ? order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1).toLowerCase() : order.status.charAt(0).toUpperCase() + order.status.slice(1).toLowerCase()}
                             </span>
                         </div>
                         <div>

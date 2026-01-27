@@ -40,7 +40,7 @@ export function OwnerMergePage() {
                 name: brandName,
                 establishmentIds: selectedEstablishments,
             });
-            toast.success('Brand created successfully!');
+            toast.success('Brand created');
             await refreshEstablishments();
             navigate('/owner/brands');
         } catch (err: any) {
@@ -63,15 +63,15 @@ export function OwnerMergePage() {
                     <div className="space-y-6">
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-paymint-green/10 border border-paymint-green/20">
                             <GitMerge size={14} className="text-paymint-green" />
-                            <span className="text-[10px] font-black text-paymint-green tracking-[0.2em]">Merger & Acquisition Engine</span>
+                            <span className="text-[10px] font-black text-paymint-green tracking-[0.2em]">Brand Creation</span>
                         </div>
 
                         <div>
                             <h1 className="text-5xl xl:text-6xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-4">
-                                Strategic <span className="text-paymint-green">Fusion</span>
+                                Create <span className="text-paymint-green">Brand</span>
                             </h1>
                             <p className="text-lg font-medium text-gray-500 dark:text-gray-400 max-w-xl">
-                                Consolidating separate operational nodes into a unified brand ecosystem.
+                                Combine multiple locations into a single brand.
                             </p>
                         </div>
                     </div>
@@ -81,7 +81,7 @@ export function OwnerMergePage() {
                         className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 text-gray-900 dark:text-white font-black text-xs tracking-widest hover:bg-gray-100 dark:hover:bg-white/5 transition-all self-start xl:self-center shadow-lg"
                     >
                         <ArrowLeft size={18} />
-                        Abort Fusion
+                        Cancel
                     </button>
                 </div>
             </div>
@@ -89,8 +89,8 @@ export function OwnerMergePage() {
             {/* Step Landscape */}
             <div className="flex items-center gap-8 px-6">
                 {[
-                    { id: 'select', label: 'Selection Phase', icon: Store },
-                    { id: 'configure', label: 'Identity Config', icon: Building2 }
+                    { id: 'select', label: 'Select Locations', icon: Store },
+                    { id: 'configure', label: 'Brand Details', icon: Building2 }
                 ].map((s, idx) => (
                     <div key={s.id} className="flex items-center gap-4 group">
                         <div className={`
@@ -123,7 +123,7 @@ export function OwnerMergePage() {
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                             <div className="lg:col-span-2 space-y-6">
                                 <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight px-2 flex items-center gap-3">
-                                    <Store className="text-paymint-green" size={20} /> Available Nodes
+                                    <Store className="text-paymint-green" size={20} /> Available Locations
                                 </h3>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -173,7 +173,7 @@ export function OwnerMergePage() {
 
                             <div className="lg:col-span-1 space-y-6">
                                 <div className="p-8 rounded-[3rem] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 sticky top-8">
-                                    <h3 className="text-lg font-black text-gray-900 dark:text-white tracking-tight mb-6">Fusion Intelligence</h3>
+                                    <h3 className="text-lg font-black text-gray-900 dark:text-white tracking-tight mb-6">Why Merge?</h3>
 
                                     <div className="space-y-6">
                                         <div className="flex items-start gap-4">
@@ -181,20 +181,20 @@ export function OwnerMergePage() {
                                                 <Zap size={18} />
                                             </div>
                                             <p className="text-xs font-bold text-gray-500 leading-relaxed">
-                                                Merging nodes enables <span className="text-gray-900 dark:text-white">Unified Reporting</span> and shared workforce matrix operations.
+                                                Grouping locations allows for <span className="text-gray-900 dark:text-white">Shared Reporting</span> and easier staff management.
                                             </p>
                                         </div>
 
                                         <div className="h-px bg-gray-200 dark:bg-white/10" />
 
                                         <div className="space-y-2">
-                                            <p className="text-[10px] font-black text-gray-400 tracking-widest leading-none">Status Check</p>
+                                            <p className="text-[10px] font-black text-gray-400 tracking-widest leading-none">Status</p>
                                             <div className="flex items-center gap-2">
                                                 <div className={`w-2 h-2 rounded-full ${selectedEstablishments.length >= 2 ? 'bg-paymint-green' : 'bg-paymint-red'} animate-pulse`} />
                                                 <span className="text-xs font-black text-gray-900 dark:text-white">
                                                     {selectedEstablishments.length < 2
-                                                        ? `Select ${2 - selectedEstablishments.length} more node(s)`
-                                                        : 'Ready for Identity Config'}
+                                                        ? `Select ${2 - selectedEstablishments.length} more location(s)`
+                                                        : 'Ready for Next Step'}
                                                 </span>
                                             </div>
                                         </div>
@@ -204,7 +204,7 @@ export function OwnerMergePage() {
                                             disabled={selectedEstablishments.length < 2}
                                             className="w-full py-5 bg-paymint-green text-black rounded-2xl font-black text-[10px] tracking-[0.2em] shadow-xl shadow-paymint-green/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:hover:scale-100"
                                         >
-                                            Initiate Config ({selectedEstablishments.length} Nodes)
+                                            Next Step ({selectedEstablishments.length} Locations)
                                         </button>
                                     </div>
                                 </div>
@@ -222,12 +222,12 @@ export function OwnerMergePage() {
                         {/* Config Form */}
                         <div className="p-10 rounded-[3rem] bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 shadow-2xl space-y-8">
                             <div>
-                                <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Identity Configuration</h3>
-                                <p className="text-xs font-bold text-gray-500 tracking-widest">Defining the strategic branding for the fused entity.</p>
+                                <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Brand Setup</h3>
+                                <p className="text-xs font-bold text-gray-500 tracking-widest">Set the name for your new brand.</p>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-gray-400 tracking-[0.2em] px-2 block">Brand Designation Name</label>
+                                <label className="text-[10px] font-black text-gray-400 tracking-[0.2em] px-2 block">Brand Name</label>
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-6 flex items-center text-gray-400 group-hover:text-paymint-green transition-colors">
                                         <Building2 size={20} />
@@ -236,7 +236,7 @@ export function OwnerMergePage() {
                                         type="text"
                                         value={brandName}
                                         onChange={(e) => setBrandName(e.target.value)}
-                                        placeholder="Enter Enterprise Identity..."
+                                        placeholder="Enter brand name..."
                                         className="w-full pl-16 pr-8 py-6 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-3xl font-black text-lg text-gray-900 dark:text-white placeholder-gray-300 focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/30 transition-all tracking-tight"
                                     />
                                 </div>
@@ -247,10 +247,10 @@ export function OwnerMergePage() {
                                     <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-500">
                                         <ShieldCheck size={18} />
                                     </div>
-                                    <h4 className="text-sm font-black text-indigo-900 dark:text-indigo-200 tracking-tight">Security Protocol</h4>
+                                    <h4 className="text-sm font-black text-indigo-900 dark:text-indigo-200 tracking-tight">Security</h4>
                                 </div>
                                 <p className="text-xs font-bold text-indigo-800 dark:text-indigo-300/60 leading-relaxed px-1">
-                                    All constituent nodes will inherit access control from the primary entity <span className="text-indigo-900 dark:text-white">({firstSelectedEst?.name})</span>. Terminal IDs and Authentication Tokens remain synchronized.
+                                    All locations will use the security settings from the main location <span className="text-indigo-900 dark:text-white">({firstSelectedEst?.name})</span>. Login credentials will be synchronized.
                                 </p>
                             </div>
 
@@ -259,7 +259,7 @@ export function OwnerMergePage() {
                                     onClick={() => setStep('select')}
                                     className="flex-1 py-5 rounded-2xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black text-[10px] tracking-widest hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
                                 >
-                                    Modify Selection
+                                    Back
                                 </button>
                                 <button
                                     onClick={handleMerge}
@@ -267,14 +267,14 @@ export function OwnerMergePage() {
                                     className="flex-[2] py-5 bg-black dark:bg-white text-white dark:text-black rounded-2xl font-black text-[10px] tracking-[0.2em] shadow-2xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
                                 >
                                     {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
-                                    Finalize Fusion
+                                    Create Brand
                                 </button>
                             </div>
                         </div>
 
                         {/* Selected List */}
                         <div className="px-10 space-y-4">
-                            <h4 className="text-[10px] font-black text-gray-400 tracking-widest px-2">Constituent Fleet Nodes</h4>
+                            <h4 className="text-[10px] font-black text-gray-400 tracking-widest px-2">Selected Locations</h4>
                             <div className="flex flex-wrap gap-2">
                                 {selectedEstInfo.map((est) => (
                                     <div key={est.id} className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 rounded-xl shadow-sm group">

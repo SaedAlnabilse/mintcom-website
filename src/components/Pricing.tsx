@@ -7,18 +7,18 @@ const plans = [
     name: "Premium Plan",
     price: "20$",
     period: "/m",
-    description: "The complete all-in-one solution for your business.",
+    description: "Everything you need to run your business.",
     features: ["Software License", "Cash Drawer Included", "Installment Options", "Year-round Support", "Mobile Admin Portal"],
     detailedFeatures: [
-      "Full POS Software License",
-      "High-quality Cash Drawer included",
-      "Tablet Hardware Options",
-      "Flexible installment plans",
-      "24/7 Priority Support",
-      "Mobile Admin Portal access",
-      "Advanced Reporting & Analytics",
-      "Inventory Management",
-      "Staff Performance Tracking"
+      "Full Pos Access",
+      "Cash Drawer",
+      "Tablet Options",
+      "Flexible Payments",
+      "24/7 Support",
+      "Mobile Admin App",
+      "Advanced Reports",
+      "Inventory",
+      "Staff Tracking"
     ],
     notIncluded: null,
     cta: "Start Free Trial",
@@ -29,14 +29,14 @@ const plans = [
     name: "Custom Plan",
     price: "Custom",
     period: "",
-    description: "Tailored solutions for franchises and multi-location enterprises.",
-    features: ["Custom Features", "API Access", "Dedicated Account Manager", "White Label Options", "Multi-branch Management"],
+    description: "Custom solutions for large businesses.",
+    features: ["Custom Features", "Api Access", "Dedicated Account Manager", "White Label Options", "Multi-branch Management"],
     detailedFeatures: [
-      "Pick the features you need",
-      "Design custom workflows",
-      "Choose hardware and integrations",
-      "Dedicated onboarding & support",
-      "Enterprise SLA"
+      "Custom Features",
+      "Custom Workflows",
+      "Custom Hardware",
+      "Dedicated Support",
+      "Enterprise Sla"
     ],
     cta: "Contact Sales",
     highlight: false,
@@ -73,10 +73,10 @@ export const Pricing = () => {
           className="text-center mb-20"
         >
           <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-6 tracking-tight">
-            Simple, Transparent Pricing
+            Simple Pricing
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            Everything you need to run your business, in one simple plan.
+            All-in-one plans. No hidden fees.
           </p>
         </motion.div>
 

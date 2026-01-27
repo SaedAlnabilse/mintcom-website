@@ -5,46 +5,46 @@ import { Tablet, Printer, X, CheckCircle2, ExternalLink } from 'lucide-react';
 const hardwareItems = [
   {
     id: 'tablets',
-    name: 'POS Tablets',
+    name: 'Pos Tablets',
     icon: Tablet,
-    description: 'Recommended tablets that work great with PayMint',
+    description: 'Tablets that work well.',
     products: [
       {
         name: 'Samsung Galaxy Tab A8',
-        specs: '10.5" display, 4GB RAM, Wi-Fi',
+        specs: '10.5" display, 4gb Ram, Wi-fi',
         price: '~$180',
         link: 'https://www.amazon.com/s?k=samsung+galaxy+tab+a8'
       },
       {
-        name: 'iPad 10th Gen',
+        name: 'Ipad 10th Gen',
         specs: '10.9" display, A14 chip, Premium option',
         price: '~$350',
         link: 'https://www.amazon.com/s?k=ipad+10th+generation'
       },
       {
         name: 'Lenovo Tab M10 Plus',
-        specs: '10.3" FHD display, 4GB RAM, Long battery',
+        specs: '10.3" Fhd display, 4gb Ram, Long battery',
         price: '~$150',
         link: 'https://www.amazon.com/s?k=lenovo+tab+m10+plus'
       }
     ],
-    note: 'Any Android tablet (8"+ screen) or iPad works with PayMint'
+    note: 'Any Android tablet (8"+ screen) or Ipad works with PayMint'
   },
   {
     id: 'printers',
     name: 'Receipt Printers',
     icon: Printer,
-    description: 'Recommended thermal printers for receipts',
+    description: 'Good receipt printers.',
     products: [
       {
-        name: 'MUNBYN Thermal Printer',
-        specs: '80mm, USB + Bluetooth, Auto-cutter',
+        name: 'Munbyn Thermal Printer',
+        specs: '80mm, Usb + Bluetooth, Auto-cutter',
         price: '~$100',
         link: 'https://www.amazon.com/s?k=munbyn+thermal+receipt+printer+80mm'
       },
       {
-        name: 'Epson TM-T20III',
-        specs: '80mm, USB, Fast & reliable',
+        name: 'Epson Tm-T20III',
+        specs: '80mm, Usb, Fast & reliable',
         price: '~$180',
         link: 'https://www.amazon.com/s?k=epson+tm-t20iii'
       },
@@ -55,7 +55,7 @@ const hardwareItems = [
         link: 'https://www.amazon.com/s?k=star+micronics+tsp143'
       }
     ],
-    note: 'We support most 80mm and 58mm ESC/POS thermal printers'
+    note: 'We support most 80mm and 58mm Esc/Pos thermal printers'
   }
 ];
 
@@ -80,7 +80,7 @@ export const Hardware = () => {
               Compatible <span className="text-paymint-green">Hardware</span>
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Use your own devices or pick from our recommended hardware. PayMint works with most tablets and printers.
+              Use your own devices or ours. Works with most tablets and printers.
             </p>
           </motion.div>
 
@@ -139,7 +139,7 @@ export const Hardware = () => {
             className="text-center"
           >
             <p className="text-gray-500 dark:text-gray-400">
-              💡 <span className="font-medium">Already have hardware?</span> PayMint works with most Android tablets, iPads, and ESC/POS printers.
+              💡 <span className="font-medium">Already have hardware?</span> PayMint works with most Android tablets, iPads, and ESC/Pos printers.
             </p>
           </motion.div>
         </div>

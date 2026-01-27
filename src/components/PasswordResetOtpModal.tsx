@@ -68,8 +68,8 @@ export function PasswordResetOtpModal({
             setStep('verify');
             toast.success('Verification code sent to your email');
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Failed to send verification code');
-            toast.error(err.response?.data?.message || 'Failed to send verification code');
+            setError(err.response?.data?.message || 'Failed to send code');
+            toast.error(err.response?.data?.message || 'Failed to send code');
         } finally {
             setIsLoading(false);
         }
@@ -99,7 +99,7 @@ export function PasswordResetOtpModal({
     const handleVerifyOtp = async () => {
         const otpString = otp.join('');
         if (otpString.length !== 6) {
-            setError('Please enter the complete verification code');
+            setError('Enter the full code');
             return;
         }
 
@@ -109,9 +109,9 @@ export function PasswordResetOtpModal({
         try {
             await api.post('/api/accounts/verify-password-otp', { otp: otpString });
             setStep('newPassword');
-            toast.success('Code verified successfully');
+            toast.success('Code verified');
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Invalid verification code');
+            setError(err.response?.data?.message || 'Invalid code');
         } finally {
             setIsLoading(false);
         }
@@ -155,7 +155,7 @@ export function PasswordResetOtpModal({
             }
 
             setStep('success');
-            toast.success('Password reset successfully');
+            toast.success('Password reset');
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to reset password');
         } finally {
@@ -208,7 +208,7 @@ export function PasswordResetOtpModal({
 
                     {/* Content */}
                     <div className="p-6">
-                        {/* Step 1: Request OTP */}
+                        {/* Step 1: Request Otp */}
                         {step === 'request' && (
                             <div className="space-y-6">
                                 <div className="text-center">
@@ -219,7 +219,7 @@ export function PasswordResetOtpModal({
                                         Verify Your Identity
                                     </h3>
                                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                                        We'll send a 6-digit verification code to your registered email address.
+                                        We'll send a 6-digit code to your registered email address.
                                     </p>
                                 </div>
 
@@ -250,7 +250,7 @@ export function PasswordResetOtpModal({
                             </div>
                         )}
 
-                        {/* Step 2: Enter OTP */}
+                        {/* Step 2: Enter Otp */}
                         {step === 'verify' && (
                             <div className="space-y-6">
                                 <div className="text-center">
@@ -265,7 +265,7 @@ export function PasswordResetOtpModal({
                                     </p>
                                 </div>
 
-                                {/* OTP Input */}
+                                {/* Otp Input */}
                                 <div className="flex justify-center gap-2">
                                     {otp.map((digit, index) => (
                                         <input

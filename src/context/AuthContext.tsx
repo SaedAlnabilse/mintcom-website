@@ -15,7 +15,7 @@ interface Account {
   emailVerified: boolean;
   trialUsed: boolean;
   trialEndDate?: string;
-  establishmentLoginId?: string; // Account-level Owner POS ID
+  establishmentLoginId?: string; // Account-level Owner Pos Id
   defaultPaymentMethod?: string; // Last 4 digits of saved card (e.g., "4242")
   defaultCardId?: string; // ID of the default saved card
   deletionRequestedAt?: string; // ISO date string if deletion is pending
@@ -145,7 +145,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       // 1. Initial "signing in" state
-      // Run API call
+      // Run Api call
       const response = await api.post('/api/accounts/login', { email, password });
 
       // The accessToken is now set as an HttpOnly cookie by the server
@@ -250,7 +250,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error: any) {
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to resend verification',
+        error: error.response?.data?.message || 'Failed to resend code',
       };
     }
   };
@@ -328,7 +328,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Update account data (e.g., after setting Owner POS ID)
+  // Update account data (e.g., after setting Owner Pos Id)
   const updateAccount = (updates: Partial<Account>) => {
     if (account) {
       const updatedAccount = { ...account, ...updates };

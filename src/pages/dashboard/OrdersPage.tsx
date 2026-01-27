@@ -110,7 +110,7 @@ export function OrdersPage() {
           subtotal: h.orderData?.subtotal || 0,
           tax: h.orderData?.tax || 0,
           discount: h.orderData?.discount?.amount || 0,
-          paymentMethod: 'N/A',
+          paymentMethod: 'N/a',
           paymentStatus: 'HELD',
           status: 'HELD',
           createdAt: h.pinnedAt,
@@ -246,7 +246,7 @@ export function OrdersPage() {
           await api.post(`/api/orders/${order.id}/refund`, {
             reason: 'Refunded via web dashboard',
           });
-          toast.success('Order refunded successfully');
+          toast.success('Order refunded');
           fetchOrders(); // Refresh the list
           setConfirmConfig(prev => ({ ...prev, isOpen: false }));
         } catch (err: any) {
@@ -297,12 +297,12 @@ export function OrdersPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-              Transactions
+              Sales
             </span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Orders History</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Orders</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-2">
-            Track and manage every transaction across your business
+            View and manage all orders
           </p>
         </div>
 
@@ -312,7 +312,7 @@ export function OrdersPage() {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
           >
             <Download size={18} />
-            <span>Export CSV</span>
+            <span>Export Csv</span>
           </button>
           <button
             onClick={fetchOrders}
@@ -333,7 +333,7 @@ export function OrdersPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && searchOrder()}
-            placeholder="Search by order ID or customer..."
+            placeholder="Search orders..."
             className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
           />
         </div>
@@ -350,7 +350,7 @@ export function OrdersPage() {
                   : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
                   }`}
               >
-                {range.replace('_', ' ')}
+                {range.replace('_', ' ').replace('this', 'This')}
               </button>
             ))}
           </div>
@@ -388,12 +388,12 @@ export function OrdersPage() {
         </div>
       </div>
 
-      {/* KPI Strip */}
+      {/* Kpi Strip */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          { label: 'Total Volume', value: formatCurrency(orders.reduce((acc, o) => acc + (o.total || 0), 0)), icon: TrendingUp, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
-          { label: 'Orders Processed', value: orders.length, icon: ShoppingCart, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-          { label: 'Pending/Held', value: orders.filter(o => o.status === 'HELD' || o.paymentStatus === 'PENDING').length, icon: Clock, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+          { label: 'Total Sales', value: formatCurrency(orders.reduce((acc, o) => acc + (o.total || 0), 0)), icon: TrendingUp, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+          { label: 'Total Orders', value: orders.length, icon: ShoppingCart, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+          { label: 'Pending', value: orders.filter(o => o.status === 'HELD' || o.paymentStatus === 'PENDING').length, icon: Clock, color: 'text-orange-500', bg: 'bg-orange-500/10' },
         ].map((stat, i) => (
           <motion.div
             key={i}
@@ -468,7 +468,7 @@ export function OrdersPage() {
                       </div>
                     </div>
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
-                      {order.paymentStatus || order.status}
+                      {(order.paymentStatus || order.status || 'PENDING').charAt(0).toUpperCase() + (order.paymentStatus || order.status || 'PENDING').slice(1).toLowerCase()}
                     </span>
                   </div>
 
@@ -479,7 +479,7 @@ export function OrdersPage() {
                         {order.customer?.name || 'Walk-in Customer'}
                       </p>
                       <p className="text-xs text-gray-500">
-                        {order.user?.username ? `Staff: ${order.user.username}` : 'POS'} • {order.paymentMethod}
+                        {order.user?.username ? `Staff: ${order.user.username}` : 'Pos'} • {order.paymentMethod}
                       </p>
                     </div>
                     <div className="text-right ml-4 flex-shrink-0">
@@ -527,7 +527,7 @@ export function OrdersPage() {
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-white/[0.02]">
                 <tr className="border-b border-gray-200 dark:border-white/5">
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Order Details</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Order</th>
                   <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Customer</th>
                   <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Amount</th>
                   <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Status</th>
@@ -558,7 +558,7 @@ export function OrdersPage() {
                       </td>
                       <td className="px-6 py-4">
                         <p className="font-bold text-gray-800 dark:text-gray-300 text-sm">{order.customer?.name || 'Walk-in Customer'}</p>
-                        <p className="text-xs text-gray-500">{order.user?.username ? `Staff: ${order.user.username}` : 'POS'}</p>
+                        <p className="text-xs text-gray-500">{order.user?.username ? `Staff: ${order.user.username}` : 'Pos'}</p>
                       </td>
                       <td className="px-6 py-4">
                         <p className="font-bold text-gray-900 dark:text-white">{formatCurrency(order.total)}</p>
@@ -566,7 +566,7 @@ export function OrdersPage() {
                       </td>
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
-                          {order.paymentStatus || order.status}
+                          {(order.paymentStatus || order.status || 'PENDING').charAt(0).toUpperCase() + (order.paymentStatus || order.status || 'PENDING').slice(1).toLowerCase()}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">

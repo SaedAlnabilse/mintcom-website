@@ -333,12 +333,12 @@ export function AddonsPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-              Inventory
+              Menu
             </span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Add-ons & Modifiers</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Add-ons</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-2">
-            Global item customizations, groups, and incremental pricing
+            Manage extra options and pricing
           </p>
         </div>
 
@@ -357,7 +357,7 @@ export function AddonsPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
           {
-            label: 'Add-on Groups',
+            label: 'Groups',
             value: stats.totalGroups,
             icon: Layers,
             color: 'text-blue-500',
@@ -365,7 +365,7 @@ export function AddonsPage() {
             action: () => handleQuickFilter('ALL')
           },
           {
-            label: 'Total Options',
+            label: 'Options',
             value: stats.totalOptions,
             icon: Package,
             color: 'text-paymint-green',
@@ -373,9 +373,9 @@ export function AddonsPage() {
             action: () => handleQuickFilter('ALL', true)
           },
           {
-            label: 'Paid Modifiers',
+            label: 'Paid',
             value: stats.paidOptions,
-            sub: 'With pricing',
+            sub: 'With price',
             icon: DollarSign,
             color: 'text-orange-500',
             bg: 'bg-orange-500/10',
@@ -413,7 +413,7 @@ export function AddonsPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-            placeholder="Search add-on groups..."
+            placeholder="Search groups..."
             className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
           />
         </div>
@@ -421,7 +421,7 @@ export function AddonsPage() {
         <div className="pt-4 border-t border-gray-100 dark:border-white/5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Selection Filter */}
           <div className="space-y-2">
-            <p className="text-[9px] font-black text-gray-400 dark:text-gray-500 tracking-widest px-1">Selection Logic</p>
+            <p className="text-[9px] font-black text-gray-400 dark:text-gray-500 tracking-widest px-1">Selection</p>
             <div className="flex bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/10">
               {['ALL', 'SINGLE_SELECT', 'MULTI_SELECT'].map((f) => (
                 <button
@@ -432,7 +432,7 @@ export function AddonsPage() {
                     : 'text-gray-400 hover:text-gray-600'
                     }`}
                 >
-                  {f.replace('_SELECT', '').replace('ALL', 'All Logic')}
+                  {f.replace('_SELECT', '').replace('ALL', 'All')}
                 </button>
               ))}
             </div>
@@ -440,7 +440,7 @@ export function AddonsPage() {
 
           {/* Requirement Filter */}
           <div className="space-y-2">
-            <p className="text-[9px] font-black text-gray-400 dark:text-gray-500 tracking-widest px-1">Mandatory Node</p>
+            <p className="text-[9px] font-black text-gray-400 dark:text-gray-500 tracking-widest px-1">Required</p>
             <div className="flex bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/10">
               {['ALL', 'MANDATORY', 'OPTIONAL'].map((f) => (
                 <button
@@ -451,7 +451,7 @@ export function AddonsPage() {
                     : 'text-gray-400 hover:text-gray-600'
                     }`}
                 >
-                  {f.replace('ALL', 'All Types')}
+                  {f.replace('ALL', 'All')}
                 </button>
               ))}
             </div>
@@ -459,7 +459,7 @@ export function AddonsPage() {
 
           {/* Pricing Model */}
           <div className="space-y-2">
-            <p className="text-[9px] font-black text-gray-400 dark:text-gray-500 tracking-widest px-1">Capital Strategy</p>
+            <p className="text-[9px] font-black text-gray-400 dark:text-gray-500 tracking-widest px-1">Price</p>
             <div className="flex bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/10">
               {['ALL', 'FREE', 'PAID'].map((f) => (
                 <button
@@ -470,7 +470,7 @@ export function AddonsPage() {
                     : 'text-gray-400 hover:text-gray-600'
                     }`}
                 >
-                  {f.replace('ALL', 'All Prices')}
+                  {f.replace('ALL', 'All')}
                 </button>
               ))}
             </div>
@@ -489,7 +489,7 @@ export function AddonsPage() {
             className="text-[9px] font-black text-gray-400 hover:text-paymint-red tracking-widest flex items-center gap-1.5 transition-colors"
           >
             <RefreshCw size={10} />
-            Reset Ecosystem Filters
+            Reset Filters
           </button>
         </div>
       </div>
@@ -504,8 +504,8 @@ export function AddonsPage() {
           <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
             <Package size={32} className="text-gray-300" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No customization groups</h3>
-          <p className="text-gray-500 max-w-xs text-sm">Create modifiers to allow staff to customize item orders during checkout.</p>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Add-ons</h3>
+          <p className="text-gray-500 max-w-xs text-sm">Create modifiers to allow staff to customize items.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -535,7 +535,7 @@ export function AddonsPage() {
                       )}
                     </div>
                     <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">
-                      {attr.inputType === 'SINGLE_SELECT' ? 'Single Selection' : 'Multiple Selection'} • {attr.subAttributes?.length || 0} Options
+                      {attr.inputType === 'SINGLE_SELECT' ? 'Single Choice' : 'Multiple Choice'} • {attr.subAttributes?.length || 0} Options
                     </p>
                   </div>
                 </div>
@@ -561,7 +561,7 @@ export function AddonsPage() {
                     className="border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 p-8"
                   >
                     <div className="flex items-center justify-between mb-6">
-                      <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Add-on Options</span>
+                      <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Options</span>
                       <button
                         onClick={() => openSubAttributeModal(attr.id)}
                         className="px-4 py-2 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-xs font-bold tracking-widest rounded-xl hover:bg-paymint-green hover:text-black hover:border-paymint-green transition-all flex items-center gap-2"
@@ -582,7 +582,7 @@ export function AddonsPage() {
                             <div>
                               <p className="font-bold text-gray-900 dark:text-white text-base">{sub.name}</p>
                               <p className="text-xs font-black text-paymint-green mt-1">
-                                {sub.price > 0 ? `+${sub.price.toFixed(2)} JOD` : 'COMPLIMENTARY'}
+                                {sub.price > 0 ? `+${sub.price.toFixed(2)} Jod` : 'Complimentary'}
                               </p>
                             </div>
                             <div className="flex gap-1 opacity-0 group-hover/sub:opacity-100 transition-opacity">
@@ -752,7 +752,7 @@ export function AddonsPage() {
                   <label className="block text-sm font-bold text-gray-400 tracking-widest mb-2 px-1">Price</label>
                   <div className="relative group">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-100 dark:bg-white/10 rounded-lg">
-                      <span className="text-gray-500 dark:text-gray-400 text-xs font-black">JOD</span>
+                      <span className="text-gray-500 dark:text-gray-400 text-xs font-black">Jod</span>
                     </div>
                     <input
                       type="text"
@@ -767,7 +767,7 @@ export function AddonsPage() {
                       className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-4 py-3 text-gray-900 dark:text-white font-bold text-lg focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
                     />
                   </div>
-                  <p className="mt-2 text-[9px] font-black text-paymint-green tracking-widest px-1">Digits shift right to left (ATM Style)</p>
+                  <p className="mt-2 text-[9px] font-black text-paymint-green tracking-widest px-1">Digits shift right to left (Atm Style)</p>
                 </div>
 
                 <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">

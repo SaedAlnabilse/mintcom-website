@@ -175,12 +175,12 @@ export function CategoriesPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-              Menu Management
+              Menu
             </span>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Categories</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-2">
-            Organize your menu structure and groupings
+            Organize your menu items
           </p>
         </div>
 
@@ -198,9 +198,9 @@ export function CategoriesPage() {
       {/* Stats Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          { label: 'Total Categories', value: stats.total, icon: Layers, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-          { label: 'Total Products', value: stats.products, icon: Package, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
-          { label: 'Most Popular', value: stats.top?.name || 'N/A', sub: `${stats.top?._count?.items || 0} items`, icon: TrendingUp, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+          { label: 'Total', value: stats.total, icon: Layers, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+          { label: 'Products', value: stats.products, icon: Package, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+          { label: 'Popular', value: stats.top?.name || 'N/a', sub: `${stats.top?._count?.items || 0} items`, icon: TrendingUp, color: 'text-purple-500', bg: 'bg-purple-500/10' },
         ].map((stat, i) => (
 
           <motion.div
@@ -237,8 +237,8 @@ export function CategoriesPage() {
           <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
             <Layers className="w-10 h-10 text-gray-300" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Categories Yet</h3>
-          <p className="text-gray-500 max-w-xs text-sm">Create your first category to start organizing your menu items.</p>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Categories</h3>
+          <p className="text-gray-500 max-w-xs text-sm">Create a category to organize your items.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -356,7 +356,7 @@ export function CategoriesPage() {
                       className="flex items-center gap-2 px-6 py-3.5 bg-paymint-green text-black font-black text-xs rounded-xl hover:scale-[1.02] transition-all shadow-lg active:scale-95 tracking-widest"
                     >
                       <Plus size={18} strokeWidth={3} />
-                      <span>Create Your First Product</span>
+                      <span>New Category</span>
                     </button>
                   </div>
                 ) : (
@@ -379,7 +379,7 @@ export function CategoriesPage() {
                         <div className="min-w-0">
                           <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
                           <p className="text-xs font-black text-paymint-green mt-0.5">
-                            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JOD' }).format(p.price).replace('JOD', '').trim()} JOD
+                            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'Jod' }).format(p.price).replace('Jod', '').trim()} Jod
                           </p>
                         </div>
                       </div>
@@ -452,7 +452,7 @@ export function CategoriesPage() {
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{deleteBlockedCategory.name}</h2>
-                    <p className="text-xs font-black text-red-500 tracking-widest">{categoryProducts.length} PRODUCTS ASSIGNED</p>
+                    <p className="text-xs font-black text-red-500 tracking-widest">{categoryProducts.length} Products Assigned</p>
                   </div>
                 </div>
                 <button
@@ -490,7 +490,7 @@ export function CategoriesPage() {
                       <div className="min-w-0">
                         <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
                         <p className="text-xs font-black text-paymint-green mt-0.5">
-                          {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JOD' }).format(p.price).replace('JOD', '').trim()} JOD
+                          {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'Jod' }).format(p.price).replace('Jod', '').trim()} Jod
                         </p>
                       </div>
                     </div>

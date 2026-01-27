@@ -218,7 +218,7 @@ export function OwnerAccountManagementPage() {
             const response = await api.post('/api/accounts/me/restore');
 
             if (response.data.success) {
-                toast.success('Account successfully restored!');
+                toast.success('Account restored!');
                 updateAccount({ deletionRequestedAt: undefined });
                 setAccountDetails(prev => prev ? { ...prev, deletionRequestedAt: undefined } : null);
             }
@@ -250,7 +250,7 @@ export function OwnerAccountManagementPage() {
                 day: 'numeric',
             });
         } catch {
-            return 'N/A';
+            return 'N/a';
         }
     };
 
@@ -290,7 +290,7 @@ export function OwnerAccountManagementPage() {
             default:
                 return (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-500/10 border border-gray-500/20 rounded-lg text-[10px] font-bold tracking-widest text-gray-500">
-                        {status}
+                        {status ? status.charAt(0).toUpperCase() + status.slice(1).toLowerCase() : ''}
                     </span>
                 );
         }
@@ -352,7 +352,7 @@ export function OwnerAccountManagementPage() {
                             Account Management
                         </h1>
                         <p className="text-sm text-gray-500 dark:text-gray-400 font-medium mt-0.5">
-                            Manage your credentials, security, and account settings
+                            Manage your login, security, and account settings
                         </p>
                     </div>
                 </div>
@@ -381,7 +381,7 @@ export function OwnerAccountManagementPage() {
                         </div>
                         <div>
                             <p className="text-[10px] font-bold text-gray-400 tracking-widest mb-1">
-                                Establishments
+                                Locations
                             </p>
                             <p className="text-3xl font-black text-gray-900 dark:text-white">
                                 {establishments?.length || 0}
@@ -419,7 +419,7 @@ export function OwnerAccountManagementPage() {
                         </div>
                         <div>
                             <p className="text-[10px] font-bold text-gray-400 tracking-widest mb-1">
-                                Admin Users
+                                Admins
                             </p>
                             <p className="text-3xl font-black text-gray-900 dark:text-white">
                                 {adminUsers.length}
@@ -446,7 +446,7 @@ export function OwnerAccountManagementPage() {
                                     <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center">
                                         <User className="w-5 h-5 text-paymint-green" />
                                     </div>
-                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Account Information</h2>
+                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Account Details</h2>
                                 </div>
                                 <button
                                     onClick={() => openPasswordModal('account')}
@@ -499,7 +499,7 @@ export function OwnerAccountManagementPage() {
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-bold text-gray-400 tracking-widest flex items-center gap-2">
                                         <Calendar size={12} />
-                                        Member Since
+                                        Joined
                                     </label>
                                     <p className="text-gray-900 dark:text-white font-semibold">
                                         {formatDate(accountDetails?.createdAt || '')}
@@ -542,9 +542,9 @@ export function OwnerAccountManagementPage() {
                                 </div>
                                 <div>
                                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-                                        Establishments ({establishments.length})
+                                        Locations ({establishments.length})
                                     </h2>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">Login credentials for each location</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">Logins for each location</p>
                                 </div>
                             </div>
 
@@ -591,7 +591,7 @@ export function OwnerAccountManagementPage() {
                                             <div className="mt-5 p-4 bg-white dark:bg-[#020617] rounded-xl border border-gray-200 dark:border-white/[0.05] group-hover:border-paymint-green/20 transition-colors">
                                                 <label className="text-[10px] font-bold text-gray-400 tracking-widest mb-2 flex items-center gap-1.5">
                                                     <Key size={10} />
-                                                    Login ID
+                                                    Login Id
                                                 </label>
                                                 <div className="flex items-center justify-between gap-3">
                                                     <code className="text-sm font-mono font-bold text-gray-900 dark:text-white tracking-wide truncate">
@@ -628,7 +628,7 @@ export function OwnerAccountManagementPage() {
                                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">
                                         Brands ({brands.length})
                                     </h2>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">Login credentials for each brand</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">Logins for each brand</p>
                                 </div>
                             </div>
 
@@ -664,7 +664,7 @@ export function OwnerAccountManagementPage() {
                                                             <h3 className="text-base font-bold text-gray-900 dark:text-white">{brand.name}</h3>
                                                             <div className="flex items-center gap-2 mt-1.5 text-xs text-gray-500 dark:text-gray-400">
                                                                 <span className="font-medium bg-gray-100 dark:bg-white/[0.05] px-2 py-0.5 rounded-md border border-gray-200 dark:border-white/[0.05]">
-                                                                    {count} establishment{count !== 1 ? 's' : ''}
+                                                                    {count} location{count !== 1 ? 's' : ''}
                                                                 </span>
                                                                 <span>•</span>
                                                                 <span className={`font-bold ${brand.isActive ? 'text-emerald-500' : 'text-gray-400'}`}>
@@ -689,7 +689,7 @@ export function OwnerAccountManagementPage() {
                                                 <div className="mt-5 p-4 bg-white dark:bg-[#020617] rounded-xl border border-gray-200 dark:border-white/[0.05] group-hover:border-purple-500/20 transition-colors">
                                                     <label className="text-[10px] font-bold text-gray-400 tracking-widest mb-2 flex items-center gap-1.5">
                                                         <Key size={10} />
-                                                        Brand Login ID
+                                                        Brand Login Id
                                                     </label>
                                                     <div className="flex items-center justify-between gap-3">
                                                         <code className="text-sm font-mono font-bold text-gray-900 dark:text-white tracking-wide truncate">
@@ -813,11 +813,11 @@ export function OwnerAccountManagementPage() {
                                 </li>
                                 <li className="flex items-start gap-2">
                                     <CheckCircle2 size={16} className="text-paymint-green mt-0.5 shrink-0" />
-                                    <span>Reset credentials periodically for security</span>
+                                    <span>Update login info periodically for security</span>
                                 </li>
                                 <li className="flex items-start gap-2">
                                     <CheckCircle2 size={16} className="text-paymint-green mt-0.5 shrink-0" />
-                                    <span>Never share your OTP codes with anyone</span>
+                                    <span>Never share your Otp codes with anyone</span>
                                 </li>
                             </ul>
                         </div>
@@ -847,7 +847,7 @@ export function OwnerAccountManagementPage() {
 
                             <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
                                 {accountDetails?.deletionRequestedAt
-                                    ? 'Your account is currently scheduled for deletion. You can restore it at any time before the 30-day period ends.'
+                                    ? 'Account scheduled for deletion. You can undo this before the 30-day period ends.'
                                     : 'Once you delete your account, there is no going back. Please be certain.'}
                             </p>
 
@@ -895,10 +895,10 @@ export function OwnerAccountManagementPage() {
                         <Store className="w-10 h-10 text-gray-400" />
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                        No establishments or brands yet
+                        No locations or brands yet
                     </h3>
                     <p className="text-gray-500 dark:text-gray-400 text-sm max-w-md mx-auto">
-                        Create your first establishment to start managing your business with PayMint.
+                        Create your first location to start managing your business with Paymint.
                     </p>
                 </motion.div>
             )}
@@ -985,12 +985,12 @@ export function OwnerAccountManagementPage() {
                             <div className="space-y-6">
                                 <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4">
                                     <p className="text-sm text-red-600 dark:text-red-400 font-medium">
-                                        This action is permanent and will delete all your establishments, brands, and history.
+                                        This will delete all your locations, brands, and data forever.
                                     </p>
                                 </div>
                                 <div className="space-y-3">
                                     <label className="text-sm font-bold text-gray-700 dark:text-gray-300">
-                                        Type <span className="text-red-500 font-black">DELETE</span> to confirm
+                                        Type <span className="text-red-500 font-black">Delete</span> to confirm
                                     </label>
                                     <input
                                         type="text"
@@ -1009,7 +1009,7 @@ export function OwnerAccountManagementPage() {
                                     </button>
                                     <button
                                         onClick={() => setDeleteStep(3)}
-                                        disabled={deleteConfirmationText !== 'DELETE'}
+                                        disabled={deleteConfirmationText !== 'Delete'}
                                         className="flex-1 py-4 bg-red-500 text-white rounded-2xl text-sm font-black disabled:opacity-50 transition-all"
                                     >
                                         Next
@@ -1077,22 +1077,22 @@ export function OwnerAccountManagementPage() {
                                 </div>
                                 <div>
                                     <h3 className="text-xl font-black text-gray-900 dark:text-white leading-tight">
-                                        Cannot Delete Account Yet
+                                        Account Has Active Locations
                                     </h3>
                                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                        Action Required
+                                        Please Fix This
                                     </p>
                                 </div>
                             </div>
 
                             <div className="space-y-6">
                                 <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
-                                    You still have <span className="font-bold text-gray-900 dark:text-white">{activeBlockingEsts.length} active establishment{activeBlockingEsts.length !== 1 ? 's' : ''}</span>. Please cancel or delete them first to proceed with account deletion.
+                                    You have <span className="font-bold text-gray-900 dark:text-white">{activeBlockingEsts.length} active location{activeBlockingEsts.length !== 1 ? 's' : ''}</span>. Please cancel or delete them first.
                                 </p>
 
                                 <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/[0.05] overflow-hidden">
                                     <div className="px-4 py-3 border-b border-gray-100 dark:border-white/[0.05] bg-gray-100/50 dark:bg-white/[0.02]">
-                                        <p className="text-[10px] font-bold text-gray-400 tracking-widest">Active Establishments</p>
+                                        <p className="text-[10px] font-bold text-gray-400 tracking-widest">Active Locations</p>
                                     </div>
                                     <div className="max-h-40 overflow-y-auto p-2 space-y-1">
                                         {activeBlockingEsts.map((est) => (
@@ -1114,7 +1114,7 @@ export function OwnerAccountManagementPage() {
                                         className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-paymint-green hover:bg-emerald-500 text-black rounded-2xl text-sm font-black transition-all shadow-lg shadow-paymint-green/20"
                                     >
                                         <Store size={18} />
-                                        Go to Establishments
+                                        Go to Locations
                                     </button>
                                     <button
                                         onClick={() => setShowActiveEstBlockModal(false)}

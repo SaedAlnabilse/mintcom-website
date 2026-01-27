@@ -114,10 +114,10 @@ export function BrandTeamPage() {
         try {
             if (editingEmployee) {
                 await api.put(`/api/accounts/employees/${editingEmployee.id}`, data);
-                toast.success('Employee updated successfully');
+                toast.success('Employee updated');
             } else {
                 await api.post('/api/accounts/employees', data);
-                toast.success('Employee added successfully');
+                toast.success('Employee added');
             }
             setIsFormModalOpen(false);
             setEditingEmployee(null);
@@ -169,7 +169,7 @@ export function BrandTeamPage() {
             await api.delete(`/api/accounts/employees/${employeeToDelete.id}`, {
                 data: { email: account.email, password: deletePassword }
             });
-            toast.success('Employee removed successfully');
+            toast.success('Employee removed');
             closeDeleteModal();
             fetchEmployees();
         } catch (error: any) {
@@ -292,12 +292,12 @@ export function BrandTeamPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-purple-500/10 text-purple-500 text-[10px] font-black tracking-widest border border-purple-500/20">
-                            Staff Matrix
+                            Team
                         </span>
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Team Members</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Team</h1>
                     <p className="text-gray-500 dark:text-gray-400 mt-2">
-                        Manage personnel and access rights across {brandName}
+                        Manage staff for {brandName}
                     </p>
                 </div>
 
@@ -314,7 +314,7 @@ export function BrandTeamPage() {
                         className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
                     >
                         <UserPlus size={18} />
-                        <span>Add Member</span>
+                        <span>Add Staff</span>
                     </button>
                 </div>
             </div>
@@ -322,7 +322,7 @@ export function BrandTeamPage() {
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
-                    { label: 'Total Members', value: stats.total, icon: Users, color: 'text-gray-900 dark:text-white', bg: 'bg-gray-100 dark:bg-white/5' },
+                    { label: 'Total Staff', value: stats.total, icon: Users, color: 'text-gray-900 dark:text-white', bg: 'bg-gray-100 dark:bg-white/5' },
                     { label: 'Users', value: stats.users, icon: UserCheck, color: 'text-blue-500', bg: 'bg-blue-500/10' },
                     { label: 'Admins', value: stats.admins, icon: Shield, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
                 ].map((stat, i) => (
@@ -355,7 +355,7 @@ export function BrandTeamPage() {
                         <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input
                             type="text"
-                            placeholder="Search by name, username, or email..."
+                            placeholder="Search staff..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
@@ -372,7 +372,7 @@ export function BrandTeamPage() {
                                 options={[
                                     { label: 'All Roles', value: 'all' },
                                     { label: 'Admin', value: 'ADMIN' },
-                                    { label: 'User', value: 'CASHIER' },
+                                    { label: 'User', value: 'Cashier' },
                                 ]}
                             />
                         </div>
@@ -445,7 +445,7 @@ export function BrandTeamPage() {
                             )}
                             {roleFilter !== 'all' && (
                                 <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
-                                    Role: {roleFilter === 'CASHIER' ? 'User' : roleFilter}
+                                    Role: {roleFilter === 'Cashier' ? 'User' : roleFilter === 'ADMIN' ? 'Admin' : roleFilter === 'all' ? 'All' : roleFilter.charAt(0).toUpperCase() + roleFilter.slice(1).toLowerCase()}
                                 </span>
                             )}
                             {locationFilter !== 'all' && (
@@ -455,7 +455,7 @@ export function BrandTeamPage() {
                             )}
                         </div>
                         <span className="text-xs font-medium text-gray-400 ml-auto">
-                            {filteredEmployees.length} of {employees.length} members
+                            {filteredEmployees.length} staff
                         </span>
                     </div>
                 )}
@@ -467,9 +467,9 @@ export function BrandTeamPage() {
             {filteredEmployees.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="text-lg font-medium text-gray-900 dark:text-white">No team members found</p>
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">No staff found</p>
                     <p className="text-sm text-gray-500 mt-1">
-                        {hasActiveFilters ? 'Try adjusting your filters' : 'Add new members to see them here'}
+                        {hasActiveFilters ? 'Try adjusting your filters' : 'Add staff to see them here'}
                     </p>
                     {hasActiveFilters && (
                         <button
@@ -543,7 +543,7 @@ export function BrandTeamPage() {
                                                         className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                                                     >
                                                         <Edit2 size={16} />
-                                                        Edit Details
+                                                        Edit
                                                     </button>
                                                     <button
                                                         onClick={() => openDeleteModal(emp)}
@@ -629,7 +629,7 @@ export function BrandTeamPage() {
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
                     {/* Table Header */}
                     <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
-                        <div className="col-span-4">Member</div>
+                        <div className="col-span-4">Name</div>
                         <div className="col-span-2">Status</div>
                         <div className="col-span-2">Primary Role</div>
                         <div className="col-span-2">Locations</div>
@@ -724,7 +724,7 @@ export function BrandTeamPage() {
                 <div className="text-center">
                     <p className="text-sm text-gray-500">
                         Showing <span className="font-bold text-gray-900 dark:text-white">{filteredEmployees.length}</span> of{' '}
-                        <span className="font-bold text-gray-900 dark:text-white">{employees.length}</span> team members
+                        <span className="font-bold text-gray-900 dark:text-white">{employees.length}</span> staff
                     </p>
                 </div>
             )}
@@ -762,16 +762,16 @@ export function BrandTeamPage() {
                                 <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-6">
                                     <AlertTriangle size={32} />
                                 </div>
-                                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Remove Employee</h3>
+                                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Remove Staff</h3>
                                 <p className="text-gray-500 text-sm leading-relaxed">
-                                    Are you sure you want to remove <span className="font-bold text-gray-900 dark:text-white">{employeeToDelete.firstName} {employeeToDelete.lastName}</span>? This action is irreversible.
+                                    Remove <span className="font-bold text-gray-900 dark:text-white">{employeeToDelete.firstName} {employeeToDelete.lastName}</span>? This cannot be undone.
                                 </p>
                             </div>
 
                             <div className="px-8 pb-6 space-y-4">
                                 <div>
                                     <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block">
-                                        Verify Your Password
+                                        Password
                                     </label>
                                     <div className="relative">
                                         <input

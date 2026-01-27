@@ -99,12 +99,12 @@ export function OwnerEstablishmentsPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-                            Fleet Inventory
+                            Locations List
                         </span>
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Establishments</h1>
                     <p className="text-gray-500 dark:text-gray-400 mt-2">
-                        Manage {establishments.length} operational units across your enterprise.
+                        Manage {establishments.length} locations in your business.
                     </p>
                 </div>
 
@@ -121,7 +121,7 @@ export function OwnerEstablishmentsPage() {
                         className="px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20 flex items-center gap-2"
                     >
                         <Plus size={18} />
-                        <span>Add New Node</span>
+                        <span>Add Location</span>
                     </button>
                 </div>
             </div>
@@ -139,7 +139,7 @@ export function OwnerEstablishmentsPage() {
                             <Store size={24} />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-gray-400 tracking-wide">Total Inventory</p>
+                            <p className="text-[10px] font-bold text-gray-400 tracking-wide">Total Locations</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">{establishments.length}</p>
                         </div>
                     </div>
@@ -157,7 +157,7 @@ export function OwnerEstablishmentsPage() {
                             <Zap size={24} />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-gray-400 tracking-wide">Active Nodes</p>
+                            <p className="text-[10px] font-bold text-gray-400 tracking-wide">Active Locations</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">
                                 {establishments.filter(e => e.subscriptionStatus === 'ACTIVE').length}
                             </p>
@@ -177,7 +177,7 @@ export function OwnerEstablishmentsPage() {
                             <Settings size={24} />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-gray-400 tracking-wide">Trial Instances</p>
+                            <p className="text-[10px] font-bold text-gray-400 tracking-wide">Trial Locations</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">
                                 {establishments.filter(e => e.subscriptionStatus === 'TRIAL').length}
                             </p>
@@ -197,7 +197,7 @@ export function OwnerEstablishmentsPage() {
                         />
                         <input
                             type="text"
-                            placeholder="Search by name, ID, or type..."
+                            placeholder="Search by name, Id, or type..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm hover:shadow-md focus:shadow-lg"
@@ -292,9 +292,9 @@ export function OwnerEstablishmentsPage() {
                                                     {est.name}
                                                 </h3>
                                                 <div className="flex items-center gap-2 mt-1">
-                                                    <span className="text-xs font-medium text-gray-500">{est.type || 'Standard'}</span>
+                                                    <span className="text-xs font-medium text-gray-500">{est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : 'Standard'}</span>
                                                     <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                                                    <span className="text-xs font-medium text-gray-500">{est.currency || 'JOD'}</span>
+                                                    <span className="text-xs font-medium text-gray-500">{est.currency || 'Jod'}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -348,7 +348,7 @@ export function OwnerEstablishmentsPage() {
                                                 est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
                                                     'bg-red-500'
                                                 }`} />
-                                            {est.subscriptionStatus}
+                                            {est.subscriptionStatus ? est.subscriptionStatus.charAt(0).toUpperCase() + est.subscriptionStatus.slice(1).toLowerCase() : ''}
                                         </span>
                                     </div>
 
@@ -359,7 +359,7 @@ export function OwnerEstablishmentsPage() {
                                                 <DollarSign size={12} />
                                                 <p className="text-[10px] font-bold tracking-wide">Currency</p>
                                             </div>
-                                            <p className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'JOD'}</p>
+                                            <p className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'Jod'}</p>
                                         </div>
                                         <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5 group-hover:border-blue-500/10 transition-colors">
                                             <div className="flex items-center gap-2 mb-1 text-gray-400">
@@ -435,7 +435,7 @@ export function OwnerEstablishmentsPage() {
                                     {/* Type */}
                                     <div className="col-span-2 flex items-center">
                                         <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                                            {est.type || 'Standard'}
+                                            {est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : 'Standard'}
                                         </span>
                                     </div>
 
@@ -446,14 +446,14 @@ export function OwnerEstablishmentsPage() {
                                                 est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
                                                     'bg-red-500'
                                                 }`} />
-                                            {est.subscriptionStatus}
+                                            {est.subscriptionStatus ? est.subscriptionStatus.charAt(0).toUpperCase() + est.subscriptionStatus.slice(1).toLowerCase() : ''}
                                         </span>
                                     </div>
 
                                     {/* Currency */}
                                     <div className="col-span-2 flex items-center">
                                         <span className="text-sm font-bold text-gray-900 dark:text-white">
-                                            {est.currency || 'JOD'}
+                                            {est.currency || 'Jod'}
                                         </span>
                                     </div>
 

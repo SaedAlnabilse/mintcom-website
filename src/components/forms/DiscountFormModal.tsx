@@ -100,8 +100,8 @@ export function DiscountFormModal({
               {/* Name */}
               <div>
                 <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 mb-2 flex items-center">
-                  Discount Name <span className="text-paymint-red mx-1">*</span>
-                  <QuickInfo text="The name that appears on the receipt (e.g. 'Staff Meal')." />
+                  Name <span className="text-paymint-red mx-1">*</span>
+                  <QuickInfo text="Name on receipt." />
                 </label>
                 <input
                   type="text"
@@ -117,7 +117,7 @@ export function DiscountFormModal({
               <div>
                 <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 mb-2 flex items-center">
                   Percentage (%) <span className="text-paymint-red mx-1">*</span>
-                  <QuickInfo text="The percentage value to deduct from the item or order total." />
+                  <QuickInfo text="Value to deduct." />
                 </label>
                 <div className="relative group">
                   <input
@@ -146,7 +146,7 @@ export function DiscountFormModal({
               <div className="bg-gray-50 dark:bg-black/20 p-5 rounded-2xl flex items-center justify-between border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
                 <div className="flex items-center">
                   <span className="text-gray-900 dark:text-white font-bold text-sm tracking-tight">Manager Only</span>
-                  <QuickInfo text="If enabled, a manager PIN is required to apply this discount." />
+                  <QuickInfo text="Manager approval required." />
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -191,7 +191,7 @@ export function DiscountFormModal({
               {isSubmitting ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                initialData ? 'Save Changes' : 'Add Discount'
+                initialData ? 'Save' : 'Add'
               )}
             </button>
           </div>

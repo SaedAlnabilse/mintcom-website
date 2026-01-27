@@ -1,8 +1,8 @@
 /**
- * Utility to export an array of objects to a CSV file and trigger a download.
+ * Utility to export an array of objects to a Csv file and trigger a download.
  * @param data Array of objects representing the rows.
  * @param filename Desired filename (without extension).
- * @param headers Optional custom headers mapping (e.g., { id: 'ID', name: 'Name' }).
+ * @param headers Optional custom headers mapping (e.g., { id: 'Id', name: 'Name' }).
  */
 export const exportToCSV = (data: any[], filename: string, headers?: Record<string, string>) => {
   if (!data || data.length === 0) {

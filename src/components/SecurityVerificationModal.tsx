@@ -46,7 +46,7 @@ export function SecurityVerificationModal({
             case 'cancel':
                 return {
                     title: 'Cancel Subscription',
-                    warning: `Canceling will lock access immediately. Your data for "${targetName}" will be permanently deleted in 30 days.`,
+                    warning: `Canceling locks access. Your data for "${targetName}" will be deleted in 30 days.`,
                     buttonText: 'Confirm Cancellation',
                     icon: ShieldAlert,
                     color: 'text-red-500',
@@ -57,7 +57,7 @@ export function SecurityVerificationModal({
             case 'stop-trial':
                 return {
                     title: 'Stop Trial',
-                    warning: `You are about to end the trial for "${targetName}". Access will be revoked immediately and the infrastructure will be deactivated.`,
+                    warning: `End trial for "${targetName}". Access will be revoked and services will stop.`,
                     buttonText: 'Stop Trial Now',
                     icon: AlertTriangle,
                     color: 'text-amber-500',
@@ -110,9 +110,9 @@ export function SecurityVerificationModal({
                 };
             case 'dissolve-establishment':
                 return {
-                    title: 'Dissolve Establishment',
-                    warning: `You are about to dissolve "${targetName}". This will permanently remove the establishment and all associated data from the brand. This action cannot be undone.`,
-                    buttonText: 'Dissolve Establishment',
+                    title: 'Delete Location',
+                    warning: `You are about to delete "${targetName}". This will permanently remove the location and all associated data. This action cannot be undone.`,
+                    buttonText: 'Delete Location',
                     icon: Building2,
                     color: 'text-red-500',
                     bg: 'bg-red-500/10',
@@ -122,7 +122,7 @@ export function SecurityVerificationModal({
             case 'reactivate':
                 return {
                     title: 'Reactivate Subscription',
-                    warning: `This will immediately charge your default card $20.00 to start a new billing cycle for "${targetName}".`,
+                    warning: `This will charge your default card $20.00 to start a new billing cycle for "${targetName}".`,
                     buttonText: 'Reactivate Now',
                     icon: ShieldCheck,
                     color: 'text-paymint-green',
@@ -140,7 +140,7 @@ export function SecurityVerificationModal({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!email || !password) {
-            toast.error('Please enter your credentials');
+            toast.error('Please enter your login details');
             return;
         }
 
@@ -150,7 +150,7 @@ export function SecurityVerificationModal({
                 ? api.post(config.endpoint, { email, password })
                 : api.delete(config.endpoint, { data: { email, password } }));
 
-            toast.success(res.data.message || 'Action completed successfully');
+            toast.success(res.data.message || 'Done');
             onSuccess();
             onClose();
             setEmail('');

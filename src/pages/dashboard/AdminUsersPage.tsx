@@ -90,10 +90,10 @@ export function AdminUsersPage() {
                     phone: formData.phone,
                     establishmentIds: formData.establishmentIds,
                 });
-                toast.success('Admin updated successfully');
+                toast.success('Admin updated');
             } else {
                 await api.post('/api/accounts/admins', formData);
-                toast.success('Admin created successfully');
+                toast.success('Admin created');
             }
             setShowModal(false);
             resetForm();
@@ -170,8 +170,8 @@ export function AdminUsersPage() {
                             <Shield size={28} className="text-black" />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Admin Users</h1>
-                            <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Manage additional administrators for your account</p>
+                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Admins</h1>
+                            <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Manage admin access</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -183,7 +183,7 @@ export function AdminUsersPage() {
                             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-md shadow-paymint-green/10"
                         >
                             <Plus size={18} />
-                            <span>Add Admin</span>
+                            <span>New Admin</span>
                         </button>
                     </div>
                 </div>
@@ -196,9 +196,9 @@ export function AdminUsersPage() {
                         <Shield size={20} className="text-blue-500" />
                     </div>
                     <div>
-                        <h3 className="font-bold text-blue-900 dark:text-blue-100 mb-1">About Admin Users</h3>
+                        <h3 className="font-bold text-blue-900 dark:text-blue-100 mb-1">About Admins</h3>
                         <p className="text-blue-800 dark:text-blue-200 text-sm">
-                            Admin users can access the web dashboard and admin mobile app. They will also receive a POS employee account automatically.
+                            Admins have full access to the dashboard and app.
                         </p>
                     </div>
                 </div>
@@ -209,16 +209,16 @@ export function AdminUsersPage() {
                 {isLoading ? (
                     <div className="py-32 flex flex-col items-center">
                         <div className="w-16 h-16 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
-                        <p className="text-[10px] font-black tracking-widest text-gray-400">Loading Cluster Registry...</p>
+                        <p className="text-[10px] font-black tracking-widest text-gray-400">Loading admins...</p>
                     </div>
                 ) : adminUsers.length === 0 ? (
                     <div className="py-32 text-center flex flex-col items-center">
                         <div className="w-24 h-24 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-200 dark:border-white/5">
                             <UserPlus className="w-12 h-12 text-gray-400" />
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No Admin Users Found</h3>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No Admins</h3>
                         <p className="text-gray-500 max-w-xs font-medium mx-auto text-sm">
-                            Initialize additional administrative nodes to delegate enterprise management.
+                            Add an admin to help manage your business.
                         </p>
                     </div>
                 ) : (
@@ -273,7 +273,7 @@ export function AdminUsersPage() {
                                 </div>
 
                                 <div className="relative z-10 mt-6 pt-4 border-t border-gray-100 dark:border-white/5">
-                                    <p className="text-[9px] font-black text-gray-400 tracking-widest mb-2">Access Nodes</p>
+                                    <p className="text-[9px] font-black text-gray-400 tracking-widest mb-2">Locations</p>
                                     <div className="flex flex-wrap gap-2">
                                         {admin.establishments.map((est) => (
                                             <span
@@ -284,7 +284,7 @@ export function AdminUsersPage() {
                                             </span>
                                         ))}
                                         {admin.establishments.length === 0 && (
-                                            <span className="text-[10px] text-gray-400 italic">No nodes assigned</span>
+                                            <span className="text-[10px] text-gray-400 italic">No locations</span>
                                         )}
                                     </div>
                                 </div>
@@ -314,7 +314,7 @@ export function AdminUsersPage() {
                             <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between relative isolate">
                                 <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
                                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                                    {editingAdmin ? 'Edit Admin' : 'Add Admin Node'}
+                                    {editingAdmin ? 'Edit Admin' : 'Add Admin'}
                                 </h2>
                                 <button
                                     onClick={() => setShowModal(false)}
@@ -442,7 +442,7 @@ export function AdminUsersPage() {
                                         onClick={() => setShowModal(false)}
                                         className="flex-1 py-4 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black tracking-[0.2em] text-[10px] rounded-xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5"
                                     >
-                                        Abort
+                                        Cancel
                                     </button>
                                     <button
                                         type="submit"
@@ -450,7 +450,7 @@ export function AdminUsersPage() {
                                         className="flex-1 py-4 bg-paymint-green text-black font-black tracking-[0.2em] text-[10px] rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
                                     >
                                         {isSubmitting && <Loader2 size={16} className="animate-spin" />}
-                                        {editingAdmin ? 'Update Core' : 'Deploy Admin'}
+                                        {editingAdmin ? 'Save Admin' : 'Save Admin'}
                                     </button>
                                 </div>
                             </form>

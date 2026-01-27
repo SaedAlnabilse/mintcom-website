@@ -73,21 +73,21 @@ export function MaterialsPage() {
 
   const [materialForm, setMaterialForm] = useState({
     name: '',
-    unit: 'kg',
+    unit: 'Kg',
     quantity: 0,
     costPerUnit: 0,
     lowStockThreshold: 0,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const units = ['kg', 'g', 'L', 'ml', 'pcs', 'units', 'oz', 'lb', 'cups'];
+  const units = ['Kg', 'G', 'L', 'Ml', 'Pcs', 'Units', 'Oz', 'Lb', 'Cups'];
 
   useEffect(() => {
     const state = location.state as { openCreateModal?: boolean };
     if (state?.openCreateModal) {
       setActiveTab('materials');
       setEditingMaterial(null);
-      setMaterialForm({ name: '', unit: 'kg', quantity: 0, costPerUnit: 0, lowStockThreshold: 0 });
+      setMaterialForm({ name: '', unit: 'Kg', quantity: 0, costPerUnit: 0, lowStockThreshold: 0 });
       setShowMaterialModal(true);
       // Clean up state
       window.history.replaceState({}, document.title);
@@ -195,8 +195,8 @@ export function MaterialsPage() {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'JOD',
-    }).format(value).replace('JOD', '').trim() + ' JOD';
+      currency: 'Jod',
+    }).format(value).replace('Jod', '').trim() + ' Jod';
   };
 
   return (
@@ -206,12 +206,12 @@ export function MaterialsPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-              Inventory Control
+              Inventory
             </span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Supply Chain</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Materials</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-2">
-            Manage raw stock, prepared materials, and manufacturing costs
+            Manage raw ingredients and costs
           </p>
         </div>
 
@@ -220,7 +220,7 @@ export function MaterialsPage() {
             onClick={() => {
               if (activeTab === 'materials') {
                 setEditingMaterial(null);
-                setMaterialForm({ name: '', unit: 'kg', quantity: 0, costPerUnit: 0, lowStockThreshold: 0 });
+                setMaterialForm({ name: '', unit: 'Kg', quantity: 0, costPerUnit: 0, lowStockThreshold: 0 });
                 setShowMaterialModal(true);
               } else {
                 navigate('/dashboard/recipes');
@@ -229,7 +229,7 @@ export function MaterialsPage() {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
           >
             <Plus size={18} />
-            <span>{activeTab === 'materials' ? 'Add Material' : 'New Sub-Recipe'}</span>
+            <span>{activeTab === 'materials' ? 'Add Material' : 'Add Prep'}</span>
           </button>
         </div>
       </div>
@@ -242,7 +242,7 @@ export function MaterialsPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-            placeholder="Filter inventory registry..."
+            placeholder="Search materials..."
             className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
           />
         </div>
@@ -252,13 +252,13 @@ export function MaterialsPage() {
             onClick={() => { setActiveTab('materials'); setPage(1); }}
             className={`px-4 py-2 rounded-lg text-[10px] font-black tracking-widest transition-all ${activeTab === 'materials' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
           >
-            Raw Materials
+            Raw
           </button>
           <button
             onClick={() => { setActiveTab('prepared'); setPage(1); }}
             className={`px-4 py-2 rounded-lg text-[10px] font-black tracking-widest transition-all ${activeTab === 'prepared' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
           >
-            Prepared Stock
+            Prepared
           </button>
         </div>
       </div>
@@ -268,15 +268,15 @@ export function MaterialsPage() {
         {isLoading ? (
           <div className="py-32 flex flex-col items-center">
             <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-[10px] font-black tracking-widest text-gray-400">Syncing Ledger...</p>
+            <p className="text-[10px] font-black tracking-widest text-gray-400">Loading...</p>
           </div>
         ) : paginatedItems.length === 0 ? (
           <div className="py-24 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
             <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
               <Package size={32} className="text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Registry is empty</h3>
-            <p className="text-gray-500 max-w-xs text-sm">Add materials to begin tracking your manufacturing costs and inventory levels.</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Materials</h3>
+            <p className="text-gray-500 max-w-xs text-sm">Add materials to track inventory.</p>
           </div>
         ) : (
           <div className="space-y-8">
@@ -286,9 +286,9 @@ export function MaterialsPage() {
                   <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-white/[0.02]">
                       <tr className="border-b border-gray-200 dark:border-white/5">
-                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Material</th>
-                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Quantity</th>
-                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Unit Cost</th>
+                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Name</th>
+                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Qty</th>
+                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Cost</th>
                         <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Status</th>
                         <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Actions</th>
                       </tr>
@@ -405,7 +405,7 @@ export function MaterialsPage() {
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md overflow-hidden shadow-2xl">
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Material Registry</h2>
+                <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">{editingMaterial ? 'Edit Material' : 'Add Material'}</h2>
                 <button onClick={() => setShowMaterialModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
                   <X size={20} />
                 </button>
@@ -413,7 +413,7 @@ export function MaterialsPage() {
               <form onSubmit={handleMaterialSubmit} className="p-8 space-y-6">
                 <div>
                   <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
-                    Material Identity <span className="text-paymint-red mx-1">*</span>
+                    Name <span className="text-paymint-red mx-1">*</span>
                     <QuickInfo text="Unique name for this raw material (e.g., 'Flour Type 00')." />
                   </label>
                   <input
@@ -443,7 +443,7 @@ export function MaterialsPage() {
                     </label>
                     <div className="relative group">
                       <div className="absolute left-3 top-1/2 -translate-y-1/2 px-2 py-0.5 bg-gray-200 dark:bg-white/10 rounded-md">
-                        <span className="text-gray-500 dark:text-gray-400 text-[10px] font-black">JOD</span>
+                        <span className="text-gray-500 dark:text-gray-400 text-[10px] font-black">Jod</span>
                       </div>
                       <input
                         type="text"
@@ -465,7 +465,7 @@ export function MaterialsPage() {
                   <div>
                     <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
                       Current Stock
-                      <QuickInfo text="Total quantity currently available in inventory." />
+                      <QuickInfo text="Total quantity in stock." />
                     </label>
                     <input
                       type="number"
@@ -493,7 +493,7 @@ export function MaterialsPage() {
                 </div>
                 <button type="submit" disabled={isSubmitting} className="w-full py-3.5 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 transition-all shadow-sm text-sm flex items-center justify-center gap-2">
                   {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
-                  Save Material
+                  Save
                 </button>
               </form>
             </motion.div>

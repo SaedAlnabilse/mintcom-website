@@ -125,7 +125,7 @@ export function OwnerOverviewPage() {
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('en-US', {
             style: 'currency',
-            currency: 'USD',
+            currency: 'Usd',
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
         }).format(amount);
@@ -150,7 +150,7 @@ export function OwnerOverviewPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-                            Enterprise Overview
+                            Business Overview
                         </span>
                         <span className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
                             <Activity size={14} className="text-emerald-500" />
@@ -159,7 +159,7 @@ export function OwnerOverviewPage() {
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Dashboard</h1>
                     <p className="text-gray-500 dark:text-gray-400 mt-2">
-                        Monitoring {establishments.length} operational units and {stats.totalBrands} brand entities.
+                        Monitoring {establishments.length} locations and {stats.totalBrands} brands.
                     </p>
                 </div>
 
@@ -256,7 +256,7 @@ export function OwnerOverviewPage() {
                 </div>
             </div>
 
-            {/* KPI Grid */}
+            {/* Kpi Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 {[
                     {
@@ -280,13 +280,13 @@ export function OwnerOverviewPage() {
                     {
                         label: 'Active Locations',
                         value: stats.activeLocations,
-                        sub: 'Operational',
+                        sub: 'Open',
                         icon: Store,
                         color: 'text-blue-500',
                         bg: 'bg-blue-500/10'
                     },
                     {
-                        label: 'Brand Entities',
+                        label: 'Brands',
                         value: stats.totalBrands,
                         sub: 'Managed',
                         icon: Building2,
@@ -294,9 +294,9 @@ export function OwnerOverviewPage() {
                         bg: 'bg-purple-500/10'
                     },
                     {
-                        label: 'Total Workforce',
+                        label: 'Total Staff',
                         value: stats.totalEmployees || '-',
-                        sub: 'Registered',
+                        sub: 'Total',
                         icon: Users,
                         color: 'text-orange-500',
                         bg: 'bg-orange-500/10'
@@ -345,7 +345,7 @@ export function OwnerOverviewPage() {
                 >
                     <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Revenue Trends</h3>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Sales Trends</h3>
                             <p className="text-xs text-gray-500 mt-1">Period: {selectedFilterLabel}</p>
                         </div>
                         <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-white/5">
@@ -429,8 +429,8 @@ export function OwnerOverviewPage() {
                             <div className="w-12 h-12 rounded-xl bg-paymint-green flex items-center justify-center text-black mb-4">
                                 <Zap size={24} />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Scale Operations</h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">Add new establishments or create unified brand entities.</p>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Grow Business</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">Add new locations or create brands.</p>
                             <div className="space-y-3">
                                 <button
                                     onClick={() => navigate('/onboarding')}

@@ -6,30 +6,30 @@ import { Logo } from './Logo';
 const hardwareItems = [
   {
     id: 'tablets',
-    name: 'POS Tablets',
+    name: 'Pos Tablets',
     icon: Tablet,
     description: 'Recommended tablets that work great with PayMint',
     products: [
       {
         name: 'Samsung Galaxy Tab A8',
-        specs: '10.5" display, 4GB RAM, Wi-Fi',
+        specs: '10.5" display, 4gb Ram, Wi-fi',
         price: '~$180',
         link: 'https://www.amazon.com/s?k=samsung+galaxy+tab+a8'
       },
       {
-        name: 'iPad 10th Gen',
+        name: 'Ipad 10th Gen',
         specs: '10.9" display, A14 chip, Premium option',
         price: '~$350',
         link: 'https://www.amazon.com/s?k=ipad+10th+generation'
       },
       {
         name: 'Lenovo Tab M10 Plus',
-        specs: '10.3" FHD display, 4GB RAM, Long battery',
+        specs: '10.3" Fhd display, 4gb Ram, Long battery',
         price: '~$150',
         link: 'https://www.amazon.com/s?k=lenovo+tab+m10+plus'
       }
     ],
-    note: 'Any Android tablet (8"+ screen) or iPad works with PayMint'
+    note: 'Any Android tablet (8"+ screen) or Ipad works with PayMint'
   },
   {
     id: 'printers',
@@ -38,14 +38,14 @@ const hardwareItems = [
     description: 'Recommended thermal printers for receipts',
     products: [
       {
-        name: 'MUNBYN Thermal Printer',
-        specs: '80mm, USB + Bluetooth, Auto-cutter',
+        name: 'Munbyn Thermal Printer',
+        specs: '80mm, Usb + Bluetooth, Auto-cutter',
         price: '~$100',
         link: 'https://www.amazon.com/s?k=munbyn+thermal+receipt+printer+80mm'
       },
       {
-        name: 'Epson TM-T20III',
-        specs: '80mm, USB, Fast & reliable',
+        name: 'Epson Tm-T20III',
+        specs: '80mm, Usb, Fast & reliable',
         price: '~$180',
         link: 'https://www.amazon.com/s?k=epson+tm-t20iii'
       },
@@ -56,7 +56,7 @@ const hardwareItems = [
         link: 'https://www.amazon.com/s?k=star+micronics+tsp143'
       }
     ],
-    note: 'We support most 80mm and 58mm ESC/POS thermal printers'
+    note: 'We support most 80mm and 58mm Esc/Pos thermal printers'
   }
 ];
 
@@ -92,7 +92,7 @@ export const Footer = () => {
             <div className="space-y-8">
               <Logo size="lg" />
               <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed max-w-xs">
-                The modern POS ecosystem built for fast-growing businesses. Simple, secure, and infinitely scalable.
+                Simple, secure Pos for growing businesses.
               </p>
               <div className="flex gap-4">
                 {[Instagram, Twitter, Linkedin, Facebook].map((Icon, i) => (
@@ -155,7 +155,7 @@ export const Footer = () => {
                   <div className="w-8 h-8 rounded-lg bg-gray-200/50 dark:bg-white/5 flex items-center justify-center">
                     <Phone size={14} className="text-paymint-green" />
                   </div>
-                  <span>+962 7XXXXXXXX</span>
+                  <span>+962 790 000 000</span>
                 </li>
                 <li className="flex items-center gap-3 text-gray-600 dark:text-gray-400 font-medium">
                   <div className="w-8 h-8 rounded-lg bg-gray-200/50 dark:bg-white/5 flex items-center justify-center">
@@ -169,7 +169,7 @@ export const Footer = () => {
 
           <div className="border-t border-gray-200 dark:border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center gap-6">
             <p className="text-gray-500 dark:text-gray-500 text-sm font-bold">
-              © 2025 PayMint LLC. All rights reserved.
+              © 2025 PayMint Llc. All rights reserved.
             </p>
             <div className="flex gap-8">
               {['Privacy Policy', 'Terms of Service'].map((link) => (

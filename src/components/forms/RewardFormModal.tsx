@@ -85,7 +85,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
           <form id="reward-form" onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[75vh] overflow-y-auto custom-scrollbar">
             {/* Reward Type */}
             <div>
-              <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-3 px-1">Reward Type</label>
+              <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-3 px-1">Type</label>
               <div className="flex p-1 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/5 relative isolate">
                 <button
                   type="button"
@@ -114,7 +114,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
 
             {/* Points Required */}
             <div>
-              <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-3 px-1">Points Required</label>
+              <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-3 px-1">Points Needed</label>
               <div className="relative group">
                 <input
                   type="number"
@@ -127,14 +127,14 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                   <Award size={20} strokeWidth={2.5} />
                 </div>
               </div>
-              <p className="text-[9px] font-black text-gray-400 mt-2 px-1 tracking-tight">Minimum Point Balance Required For Activation</p>
+              <p className="text-[9px] font-black text-gray-400 mt-2 px-1 tracking-tight">Points to redeem</p>
             </div>
 
             {/* Dynamic Fields - Height Stabilized */}
             <div className="min-h-[90px]">
               {type === 'DISCOUNT' ? (
                 <motion.div key="discount" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-2.5 px-1">Discount Percentage</label>
+                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-2.5 px-1">Discount %</label>
                   <div className="relative group">
                     <input
                       type="number"
@@ -148,7 +148,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                 </motion.div>
               ) : (
                 <motion.div key="category" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-2.5 px-1">Applies To Category</label>
+                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-2.5 px-1">Category</label>
                   <CustomSelect
                     value={freeCategoryId}
                     onChange={(val) => {
@@ -184,7 +184,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
               className="flex-[2] h-14 rounded-xl bg-paymint-green text-black font-black tracking-[0.2em] text-[10px] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
             >
               <Check size={18} strokeWidth={3} />
-              {initialData ? 'Save Changes' : 'Add Reward'}
+              {initialData ? 'Save' : 'Add'}
             </button>
           </div>
         </motion.div>

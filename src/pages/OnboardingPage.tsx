@@ -60,16 +60,16 @@ const step1Schema = z.object({
 // Step 2: Payment Method (Mock)
 const step2Schema = z.object({
   cardNumber: z.string().min(16, 'Card number must be 16 digits').max(19),
-  expiryDate: z.string().min(5, 'MM/YY required'),
-  cvc: z.string().min(3, 'CVC required'),
+  expiryDate: z.string().min(5, 'Mm/Yy required'),
+  cvc: z.string().min(3, 'Cvc required'),
   cardName: z.string().min(1, 'Name on card is required'),
 });
 
 // Step 3: Establishment Access Credentials
 const step3Schema = z.object({
   establishmentLoginId: z.string()
-    .min(4, 'Establishment ID must be at least 4 characters')
-    .regex(/^[a-zA-Z0-9_-]+$/, 'Establishment ID can only contain letters, numbers, underscores, and hyphens'),
+    .min(4, 'Establishment Id must be at least 4 characters')
+    .regex(/^[a-zA-Z0-9_-]+$/, 'Establishment Id can only contain letters, numbers, underscores, and hyphens'),
   establishmentPassword: z.string().min(6, 'Establishment Password must be at least 6 characters'),
 });
 
@@ -114,13 +114,13 @@ export function OnboardingPage() {
     },
     {
       targetId: 'tour-pos-app',
-      title: 'POS App for Staff',
+      title: 'Pos App for Staff',
       description: 'Download this app on tablets or phones for your staff. They will use it to take orders and process payments at your establishment.'
     },
     {
       targetId: 'tour-owner-app',
       title: 'Owner App for You',
-      description: 'This is the same Owner Portal, but as a mobile app. Monitor your sales and manage your business on the go. Use your same login credentials.'
+      description: 'This is the same Owner Portal, but as a mobile app. Monitor your sales and manage your business on the go. Use your same login info.'
     },
     {
       targetId: 'tour-resources',
@@ -143,10 +143,10 @@ export function OnboardingPage() {
   // Country codes list
   const countries = [
     { code: 'JO', name: 'Jordan', dialCode: '+962', flag: '🇯🇴' },
-    { code: 'AE', name: 'UAE', dialCode: '+971', flag: '🇦🇪' },
+    { code: 'AE', name: 'Uae', dialCode: '+971', flag: '🇦🇪' },
     { code: 'SA', name: 'Saudi Arabia', dialCode: '+966', flag: '🇸🇦' },
-    { code: 'US', name: 'USA', dialCode: '+1', flag: '🇺🇸' },
-    { code: 'GB', name: 'UK', dialCode: '+44', flag: '🇬🇧' },
+    { code: 'US', name: 'Usa', dialCode: '+1', flag: '🇺🇸' },
+    { code: 'GB', name: 'Uk', dialCode: '+44', flag: '🇬🇧' },
     { code: 'EG', name: 'Egypt', dialCode: '+20', flag: '🇪🇬' },
     { code: 'LB', name: 'Lebanon', dialCode: '+961', flag: '🇱🇧' },
     { code: 'KW', name: 'Kuwait', dialCode: '+965', flag: '🇰🇼' },
@@ -174,7 +174,7 @@ export function OnboardingPage() {
   // Forms
   const form1 = useForm({
     resolver: zodResolver(step1Schema),
-    defaultValues: { currency: 'JOD', type: 'restaurant' }
+    defaultValues: { currency: 'Jod', type: 'restaurant' }
   });
 
   const form2 = useForm({
@@ -201,7 +201,7 @@ export function OnboardingPage() {
     return parts.length ? parts.join(' ') : v;
   };
 
-  // Format expiry date (MM/YY)
+  // Format expiry date (Mm/Yy)
   const formatExpiryDate = (value: string) => {
     const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
     if (v.length >= 2) {
@@ -210,7 +210,7 @@ export function OnboardingPage() {
     return v;
   };
 
-  // Format CVC (max 4 digits)
+  // Format Cvc (max 4 digits)
   const formatCVC = (value: string) => {
     return value.replace(/[^0-9]/gi, '').substring(0, 4);
   };
@@ -295,13 +295,13 @@ export function OnboardingPage() {
       }
     }
 
-    // Always show Step 3 - each establishment gets its own unique Owner POS ID
+    // Always show Step 3 - each establishment gets its own unique Owner Pos Id
     setStep(3);
   };
 
   const onStep3Submit = (data: any) => {
-    // Store Owner POS credentials locally for this establishment
-    // Each establishment gets its own unique Owner POS ID
+    // Store Owner Pos credentials locally for this establishment
+    // Each establishment gets its own unique Owner Pos Id
     setFormData((prev: any) => ({ ...prev, ...data }));
     setStep(4);
   };
@@ -332,7 +332,7 @@ export function OnboardingPage() {
       const estId = estRes.data.establishment?.id || estRes.data.id;
 
       if (!estId) {
-        throw new Error('Failed to get establishment ID');
+        throw new Error('Failed to get establishment Id');
       }
 
       // Save the establishment ID for navigation
@@ -420,16 +420,16 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
-                  <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Establishment Setup</h2>
-                  <p className="text-gray-600 dark:text-gray-400 font-medium">Add your first establishment details.</p>
+                  <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Location Setup</h2>
+                  <p className="text-gray-600 dark:text-gray-400 font-medium">Add your first location.</p>
                 </div>
 
                 <form onSubmit={form1.handleSubmit(onStep1Submit)} className="space-y-8">
                   <div className="space-y-6">
                     <div className="space-y-2">
                       <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
-                        Establishment Name <span className="text-paymint-red mx-1">*</span>
-                        <QuickInfo text="The legal or trade name of your business as shown on receipts." />
+                        Location Name <span className="text-paymint-red mx-1">*</span>
+                        <QuickInfo text="The name of your business." />
                       </label>
                       <div className="relative group">
                         <Store className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
@@ -445,8 +445,8 @@ export function OnboardingPage() {
 
                     <div className="space-y-3">
                       <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
-                        Business Category
-                        <QuickInfo text="Select the category that best describes your business to help us tailor your experience." />
+                        Business Type
+                        <QuickInfo text="Select your business type." />
                       </label>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         {businessTypes.map((type) => (
@@ -467,8 +467,8 @@ export function OnboardingPage() {
                     {/* Phone Number Row */}
                     <div className="space-y-2">
                       <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
-                        Phone Number <span className="text-paymint-red mx-1">*</span>
-                        <QuickInfo text="Used for account verification and emergency support." />
+                        Phone <span className="text-paymint-red mx-1">*</span>
+                        <QuickInfo text="To confirm account." />
                       </label>
                       <div className="flex gap-2">
                         {/* Country Code Selector */}
@@ -561,8 +561,8 @@ export function OnboardingPage() {
                     {/* Base Currency Row */}
                     <div className="space-y-2">
                       <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
-                        Base Currency <span className="text-paymint-red mx-1">*</span>
-                        <QuickInfo text="The primary currency for your sales and inventory reports." />
+                        Currency <span className="text-paymint-red mx-1">*</span>
+                        <QuickInfo text="Primary currency for sales." />
                       </label>
                       <div className="relative">
                         <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -570,18 +570,18 @@ export function OnboardingPage() {
                           {...form1.register('currency')}
                           className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.currency ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all appearance-none`}
                         >
-                          <option value="JOD">JOD - Jordanian Dinar</option>
-                          <option value="USD">USD - US Dollar</option>
-                          <option value="AED">AED - UAE Dirham</option>
-                          <option value="SAR">SAR - Saudi Riyal</option>
-                          <option value="KWD">KWD - Kuwaiti Dinar</option>
-                          <option value="QAR">QAR - Qatari Riyal</option>
-                          <option value="BHD">BHD - Bahraini Dinar</option>
-                          <option value="OMR">OMR - Omani Rial</option>
-                          <option value="EGP">EGP - Egyptian Pound</option>
-                          <option value="GBP">GBP - British Pound</option>
-                          <option value="EUR">EUR - Euro</option>
-                          <option value="TRY">TRY - Turkish Lira</option>
+                          <option value="Jod">Jod - Jordanian Dinar</option>
+                          <option value="Usd">Usd - Us Dollar</option>
+                          <option value="Aed">Aed - Uae Dirham</option>
+                          <option value="Sar">Sar - Saudi Riyal</option>
+                          <option value="Kwd">Kwd - Kuwaiti Dinar</option>
+                          <option value="Qar">Qar - Qatari Riyal</option>
+                          <option value="Bhd">Bhd - Bahraini Dinar</option>
+                          <option value="Omr">Omr - Omani Rial</option>
+                          <option value="Egp">Egp - Egyptian Pound</option>
+                          <option value="Gbp">Gbp - British Pound</option>
+                          <option value="Eur">Eur - Euro</option>
+                          <option value="Try">Try - Turkish Lira</option>
                         </select>
                       </div>
                       {form1.formState.errors.currency && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form1.formState.errors.currency.message as string}</p>}
@@ -589,8 +589,8 @@ export function OnboardingPage() {
 
                     <div className="space-y-2">
                       <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
-                        Location Address <span className="text-paymint-red mx-1">*</span>
-                        <QuickInfo text="Physical location of your establishment." />
+                        Address <span className="text-paymint-red mx-1">*</span>
+                        <QuickInfo text="Location address." />
                       </label>
                       <div className="relative">
                         <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -614,8 +614,8 @@ export function OnboardingPage() {
 
                         <div className="bg-gray-50 dark:bg-black/20 rounded-2xl p-5 border border-gray-100 dark:border-white/5">
                           <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] mb-2 flex items-center">
-                            Import Settings From
-                            <QuickInfo text="Accelerate setup by copying your menu and settings from another location." />
+                            Copy Settings
+                            <QuickInfo text="Copy menu from another location." />
                           </label>
                           <div className="relative mb-4">
                             <select
@@ -642,7 +642,7 @@ export function OnboardingPage() {
                                 exit={{ opacity: 0, height: 0 }}
                                 className="space-y-3 overflow-hidden"
                               >
-                                <p className="text-xs font-bold text-gray-400 mb-2">SELECT DATA TO DUPLICATE:</p>
+                                <p className="text-xs font-bold text-gray-400 mb-2">Select Data To Duplicate:</p>
 
                                 {/* Inventory Checkbox */}
                                 <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicateInventory ? 'border-paymint-green bg-paymint-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
@@ -658,8 +658,8 @@ export function OnboardingPage() {
                                   <div className="flex-1 flex items-center gap-2">
                                     <Box size={16} className={duplicateInventory ? 'text-paymint-green' : 'text-gray-400'} />
                                     <div>
-                                      <p className="text-sm font-bold text-gray-900 dark:text-white">Inventory & Menu</p>
-                                      <p className="text-[10px] text-gray-500 font-medium">Categories, products, add-ons, recipes</p>
+                                      <p className="text-sm font-bold text-gray-900 dark:text-white">Menu</p>
+                                      <p className="text-[10px] text-gray-500 font-medium">Items & categories</p>
                                     </div>
                                   </div>
                                 </label>
@@ -758,7 +758,7 @@ export function OnboardingPage() {
                   <p className="text-gray-600 dark:text-gray-400 font-medium text-sm">
                     {isTrialFlow
                       ? "You won't be charged today. Cancel anytime before your trial ends."
-                      : "Your card will be charged $20.00 immediately for this new establishment."
+                      : "Your card will be charged $20.00 for this new location."
                     }
                   </p>
                 </div>
@@ -857,12 +857,12 @@ export function OnboardingPage() {
                               form2.setValue('expiryDate', formatted);
                             }}
                             maxLength={5}
-                            placeholder="MM/YY"
+                            placeholder="Mm/Yy"
                             className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.expiryDate ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-gray-700 dark:text-white placeholder-gray-400 tracking-wider focus:outline-none focus:ring-2 focus:ring-paymint-green/50 text-center`}
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">CVC</label>
+                          <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">Cvc</label>
                           <input
                             type="text"
                             {...form2.register('cvc')}
@@ -918,18 +918,18 @@ export function OnboardingPage() {
                   <button onClick={() => setStep(2)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 font-bold text-xs tracking-widest">
                     <ArrowLeft size={14} /> Back
                   </button>
-                  <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Create Establishment Login</h2>
-                  <p className="text-gray-600 dark:text-gray-400 font-medium">This ID will be used to log into the POS app for this establishment.</p>
+                  <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Create Location Login</h2>
+                  <p className="text-gray-600 dark:text-gray-400 font-medium">This Id is for the Pos app.</p>
                   <div className="mt-4 p-3 bg-paymint-green/10 text-paymint-green text-sm rounded-xl font-medium border border-paymint-green/20">
-                    <p>✨ <strong>Unique access:</strong> Each establishment has its own ID and password for secure POS login.</p>
+                    <p>✨ <strong>Unique access:</strong> Each location needs its own Id and password.</p>
                   </div>
                 </div>
 
                 <form onSubmit={form3.handleSubmit(onStep3Submit)} className="space-y-6">
                   <div className="space-y-2">
                     <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
-                      Establishment ID <span className="text-paymint-red mx-1">*</span>
-                      <QuickInfo text="A unique ID for this specific location. Used during the first step of POS login." />
+                      Location Id <span className="text-paymint-red mx-1">*</span>
+                      <QuickInfo text="Unique Id for Pos login." />
                     </label>
                     <div className="relative group">
                       <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
@@ -941,12 +941,12 @@ export function OnboardingPage() {
                       />
                     </div>
                     {form3.formState.errors.establishmentLoginId && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form3.formState.errors.establishmentLoginId.message as string}</p>}
-                    <p className="text-[10px] text-gray-400 ml-1">Unique ID for this location's POS login (Step 1 of 2-step login).</p>
+                    <p className="text-[10px] text-gray-400 ml-1">Unique Id for this location.</p>
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
-                      Establishment Password <span className="text-paymint-red mx-1">*</span>
-                      <QuickInfo text="The password for the Establishment ID. Shared by all staff at this location." />
+                      Location Password <span className="text-paymint-red mx-1">*</span>
+                      <QuickInfo text="Password for this location." />
                     </label>
                     <div className="relative group">
                       <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
@@ -995,10 +995,10 @@ export function OnboardingPage() {
                   <button onClick={() => setStep(3)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 font-bold text-xs tracking-widest">
                     <ArrowLeft size={14} /> Back
                   </button>
-                  <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Create Your POS Login</h2>
-                  <p className="text-gray-600 dark:text-gray-400 font-medium">Create your personal employee account to work on the POS.</p>
+                  <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Create Your Login</h2>
+                  <p className="text-gray-600 dark:text-gray-400 font-medium">Create your personal account.</p>
                   <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 text-xs rounded-xl font-medium border border-blue-100 dark:border-blue-900/30">
-                    <p>This is Step 2 of the POS Login (Employee Access).</p>
+                    <p>This is Step 2 of the Pos Login.</p>
                   </div>
                 </div>
 
@@ -1039,7 +1039,7 @@ export function OnboardingPage() {
                   <div className="space-y-2">
                     <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
                       Admin Username <span className="text-paymint-red mx-1">*</span>
-                      <QuickInfo text="Your personal identifier for the second step of POS login." />
+                      <QuickInfo text="Your username." />
                     </label>
                     <div className="relative group">
                       <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
@@ -1056,7 +1056,7 @@ export function OnboardingPage() {
                   <div className="space-y-2">
                     <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
                       Personal Password <span className="text-paymint-red mx-1">*</span>
-                      <QuickInfo text="Your unique password to log into the system as an operator." />
+                      <QuickInfo text="Your unique password." />
                     </label>
                     <div className="relative group">
                       <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
@@ -1106,9 +1106,9 @@ export function OnboardingPage() {
                   <div className="w-20 h-20 bg-paymint-green rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-paymint-green/20">
                     <Sparkles size={40} className="text-black" />
                   </div>
-                  <h2 className="text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-3 tracking-tight">Welcome to PayMint!</h2>
+                  <h2 className="text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-3 tracking-tight">Welcome!</h2>
                   <p className="text-gray-600 dark:text-gray-400 text-lg font-medium max-w-xl mx-auto">
-                    <span className="text-gray-900 dark:text-white font-bold">{formData.name}</span> is ready. Here's everything you need to get started.
+                    <span className="text-gray-900 dark:text-white font-bold">{formData.name}</span> is ready.
                   </p>
                 </div>
 
@@ -1184,8 +1184,8 @@ export function OnboardingPage() {
                         <Building2 size={28} className="text-black" />
                       </div>
                       <div className="relative z-10 flex-1">
-                        <h3 className="text-xl font-black mb-1 tracking-tight">Open Owner Portal in Browser</h3>
-                        <p className="text-sm font-bold opacity-70">Manage your establishments, employees, menu, analytics, and billing from any browser.</p>
+                        <h3 className="text-xl font-black mb-1 tracking-tight">Open Owner Portal</h3>
+                        <p className="text-sm font-bold opacity-70">Manage your business from any browser.</p>
                       </div>
                       <div className="relative z-10 flex items-center gap-2 font-black text-sm tracking-widest opacity-80">
                         <ExternalLink size={18} />
@@ -1204,14 +1204,14 @@ export function OnboardingPage() {
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    {/* POS App Card */}
+                    {/* Pos App Card */}
                     <div id="tour-pos-app" className="p-5 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl">
                       <div className="flex items-start gap-4 mb-4">
                         <div className="w-12 h-12 bg-orange-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
                           <Tablet size={24} className="text-orange-500" />
                         </div>
                         <div>
-                          <h4 className="text-lg font-black text-gray-900 dark:text-white mb-1">POS App</h4>
+                          <h4 className="text-lg font-black text-gray-900 dark:text-white mb-1">Pos App</h4>
                           <p className="text-sm text-gray-500 dark:text-gray-400">For tablets and phones. Your staff uses this to take orders and process payments.</p>
                         </div>
                       </div>

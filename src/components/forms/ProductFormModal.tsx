@@ -128,7 +128,7 @@ export function ProductFormModal({
   };
   const [showAddonsWarning, setShowAddonsWarning] = useState(false);
   const [taxRate, setTaxRate] = useState(0);
-  const [currencySymbol, setCurrencySymbol] = useState('JOD');
+  const [currencySymbol, setCurrencySymbol] = useState('Jod');
 
   const formatATM = (val: string) => {
     const digits = val.replace(/\D/g, '');
@@ -206,7 +206,7 @@ export function ProductFormModal({
       ]);
       setAttributes(attrRes.data || []);
       setTaxRate(settingsRes.data?.taxRate || 0);
-      setCurrencySymbol(settingsRes.data?.currency || 'JOD');
+      setCurrencySymbol(settingsRes.data?.currency || 'Jod');
     } catch (error) {
       console.error('Failed to fetch settings/addons:', error);
     }
@@ -421,7 +421,7 @@ export function ProductFormModal({
               <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Product Management</span>
+                  <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Product</span>
                   <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
                   <span className="text-[10px] font-black text-paymint-green tracking-widest">Active</span>
                 </div>
@@ -452,7 +452,7 @@ export function ProductFormModal({
                       ) : (
                         <div className="flex flex-col items-center text-gray-400 group-hover:text-paymint-green transition-colors">
                           <Upload size={32} strokeWidth={1.5} className="mb-2" />
-                          <span className="text-[10px] font-black tracking-widest">Upload Media</span>
+                          <span className="text-[10px] font-black tracking-widest">Upload</span>
                         </div>
                       )}
                       <input
@@ -485,15 +485,15 @@ export function ProductFormModal({
                     ) : (
                       <Wand2 size={14} />
                     )}
-                    <span>Generate AI Image</span>
+                    <span>Generate Image</span>
                   </button>
                 </div>
 
                 {/* Name */}
                 <div className="space-y-3">
                   <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
-                    Product Name <span className="text-paymint-red mx-1">*</span>
-                    <QuickInfo text="The item name as it will appear on the POS grid and customer receipts." />
+                    Name <span className="text-paymint-red mx-1">*</span>
+                    <QuickInfo text="Product name." />
                   </label>
                   <input
                     type="text"
@@ -514,8 +514,8 @@ export function ProductFormModal({
                     {canViewCosts && (
                       <div className="space-y-3">
                         <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
-                          Cost Price
-                          <QuickInfo text="Your purchase cost for this item. Used to calculate profit margins." />
+                          Cost
+                          <QuickInfo text="Item cost." />
                         </label>
                         <div className="relative group">
                           <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-lg shadow-sm">
@@ -536,7 +536,7 @@ export function ProductFormModal({
                     <div className="space-y-3">
                       <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
                         Price <span className="text-paymint-red mx-1">*</span>
-                        <QuickInfo text="The final price the customer pays, including any applicable tax." />
+                        <QuickInfo text="Retail price." />
                       </label>
                       <div className="relative group">
                         <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg shadow-sm">
@@ -558,7 +558,7 @@ export function ProductFormModal({
                     <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-4 border border-gray-100 dark:border-white/5 shadow-sm">
                       <div className="flex items-center mb-1.5 gap-1">
                         <p className="text-[9px] font-black text-gray-400 tracking-widest leading-tight">Tax Rate</p>
-                        <QuickInfo text="The tax percentage configured in your store settings." />
+                        <QuickInfo text="Tax %." />
                       </div>
                       <div className="flex items-baseline gap-1">
                         <p className="text-gray-900 dark:text-white font-bold text-lg">
@@ -568,14 +568,14 @@ export function ProductFormModal({
                       </div>
                     </div>
                     <div className="bg-paymint-green/5 rounded-2xl p-4 border border-paymint-green/20 shadow-sm">
-                      <p className="text-[9px] font-black text-paymint-green tracking-widest mb-1.5 leading-tight">Tax Amount</p>
+                      <p className="text-[9px] font-black text-paymint-green tracking-widest mb-1.5 leading-tight">Tax</p>
                       <div className="flex items-baseline gap-1">
                         <p className="text-paymint-green font-bold text-lg">{taxAmount.toFixed(3)}</p>
                         <p className="text-[8px] text-paymint-green/60 font-black">{currencySymbol}</p>
                       </div>
                     </div>
                     <div className="bg-paymint-green/10 rounded-2xl p-4 border border-paymint-green/30 shadow-sm">
-                      <p className="text-[9px] font-black text-paymint-green tracking-widest mb-1.5 leading-tight">Net Price</p>
+                      <p className="text-[9px] font-black text-paymint-green tracking-widest mb-1.5 leading-tight">Net</p>
                       <div className="flex items-baseline gap-1">
                         <p className="text-paymint-green font-bold text-lg">{netPrice.toFixed(3)}</p>
                         <p className="text-[8px] text-paymint-green/60 font-black">{currencySymbol}</p>
@@ -622,7 +622,7 @@ export function ProductFormModal({
                   <div className="flex items-center justify-between px-1">
                     <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] flex items-center">
                       Description
-                      <QuickInfo text="A short description that may appear on online menus or receipts (max 30 chars)." />
+                      <QuickInfo text="Details." />
                     </label>
                     <span className={`text-[9px] font-black tracking-widest ${description.length >= 30 ? 'text-paymint-red' : 'text-gray-400'}`}>
                       {description.length} / 30
@@ -641,7 +641,7 @@ export function ProductFormModal({
                 <div className="relative space-y-3" ref={categoryRef}>
                   <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
                     Category <span className="text-paymint-red mx-1">*</span>
-                    <QuickInfo text="The category determines where this item appears on the POS menu." />
+                    <QuickInfo text="Group." />
                   </label>
                   <button
                     type="button"
@@ -652,7 +652,7 @@ export function ProductFormModal({
                     className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.category ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-left flex items-center justify-between text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all shadow-sm group-hover:border-paymint-green/50`}
                   >
                     <span className={categoryId ? 'text-gray-900 dark:text-white font-bold' : 'text-gray-400 italic'}>
-                      {localCategories.find(c => c.id === categoryId)?.name || 'Select Primary Category'}
+                      {localCategories.find(c => c.id === categoryId)?.name || 'Select Category'}
                     </span>
                     <ChevronDown size={20} className={`text-gray-400 transition-transform duration-300 ${showCategoryDropdown ? 'rotate-180 text-paymint-green' : ''}`} />
                   </button>
@@ -730,7 +730,7 @@ export function ProductFormModal({
                           className="w-full px-5 py-4 text-left bg-gray-50 dark:bg-white/[0.02] hover:bg-paymint-green/10 flex items-center gap-3 transition-colors text-paymint-green border-t border-gray-100 dark:border-white/10 shrink-0"
                         >
                           <Plus size={16} />
-                          <span className="text-xs font-black tracking-widest">Create New Category</span>
+                          <span className="text-xs font-black tracking-widest">Create Category</span>
                         </button>
                       </motion.div>
                     )}
@@ -741,7 +741,7 @@ export function ProductFormModal({
                 <div className="relative space-y-3" ref={addonsRef}>
                   <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
                     Add-ons
-                    <QuickInfo text="Attach options like toppings, sizes, or special instructions to this item." />
+                    <QuickInfo text="Extras." />
                   </label>
 
                   {attributes.length === 0 && (
@@ -752,7 +752,7 @@ export function ProductFormModal({
                         </div>
                         <div>
                           <p className="text-[10px] font-black tracking-[0.15em] text-red-600 dark:text-red-500">Notice</p>
-                          <p className="text-[11px] font-bold text-red-500/90 dark:text-red-400/70 leading-snug">No modifiers found in your database. Please visit the <span className="underline cursor-pointer hover:text-red-600" onClick={() => setShowAddonsWarning(true)}>Add-ons section</span> to create some.</p>
+                          <p className="text-[11px] font-bold text-red-500/90 dark:text-red-400/70 leading-snug">No modifiers. <span className="underline cursor-pointer hover:text-red-600" onClick={() => setShowAddonsWarning(true)}>Add here</span>.</p>
                         </div>
                       </div>
                     </div>
@@ -772,10 +772,10 @@ export function ProductFormModal({
                       </div>
                       <span className={selectedAttributeIds.length > 0 ? 'text-gray-900 dark:text-white font-bold' : 'text-gray-400 italic'}>
                         {selectedAttributeIds.length === 0
-                          ? (attributes.length === 0 ? 'No Modifiers Available' : 'Add Modifiers')
+                          ? (attributes.length === 0 ? 'No Modifiers' : 'Add Modifiers')
                           : selectedAttributeIds.length === 1
-                            ? attributes.find(a => a.id === selectedAttributeIds[0])?.name || '1 Modifier Active'
-                            : `${selectedAttributeIds.length} Modifiers Linked`}
+                            ? attributes.find(a => a.id === selectedAttributeIds[0])?.name || '1 Active'
+                            : `${selectedAttributeIds.length} Linked`}
                       </span>
                     </div>
                     <ChevronDown size={20} className={`text-gray-400 transition-transform duration-300 ${showAddonsDropdown ? 'rotate-180 text-paymint-green' : ''}`} />
@@ -885,9 +885,9 @@ export function ProductFormModal({
                     <div>
                       <h4 className="text-gray-900 dark:text-white font-bold text-sm tracking-tight flex items-center gap-2">
                         Track Stock
-                        <QuickInfo text="Enable this to count inventory for this item. Selling will decrease the count." />
+                        <QuickInfo text="Inventory." />
                       </h4>
-                      <p className="text-gray-400 text-[10px] font-black tracking-widest mt-1">Real-Time Depletion Monitoring</p>
+                      <p className="text-gray-400 text-[10px] font-black tracking-widest mt-1">Stock Control</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input
@@ -905,8 +905,8 @@ export function ProductFormModal({
                       <div className="flex items-center justify-between bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
                         <div>
                           <h4 className="text-gray-900 dark:text-white font-bold text-xs tracking-tight flex items-center gap-1">
-                            Allow Negative Stock
-                            <QuickInfo text="If enabled, you can continue selling this item even when inventory reaches zero." />
+                            Allow Negative
+                            <QuickInfo text="Sell if empty." />
                           </h4>
                           <p className="text-gray-400 text-[9px] font-bold mt-0.5">Sell Below Threshold</p>
                         </div>
@@ -923,8 +923,8 @@ export function ProductFormModal({
 
                       <div className="space-y-3">
                         <label className="block text-[10px] font-black text-gray-400 tracking-widest px-1 flex items-center">
-                          Availability
-                          <QuickInfo text="Current number of units in stock." />
+                          Stock
+                          <QuickInfo text="Qty." />
                         </label>
                         <input
                           type="number"
@@ -941,7 +941,7 @@ export function ProductFormModal({
                       <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-3">
                           <label className="block text-[10px] font-black text-gray-400 tracking-widest px-1 flex items-center">
-                            <span className="text-yellow-500 mr-2 text-lg">●</span> Low Stock Warning
+                            <span className="text-yellow-500 mr-2 text-lg">●</span> Low
                           </label>
                           <input
                             type="number"
@@ -953,7 +953,7 @@ export function ProductFormModal({
                         </div>
                         <div className="space-y-3">
                           <label className="block text-[10px] font-black text-gray-400 tracking-widest px-1 flex items-center">
-                            <span className="text-paymint-red mr-2 text-lg">●</span> Critical Stock Alert
+                            <span className="text-paymint-red mr-2 text-lg">●</span> Critical
                           </label>
                           <input
                             type="number"
@@ -1002,7 +1002,7 @@ export function ProductFormModal({
                 {isSubmitting ? (
                   <RefreshCw size={18} className="animate-spin" />
                 ) : (
-                  initialData?.id ? 'Save Changes' : 'Add Product'
+                  initialData?.id ? 'Save' : 'Add'
                 )}
               </button>
             </div>

@@ -31,31 +31,31 @@ interface CustomRoleFormModalProps {
 }
 
 const POS_PERMISSIONS = [
-  { id: 'accept_payments', label: 'Accept Payments', description: 'Process Payment Transactions' },
-  { id: 'apply_discounts', label: 'Apply Discounts With Restricted Access', description: 'Allow Applying Discounts During Sale' },
-  { id: 'change_taxes', label: 'Change Taxes In A Sale', description: 'Modify Tax Rate During Checkout' },
-  { id: 'open_cash_drawer', label: 'Open Cash Drawer Without Making A Sale', description: 'Manual Drawer Access' },
-  { id: 'view_all_receipts', label: 'View All Receipts', description: 'When Disabled, Can Only View Last 5 Receipts' },
-  { id: 'refunds', label: 'Perform Refunds', description: 'Process Order Refunds' },
-  { id: 'reprint_receipts', label: 'Reprint And Resend Receipts', description: 'Print Receipts For Past Orders' },
-  { id: 'manage_items', label: 'Manage Items', description: 'Add, Edit, Delete Menu Items In POS' },
-  { id: 'view_item_cost', label: 'View Cost Of Items', description: 'See Cost Prices And Margins' },
-  { id: 'settings', label: 'Change Settings', description: 'Access App Settings' },
-  { id: 'live_chat', label: 'Access To Live Chat Support', description: 'Contact Support Via Chat' },
+  { id: 'accept_payments', label: 'Accept Payments', description: 'Process payments' },
+  { id: 'apply_discounts', label: 'Apply Discounts', description: 'Apply discounts' },
+  { id: 'change_taxes', label: 'Change Taxes', description: 'Modify tax rate' },
+  { id: 'open_cash_drawer', label: 'Open Drawer', description: 'Open drawer manually' },
+  { id: 'view_all_receipts', label: 'View Receipts', description: 'See all receipts' },
+  { id: 'refunds', label: 'Refunds', description: 'Process refunds' },
+  { id: 'reprint_receipts', label: 'Reprint', description: 'Reprint receipts' },
+  { id: 'manage_items', label: 'Manage Items', description: 'Edit menu' },
+  { id: 'view_item_cost', label: 'View Costs', description: 'See costs' },
+  { id: 'settings', label: 'Settings', description: 'App settings' },
+  { id: 'live_chat', label: 'Support', description: 'Chat support' },
 ];
 
 const BACKOFFICE_PERMISSIONS = [
-  { id: 'view_reports', label: 'View Reports & Analytics', description: 'Access Sales Reports And Business Insights' },
-  { id: 'view_orders', label: 'View Orders', description: 'View Transaction History And Receipts' },
-  { id: 'manage_inventory', label: 'Manage Inventory', description: 'Create And Edit Products, Categories, And Stock' },
-  { id: 'view_costs', label: 'View Item Costs', description: 'See Cost Prices And Profit Margins' },
-  { id: 'manage_employees', label: 'Manage Team', description: 'Add/Edit Staff And Configure Roles' },
-  { id: 'manage_customers', label: 'Manage Customers', description: 'View And Edit Customer Database' },
-  { id: 'manage_discounts', label: 'Manage Discounts', description: 'Create And Edit Promotional Discounts' },
-  { id: 'manage_payment_methods', label: 'Manage Payment Methods', description: 'Configure Accepted Payment Types' },
-  { id: 'manage_settings', label: 'General Settings', description: 'Configure Store Details, Taxes, And Printers' },
-  { id: 'view_activity_logs', label: 'View System Logs', description: 'Track Sensitive Actions And History' },
-  { id: 'manage_billing', label: 'Manage Billing', description: 'Subscription And Payment Methods' },
+  { id: 'view_reports', label: 'Reports', description: 'Sales reports' },
+  { id: 'view_orders', label: 'Orders', description: 'Transaction history' },
+  { id: 'manage_inventory', label: 'Inventory', description: 'Manage stock' },
+  { id: 'view_costs', label: 'Costs', description: 'See costs' },
+  { id: 'manage_employees', label: 'Staff', description: 'Manage team' },
+  { id: 'manage_customers', label: 'Customers', description: 'Manage customers' },
+  { id: 'manage_discounts', label: 'Discounts', description: 'Manage offers' },
+  { id: 'manage_payment_methods', label: 'Payments', description: 'Payment types' },
+  { id: 'manage_settings', label: 'Settings', description: 'Store settings' },
+  { id: 'view_activity_logs', label: 'Logs', description: 'System logs' },
+  { id: 'manage_billing', label: 'Billing', description: 'Subscription' },
 ];
 
 export function CustomRoleFormModal({
@@ -72,7 +72,7 @@ export function CustomRoleFormModal({
   const [backofficeAccess, setBackofficeAccess] = useState(false);
 
   // Permissions State
-  const [permissions, setPermissions] = useState<string[]>([]); // POS permissions
+  const [permissions, setPermissions] = useState<string[]>([]); // Pos permissions
   const [backofficePermissions, setBackofficePermissions] = useState<string[]>([]); // Back office permissions
 
   // Discount State
@@ -197,7 +197,7 @@ export function CustomRoleFormModal({
               <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
                 {initialData ? 'Edit Role' : 'New Custom Role'}
               </h2>
-              <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">Configure Permissions</p>
+              <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">Permissions</p>
             </div>
             <button
               onClick={onClose}
@@ -221,7 +221,7 @@ export function CustomRoleFormModal({
                 {errors.name && <p className="absolute -bottom-5 left-0 text-xs font-bold text-paymint-red">{errors.name}</p>}
               </div>
 
-              {/* POS Section */}
+              {/* Pos Section */}
               <div className="rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 overflow-hidden transition-all duration-300">
                 <div 
                   className="flex items-center justify-between p-5 cursor-pointer hover:bg-gray-100/50 dark:hover:bg-white/[0.02]"
@@ -232,8 +232,8 @@ export function CustomRoleFormModal({
                       <Smartphone size={24} />
                     </div>
                     <div>
-                      <h3 className="text-base font-bold text-gray-900 dark:text-white">POS App</h3>
-                      <p className="text-xs text-gray-500 max-w-[250px] leading-relaxed">Employees can log in to the app using personal PIN code</p>
+                      <h3 className="text-base font-bold text-gray-900 dark:text-white">Pos App</h3>
+                      <p className="text-xs text-gray-500 max-w-[250px] leading-relaxed">Employees can log in to the app using personal Pin code</p>
                     </div>
                   </div>
                   <button
@@ -253,7 +253,7 @@ export function CustomRoleFormModal({
                       className="border-t border-gray-200 dark:border-white/10"
                     >
                       <div className="p-5 space-y-6">
-                        {/* POS Permissions List */}
+                        {/* Pos Permissions List */}
                         <div className="space-y-3">
                           {POS_PERMISSIONS.map(perm => (
                             <div 

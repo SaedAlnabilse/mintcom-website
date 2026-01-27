@@ -38,7 +38,7 @@ export const DownloadApp = () => {
                 "Works on Tablets & Phones (Universal)",
                 "Offline Mode Support",
                 "Instant Sync across devices",
-                "Built for Android & iOS"
+                "Built for Android & Ios"
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
                   <CheckCircle2 size={20} className="text-paymint-green flex-shrink-0" />
@@ -50,7 +50,7 @@ export const DownloadApp = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <a
                 href="#" // TODO: Replace with your hosted APK URL (e.g., from R2 or S3)
-                onClick={() => alert("Please update the APK link in src/components/DownloadApp.tsx")}
+                onClick={() => alert("Please update the Apk link in src/components/DownloadApp.tsx")}
                 className="flex items-center justify-center gap-3 bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 py-4 px-8 rounded-xl transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 group"
               >
                 <Download className="w-6 h-6" />
@@ -70,7 +70,7 @@ export const DownloadApp = () => {
             </div>
 
             <p className="mt-6 text-sm text-gray-500 dark:text-gray-400 italic">
-              * Supports Android 8.0+ and iOS 17+
+              * Supports Android 8.0+ and Ios 17+
             </p>
           </motion.div>
 
@@ -92,7 +92,7 @@ export const DownloadApp = () => {
               <div className="w-full h-full bg-[#1a1a1a] p-6 relative">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-4 bg-gray-800 rounded-b-xl" />
 
-                {/* Mock UI: POS Grid */}
+                {/* Mock UI: Pos Grid */}
                 <div className="grid grid-cols-3 gap-4 h-full mt-4">
                   <div className="col-span-2 grid grid-cols-3 gap-3">
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => (

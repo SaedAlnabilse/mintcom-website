@@ -82,7 +82,7 @@ export function OwnerEmployeesPage() {
     const tourSteps: TourStep[] = [
         {
             targetId: 'tour-stats-grid',
-            title: 'Workforce Overview',
+            title: 'Team Overview',
             description: 'Get a quick snapshot of your total employees, active staff, and role distribution across all locations.'
         },
         {
@@ -102,7 +102,7 @@ export function OwnerEmployeesPage() {
         },
         {
             targetId: 'tour-add-employee-btn',
-            title: 'Induct Personnel',
+            title: 'Add Staff',
             description: 'Ready to grow? Click here to add new team members and assign them to specific locations.'
         }
     ];
@@ -163,7 +163,7 @@ export function OwnerEmployeesPage() {
             await api.delete(`/api/accounts/employees/${employeeToDelete.id}`, {
                 data: { email: account.email, password: deletePassword }
             });
-            toast.success('Employee removed successfully');
+            toast.success('Employee removed');
             closeDeleteModal();
             fetchEmployees();
         } catch (error: any) {
@@ -185,10 +185,10 @@ export function OwnerEmployeesPage() {
         try {
             if (editingEmployee) {
                 await api.put(`/api/accounts/employees/${editingEmployee.id}`, data);
-                toast.success('Employee updated successfully');
+                toast.success('Employee updated');
             } else {
                 await api.post('/api/accounts/employees', data);
-                toast.success('Employee added successfully');
+                toast.success('Employee added');
             }
             setIsFormModalOpen(false);
             setEditingEmployee(null);
@@ -234,7 +234,7 @@ export function OwnerEmployeesPage() {
             case 'USER':
                 return <span className={`${base} bg-blue-500/10 text-blue-500 border-blue-500/20`}>Staff</span>;
             default:
-                return <span className={`${base} bg-gray-500/10 text-gray-500 border-gray-500/20`}>{role}</span>;
+                return <span className={`${base} bg-gray-500/10 text-gray-500 border-gray-500/20`}>{role ? role.charAt(0).toUpperCase() + role.slice(1).toLowerCase() : ''}</span>;
         }
     };
 
@@ -270,12 +270,12 @@ export function OwnerEmployeesPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-                            Unified Access Control
+                            Team Access
                         </span>
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Global Workforce</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">All Staff</h1>
                     <p className="text-gray-500 dark:text-gray-400 mt-2">
-                        Manage personnel across {establishments.length} operational nodes.
+                        Manage staff across {establishments.length} locations.
                     </p>
                 </div>
 
@@ -301,7 +301,7 @@ export function OwnerEmployeesPage() {
                         className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20"
                     >
                         <UserPlus size={18} />
-                        <span>Induct Personnel</span>
+                        <span>Add Staff</span>
                     </button>
                 </div>
             </div>
@@ -309,10 +309,10 @@ export function OwnerEmployeesPage() {
             {/* Stats Grid */}
             <div id="tour-stats-grid" className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                    { label: 'Total Workforce', info: 'Total number of registered employees across all locations.', value: stats.total, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: 'Active Now', info: 'Employees currently clocked in or managing active sessions.', value: stats.active, icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-                    { label: 'Administrators', info: 'Users with full system access and configuration privileges.', value: stats.admins, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-                    { label: 'Staff Members', info: 'Standard users with restricted access based on assigned roles.', value: stats.staff, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+                    { label: 'Total Staff', info: 'Total number of registered employees across all locations.', value: stats.total, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                    { label: 'Active Now', info: 'Employees clocked in or active.', value: stats.active, icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+                    { label: 'Admins', info: 'Users with full access to settings.', value: stats.admins, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+                    { label: 'Staff', info: 'Standard users with restricted access based on assigned roles.', value: stats.staff, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
                 ].map((stat, i) => (
                     <motion.div
                         key={i}
@@ -350,7 +350,7 @@ export function OwnerEmployeesPage() {
                         />
                         <input
                             type="text"
-                            placeholder="Filter by name, email or node..."
+                            placeholder="Filter by name, email or location..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm hover:shadow-md focus:shadow-lg"
@@ -407,13 +407,13 @@ export function OwnerEmployeesPage() {
             {isLoading ? (
                 <div className="flex flex-col items-center justify-center py-20 space-y-4">
                     <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin" />
-                    <p className="text-sm font-bold text-gray-400 tracking-widest">Synchronizing Personnel...</p>
+                    <p className="text-sm font-bold text-gray-400 tracking-widest">Loading staff...</p>
                 </div>
             ) : filteredEmployees.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="text-lg font-medium text-gray-900 dark:text-white">No personnel found</p>
-                    <p className="text-sm text-gray-500 mt-1">Adjust filters or induct new team members</p>
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">No staff found</p>
+                    <p className="text-sm text-gray-500 mt-1">Adjust filters or add new staff</p>
                 </div>
             ) : viewMode === 'grid' ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -529,7 +529,7 @@ export function OwnerEmployeesPage() {
             ) : (
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
                     <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
-                        <div className="col-span-4">Personnel</div>
+                        <div className="col-span-4">Name</div>
                         <div className="col-span-2 text-center">Role</div>
                         <div className="col-span-2 text-center">Status</div>
                         <div className="col-span-2 text-center">Access</div>
@@ -664,9 +664,9 @@ export function OwnerEmployeesPage() {
                                 <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-6">
                                     <AlertTriangle size={32} />
                                 </div>
-                                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Terminate Access</h3>
+                                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Remove Staff</h3>
                                 <p className="text-gray-500 text-sm leading-relaxed">
-                                    Are you sure you want to remove <span className="font-bold text-gray-900 dark:text-white">{employeeToDelete.firstName} {employeeToDelete.lastName}</span> from the workforce? This action is irreversible.
+                                    Are you sure you want to remove <span className="font-bold text-gray-900 dark:text-white">{employeeToDelete.firstName} {employeeToDelete.lastName}</span>? This action is irreversible.
                                 </p>
                             </div>
 

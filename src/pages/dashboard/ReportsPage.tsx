@@ -7,17 +7,18 @@ import { endOfDay, startOfDay, format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   TrendingUp, Clock, Activity, ShoppingBag, ArrowUpRight, RefreshCw,
-  DownloadCloud, ChevronRight, ChevronLeft, Wallet, CreditCard, ExternalLink, Percent, DollarSign, PieChart as PieChartIcon, Tag, Scale, ArrowUpDown, Calendar, LayoutGrid
+  DownloadCloud, ChevronRight, ChevronLeft, Wallet, CreditCard, ExternalLink, Percent, DollarSign, PieChart as PieChartIcon, Tag, Scale, ArrowUpDown, Calendar, LayoutGrid, Receipt
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import { PayInPayOutLogModal } from '../../components/dashboard/reports/PayInPayOutLogModal';
+import { ReceiptsReport } from '../../components/dashboard/reports/ReceiptsReport';
 import { SingleSelect } from '../../components/SingleSelect';
 import { exportToCSV } from '../../utils/export';
 
-type ReportType = 'sales' | 'top-items' | 'top-categories' | 'top-modifiers' | 'peak-hours' | 'shifts' | 'employees' | 'payments' | 'discounts' | 'taxes';
+type ReportType = 'sales' | 'top-items' | 'top-categories' | 'top-modifiers' | 'peak-hours' | 'shifts' | 'employees' | 'payments' | 'discounts' | 'taxes' | 'receipts';
 
 const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
@@ -66,6 +67,9 @@ export function ReportsPage() {
           break;
         case 'peak-hours':
           setReportType('peak-hours');
+          break;
+        case 'receipts':
+          setReportType('receipts');
           break;
         default:
           setReportType('sales');
@@ -249,7 +253,8 @@ export function ReportsPage() {
       (reportType === 'taxes' && salesData) ||
       (reportType === 'top-items' && itemReportData) ||
       (reportType === 'peak-hours' && peakHours.length > 0) ||
-      (reportType === 'shifts' && shifts.length > 0);
+      (reportType === 'shifts' && shifts.length > 0) ||
+      (reportType === 'receipts' && true); // Receipts are fetched inside the component
 
     // If switching report types or no data yet, block UI.
     // Otherwise (filters/sub-tabs), just show fetching indicator.
@@ -424,18 +429,18 @@ export function ReportsPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-              Analytics
+              Reports
             </span>
             <div className="flex items-center gap-2">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
               </span>
-              <span className="text-[10px] font-bold text-gray-400 tracking-widest">Live Data</span>
+              <span className="text-[10px] font-bold text-gray-400 tracking-widest">Live</span>
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Reports & Analytics</h1>
-          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Business performance metrics & insights</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Reports</h1>
+          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Track business performance</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -461,15 +466,16 @@ export function ReportsPage() {
         {/* Report Type Selector */}
         <div className="flex w-full gap-2">
           {[
-            { id: 'sales', label: 'Summary', icon: TrendingUp },
+            { id: 'sales', label: 'Overview', icon: TrendingUp },
             { id: 'top-items', label: 'Items', icon: ShoppingBag },
             { id: 'top-categories', label: 'Categories', icon: LayoutGrid },
             { id: 'top-modifiers', label: 'Add-ons', icon: Tag },
             { id: 'employees', label: 'Staff', icon: Activity },
-            { id: 'shifts', label: 'Audit', icon: Clock },
-            { id: 'peak-hours', label: 'Heatmap', icon: Clock },
+            { id: 'shifts', label: 'Shifts', icon: Clock },
+            { id: 'peak-hours', label: 'Busy Times', icon: Clock },
             { id: 'discounts', label: 'Discounts', icon: Percent },
             { id: 'taxes', label: 'Taxes', icon: Scale },
+            { id: 'receipts', label: 'Receipts', icon: Receipt },
           ].map((type) => {
             const isSelected = type.id === 'top-categories'
               ? (reportType === 'top-items' && itemReportTab === 'categories')
@@ -655,45 +661,45 @@ export function ReportsPage() {
 
                     return [
                       {
-                        label: 'Settlement Value',
+                        label: 'Settlement',
                         value: ((salesData.totalRevenue || 0) + (salesData.taxCollected || 0)).toFixed(3),
                         icon: Wallet,
                         color: 'text-blue-500',
                         bg: 'bg-blue-500/10',
-                        sub: 'Total Sales (Inc. Tax)'
+                        sub: 'Total (Inc. Tax)'
                       },
                       {
-                        label: 'Net Capital',
+                        label: 'Net Sales',
                         value: (salesData.totalRevenue || 0).toFixed(3),
                         icon: TrendingUp,
                         color: 'text-paymint-green',
                         bg: 'bg-paymint-green/10',
-                        sub: 'Net Revenue (Excl. Tax)'
+                        sub: 'Excl. Tax'
                       },
                       {
-                        label: 'Estimated Profit',
+                        label: 'Profit',
                         value: (salesData.grossProfit || 0).toFixed(3),
                         icon: DollarSign,
                         color: (salesData.grossProfit || 0) >= 0 ? 'text-emerald-500' : 'text-red-500',
                         bg: (salesData.grossProfit || 0) >= 0 ? 'bg-emerald-500/10' : 'bg-red-500/10',
-                        sub: 'Net Capital - Item Costs'
+                        sub: 'Net Sales - Cost'
                       },
                       {
-                        label: 'Tax Calculated',
+                        label: 'Tax',
                         value: (salesData.taxCollected || 0).toFixed(3),
                         icon: Percent,
                         color: 'text-orange-500',
                         bg: 'bg-orange-500/10',
-                        sub: 'Total Tax Liability'
+                        sub: 'Tax Amount'
                       },
                       {
-                        label: 'Total Orders',
+                        label: 'Orders',
                         value: (salesData.totalOrders || 0).toString(),
                         suffix: 'Ord',
                         icon: ShoppingBag,
                         color: 'text-indigo-500',
                         bg: 'bg-indigo-500/10',
-                        sub: 'Completed Sales'
+                        sub: 'Completed'
                       },
                       {
                         label: 'Refunds',
@@ -701,10 +707,10 @@ export function ReportsPage() {
                         icon: RefreshCw,
                         color: 'text-red-500',
                         bg: 'bg-red-500/10',
-                        sub: 'Returned Items'
+                        sub: 'Returns'
                       },
                       {
-                        label: 'Time Worked',
+                        label: 'Hours',
                         value: (salesData.totalHoursWorked || 0).toFixed(1),
                         suffix: 'Hrs',
                         icon: Clock,
@@ -796,9 +802,9 @@ export function ReportsPage() {
                       <div>
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                           <TrendingUp className="text-paymint-green" size={20} />
-                          Revenue Trend
+                          Revenue
                         </h3>
-                        <p className="text-xs text-gray-500 mt-1">Financial performance over time</p>
+                        <p className="text-xs text-gray-500 mt-1">Performance over time</p>
                       </div>
                       <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
                         <Activity size={12} className="text-paymint-green" />
@@ -1062,8 +1068,8 @@ export function ReportsPage() {
                         <Wallet size={20} />
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Capital Sources</h3>
-                        <p className="text-[10px] font-bold text-gray-500 tracking-widest">Today's Payment Distribution</p>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Payments</h3>
+                        <p className="text-[10px] font-bold text-gray-500 tracking-widest">Payment breakdown</p>
                       </div>
                     </div>
                     <div className="flex-1 flex flex-col justify-center">
@@ -1291,8 +1297,8 @@ export function ReportsPage() {
                         {/* 1. Revenue Share Chart (The "Slice" View) */}
                         <div className="bg-white dark:bg-[#0B1120] p-6 rounded-[24px] border border-gray-100 dark:border-white/[0.05] shadow-sm flex flex-col">
                           <div className="mb-4">
-                            <h3 className="text-lg font-black text-gray-900 dark:text-white">Revenue Share</h3>
-                            <p className="text-[10px] font-black text-gray-400 tracking-widest">Team Contribution</p>
+                            <h3 className="text-lg font-black text-gray-900 dark:text-white">Sales Share</h3>
+                            <p className="text-[10px] font-black text-gray-400 tracking-widest">By Staff</p>
                           </div>
                           <div className="flex-1 min-h-[200px] relative">
                             <ResponsiveContainer width="100%" height="100%">
@@ -1354,7 +1360,7 @@ export function ReportsPage() {
                                     {emp.username.charAt(0).toUpperCase()}
                                   </div>
                                   <div className={`px-3 py-1 rounded-full text-[10px] font-black tracking-widest ${idx === 0 ? 'bg-black/10 text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
-                                    {idx === 0 ? '🏆 #1 Leader' : '🥈 #2 Runner Up'}
+                                    {idx === 0 ? '🏆 #1 Top' : '🥈 #2'}
                                   </div>
                                 </div>
 
@@ -1384,8 +1390,8 @@ export function ReportsPage() {
                       <div className="bg-white dark:bg-[#0B1120] rounded-[24px] border border-gray-100 dark:border-white/[0.05] overflow-hidden shadow-sm">
                         <div className="p-6 border-b border-gray-100 dark:border-white/[0.05] flex items-center justify-between">
                           <div>
-                            <h3 className="text-lg font-black text-gray-900 dark:text-white">Comparative Team Analysis</h3>
-                            <p className="text-[10px] font-black text-gray-400 tracking-widest">Quality vs. Quantity Metrics</p>
+                            <h3 className="text-lg font-black text-gray-900 dark:text-white">Staff Analysis</h3>
+                            <p className="text-[10px] font-black text-gray-400 tracking-widest">Performance Metrics</p>
                           </div>
                         </div>
                         <div className="overflow-x-auto">
@@ -1393,11 +1399,11 @@ export function ReportsPage() {
                             <thead className="bg-gray-50/50 dark:bg-white/[0.01]">
                               <tr className="border-b border-gray-100 dark:border-white/[0.05]">
                                 <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Rank</th>
-                                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Staff Member</th>
-                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Total Sales</th>
-                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Share %</th>
-                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Avg Ticket</th>
-                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Efficiency</th>
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Staff</th>
+                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Sales</th>
+                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Share</th>
+                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Avg Order</th>
+                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Sales/Hr</th>
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100 dark:divide-white/[0.03]">
@@ -1461,28 +1467,28 @@ export function ReportsPage() {
                       <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
                         <div className="flex items-center gap-3 mb-4 text-orange-500">
                           <Activity size={20} />
-                          <h4 className="text-[10px] font-black tracking-widest text-gray-400">Net Cash Health</h4>
+                          <h4 className="text-[10px] font-black tracking-widest text-gray-400">Cash Variance</h4>
                         </div>
                         <p className={`text-3xl font-black ${totalVariance < -0.01 ? 'text-red-500' : 'text-paymint-green'}`}>
                           {totalVariance > 0 ? '+' : ''}{formatCurrency(totalVariance)}
                         </p>
-                        <p className="text-[10px] font-bold text-gray-500 mt-2">Lifetime variance in this period</p>
+                        <p className="text-[10px] font-bold text-gray-500 mt-2">Total over/short</p>
                       </div>
                       <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
                         <div className="flex items-center gap-3 mb-4 text-blue-500">
                           <Clock size={20} />
-                          <h4 className="text-[10px] font-black tracking-widest text-gray-400">Session Activity</h4>
+                          <h4 className="text-[10px] font-black tracking-widest text-gray-400">Shifts</h4>
                         </div>
                         <p className="text-3xl font-black text-gray-900 dark:text-white">{shifts.length}</p>
-                        <p className="text-[10px] font-bold text-gray-500 mt-2">{activeShifts} currently open sessions</p>
+                        <p className="text-[10px] font-bold text-gray-500 mt-2">{activeShifts} active shifts</p>
                       </div>
                       <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
                         <div className="flex items-center gap-3 mb-4 text-paymint-green">
                           <Wallet size={20} />
-                          <h4 className="text-[10px] font-black tracking-widest text-gray-400">Audit Status</h4>
+                          <h4 className="text-[10px] font-black tracking-widest text-gray-400">Audited</h4>
                         </div>
                         <p className="text-3xl font-black text-paymint-green">100%</p>
-                        <p className="text-[10px] font-bold text-gray-500 mt-2">Sessions documented</p>
+                        <p className="text-[10px] font-bold text-gray-500 mt-2">Shifts closed</p>
                       </div>
                     </div>
                   );
@@ -1494,12 +1500,12 @@ export function ReportsPage() {
                     <table className="w-full">
                       <thead className="bg-gray-50 dark:bg-white/[0.02]">
                         <tr className="border-b border-gray-200 dark:border-white/5">
-                          <th className="px-5 py-5 text-left text-[10px] font-black text-gray-400 tracking-widest">Staff Member</th>
-                          <th className="px-5 py-5 text-left text-[10px] font-black text-gray-400 tracking-widest">Shift Period</th>
-                          <th className="px-5 py-5 text-right text-[10px] font-black text-gray-400 tracking-widest">Opening Bal</th>
-                          <th className="px-5 py-5 text-right text-[10px] font-black text-gray-400 tracking-widest">Net Sales</th>
-                          <th className="px-5 py-5 text-right text-[10px] font-black text-gray-400 tracking-widest">Closing Bal</th>
-                          <th className="px-5 py-5 text-center text-[10px] font-black text-gray-400 tracking-widest">Cash Over/Short</th>
+                          <th className="px-5 py-5 text-left text-[10px] font-black text-gray-400 tracking-widest">Staff</th>
+                          <th className="px-5 py-5 text-left text-[10px] font-black text-gray-400 tracking-widest">Time</th>
+                          <th className="px-5 py-5 text-right text-[10px] font-black text-gray-400 tracking-widest">Opening</th>
+                          <th className="px-5 py-5 text-right text-[10px] font-black text-gray-400 tracking-widest">Sales</th>
+                          <th className="px-5 py-5 text-right text-[10px] font-black text-gray-400 tracking-widest">Closing</th>
+                          <th className="px-5 py-5 text-center text-[10px] font-black text-gray-400 tracking-widest">Variance</th>
                           <th className="px-5 py-5 text-center text-[10px] font-black text-gray-400 tracking-widest">Status</th>
                         </tr>
                       </thead>
@@ -1573,7 +1579,7 @@ export function ReportsPage() {
                                   ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
                                   : 'bg-gray-100 dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10'
                                   }`}>
-                                  {shift.status}
+                                  {shift.status.charAt(0).toUpperCase() + shift.status.slice(1).toLowerCase()}
                                 </span>
                               </td>
                             </motion.tr>
@@ -1591,6 +1597,15 @@ export function ReportsPage() {
             )
             }
 
+            {/* Receipts Report Table */}
+            {reportType === 'receipts' && (
+              <ReceiptsReport
+                startDate={effectiveDateRange.start}
+                endDate={effectiveDateRange.end}
+                employeeId={selectedEmployeeId}
+              />
+            )}
+
             {/* Peak Hours Section */}
             {
               reportType === 'peak-hours' && (
@@ -1601,8 +1616,8 @@ export function ReportsPage() {
                         <Clock size={20} />
                       </div>
                       <div>
-                        <h3 className="text-base font-bold text-gray-900 dark:text-white">Traffic Heatmap</h3>
-                        <p className="text-[10px] font-bold text-gray-500 tracking-widest">Hourly distribution</p>
+                        <h3 className="text-base font-bold text-gray-900 dark:text-white">Busy Times</h3>
+                        <p className="text-[10px] font-bold text-gray-500 tracking-widest">Sales by hour</p>
                       </div>
                     </div>
                   </div>
@@ -1708,7 +1723,7 @@ export function ReportsPage() {
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col">
                       <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
                         <PieChartIcon size={20} className="text-paymint-green" />
-                        Distribution Analysis
+                        Distribution
                       </h3>
                       <div className="h-[300px] w-full relative">
                         {salesData.paymentMethodBreakdown && salesData.paymentMethodBreakdown.length > 0 ? (
@@ -1768,7 +1783,7 @@ export function ReportsPage() {
                       <div className="p-6 border-b border-gray-100 dark:border-white/5">
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                           <Activity size={20} className="text-blue-500" />
-                          Detailed Breakdown
+                          Details
                         </h3>
                       </div>
                       <div className="flex-1 overflow-x-auto">
@@ -2000,11 +2015,11 @@ export function ReportsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Tax Collected</p>
+                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Tax</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {formatCurrency(salesData.taxCollected || 0)}
                         </p>
-                        <p className="text-xs text-gray-500 mt-2">Total fiscal liability</p>
+                        <p className="text-xs text-gray-500 mt-2">Total tax amount</p>
                       </div>
                       <div className="absolute right-0 top-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl -mr-10 -mt-10" />
                     </div>
@@ -2015,20 +2030,20 @@ export function ReportsPage() {
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {formatCurrency(salesData.totalRevenue || 0)}
                         </p>
-                        <p className="text-xs text-gray-500 mt-2">Revenue subject to tax</p>
+                        <p className="text-xs text-gray-500 mt-2">Sales with tax</p>
                       </div>
                       <div className="absolute right-0 top-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -mr-10 -mt-10" />
                     </div>
 
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Avg. Tax Rate</p>
+                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Avg. Rate</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {salesData.totalRevenue > 0
                             ? ((salesData.taxCollected / salesData.totalRevenue) * 100).toFixed(1)
                             : '0.0'}%
                         </p>
-                        <p className="text-xs text-gray-500 mt-2">Effective rate across all sales</p>
+                        <p className="text-xs text-gray-500 mt-2">Average tax percentage</p>
                       </div>
                       <div className="absolute right-0 top-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl -mr-10 -mt-10" />
                     </div>
@@ -2040,18 +2055,18 @@ export function ReportsPage() {
                       <div className="p-6 border-b border-gray-100 dark:border-white/5">
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                           <Scale size={20} className="text-orange-500" />
-                          Detailed Tax Breakdown
+                          Tax Details
                         </h3>
                       </div>
                       <div className="flex-1 overflow-x-auto">
                         <table className="w-full">
                           <thead className="bg-gray-50 dark:bg-white/[0.02]">
                             <tr>
-                              <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Tax Type</th>
-                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Tax Rate</th>
-                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Taxable Amount</th>
-                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Calculated Tax</th>
-                              <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 tracking-widest">Contribution</th>
+                              <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Type</th>
+                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Rate</th>
+                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Taxable</th>
+                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Tax</th>
+                              <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 tracking-widest">Share</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -2131,9 +2146,9 @@ export function ReportsPage() {
                     {/* Exemptions Panel */}
                     <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm p-6 flex flex-col">
                       <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-2">
-                        Tax Exemptions
+                        Exemptions
                       </h3>
-                      <p className="text-xs text-gray-500 mb-6">Non-taxable activity log</p>
+                      <p className="text-xs text-gray-500 mb-6">Tax-free sales</p>
 
                       <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4 py-8">
                         <div className="w-16 h-16 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-300 dark:text-white/20">
@@ -2143,7 +2158,7 @@ export function ReportsPage() {
                           <p className="text-2xl font-black text-gray-900 dark:text-white">
                             {formatCurrency(salesData.taxExemptSales || 0)}
                           </p>
-                          <p className="text-[10px] font-bold text-gray-400 tracking-widest mt-1">Exempt Revenue</p>
+                          <p className="text-[10px] font-bold text-gray-400 tracking-widest mt-1">Tax-Free Sales</p>
                         </div>
                         <div className="w-full h-px bg-gray-100 dark:bg-white/5 my-4" />
                         <div className="w-full space-y-3">
