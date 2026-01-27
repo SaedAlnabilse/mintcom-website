@@ -183,7 +183,7 @@ export const Pricing = () => {
                 </div>
 
                 <div className="bg-gray-50 dark:bg-black/20 rounded-2xl p-6 mb-8 border border-gray-100 dark:border-transparent transition-colors">
-                  <h4 className="font-bold text-gray-900 dark:text-white mb-4 text-sm uppercase tracking-wider">What's Included</h4>
+                  <h4 className="font-bold text-gray-900 dark:text-white mb-4 text-sm tracking-wider">What's Included</h4>
                   <ul className="space-y-3">
                     {[...selectedPlan.features, ...(selectedPlan.detailedFeatures || [])].map((feature, i) => (
                       <li key={i} className="flex items-start gap-3 text-gray-700 dark:text-gray-300 text-sm">

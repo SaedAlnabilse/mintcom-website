@@ -69,7 +69,7 @@ export const AdminControl = () => {
               <span className="p-2 bg-paymint-green/10 rounded-lg">
                 <Laptop size={20} className="text-paymint-green" />
               </span>
-              <span className="text-paymint-green font-bold tracking-wide uppercase text-sm">Owner & Admin Portal</span>
+              <span className="text-paymint-green font-bold tracking-wide text-sm">Owner & Admin Portal</span>
             </div>
 
             <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-8 tracking-tight leading-tight">

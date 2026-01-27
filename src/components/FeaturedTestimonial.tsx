@@ -58,7 +58,7 @@ export const FeaturedTestimonial = () => {
                         <Star key={i} size={16} fill="#7CC39F" className="text-paymint-green" />
                       ))}
                     </div>
-                    <p className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest">Verified Partner</p>
+                    <p className="text-sm font-black text-gray-900 dark:text-white tracking-widest">Verified Partner</p>
                   </div>
                 </div>
 
@@ -74,7 +74,7 @@ export const FeaturedTestimonial = () => {
 
                   <div>
                     <p className="text-xl font-black text-gray-900 dark:text-white">{testimonial.author}</p>
-                    <p className="text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest text-xs mt-1">{testimonial.role}</p>
+                    <p className="text-gray-500 dark:text-gray-400 font-bold tracking-widest text-xs mt-1">{testimonial.role}</p>
                   </div>
 
                   {/* Navigation */}

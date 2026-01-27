@@ -42,7 +42,7 @@ export const Contact = () => {
                         <item.icon size={20} className={item.color} />
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">{item.label}</p>
+                        <p className="text-xs font-bold text-gray-500 tracking-widest mb-1">{item.label}</p>
                         <p className="text-lg font-bold">{item.value}</p>
                       </div>
                     </div>
@@ -73,7 +73,7 @@ export const Contact = () => {
                     </div>
                     <button
                       onClick={() => setIsSuccess(false)}
-                      className="text-paymint-green font-bold uppercase tracking-widest text-xs hover:underline"
+                      className="text-paymint-green font-bold tracking-widest text-xs hover:underline"
                     >
                       Send another message
                     </button>
@@ -87,7 +87,7 @@ export const Contact = () => {
                   >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1">Full Name</label>
+                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">Full Name</label>
                         <input
                           required
                           type="text"
@@ -96,7 +96,7 @@ export const Contact = () => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1">Business Name</label>
+                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">Business Name</label>
                         <input
                           required
                           type="text"
@@ -107,7 +107,7 @@ export const Contact = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1">Email Address</label>
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">Email Address</label>
                       <input
                         required
                         type="email"
@@ -117,7 +117,7 @@ export const Contact = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1">Your Message</label>
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">Your Message</label>
                       <textarea
                         required
                         rows={4}

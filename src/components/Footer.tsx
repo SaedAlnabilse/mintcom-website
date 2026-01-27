@@ -109,7 +109,7 @@ export const Footer = () => {
 
             {/* Product */}
             <div>
-              <h4 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-[0.2em] mb-8">Product</h4>
+              <h4 className="text-xs font-black text-gray-900 dark:text-white tracking-[0.2em] mb-8">Product</h4>
               <ul className="space-y-4">
                 {productLinks.map((link) => (
                   <li key={link.name}>
@@ -126,7 +126,7 @@ export const Footer = () => {
 
             {/* Company */}
             <div>
-              <h4 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-[0.2em] mb-8">Company</h4>
+              <h4 className="text-xs font-black text-gray-900 dark:text-white tracking-[0.2em] mb-8">Company</h4>
               <ul className="space-y-4">
                 {companyLinks.map((link) => (
                   <li key={link.name}>
@@ -143,7 +143,7 @@ export const Footer = () => {
 
             {/* Contact */}
             <div>
-              <h4 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-[0.2em] mb-8">Get in Touch</h4>
+              <h4 className="text-xs font-black text-gray-900 dark:text-white tracking-[0.2em] mb-8">Get in Touch</h4>
               <ul className="space-y-6">
                 <li className="flex items-center gap-3 text-gray-600 dark:text-gray-400 font-medium">
                   <div className="w-8 h-8 rounded-lg bg-gray-200/50 dark:bg-white/5 flex items-center justify-center">
@@ -173,7 +173,7 @@ export const Footer = () => {
             </p>
             <div className="flex gap-8">
               {['Privacy Policy', 'Terms of Service'].map((link) => (
-                <a key={link} href="#" className="text-gray-500 dark:text-gray-500 text-xs font-bold hover:text-paymint-green transition-colors uppercase tracking-widest">{link}</a>
+                <a key={link} href="#" className="text-gray-500 dark:text-gray-500 text-xs font-bold hover:text-paymint-green transition-colors tracking-widest">{link}</a>
               ))}
             </div>
           </div>
