@@ -421,12 +421,12 @@ export function ProductFormModal({
               <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Product Registry</span>
+                  <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Product Management</span>
                   <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                  <span className="text-[10px] font-black text-paymint-green uppercase tracking-widest">Active Node</span>
+                  <span className="text-[10px] font-black text-paymint-green tracking-widest">Active</span>
                 </div>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                  {initialData?.id ? 'Edit Inventory Item' : 'New Catalog Item'}
+                  {initialData?.id ? 'Edit Product' : 'New Product'}
                 </h2>
               </div>
               <button
@@ -452,7 +452,7 @@ export function ProductFormModal({
                       ) : (
                         <div className="flex flex-col items-center text-gray-400 group-hover:text-paymint-green transition-colors">
                           <Upload size={32} strokeWidth={1.5} className="mb-2" />
-                          <span className="text-[10px] font-black uppercase tracking-widest">Upload Media</span>
+                          <span className="text-[10px] font-black tracking-widest">Upload Media</span>
                         </div>
                       )}
                       <input
@@ -478,32 +478,32 @@ export function ProductFormModal({
                     type="button"
                     onClick={handleGenerateImage}
                     disabled={isGeneratingImage || !name.trim()}
-                    className="mt-6 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-paymint-green bg-paymint-green/10 px-5 py-2.5 rounded-xl hover:bg-paymint-green/20 transition-all border border-paymint-green/20 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm active:scale-95"
+                    className="mt-6 flex items-center gap-2 text-[10px] font-black tracking-widest text-paymint-green bg-paymint-green/10 px-5 py-2.5 rounded-xl hover:bg-paymint-green/20 transition-all border border-paymint-green/20 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm active:scale-95"
                   >
                     {isGeneratingImage ? (
                       <RefreshCw size={14} className="animate-spin" />
                     ) : (
                       <Wand2 size={14} />
                     )}
-                    <span>Synthesize AI Imagery</span>
+                    <span>Generate AI Image</span>
                   </button>
                 </div>
 
                 {/* Name */}
                 <div className="space-y-3">
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-1 flex items-center">
-                    Legal Descriptor <span className="text-paymint-red mx-1">*</span>
+                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
+                    Product Name <span className="text-paymint-red mx-1">*</span>
                     <QuickInfo text="The item name as it will appear on the POS grid and customer receipts." />
                   </label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. ORGANIC ESPRESSO"
+                    placeholder="E.g. Organic Espresso"
                     className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-bold shadow-sm`}
                   />
                   {errors.name && (
-                    <p className="mt-1.5 px-1 text-paymint-red text-[10px] font-black uppercase tracking-widest">{errors.name}</p>
+                    <p className="mt-1.5 px-1 text-paymint-red text-[10px] font-black tracking-widest">{errors.name}</p>
                   )}
                 </div>
 
@@ -513,8 +513,8 @@ export function ProductFormModal({
                     {/* Cost Price */}
                     {canViewCosts && (
                       <div className="space-y-3">
-                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-1 flex items-center">
-                          Acquisition Cost
+                        <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
+                          Cost Price
                           <QuickInfo text="Your purchase cost for this item. Used to calculate profit margins." />
                         </label>
                         <div className="relative group">
@@ -534,8 +534,8 @@ export function ProductFormModal({
 
                     {/* Retail Price (Total) */}
                     <div className="space-y-3">
-                      <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-1 flex items-center">
-                        Settlement Value <span className="text-paymint-red mx-1">*</span>
+                      <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
+                        Price <span className="text-paymint-red mx-1">*</span>
                         <QuickInfo text="The final price the customer pays, including any applicable tax." />
                       </label>
                       <div className="relative group">
@@ -557,28 +557,28 @@ export function ProductFormModal({
                   <div className="grid grid-cols-3 gap-3">
                     <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-4 border border-gray-100 dark:border-white/5 shadow-sm">
                       <div className="flex items-center mb-1.5 gap-1">
-                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-tight">Tax Code</p>
+                        <p className="text-[9px] font-black text-gray-400 tracking-widest leading-tight">Tax Rate</p>
                         <QuickInfo text="The tax percentage configured in your store settings." />
                       </div>
                       <div className="flex items-baseline gap-1">
                         <p className="text-gray-900 dark:text-white font-bold text-lg">
                           {taxRate < 1 ? parseFloat((taxRate * 100).toFixed(2)) : taxRate}
                         </p>
-                        <p className="text-[9px] text-gray-400 font-black uppercase">%</p>
+                        <p className="text-[9px] text-gray-400 font-black">%</p>
                       </div>
                     </div>
                     <div className="bg-paymint-green/5 rounded-2xl p-4 border border-paymint-green/20 shadow-sm">
-                      <p className="text-[9px] font-black text-paymint-green uppercase tracking-widest mb-1.5 leading-tight">Tax Share</p>
+                      <p className="text-[9px] font-black text-paymint-green tracking-widest mb-1.5 leading-tight">Tax Amount</p>
                       <div className="flex items-baseline gap-1">
                         <p className="text-paymint-green font-bold text-lg">{taxAmount.toFixed(3)}</p>
-                        <p className="text-[8px] text-paymint-green/60 font-black uppercase">{currencySymbol}</p>
+                        <p className="text-[8px] text-paymint-green/60 font-black">{currencySymbol}</p>
                       </div>
                     </div>
                     <div className="bg-paymint-green/10 rounded-2xl p-4 border border-paymint-green/30 shadow-sm">
-                      <p className="text-[9px] font-black text-paymint-green uppercase tracking-widest mb-1.5 leading-tight">Net Capital</p>
+                      <p className="text-[9px] font-black text-paymint-green tracking-widest mb-1.5 leading-tight">Net Price</p>
                       <div className="flex items-baseline gap-1">
                         <p className="text-paymint-green font-bold text-lg">{netPrice.toFixed(3)}</p>
-                        <p className="text-[8px] text-paymint-green/60 font-black uppercase">{currencySymbol}</p>
+                        <p className="text-[8px] text-paymint-green/60 font-black">{currencySymbol}</p>
                       </div>
                     </div>
                   </div>
@@ -597,17 +597,17 @@ export function ProductFormModal({
                         return (
                           <>
                             <div className={`${bgClass} rounded-2xl p-4 border shadow-sm transition-colors`}>
-                              <p className={`text-[9px] font-black uppercase tracking-widest mb-1.5 leading-tight ${colorClass}`}>Est. Profit</p>
+                              <p className={`text-[9px] font-black tracking-widest mb-1.5 leading-tight ${colorClass}`}>Profit</p>
                               <div className="flex items-baseline gap-1">
                                 <p className={`${colorClass} font-bold text-lg`}>{profit.toFixed(3)}</p>
-                                <p className={`text-[8px] font-black uppercase ${colorClass} opacity-60`}>{currencySymbol}</p>
+                                <p className={`text-[8px] font-black ${colorClass} opacity-60`}>{currencySymbol}</p>
                               </div>
                             </div>
                             <div className={`${bgClass} rounded-2xl p-4 border shadow-sm transition-colors`}>
-                              <p className={`text-[9px] font-black uppercase tracking-widest mb-1.5 leading-tight ${colorClass}`}>Net Margin</p>
+                              <p className={`text-[9px] font-black tracking-widest mb-1.5 leading-tight ${colorClass}`}>Margin</p>
                               <div className="flex items-baseline gap-1">
                                 <p className={`${colorClass} font-bold text-lg`}>{margin.toFixed(1)}</p>
-                                <p className={`text-[9px] font-black uppercase ${colorClass} opacity-60`}>%</p>
+                                <p className={`text-[9px] font-black ${colorClass} opacity-60`}>%</p>
                               </div>
                             </div>
                           </>
@@ -620,11 +620,11 @@ export function ProductFormModal({
                 {/* Description */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between px-1">
-                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center">
-                      Client Description
+                    <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] flex items-center">
+                      Description
                       <QuickInfo text="A short description that may appear on online menus or receipts (max 30 chars)." />
                     </label>
-                    <span className={`text-[9px] font-black uppercase tracking-widest ${description.length >= 30 ? 'text-paymint-red' : 'text-gray-400'}`}>
+                    <span className={`text-[9px] font-black tracking-widest ${description.length >= 30 ? 'text-paymint-red' : 'text-gray-400'}`}>
                       {description.length} / 30
                     </span>
                   </div>
@@ -639,8 +639,8 @@ export function ProductFormModal({
 
                 {/* Category */}
                 <div className="relative space-y-3" ref={categoryRef}>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-1 flex items-center">
-                    Classification <span className="text-paymint-red mx-1">*</span>
+                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
+                    Category <span className="text-paymint-red mx-1">*</span>
                     <QuickInfo text="The category determines where this item appears on the POS menu." />
                   </label>
                   <button
@@ -657,7 +657,7 @@ export function ProductFormModal({
                     <ChevronDown size={20} className={`text-gray-400 transition-transform duration-300 ${showCategoryDropdown ? 'rotate-180 text-paymint-green' : ''}`} />
                   </button>
                   {errors.category && (
-                    <p className="mt-1.5 px-1 text-paymint-red text-[10px] font-black uppercase tracking-widest">{errors.category}</p>
+                    <p className="mt-1.5 px-1 text-paymint-red text-[10px] font-black tracking-widest">{errors.category}</p>
                   )}
 
                   <AnimatePresence>
@@ -675,7 +675,7 @@ export function ProductFormModal({
                               type="text"
                               value={categorySearchQuery}
                               onChange={(e) => setCategorySearchQuery(e.target.value)}
-                              placeholder="Filter categories..."
+                              placeholder="Filter Categories..."
                               className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
                               onClick={(e) => e.stopPropagation()}
                             />
@@ -693,7 +693,7 @@ export function ProductFormModal({
                             }}
                             className="w-full px-5 py-4 text-left hover:bg-gray-50 dark:hover:bg-white/[0.02] flex items-center justify-between group transition-colors border-b border-gray-100 dark:border-white/5"
                           >
-                            <span className={`text-xs font-black uppercase tracking-widest ${!categoryId ? 'text-paymint-green' : 'text-gray-400 italic'}`}>
+                            <span className={`text-xs font-black tracking-widest ${!categoryId ? 'text-paymint-green' : 'text-gray-400 italic'}`}>
                               None Selected
                             </span>
                             {!categoryId && <Check size={18} className="text-paymint-green" strokeWidth={3} />}
@@ -701,7 +701,7 @@ export function ProductFormModal({
 
                           {filteredCategories.length === 0 && (
                             <div className="p-8 text-center border-b border-gray-100 dark:border-white/5">
-                              <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 italic">No matches found</p>
+                              <p className="text-[10px] font-black tracking-widest text-gray-400 italic">No Matches Found</p>
                             </div>
                           )}
 
@@ -730,7 +730,7 @@ export function ProductFormModal({
                           className="w-full px-5 py-4 text-left bg-gray-50 dark:bg-white/[0.02] hover:bg-paymint-green/10 flex items-center gap-3 transition-colors text-paymint-green border-t border-gray-100 dark:border-white/10 shrink-0"
                         >
                           <Plus size={16} />
-                          <span className="text-xs font-black uppercase tracking-widest">Create New Category</span>
+                          <span className="text-xs font-black tracking-widest">Create New Category</span>
                         </button>
                       </motion.div>
                     )}
@@ -739,8 +739,8 @@ export function ProductFormModal({
 
                 {/* Add-ons (Attributes) */}
                 <div className="relative space-y-3" ref={addonsRef}>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-1 flex items-center">
-                    Modifier Protocols
+                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
+                    Add-ons
                     <QuickInfo text="Attach options like toppings, sizes, or special instructions to this item." />
                   </label>
 
@@ -751,7 +751,7 @@ export function ProductFormModal({
                           <AlertCircle size={16} className="text-red-600 dark:text-red-500" strokeWidth={2.5} />
                         </div>
                         <div>
-                          <p className="text-[10px] font-black uppercase tracking-[0.15em] text-red-600 dark:text-red-500">Inventory Notice</p>
+                          <p className="text-[10px] font-black tracking-[0.15em] text-red-600 dark:text-red-500">Notice</p>
                           <p className="text-[11px] font-bold text-red-500/90 dark:text-red-400/70 leading-snug">No modifiers found in your database. Please visit the <span className="underline cursor-pointer hover:text-red-600" onClick={() => setShowAddonsWarning(true)}>Add-ons section</span> to create some.</p>
                         </div>
                       </div>
@@ -772,7 +772,7 @@ export function ProductFormModal({
                       </div>
                       <span className={selectedAttributeIds.length > 0 ? 'text-gray-900 dark:text-white font-bold' : 'text-gray-400 italic'}>
                         {selectedAttributeIds.length === 0
-                          ? (attributes.length === 0 ? 'No Modifiers Available' : 'Link Optional Modifiers')
+                          ? (attributes.length === 0 ? 'No Modifiers Available' : 'Add Modifiers')
                           : selectedAttributeIds.length === 1
                             ? attributes.find(a => a.id === selectedAttributeIds[0])?.name || '1 Modifier Active'
                             : `${selectedAttributeIds.length} Modifiers Linked`}
@@ -796,7 +796,7 @@ export function ProductFormModal({
                               type="text"
                               value={addonsSearchQuery}
                               onChange={(e) => setAddonsSearchQuery(e.target.value)}
-                              placeholder="Filter modifiers..."
+                              placeholder="Filter Modifiers..."
                               className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
                               onClick={(e) => e.stopPropagation()}
                             />
@@ -808,7 +808,7 @@ export function ProductFormModal({
                         <div className="overflow-y-auto custom-scrollbar flex-1">
                           {filteredAttributes.length === 0 ? (
                             <div className="p-8 text-center border-b border-gray-100 dark:border-white/5">
-                              <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 italic">No matches found</p>
+                              <p className="text-[10px] font-black tracking-widest text-gray-400 italic">No Matches Found</p>
                             </div>
                           ) : (
                             filteredAttributes.map(attr => (
@@ -829,7 +829,7 @@ export function ProductFormModal({
                                   <span className={`text-sm font-bold ${selectedAttributeIds.includes(attr.id) ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
                                     {attr.name}
                                   </span>
-                                  <span className="text-[10px] text-gray-400 uppercase tracking-widest font-black mt-0.5">
+                                  <span className="text-[10px] text-gray-400 tracking-widest font-black mt-0.5">
                                     {attr.subAttributes?.length === 0
                                       ? 'No Sub-Items'
                                       : `${attr.subAttributes?.length || 0} Option${attr.subAttributes?.length !== 1 ? 's' : ''}`}
@@ -850,7 +850,7 @@ export function ProductFormModal({
                           className="w-full px-5 py-4 text-left bg-gray-50 dark:bg-white/[0.02] hover:bg-paymint-green/10 flex items-center gap-3 transition-colors text-paymint-green border-t border-gray-100 dark:border-white/10 shrink-0"
                         >
                           <Plus size={16} />
-                          <span className="text-xs font-black uppercase tracking-widest">Create New Modifier</span>
+                          <span className="text-xs font-black tracking-widest">Create Modifier</span>
                         </button>
                       </motion.div>
                     )}
@@ -864,7 +864,7 @@ export function ProductFormModal({
                         if (!attr) return null;
                         return (
                           <div key={id} className="flex items-center gap-2 bg-paymint-green/10 text-paymint-green px-4 py-2 rounded-xl border border-paymint-green/20 shadow-sm transition-all hover:bg-paymint-green/20">
-                            <span className="text-[10px] font-black uppercase tracking-widest">{attr.name}</span>
+                            <span className="text-[10px] font-black tracking-widest">{attr.name}</span>
                             <button
                               type="button"
                               onClick={() => setSelectedAttributeIds(selectedAttributeIds.filter(idx => idx !== id))}
@@ -883,11 +883,11 @@ export function ProductFormModal({
                 <div ref={stockRef} className="bg-gray-50 dark:bg-black/20 rounded-2xl p-8 border border-gray-200 dark:border-white/5 space-y-8 shadow-inner">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="text-gray-900 dark:text-white font-bold text-sm uppercase tracking-tight flex items-center gap-2">
-                        Inventory Control
+                      <h4 className="text-gray-900 dark:text-white font-bold text-sm tracking-tight flex items-center gap-2">
+                        Track Stock
                         <QuickInfo text="Enable this to count inventory for this item. Selling will decrease the count." />
                       </h4>
-                      <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mt-1">Real-time depletion monitoring</p>
+                      <p className="text-gray-400 text-[10px] font-black tracking-widest mt-1">Real-Time Depletion Monitoring</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input
@@ -904,11 +904,11 @@ export function ProductFormModal({
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                       <div className="flex items-center justify-between bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
                         <div>
-                          <h4 className="text-gray-900 dark:text-white font-bold text-xs uppercase tracking-tight flex items-center gap-1">
-                            Negative Float
+                          <h4 className="text-gray-900 dark:text-white font-bold text-xs tracking-tight flex items-center gap-1">
+                            Allow Negative Stock
                             <QuickInfo text="If enabled, you can continue selling this item even when inventory reaches zero." />
                           </h4>
-                          <p className="text-gray-400 text-[9px] font-bold uppercase mt-0.5">Sell below threshold</p>
+                          <p className="text-gray-400 text-[9px] font-bold mt-0.5">Sell Below Threshold</p>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
                           <input
@@ -922,8 +922,8 @@ export function ProductFormModal({
                       </div>
 
                       <div className="space-y-3">
-                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest px-1 flex items-center">
-                          Available Balance
+                        <label className="block text-[10px] font-black text-gray-400 tracking-widest px-1 flex items-center">
+                          Availability
                           <QuickInfo text="Current number of units in stock." />
                         </label>
                         <input
@@ -934,14 +934,14 @@ export function ProductFormModal({
                           className={`w-full bg-white dark:bg-black/20 border ${errors.stock ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-gray-900 dark:text-white font-bold text-center text-2xl focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                         />
                         {errors.stock && (
-                          <p className="mt-1.5 text-paymint-red text-[10px] font-black uppercase text-center tracking-widest">{errors.stock}</p>
+                          <p className="mt-1.5 text-paymint-red text-[10px] font-black text-center tracking-widest">{errors.stock}</p>
                         )}
                       </div>
 
                       <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-3">
-                          <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest px-1 flex items-center">
-                            <span className="text-yellow-500 mr-2 text-lg">●</span> Warn Level
+                          <label className="block text-[10px] font-black text-gray-400 tracking-widest px-1 flex items-center">
+                            <span className="text-yellow-500 mr-2 text-lg">●</span> Low Stock Warning
                           </label>
                           <input
                             type="number"
@@ -952,8 +952,8 @@ export function ProductFormModal({
                           />
                         </div>
                         <div className="space-y-3">
-                          <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest px-1 flex items-center">
-                            <span className="text-paymint-red mr-2 text-lg">●</span> Alert Level
+                          <label className="block text-[10px] font-black text-gray-400 tracking-widest px-1 flex items-center">
+                            <span className="text-paymint-red mr-2 text-lg">●</span> Critical Stock Alert
                           </label>
                           <input
                             type="number"
@@ -977,7 +977,7 @@ export function ProductFormModal({
                 <button
                   type="button"
                   onClick={() => onDelete(initialData.id!)}
-                  className="flex-1 h-14 border border-paymint-red/20 text-paymint-red font-black text-xs rounded-2xl hover:bg-paymint-red/5 transition-all uppercase tracking-widest flex items-center justify-center gap-2"
+                  className="flex-1 h-14 border border-paymint-red/20 text-paymint-red font-black text-xs rounded-2xl hover:bg-paymint-red/5 transition-all tracking-widest flex items-center justify-center gap-2"
                 >
                   <Trash2 size={16} />
                   <span>Delete</span>
@@ -988,7 +988,7 @@ export function ProductFormModal({
                 type="button"
                 onClick={onClose}
                 disabled={isSubmitting || isGeneratingImage}
-                className="flex-1 h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
+                className="flex-1 h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black tracking-[0.2em] text-[10px] rounded-2xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -997,7 +997,7 @@ export function ProductFormModal({
                 type="submit"
                 form="product-form"
                 disabled={isSubmitting || isGeneratingImage || Object.keys(errors).length > 0}
-                className="flex-1 h-14 bg-paymint-green text-black font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+                className="flex-1 h-14 bg-paymint-green text-black font-black tracking-[0.2em] text-[10px] rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
               >
                 {isSubmitting ? (
                   <RefreshCw size={18} className="animate-spin" />

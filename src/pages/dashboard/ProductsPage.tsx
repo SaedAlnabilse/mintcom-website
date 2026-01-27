@@ -294,12 +294,12 @@ export function ProductsPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
-                            Inventory Management
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+                            Inventory
                         </span>
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Products</h1>
-                    <p className="text-gray-500 dark:text-gray-400 mt-2">Manage your product catalog, prices, and stock levels</p>
+                    <p className="text-gray-500 dark:text-gray-400 mt-2">Manage products, prices, and stock.</p>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -309,7 +309,7 @@ export function ProductsPage() {
                         title="Export CSV"
                     >
                         <Download size={18} className="group-hover:text-paymint-green transition-colors" />
-                        <span className="font-bold text-sm">Export CSV</span>
+                        <span className="font-bold text-sm">Export</span>
                     </button>
                     <button
                         onClick={handleCreateNew}
@@ -328,7 +328,7 @@ export function ProductsPage() {
                     <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
                         type="text"
-                        placeholder="Search products by name..."
+                        placeholder="Search Products..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full pl-11 pr-4 py-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm"
@@ -439,9 +439,9 @@ export function ProductsPage() {
                 <div className="bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="p-2 rounded-lg bg-blue-500/10 text-blue-500"><Package size={18} /></div>
-                        <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
+                        <span className="text-[10px] font-black text-gray-400 tracking-widest flex items-center gap-2">
                             Total Items
-                            <QuickInfo text="Total count of unique products in your catalog." />
+                            <QuickInfo text="Total count of unique products." />
                         </span>
                     </div>
                     <p className="text-2xl font-black text-gray-900 dark:text-white">{stats.total}</p>
@@ -449,9 +449,9 @@ export function ProductsPage() {
                 <div className="bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="p-2 rounded-lg bg-yellow-500/10 text-yellow-500"><AlertCircle size={18} /></div>
-                        <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
+                        <span className="text-[10px] font-black text-gray-400 tracking-widest flex items-center gap-2">
                             Low Stock
-                            <QuickInfo text="Items with inventory levels below their warning threshold." />
+                            <QuickInfo text="Items running low on stock." />
                         </span>
                     </div>
                     <p className="text-2xl font-black text-gray-900 dark:text-white">{stats.lowStock}</p>
@@ -460,9 +460,9 @@ export function ProductsPage() {
                 <div className="bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="p-2 rounded-lg bg-paymint-green/10 text-paymint-green"><ArrowUpDown size={18} /></div>
-                        <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-2">
+                        <span className="text-[10px] font-black text-gray-400 tracking-widest flex items-center gap-2">
                             Stock Value
-                            <QuickInfo text="Total retail value of currently held inventory. Calculated as: Sum of (Product Price × Available Stock)." />
+                            <QuickInfo text="Total value of your current inventory." />
                         </span>
                     </div>
                     <p className="text-xl font-black text-gray-900 dark:text-white truncate">
@@ -478,11 +478,11 @@ export function ProductsPage() {
                     <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
                         <Package className="w-10 h-10 text-gray-300" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No products found</h3>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Products Found</h3>
                     <p className="text-gray-500 max-w-xs text-sm mb-6">Try adjusting your search or add a new product to your inventory.</p>
                     <button
                         onClick={handleCreateNew}
-                        className="flex items-center gap-2 px-6 py-3 bg-paymint-green text-black font-bold text-xs rounded-xl hover:bg-emerald-400 transition-all uppercase tracking-widest"
+                        className="flex items-center gap-2 px-6 py-3 bg-paymint-green text-black font-bold text-xs rounded-xl hover:bg-emerald-400 transition-all tracking-widest"
                     >
                         <Plus size={16} />
                         Add First Product
@@ -520,21 +520,21 @@ export function ProductsPage() {
                                         <div className="p-3 flex-1 flex flex-col">
                                             <div className="flex items-start justify-between mb-2 gap-2">
                                                 <h3 className="font-bold text-sm text-gray-900 dark:text-white leading-tight line-clamp-2">{p.name}</h3>
-                                                <span className="text-[9px] font-black uppercase tracking-widest text-gray-400 bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded-md whitespace-nowrap shrink-0">
+                                                <span className="text-[9px] font-black tracking-widest text-gray-400 bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded-md whitespace-nowrap shrink-0">
                                                     {categories.find(c => c.id === p.categoryId)?.name || 'Uncategorized'}
                                                 </span>
                                             </div>
                                             {p.description && <p className="text-[10px] text-gray-500 line-clamp-2 mb-3 flex-1">{p.description}</p>}
                                             <div className="border-t border-gray-100 dark:border-white/5 pt-3 flex items-center justify-between mt-auto">
                                                 <div>
-                                                    <p className="text-[9px] font-black uppercase text-gray-400 tracking-widest mb-0.5">Price</p>
+                                                    <p className="text-[9px] font-black text-gray-400 tracking-widest mb-0.5">Price</p>
                                                     <p className="text-sm font-black text-paymint-green">
                                                         {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JOD' }).format(p.price).replace('JOD', '').trim()} <span className="text-[10px] opacity-60">JOD</span>
                                                     </p>
                                                 </div>
                                                 {p.trackStock && (
                                                     <div className="text-right">
-                                                        <p className="text-[9px] font-black uppercase text-gray-400 tracking-widest mb-0.5">Stock</p>
+                                                        <p className="text-[9px] font-black text-gray-400 tracking-widest mb-0.5">Stock</p>
                                                         <div className={`text-xs font-bold flex items-center justify-end gap-1 ${(p.availableStock || 0) <= (p.lowStockThresholdYellow || 0) ? 'text-amber-500' : 'text-gray-900 dark:text-white'}`}>
                                                             {(p.availableStock || 0) <= (p.lowStockThresholdYellow || 0) && <AlertCircle size={10} />}
                                                             {p.availableStock}
@@ -553,9 +553,9 @@ export function ProductsPage() {
                                 <table className="w-full">
                                     <thead className="bg-gray-50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
                                         <tr>
-                                            <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest w-16">Image</th>
+                                            <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest w-16">Image</th>
                                             <th
-                                                className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                                                className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
                                                 onClick={() => handleSort('name')}
                                             >
                                                 <div className="flex items-center gap-1">
@@ -564,7 +564,7 @@ export function ProductsPage() {
                                                 </div>
                                             </th>
                                             <th
-                                                className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                                                className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
                                                 onClick={() => handleSort('category')}
                                             >
                                                 <div className="flex items-center gap-1">
@@ -573,7 +573,7 @@ export function ProductsPage() {
                                                 </div>
                                             </th>
                                             <th
-                                                className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                                                className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
                                                 onClick={() => handleSort('availableStock')}
                                             >
                                                 <div className="flex items-center gap-1">
@@ -582,7 +582,7 @@ export function ProductsPage() {
                                                 </div>
                                             </th>
                                             <th
-                                                className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                                                className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
                                                 onClick={() => handleSort('price')}
                                             >
                                                 <div className="flex items-center justify-end gap-1">
@@ -590,7 +590,7 @@ export function ProductsPage() {
                                                     {sortConfig?.key === 'price' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                                                 </div>
                                             </th>
-                                            <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest w-24">Actions</th>
+                                            <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 tracking-widest w-24">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -609,7 +609,7 @@ export function ProductsPage() {
                                                     <p className="text-sm font-bold text-gray-900 dark:text-white">{p.name}</p>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <span className="inline-flex px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 text-[10px] font-bold uppercase text-gray-500">
+                                                    <span className="inline-flex px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 text-[10px] font-bold text-gray-500">
                                                         {categories.find(c => c.id === p.categoryId)?.name || 'Uncategorized'}
                                                     </span>
                                                 </td>

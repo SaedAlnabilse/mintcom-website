@@ -107,7 +107,7 @@ export function OwnerLayout() {
                                         alt="PayMint"
                                         className="h-7 w-7 object-contain scale-110"
                                     />
-                                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
+                                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-[10px] font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
                                         Expand Sidebar
                                     </div>
                                 </div>
@@ -131,7 +131,7 @@ export function OwnerLayout() {
                         className="w-12 h-12 mx-auto mb-6 flex items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/[0.03] text-gray-600 dark:text-gray-400 hover:text-paymint-green transition-all border border-gray-200 dark:border-white/[0.05] hover:border-paymint-green/30 group relative"
                     >
                         <PanelLeft size={20} />
-                        <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
+                        <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-[10px] font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
                             Expand Sidebar
                         </div>
                     </button>
@@ -142,7 +142,7 @@ export function OwnerLayout() {
 
                 {/* Navigation Section */}
                 <div className={`flex-1 ${sidebarOpen ? 'overflow-y-auto' : 'overflow-visible'} px-3 space-y-1.5 scrollbar-none scroll-smooth pb-4 relative z-10`}>
-                    {sidebarOpen && <p className="px-3 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4 mt-2">Main Menu</p>}
+                    {sidebarOpen && <p className="px-3 text-[10px] font-black text-gray-400 tracking-[0.2em] mb-4 mt-2">Main Menu</p>}
                     {menuItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = item.path === '/owner'
@@ -164,7 +164,7 @@ export function OwnerLayout() {
                                 {sidebarOpen && isActive && <ChevronRight size={14} strokeWidth={3} className="opacity-40" />}
 
                                 {!sidebarOpen && (
-                                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
+                                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-[10px] font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
                                         {item.label}
                                     </div>
                                 )}

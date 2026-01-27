@@ -607,10 +607,10 @@ export function SettingsPage() {
       <div className={`relative group ${compact ? 'w-full' : ''}`}>
         {!compact && (
           <div className="flex flex-col gap-1 mb-4 px-6">
-            <label className={`text-[10px] font-black uppercase tracking-widest transition-colors ${colorClass === 'paymint-green' ? 'text-paymint-green/60' : 'text-orange-500/60'}`}>
+            <label className={`text-[10px] font-black tracking-widest transition-colors ${colorClass === 'paymint-green' ? 'text-paymint-green/60' : 'text-orange-500/60'}`}>
               {label}
             </label>
-            <label className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-tight">
+            <label className="text-[10px] font-black text-gray-500 dark:text-gray-400 tracking-tight">
               {subLabel}
             </label>
           </div>
@@ -624,7 +624,7 @@ export function SettingsPage() {
             <span className={`${compact ? 'text-sm' : 'text-2xl'} font-bold text-gray-900 dark:text-white tracking-tighter`}>
               {hour}:{minute}
             </span>
-            <span className={`${compact ? 'text-[10px]' : 'text-xs'} font-black text-gray-400 uppercase`}>{period}</span>
+            <span className={`${compact ? 'text-[10px]' : 'text-xs'} font-black text-gray-400`}>{period}</span>
           </div>
 
           <div className={`text-gray-400 group-hover:text-paymint-green transition-colors ${compact ? '' : 'absolute right-6 top-1/2 -translate-y-1/2'}`}>
@@ -652,7 +652,7 @@ export function SettingsPage() {
               >
                 <div className="grid grid-cols-3 gap-4 mb-6">
                   <div className="space-y-2">
-                    <p className="text-[10px] font-black text-gray-400 uppercase text-center mb-2">Hour</p>
+                    <p className="text-[10px] font-black text-gray-400 text-center mb-2">Hour</p>
                     <div ref={hourScrollRef} className="h-40 overflow-y-auto no-scrollbar space-y-1 scroll-smooth">
                       {hours.map(h => (
                         <button
@@ -668,7 +668,7 @@ export function SettingsPage() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <p className="text-[10px] font-black text-gray-400 uppercase text-center mb-2">Min</p>
+                    <p className="text-[10px] font-black text-gray-400 text-center mb-2">Min</p>
                     <div ref={minScrollRef} className="h-40 overflow-y-auto no-scrollbar space-y-1 scroll-smooth">
                       {minutes.map(m => (
                         <button
@@ -684,7 +684,7 @@ export function SettingsPage() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <p className="text-[10px] font-black text-gray-400 uppercase text-center mb-2">Period</p>
+                    <p className="text-[10px] font-black text-gray-400 text-center mb-2">Period</p>
                     <div className="space-y-1">
                       {['AM', 'PM'].map(p => (
                         <button
@@ -704,14 +704,14 @@ export function SettingsPage() {
                   <button
                     type="button"
                     onClick={() => setIsOpen(false)}
-                    className="flex-1 py-3 bg-gray-100 dark:bg-white/5 text-gray-500 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
+                    className="flex-1 py-3 bg-gray-100 dark:bg-white/5 text-gray-500 rounded-2xl font-black text-[10px] tracking-widest hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
                     onClick={handleApply}
-                    className="flex-[2] py-3 bg-paymint-green text-black rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-paymint-green/20"
+                    className="flex-[2] py-3 bg-paymint-green text-black rounded-2xl font-black text-[10px] tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-paymint-green/20"
                   >
                     Apply Changes
                   </button>
@@ -909,7 +909,7 @@ export function SettingsPage() {
           <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
           <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
         </div>
-        <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Loading settings...</p>
+        <p className="text-sm font-bold text-gray-400 tracking-widest">Loading settings...</p>
       </div>
     );
   }
@@ -919,7 +919,7 @@ export function SettingsPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
               System Configuration
             </span>
             <div className="flex items-center gap-2">
@@ -927,7 +927,7 @@ export function SettingsPage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
               </span>
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Live</span>
+              <span className="text-[10px] font-bold text-gray-400 tracking-widest">Live</span>
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Establishment Settings</h1>
@@ -968,7 +968,7 @@ export function SettingsPage() {
             key={tab.id}
             type="button"
             onClick={() => handleTabChange(tab.id as SettingsTab)}
-            className={`relative flex-1 flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wide transition-all duration-300 ${activeTab === tab.id
+            className={`relative flex-1 flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black tracking-wide transition-all duration-300 ${activeTab === tab.id
               ? tab.isDanger
                 ? 'text-paymint-red'
                 : 'text-black'
@@ -1010,7 +1010,7 @@ export function SettingsPage() {
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">Restaurant Profile</h3>
             <div>
-              <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-4 uppercase tracking-wider">Brand Logo</label>
+              <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-4 tracking-wider">Brand Logo</label>
               <div className="flex items-center gap-8">
                 <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-2xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
                   {previewImage ? <img src={previewImage} alt="Logo" className="w-full h-full object-cover" /> : <Store className="w-12 h-12 text-gray-300 dark:text-gray-600" />}
@@ -1022,28 +1022,28 @@ export function SettingsPage() {
               </div>
             </div>
             <div>
-              <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Restaurant Name</label>
+              <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Restaurant Name</label>
               <input type="text" {...register('restaurantName')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
             </div>
             <div>
-              <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Description</label>
+              <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Description</label>
               <textarea {...register('restaurantDescription')} rows={3} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium resize-none" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Address</label>
+                <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Address</label>
                 <input type="text" {...register('restaurantAddress')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
               <div>
-                <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Phone</label>
+                <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Phone</label>
                 <input type="text" {...register('phone')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
               <div>
-                <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Email</label>
+                <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Email</label>
                 <input type="email" {...register('email')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
               <div>
-                <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Tax ID / TRN</label>
+                <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Tax ID / TRN</label>
                 <input type="text" {...register('taxIdNumber')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
             </div>
@@ -1053,8 +1053,8 @@ export function SettingsPage() {
                   <Clock size={18} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest px-1">Operational Schedule</h4>
-                  <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Configure service windows</p>
+                  <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">Operational Schedule</h4>
+                  <p className="text-[10px] text-gray-400 font-black tracking-widest px-1">Configure service windows</p>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2 mb-6">
@@ -1065,7 +1065,7 @@ export function SettingsPage() {
                   const isSelected = selectedDays.includes(day);
                   return (
                     <button key={day} type="button" onClick={() => setSelectedDays(prev => prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day])} className={`relative flex-1 min-w-[3.5rem] h-14 rounded-xl flex flex-col items-center justify-center gap-1 transition-all duration-300 border ${isSelected ? 'bg-gray-900 dark:bg-white text-white dark:text-black border-transparent shadow-lg scale-105 z-10' : 'bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 shadow-sm'}`}>
-                      <span className="text-[10px] font-black uppercase tracking-widest">{day.slice(0, 3)}</span>
+                      <span className="text-[10px] font-black tracking-widest">{day.slice(0, 3)}</span>
                       <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? (isOpen ? 'bg-paymint-green' : 'bg-gray-500') : (isOpen ? 'bg-paymint-green' : 'bg-gray-300 dark:bg-white/20')}`} />
                     </button>
                   );
@@ -1094,11 +1094,11 @@ export function SettingsPage() {
                         <div className="space-y-8">
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-[10px] font-black text-paymint-green uppercase tracking-[0.2em] mb-1">Session Logic</p>
+                              <p className="text-[10px] font-black text-paymint-green tracking-[0.2em] mb-1">Session Logic</p>
                               <p className="text-sm font-bold text-gray-900 dark:text-white truncate max-w-[200px] md:max-w-md">{selectedDays.length === 7 ? 'Entire Week' : selectedDays.map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ')}</p>
                             </div>
                             <div className="flex items-center gap-4 bg-white dark:bg-white/[0.03] px-5 py-3 rounded-2xl border border-gray-200 dark:border-white/[0.08] shadow-sm">
-                              <span className={`text-[10px] font-black uppercase tracking-widest ${refConfig.isOpen ? 'text-paymint-green' : 'text-gray-400'}`}>{refConfig.isOpen ? 'Active' : 'Offline'}</span>
+                              <span className={`text-[10px] font-black tracking-widest ${refConfig.isOpen ? 'text-paymint-green' : 'text-gray-400'}`}>{refConfig.isOpen ? 'Active' : 'Offline'}</span>
                               <label className="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" checked={refConfig.isOpen} onChange={(e) => updateSelectedDays('isOpen', e.target.checked)} className="sr-only peer" />
                                 <div className="w-11 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-sm"></div>
@@ -1115,7 +1115,7 @@ export function SettingsPage() {
                               <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center mb-3 shadow-sm border border-gray-200 dark:border-white/5">
                                 <Clock className="w-6 h-6 text-gray-400" />
                               </div>
-                              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Protocol: Establishment Closed</span>
+                              <span className="text-[10px] font-black text-gray-400 tracking-widest">Protocol: Establishment Closed</span>
                             </div>
                           )}
                         </div>
@@ -1127,8 +1127,8 @@ export function SettingsPage() {
                     <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-gray-400 shadow-sm">
                       <Plus size={24} />
                     </div>
-                    <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Initialization Required</p>
-                    <p className="text-[10px] font-black text-gray-400 mt-1 uppercase tracking-widest">Select one or more days to edit schedule metadata</p>
+                    <p className="text-xs font-black text-gray-400 tracking-widest">Initialization Required</p>
+                    <p className="text-[10px] font-black text-gray-400 mt-1 tracking-widest">Select one or more days to edit schedule metadata</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -1145,7 +1145,7 @@ export function SettingsPage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sales & Tax Logic</h3>
-                  <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Configure financial processing rules</p>
+                  <p className="text-[10px] text-gray-400 font-black tracking-widest px-1">Configure financial processing rules</p>
                 </div>
               </div>
 
@@ -1153,10 +1153,10 @@ export function SettingsPage() {
                 <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all hover:border-paymint-green/20 group/card">
                   <div className="flex items-center justify-between mb-6">
                     <div>
-                      <p className="text-[10px] font-black text-paymint-green uppercase tracking-[0.2em] mb-1">Taxation Protocol</p>
+                      <p className="text-[10px] font-black text-paymint-green tracking-[0.2em] mb-1">Taxation Protocol</p>
                       <h4 className="text-sm font-bold text-gray-900 dark:text-white">Active Tax Rate (%)</h4>
                     </div>
-                    <button type="button" onClick={updateTaxRate} className="px-4 py-2 bg-paymint-green text-black text-[10px] font-black uppercase tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md shadow-paymint-green/10">Update</button>
+                    <button type="button" onClick={updateTaxRate} className="px-4 py-2 bg-paymint-green text-black text-[10px] font-black tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md shadow-paymint-green/10">Update</button>
                   </div>
                   <div className={`relative group transition-all`}>
                     <input
@@ -1205,12 +1205,12 @@ export function SettingsPage() {
                         <AlertTriangle size={18} className="text-red-500" />
                       </div>
                       <div>
-                        <p className="text-[10px] font-black text-red-500 uppercase tracking-widest leading-none mb-1">Constraint Violation</p>
-                        <p className="text-[10px] font-bold text-red-500/80 uppercase tracking-tight">{errors.taxRate.message as string || 'Tax rate error'}</p>
+                        <p className="text-[10px] font-black text-red-500 tracking-widest leading-none mb-1">Constraint Violation</p>
+                        <p className="text-[10px] font-bold text-red-500/80 tracking-tight">{errors.taxRate.message as string || 'Tax rate error'}</p>
                       </div>
                     </motion.div>
                   )}
-                  <p className="text-[9px] font-black text-gray-400 mt-6 leading-relaxed uppercase tracking-tight flex items-start gap-2">
+                  <p className="text-[9px] font-black text-gray-400 mt-6 leading-relaxed tracking-tight flex items-start gap-2">
                     <span className="text-paymint-green">•</span>
                     Modifying this will affect future transactions and net revenue calculations.
                   </p>
@@ -1218,7 +1218,7 @@ export function SettingsPage() {
 
                 <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all hover:border-paymint-green/20 group/card">
                   <div className="mb-6">
-                    <p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.2em] mb-1">Financial Standard</p>
+                    <p className="text-[10px] font-black text-blue-500 tracking-[0.2em] mb-1">Financial Standard</p>
                     <h4 className="text-sm font-bold text-gray-900 dark:text-white">System Currency</h4>
                   </div>
                   <div className="relative">
@@ -1234,7 +1234,7 @@ export function SettingsPage() {
                       ]}
                     />
                   </div>
-                  <p className="text-[9px] font-black text-gray-400 mt-6 leading-relaxed uppercase tracking-tight flex items-start gap-2">
+                  <p className="text-[9px] font-black text-gray-400 mt-6 leading-relaxed tracking-tight flex items-start gap-2">
                     <span className="text-blue-500">•</span>
                     Primary currency for transactions, global pricing, and reporting metrics.
                   </p>
@@ -1257,7 +1257,7 @@ export function SettingsPage() {
             </div>
             <div className="space-y-8">
               <div className="space-y-4 p-6 bg-gray-50 dark:bg-white/[0.02] rounded-2xl border border-gray-200 dark:border-white/5">
-                <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest mb-6 px-1">Display Controls</h4>
+                <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest mb-6 px-1">Display Controls</h4>
                 <div className="space-y-4">
                   {/* Identity Visibility */}
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
@@ -1266,7 +1266,7 @@ export function SettingsPage() {
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <div>
-                            <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 uppercase tracking-tight">Restaurant Name</span>
+                            <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Restaurant Name</span>
                             <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Display business name on header</span>
                           </div>
                           <label className="relative inline-flex items-center cursor-pointer">
@@ -1287,7 +1287,7 @@ export function SettingsPage() {
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <div>
-                            <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 uppercase tracking-tight">Description / Tagline</span>
+                            <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Description / Tagline</span>
                             <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Display secondary text (e.g. Specialty Coffee)</span>
                           </div>
                           <label className="relative inline-flex items-center cursor-pointer">
@@ -1310,7 +1310,7 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 uppercase tracking-tight">Branding Protocol</span>
+                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Branding Protocol</span>
                         <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Include brand logo at the top</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
@@ -1323,7 +1323,7 @@ export function SettingsPage() {
                         <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
                           {receiptLogoPreview ? <img src={receiptLogoPreview} alt="Receipt Logo" className="w-full h-full object-cover" /> : <Store className="w-8 h-8 text-gray-300 dark:text-gray-600" />}
                         </div>
-                        <label className="px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl hover:opacity-90 cursor-pointer text-xs font-black uppercase tracking-widest transition-all">
+                        <label className="px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl hover:opacity-90 cursor-pointer text-xs font-black tracking-widest transition-all">
                           Upload Logo
                           <input type="file" accept="image/*" onChange={handleReceiptLogoChange} className="hidden" disabled={!watch('showLogoOnReceipt')} />
                         </label>
@@ -1335,7 +1335,7 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 uppercase tracking-tight">Location Metadata</span>
+                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Location Metadata</span>
                         <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Print full establishment address</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
@@ -1356,7 +1356,7 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 uppercase tracking-tight">Regulatory Data</span>
+                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Regulatory Data</span>
                         <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Show Tax ID / TRN on footer</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
@@ -1377,7 +1377,7 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 uppercase tracking-tight">Client Relations</span>
+                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Client Relations</span>
                         <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Include custom footer message</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
@@ -1390,7 +1390,7 @@ export function SettingsPage() {
                       rows={2}
                       disabled={!showFarewellMessage}
                       className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                      placeholder="Enter custom footer message"
+                      placeholder="Enter Custom Footer Message"
                     />
                   </div>
                 </div>
@@ -1408,12 +1408,12 @@ export function SettingsPage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white">Loyalty Protocol</h3>
-                  <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest px-1">Customer Retention Infrastructure</p>
+                  <p className="text-[10px] text-gray-400 font-black tracking-widest px-1">Customer Retention Infrastructure</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-4 bg-gray-50 dark:bg-white/[0.03] px-5 py-3 rounded-2xl border border-gray-200 dark:border-white/[0.08] shadow-sm">
-                <span className={`text-[10px] font-black uppercase tracking-widest ${loyaltyConfig.enabled ? 'text-paymint-green' : 'text-gray-400'}`}>{loyaltyConfig.enabled ? 'Active' : 'Disabled'}</span>
+                <span className={`text-[10px] font-black tracking-widest ${loyaltyConfig.enabled ? 'text-paymint-green' : 'text-gray-400'}`}>{loyaltyConfig.enabled ? 'Active' : 'Disabled'}</span>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
@@ -1430,18 +1430,18 @@ export function SettingsPage() {
               <div className="space-y-5 pt-4">
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
-                  <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest px-1">Earning Algorithm</h4>
+                  <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">Earning Algorithm</h4>
                 </div>
                 <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
                   <div className="flex flex-col lg:flex-row items-center gap-8">
                     {/* Spend Input Section */}
                     <div className="flex-1 w-full lg:w-auto space-y-4">
                       <div className="flex items-center gap-3">
-                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">For Every</span>
+                        <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">For Every</span>
                       </div>
                       <div className="flex items-stretch bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
                         <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
-                          <span className="text-sm font-black text-paymint-green uppercase">{watch('currency')}</span>
+                          <span className="text-sm font-black text-paymint-green">{watch('currency')}</span>
                         </div>
                         <input
                           type="text"
@@ -1454,17 +1454,17 @@ export function SettingsPage() {
 
                     {/* Connector */}
                     <div className="flex flex-col items-center justify-center py-4 lg:py-0 self-end lg:pb-5">
-                      <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Customer Gets</div>
+                      <div className="text-[10px] font-black text-gray-400 tracking-widest">Customer Gets</div>
                     </div>
 
                     {/* Points Input Section */}
                     <div className="flex-1 w-full lg:w-auto space-y-4">
                       <div className="flex items-center gap-3">
-                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] opacity-0 lg:block hidden">Spacer</span>
+                        <span className="text-[10px] font-black text-gray-400 tracking-[0.2em] opacity-0 lg:block hidden">Spacer</span>
                       </div>
                       <div className="flex items-stretch bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
                         <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
-                          <span className="text-sm font-black text-paymint-green uppercase">PTS</span>
+                          <span className="text-sm font-black text-paymint-green">PTS</span>
                         </div>
                         <input
                           type="text"
@@ -1492,9 +1492,9 @@ export function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
-                    <h4 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest px-1">Rewards Catalog</h4>
+                    <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">Rewards Catalog</h4>
                   </div>
-                  <button type="button" onClick={() => { setEditingReward(null); setShowRewardModal(true); }} className="flex items-center gap-2 px-4 py-2 bg-paymint-green/10 text-paymint-green rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-paymint-green/20 transition-all border border-paymint-green/20">
+                  <button type="button" onClick={() => { setEditingReward(null); setShowRewardModal(true); }} className="flex items-center gap-2 px-4 py-2 bg-paymint-green/10 text-paymint-green rounded-xl text-[10px] font-black tracking-widest hover:bg-paymint-green/20 transition-all border border-paymint-green/20">
                     <Plus size={14} /> Add Protocol
                   </button>
                 </div>
@@ -1503,8 +1503,8 @@ export function SettingsPage() {
                     <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-paymint-green shadow-sm">
                       <Award size={24} />
                     </div>
-                    <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Catalog Empty</p>
-                    <p className="text-[10px] font-black text-gray-400 mt-1 uppercase tracking-widest">Initialize reward tiers to activate redemption</p>
+                    <p className="text-xs font-black text-gray-400 tracking-widest">Catalog Empty</p>
+                    <p className="text-[10px] font-black text-gray-400 mt-1 tracking-widest">Initialize reward tiers to activate redemption</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1525,9 +1525,9 @@ export function SettingsPage() {
                           <div>
                             <p className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-paymint-green transition-colors">{reward.name}</p>
                             <div className="flex items-center gap-1.5 mt-0.5">
-                              <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">{reward.pointsRequired} Points</span>
+                              <span className="text-[10px] text-gray-400 font-black tracking-widest">{reward.pointsRequired} Points</span>
                               <span className="text-[10px] text-gray-300 dark:text-gray-600">•</span>
-                              <span className="text-[10px] text-paymint-green font-black uppercase tracking-widest">
+                              <span className="text-[10px] text-paymint-green font-black tracking-widest">
                                 {reward.type === 'DISCOUNT'
                                   ? `${reward.discountPercentage}% Off`
                                   : reward.freeCategoryName ? `Free from ${reward.freeCategoryName}` : 'Free Product'}
@@ -1568,10 +1568,10 @@ export function SettingsPage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white">Terminal Deletion</h3>
-                  <p className="text-[10px] text-red-600/80 dark:text-red-400/80 font-black uppercase tracking-widest px-1">Critical Administrative Action</p>
+                  <p className="text-[10px] text-red-600/80 dark:text-red-400/80 font-black tracking-widest px-1">Critical Administrative Action</p>
                 </div>
               </div>
-              <span className="px-3 py-1 rounded-lg bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-[10px] font-black uppercase tracking-widest border border-red-200 dark:border-red-900/30">
+              <span className="px-3 py-1 rounded-lg bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-[10px] font-black tracking-widest border border-red-200 dark:border-red-900/30">
                 High Risk
               </span>
             </div>
@@ -1588,7 +1588,7 @@ export function SettingsPage() {
                     All associated data including order history, product catalogs, and customer metrics will be purged from our production clusters.
                   </p>
                   <div className="mt-6 flex flex-col gap-3">
-                    <div className="flex items-center gap-2 text-[10px] font-black text-red-500 uppercase tracking-tight">
+                    <div className="flex items-center gap-2 text-[10px] font-black text-red-500 tracking-tight">
                       <AlertTriangle size={14} />
                       This action cannot be reversed after the cooling-off period.
                     </div>
@@ -1597,7 +1597,7 @@ export function SettingsPage() {
                 <button
                   type="button"
                   onClick={() => setShowDeletionWizard(true)}
-                  className="w-full md:w-auto px-8 py-4 bg-red-600 text-white font-black uppercase tracking-widest text-xs rounded-xl hover:bg-red-700 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-red-600/20"
+                  className="w-full md:w-auto px-8 py-4 bg-red-600 text-white font-black tracking-widest text-xs rounded-xl hover:bg-red-700 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-red-600/20"
                 >
                   Start Termination Protocol
                 </button>

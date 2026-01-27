@@ -71,9 +71,9 @@ export function AttributeFormModal({
                         <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
                         <div>
                             <div className="flex items-center gap-2 mb-1">
-                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Modifier Protocol</span>
+                                <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Modifier Details</span>
                                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                                <span className="text-[10px] font-black text-paymint-green uppercase tracking-widest">Active Schema</span>
+                                <span className="text-[10px] font-black text-paymint-green tracking-widest">Active</span>
                             </div>
                             <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                                 {initialData ? 'Edit Modifier' : 'New Modifier'}
@@ -92,24 +92,24 @@ export function AttributeFormModal({
 
                             {/* Name */}
                             <div className="space-y-3">
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-1 flex items-center">
-                                    Legal Descriptor <span className="text-paymint-red mx-1">*</span>
+                                <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
+                                    Modifier Name <span className="text-paymint-red mx-1">*</span>
                                     <QuickInfo text="The name of this modifier group (e.g. 'Size', 'Toppings')." />
                                 </label>
                                 <input
                                     type="text"
                                     value={name}
                                     onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
-                                    placeholder="e.g. SPICE LEVEL"
+                                    placeholder="E.g. Spice Level"
                                     className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-bold shadow-sm`}
                                 />
-                                {errors.name && <p className="mt-1.5 px-1 text-[10px] font-black uppercase text-paymint-red tracking-wider">{errors.name}</p>}
+                                {errors.name && <p className="mt-1.5 px-1 text-[10px] font-black text-paymint-red tracking-wider">{errors.name}</p>}
                             </div>
 
                             {/* Input Type Selection */}
                             <div className="space-y-4">
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-1 flex items-center">
-                                    Selection Behavior
+                                <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
+                                    Selection Type
                                     <QuickInfo text="Determines how many options the customer can select." />
                                 </label>
                                 <div className="grid grid-cols-2 gap-4">
@@ -163,7 +163,7 @@ export function AttributeFormModal({
                             <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
                                 <div>
                                     <p className="text-sm font-bold text-gray-900 dark:text-white">Required</p>
-                                    <p className="text-[10px] text-gray-500 font-bold uppercase mt-0.5">Customer must select an option</p>
+                                    <p className="text-[10px] text-gray-500 font-bold mt-0.5">Customer must select an option</p>
                                 </div>
                                 <label className="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" checked={isRequired} onChange={() => setIsRequired(!isRequired)} className="sr-only peer" />
@@ -174,7 +174,7 @@ export function AttributeFormModal({
                             <div className="bg-blue-50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-500/10 rounded-xl p-4 flex gap-3">
                                 <AlertCircle size={18} className="text-blue-500 shrink-0 mt-0.5" />
                                 <div>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-blue-500 mb-1">Note</p>
+                                    <p className="text-[10px] font-black tracking-widest text-blue-500 mb-1">Note</p>
                                     <p className="text-xs text-blue-900/70 dark:text-blue-200/70 font-medium leading-relaxed">
                                         After creating the modifier group, you can add specific options (like 'Small', 'Medium', 'Large') from the main Attributes page.
                                     </p>
@@ -198,7 +198,7 @@ export function AttributeFormModal({
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-black uppercase tracking-[0.2em] text-[10px] hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
+                            className="flex-1 h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-black tracking-[0.2em] text-[10px] hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
                         >
                             Cancel
                         </button>
@@ -206,7 +206,7 @@ export function AttributeFormModal({
                             type="submit"
                             form="attribute-form"
                             disabled={isSubmitting}
-                            className="flex-[2] h-14 rounded-xl bg-paymint-green text-black font-black uppercase tracking-[0.2em] text-[10px] hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+                            className="flex-[2] h-14 rounded-xl bg-paymint-green text-black font-black tracking-[0.2em] text-[10px] hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
                         >
                             {isSubmitting ? (
                                 <RefreshCw size={18} className="animate-spin" />

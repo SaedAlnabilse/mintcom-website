@@ -54,31 +54,31 @@ interface EmployeeFormModalProps {
 }
 
 const POS_PERMISSIONS = [
-  { id: 'accept_payments', label: 'Accept payments', description: 'Process payment transactions' },
-  { id: 'apply_discounts', label: 'Apply discounts with restricted access', description: 'Allow applying discounts during sale' },
-  { id: 'change_taxes', label: 'Change taxes in a sale', description: 'Modify tax rate during checkout' },
-  { id: 'open_cash_drawer', label: 'Open cash drawer without making a sale', description: 'Manual drawer access' },
-  { id: 'view_all_receipts', label: 'View all receipts', description: 'When disabled, can only view last 5 receipts' },
-  { id: 'refunds', label: 'Perform refunds', description: 'Process order refunds' },
-  { id: 'reprint_receipts', label: 'Reprint and resend receipts', description: 'Print receipts for past orders' },
-  { id: 'inventory', label: 'Manage items', description: 'Add, edit, delete menu items' },
-  { id: 'view_item_cost', label: 'View cost of items', description: 'See cost prices and margins' },
-  { id: 'settings', label: 'Change settings', description: 'Access app settings' },
-  { id: 'live_chat', label: 'Access to live chat support', description: 'Contact support via chat' },
+  { id: 'accept_payments', label: 'Accept Payments', description: 'Process Payment Transactions' },
+  { id: 'apply_discounts', label: 'Apply Discounts With Restricted Access', description: 'Allow Applying Discounts During Sale' },
+  { id: 'change_taxes', label: 'Change Taxes In A Sale', description: 'Modify Tax Rate During Checkout' },
+  { id: 'open_cash_drawer', label: 'Open Cash Drawer Without Making A Sale', description: 'Manual Drawer Access' },
+  { id: 'view_all_receipts', label: 'View All Receipts', description: 'When Disabled, Can Only View Last 5 Receipts' },
+  { id: 'refunds', label: 'Perform Refunds', description: 'Process Order Refunds' },
+  { id: 'reprint_receipts', label: 'Reprint And Resend Receipts', description: 'Print Receipts For Past Orders' },
+  { id: 'inventory', label: 'Manage Items', description: 'Add, Edit, Delete Menu Items' },
+  { id: 'view_item_cost', label: 'View Cost Of Items', description: 'See Cost Prices And Margins' },
+  { id: 'settings', label: 'Change Settings', description: 'Access App Settings' },
+  { id: 'live_chat', label: 'Access To Live Chat Support', description: 'Contact Support Via Chat' },
 ];
 
 const BACKOFFICE_PERMISSIONS = [
-  { id: 'view_reports', label: 'View sales reports', description: 'Access dashboard and analytics' },
-  { id: 'manage_items', label: 'Manage items', description: 'Create and edit products and inventory' },
-  { id: 'view_cost', label: 'View cost of items', description: 'See profit margins and costs' },
-  { id: 'manage_employees', label: 'Manage employees', description: 'Add/edit staff and roles' },
-  { id: 'manage_customers', label: 'Manage customers', description: 'View and edit customer database' },
-  { id: 'manage_settings', label: 'Manage feature settings', description: 'General store configuration' },
-  { id: 'manage_billing', label: 'Manage billing', description: 'Subscription and payment methods' },
-  { id: 'manage_payment_types', label: 'Manage payment types', description: 'Configure payment options' },
-  { id: 'manage_loyalty', label: 'Manage loyalty program', description: 'Configure points and rewards' },
-  { id: 'manage_taxes', label: 'Manage taxes', description: 'Tax rates and settings' },
-  { id: 'manage_devices', label: 'Manage POS devices', description: 'Add or remove POS registers' },
+  { id: 'view_reports', label: 'View Sales Reports', description: 'Access Dashboard And Analytics' },
+  { id: 'manage_items', label: 'Manage Items', description: 'Create And Edit Products And Inventory' },
+  { id: 'view_cost', label: 'View Cost Of Items', description: 'See Profit Margins And Costs' },
+  { id: 'manage_employees', label: 'Manage Employees', description: 'Add/Edit Staff And Roles' },
+  { id: 'manage_customers', label: 'Manage Customers', description: 'View And Edit Customer Database' },
+  { id: 'manage_settings', label: 'Manage Feature Settings', description: 'General Store Configuration' },
+  { id: 'manage_billing', label: 'Manage Billing', description: 'Subscription And Payment Methods' },
+  { id: 'manage_payment_types', label: 'Manage Payment Types', description: 'Configure Payment Options' },
+  { id: 'manage_loyalty', label: 'Manage Loyalty Program', description: 'Configure Points And Rewards' },
+  { id: 'manage_taxes', label: 'Manage Taxes', description: 'Tax Rates And Settings' },
+  { id: 'manage_devices', label: 'Manage POS Devices', description: 'Add Or Remove POS Registers' },
 ];
 
 export function EmployeeFormModal({
@@ -341,10 +341,10 @@ export function EmployeeFormModal({
           {/* Header */}
           <div className="flex items-center justify-between p-8 pb-4 border-b border-gray-100 dark:border-white/5">
             <div>
-              <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight uppercase">
+              <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
                 {initialData ? 'Edit Employee' : 'New Employee'}
               </h2>
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Manage Workforce Access</p>
+              <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">Staff Details</p>
             </div>
             <button
               onClick={onClose}
@@ -359,14 +359,14 @@ export function EmployeeFormModal({
 
               {/* Name */}
               <div>
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block flex items-center gap-1">
+                <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
                   Full Name <span className="text-paymint-red">*</span>
                 </label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
-                  placeholder="e.g. John Doe"
+                  placeholder="E.g. John Doe"
                   className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
                 />
                 {errors.name && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
@@ -374,14 +374,14 @@ export function EmployeeFormModal({
 
               {/* Username */}
               <div>
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block flex items-center gap-1">
+                <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
                   Username <span className="text-paymint-red">*</span>
                 </label>
                 <input
                   type="text"
                   value={username}
                   onChange={(e) => { setUsername(e.target.value); if (errors.username) setErrors({ ...errors, username: '' }); }}
-                  placeholder="e.g. johndoe"
+                  placeholder="E.g. johndoe"
                   className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.username ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
                 />
                 {errors.username && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.username}</p>}
@@ -389,14 +389,14 @@ export function EmployeeFormModal({
 
               {/* Email */}
               <div>
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block flex items-center gap-1">
+                <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
                   Email {role === 'ADMIN' ? <span className="text-paymint-red">*</span> : '(Optional)'}
                 </label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors({ ...errors, email: '' }); }}
-                  placeholder="e.g. john@example.com"
+                  placeholder="E.g. john@example.com"
                   className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.email ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
                 />
                 {errors.email && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.email}</p>}
@@ -404,14 +404,14 @@ export function EmployeeFormModal({
 
               {/* Phone */}
               <div>
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">
+                <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block">
                   Phone (Optional)
                 </label>
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="e.g. +1 234 567 8900"
+                  placeholder="E.g. +1 234 567 8900"
                   className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors"
                 />
               </div>
@@ -419,7 +419,7 @@ export function EmployeeFormModal({
               {/* Establishment Selection (Only if establishments prop is provided) */}
               {establishments && (
                 <div className="relative">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block flex items-center gap-1">
+                  <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
                     Access <span className="text-paymint-red">*</span>
                   </label>
                   <button
@@ -432,7 +432,7 @@ export function EmployeeFormModal({
                         ? 'Select establishments...'
                         : selectedEstablishmentIds.length === establishments.length
                           ? 'All Establishments'
-                          : `${selectedEstablishmentIds.length} location${selectedEstablishmentIds.length === 1 ? '' : 's'} selected`}
+                          : `${selectedEstablishmentIds.length} Location${selectedEstablishmentIds.length === 1 ? '' : 's'} Selected`}
                     </span>
                     <ChevronDown size={16} className={`text-gray-400 transition-transform ${showEstablishmentDropdown ? 'rotate-180' : ''}`} />
                   </button>
@@ -479,7 +479,7 @@ export function EmployeeFormModal({
                             );
                           })}
                         {establishments.filter(e => e.name.toLowerCase().includes(establishmentSearch.toLowerCase())).length === 0 && (
-                          <div className="p-4 text-center text-xs font-bold text-gray-500">No locations found</div>
+                          <div className="p-4 text-center text-xs font-bold text-gray-500">No Locations Found</div>
                         )}
                       </div>
                     </div>
@@ -489,7 +489,7 @@ export function EmployeeFormModal({
 
               {/* Role Selection - Now uses Role Template dropdown */}
               <div className="relative">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block flex items-center justify-between">
+                <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block flex items-center justify-between">
                   <span className="flex items-center gap-1">Role <span className="text-paymint-red">*</span></span>
                   {isModifiedFromTemplate() && (
                     <span className="text-paymint-red lowercase font-bold tracking-normal">(Modified)</span>
@@ -504,8 +504,8 @@ export function EmployeeFormModal({
                     {role === 'ADMIN'
                       ? 'Admin (Full Access)'
                       : selectedCustomRoleId
-                        ? customRoles.find(r => r.id === selectedCustomRoleId)?.name || 'Select role...'
-                        : 'Select role...'}
+                        ? customRoles.find(r => r.id === selectedCustomRoleId)?.name || 'Select Role...'
+                        : 'Select Role...'}
                   </span>
                   <ChevronDown size={16} className={`text-gray-400 transition-transform ${showRolesDropdown ? 'rotate-180' : ''}`} />
                 </button>
@@ -555,7 +555,7 @@ export function EmployeeFormModal({
                             <span className={`text-xs font-bold ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
                               {customRole.name}
                             </span>
-                            <p className="text-[10px] text-gray-500 mt-0.5">{customRole.permissions.length} permissions</p>
+                            <p className="text-[10px] text-gray-500 mt-0.5">{customRole.permissions.length} Permissions</p>
                           </div>
                           {selectedCustomRoleId === customRole.id && role !== 'ADMIN' && <Check size={14} className="text-paymint-green" />}
                         </button>
@@ -564,8 +564,8 @@ export function EmployeeFormModal({
                       {/* No custom roles message */}
                       {customRoles.length === 0 && (
                         <div className="p-3 text-center">
-                          <p className="text-xs text-gray-500">No custom roles created yet</p>
-                          <p className="text-[10px] text-gray-400 mt-1">Create roles in Settings → Roles</p>
+                          <p className="text-xs text-gray-500">No Custom Roles Created Yet</p>
+                          <p className="text-[10px] text-gray-400 mt-1">Create Roles In Settings → Roles</p>
                         </div>
                       )}
                     </div>
@@ -578,7 +578,7 @@ export function EmployeeFormModal({
 
               {/* Password wrapper start (to match existing indentation/structure) */}
               <div className="pt-4 border-t border-gray-100 dark:border-white/5">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block flex items-center gap-1">
+                <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
                   {initialData ? 'New Password (Optional)' : 'Password'} {(!initialData) && <span className="text-paymint-red">*</span>}
                 </label>
                 <div className="relative">
@@ -601,7 +601,7 @@ export function EmployeeFormModal({
               </div>
 
               <div>
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block flex items-center gap-1">
+                <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
                   Confirm Password {(!initialData || password) && <span className="text-paymint-red">*</span>}
                 </label>
                 <div className="relative">
@@ -640,7 +640,7 @@ export function EmployeeFormModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-14 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-black text-xs uppercase tracking-widest hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+              className="flex-1 h-14 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-black text-xs tracking-widest hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
             >
               Cancel
             </button>
@@ -648,7 +648,7 @@ export function EmployeeFormModal({
               type="submit"
               form="employee-form"
               disabled={isSubmitting}
-              className="flex-1 h-14 rounded-xl bg-paymint-green text-black font-black text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center"
+              className="flex-1 h-14 rounded-xl bg-paymint-green text-black font-black text-xs tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center"
             >
               {isSubmitting ? (
                 <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />

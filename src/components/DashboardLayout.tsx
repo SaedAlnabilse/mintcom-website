@@ -57,13 +57,13 @@ const menuStructure: MenuItemOrGroup[] = [
     label: 'Reports',
     icon: FileBarChart,
     items: [
-      { path: '/dashboard/reports/sales', label: 'Sales summary', icon: FileBarChart },
-      { path: '/dashboard/reports/items', label: 'Sales by item', icon: Package },
-      { path: '/dashboard/reports/categories', label: 'Sales by category', icon: LayoutDashboard },
-      { path: '/dashboard/reports/employees', label: 'Sales by employee', icon: Users },
-      { path: '/dashboard/reports/payments', label: 'Sales by payment type', icon: CreditCard },
+      { path: '/dashboard/reports/sales', label: 'Sales Summary', icon: FileBarChart },
+      { path: '/dashboard/reports/items', label: 'Sales By Item', icon: Package },
+      { path: '/dashboard/reports/categories', label: 'Sales By Category', icon: LayoutDashboard },
+      { path: '/dashboard/reports/employees', label: 'Sales By Staff', icon: Users },
+      { path: '/dashboard/reports/payments', label: 'Sales By Payment Type', icon: CreditCard },
       { path: '/dashboard/orders', label: 'Receipts', icon: History },
-      { path: '/dashboard/reports/modifiers', label: 'Sales by modifier', icon: Package },
+      { path: '/dashboard/reports/modifiers', label: 'Sales By Add-On', icon: Package },
       { path: '/dashboard/reports/discounts', label: 'Discounts', icon: Percent },
       { path: '/dashboard/reports/taxes', label: 'Taxes', icon: Percent },
       { path: '/dashboard/reports/shifts', label: 'Shifts', icon: Clock },
@@ -76,13 +76,13 @@ const menuStructure: MenuItemOrGroup[] = [
     items: [
       { path: '/dashboard/categories', label: 'Categories', icon: LayoutDashboard },
       { path: '/dashboard/products', label: 'Products', icon: Package },
-      { path: '/dashboard/addons', label: 'Add-ons', icon: Package },
+      { path: '/dashboard/addons', label: 'Add-Ons', icon: Package },
       { path: '/dashboard/materials', label: 'Materials', icon: Package },
       { path: '/dashboard/recipes', label: 'Recipes', icon: FileBarChart },
     ],
   },
   {
-    label: 'Sales & Growth',
+    label: 'Sales',
     icon: Percent,
     items: [
       { path: '/dashboard/discounts', label: 'Discounts', icon: Percent },
@@ -90,7 +90,7 @@ const menuStructure: MenuItemOrGroup[] = [
     ],
   },
   {
-    label: 'Community',
+    label: 'People',
     icon: Users,
     items: [
       { path: '/dashboard/staff', label: 'Team', icon: Users },
@@ -172,11 +172,11 @@ export function DashboardLayout() {
     const hasAccess = (path: string) => {
       // Root dashboard always accessible if logged in
       if (path === '/dashboard') return true;
-      
+
       const required = REQUIRED_PERMISSIONS[path];
       // If no specific permission required, default to accessible (or restricted, depending on policy)
       // For safety, if not listed, assume it's public/common unless we want strict whitelist
-      if (!required) return true; 
+      if (!required) return true;
 
       // Check if user has ANY of the required permissions (OR logic)
       return required.some(p => userPerms.has(p));
@@ -349,7 +349,7 @@ export function DashboardLayout() {
                     <Store size={18} className="text-paymint-green" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[9px] font-bold text-paymint-green uppercase tracking-[0.15em] mb-0.5">Active Location</p>
+                    <p className="text-[9px] font-bold text-paymint-green tracking-[0.15em] mb-0.5">Active Location</p>
                     <h2 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight leading-[1.2] font-sans truncate">
                       {currentEstablishment?.name || 'Loading...'}
                     </h2>
@@ -385,7 +385,7 @@ export function DashboardLayout() {
           className={`flex-1 px-3 space-y-1.5 scrollbar-none pb-4 ${sidebarOpen ? 'overflow-y-auto' : 'overflow-visible'}`}
         >
           {sidebarOpen && (
-            <p className="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Main Menu</p>
+            <p className="px-3 py-2 text-[10px] font-bold text-gray-400 tracking-widest">Main Menu</p>
           )}
 
           {filteredMenu.map((item, index) => {
@@ -420,7 +420,7 @@ export function DashboardLayout() {
                       <div className="absolute left-[calc(100%+8px)] top-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] pointer-events-none group-hover:pointer-events-auto translate-x-1 group-hover:translate-x-0">
                         <div className="bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden min-w-[200px] py-2">
                           <div className="px-4 py-2 border-b border-gray-100 dark:border-white/5 mb-1 bg-gray-50/50 dark:bg-white/[0.02]">
-                            <p className="text-[9px] font-black text-paymint-green uppercase tracking-[0.2em]">{item.label}</p>
+                            <p className="text-[9px] font-black text-paymint-green tracking-[0.2em]">{item.label}</p>
                           </div>
                           <div className="px-2 space-y-1">
                             {item.items.map((subItem) => (
@@ -668,7 +668,7 @@ export function DashboardLayout() {
                   // Simplified mobile menu for groups: just list items
                   return (
                     <div key={index} className="mb-2">
-                      <p className="px-3 py-2 text-xs font-bold text-gray-400 uppercase tracking-widest">{item.label}</p>
+                      <p className="px-3 py-2 text-xs font-bold text-gray-400 tracking-widest">{item.label}</p>
                       <div className="pl-2 space-y-1">
                         {item.items.map((subItem) => (
                           <NavLink

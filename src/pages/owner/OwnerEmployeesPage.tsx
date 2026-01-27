@@ -225,14 +225,14 @@ export function OwnerEmployeesPage() {
     const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
 
     const getRoleBadge = (role: string) => {
-        const base = "px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border";
+        const base = "px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wide border";
         switch (role?.toUpperCase()) {
             case 'ADMIN':
-                return <span className={`${base} bg-paymint-green/10 text-paymint-green border-paymint-green/20`}>ADMIN</span>;
+                return <span className={`${base} bg-paymint-green/10 text-paymint-green border-paymint-green/20`}>Admin</span>;
             case 'MANAGER':
-                return <span className={`${base} bg-purple-500/10 text-purple-500 border-purple-500/20`}>MANAGER</span>;
+                return <span className={`${base} bg-purple-500/10 text-purple-500 border-purple-500/20`}>Manager</span>;
             case 'USER':
-                return <span className={`${base} bg-blue-500/10 text-blue-500 border-blue-500/20`}>STAFF</span>;
+                return <span className={`${base} bg-blue-500/10 text-blue-500 border-blue-500/20`}>Staff</span>;
             default:
                 return <span className={`${base} bg-gray-500/10 text-gray-500 border-gray-500/20`}>{role}</span>;
         }
@@ -241,14 +241,14 @@ export function OwnerEmployeesPage() {
     const getStatusBadge = (isActive: boolean | undefined) => {
         if (isActive) {
             return (
-                <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[10px] font-bold uppercase tracking-wide w-fit mx-auto">
+                <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[10px] font-bold tracking-wide w-fit mx-auto">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                     Active
                 </span>
             );
         }
         return (
-            <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 border border-gray-200 dark:border-white/10 text-[10px] font-bold uppercase tracking-wide w-fit mx-auto">
+            <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 border border-gray-200 dark:border-white/10 text-[10px] font-bold tracking-wide w-fit mx-auto">
                 Not Active
             </span>
         );
@@ -269,7 +269,7 @@ export function OwnerEmployeesPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
                             Unified Access Control
                         </span>
                     </div>
@@ -329,7 +329,7 @@ export function OwnerEmployeesPage() {
                                 </div>
                             </div>
                             <div className="flex items-center gap-1 mb-1">
-                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">{stat.label}</p>
+                                <p className="text-[10px] font-bold text-gray-400 tracking-wide">{stat.label}</p>
                                 <QuickInfo text={stat.info} />
                             </div>
                             <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
@@ -407,7 +407,7 @@ export function OwnerEmployeesPage() {
             {isLoading ? (
                 <div className="flex flex-col items-center justify-center py-20 space-y-4">
                     <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin" />
-                    <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Synchronizing Personnel...</p>
+                    <p className="text-sm font-bold text-gray-400 tracking-widest">Synchronizing Personnel...</p>
                 </div>
             ) : filteredEmployees.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
@@ -500,7 +500,7 @@ export function OwnerEmployeesPage() {
                                     </div>
 
                                     <div className="space-y-3 pt-4 border-t border-gray-100 dark:border-white/5">
-                                        <div className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                                        <div className="flex items-center gap-2 text-xs font-bold text-gray-500 tracking-wide">
                                             <MapPin size={12} />
                                             Access Locations
                                         </div>
@@ -528,7 +528,7 @@ export function OwnerEmployeesPage() {
                 </div>
             ) : (
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
                         <div className="col-span-4">Personnel</div>
                         <div className="col-span-2 text-center">Role</div>
                         <div className="col-span-2 text-center">Status</div>
@@ -568,7 +568,7 @@ export function OwnerEmployeesPage() {
                                     <div className="col-span-2 flex items-center justify-center gap-2">
                                         <button
                                             onClick={() => { setEditingEmployee(emp); setIsFormModalOpen(true); }}
-                                            className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/5"
+                                            className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/5"
                                         >
                                             Edit
                                         </button>
@@ -589,7 +589,7 @@ export function OwnerEmployeesPage() {
             {/* Pagination Controls */}
             {totalPages > 1 && (
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 px-6 py-4 flex items-center justify-between shadow-sm">
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                    <p className="text-xs font-bold text-gray-400 tracking-widest">
                         Page <span className="text-gray-900 dark:text-white">{currentPage}</span> of {totalPages}
                     </p>
                     <div className="flex items-center gap-2">
@@ -664,7 +664,7 @@ export function OwnerEmployeesPage() {
                                 <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-6">
                                     <AlertTriangle size={32} />
                                 </div>
-                                <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight mb-2">Terminate Access</h3>
+                                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Terminate Access</h3>
                                 <p className="text-gray-500 text-sm leading-relaxed">
                                     Are you sure you want to remove <span className="font-bold text-gray-900 dark:text-white">{employeeToDelete.firstName} {employeeToDelete.lastName}</span> from the workforce? This action is irreversible.
                                 </p>
@@ -672,7 +672,7 @@ export function OwnerEmployeesPage() {
 
                             <div className="px-8 pb-6 space-y-4">
                                 <div>
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">
+                                    <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block">
                                         Verify Password
                                     </label>
                                     <div className="relative">
@@ -698,14 +698,14 @@ export function OwnerEmployeesPage() {
                             <div className="p-6 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 bg-gray-50 dark:bg-white/[0.02]">
                                 <button
                                     onClick={closeDeleteModal}
-                                    className="flex-1 py-3.5 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-bold text-xs uppercase tracking-wider hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                                    className="flex-1 py-3.5 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-bold text-xs tracking-wider hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={confirmDelete}
                                     disabled={isDeleting}
-                                    className="flex-1 py-3.5 rounded-xl bg-red-500 text-white font-bold text-xs uppercase tracking-wider hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-red-500/20"
+                                    className="flex-1 py-3.5 rounded-xl bg-red-500 text-white font-bold text-xs tracking-wider hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-red-500/20"
                                 >
                                     {isDeleting ? (
                                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

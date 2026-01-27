@@ -31,31 +31,31 @@ interface CustomRoleFormModalProps {
 }
 
 const POS_PERMISSIONS = [
-  { id: 'accept_payments', label: 'Accept payments', description: 'Process payment transactions' },
-  { id: 'apply_discounts', label: 'Apply discounts with restricted access', description: 'Allow applying discounts during sale' },
-  { id: 'change_taxes', label: 'Change taxes in a sale', description: 'Modify tax rate during checkout' },
-  { id: 'open_cash_drawer', label: 'Open cash drawer without making a sale', description: 'Manual drawer access' },
-  { id: 'view_all_receipts', label: 'View all receipts', description: 'When disabled, can only view last 5 receipts' },
-  { id: 'refunds', label: 'Perform refunds', description: 'Process order refunds' },
-  { id: 'reprint_receipts', label: 'Reprint and resend receipts', description: 'Print receipts for past orders' },
-  { id: 'manage_items', label: 'Manage items', description: 'Add, edit, delete menu items in POS' },
-  { id: 'view_item_cost', label: 'View cost of items', description: 'See cost prices and margins' },
-  { id: 'settings', label: 'Change settings', description: 'Access app settings' },
-  { id: 'live_chat', label: 'Access to live chat support', description: 'Contact support via chat' },
+  { id: 'accept_payments', label: 'Accept Payments', description: 'Process Payment Transactions' },
+  { id: 'apply_discounts', label: 'Apply Discounts With Restricted Access', description: 'Allow Applying Discounts During Sale' },
+  { id: 'change_taxes', label: 'Change Taxes In A Sale', description: 'Modify Tax Rate During Checkout' },
+  { id: 'open_cash_drawer', label: 'Open Cash Drawer Without Making A Sale', description: 'Manual Drawer Access' },
+  { id: 'view_all_receipts', label: 'View All Receipts', description: 'When Disabled, Can Only View Last 5 Receipts' },
+  { id: 'refunds', label: 'Perform Refunds', description: 'Process Order Refunds' },
+  { id: 'reprint_receipts', label: 'Reprint And Resend Receipts', description: 'Print Receipts For Past Orders' },
+  { id: 'manage_items', label: 'Manage Items', description: 'Add, Edit, Delete Menu Items In POS' },
+  { id: 'view_item_cost', label: 'View Cost Of Items', description: 'See Cost Prices And Margins' },
+  { id: 'settings', label: 'Change Settings', description: 'Access App Settings' },
+  { id: 'live_chat', label: 'Access To Live Chat Support', description: 'Contact Support Via Chat' },
 ];
 
 const BACKOFFICE_PERMISSIONS = [
-  { id: 'view_reports', label: 'View Reports & Analytics', description: 'Access sales reports and business insights' },
-  { id: 'view_orders', label: 'View Orders', description: 'View transaction history and receipts' },
-  { id: 'manage_inventory', label: 'Manage Inventory', description: 'Create and edit products, categories, and stock' },
-  { id: 'view_costs', label: 'View Item Costs', description: 'See cost prices and profit margins' },
-  { id: 'manage_employees', label: 'Manage Team', description: 'Add/edit staff and configure roles' },
-  { id: 'manage_customers', label: 'Manage Customers', description: 'View and edit customer database' },
-  { id: 'manage_discounts', label: 'Manage Discounts', description: 'Create and edit promotional discounts' },
-  { id: 'manage_payment_methods', label: 'Manage Payment Methods', description: 'Configure accepted payment types' },
-  { id: 'manage_settings', label: 'General Settings', description: 'Configure store details, taxes, and printers' },
-  { id: 'view_activity_logs', label: 'View System Logs', description: 'Track sensitive actions and history' },
-  { id: 'manage_billing', label: 'Manage Billing', description: 'Subscription and payment methods' },
+  { id: 'view_reports', label: 'View Reports & Analytics', description: 'Access Sales Reports And Business Insights' },
+  { id: 'view_orders', label: 'View Orders', description: 'View Transaction History And Receipts' },
+  { id: 'manage_inventory', label: 'Manage Inventory', description: 'Create And Edit Products, Categories, And Stock' },
+  { id: 'view_costs', label: 'View Item Costs', description: 'See Cost Prices And Profit Margins' },
+  { id: 'manage_employees', label: 'Manage Team', description: 'Add/Edit Staff And Configure Roles' },
+  { id: 'manage_customers', label: 'Manage Customers', description: 'View And Edit Customer Database' },
+  { id: 'manage_discounts', label: 'Manage Discounts', description: 'Create And Edit Promotional Discounts' },
+  { id: 'manage_payment_methods', label: 'Manage Payment Methods', description: 'Configure Accepted Payment Types' },
+  { id: 'manage_settings', label: 'General Settings', description: 'Configure Store Details, Taxes, And Printers' },
+  { id: 'view_activity_logs', label: 'View System Logs', description: 'Track Sensitive Actions And History' },
+  { id: 'manage_billing', label: 'Manage Billing', description: 'Subscription And Payment Methods' },
 ];
 
 export function CustomRoleFormModal({
@@ -194,10 +194,10 @@ export function CustomRoleFormModal({
           {/* Header */}
           <div className="flex items-center justify-between p-8 pb-4 border-b border-gray-100 dark:border-white/5">
             <div>
-              <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight uppercase">
+              <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
                 {initialData ? 'Edit Role' : 'New Custom Role'}
               </h2>
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Configure Permissions</p>
+              <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">Configure Permissions</p>
             </div>
             <button
               onClick={onClose}
@@ -409,7 +409,7 @@ export function CustomRoleFormModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-14 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-black text-xs uppercase tracking-widest hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+              className="flex-1 h-14 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-black text-xs tracking-widest hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
             >
               Cancel
             </button>
@@ -417,7 +417,7 @@ export function CustomRoleFormModal({
               type="submit"
               form="role-form"
               disabled={isSubmitting}
-              className="flex-1 h-14 rounded-xl bg-paymint-green text-black font-black text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center"
+              className="flex-1 h-14 rounded-xl bg-paymint-green text-black font-black text-xs tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center"
             >
               {isSubmitting ? (
                 <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
