@@ -151,9 +151,14 @@ export function OwnerAccountManagementPage() {
 
             // Backend returns the updated user object directly (check for id)
             if (response.data && response.data.id) {
-                toast.success('Profile updated successfully');
-
                 const updatedData = response.data;
+                const emailChangedButNotVerified = editForm.email.toLowerCase() !== updatedData.email.toLowerCase();
+
+                if (emailChangedButNotVerified) {
+                    toast.success('Profile updated. Please verify your new email to complete the change.', { duration: 5000 });
+                } else {
+                    toast.success('Profile updated successfully');
+                }
 
                 // Update local state immediately with the fresh data from the response
                 setAccountDetails(prev => prev ? ({
