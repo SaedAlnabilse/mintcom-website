@@ -86,7 +86,7 @@ export function VerifyEmailPage() {
               </Link>
               <Link
                 to="/"
-                className="text-gray-500 hover:text-gray-900 dark:hover:text-white font-bold text-sm uppercase tracking-widest transition-colors"
+                className="text-gray-500 hover:text-gray-900 dark:hover:text-white font-bold text-sm tracking-widest transition-colors"
               >
                 Back to Home
               </Link>

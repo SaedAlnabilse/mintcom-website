@@ -133,7 +133,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2 text-paymint-green">
                     <HelpCircle size={18} />
-                    <span className="text-xs font-black uppercase tracking-widest">Guide</span>
+                    <span className="text-xs font-black tracking-widest">Guide</span>
                 </div>
                 <button
                     onClick={onClose}

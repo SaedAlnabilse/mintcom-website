@@ -104,7 +104,7 @@ export const DemoPage = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1">Restaurant Name</label>
+              <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">Restaurant Name</label>
               <input
                 required
                 type="text"
@@ -116,7 +116,7 @@ export const DemoPage = () => {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1">Business Type</label>
+              <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">Business Type</label>
               <select
                 name="type"
                 value={formData.type}
@@ -132,7 +132,7 @@ export const DemoPage = () => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1">Owner Name</label>
+            <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">Owner Name</label>
             <input
               required
               type="text"
@@ -146,7 +146,7 @@ export const DemoPage = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1">Email Address</label>
+              <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">Email Address</label>
               <input
                 required
                 type="email"
@@ -158,7 +158,7 @@ export const DemoPage = () => {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1">Phone Number</label>
+              <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">Phone Number</label>
               <input
                 required
                 type="tel"
@@ -262,7 +262,7 @@ export const DemoPage = () => {
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 font-medium">
               Experience the point of sale interface used by cashiers and waiters.
             </p>
-            <span className="text-paymint-green font-black text-sm uppercase tracking-widest flex items-center gap-2">
+            <span className="text-paymint-green font-black text-sm tracking-widest flex items-center gap-2">
               Launch App <ArrowRight size={18} />
             </span>
           </div>
@@ -275,7 +275,7 @@ export const DemoPage = () => {
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 font-medium">
               Manage your menu, inventory, employees and view detailed reports.
             </p>
-            <span className="text-paymint-green font-black text-sm uppercase tracking-widest flex items-center gap-2">
+            <span className="text-paymint-green font-black text-sm tracking-widest flex items-center gap-2">
               Go to Dashboard <ArrowRight size={18} />
             </span>
           </div>
@@ -284,7 +284,7 @@ export const DemoPage = () => {
         <div className="mt-12 pt-8 border-t border-gray-100 dark:border-white/10 text-center">
           <button
             onClick={() => navigate('/')}
-            className="text-gray-500 hover:text-gray-900 dark:hover:text-white flex items-center justify-center gap-2 mx-auto transition-colors font-bold uppercase tracking-widest text-xs"
+            className="text-gray-500 hover:text-gray-900 dark:hover:text-white flex items-center justify-center gap-2 mx-auto transition-colors font-bold tracking-widest text-xs"
           >
             <ArrowLeft size={16} /> Back to Home
           </button>

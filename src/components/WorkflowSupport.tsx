@@ -333,7 +333,7 @@ export const WorkflowSupport = () => {
                 {/* Content */}
                 <div className="p-6 space-y-6">
                   <div className="bg-gray-50 dark:bg-black/20 rounded-2xl p-5">
-                    <h4 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
+                    <h4 className="text-sm font-bold text-gray-500 dark:text-gray-400 tracking-wider mb-3">
                       Overview
                     </h4>
                     <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
@@ -342,7 +342,7 @@ export const WorkflowSupport = () => {
                   </div>
 
                   <div>
-                    <h4 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
+                    <h4 className="text-sm font-bold text-gray-500 dark:text-gray-400 tracking-wider mb-4">
                       Key Features
                     </h4>
                     <ul className="space-y-3">

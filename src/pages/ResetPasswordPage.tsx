@@ -11,7 +11,7 @@ import toast from 'react-hot-toast';
 const resetPasswordSchema = z.object({
   password: z.string()
     .min(8, 'Password must be at least 8 characters')
-    .regex(/[A-Z]/, 'Must contain at least one uppercase letter')
+    .regex(/[A-Z]/, 'Must contain at least one letter')
     .regex(/[a-z]/, 'Must contain at least one lowercase letter')
     .regex(/[0-9]/, 'Must contain at least one number'),
   confirmPassword: z.string(),
@@ -124,7 +124,7 @@ export function ResetPasswordPage() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">New Password</label>
+            <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">New Password</label>
             <div className="relative group">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
               <input
@@ -145,7 +145,7 @@ export function ResetPasswordPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">Confirm Password</label>
+            <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">Confirm Password</label>
             <div className="relative group">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
               <input
