@@ -43,16 +43,13 @@ export const Features = () => {
           >
             <div className="absolute -inset-4 bg-gradient-to-r from-paymint-green/30 to-blue-500/30 rounded-[2rem] blur-2xl opacity-50" />
             <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 dark:border-white/10 aspect-video">
-              <video
-                src="/demo-video.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover"
-              >
-                Your browser does not support the video tag.
-              </video>
+              <iframe
+                src="https://player.vimeo.com/video/1158972798?h=234e7f9175&autoplay=1&background=1&muted=1&loop=1"
+                className="w-full h-full"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowFullScreen
+                style={{ pointerEvents: 'none' }}
+              />
 
               {/* Overlay Gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />

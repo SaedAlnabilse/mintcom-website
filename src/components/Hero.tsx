@@ -249,13 +249,12 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               className="w-full max-w-6xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10"
               onClick={(e) => e.stopPropagation()}
             >
-              <video
-                src="/demo-video.mp4"
-                controls
+              <iframe
+                src="https://player.vimeo.com/video/1158972798?h=234e7f9175&autoplay=1&title=0&byline=0&portrait=0"
                 className="w-full h-full"
-              >
-                Your browser does not support the video tag.
-              </video>
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowFullScreen
+              />
             </motion.div>
           </motion.div>
         )}

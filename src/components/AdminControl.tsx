@@ -23,16 +23,15 @@ export const AdminControl = () => {
             {/* Phone Frame Mockup */}
             <div className="relative w-[300px] h-[600px] bg-black rounded-[3rem] border-[8px] border-gray-800 shadow-2xl overflow-hidden ring-1 ring-white/10">
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-gray-800 rounded-b-2xl z-20" />
-              <video
-                src="/demo-video.mp4" // Assuming same video or replace with mobile specific
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover"
-              >
-                Your browser does not support the video tag.
-              </video>
+              <div className="w-full h-full bg-black relative">
+                 {/* Video with object-cover equivalent for iframe via absolute positioning */}
+                 <iframe
+                  src="https://player.vimeo.com/video/1158972798?h=234e7f9175&autoplay=1&background=1&muted=1&loop=1"
+                  className="absolute top-1/2 left-1/2 w-[300%] h-[100%] -translate-x-1/2 -translate-y-1/2"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  style={{ pointerEvents: 'none' }}
+                />
+              </div>
 
               {/* Floating Badge */}
               <motion.div
