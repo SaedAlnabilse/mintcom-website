@@ -97,12 +97,89 @@ export function OwnerAccountManagementPage() {
         type: 'account',
     });
 
+    // Profile Edit State
+    const [isEditing, setIsEditing] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [editForm, setEditForm] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: ''
+    });
+
     const [isDeletingAccount, setIsDeletingAccount] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [deleteStep, setDeleteStep] = useState(1);
     const [deleteReason, setDeleteReason] = useState('');
     const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
     const [deletePassword, setDeletePassword] = useState('');
+
+    const handleEditClick = () => {
+        if (accountDetails) {
+            setEditForm({
+                firstName: accountDetails.firstName || '',
+                lastName: accountDetails.lastName || '',
+                email: accountDetails.email || '',
+                phone: accountDetails.phone || ''
+            });
+            setIsEditing(true);
+        }
+    };
+
+    const handleCancelEdit = () => {
+        setIsEditing(false);
+        setEditForm({
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: ''
+        });
+    };
+
+    const handleSaveProfile = async () => {
+        try {
+            setIsSaving(true);
+
+            // Validate
+            if (!editForm.firstName || !editForm.lastName || !editForm.email) {
+                toast.error('First name, last name, and email are required');
+                setIsSaving(false);
+                return;
+            }
+
+            const response = await api.put('/api/accounts/profile', editForm);
+
+            if (response.data.success) {
+                toast.success('Profile updated successfully');
+
+                // Update local state
+                setAccountDetails(prev => prev ? ({
+                    ...prev,
+                    firstName: editForm.firstName,
+                    lastName: editForm.lastName,
+                    email: editForm.email,
+                    phone: editForm.phone,
+                    // If email changed, backend might reset verification
+                    emailVerified: editForm.email !== prev.email ? false : prev.emailVerified
+                }) : null);
+
+                // Update global context
+                updateAccount({
+                    firstName: editForm.firstName,
+                    lastName: editForm.lastName,
+                    email: editForm.email,
+                    phone: editForm.phone
+                });
+
+                setIsEditing(false);
+            }
+        } catch (err: any) {
+            console.error('Failed to update profile:', err);
+            toast.error(err.response?.data?.message || 'Failed to update profile');
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
     const deleteReasons = [
         "It's too expensive",
@@ -448,13 +525,43 @@ export function OwnerAccountManagementPage() {
                                     </div>
                                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">Account</h2>
                                 </div>
-                                <button
-                                    onClick={() => openPasswordModal('account')}
-                                    className="flex items-center gap-2 px-4 py-2 bg-paymint-green/10 hover:bg-paymint-green/20 text-paymint-green rounded-xl text-sm font-bold transition-all"
-                                >
-                                    <Key size={16} />
-                                    Reset Password
-                                </button>
+                                <div className="flex items-center gap-2">
+                                    {isEditing ? (
+                                        <>
+                                            <button
+                                                onClick={handleCancelEdit}
+                                                className="px-4 py-2 bg-gray-100 dark:bg-white/[0.05] hover:bg-gray-200 dark:hover:bg-white/[0.1] text-gray-600 dark:text-gray-300 rounded-xl text-sm font-bold transition-all"
+                                                disabled={isSaving}
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                onClick={handleSaveProfile}
+                                                className="flex items-center gap-2 px-4 py-2 bg-paymint-green hover:bg-emerald-500 text-black rounded-xl text-sm font-bold transition-all disabled:opacity-70"
+                                                disabled={isSaving}
+                                            >
+                                                {isSaving ? <RefreshCw size={16} className="animate-spin" /> : <CheckCircle2 size={16} />}
+                                                Save
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <button
+                                                onClick={handleEditClick}
+                                                className="px-4 py-2 bg-gray-100 dark:bg-white/[0.05] hover:bg-gray-200 dark:hover:bg-white/[0.1] text-gray-600 dark:text-gray-300 rounded-xl text-sm font-bold transition-all"
+                                            >
+                                                Edit Profile
+                                            </button>
+                                            <button
+                                                onClick={() => openPasswordModal('account')}
+                                                className="flex items-center gap-2 px-4 py-2 bg-paymint-green/10 hover:bg-paymint-green/20 text-paymint-green rounded-xl text-sm font-bold transition-all"
+                                            >
+                                                <Key size={16} />
+                                                Reset Password
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -463,9 +570,28 @@ export function OwnerAccountManagementPage() {
                                         <User size={12} />
                                         Full Name
                                     </label>
-                                    <p className="text-gray-900 dark:text-white font-semibold">
-                                        {accountDetails?.firstName} {accountDetails?.lastName}
-                                    </p>
+                                    {isEditing ? (
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                value={editForm.firstName}
+                                                onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })}
+                                                placeholder="First Name"
+                                                className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
+                                            />
+                                            <input
+                                                type="text"
+                                                value={editForm.lastName}
+                                                onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })}
+                                                placeholder="Last Name"
+                                                className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <p className="text-gray-900 dark:text-white font-semibold">
+                                            {accountDetails?.firstName} {accountDetails?.lastName}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="space-y-2">
@@ -473,17 +599,27 @@ export function OwnerAccountManagementPage() {
                                         <Mail size={12} />
                                         Email
                                     </label>
-                                    <div className="flex items-center gap-2">
-                                        <p className="text-gray-900 dark:text-white font-semibold">
-                                            {accountDetails?.email}
-                                        </p>
-                                        {accountDetails?.emailVerified && (
-                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded-md text-[9px] font-bold tracking-widest text-emerald-500">
-                                                <Shield size={10} />
-                                                Verified
-                                            </span>
-                                        )}
-                                    </div>
+                                    {isEditing ? (
+                                        <input
+                                            type="email"
+                                            value={editForm.email}
+                                            onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                                            placeholder="Email Address"
+                                            className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
+                                        />
+                                    ) : (
+                                        <div className="flex items-center gap-2">
+                                            <p className="text-gray-900 dark:text-white font-semibold">
+                                                {accountDetails?.email}
+                                            </p>
+                                            {accountDetails?.emailVerified && (
+                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded-md text-[9px] font-bold tracking-widest text-emerald-500">
+                                                    <Shield size={10} />
+                                                    Verified
+                                                </span>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="space-y-2">
@@ -491,9 +627,19 @@ export function OwnerAccountManagementPage() {
                                         <Phone size={12} />
                                         Phone
                                     </label>
-                                    <p className="text-gray-900 dark:text-white font-semibold">
-                                        {accountDetails?.phone || <span className="text-gray-400 italic">Not set</span>}
-                                    </p>
+                                    {isEditing ? (
+                                        <input
+                                            type="tel"
+                                            value={editForm.phone}
+                                            onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                                            placeholder="Phone Number"
+                                            className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
+                                        />
+                                    ) : (
+                                        <p className="text-gray-900 dark:text-white font-semibold">
+                                            {accountDetails?.phone || <span className="text-gray-400 italic">Not set</span>}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div className="space-y-2">
