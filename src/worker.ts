@@ -11,7 +11,8 @@ export default {
 
             // 0. API Proxy (Forward /api requests to Railway)
             if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/reports/') || url.pathname.startsWith('/app-settings/') || url.pathname.startsWith('/files/') || url.pathname.startsWith('/customers/') || url.pathname.startsWith('/uploads/')) {
-                const targetBase = 'https://grateful-liberation-production-d036.up.railway.app';
+                // @ts-ignore
+                const targetBase = env.API_TARGET || 'https://grateful-liberation-production-d036.up.railway.app';
                 const newUrl = new URL(url.pathname + url.search, targetBase);
 
                 const proxyRequest = new Request(newUrl, {

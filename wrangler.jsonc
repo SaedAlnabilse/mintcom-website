@@ -8,5 +8,8 @@
     "main": "src/worker.ts",
     "observability": {
         "enabled": true
+    },
+    "vars": {
+        "API_TARGET": "https://grateful-liberation-production-d036.up.railway.app"
     }
 }
