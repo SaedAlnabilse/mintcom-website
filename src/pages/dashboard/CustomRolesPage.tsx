@@ -63,7 +63,7 @@ export function CustomRolesPage() {
       const response = await api.get(`/api/custom-roles/${establishmentId}`);
       setRoles(response.data || []);
     } catch (err: any) {
-      toast.error('Failed to load custom roles');
+      toast.error('Failed to load roles');
     } finally {
       setIsLoading(false);
     }
@@ -117,7 +117,7 @@ export function CustomRolesPage() {
 
       const currentEstablishment = sessionStorage.getItem('currentEstablishment');
       if (!currentEstablishment) {
-        toast.error('No establishment selected');
+        toast.error('No location selected');
         return;
       }
       const { id: establishmentId } = JSON.parse(currentEstablishment);
@@ -158,7 +158,7 @@ export function CustomRolesPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-              Security
+              Team
             </span>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Roles</h1>

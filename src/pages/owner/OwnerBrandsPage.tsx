@@ -72,8 +72,8 @@ type SortOption = 'name' | 'date' | 'locations';
 const createBrandSchema = z.object({
     name: z.string().min(2, 'Brand name must be at least 2 characters'),
     establishmentLoginId: z.string()
-        .min(4, 'Pos Id must be at least 4 characters')
-        .regex(/^[a-zA-Z0-9_-]+$/, 'Pos Id can only contain letters, numbers, underscores, and hyphens'),
+        .min(4, 'Login ID must be at least 4 characters')
+        .regex(/^[a-zA-Z0-9_-]+$/, 'Login ID can only contain letters, numbers, underscores, and hyphens'),
     establishmentPassword: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
@@ -278,7 +278,7 @@ export function OwnerBrandsPage() {
             }
         } else if (wizardStep === 2) {
             if (selectedEstablishments.length < 2) {
-                setError('Select at least 2 establishments to create a brand');
+                setError('Select at least 2 locations to create a brand');
                 return;
             }
             setError('');
@@ -306,7 +306,7 @@ export function OwnerBrandsPage() {
 
     const onCreateBrand = async (data: BrandFormData) => {
         if (selectedEstablishments.length < 2) {
-            setError('Select at least 2 establishments to merge');
+            setError('Select at least 2 locations to merge');
             return;
         }
 
@@ -358,7 +358,7 @@ export function OwnerBrandsPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-                            Brand Management
+                            Brands
                         </span>
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Brands</h1>
@@ -426,7 +426,7 @@ export function OwnerBrandsPage() {
                         />
                         <input
                             type="text"
-                            placeholder="Search brands by name or Pos Id..."
+                            placeholder="Search brands by name or Login ID..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm hover:shadow-md focus:shadow-lg"
@@ -599,7 +599,7 @@ export function OwnerBrandsPage() {
                                         <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <Hash size={14} className="text-purple-500" />
-                                                <span className="text-[9px] font-black text-gray-400 tracking-widest">Login Id</span>
+                                                <span className="text-[9px] font-black text-gray-400 tracking-widest">Login ID</span>
                                             </div>
                                             <p className="text-sm font-mono font-bold text-gray-900 dark:text-white truncate">
                                                 {brand.establishmentLoginId}
@@ -616,7 +616,7 @@ export function OwnerBrandsPage() {
                                         </div>
                                     </div>
 
-                                    {/* Establishments */}
+                                    {/* Locations */}
                                     <div className="space-y-3 relative z-10">
                                         <div className="flex items-center justify-between">
                                             <span className="text-[10px] font-black text-gray-400 tracking-widest">Locations</span>
@@ -659,7 +659,7 @@ export function OwnerBrandsPage() {
                     {/* Table Header */}
                     <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
                         <div className="col-span-4">Brand</div>
-                        <div className="col-span-2">Login Id</div>
+                        <div className="col-span-2">Login ID</div>
                         <div className="col-span-2">Locations</div>
                         <div className="col-span-2">Created</div>
                         <div className="col-span-2 text-right">Actions</div>
@@ -833,7 +833,7 @@ export function OwnerBrandsPage() {
 
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                         <div className="space-y-2">
-                                                            <label className="text-xs font-bold text-gray-500 tracking-wide block">Login Id</label>
+                                                            <label className="text-xs font-bold text-gray-500 tracking-wide block">Login ID</label>
                                                             <div className="relative">
                                                                 <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                                                                 <input

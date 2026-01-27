@@ -241,7 +241,7 @@ export class DemoDataGenerator {
       this.progressFn(45);
 
       // 5. Clear Attributes (Add-ons)
-      this.logFn('Clearing modifiers...');
+      this.logFn('Clearing add-ons...');
       await this.clearAttributes();
       this.progressFn(55);
 
@@ -373,7 +373,7 @@ export class DemoDataGenerator {
         await api.delete(`/api/attributes/${attr.id}`);
       }
     } catch (e) {
-      this.logFn('Warning: Failed to clear modifiers');
+      this.logFn('Warning: Failed to clear add-ons');
     }
   }
 
@@ -440,7 +440,7 @@ export class DemoDataGenerator {
       this.progressFn(20);
 
       // 2. Attributes (Modifiers)
-      this.logFn('Creating modifiers...');
+      this.logFn('Creating add-ons...');
       const attributes = await this.generateAttributes(type);
       this.progressFn(30);
 
@@ -711,7 +711,7 @@ export class DemoDataGenerator {
         await this.delay(500);
       } catch (e: any) {
         const errorMsg = e.response?.data?.message || e.message || 'Unknown error';
-        this.logFn(`Failed to create modifier ${attr.name}: ${errorMsg}`);
+        this.logFn(`Failed to create add-on ${attr.name}: ${errorMsg}`);
       }
     }
     return createdAttributes;

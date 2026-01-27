@@ -22,7 +22,7 @@ export function OwnerMergePage() {
 
     const handleContinue = () => {
         if (selectedEstablishments.length < 2) {
-            toast.error('Please select at least 2 establishments to merge');
+            toast.error('Please select at least 2 locations to merge');
             return;
         }
         setStep('configure');
@@ -63,7 +63,7 @@ export function OwnerMergePage() {
                     <div className="space-y-6">
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-paymint-green/10 border border-paymint-green/20">
                             <GitMerge size={14} className="text-paymint-green" />
-                            <span className="text-[10px] font-black text-paymint-green tracking-[0.2em]">Brand Creation</span>
+                            <span className="text-[10px] font-black text-paymint-green tracking-[0.2em]">New Brand</span>
                         </div>
 
                         <div>
@@ -71,7 +71,7 @@ export function OwnerMergePage() {
                                 Create <span className="text-paymint-green">Brand</span>
                             </h1>
                             <p className="text-lg font-medium text-gray-500 dark:text-gray-400 max-w-xl">
-                                Combine multiple locations into a single brand.
+                                Combine locations into one brand.
                             </p>
                         </div>
                     </div>
@@ -222,8 +222,8 @@ export function OwnerMergePage() {
                         {/* Config Form */}
                         <div className="p-10 rounded-[3rem] bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 shadow-2xl space-y-8">
                             <div>
-                                <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Brand Setup</h3>
-                                <p className="text-xs font-bold text-gray-500 tracking-widest">Set the name for your new brand.</p>
+                                <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Brand Details</h3>
+                                <p className="text-xs font-bold text-gray-500 tracking-widest">Name your brand.</p>
                             </div>
 
                             <div className="space-y-2">
@@ -250,7 +250,7 @@ export function OwnerMergePage() {
                                     <h4 className="text-sm font-black text-indigo-900 dark:text-indigo-200 tracking-tight">Security</h4>
                                 </div>
                                 <p className="text-xs font-bold text-indigo-800 dark:text-indigo-300/60 leading-relaxed px-1">
-                                    All locations will use the security settings from the main location <span className="text-indigo-900 dark:text-white">({firstSelectedEst?.name})</span>. Login credentials will be synchronized.
+                                    All locations will use the security settings from the main location <span className="text-indigo-900 dark:text-white">({firstSelectedEst?.name})</span>. Login info will be synced.
                                 </p>
                             </div>
 

@@ -312,11 +312,11 @@ export function ProductsPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-                            Inventory
+                            Menu
                         </span>
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Products</h1>
-                    <p className="text-gray-500 dark:text-gray-400 mt-2">Manage products, prices, and stock.</p>
+                    <p className="text-gray-500 dark:text-gray-400 mt-2">Manage items and stock.</p>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -496,7 +496,7 @@ export function ProductsPage() {
                         <Package className="w-10 h-10 text-gray-300" />
                     </div>
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Products Found</h3>
-                    <p className="text-gray-500 max-w-xs text-sm mb-6">Try adjusting your search or add a new product to your inventory.</p>
+                    <p className="text-gray-500 max-w-xs text-sm mb-6">Adjust search or add a product.</p>
                     <button
                         onClick={handleCreateNew}
                         className="flex items-center gap-2 px-6 py-3 bg-paymint-green text-black font-bold text-xs rounded-xl hover:bg-emerald-400 transition-all tracking-widest"

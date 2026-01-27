@@ -905,7 +905,7 @@ export function RecipesPage() {
                 <div className="w-20 h-20 bg-paymint-green/10 text-paymint-green rounded-[2rem] flex items-center justify-center mx-auto mb-6">
                   <RefreshCw size={40} />
                 </div>
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Execute Batch</h2>
+                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Run Batch</h2>
                 <p className="text-gray-500 font-bold mt-1 text-[10px] tracking-widest">{manufactureRecipe.name}</p>
               </div>
               <div className="p-8 space-y-8">

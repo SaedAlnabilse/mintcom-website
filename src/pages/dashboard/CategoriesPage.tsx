@@ -323,7 +323,7 @@ export function CategoriesPage() {
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{viewingCategory.name}</h2>
-                    <p className="text-xs font-black text-paymint-green tracking-widest">{categoryProducts.length} Products Assigned</p>
+                    <p className="text-xs font-black text-paymint-green tracking-widest">{categoryProducts.length} Items</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -452,7 +452,7 @@ export function CategoriesPage() {
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{deleteBlockedCategory.name}</h2>
-                    <p className="text-xs font-black text-red-500 tracking-widest">{categoryProducts.length} Products Assigned</p>
+                    <p className="text-xs font-black text-red-500 tracking-widest">{categoryProducts.length} Items</p>
                   </div>
                 </div>
                 <button
@@ -467,7 +467,7 @@ export function CategoriesPage() {
                 <div className="mb-6 p-4 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
                   <p className="text-sm text-red-600 dark:text-red-400 font-medium flex items-center gap-2">
                     <AlertTriangle size={16} />
-                    You cannot delete this category while it has products assigned. Please reassign or delete the products below first.
+                    You cannot delete this category while it has items. Please remove the items first.
                   </p>
                 </div>
 

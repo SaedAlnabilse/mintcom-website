@@ -53,7 +53,7 @@ export function DemoDataGeneratorComponent() {
       addLog("Done! You can now explore the dashboard.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
-      addLog("Operation failed.");
+      addLog("Something went wrong.");
     } finally {
       setIsGenerating(false);
     }

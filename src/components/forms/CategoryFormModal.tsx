@@ -81,7 +81,7 @@ export function CategoryFormModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
-      setErrors({ name: 'Category name is required' });
+      setErrors({ name: 'Name is required' });
       return;
     }
     await onSubmit(name, selectedIcon, sortOrder);
@@ -138,7 +138,7 @@ export function CategoryFormModal({
               <div className="space-y-3">
                 <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
                   Name <span className="text-paymint-red mx-1">*</span>
-                  <QuickInfo text="Name for the menu." />
+                  <QuickInfo text="Category name." />
                 </label>
                 <input
                   type="text"

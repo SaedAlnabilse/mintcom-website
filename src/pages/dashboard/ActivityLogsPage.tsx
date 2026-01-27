@@ -189,11 +189,11 @@ export function ActivityLogsPage() {
     }));
 
     exportToCSV(exportData, 'system_activity', {
-      time: 'Execution Time',
-      user: 'Operative',
-      action: 'Protocol',
-      desc: 'Event Description',
-      ip: 'Ip Address'
+      time: 'Time',
+      user: 'User',
+      action: 'Action',
+      desc: 'Details',
+      ip: 'IP Address'
     });
   };
 
@@ -204,12 +204,12 @@ export function ActivityLogsPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-              System Logs
+              History
             </span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Activity Log</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Activity</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-2">
-            Track changes and updates
+            See recent changes
           </p>
         </div>
 

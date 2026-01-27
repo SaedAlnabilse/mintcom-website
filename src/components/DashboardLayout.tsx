@@ -71,13 +71,13 @@ const menuStructure: MenuItemOrGroup[] = [
   },
   { path: '/dashboard/orders', label: 'Orders', icon: ShoppingCart },
   {
-    label: 'Inventory',
+    label: 'Menu',
     icon: Package,
     items: [
       { path: '/dashboard/categories', label: 'Categories', icon: LayoutDashboard },
       { path: '/dashboard/products', label: 'Products', icon: Package },
       { path: '/dashboard/addons', label: 'Add-Ons', icon: Package },
-      { path: '/dashboard/materials', label: 'Materials', icon: Package },
+      { path: '/dashboard/materials', label: 'Ingredients', icon: Package },
       { path: '/dashboard/recipes', label: 'Recipes', icon: FileBarChart },
     ],
   },
@@ -516,7 +516,7 @@ export function DashboardLayout() {
                   <Smartphone size={16} />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-xs font-bold text-gray-900 dark:text-white leading-none mb-0.5">Pos App</span>
+                  <span className="text-xs font-bold text-gray-900 dark:text-white leading-none mb-0.5">POS App</span>
                   <span className="text-[9px] text-gray-500 dark:text-gray-400 leading-none">Download</span>
                 </div>
               </div>
@@ -540,7 +540,7 @@ export function DashboardLayout() {
               {/* Compact Popover */}
               <div className="absolute left-full bottom-0 ml-3 bg-gray-900/95 backdrop-blur-md rounded-xl p-3 border border-white/10 shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[70] translate-x-1 group-hover:translate-x-0 w-max">
                 <div className="flex items-center gap-3">
-                  <span className="text-white font-bold text-xs whitespace-nowrap">Pos App</span>
+                  <span className="text-white font-bold text-xs whitespace-nowrap">POS App</span>
                   <div className="h-4 w-px bg-white/20" />
                   <div className="flex gap-2">
                     <button className="w-7 h-7 flex items-center justify-center rounded-lg bg-white text-black hover:opacity-90">

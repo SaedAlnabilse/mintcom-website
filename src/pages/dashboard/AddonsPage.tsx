@@ -195,15 +195,15 @@ export function AddonsPage() {
     try {
       if (editingAttribute) {
         await api.put(`/api/attributes/${editingAttribute.id}`, attributeForm);
-        toast.success('Attribute updated');
+        toast.success('Group updated');
       } else {
         await api.post('/api/attributes', attributeForm);
-        toast.success('Attribute created');
+        toast.success('Group created');
       }
       setShowAttributeModal(false);
       fetchAttributes();
     } catch (err: any) {
-      toast.error('Error saving attribute');
+      toast.error('Error saving group');
     } finally {
       setIsSubmitting(false);
     }
@@ -227,14 +227,14 @@ export function AddonsPage() {
 
     setConfirmConfig({
       isOpen: true,
-      title: 'Delete Attribute Group',
+      title: 'Delete Add-on Group',
       message: `Are you sure you want to permanently remove the "${attr?.name}" group? This action cannot be undone.`,
       type: 'danger',
       showCancel: true,
       onConfirm: async () => {
         try {
           await api.delete(`/api/attributes/${id}`);
-          toast.success('Attribute removed');
+          toast.success('Group removed');
           fetchAttributes();
         } catch (err: any) {
           toast.error('Failed to delete');
@@ -272,7 +272,7 @@ export function AddonsPage() {
     setConfirmConfig({
       isOpen: true,
       title: 'Delete Option',
-      message: 'Remove this specific modifier option?',
+      message: 'Remove this specific add-on option?',
       type: 'danger',
       onConfirm: async () => {
         try {
@@ -494,7 +494,7 @@ export function AddonsPage() {
         </div>
       </div>
 
-      {/* Attributes List */}
+      {/* Add-ons List */}
       {isLoading ? (
         <div className="py-32 flex flex-col items-center">
           <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
@@ -505,7 +505,7 @@ export function AddonsPage() {
             <Package size={32} className="text-gray-300" />
           </div>
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Add-ons</h3>
-          <p className="text-gray-500 max-w-xs text-sm">Create modifiers to allow staff to customize items.</p>
+          <p className="text-gray-500 max-w-xs text-sm">Create add-ons to allow staff to customize items.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -623,7 +623,7 @@ export function AddonsPage() {
         </div>
       )}
 
-      {/* Attribute Group Modal */}
+      {/* Add-on Group Modal */}
       <AnimatePresence>
         {showAttributeModal && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
@@ -711,7 +711,7 @@ export function AddonsPage() {
 
                 <button onClick={handleSaveAttribute} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs flex items-center justify-center gap-2">
                   {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
-                  Save Configuration
+                  Save
                 </button>
               </div>
             </motion.div>
@@ -719,7 +719,7 @@ export function AddonsPage() {
         )}
       </AnimatePresence>
 
-      {/* Modifier Option Modal */}
+      {/* Add-on Option Modal */}
       <AnimatePresence>
         {showSubAttributeModal && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">

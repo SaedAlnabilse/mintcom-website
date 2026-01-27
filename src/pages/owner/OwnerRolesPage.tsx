@@ -144,7 +144,7 @@ export function OwnerRolesPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-indigo-500/10 text-indigo-500 text-[10px] font-black tracking-widest border border-indigo-500/20">
-              Role Management
+              Roles
             </span>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Company Roles</h1>

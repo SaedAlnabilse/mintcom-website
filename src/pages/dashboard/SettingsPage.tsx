@@ -361,10 +361,10 @@ export function SettingsPage() {
   const handleDeleteReward = (rewardId: string) => {
     setConfirmConfig({
       isOpen: true,
-      title: 'Terminate Reward Tier',
+      title: 'Delete Reward',
       message: 'Are you sure you want to permanently remove this reward from the loyalty catalog? This action cannot be reversed.',
       type: 'danger',
-      confirmText: 'Delete Protocol',
+      confirmText: 'Delete Reward',
       onConfirm: async () => {
         const updatedRewards = rewards.filter(r => r.id !== rewardId);
         try {
@@ -1145,7 +1145,7 @@ export function SettingsPage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sales Setup</h3>
-                  <p className="text-[10px] text-gray-400 font-black tracking-widest px-1">Configure tax and currency</p>
+                  <p className="text-[10px] text-gray-400 font-black tracking-widest px-1">Set tax and currency</p>
                 </div>
               </div>
 
@@ -1205,7 +1205,7 @@ export function SettingsPage() {
                         <AlertTriangle size={18} className="text-red-500" />
                       </div>
                       <div>
-                        <p className="text-[10px] font-black text-red-500 tracking-widest leading-none mb-1">Constraint Violation</p>
+                        <p className="text-[10px] font-black text-red-500 tracking-widest leading-none mb-1">Invalid Input</p>
                         <p className="text-[10px] font-bold text-red-500/80 tracking-tight">{errors.taxRate.message as string || 'Tax rate error'}</p>
                       </div>
                     </motion.div>
@@ -1236,7 +1236,7 @@ export function SettingsPage() {
                   </div>
                   <p className="text-[9px] font-black text-gray-400 mt-6 leading-relaxed tracking-tight flex items-start gap-2">
                     <span className="text-blue-500">•</span>
-                    Primary currency for transactions, global pricing, and reporting metrics.
+                    Main currency for sales and reports.
                   </p>
                 </div>
               </div>
@@ -1279,10 +1279,9 @@ export function SettingsPage() {
                           {...register('restaurantName')}
                           disabled={!showRestaurantName}
                           className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                          placeholder="Enter Restaurant Name"
+                          placeholder="Enter Location Name"
                         />
                       </div>
-
                       {/* Description / Tagline */}
                       <div>
                         <div className="flex items-center justify-between mb-2">
@@ -1300,13 +1299,13 @@ export function SettingsPage() {
                           {...register('restaurantDescription')}
                           disabled={!showDescription}
                           className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                          placeholder="Enter Restaurant Description"
+                          placeholder="Enter Description"
                         />
                       </div>
                     </div>
                   </div>
 
-                  {/* Branding Protocol */}
+                  {/* Branding */}
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
@@ -1331,7 +1330,7 @@ export function SettingsPage() {
                     </div>
                   </div>
 
-                  {/* Location Metadata */}
+                  {/* Location Info */}
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
@@ -1352,7 +1351,7 @@ export function SettingsPage() {
                     />
                   </div>
 
-                  {/* Regulatory Data */}
+                  {/* Tax Info */}
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
@@ -1369,11 +1368,11 @@ export function SettingsPage() {
                       {...register('taxIdNumber')}
                       disabled={!showTaxId}
                       className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                      placeholder="Enter Tax Id / Trn"
+                      placeholder="Enter Tax ID"
                     />
                   </div>
 
-                  {/* Client Relations */}
+                  {/* Footer */}
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
@@ -1504,7 +1503,7 @@ export function SettingsPage() {
                       <Award size={24} />
                     </div>
                     <p className="text-xs font-black text-gray-400 tracking-widest">Catalog Empty</p>
-                    <p className="text-[10px] font-black text-gray-400 mt-1 tracking-widest">Initialize reward tiers to activate redemption</p>
+                    <p className="text-[10px] font-black text-gray-400 mt-1 tracking-widest">Create reward tiers to activate redemption</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1584,13 +1583,13 @@ export function SettingsPage() {
               <div className="space-y-6">
                 <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-red-200/50 dark:border-red-900/20 shadow-sm">
                   <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
-                    This action will initiate the permanent removal of <span className="font-bold text-gray-900 dark:text-white">"{establishmentInfo?.name || 'this establishment'}"</span>.
-                    All associated data including order history, product catalogs, and customer metrics will be purged from our production clusters.
+                    This will permanently delete <span className="font-bold text-gray-900 dark:text-white">"{establishmentInfo?.name || 'this location'}"</span>.
+                    All data including orders, products, and customer info will be deleted.
                   </p>
                   <div className="mt-6 flex flex-col gap-3">
                     <div className="flex items-center gap-2 text-[10px] font-black text-red-500 tracking-tight">
                       <AlertTriangle size={14} />
-                      This action cannot be reversed after the cooling-off period.
+                      You cannot undo this after 30 days.
                     </div>
                   </div>
                 </div>
@@ -1599,7 +1598,7 @@ export function SettingsPage() {
                   onClick={() => setShowDeletionWizard(true)}
                   className="w-full md:w-auto px-8 py-4 bg-red-600 text-white font-black tracking-widest text-xs rounded-xl hover:bg-red-700 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-red-600/20"
                 >
-                  Start Termination Protocol
+                  Start Deletion
                 </button>
               </div>
             )}

@@ -78,9 +78,9 @@ export function SecurityVerificationModal({
                 };
             case 'dissolve-brand':
                 return {
-                    title: 'Dissolve Brand Identity',
-                    warning: `You are about to dissolve "${targetName}". All establishments will return to independent nodes. This action is sensitive and affects infrastructure routing.`,
-                    buttonText: 'Dissolve Brand',
+                    title: 'Delete Brand',
+                    warning: `You are about to delete "${targetName}". All locations will return to independent mode.`,
+                    buttonText: 'Delete Brand',
                     icon: Building2,
                     color: 'text-purple-500',
                     bg: 'bg-purple-500/10',

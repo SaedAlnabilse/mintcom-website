@@ -49,7 +49,7 @@ export function AttributeFormModal({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!name.trim()) {
-            setErrors({ name: 'Attribute name is required' });
+            setErrors({ name: 'Name is required' });
             return;
         }
         await onSubmit(name, inputType, isRequired);
@@ -71,12 +71,12 @@ export function AttributeFormModal({
                         <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
                         <div>
                             <div className="flex items-center gap-2 mb-1">
-                                <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Modifier</span>
+                                <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Add-on</span>
                                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
                                 <span className="text-[10px] font-black text-paymint-green tracking-widest">Active</span>
                             </div>
                             <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                                {initialData ? 'Edit Modifier' : 'New Modifier'}
+                                {initialData ? 'Edit Add-on' : 'New Add-on'}
                             </h2>
                         </div>
                         <button
@@ -94,7 +94,7 @@ export function AttributeFormModal({
                             <div className="space-y-3">
                                 <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
                                     Name <span className="text-paymint-red mx-1">*</span>
-                                    <QuickInfo text="Name (e.g. Size)." />
+                                    <QuickInfo text="Name (e.g. Size, Sauce)." />
                                 </label>
                                 <input
                                     type="text"
@@ -110,7 +110,7 @@ export function AttributeFormModal({
                             <div className="space-y-4">
                                 <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
                                     Type
-                                    <QuickInfo text="Single or multiple choice?" />
+                                    <QuickInfo text="Allow one or many?" />
                                 </label>
                                 <div className="grid grid-cols-2 gap-4">
                                     <button
@@ -163,7 +163,7 @@ export function AttributeFormModal({
                             <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
                                 <div>
                                     <p className="text-sm font-bold text-gray-900 dark:text-white">Required</p>
-                                    <p className="text-[10px] text-gray-500 font-bold mt-0.5">Selection mandatory</p>
+                                    <p className="text-[10px] text-gray-500 font-bold mt-0.5">Force selection</p>
                                 </div>
                                 <label className="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" checked={isRequired} onChange={() => setIsRequired(!isRequired)} className="sr-only peer" />

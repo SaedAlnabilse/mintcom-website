@@ -283,7 +283,7 @@ export function EmployeeFormModal({
 
     // Validate establishment selection if in Owner Mode
     if (establishments && selectedEstablishmentIds.length === 0) {
-      newErrors.establishments = 'Select at least one establishment';
+      newErrors.establishments = 'Select at least one location';
     }
 
     if (Object.keys(newErrors).length > 0) {

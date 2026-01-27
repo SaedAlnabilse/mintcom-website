@@ -184,7 +184,7 @@ export function CustomersPage() {
 
   const handleExport = async () => {
     try {
-      toast.loading('Preparing export...', { id: 'export' });
+      toast.loading('Exporting...', { id: 'export' });
       // Fetch all customers (no limit) for export
       const response = await api.get('/customers', {
         params: {

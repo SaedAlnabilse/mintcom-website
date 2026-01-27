@@ -111,7 +111,7 @@ export function EstablishmentsPage() {
         </div>
       </div>
 
-      {/* Establishments Grid */}
+      {/* Locations Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {establishments.map((est) => (
           <motion.div
@@ -230,7 +230,7 @@ export function EstablishmentsPage() {
               <Loader2 size={40} className="text-paymint-green animate-spin" />
               <div className="absolute inset-0 bg-paymint-green/20 rounded-2xl animate-ping" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Switching</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Opening...</h2>
             <p className="text-paymint-green font-black tracking-[0.3em] text-sm mt-4">{selectedName}</p>
 
             <div className="mt-12 w-48 h-1 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">

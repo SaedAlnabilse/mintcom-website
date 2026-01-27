@@ -57,8 +57,8 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
     const handleRefund = async () => {
         setConfirmConfig({
             isOpen: true,
-            title: 'Initiate Refund',
-            message: 'Are you sure you want to reverse this transaction? This action is permanent.',
+            title: 'Refund Order',
+            message: 'Are you sure you want to refund this order? This action is permanent.',
             type: 'danger',
             onConfirm: async () => {
                 try {
@@ -87,9 +87,9 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                     <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
                     <div>
                         <div className="flex items-center gap-2 mb-1">
-                            <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Transaction Log</span>
+                            <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Order Details</span>
                             <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                            <span className="text-[10px] font-black text-paymint-green tracking-widest">Protocol Active</span>
+                            <span className="text-[10px] font-black text-paymint-green tracking-widest">Processed</span>
                         </div>
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Order #{order.orderNumber}</h2>
                     </div>
@@ -106,15 +106,15 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                         <div>
                             <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2 flex items-center gap-1">
-                                Execution
-                                <QuickInfo text="Timestamp when the order was committed." />
+                                Date
+                                <QuickInfo text="When the order was created." />
                             </p>
                             <p className="text-sm font-bold text-gray-900 dark:text-white">{formatDate(order.createdAt)}</p>
                         </div>
                         <div>
                             <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2 flex items-center gap-1">
                                 Status
-                                <QuickInfo text="Current state of the settlement." />
+                                <QuickInfo text="Order payment status." />
                             </p>
                             <span
                                 className={`inline-flex px-2 py-0.5 text-[9px] font-black tracking-widest rounded-md border ${getStatusColor(
@@ -126,15 +126,15 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                         </div>
                         <div>
                             <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2 flex items-center gap-1">
-                                Protocol
-                                <QuickInfo text="Method used to settle the transaction." />
+                                Payment
+                                <QuickInfo text="Payment method used." />
                             </p>
                             <p className="text-sm font-bold text-gray-900 dark:text-white">{order.paymentMethod}</p>
                         </div>
                         <div>
                             <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2 flex items-center gap-1">
-                                Operator
-                                <QuickInfo text="Staff member authorized for this transaction." />
+                                Staff
+                                <QuickInfo text="Staff who processed the order." />
                             </p>
                             <p className="text-sm font-bold text-gray-900 dark:text-white">{order.user?.username || 'System'}</p>
                         </div>
@@ -142,15 +142,15 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                             <>
                                 <div className="col-span-2">
                                     <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2 flex items-center gap-1">
-                                        Client Identity
-                                        <QuickInfo text="Name associated with the client account." />
+                                        Customer
+                                        <QuickInfo text="Customer name." />
                                     </p>
                                     <p className="text-sm font-bold text-gray-900 dark:text-white">{order.customer.name}</p>
                                 </div>
                                 <div className="col-span-2">
                                     <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2 flex items-center gap-1">
-                                        Contact Metadata
-                                        <QuickInfo text="Client communication identifier." />
+                                        Contact
+                                        <QuickInfo text="Customer phone number." />
                                     </p>
                                     <p className="text-sm font-bold text-gray-900 dark:text-white">{order.customer.phone}</p>
                                 </div>
@@ -162,7 +162,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                     <div>
                         <div className="flex items-center gap-2 mb-4">
                             <div className="w-1 h-4 bg-paymint-green rounded-full" />
-                            <h3 className="text-sm font-black text-gray-900 dark:text-white tracking-widest">Inventory Manifest</h3>
+                            <h3 className="text-sm font-black text-gray-900 dark:text-white tracking-widest">Items</h3>
                         </div>
                         <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/5 overflow-hidden shadow-inner">
                             <div className="divide-y divide-gray-100 dark:divide-white/5">
@@ -201,14 +201,14 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                         )}
                         <div className="flex justify-between text-gray-400">
                             <span className="text-[10px] font-black tracking-widest flex items-center gap-1">
-                                Tax Metadata
+                                Tax
                             </span>
                             <span className="text-sm font-bold">{formatCurrency(order.tax || 0)}</span>
                         </div>
                         <div className="flex justify-between text-white font-bold text-xl pt-6 border-t border-white/10 mt-2">
                             <span className="flex items-center gap-2">
                                 <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
-                                <span className="text-xs font-black tracking-[0.2em]">Net Settlement</span>
+                                <span className="text-xs font-black tracking-[0.2em]">Total</span>
                             </span>
                             <span className="text-2xl tracking-tighter text-paymint-green">{formatCurrency(order.total || 0)}</span>
                         </div>
@@ -217,7 +217,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                     {/* Notes */}
                     {order.note && (
                         <div>
-                            <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2 px-1">Special Directives</p>
+                            <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2 px-1">Notes</p>
                             <p className="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-100 dark:border-white/5 font-medium leading-relaxed italic">
                                 "{order.note}"
                             </p>
@@ -230,14 +230,14 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                             onClick={onClose}
                             className="flex-1 py-4 px-6 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-black tracking-[0.2em] text-[10px] rounded-2xl transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm"
                         >
-                            Close Entry
+                            Close
                         </button>
                         {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
                             <button
                                 onClick={handleRefund}
                                 className="flex-1 py-4 px-6 bg-paymint-red/10 text-paymint-red hover:bg-paymint-red hover:text-white font-black tracking-[0.2em] text-[10px] rounded-2xl transition-all border border-paymint-red/20 active:scale-95 shadow-lg shadow-paymint-red/10"
                             >
-                                Reverse Protocol
+                                Refund
                             </button>
                         )}
                     </div>

@@ -708,7 +708,7 @@ export function BrandDashboardPage() {
                     <div className="flex flex-col items-center justify-center py-16 text-center">
                         <Store size={48} className="text-gray-300 dark:text-gray-700 mb-4" />
                         <p className="text-lg font-medium text-gray-900 dark:text-white">No locations found</p>
-                        <p className="text-sm text-gray-500 mt-1">Add establishments to your brand to see performance data</p>
+                        <p className="text-sm text-gray-500 mt-1">Add locations to your brand to see performance data</p>
                     </div>
                 ) : (
                     <div className="divide-y divide-gray-100 dark:divide-white/5">
@@ -787,7 +787,7 @@ export function BrandDashboardPage() {
                 {[
                     {
                         title: 'View All Locations',
-                        description: 'Manage establishments and view detailed metrics',
+                        description: 'Manage locations and view details',
                         icon: Store,
                         color: 'text-blue-500',
                         bg: 'bg-blue-500/10',

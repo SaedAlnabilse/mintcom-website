@@ -225,7 +225,7 @@ export function OwnerBillingPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-                            Finance
+                            Billing
                         </span>
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Billing</h1>
@@ -257,7 +257,7 @@ export function OwnerBillingPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
                     { label: 'Cards', value: billingData?.savedCards.length || 0, icon: CreditCard, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: 'Subscriptions', value: billingData?.establishments.filter(e => e.subscriptionStatus === 'ACTIVE' || e.subscriptionStatus === 'TRIAL').length || 0, icon: Zap, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+                    { label: 'Plans', value: billingData?.establishments.filter(e => e.subscriptionStatus === 'ACTIVE' || e.subscriptionStatus === 'TRIAL').length || 0, icon: Zap, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
                     {
                         label: 'Next Bill',
                         value: billingData?.nextInvoiceDate
@@ -333,7 +333,7 @@ export function OwnerBillingPage() {
 
                                     <div className="relative z-10 flex justify-between items-start">
                                         <div className="space-y-1.5">
-                                            <p className="text-[10px] font-black tracking-[0.2em] text-gray-400">Secured Card</p>
+                                            <p className="text-[10px] font-black tracking-[0.2em] text-gray-400">Card</p>
                                             <p className="text-xl font-bold tracking-[0.15em] text-gray-900 dark:text-white">
                                                 <span className="opacity-30">••••</span> {card.last4}
                                             </p>
@@ -356,7 +356,7 @@ export function OwnerBillingPage() {
 
                                     <div className="relative z-10 flex justify-between items-end">
                                         <div className="space-y-1">
-                                            <p className="text-[9px] font-black tracking-[0.2em] text-gray-400">Card Holder</p>
+                                            <p className="text-[9px] font-black tracking-[0.2em] text-gray-400">Name</p>
                                             <p className="font-bold tracking-wider text-xs text-gray-800 dark:text-gray-200">{card.cardholderName || 'User'}</p>
                                         </div>
                                         <div className="text-right space-y-1">

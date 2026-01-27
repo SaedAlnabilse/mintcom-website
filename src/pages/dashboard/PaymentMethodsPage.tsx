@@ -234,16 +234,16 @@ export function PaymentMethodsPage() {
 
       if (editingCard) {
         await api.patch(`/card-types/${editingCard.id}`, payload);
-        toast.success('Card network updated');
+        toast.success('Brand updated');
       } else {
         await api.post('/card-types', payload);
-        toast.success('Card network added');
+        toast.success('Brand added');
       }
 
       setShowCardModal(false);
       fetchCardTypes();
     } catch (err: any) {
-      toast.error('Failed to save card network');
+      toast.error('Failed to save brand');
     } finally {
       setIsSubmitting(false);
     }
@@ -313,7 +313,7 @@ export function PaymentMethodsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {cardTypes.length === 0 ? (
             <div className="col-span-full py-12 text-center">
-              <p className="text-gray-400 font-black tracking-widest text-[10px]">No card networks configured yet.</p>
+              <p className="text-gray-400 font-black tracking-widest text-[10px]">No card brands added yet.</p>
             </div>
           ) : (
             Array.isArray(cardTypes) && cardTypes.map((card) => (
@@ -556,7 +556,7 @@ export function PaymentMethodsPage() {
                 <div>
                   <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
                     Name <span className="text-paymint-red mx-1">*</span>
-                    <QuickInfo text="The name of the card network (e.g. Visa)." />
+                    <QuickInfo text="Brand name (e.g. Visa)." />
                   </label>
                   <input
                     type="text"

@@ -96,7 +96,7 @@ export function SelectEstablishmentPage() {
             <h1 className="text-5xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">
               Select <span className="text-paymint-green underline decoration-paymint-green/30">Location</span>
             </h1>
-            <p className="text-gray-500 dark:text-gray-400 text-lg font-bold tracking-widest text-sm">Select Location</p>
+            <p className="text-gray-500 dark:text-gray-400 text-lg font-bold tracking-widest text-sm">Choose a location to manage</p>
           </motion.div>
         </div>
 

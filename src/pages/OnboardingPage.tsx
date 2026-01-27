@@ -48,9 +48,9 @@ import { QuickInfo } from '../components/QuickInfo';
 import PaymintLogoGreen from '../assets/green-full-logo.png';
 import PaymintLogoWhite from '../assets/white-green-full-logo.png';
 
-// Step 1: Establishment Details
+// Step 1: Location Details
 const step1Schema = z.object({
-  name: z.string().min(1, 'Establishment name is required'),
+  name: z.string().min(1, 'Location name is required'),
   type: z.string().min(1, 'Business type is required'),
   address: z.string().min(1, 'Address is required'),
   phone: z.string().min(1, 'Phone is required'),
@@ -65,12 +65,12 @@ const step2Schema = z.object({
   cardName: z.string().min(1, 'Name on card is required'),
 });
 
-// Step 3: Establishment Access Credentials
+// Step 3: Location Login
 const step3Schema = z.object({
   establishmentLoginId: z.string()
-    .min(4, 'Establishment Id must be at least 4 characters')
-    .regex(/^[a-zA-Z0-9_-]+$/, 'Establishment Id can only contain letters, numbers, underscores, and hyphens'),
-  establishmentPassword: z.string().min(6, 'Establishment Password must be at least 6 characters'),
+    .min(4, 'Location ID must be at least 4 characters')
+    .regex(/^[a-zA-Z0-9_-]+$/, 'Location ID can only contain letters, numbers, underscores, and hyphens'),
+  establishmentPassword: z.string().min(6, 'Location Password must be at least 6 characters'),
 });
 
 // Step 4: Admin Access
@@ -114,7 +114,7 @@ export function OnboardingPage() {
     },
     {
       targetId: 'tour-pos-app',
-      title: 'Pos App for Staff',
+      title: 'POS App for Staff',
       description: 'Download this app on tablets or phones for your staff. They will use it to take orders and process payments at your establishment.'
     },
     {
@@ -409,7 +409,7 @@ export function OnboardingPage() {
       <div className="flex-1 flex items-center justify-center p-6">
         <AnimatePresence mode="wait">
 
-          {/* STEP 1: Establishment Details */}
+          {/* STEP 1: Location Details */}
           {step === 1 && (
             <motion.div
               key="step1"
@@ -904,7 +904,7 @@ export function OnboardingPage() {
             </motion.div>
           )}
 
-          {/* STEP 3: Establishment Access Credentials */}
+          {/* STEP 3: Location Login Details */}
           {step === 3 && (
             <motion.div
               key="step3"
@@ -919,7 +919,7 @@ export function OnboardingPage() {
                     <ArrowLeft size={14} /> Back
                   </button>
                   <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Create Location Login</h2>
-                  <p className="text-gray-600 dark:text-gray-400 font-medium">This Id is for the Pos app.</p>
+                  <p className="text-gray-600 dark:text-gray-400 font-medium">This ID is for the POS app.</p>
                   <div className="mt-4 p-3 bg-paymint-green/10 text-paymint-green text-sm rounded-xl font-medium border border-paymint-green/20">
                     <p>✨ <strong>Unique access:</strong> Each location needs its own Id and password.</p>
                   </div>
@@ -928,8 +928,8 @@ export function OnboardingPage() {
                 <form onSubmit={form3.handleSubmit(onStep3Submit)} className="space-y-6">
                   <div className="space-y-2">
                     <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
-                      Location Id <span className="text-paymint-red mx-1">*</span>
-                      <QuickInfo text="Unique Id for Pos login." />
+                      Location ID <span className="text-paymint-red mx-1">*</span>
+                      <QuickInfo text="Unique ID for POS login." />
                     </label>
                     <div className="relative group">
                       <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
@@ -941,7 +941,7 @@ export function OnboardingPage() {
                       />
                     </div>
                     {form3.formState.errors.establishmentLoginId && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form3.formState.errors.establishmentLoginId.message as string}</p>}
-                    <p className="text-[10px] text-gray-400 ml-1">Unique Id for this location.</p>
+                    <p className="text-[10px] text-gray-400 ml-1">Unique ID for this location.</p>
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
@@ -998,7 +998,7 @@ export function OnboardingPage() {
                   <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Create Your Login</h2>
                   <p className="text-gray-600 dark:text-gray-400 font-medium">Create your personal account.</p>
                   <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 text-xs rounded-xl font-medium border border-blue-100 dark:border-blue-900/30">
-                    <p>This is Step 2 of the Pos Login.</p>
+                    <p>This is Step 2 of the POS Login.</p>
                   </div>
                 </div>
 
@@ -1211,7 +1211,7 @@ export function OnboardingPage() {
                           <Tablet size={24} className="text-orange-500" />
                         </div>
                         <div>
-                          <h4 className="text-lg font-black text-gray-900 dark:text-white mb-1">Pos App</h4>
+                          <h4 className="text-lg font-black text-gray-900 dark:text-white mb-1">POS App</h4>
                           <p className="text-sm text-gray-500 dark:text-gray-400">For tablets and phones. Your staff uses this to take orders and process payments.</p>
                         </div>
                       </div>

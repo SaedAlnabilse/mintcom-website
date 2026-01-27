@@ -450,7 +450,7 @@ export function StaffPage() {
                                   className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl shadow-2xl border border-gray-100 dark:border-white/10 z-50 overflow-hidden py-1.5"
                                 >
                                   <button
-                                    onClick={() => { setActiveDropdown(null); toast.success('Protocol sent to identity mail'); }}
+                                    onClick={() => { setActiveDropdown(null); toast.success('Reset email sent'); }}
                                     className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black tracking-widest text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
                                   >
                                     <Key size={14} className="text-paymint-green" />

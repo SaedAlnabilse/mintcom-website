@@ -96,7 +96,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                   {type === 'DISCOUNT' && (
                     <motion.div layoutId="active-reward-type" className="absolute inset-0 bg-paymint-green rounded-lg -z-10 shadow-sm" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />
                   )}
-                  Value Discount
+                  Value Off
                 </button>
                 <button
                   type="button"
@@ -107,14 +107,14 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                   {type === 'FREE_ITEM' && (
                     <motion.div layoutId="active-reward-type" className="absolute inset-0 bg-paymint-green rounded-lg -z-10 shadow-sm" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />
                   )}
-                  Product Award
+                  Free Item
                 </button>
               </div>
             </div>
 
             {/* Points Required */}
             <div>
-              <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-3 px-1">Points Needed</label>
+              <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-3 px-1">Points Cost</label>
               <div className="relative group">
                 <input
                   type="number"
@@ -127,7 +127,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                   <Award size={20} strokeWidth={2.5} />
                 </div>
               </div>
-              <p className="text-[9px] font-black text-gray-400 mt-2 px-1 tracking-tight">Points to redeem</p>
+              <p className="text-[9px] font-black text-gray-400 mt-2 px-1 tracking-tight">Points required</p>
             </div>
 
             {/* Dynamic Fields - Height Stabilized */}

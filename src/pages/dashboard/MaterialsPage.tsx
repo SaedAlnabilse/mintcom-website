@@ -177,7 +177,7 @@ export function MaterialsPage() {
   const handleDeleteMaterial = async (id: string, name: string) => {
     setConfirmConfig({
       isOpen: true,
-      title: 'Remove Material',
+      title: 'Remove Item',
       message: `Delete "${name}" from inventory? This action is permanent.`,
       type: 'danger',
       onConfirm: async () => {
@@ -209,9 +209,9 @@ export function MaterialsPage() {
               Inventory
             </span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Materials</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Ingredients</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-2">
-            Manage raw ingredients and costs
+            Manage stock and costs
           </p>
         </div>
 
@@ -229,7 +229,7 @@ export function MaterialsPage() {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
           >
             <Plus size={18} />
-            <span>{activeTab === 'materials' ? 'Add Material' : 'Add Prep'}</span>
+            <span>{activeTab === 'materials' ? 'Add Ingredient' : 'Add Prep'}</span>
           </button>
         </div>
       </div>
@@ -242,7 +242,7 @@ export function MaterialsPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-            placeholder="Search materials..."
+            placeholder="Search items..."
             className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
           />
         </div>
@@ -252,13 +252,13 @@ export function MaterialsPage() {
             onClick={() => { setActiveTab('materials'); setPage(1); }}
             className={`px-4 py-2 rounded-lg text-[10px] font-black tracking-widest transition-all ${activeTab === 'materials' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
           >
-            Raw
+            Ingredients
           </button>
           <button
             onClick={() => { setActiveTab('prepared'); setPage(1); }}
             className={`px-4 py-2 rounded-lg text-[10px] font-black tracking-widest transition-all ${activeTab === 'prepared' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
           >
-            Prepared
+            Prepped
           </button>
         </div>
       </div>
@@ -275,8 +275,8 @@ export function MaterialsPage() {
             <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
               <Package size={32} className="text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Materials</h3>
-            <p className="text-gray-500 max-w-xs text-sm">Add materials to track inventory.</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Ingredients</h3>
+            <p className="text-gray-500 max-w-xs text-sm">Add ingredients to track stock.</p>
           </div>
         ) : (
           <div className="space-y-8">
@@ -405,7 +405,7 @@ export function MaterialsPage() {
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md overflow-hidden shadow-2xl">
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">{editingMaterial ? 'Edit Material' : 'Add Material'}</h2>
+                <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">{editingMaterial ? 'Edit Ingredient' : 'Add Ingredient'}</h2>
                 <button onClick={() => setShowMaterialModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
                   <X size={20} />
                 </button>
@@ -414,7 +414,7 @@ export function MaterialsPage() {
                 <div>
                   <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
                     Name <span className="text-paymint-red mx-1">*</span>
-                    <QuickInfo text="Unique name for this raw material (e.g., 'Flour Type 00')." />
+                    <QuickInfo text="Name (e.g., 'Flour Type 00')." />
                   </label>
                   <input
                     type="text"
@@ -438,8 +438,8 @@ export function MaterialsPage() {
                   </div>
                   <div>
                     <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
-                      Cost per Unit
-                      <QuickInfo text="The cost to acquire one unit of this material." />
+                      Unit Cost
+                      <QuickInfo text="Cost for one unit." />
                     </label>
                     <div className="relative group">
                       <div className="absolute left-3 top-1/2 -translate-y-1/2 px-2 py-0.5 bg-gray-200 dark:bg-white/10 rounded-md">
@@ -464,8 +464,8 @@ export function MaterialsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
-                      Current Stock
-                      <QuickInfo text="Total quantity in stock." />
+                      In Stock
+                      <QuickInfo text="Quantity available." />
                     </label>
                     <input
                       type="number"
@@ -478,8 +478,8 @@ export function MaterialsPage() {
                   </div>
                   <div>
                     <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
-                      Low Stock Alert
-                      <QuickInfo text="Threshold to trigger a reorder warning." />
+                      Low Stock
+                      <QuickInfo text="Alert threshold." />
                     </label>
                     <input
                       type="number"
@@ -517,7 +517,7 @@ export function MaterialsPage() {
                 <div>
                   <input type="number" step="0.01" value={restockAmount} onChange={(e) => setRestockAmount(Number(e.target.value))} className="w-full bg-transparent text-center text-5xl font-black text-paymint-green focus:outline-none placeholder-gray-300" placeholder="0.00" autoFocus />
                   <div className="flex items-center justify-center mt-2 gap-1">
-                    <p className="text-[10px] font-black text-gray-400 tracking-widest">Volume to Add ({restockMaterial.unit})</p>
+                    <p className="text-[10px] font-black text-gray-400 tracking-widest">Qty to Add ({restockMaterial.unit})</p>
                   </div>
                 </div>
                 <button onClick={handleRestock} disabled={isSubmitting || restockAmount <= 0} className="w-full py-3.5 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 transition-all text-sm flex items-center justify-center gap-2">

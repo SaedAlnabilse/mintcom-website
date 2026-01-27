@@ -354,7 +354,7 @@ export function AdminUsersPage() {
 
                                 <div className="space-y-2">
                                     <label className="block text-[10px] font-black text-gray-400 tracking-widest px-1">
-                                        Auth Identifier <span className="text-paymint-red">*</span>
+                                        Email / Login ID <span className="text-paymint-red">*</span>
                                     </label>
                                     <input
                                         type="email"
@@ -370,7 +370,7 @@ export function AdminUsersPage() {
                                 {!editingAdmin && (
                                     <div className="space-y-2">
                                         <label className="block text-[10px] font-black text-gray-400 tracking-widest px-1">
-                                            Access Token <span className="text-paymint-red">*</span>
+                                            Password <span className="text-paymint-red">*</span>
                                         </label>
                                         <div className="relative group">
                                             <input
@@ -390,14 +390,14 @@ export function AdminUsersPage() {
                                             </button>
                                         </div>
                                         <p className="text-[9px] font-bold text-gray-400 mt-1 px-1 tracking-tight">
-                                            Entropy requirement: 8+ chars (A-z, 0-9)
+                                            Min 8 chars
                                         </p>
                                     </div>
                                 )}
 
                                 <div className="space-y-2">
                                     <label className="block text-[10px] font-black text-gray-400 tracking-widest px-1">
-                                        Communication Line
+                                        Phone
                                     </label>
                                     <input
                                         type="tel"
@@ -410,7 +410,7 @@ export function AdminUsersPage() {
 
                                 <div className="space-y-3">
                                     <label className="block text-[10px] font-black text-gray-400 tracking-widest px-1">
-                                        Node Authorization
+                                        Location Access
                                     </label>
                                     <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-1">
                                         {establishments.map((est) => (

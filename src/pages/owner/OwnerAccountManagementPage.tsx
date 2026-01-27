@@ -349,10 +349,10 @@ export function OwnerAccountManagementPage() {
                     </div>
                     <div>
                         <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
-                            Account Management
+                            Account
                         </h1>
                         <p className="text-sm text-gray-500 dark:text-gray-400 font-medium mt-0.5">
-                            Manage your login, security, and account settings
+                            Security and settings
                         </p>
                     </div>
                 </div>
@@ -371,7 +371,7 @@ export function OwnerAccountManagementPage() {
                 transition={{ delay: 0.05 }}
                 className="grid grid-cols-2 md:grid-cols-3 gap-4"
             >
-                {/* Establishments Card */}
+                {/* Locations Card */}
                 <div className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-5 shadow-sm hover:shadow-lg hover:border-blue-500/30 transition-all duration-300 overflow-hidden">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
@@ -446,7 +446,7 @@ export function OwnerAccountManagementPage() {
                                     <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center">
                                         <User className="w-5 h-5 text-paymint-green" />
                                     </div>
-                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Account Details</h2>
+                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Account</h2>
                                 </div>
                                 <button
                                     onClick={() => openPasswordModal('account')}
@@ -528,7 +528,7 @@ export function OwnerAccountManagementPage() {
                         </div>
                     </motion.div>
 
-                    {/* Establishments Credentials */}
+                    {/* Location Logins */}
                     {establishments && establishments.length > 0 && (
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
@@ -542,7 +542,7 @@ export function OwnerAccountManagementPage() {
                                 </div>
                                 <div>
                                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-                                        Locations ({establishments.length})
+                                        Location Logins ({establishments.length})
                                     </h2>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">Logins for each location</p>
                                 </div>
@@ -591,7 +591,7 @@ export function OwnerAccountManagementPage() {
                                             <div className="mt-5 p-4 bg-white dark:bg-[#020617] rounded-xl border border-gray-200 dark:border-white/[0.05] group-hover:border-paymint-green/20 transition-colors">
                                                 <label className="text-[10px] font-bold text-gray-400 tracking-widest mb-2 flex items-center gap-1.5">
                                                     <Key size={10} />
-                                                    Login Id
+                                                    Login ID
                                                 </label>
                                                 <div className="flex items-center justify-between gap-3">
                                                     <code className="text-sm font-mono font-bold text-gray-900 dark:text-white tracking-wide truncate">
@@ -612,7 +612,7 @@ export function OwnerAccountManagementPage() {
                         </motion.div>
                     )}
 
-                    {/* Brands Credentials */}
+                    {/* Brand Logins */}
                     {brands.length > 0 && (
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
@@ -626,7 +626,7 @@ export function OwnerAccountManagementPage() {
                                 </div>
                                 <div>
                                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-                                        Brands ({brands.length})
+                                        Brand Logins ({brands.length})
                                     </h2>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">Logins for each brand</p>
                                 </div>
@@ -689,7 +689,7 @@ export function OwnerAccountManagementPage() {
                                                 <div className="mt-5 p-4 bg-white dark:bg-[#020617] rounded-xl border border-gray-200 dark:border-white/[0.05] group-hover:border-purple-500/20 transition-colors">
                                                     <label className="text-[10px] font-bold text-gray-400 tracking-widest mb-2 flex items-center gap-1.5">
                                                         <Key size={10} />
-                                                        Brand Login Id
+                                                        Brand Login ID
                                                     </label>
                                                     <div className="flex items-center justify-between gap-3">
                                                         <code className="text-sm font-mono font-bold text-gray-900 dark:text-white tracking-wide truncate">
@@ -729,8 +729,8 @@ export function OwnerAccountManagementPage() {
                                     <BookOpen className="w-5 h-5 text-blue-500" />
                                 </div>
                                 <div>
-                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Resources & Help</h2>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">Guides and tutorials to help you succeed</p>
+                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Resources</h2>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">Help guides</p>
                                 </div>
                             </div>
 
@@ -809,7 +809,7 @@ export function OwnerAccountManagementPage() {
                             <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-300">
                                 <li className="flex items-start gap-2">
                                     <CheckCircle2 size={16} className="text-paymint-green mt-0.5 shrink-0" />
-                                    <span>Use unique passwords for each establishment</span>
+                                    <span>Use unique passwords for each location</span>
                                 </li>
                                 <li className="flex items-start gap-2">
                                     <CheckCircle2 size={16} className="text-paymint-green mt-0.5 shrink-0" />

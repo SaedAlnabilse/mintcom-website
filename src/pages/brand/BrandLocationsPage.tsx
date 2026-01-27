@@ -254,7 +254,7 @@ export function BrandLocationsPage() {
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Locations</h1>
                     <p className="text-gray-500 dark:text-gray-400 mt-2">
-                        Manage and monitor all establishments under {brandName}
+                        Manage and monitor all locations under {brandName}
                     </p>
                 </div>
 
@@ -424,7 +424,7 @@ export function BrandLocationsPage() {
                     <Store size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
                     <p className="text-lg font-medium text-gray-900 dark:text-white">No locations found</p>
                     <p className="text-sm text-gray-500 mt-1">
-                        {hasActiveFilters ? 'Try adjusting your filters' : 'Add establishments to your brand to see them here'}
+                        {hasActiveFilters ? 'Try adjusting your filters' : 'Add locations to your brand to see them here'}
                     </p>
                     {hasActiveFilters && (
                         <button
@@ -512,7 +512,7 @@ export function BrandLocationsPage() {
                                                         className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
                                                     >
                                                         <Trash2 size={16} />
-                                                        Dissolve Establishment
+                                                        Remove Location
                                                     </button>
                                                 </motion.div>
                                             )}
@@ -669,7 +669,7 @@ export function BrandLocationsPage() {
                                                         className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
                                                     >
                                                         <Trash2 size={16} />
-                                                        Dissolve Establishment
+                                                        Remove Location
                                                     </button>
                                                 </motion.div>
                                             )}

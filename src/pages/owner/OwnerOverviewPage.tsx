@@ -150,16 +150,16 @@ export function OwnerOverviewPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-                            Business Overview
+                            Overview
                         </span>
                         <span className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
                             <Activity size={14} className="text-emerald-500" />
-                            System Active
+                            Online
                         </span>
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Dashboard</h1>
                     <p className="text-gray-500 dark:text-gray-400 mt-2">
-                        Monitoring {establishments.length} locations and {stats.totalBrands} brands.
+                        Managing {establishments.length} locations and {stats.totalBrands} brands.
                     </p>
                 </div>
 
@@ -436,7 +436,7 @@ export function OwnerOverviewPage() {
                                     onClick={() => navigate('/onboarding')}
                                     className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl text-sm hover:scale-[1.02] active:scale-95 transition-all shadow-sm"
                                 >
-                                    Add Establishment
+                                    Add Location
                                 </button>
                                 <button
                                     onClick={() => navigate('/owner/brands')}
@@ -473,7 +473,7 @@ export function OwnerOverviewPage() {
                                         <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
                                             <Store size={16} />
                                         </div>
-                                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Manage Establishments</span>
+                                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Manage Locations</span>
                                     </div>
                                     <Activity size={14} className="text-gray-400 group-hover/btn:text-emerald-500 transition-colors" />
                                 </button>

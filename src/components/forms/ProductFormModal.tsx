@@ -149,9 +149,9 @@ export function ProductFormModal({
       setAttributes(prev => [...prev, newAttribute]);
       setSelectedAttributeIds(prev => [...prev, newAttribute.id]);
       setShowAttributeModal(false);
-      toast.success('Modifier Created');
+      toast.success('Add-on Created');
     } catch (err: any) {
-      toast.error('Failed to create modifier');
+      toast.error('Failed to create add-on');
     } finally {
       setIsAttributeSubmitting(false);
     }
@@ -752,7 +752,7 @@ export function ProductFormModal({
                         </div>
                         <div>
                           <p className="text-[10px] font-black tracking-[0.15em] text-red-600 dark:text-red-500">Notice</p>
-                          <p className="text-[11px] font-bold text-red-500/90 dark:text-red-400/70 leading-snug">No modifiers. <span className="underline cursor-pointer hover:text-red-600" onClick={() => setShowAddonsWarning(true)}>Add here</span>.</p>
+                          <p className="text-[11px] font-bold text-red-500/90 dark:text-red-400/70 leading-snug">No add-ons. <span className="underline cursor-pointer hover:text-red-600" onClick={() => setShowAddonsWarning(true)}>Create here</span>.</p>
                         </div>
                       </div>
                     </div>
@@ -772,7 +772,7 @@ export function ProductFormModal({
                       </div>
                       <span className={selectedAttributeIds.length > 0 ? 'text-gray-900 dark:text-white font-bold' : 'text-gray-400 italic'}>
                         {selectedAttributeIds.length === 0
-                          ? (attributes.length === 0 ? 'No Modifiers' : 'Add Modifiers')
+                          ? (attributes.length === 0 ? 'No Add-ons' : 'Add Add-ons')
                           : selectedAttributeIds.length === 1
                             ? attributes.find(a => a.id === selectedAttributeIds[0])?.name || '1 Active'
                             : `${selectedAttributeIds.length} Linked`}
@@ -796,7 +796,7 @@ export function ProductFormModal({
                               type="text"
                               value={addonsSearchQuery}
                               onChange={(e) => setAddonsSearchQuery(e.target.value)}
-                              placeholder="Filter Modifiers..."
+                              placeholder="Search Add-ons..."
                               className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
                               onClick={(e) => e.stopPropagation()}
                             />
@@ -850,7 +850,7 @@ export function ProductFormModal({
                           className="w-full px-5 py-4 text-left bg-gray-50 dark:bg-white/[0.02] hover:bg-paymint-green/10 flex items-center gap-3 transition-colors text-paymint-green border-t border-gray-100 dark:border-white/10 shrink-0"
                         >
                           <Plus size={16} />
-                          <span className="text-xs font-black tracking-widest">Create Modifier</span>
+                          <span className="text-xs font-black tracking-widest">Create Add-on</span>
                         </button>
                       </motion.div>
                     )}
@@ -884,7 +884,7 @@ export function ProductFormModal({
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="text-gray-900 dark:text-white font-bold text-sm tracking-tight flex items-center gap-2">
-                        Track Stock
+                        Track Inventory
                         <QuickInfo text="Inventory." />
                       </h4>
                       <p className="text-gray-400 text-[10px] font-black tracking-widest mt-1">Stock Control</p>
@@ -905,10 +905,10 @@ export function ProductFormModal({
                       <div className="flex items-center justify-between bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
                         <div>
                           <h4 className="text-gray-900 dark:text-white font-bold text-xs tracking-tight flex items-center gap-1">
-                            Allow Negative
+                            Allow Overselling
                             <QuickInfo text="Sell if empty." />
                           </h4>
-                          <p className="text-gray-400 text-[9px] font-bold mt-0.5">Sell Below Threshold</p>
+                          <p className="text-gray-400 text-[9px] font-bold mt-0.5">Continue selling when out of stock</p>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
                           <input
@@ -923,7 +923,7 @@ export function ProductFormModal({
 
                       <div className="space-y-3">
                         <label className="block text-[10px] font-black text-gray-400 tracking-widest px-1 flex items-center">
-                          Stock
+                          Quantity
                           <QuickInfo text="Qty." />
                         </label>
                         <input
@@ -953,7 +953,7 @@ export function ProductFormModal({
                         </div>
                         <div className="space-y-3">
                           <label className="block text-[10px] font-black text-gray-400 tracking-widest px-1 flex items-center">
-                            <span className="text-paymint-red mr-2 text-lg">●</span> Critical
+                            <span className="text-paymint-red mr-2 text-lg">●</span> Very Low
                           </label>
                           <input
                             type="number"

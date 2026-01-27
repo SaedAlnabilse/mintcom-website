@@ -117,12 +117,12 @@ export function EstablishmentDeletionWizard({
 
     const handleRequestDeletion = async () => {
         if (!establishmentLoginId) {
-            toast.error('Please enter Establishment Id');
+            toast.error('Please enter Location ID');
             return;
         }
 
         if (establishmentPassword.length < 6) {
-            toast.error('Please enter Establishment Password');
+            toast.error('Please enter Location Password');
             return;
         }
 
@@ -183,7 +183,7 @@ export function EstablishmentDeletionWizard({
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <div className="bg-white dark:bg-[#1E293B] rounded-2xl p-8 border border-gray-200 dark:border-white/5 shadow-xl">
                 <div className="w-12 h-12 border-4 border-paymint-red/10 border-t-paymint-red rounded-full animate-spin mx-auto" />
-                <p className="text-[10px] font-black tracking-widest text-gray-400 mt-4 text-center">Loading Establishment Metadata...</p>
+                <p className="text-[10px] font-black tracking-widest text-gray-400 mt-4 text-center">Loading Location Data...</p>
             </div>
             </div>
         );
@@ -271,7 +271,7 @@ export function EstablishmentDeletionWizard({
                                 <div>
                                     <h3 className="text-[10px] font-black text-gray-400 dark:text-gray-500 tracking-[0.2em] mb-4 flex items-center gap-2 px-1">
                                         <Package size={14} className="text-paymint-red" />
-                                        Data to be Deleted
+                                        Deletion Summary
                                     </h3>
                                     <div className="grid grid-cols-2 gap-3">
                                         <StatCard
@@ -329,7 +329,7 @@ export function EstablishmentDeletionWizard({
                                         <Mail className="text-blue-500 flex-shrink-0 mt-0.5" size={20} />
                                         <div>
                                             <h3 className="font-bold text-blue-700 dark:text-blue-400">
-                                                Save your data first
+                                                Export Data
                                             </h3>
                                             <p className="text-blue-600 dark:text-blue-300 text-sm mt-1">
                                                 We'll email you these files.
@@ -402,7 +402,7 @@ export function EstablishmentDeletionWizard({
                                         <Calendar className="text-purple-500 flex-shrink-0 mt-0.5" size={20} />
                                         <div>
                                             <h3 className="font-bold text-purple-700 dark:text-purple-400">
-                                                30 Days to Cancel
+                                                Grace Period
                                             </h3>
                                             <p className="text-purple-600 dark:text-purple-300 text-sm mt-1">
                                                 You can stop this anytime in the next 30 days.
@@ -427,14 +427,14 @@ export function EstablishmentDeletionWizard({
 
                                 <div>
                                     <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center">
-                                        Location Id
-                                        <QuickInfo text="The Id used for Pos login." />
+                                        Location ID
+                                        <QuickInfo text="The ID used for Login." />
                                     </label>
                                     <input
                                         type="text"
                                         value={establishmentLoginId}
                                         onChange={(e) => setEstablishmentLoginId(e.target.value)}
-                                        placeholder="Enter location Id"
+                                        placeholder="Enter Location ID"
                                         className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-red transition-colors"
                                     />
                                 </div>
@@ -689,7 +689,7 @@ export function PendingDeletionBanner({
                     <div>
                         <h3 className="font-bold text-lg">Deletion Scheduled</h3>
                         <p className="text-white/80 text-sm">
-                            This establishment will be permanently deleted on{' '}
+                            This location will be permanently deleted on{' '}
                             <span className="font-bold">{scheduledDate}</span>
                         </p>
                     </div>

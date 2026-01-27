@@ -71,12 +71,12 @@ export const DashboardPage = () => {
   const tourSteps: TourStep[] = [
     {
       targetId: 'tour-kpi-cards',
-      title: "Financial Pulse",
-      description: "Track your Settlement Value, Net Capital, Taxes, and Profit in real-time."
+      title: "Sales Overview",
+      description: "Track your Total Sales, Net Sales, Taxes, and Profit in real-time."
     },
     {
       targetId: 'tour-revenue-chart',
-      title: "Revenue Trends",
+      title: "Sales Trends",
       description: "Monitor sales performance throughout the day to identify peak periods."
     },
     {

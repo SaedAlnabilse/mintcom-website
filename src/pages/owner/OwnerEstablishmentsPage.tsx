@@ -99,12 +99,12 @@ export function OwnerEstablishmentsPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-                            Locations List
+                            Locations
                         </span>
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Establishments</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Locations</h1>
                     <p className="text-gray-500 dark:text-gray-400 mt-2">
-                        Manage {establishments.length} locations in your business.
+                        Manage your locations.
                     </p>
                 </div>
 
@@ -114,7 +114,7 @@ export function OwnerEstablishmentsPage() {
                         className="px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all flex items-center gap-2"
                     >
                         <Building2 size={18} className="text-purple-500" />
-                        <span>Manage Brands</span>
+                        <span>Brands</span>
                     </button>
                     <button
                         onClick={handleAddEstablishment}
@@ -139,7 +139,7 @@ export function OwnerEstablishmentsPage() {
                             <Store size={24} />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-gray-400 tracking-wide">Total Locations</p>
+                            <p className="text-[10px] font-bold text-gray-400 tracking-wide">Total</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">{establishments.length}</p>
                         </div>
                     </div>
@@ -157,7 +157,7 @@ export function OwnerEstablishmentsPage() {
                             <Zap size={24} />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-gray-400 tracking-wide">Active Locations</p>
+                            <p className="text-[10px] font-bold text-gray-400 tracking-wide">Active</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">
                                 {establishments.filter(e => e.subscriptionStatus === 'ACTIVE').length}
                             </p>
@@ -177,7 +177,7 @@ export function OwnerEstablishmentsPage() {
                             <Settings size={24} />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-gray-400 tracking-wide">Trial Locations</p>
+                            <p className="text-[10px] font-bold text-gray-400 tracking-wide">Trial</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">
                                 {establishments.filter(e => e.subscriptionStatus === 'TRIAL').length}
                             </p>
@@ -197,7 +197,7 @@ export function OwnerEstablishmentsPage() {
                         />
                         <input
                             type="text"
-                            placeholder="Search by name, Id, or type..."
+                            placeholder="Search locations..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm hover:shadow-md focus:shadow-lg"
@@ -246,9 +246,9 @@ export function OwnerEstablishmentsPage() {
             {filteredEstablishments.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Store size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="text-lg font-medium text-gray-900 dark:text-white">No establishments found</p>
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">No locations found</p>
                     <p className="text-sm text-gray-500 mt-1">
-                        Add your first establishment to get started or adjust your searches
+                        Add your first location to get started.
                     </p>
                 </div>
             ) : viewMode === 'grid' ? (
@@ -326,7 +326,7 @@ export function OwnerEstablishmentsPage() {
                                                             className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                                                         >
                                                             <Eye size={16} />
-                                                            Enter Dashboard
+                                                            Enter
                                                         </button>
                                                         <button
                                                             onClick={(e) => e.stopPropagation()}
@@ -378,7 +378,7 @@ export function OwnerEstablishmentsPage() {
                                         }}
                                         className="w-full py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-blue-500 shadow-sm hover:shadow-blue-500/20"
                                     >
-                                        <span>Open Terminal</span>
+                                        <span>Open</span>
                                         <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
                                     </button>
                                 </div>
@@ -391,7 +391,7 @@ export function OwnerEstablishmentsPage() {
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
                     {/* Table Header */}
                     <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
-                        <div className="col-span-4">Establishment</div>
+                        <div className="col-span-4">Location</div>
                         <div className="col-span-2">Type</div>
                         <div className="col-span-2">Status</div>
                         <div className="col-span-2">Currency</div>
@@ -466,7 +466,7 @@ export function OwnerEstablishmentsPage() {
                                             }}
                                             className="px-4 py-2 rounded-lg bg-paymint-green text-black text-xs font-bold tracking-wide hover:bg-emerald-400 transition-all flex items-center gap-2"
                                         >
-                                            Enter Dashboard
+                                            Enter
                                         </button>
                                     </div>
                                 </motion.div>
