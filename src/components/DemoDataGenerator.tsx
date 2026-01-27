@@ -83,7 +83,7 @@ export function DemoDataGeneratorComponent() {
         </p>
 
         <div className="mt-6 mb-6">
-          <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
+          <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wide mb-2">
             Select Business Type
           </label>
           <div className="grid grid-cols-3 gap-3">

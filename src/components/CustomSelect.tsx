@@ -82,7 +82,7 @@ export function CustomSelect({
     return (
         <div className={`relative ${className}`} ref={containerRef}>
             {label && (
-                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 px-1">
+                <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-3 px-1">
                     {label} {required && <span className="text-paymint-red">*</span>}
                 </label>
             )}

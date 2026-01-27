@@ -39,7 +39,7 @@ export function LoadingFallback({
       </div>
 
       {/* Loading text */}
-      <p className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+      <p className="text-xs font-bold text-gray-400 dark:text-gray-500 tracking-widest">
         {message}
       </p>
     </motion.div>

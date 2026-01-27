@@ -100,11 +100,11 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                         {/* Header */}
                         <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                             <div>
-                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white uppercase tracking-tight">
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                                     Cash Management Log
                                 </h2>
                                 <div className="flex items-center gap-2 mt-2">
-                                    <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-md border border-gray-200 dark:border-white/10">
+                                    <span className="text-[10px] font-black text-gray-500 tracking-widest bg-gray-100 dark:bg-white/5 px-2 py-1 rounded-md border border-gray-200 dark:border-white/10">
                                         {format(new Date(startDate), 'MMM dd')} - {format(new Date(endDate), 'MMM dd, yyyy')}
                                     </span>
                                 </div>
@@ -127,7 +127,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                                             <ArrowDownLeft size={16} className="text-paymint-green" />
                                         </div>
                                         <div className="flex items-center">
-                                            <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Total Pay In</span>
+                                            <span className="text-xs font-black text-gray-400 tracking-widest">Total Pay In</span>
                                             <QuickInfo text="Total cash added to the drawer manually (e.g. Opening Float, Change)." />
                                         </div>
                                     </div>
@@ -142,7 +142,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                                             <ArrowUpRight size={16} className="text-red-500" />
                                         </div>
                                         <div className="flex items-center">
-                                            <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Total Pay Out</span>
+                                            <span className="text-xs font-black text-gray-400 tracking-widest">Total Pay Out</span>
                                             <QuickInfo text="Total cash removed manually (e.g. Vendor Payments, Safe Drops)." />
                                         </div>
                                     </div>
@@ -159,7 +159,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                                 {isLoading ? (
                                     <div className="flex flex-col items-center justify-center h-full space-y-4">
                                         <div className="w-8 h-8 border-2 border-paymint-green border-t-transparent rounded-full animate-spin" />
-                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Loading Records...</p>
+                                        <p className="text-xs font-bold text-gray-400 tracking-widest">Loading Records...</p>
                                     </div>
                                 ) : logs.length > 0 ? (
                                     <div className="space-y-4">
@@ -178,7 +178,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                                                         </div>
                                                         <div>
                                                             <div className="flex items-center gap-2 mb-1">
-                                                                <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${log.type === 'PAY_IN'
+                                                                <span className={`text-[10px] font-black tracking-widest px-2 py-0.5 rounded-md ${log.type === 'PAY_IN'
                                                                     ? 'bg-paymint-green/10 text-paymint-green'
                                                                     : 'bg-red-500/10 text-red-500'
                                                                     }`}>
@@ -200,7 +200,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                                                             )}
                                                             <div className="flex items-center gap-1.5 mt-2">
                                                                 <User size={10} className="text-gray-400" />
-                                                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                                                <span className="text-[10px] font-black text-gray-400 tracking-widest">
                                                                     {log.userName}
                                                                 </span>
                                                             </div>
@@ -219,7 +219,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                                         <div className="w-16 h-16 rounded-2xl bg-gray-100 dark:bg-white/5 flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10">
                                             <FileText size={32} className="text-gray-400" />
                                         </div>
-                                        <p className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest">No Records Found</p>
+                                        <p className="text-sm font-bold text-gray-900 dark:text-white tracking-widest">No Records Found</p>
                                         <p className="text-xs text-gray-500 mt-1">No cash movements recorded for this period</p>
                                     </div>
                                 )}
