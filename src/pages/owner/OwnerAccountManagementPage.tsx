@@ -149,18 +149,29 @@ export function OwnerAccountManagementPage() {
 
             const response = await api.put('/api/accounts/profile', editForm);
 
-            if (response.data.success) {
+            // Backend returns the updated user object directly (check for id)
+            if (response.data && response.data.id) {
                 toast.success('Profile updated successfully');
 
-                // Fetch fresh data from server to ensure we have the live state
-                await fetchAccountData();
+                const updatedData = response.data;
+
+                // Update local state immediately with the fresh data from the response
+                setAccountDetails(prev => prev ? ({
+                    ...prev,
+                    firstName: updatedData.firstName,
+                    lastName: updatedData.lastName,
+                    email: updatedData.email,
+                    phone: updatedData.phone,
+                    emailVerified: updatedData.emailVerified
+                }) : null);
 
                 // Update global context for other components
                 updateAccount({
-                    firstName: editForm.firstName,
-                    lastName: editForm.lastName,
-                    email: editForm.email,
-                    phone: editForm.phone
+                    firstName: updatedData.firstName,
+                    lastName: updatedData.lastName,
+                    email: updatedData.email,
+                    phone: updatedData.phone,
+                    emailVerified: updatedData.emailVerified
                 });
 
                 setIsEditing(false);
