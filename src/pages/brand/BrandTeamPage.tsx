@@ -372,7 +372,7 @@ export function BrandTeamPage() {
                                 options={[
                                     { label: 'All Roles', value: 'all' },
                                     { label: 'Admin', value: 'ADMIN' },
-                                    { label: 'User', value: 'Cashier' },
+                                    { label: 'User', value: 'CASHIER' },
                                 ]}
                             />
                         </div>
@@ -445,7 +445,7 @@ export function BrandTeamPage() {
                             )}
                             {roleFilter !== 'all' && (
                                 <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
-                                    Role: {roleFilter === 'Cashier' ? 'User' : roleFilter === 'ADMIN' ? 'Admin' : roleFilter === 'all' ? 'All' : roleFilter.charAt(0).toUpperCase() + roleFilter.slice(1).toLowerCase()}
+                                    Role: {roleFilter === 'CASHIER' ? 'User' : roleFilter === 'ADMIN' ? 'Admin' : 'All'}
                                 </span>
                             )}
                             {locationFilter !== 'all' && (
