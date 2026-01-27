@@ -152,18 +152,10 @@ export function OwnerAccountManagementPage() {
             if (response.data.success) {
                 toast.success('Profile updated successfully');
 
-                // Update local state
-                setAccountDetails(prev => prev ? ({
-                    ...prev,
-                    firstName: editForm.firstName,
-                    lastName: editForm.lastName,
-                    email: editForm.email,
-                    phone: editForm.phone,
-                    // If email changed, backend might reset verification
-                    emailVerified: editForm.email !== prev.email ? false : prev.emailVerified
-                }) : null);
+                // Fetch fresh data from server to ensure we have the live state
+                await fetchAccountData();
 
-                // Update global context
+                // Update global context for other components
                 updateAccount({
                     firstName: editForm.firstName,
                     lastName: editForm.lastName,
