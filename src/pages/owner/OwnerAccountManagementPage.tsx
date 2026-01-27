@@ -225,8 +225,8 @@ export function OwnerAccountManagementPage() {
     const handleDeleteAccount = async () => {
         try {
             setIsDeletingAccount(true);
-            // In a real implementation, this would call the API
-            await api.delete('/api/accounts/profile', {
+            // Call the correct endpoint for account deletion
+            await api.delete('/api/accounts/me', {
                 data: {
                     reason: deleteReason,
                     password: deletePassword
