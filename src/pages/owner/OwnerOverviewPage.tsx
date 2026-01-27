@@ -149,7 +149,7 @@ export function OwnerOverviewPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
                             Enterprise Overview
                         </span>
                         <span className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
@@ -175,7 +175,7 @@ export function OwnerOverviewPage() {
                     <div className="relative">
                         <button
                             onClick={() => setShowDatePicker(!showDatePicker)}
-                            className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wide border transition-all ${showDatePicker
+                            className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide border transition-all ${showDatePicker
                                 ? 'bg-paymint-green text-black border-paymint-green'
                                 : 'bg-white dark:bg-white/5 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10'
                                 }`}
@@ -203,7 +203,7 @@ export function OwnerOverviewPage() {
                                     className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/10 shadow-xl z-50 p-4"
                                 >
                                     <div className="flex items-center justify-between mb-4">
-                                        <h4 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wide">Select Period</h4>
+                                        <h4 className="text-xs font-bold text-gray-900 dark:text-white tracking-wide">Select Period</h4>
                                         <button onClick={() => setShowDatePicker(false)}>
                                             <X size={16} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" />
                                         </button>
@@ -228,7 +228,7 @@ export function OwnerOverviewPage() {
                                     </div>
 
                                     <div className="space-y-3 pt-3 border-t border-gray-100 dark:border-white/5">
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase">Custom Range</p>
+                                        <p className="text-[10px] font-bold text-gray-400">Custom Range</p>
                                         <input
                                             type="date"
                                             value={customStartDate}
@@ -244,7 +244,7 @@ export function OwnerOverviewPage() {
                                         <button
                                             onClick={handleCustomDateApply}
                                             disabled={!customStartDate || !customEndDate}
-                                            className="w-full py-2.5 rounded-lg bg-paymint-green text-black text-xs font-bold uppercase tracking-wide hover:bg-emerald-400 transition-all disabled:opacity-50"
+                                            className="w-full py-2.5 rounded-lg bg-paymint-green text-black text-xs font-bold tracking-wide hover:bg-emerald-400 transition-all disabled:opacity-50"
                                         >
                                             Apply
                                         </button>
@@ -325,7 +325,7 @@ export function OwnerOverviewPage() {
                                     </div>
                                 )}
                             </div>
-                            <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">{stat.label}</p>
+                            <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">{stat.label}</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                             {stat.sub && (
                                 <p className="text-xs font-medium text-gray-500 mt-1">{stat.sub}</p>
@@ -451,7 +451,7 @@ export function OwnerOverviewPage() {
                     <div className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 group relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-gray-100 dark:bg-white/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                         <div className="relative z-10">
-                            <h4 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide mb-4">Quick Management</h4>
+                            <h4 className="text-sm font-bold text-gray-900 dark:text-white tracking-wide mb-4">Quick Management</h4>
                             <div className="space-y-3">
                                 <button
                                     onClick={() => navigate('/owner/employees')}

@@ -260,7 +260,7 @@ export function OwnerAccountManagementPage() {
         switch (status?.toUpperCase()) {
             case 'ACTIVE':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-[10px] font-bold uppercase tracking-widest text-emerald-500">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-[10px] font-bold tracking-widest text-emerald-500">
                         <CheckCircle2 size={12} />
                         Active
                     </span>
@@ -268,28 +268,28 @@ export function OwnerAccountManagementPage() {
             case 'TRIAL':
             case 'TRIALING':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-500/10 border border-blue-500/20 rounded-lg text-[10px] font-bold uppercase tracking-widest text-blue-500">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-500/10 border border-blue-500/20 rounded-lg text-[10px] font-bold tracking-widest text-blue-500">
                         <Zap size={12} />
                         Trial
                     </span>
                 );
             case 'PAST_DUE':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-[10px] font-bold uppercase tracking-widest text-red-500">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-[10px] font-bold tracking-widest text-red-500">
                         <AlertTriangle size={12} />
                         Past Due
                     </span>
                 );
             case 'CANCELED':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-[10px] font-bold uppercase tracking-widest text-red-500">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-[10px] font-bold tracking-widest text-red-500">
                         <XCircle size={12} />
                         Canceled
                     </span>
                 );
             default:
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-500/10 border border-gray-500/20 rounded-lg text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-500/10 border border-gray-500/20 rounded-lg text-[10px] font-bold tracking-widest text-gray-500">
                         {status}
                     </span>
                 );
@@ -380,7 +380,7 @@ export function OwnerAccountManagementPage() {
                             <Store className="w-6 h-6 text-blue-500" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
+                            <p className="text-[10px] font-bold text-gray-400 tracking-widest mb-1">
                                 Establishments
                             </p>
                             <p className="text-3xl font-black text-gray-900 dark:text-white">
@@ -399,7 +399,7 @@ export function OwnerAccountManagementPage() {
                             <Building2 className="w-6 h-6 text-purple-500" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
+                            <p className="text-[10px] font-bold text-gray-400 tracking-widest mb-1">
                                 Brands
                             </p>
                             <p className="text-3xl font-black text-gray-900 dark:text-white">
@@ -418,7 +418,7 @@ export function OwnerAccountManagementPage() {
                             <Users className="w-6 h-6 text-amber-500" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">
+                            <p className="text-[10px] font-bold text-gray-400 tracking-widest mb-1">
                                 Admin Users
                             </p>
                             <p className="text-3xl font-black text-gray-900 dark:text-white">
@@ -459,7 +459,7 @@ export function OwnerAccountManagementPage() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                    <label className="text-[10px] font-bold text-gray-400 tracking-widest flex items-center gap-2">
                                         <User size={12} />
                                         Full Name
                                     </label>
@@ -469,7 +469,7 @@ export function OwnerAccountManagementPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                    <label className="text-[10px] font-bold text-gray-400 tracking-widest flex items-center gap-2">
                                         <Mail size={12} />
                                         Email
                                     </label>
@@ -478,7 +478,7 @@ export function OwnerAccountManagementPage() {
                                             {accountDetails?.email}
                                         </p>
                                         {accountDetails?.emailVerified && (
-                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded-md text-[9px] font-bold uppercase tracking-widest text-emerald-500">
+                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded-md text-[9px] font-bold tracking-widest text-emerald-500">
                                                 <Shield size={10} />
                                                 Verified
                                             </span>
@@ -487,7 +487,7 @@ export function OwnerAccountManagementPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                    <label className="text-[10px] font-bold text-gray-400 tracking-widest flex items-center gap-2">
                                         <Phone size={12} />
                                         Phone
                                     </label>
@@ -497,7 +497,7 @@ export function OwnerAccountManagementPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                    <label className="text-[10px] font-bold text-gray-400 tracking-widest flex items-center gap-2">
                                         <Calendar size={12} />
                                         Member Since
                                     </label>
@@ -589,7 +589,7 @@ export function OwnerAccountManagementPage() {
                                             </div>
 
                                             <div className="mt-5 p-4 bg-white dark:bg-[#020617] rounded-xl border border-gray-200 dark:border-white/[0.05] group-hover:border-paymint-green/20 transition-colors">
-                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                                                <label className="text-[10px] font-bold text-gray-400 tracking-widest mb-2 flex items-center gap-1.5">
                                                     <Key size={10} />
                                                     Login ID
                                                 </label>
@@ -687,7 +687,7 @@ export function OwnerAccountManagementPage() {
                                                 </div>
 
                                                 <div className="mt-5 p-4 bg-white dark:bg-[#020617] rounded-xl border border-gray-200 dark:border-white/[0.05] group-hover:border-purple-500/20 transition-colors">
-                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                                                    <label className="text-[10px] font-bold text-gray-400 tracking-widest mb-2 flex items-center gap-1.5">
                                                         <Key size={10} />
                                                         Brand Login ID
                                                     </label>
@@ -996,7 +996,7 @@ export function OwnerAccountManagementPage() {
                                         type="text"
                                         value={deleteConfirmationText}
                                         onChange={(e) => setDeleteConfirmationText(e.target.value)}
-                                        placeholder="Type DELETE"
+                                        placeholder="Type Delete"
                                         className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500/50"
                                     />
                                 </div>
@@ -1092,7 +1092,7 @@ export function OwnerAccountManagementPage() {
 
                                 <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/[0.05] overflow-hidden">
                                     <div className="px-4 py-3 border-b border-gray-100 dark:border-white/[0.05] bg-gray-100/50 dark:bg-white/[0.02]">
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Active Establishments</p>
+                                        <p className="text-[10px] font-bold text-gray-400 tracking-widest">Active Establishments</p>
                                     </div>
                                     <div className="max-h-40 overflow-y-auto p-2 space-y-1">
                                         {activeBlockingEsts.map((est) => (

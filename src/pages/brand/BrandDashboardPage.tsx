@@ -275,7 +275,7 @@ export function BrandDashboardPage() {
                     <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
                     <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
                 </div>
-                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Loading dashboard...</p>
+                <p className="text-sm font-bold text-gray-400 tracking-widest">Loading dashboard...</p>
             </div>
         );
     }
@@ -333,7 +333,7 @@ export function BrandDashboardPage() {
                                             setShowDatePicker(false);
                                         }
                                     }}
-                                    className={`px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wide transition-all flex items-center gap-1.5 ${timeRange === range.value
+                                    className={`px-4 py-2.5 rounded-lg text-xs font-bold tracking-wide transition-all flex items-center gap-1.5 ${timeRange === range.value
                                         ? 'bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm'
                                         : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
                                         }`}
@@ -390,7 +390,7 @@ export function BrandDashboardPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">
+                            <label className="block text-xs font-bold text-gray-500 tracking-wide mb-2">
                                 Start Date
                             </label>
                             <input
@@ -402,7 +402,7 @@ export function BrandDashboardPage() {
                             />
                         </div>
                         <div>
-                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">
+                            <label className="block text-xs font-bold text-gray-500 tracking-wide mb-2">
                                 End Date
                             </label>
                             <input
@@ -518,7 +518,7 @@ export function BrandDashboardPage() {
                                     </div>
                                 )}
                             </div>
-                            <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">{stat.label}</p>
+                            <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">{stat.label}</p>
                             <p className={`text-2xl font-bold text-gray-900 dark:text-white ${isTopBrand ? 'tracking-tight' : ''}`}>{stat.value}</p>
                         </div>
                     </motion.div>
@@ -618,7 +618,7 @@ export function BrandDashboardPage() {
                                     <BarChart3 size={32} className="text-gray-400 dark:text-gray-600" />
                                 </div>
                                 <div className="text-center">
-                                    <p className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide">No Performance Data</p>
+                                    <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">No Performance Data</p>
                                     <p className="text-xs text-gray-500 mt-1">There are no sales or order records for this period.</p>
                                 </div>
                             </div>
@@ -697,7 +697,7 @@ export function BrandDashboardPage() {
                     </div>
                     <button
                         onClick={() => navigate(`/brand/${brandId}/locations`)}
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all"
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all"
                     >
                         View All
                         <ChevronRight size={16} />

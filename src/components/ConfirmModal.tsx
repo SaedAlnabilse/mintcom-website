@@ -136,7 +136,7 @@ export function ConfirmModal({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="px-6 py-4 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 border border-gray-200 dark:border-white/5 transition-all duration-200 active:scale-95"
+                    className="px-6 py-4 rounded-xl text-xs font-bold tracking-widest text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 border border-gray-200 dark:border-white/5 transition-all duration-200 active:scale-95"
                   >
                     {cancelText}
                   </button>
@@ -147,7 +147,7 @@ export function ConfirmModal({
                     onConfirm();
                     onClose();
                   }}
-                  className={`px-6 py-4 rounded-xl text-xs font-bold uppercase tracking-widest ${theme.buttonBg} transition-all duration-300 active:scale-95 hover:scale-[1.02] ${!showCancel ? 'w-full' : ''}`}
+                  className={`px-6 py-4 rounded-xl text-xs font-bold tracking-widest ${theme.buttonBg} transition-all duration-300 active:scale-95 hover:scale-[1.02] ${!showCancel ? 'w-full' : ''}`}
                 >
                   {confirmText}
                 </button>

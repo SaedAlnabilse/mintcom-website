@@ -98,7 +98,7 @@ export function OwnerEstablishmentsPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
                             Fleet Inventory
                         </span>
                     </div>
@@ -139,7 +139,7 @@ export function OwnerEstablishmentsPage() {
                             <Store size={24} />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Total Inventory</p>
+                            <p className="text-[10px] font-bold text-gray-400 tracking-wide">Total Inventory</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">{establishments.length}</p>
                         </div>
                     </div>
@@ -157,7 +157,7 @@ export function OwnerEstablishmentsPage() {
                             <Zap size={24} />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Active Nodes</p>
+                            <p className="text-[10px] font-bold text-gray-400 tracking-wide">Active Nodes</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">
                                 {establishments.filter(e => e.subscriptionStatus === 'ACTIVE').length}
                             </p>
@@ -177,7 +177,7 @@ export function OwnerEstablishmentsPage() {
                             <Settings size={24} />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Trial Instances</p>
+                            <p className="text-[10px] font-bold text-gray-400 tracking-wide">Trial Instances</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">
                                 {establishments.filter(e => e.subscriptionStatus === 'TRIAL').length}
                             </p>
@@ -275,7 +275,7 @@ export function OwnerEstablishmentsPage() {
 
                                 {est.id === highlightId && (
                                     <div className="absolute top-0 right-0 p-2">
-                                        <span className="bg-paymint-green text-black text-[10px] font-black px-2 py-1 rounded-bl-xl rounded-tr-xl uppercase tracking-widest shadow-sm">New</span>
+                                        <span className="bg-paymint-green text-black text-[10px] font-black px-2 py-1 rounded-bl-xl rounded-tr-xl tracking-widest shadow-sm">New</span>
                                     </div>
                                 )}
 
@@ -343,7 +343,7 @@ export function OwnerEstablishmentsPage() {
 
                                     {/* Status Badge */}
                                     <div className="mb-6">
-                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border ${getStatusColor(est.subscriptionStatus)}`}>
+                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold tracking-wide border ${getStatusColor(est.subscriptionStatus)}`}>
                                             <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' :
                                                 est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
                                                     'bg-red-500'
@@ -357,14 +357,14 @@ export function OwnerEstablishmentsPage() {
                                         <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5 group-hover:border-blue-500/10 transition-colors">
                                             <div className="flex items-center gap-2 mb-1 text-gray-400">
                                                 <DollarSign size={12} />
-                                                <p className="text-[10px] font-bold uppercase tracking-wide">Currency</p>
+                                                <p className="text-[10px] font-bold tracking-wide">Currency</p>
                                             </div>
                                             <p className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'JOD'}</p>
                                         </div>
                                         <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5 group-hover:border-blue-500/10 transition-colors">
                                             <div className="flex items-center gap-2 mb-1 text-gray-400">
                                                 <Zap size={12} />
-                                                <p className="text-[10px] font-bold uppercase tracking-wide">Status</p>
+                                                <p className="text-[10px] font-bold tracking-wide">Status</p>
                                             </div>
                                             <p className="text-sm font-bold text-emerald-500">Online</p>
                                         </div>
@@ -376,7 +376,7 @@ export function OwnerEstablishmentsPage() {
                                             e.stopPropagation();
                                             handleEstablishmentClick(est);
                                         }}
-                                        className="w-full py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wide hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-blue-500 shadow-sm hover:shadow-blue-500/20"
+                                        className="w-full py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-blue-500 shadow-sm hover:shadow-blue-500/20"
                                     >
                                         <span>Open Terminal</span>
                                         <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
@@ -390,7 +390,7 @@ export function OwnerEstablishmentsPage() {
                 /* List View */
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
                     {/* Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
                         <div className="col-span-4">Establishment</div>
                         <div className="col-span-2">Type</div>
                         <div className="col-span-2">Status</div>
@@ -427,7 +427,7 @@ export function OwnerEstablishmentsPage() {
                                             </h3>
                                             <p className="text-xs text-gray-500 mt-0.5 md:hidden">{est.type}</p>
                                             {est.id === highlightId && (
-                                                <span className="text-[10px] text-paymint-green font-bold uppercase tracking-wider ml-2">New</span>
+                                                <span className="text-[10px] text-paymint-green font-bold tracking-wider ml-2">New</span>
                                             )}
                                         </div>
                                     </div>
@@ -441,7 +441,7 @@ export function OwnerEstablishmentsPage() {
 
                                     {/* Status */}
                                     <div className="col-span-2 flex items-center">
-                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border ${getStatusColor(est.subscriptionStatus)}`}>
+                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wide border ${getStatusColor(est.subscriptionStatus)}`}>
                                             <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' :
                                                 est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
                                                     'bg-red-500'
@@ -464,7 +464,7 @@ export function OwnerEstablishmentsPage() {
                                                 e.stopPropagation();
                                                 handleEstablishmentClick(est);
                                             }}
-                                            className="px-4 py-2 rounded-lg bg-paymint-green text-black text-xs font-bold uppercase tracking-wide hover:bg-emerald-400 transition-all flex items-center gap-2"
+                                            className="px-4 py-2 rounded-lg bg-paymint-green text-black text-xs font-bold tracking-wide hover:bg-emerald-400 transition-all flex items-center gap-2"
                                         >
                                             Enter Dashboard
                                         </button>
