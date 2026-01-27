@@ -332,7 +332,7 @@ export function AddonsPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
               Inventory
             </span>
           </div>
@@ -395,9 +395,9 @@ export function AddonsPage() {
                 <stat.icon size={20} />
               </div>
               <div>
-                <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-0.5">{stat.label}</p>
+                <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
                 <p className="text-xl font-black text-gray-900 dark:text-white">{stat.value}</p>
-                {stat.sub && <p className="text-[10px] font-bold text-paymint-green uppercase tracking-wide mt-1">{stat.sub}</p>}
+                {stat.sub && <p className="text-[10px] font-bold text-paymint-green tracking-wide mt-1">{stat.sub}</p>}
               </div>
             </div>
           </motion.div>
@@ -421,13 +421,13 @@ export function AddonsPage() {
         <div className="pt-4 border-t border-gray-100 dark:border-white/5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Selection Filter */}
           <div className="space-y-2">
-            <p className="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">Selection Logic</p>
+            <p className="text-[9px] font-black text-gray-400 dark:text-gray-500 tracking-widest px-1">Selection Logic</p>
             <div className="flex bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/10">
               {['ALL', 'SINGLE_SELECT', 'MULTI_SELECT'].map((f) => (
                 <button
                   key={f}
                   onClick={() => { setFilterSelection(f as any); setPage(1); }}
-                  className={`flex-1 py-2 text-[9px] font-black uppercase tracking-tight rounded-lg transition-all ${filterSelection === f
+                  className={`flex-1 py-2 text-[9px] font-black tracking-tight rounded-lg transition-all ${filterSelection === f
                     ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm'
                     : 'text-gray-400 hover:text-gray-600'
                     }`}
@@ -440,13 +440,13 @@ export function AddonsPage() {
 
           {/* Requirement Filter */}
           <div className="space-y-2">
-            <p className="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">Mandatory Node</p>
+            <p className="text-[9px] font-black text-gray-400 dark:text-gray-500 tracking-widest px-1">Mandatory Node</p>
             <div className="flex bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/10">
               {['ALL', 'MANDATORY', 'OPTIONAL'].map((f) => (
                 <button
                   key={f}
                   onClick={() => { setFilterRequirement(f as any); setPage(1); }}
-                  className={`flex-1 py-2 text-[9px] font-black uppercase tracking-tight rounded-lg transition-all ${filterRequirement === f
+                  className={`flex-1 py-2 text-[9px] font-black tracking-tight rounded-lg transition-all ${filterRequirement === f
                     ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm'
                     : 'text-gray-400 hover:text-gray-600'
                     }`}
@@ -459,13 +459,13 @@ export function AddonsPage() {
 
           {/* Pricing Model */}
           <div className="space-y-2">
-            <p className="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">Capital Strategy</p>
+            <p className="text-[9px] font-black text-gray-400 dark:text-gray-500 tracking-widest px-1">Capital Strategy</p>
             <div className="flex bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/10">
               {['ALL', 'FREE', 'PAID'].map((f) => (
                 <button
                   key={f}
                   onClick={() => handleQuickFilter(f as any)}
-                  className={`flex-1 py-2 text-[9px] font-black uppercase tracking-tight rounded-lg transition-all ${filterPricing === f
+                  className={`flex-1 py-2 text-[9px] font-black tracking-tight rounded-lg transition-all ${filterPricing === f
                     ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm'
                     : 'text-gray-400 hover:text-gray-600'
                     }`}
@@ -486,7 +486,7 @@ export function AddonsPage() {
               setFilterPricing('ALL');
               setSearchQuery('');
             }}
-            className="text-[9px] font-black text-gray-400 hover:text-paymint-red uppercase tracking-widest flex items-center gap-1.5 transition-colors"
+            className="text-[9px] font-black text-gray-400 hover:text-paymint-red tracking-widest flex items-center gap-1.5 transition-colors"
           >
             <RefreshCw size={10} />
             Reset Ecosystem Filters
@@ -531,10 +531,10 @@ export function AddonsPage() {
                     <div className="flex items-center gap-3">
                       <h3 className="font-bold text-gray-900 dark:text-white text-lg">{attr.name}</h3>
                       {attr.isRequired && (
-                        <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 bg-paymint-green/10 text-paymint-green rounded-md border border-paymint-green/20">Mandatory</span>
+                        <span className="text-[10px] font-black tracking-widest px-2 py-0.5 bg-paymint-green/10 text-paymint-green rounded-md border border-paymint-green/20">Mandatory</span>
                       )}
                     </div>
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">
+                    <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">
                       {attr.inputType === 'SINGLE_SELECT' ? 'Single Selection' : 'Multiple Selection'} • {attr.subAttributes?.length || 0} Options
                     </p>
                   </div>
@@ -561,10 +561,10 @@ export function AddonsPage() {
                     className="border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 p-8"
                   >
                     <div className="flex items-center justify-between mb-6">
-                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Add-on Options</span>
+                      <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Add-on Options</span>
                       <button
                         onClick={() => openSubAttributeModal(attr.id)}
-                        className="px-4 py-2 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-paymint-green hover:text-black hover:border-paymint-green transition-all flex items-center gap-2"
+                        className="px-4 py-2 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-xs font-bold tracking-widest rounded-xl hover:bg-paymint-green hover:text-black hover:border-paymint-green transition-all flex items-center gap-2"
                       >
                         <Plus size={14} /> Add Option
                       </button>
@@ -636,7 +636,7 @@ export function AddonsPage() {
               </div>
               <div className="p-8 space-y-8">
                 <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 px-1">
+                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-3 px-1">
                     Group Name <span className="text-paymint-red">*</span>
                   </label>
                   <input
@@ -647,7 +647,7 @@ export function AddonsPage() {
                       if (errors.groupName) setErrors({ ...errors, groupName: '' });
                     }}
                     className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.groupName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
-                    placeholder="e.g. COOKING PREFERENCE"
+                    placeholder="e.g. Cooking Preference"
                   />
                   {errors.groupName && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.groupName}</p>}
                 </div>
@@ -701,7 +701,7 @@ export function AddonsPage() {
                 <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
                   <div>
                     <p className="text-sm font-bold text-gray-900 dark:text-white">Required</p>
-                    <p className="text-[10px] text-gray-500 font-bold uppercase mt-0.5">Customer must select an option</p>
+                    <p className="text-[10px] text-gray-500 font-bold mt-0.5">Customer must select an option</p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" checked={attributeForm.isRequired} onChange={() => setAttributeForm({ ...attributeForm, isRequired: !attributeForm.isRequired })} className="sr-only peer" />
@@ -709,7 +709,7 @@ export function AddonsPage() {
                   </label>
                 </div>
 
-                <button onClick={handleSaveAttribute} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] uppercase tracking-widest text-xs flex items-center justify-center gap-2">
+                <button onClick={handleSaveAttribute} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs flex items-center justify-center gap-2">
                   {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
                   Save Configuration
                 </button>
@@ -732,7 +732,7 @@ export function AddonsPage() {
               </div>
               <div className="p-8 space-y-8">
                 <div>
-                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 px-1">
+                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-3 px-1">
                     Option Name <span className="text-paymint-red">*</span>
                   </label>
                   <input
@@ -743,16 +743,16 @@ export function AddonsPage() {
                       if (errors.optionName) setErrors({ ...errors, optionName: '' });
                     }}
                     className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${errors.optionName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
-                    placeholder="e.g. DOUBLE ESPRESSO"
+                    placeholder="e.g. Double Espresso"
                   />
                   {errors.optionName && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.optionName}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-2 px-1">Price</label>
+                  <label className="block text-sm font-bold text-gray-400 tracking-widest mb-2 px-1">Price</label>
                   <div className="relative group">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-100 dark:bg-white/10 rounded-lg">
-                      <span className="text-gray-500 dark:text-gray-400 text-xs font-black uppercase">JOD</span>
+                      <span className="text-gray-500 dark:text-gray-400 text-xs font-black">JOD</span>
                     </div>
                     <input
                       type="text"
@@ -767,18 +767,18 @@ export function AddonsPage() {
                       className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-4 py-3 text-gray-900 dark:text-white font-bold text-lg focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
                     />
                   </div>
-                  <p className="mt-2 text-[9px] font-black text-paymint-green uppercase tracking-widest px-1">Digits shift right to left (ATM Style)</p>
+                  <p className="mt-2 text-[9px] font-black text-paymint-green tracking-widest px-1">Digits shift right to left (ATM Style)</p>
                 </div>
 
                 <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
-                  <p className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tighter">Available</p>
+                  <p className="text-sm font-black text-gray-900 dark:text-white tracking-tighter">Available</p>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" checked={subAttributeForm.isAvailable} onChange={() => setSubAttributeForm({ ...subAttributeForm, isAvailable: !subAttributeForm.isAvailable })} className="sr-only peer" />
                     <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-paymint-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
                   </label>
                 </div>
 
-                <button onClick={handleSaveSubAttribute} disabled={isSubmitting} className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl hover:scale-[1.02] uppercase tracking-widest text-xs transition-all flex items-center justify-center gap-2">
+                <button onClick={handleSaveSubAttribute} disabled={isSubmitting} className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2">
                   {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
                   Save Option
                 </button>

@@ -331,8 +331,8 @@ export function ReportsPage() {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'JOD',
-    }).format(value).replace('JOD', '').trim() + ' JOD';
+      currency: 'Jod',
+    }).format(value).replace('Jod', '').trim() + ' Jod';
   };
 
   const setQuickDate = (range: string) => {
@@ -381,7 +381,7 @@ export function ReportsPage() {
       case 'discounts':
       case 'taxes':
         dataToExport = salesData?.dailyBreakdown || [];
-        headers = { date: 'Date', revenue: 'Revenue (JOD)', count: 'Orders' };
+        headers = { date: 'Date', revenue: 'Revenue (Jod)', count: 'Orders' };
         break;
       case 'top-items':
         dataToExport = itemReportData?.breakdown || [];
@@ -423,7 +423,7 @@ export function ReportsPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
               Analytics
             </span>
             <div className="flex items-center gap-2">
@@ -431,7 +431,7 @@ export function ReportsPage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
               </span>
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Live Data</span>
+              <span className="text-[10px] font-bold text-gray-400 tracking-widest">Live Data</span>
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Reports & Analytics</h1>
@@ -512,7 +512,7 @@ export function ReportsPage() {
                 <div className="flex items-center justify-center relative z-10">
                   <type.icon size={14} className={isSelected ? 'text-black' : 'text-gray-400'} />
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-wide truncate relative z-10">{type.label}</span>
+                <span className="text-[10px] font-black tracking-wide truncate relative z-10">{type.label}</span>
               </button>
             );
           })}
@@ -554,7 +554,7 @@ export function ReportsPage() {
                   <div className="flex-1 w-full bg-transparent flex flex-col justify-center px-2 group">
                     <div className="flex items-center gap-2 mb-1">
                       <Calendar size={12} className={isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
-                      <span className={`text-[9px] font-black uppercase tracking-widest transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Date Range</span>
+                      <span className={`text-[9px] font-black tracking-widest transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Date Range</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <input
@@ -580,7 +580,7 @@ export function ReportsPage() {
                   <div className="flex-1 w-full bg-transparent flex flex-col justify-center px-2 group">
                     <div className="flex items-center gap-2 mb-1">
                       <Clock size={12} className={isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
-                      <span className={`text-[9px] font-black uppercase tracking-widest transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Active Hours</span>
+                      <span className={`text-[9px] font-black tracking-widest transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Active Hours</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <input
@@ -642,7 +642,7 @@ export function ReportsPage() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-32">
             <div className="w-16 h-16 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Processing Analytics...</p>
+            <p className="text-[10px] font-black tracking-widest text-gray-400">Processing Analytics...</p>
           </div>
         ) : (
           <motion.div key={reportType} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
@@ -689,7 +689,7 @@ export function ReportsPage() {
                       {
                         label: 'Total Orders',
                         value: (salesData.totalOrders || 0).toString(),
-                        suffix: 'ORD',
+                        suffix: 'Ord',
                         icon: ShoppingBag,
                         color: 'text-indigo-500',
                         bg: 'bg-indigo-500/10',
@@ -706,7 +706,7 @@ export function ReportsPage() {
                       {
                         label: 'Time Worked',
                         value: (salesData.totalHoursWorked || 0).toFixed(1),
-                        suffix: 'HRS',
+                        suffix: 'Hrs',
                         icon: Clock,
                         color: 'text-orange-500',
                         bg: 'bg-orange-500/10',
@@ -718,18 +718,18 @@ export function ReportsPage() {
                         value: (
                           <div className="w-full mt-1 space-y-2">
                             <div className="flex items-center justify-between">
-                              <span className="text-[10px] uppercase font-bold text-gray-400">Pay In</span>
-                              <span className="text-sm font-bold text-paymint-green tracking-tight">+{formatCurrency(salesData.totalPayIn || 0).replace(' JOD', '')}</span>
+                              <span className="text-[10px] font-bold text-gray-400">Pay In</span>
+                              <span className="text-sm font-bold text-paymint-green tracking-tight">+{formatCurrency(salesData.totalPayIn || 0).replace(' Jod', '')}</span>
                             </div>
                             <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
                             <div className="flex items-center justify-between">
-                              <span className="text-[10px] uppercase font-bold text-gray-400">Pay Out</span>
-                              <span className="text-sm font-bold text-red-500 tracking-tight">-{formatCurrency(salesData.totalPayOut || 0).replace(' JOD', '')}</span>
+                              <span className="text-[10px] font-bold text-gray-400">Pay Out</span>
+                              <span className="text-sm font-bold text-red-500 tracking-tight">-{formatCurrency(salesData.totalPayOut || 0).replace(' Jod', '')}</span>
                             </div>
                             <div className="flex items-center justify-between pt-2 border-t border-dashed border-gray-200 dark:border-white/10">
                               <span className="text-[10px] font-bold text-gray-400">Net Flow</span>
                               <span className={`text-sm font-bold ${netPayInOut >= 0 ? 'text-paymint-green' : 'text-red-500'}`}>
-                                {netPayInOut >= 0 ? '+' : ''}{formatCurrency(netPayInOut).replace(' JOD', '')}
+                                {netPayInOut >= 0 ? '+' : ''}{formatCurrency(netPayInOut).replace(' Jod', '')}
                               </span>
                             </div>
                           </div>
@@ -759,7 +759,7 @@ export function ReportsPage() {
                               <ExternalLink size={14} className="text-gray-300 dark:text-gray-600 group-hover:text-paymint-green transition-colors" />
                             )}
                           </div>
-                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1 flex items-center gap-1">
+                          <p className="text-[10px] font-bold text-gray-400 tracking-wide mb-1 flex items-center gap-1">
                             {stat.label}
                           </p>
                           {typeof stat.value === 'string' ? (
@@ -802,7 +802,7 @@ export function ReportsPage() {
                       </div>
                       <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
                         <Activity size={12} className="text-paymint-green" />
-                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Real-time</span>
+                        <span className="text-[10px] font-bold text-gray-500 tracking-wide">Real-time</span>
                       </div>
                     </div>
                     <div className="h-[300px]">
@@ -883,7 +883,7 @@ export function ReportsPage() {
                                   <Activity size={36} className="text-gray-400 dark:text-gray-600" />
                                 </div>
                                 <div className="text-center">
-                                  <p className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide">No Revenue Data</p>
+                                  <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">No Revenue Data</p>
                                   <p className="text-xs text-gray-500 mt-1">There are no sales recorded for the selected period.</p>
                                 </div>
                               </div>
@@ -958,7 +958,7 @@ export function ReportsPage() {
                                           boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
                                           padding: '16px'
                                         }}
-                                        itemStyle={{ color: '#7CC39F', fontWeight: '900', fontSize: '12px', textTransform: 'uppercase' }}
+                                        itemStyle={{ color: '#7CC39F', fontWeight: '900', fontSize: '12px', textTransform: 'capitalize' }}
                                         labelStyle={{ fontWeight: '900', color: isDark ? '#fff' : '#000', marginBottom: '8px', fontSize: '10px' }}
                                         labelFormatter={(val) => {
                                           if (val.length === 5 && val.includes(':')) return val;
@@ -1019,7 +1019,7 @@ export function ReportsPage() {
                                           boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
                                           padding: '16px'
                                         }}
-                                        itemStyle={{ color: '#7CC39F', fontWeight: '900', fontSize: '12px', textTransform: 'uppercase' }}
+                                        itemStyle={{ color: '#7CC39F', fontWeight: '900', fontSize: '12px', textTransform: 'capitalize' }}
                                         labelStyle={{ fontWeight: '900', color: isDark ? '#fff' : '#000', marginBottom: '8px', fontSize: '10px' }}
                                         labelFormatter={(val, payload) => {
                                           // For aggregated data, show the full date from the date field
@@ -1063,7 +1063,7 @@ export function ReportsPage() {
                       </div>
                       <div>
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white">Capital Sources</h3>
-                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Today's Payment Distribution</p>
+                        <p className="text-[10px] font-bold text-gray-500 tracking-widest">Today's Payment Distribution</p>
                       </div>
                     </div>
                     <div className="flex-1 flex flex-col justify-center">
@@ -1097,7 +1097,7 @@ export function ReportsPage() {
                                     color: isDark ? '#fff' : '#111',
                                     fontWeight: '800',
                                     fontSize: '10px',
-                                    textTransform: 'uppercase'
+                                    textTransform: 'capitalize'
                                   }}
                                 />
                               </PieChart>
@@ -1108,7 +1108,7 @@ export function ReportsPage() {
                               <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                                 <div className="flex items-center gap-2">
                                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                                  <span className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase">{item.name}</span>
+                                  <span className="text-xs font-bold text-gray-700 dark:text-gray-300">{item.name}</span>
                                 </div>
                                 <span className="text-xs font-bold text-gray-900 dark:text-white">{formatCurrency(item.value)}</span>
                               </div>
@@ -1118,7 +1118,7 @@ export function ReportsPage() {
                       ) : (
                         <div className="flex flex-col items-center justify-center h-full text-gray-400">
                           <CreditCard size={32} className="mb-3 opacity-20" />
-                          <p className="text-xs font-bold uppercase tracking-wide">No payment data</p>
+                          <p className="text-xs font-bold tracking-wide">No payment data</p>
                         </div>
                       )}
                     </div>
@@ -1140,7 +1140,7 @@ export function ReportsPage() {
                       <thead className="bg-gray-50 dark:bg-white/[0.02]">
                         <tr className="border-b border-gray-200 dark:border-white/5">
                           <th
-                            className={`px-8 py-5 text-left text-[10px] font-black uppercase tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'name' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                            className={`px-8 py-5 text-left text-[10px] font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'name' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                             onClick={() => requestSort('name')}
                           >
                             <div className="flex items-center gap-2">
@@ -1149,7 +1149,7 @@ export function ReportsPage() {
                             </div>
                           </th>
                           <th
-                            className={`px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'quantity' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                            className={`px-8 py-5 text-right text-[10px] font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'quantity' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                             onClick={() => requestSort('quantity')}
                           >
                             <div className="flex items-center justify-end gap-2">
@@ -1158,7 +1158,7 @@ export function ReportsPage() {
                             </div>
                           </th>
                           <th
-                            className={`px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'revenue' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                            className={`px-8 py-5 text-right text-[10px] font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'revenue' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                             onClick={() => requestSort('revenue')}
                           >
                             <div className="flex items-center justify-end gap-2">
@@ -1198,7 +1198,7 @@ export function ReportsPage() {
                             ))
                         ) : (
                           <tr>
-                            <td colSpan={3} className="py-20 text-center text-gray-400 font-black text-[10px] uppercase tracking-[0.2em]">No transactional data identified for this period</td>
+                            <td colSpan={3} className="py-20 text-center text-gray-400 font-black text-[10px] tracking-[0.2em]">No transactional data identified for this period</td>
                           </tr>
                         )}
                       </tbody>
@@ -1208,7 +1208,7 @@ export function ReportsPage() {
                   {/* Pagination */}
                   {itemReportData.breakdown && itemReportData.breakdown.length > itemsPerPage && (
                     <div className="flex items-center justify-between px-8 py-4 border-t border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.01]">
-                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                      <p className="text-[10px] font-black text-gray-400 tracking-widest">
                         Page {currentPage} of {Math.ceil(itemReportData.breakdown.length / itemsPerPage)}
                       </p>
                       <div className="flex gap-2">
@@ -1292,7 +1292,7 @@ export function ReportsPage() {
                         <div className="bg-white dark:bg-[#0B1120] p-6 rounded-[24px] border border-gray-100 dark:border-white/[0.05] shadow-sm flex flex-col">
                           <div className="mb-4">
                             <h3 className="text-lg font-black text-gray-900 dark:text-white">Revenue Share</h3>
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Team Contribution</p>
+                            <p className="text-[10px] font-black text-gray-400 tracking-widest">Team Contribution</p>
                           </div>
                           <div className="flex-1 min-h-[200px] relative">
                             <ResponsiveContainer width="100%" height="100%">
@@ -1320,8 +1320,8 @@ export function ReportsPage() {
                             {/* Center Stat */}
                             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                               <div className="text-center">
-                                <p className="text-[10px] font-black text-gray-400 uppercase">Total</p>
-                                <p className="text-sm font-black text-gray-900 dark:text-white">{formatCurrency(totalStoreSales).replace(' JOD', '')}</p>
+                                <p className="text-[10px] font-black text-gray-400">Total</p>
+                                <p className="text-sm font-black text-gray-900 dark:text-white">{formatCurrency(totalStoreSales).replace(' Jod', '')}</p>
                               </div>
                             </div>
                           </div>
@@ -1353,7 +1353,7 @@ export function ReportsPage() {
                                   <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg ${idx === 0 ? 'bg-black/10' : 'bg-paymint-green/10 text-paymint-green'}`}>
                                     {emp.username.charAt(0).toUpperCase()}
                                   </div>
-                                  <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${idx === 0 ? 'bg-black/10 text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                                  <div className={`px-3 py-1 rounded-full text-[10px] font-black tracking-widest ${idx === 0 ? 'bg-black/10 text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
                                     {idx === 0 ? '🏆 #1 Leader' : '🥈 #2 Runner Up'}
                                   </div>
                                 </div>
@@ -1362,13 +1362,13 @@ export function ReportsPage() {
                                   <h3 className={`text-xl font-black mb-1 ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>{emp.username}</h3>
                                   <div className="flex gap-4 mt-4">
                                     <div>
-                                      <p className={`text-[9px] font-black uppercase tracking-widest mb-1 ${idx === 0 ? 'text-black/60' : 'text-gray-400'}`}>Revenue</p>
-                                      <p className={`text-2xl font-black ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>{formatCurrency(emp.totalSales).replace(' JOD', '')}</p>
+                                      <p className={`text-[9px] font-black tracking-widest mb-1 ${idx === 0 ? 'text-black/60' : 'text-gray-400'}`}>Revenue</p>
+                                      <p className={`text-2xl font-black ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>{formatCurrency(emp.totalSales).replace(' Jod', '')}</p>
                                     </div>
                                     <div>
-                                      <p className={`text-[9px] font-black uppercase tracking-widest mb-1 ${idx === 0 ? 'text-black/60' : 'text-gray-400'}`}>Avg Ticket</p>
+                                      <p className={`text-[9px] font-black tracking-widest mb-1 ${idx === 0 ? 'text-black/60' : 'text-gray-400'}`}>Avg Ticket</p>
                                       <p className={`text-2xl font-black ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>
-                                        {formatCurrency(emp.totalSales / (emp.transactionCount || 1)).replace(' JOD', '')}
+                                        {formatCurrency(emp.totalSales / (emp.transactionCount || 1)).replace(' Jod', '')}
                                       </p>
                                     </div>
                                   </div>
@@ -1385,19 +1385,19 @@ export function ReportsPage() {
                         <div className="p-6 border-b border-gray-100 dark:border-white/[0.05] flex items-center justify-between">
                           <div>
                             <h3 className="text-lg font-black text-gray-900 dark:text-white">Comparative Team Analysis</h3>
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Quality vs. Quantity Metrics</p>
+                            <p className="text-[10px] font-black text-gray-400 tracking-widest">Quality vs. Quantity Metrics</p>
                           </div>
                         </div>
                         <div className="overflow-x-auto">
                           <table className="w-full">
                             <thead className="bg-gray-50/50 dark:bg-white/[0.01]">
                               <tr className="border-b border-gray-100 dark:border-white/[0.05]">
-                                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Rank</th>
-                                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Staff Member</th>
-                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Total Sales</th>
-                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Share %</th>
-                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Avg Ticket</th>
-                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Efficiency</th>
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Rank</th>
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Staff Member</th>
+                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Total Sales</th>
+                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Share %</th>
+                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Avg Ticket</th>
+                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Efficiency</th>
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100 dark:divide-white/[0.03]">
@@ -1428,11 +1428,11 @@ export function ReportsPage() {
                                       </div>
                                     </td>
                                     <td className="px-6 py-4 text-right font-bold text-gray-900 dark:text-white">
-                                      {formatCurrency(avgTicket).replace(' JOD', '')}
+                                      {formatCurrency(avgTicket).replace(' Jod', '')}
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                       <span className="text-xs font-bold text-gray-500">
-                                        {formatCurrency(efficiency).replace(' JOD', '')} / hr
+                                        {formatCurrency(efficiency).replace(' Jod', '')} / hr
                                       </span>
                                     </td>
                                   </tr>
@@ -1461,28 +1461,28 @@ export function ReportsPage() {
                       <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
                         <div className="flex items-center gap-3 mb-4 text-orange-500">
                           <Activity size={20} />
-                          <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400">Net Cash Health</h4>
+                          <h4 className="text-[10px] font-black tracking-widest text-gray-400">Net Cash Health</h4>
                         </div>
                         <p className={`text-3xl font-black ${totalVariance < -0.01 ? 'text-red-500' : 'text-paymint-green'}`}>
                           {totalVariance > 0 ? '+' : ''}{formatCurrency(totalVariance)}
                         </p>
-                        <p className="text-[10px] font-bold text-gray-500 mt-2 uppercase">Lifetime variance in this period</p>
+                        <p className="text-[10px] font-bold text-gray-500 mt-2">Lifetime variance in this period</p>
                       </div>
                       <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
                         <div className="flex items-center gap-3 mb-4 text-blue-500">
                           <Clock size={20} />
-                          <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400">Session Activity</h4>
+                          <h4 className="text-[10px] font-black tracking-widest text-gray-400">Session Activity</h4>
                         </div>
                         <p className="text-3xl font-black text-gray-900 dark:text-white">{shifts.length}</p>
-                        <p className="text-[10px] font-bold text-gray-500 mt-2 uppercase">{activeShifts} currently open sessions</p>
+                        <p className="text-[10px] font-bold text-gray-500 mt-2">{activeShifts} currently open sessions</p>
                       </div>
                       <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
                         <div className="flex items-center gap-3 mb-4 text-paymint-green">
                           <Wallet size={20} />
-                          <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400">Audit Status</h4>
+                          <h4 className="text-[10px] font-black tracking-widest text-gray-400">Audit Status</h4>
                         </div>
                         <p className="text-3xl font-black text-paymint-green">100%</p>
-                        <p className="text-[10px] font-bold text-gray-500 mt-2 uppercase">Sessions documented</p>
+                        <p className="text-[10px] font-bold text-gray-500 mt-2">Sessions documented</p>
                       </div>
                     </div>
                   );
@@ -1494,13 +1494,13 @@ export function ReportsPage() {
                     <table className="w-full">
                       <thead className="bg-gray-50 dark:bg-white/[0.02]">
                         <tr className="border-b border-gray-200 dark:border-white/5">
-                          <th className="px-5 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Staff Member</th>
-                          <th className="px-5 py-5 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Shift Period</th>
-                          <th className="px-5 py-5 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Opening Bal</th>
-                          <th className="px-5 py-5 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Net Sales</th>
-                          <th className="px-5 py-5 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Closing Bal</th>
-                          <th className="px-5 py-5 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">Cash Over/Short</th>
-                          <th className="px-5 py-5 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
+                          <th className="px-5 py-5 text-left text-[10px] font-black text-gray-400 tracking-widest">Staff Member</th>
+                          <th className="px-5 py-5 text-left text-[10px] font-black text-gray-400 tracking-widest">Shift Period</th>
+                          <th className="px-5 py-5 text-right text-[10px] font-black text-gray-400 tracking-widest">Opening Bal</th>
+                          <th className="px-5 py-5 text-right text-[10px] font-black text-gray-400 tracking-widest">Net Sales</th>
+                          <th className="px-5 py-5 text-right text-[10px] font-black text-gray-400 tracking-widest">Closing Bal</th>
+                          <th className="px-5 py-5 text-center text-[10px] font-black text-gray-400 tracking-widest">Cash Over/Short</th>
+                          <th className="px-5 py-5 text-center text-[10px] font-black text-gray-400 tracking-widest">Status</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -1545,31 +1545,31 @@ export function ReportsPage() {
                                       : '—'}
                                   </span>
                                 ) : (
-                                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Active</span>
+                                  <span className="text-[10px] font-black text-gray-400 tracking-widest">Active</span>
                                 )}
                               </td>
                               <td className="px-5 py-5 text-center">
                                 {shift.status === 'CLOSED' && shift.discrepancy !== null && shift.discrepancy !== undefined ? (
                                   <div className="flex flex-col items-center">
-                                    <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${shift.discrepancy > 0.001
+                                    <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black tracking-widest border ${shift.discrepancy > 0.001
                                       ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
                                       : shift.discrepancy < -0.001
                                         ? 'bg-red-500/10 text-red-500 border-red-500/20'
                                         : 'bg-gray-100 dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10'
                                       }`}>
                                       {shift.discrepancy > 0.001
-                                        ? `+${formatCurrency(shift.discrepancy).replace(' JOD', '')} Over`
+                                        ? `+${formatCurrency(shift.discrepancy).replace(' Jod', '')} Over`
                                         : shift.discrepancy < -0.001
-                                          ? `${formatCurrency(shift.discrepancy).replace(' JOD', '')} Short`
+                                          ? `${formatCurrency(shift.discrepancy).replace(' Jod', '')} Short`
                                           : '0'}
                                     </span>
                                   </div>
                                 ) : (
-                                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">—</span>
+                                  <span className="text-[10px] font-black text-gray-400 tracking-widest">—</span>
                                 )}
                               </td>
                               <td className="px-5 py-5 text-center">
-                                <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border transition-all ${shift.status === 'OPEN'
+                                <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black tracking-widest border transition-all ${shift.status === 'OPEN'
                                   ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
                                   : 'bg-gray-100 dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10'
                                   }`}>
@@ -1580,7 +1580,7 @@ export function ReportsPage() {
                           ))
                         ) : (
                           <tr>
-                            <td colSpan={7} className="py-20 text-center text-gray-400 font-black text-[10px] uppercase tracking-[0.2em]">No shift records found in cluster</td>
+                            <td colSpan={7} className="py-20 text-center text-gray-400 font-black text-[10px] tracking-[0.2em]">No shift records found in cluster</td>
                           </tr>
                         )}
                       </tbody>
@@ -1602,7 +1602,7 @@ export function ReportsPage() {
                       </div>
                       <div>
                         <h3 className="text-base font-bold text-gray-900 dark:text-white">Traffic Heatmap</h3>
-                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Hourly distribution</p>
+                        <p className="text-[10px] font-bold text-gray-500 tracking-widest">Hourly distribution</p>
                       </div>
                     </div>
                   </div>
@@ -1631,7 +1631,7 @@ export function ReportsPage() {
                             fontSize={10}
                             tickLine={false}
                             axisLine={false}
-                            tickFormatter={(val) => formatCurrency(val).replace(' JOD', '')}
+                            tickFormatter={(val) => formatCurrency(val).replace(' Jod', '')}
                           />
                           <Tooltip
                             cursor={{ fill: 'transparent' }}
@@ -1642,7 +1642,7 @@ export function ReportsPage() {
                               boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
                               padding: '12px'
                             }}
-                            itemStyle={{ color: '#f97316', fontWeight: 'bold', fontSize: '12px', textTransform: 'uppercase' }}
+                            itemStyle={{ color: '#f97316', fontWeight: 'bold', fontSize: '12px', textTransform: 'capitalize' }}
                             labelStyle={{ color: isDark ? '#fff' : '#000', fontWeight: 'bold', marginBottom: '4px', fontSize: '10px' }}
                             formatter={(val: any) => [formatCurrency(val), 'Revenue']}
                           />
@@ -1655,7 +1655,7 @@ export function ReportsPage() {
                           <Clock size={36} className="text-gray-400 dark:text-gray-600" />
                         </div>
                         <div className="text-center">
-                          <p className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide">No Traffic Data</p>
+                          <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">No Traffic Data</p>
                           <p className="text-xs text-gray-500 mt-1">There is no transaction activity recorded for the selected period.</p>
                         </div>
                       </div>
@@ -1671,7 +1671,7 @@ export function ReportsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Collected</p>
+                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Collected</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {formatCurrency(salesData.totalRevenue || 0)}
                         </p>
@@ -1682,7 +1682,7 @@ export function ReportsPage() {
 
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Top Method</p>
+                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Top Method</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {salesData.paymentMethodBreakdown?.sort((a: any, b: any) => b.value - a.value)[0]?.name || '—'}
                         </p>
@@ -1693,7 +1693,7 @@ export function ReportsPage() {
 
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Transaction Count</p>
+                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Transaction Count</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {salesData.totalOrders || 0}
                         </p>
@@ -1739,7 +1739,7 @@ export function ReportsPage() {
                                   color: isDark ? '#fff' : '#111',
                                   fontWeight: '800',
                                   fontSize: '12px',
-                                  textTransform: 'uppercase'
+                                  textTransform: 'capitalize'
                                 }}
                                 formatter={(val: any) => formatCurrency(val)}
                               />
@@ -1748,7 +1748,7 @@ export function ReportsPage() {
                         ) : (
                           <div className="flex h-full items-center justify-center text-gray-400 flex-col gap-2">
                             <CreditCard size={32} className="opacity-20" />
-                            <span className="text-xs font-bold uppercase tracking-widest">No Data Available</span>
+                            <span className="text-xs font-bold tracking-widest">No Data Available</span>
                           </div>
                         )}
                         {/* Center Stats */}
@@ -1757,7 +1757,7 @@ export function ReportsPage() {
                             <span className="text-3xl font-black text-gray-900 dark:text-white">
                               {salesData.paymentMethodBreakdown.length}
                             </span>
-                            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Methods</span>
+                            <span className="text-[10px] font-bold text-gray-500 tracking-widest">Methods</span>
                           </div>
                         )}
                       </div>
@@ -1775,9 +1775,9 @@ export function ReportsPage() {
                         <table className="w-full">
                           <thead className="bg-gray-50 dark:bg-white/[0.02]">
                             <tr>
-                              <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Method</th>
-                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Revenue</th>
-                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Share</th>
+                              <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Method</th>
+                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Revenue</th>
+                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Share</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -1825,7 +1825,7 @@ export function ReportsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Discounted</p>
+                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Discounted</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {formatCurrency(salesData.totalDiscounts || 0)}
                         </p>
@@ -1836,7 +1836,7 @@ export function ReportsPage() {
 
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Top Discount</p>
+                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Top Discount</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {salesData.discountBreakdown?.sort((a: any, b: any) => b.value - a.value)[0]?.name || '—'}
                         </p>
@@ -1847,7 +1847,7 @@ export function ReportsPage() {
 
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Usage Count</p>
+                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Usage Count</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {salesData.totalDiscountCount || salesData.discountBreakdown?.reduce((acc: number, curr: any) => acc + (curr.count || 0), 0) || 0}
                         </p>
@@ -1893,7 +1893,7 @@ export function ReportsPage() {
                                   color: isDark ? '#fff' : '#111',
                                   fontWeight: '800',
                                   fontSize: '12px',
-                                  textTransform: 'uppercase'
+                                  textTransform: 'capitalize'
                                 }}
                                 formatter={(val: any) => formatCurrency(val)}
                               />
@@ -1902,7 +1902,7 @@ export function ReportsPage() {
                         ) : (
                           <div className="flex h-full items-center justify-center text-gray-400 flex-col gap-2">
                             <Percent size={32} className="opacity-20" />
-                            <span className="text-xs font-bold uppercase tracking-widest">No Discounts Applied</span>
+                            <span className="text-xs font-bold tracking-widest">No Discounts Applied</span>
                           </div>
                         )}
                         {/* Center Stats */}
@@ -1911,7 +1911,7 @@ export function ReportsPage() {
                             <span className="text-3xl font-black text-gray-900 dark:text-white">
                               {salesData.discountBreakdown.length}
                             </span>
-                            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Types</span>
+                            <span className="text-[10px] font-bold text-gray-500 tracking-widest">Types</span>
                           </div>
                         )}
                       </div>
@@ -1930,7 +1930,7 @@ export function ReportsPage() {
                           <thead className="bg-gray-50 dark:bg-white/[0.02]">
                             <tr>
                               <th
-                                className={`px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'name' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                                className={`px-6 py-4 text-left text-[10px] font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'name' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                                 onClick={() => requestSort('name')}
                               >
                                 <div className="flex items-center gap-2">
@@ -1939,7 +1939,7 @@ export function ReportsPage() {
                                 </div>
                               </th>
                               <th
-                                className={`px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'count' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                                className={`px-6 py-4 text-right text-[10px] font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'count' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                                 onClick={() => requestSort('count')}
                               >
                                 <div className="flex items-center justify-end gap-2">
@@ -1948,7 +1948,7 @@ export function ReportsPage() {
                                 </div>
                               </th>
                               <th
-                                className={`px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'value' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                                className={`px-6 py-4 text-right text-[10px] font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'value' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                                 onClick={() => requestSort('value')}
                               >
                                 <div className="flex items-center justify-end gap-2">
@@ -1982,7 +1982,7 @@ export function ReportsPage() {
                           </tbody>
                         </table>
                         {(!salesData.discountBreakdown || salesData.discountBreakdown.length === 0) && (
-                          <div className="p-8 text-center text-gray-400 text-xs font-bold uppercase tracking-widest">
+                          <div className="p-8 text-center text-gray-400 text-xs font-bold tracking-widest">
                             No discount data available
                           </div>
                         )}
@@ -2000,7 +2000,7 @@ export function ReportsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Tax Collected</p>
+                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Tax Collected</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {formatCurrency(salesData.taxCollected || 0)}
                         </p>
@@ -2011,7 +2011,7 @@ export function ReportsPage() {
 
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Taxable Sales</p>
+                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Taxable Sales</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {formatCurrency(salesData.totalRevenue || 0)}
                         </p>
@@ -2022,7 +2022,7 @@ export function ReportsPage() {
 
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Avg. Tax Rate</p>
+                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Avg. Tax Rate</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {salesData.totalRevenue > 0
                             ? ((salesData.taxCollected / salesData.totalRevenue) * 100).toFixed(1)
@@ -2047,11 +2047,11 @@ export function ReportsPage() {
                         <table className="w-full">
                           <thead className="bg-gray-50 dark:bg-white/[0.02]">
                             <tr>
-                              <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Tax Type</th>
-                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Tax Rate</th>
-                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Taxable Amount</th>
-                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Calculated Tax</th>
-                              <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">Contribution</th>
+                              <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Tax Type</th>
+                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Tax Rate</th>
+                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Taxable Amount</th>
+                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Calculated Tax</th>
+                              <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 tracking-widest">Contribution</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -2068,7 +2068,7 @@ export function ReportsPage() {
                                         </div>
                                         <div className="flex flex-col">
                                           <span className="font-bold text-sm text-gray-900 dark:text-white">{tax.name}</span>
-                                          <span className="text-[10px] text-gray-400 font-bold uppercase">{tax.transactions || 0} Txns</span>
+                                          <span className="text-[10px] text-gray-400 font-bold">{tax.transactions || 0} Txns</span>
                                         </div>
                                       </div>
                                     </td>
@@ -2101,7 +2101,7 @@ export function ReportsPage() {
                                     </div>
                                     <div className="flex flex-col">
                                       <span className="font-bold text-sm text-gray-900 dark:text-white">Sales Tax (Standard)</span>
-                                      <span className="text-[10px] text-gray-400 font-bold uppercase">{salesData.totalOrders || 0} Txns</span>
+                                      <span className="text-[10px] text-gray-400 font-bold">{salesData.totalOrders || 0} Txns</span>
                                     </div>
                                   </div>
                                 </td>
@@ -2143,7 +2143,7 @@ export function ReportsPage() {
                           <p className="text-2xl font-black text-gray-900 dark:text-white">
                             {formatCurrency(salesData.taxExemptSales || 0)}
                           </p>
-                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Exempt Revenue</p>
+                          <p className="text-[10px] font-bold text-gray-400 tracking-widest mt-1">Exempt Revenue</p>
                         </div>
                         <div className="w-full h-px bg-gray-100 dark:bg-white/5 my-4" />
                         <div className="w-full space-y-3">

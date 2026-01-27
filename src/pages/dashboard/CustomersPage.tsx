@@ -211,7 +211,7 @@ export function CustomersPage() {
         email: 'Email',
         tier: 'Tier level',
         points: 'Loyalty Points',
-        totalSpent: 'Total Spent (JOD)',
+        totalSpent: 'Total Spent (Jod)',
         visits: 'Total Visits'
       });
       toast.success('Export complete', { id: 'export' });
@@ -224,8 +224,8 @@ export function CustomersPage() {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'JOD',
-    }).format(value).replace('JOD', '').trim() + ' JOD';
+      currency: 'Jod',
+    }).format(value).replace('Jod', '').trim() + ' Jod';
   };
 
   return (

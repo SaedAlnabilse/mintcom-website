@@ -76,15 +76,15 @@ export function BillingPage() {
 
   // Mock invoices for demo
   const invoices: Invoice[] = [
-    { id: '1', date: 'Oct 12, 2025', amount: '20.00 JOD', status: 'Paid' },
-    { id: '2', date: 'Sep 12, 2025', amount: '20.00 JOD', status: 'Paid' },
+    { id: '1', date: 'Oct 12, 2025', amount: '20.00 Jod', status: 'Paid' },
+    { id: '2', date: 'Sep 12, 2025', amount: '20.00 Jod', status: 'Paid' },
   ];
 
   const getStatusBadge = () => {
     const status = billingInfo?.subscriptionStatus?.toUpperCase();
     if (billingInfo?.cancelAtPeriodEnd) {
       return (
-        <span className="px-3 py-1 rounded-lg bg-amber-500/10 text-amber-500 text-[10px] font-black uppercase tracking-widest border border-amber-500/20 flex items-center gap-2">
+        <span className="px-3 py-1 rounded-lg bg-amber-500/10 text-amber-500 text-[10px] font-black tracking-widest border border-amber-500/20 flex items-center gap-2">
           <Calendar size={12} />
           Canceling Soon
         </span>
@@ -94,28 +94,28 @@ export function BillingPage() {
     switch (status) {
       case 'ACTIVE':
         return (
-          <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20 flex items-center gap-2">
+          <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20 flex items-center gap-2">
             <CheckCircle2 size={12} />
             Active
           </span>
         );
       case 'TRIAL':
         return (
-          <span className="px-3 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase tracking-widest border border-emerald-500/20 flex items-center gap-2">
+          <span className="px-3 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 text-[10px] font-black tracking-widest border border-emerald-500/20 flex items-center gap-2">
             <Zap size={12} />
             Trial
           </span>
         );
       case 'CANCELED':
         return (
-          <span className="px-3 py-1 rounded-lg bg-red-500/10 text-red-500 text-[10px] font-black uppercase tracking-widest border border-red-500/20 flex items-center gap-2">
+          <span className="px-3 py-1 rounded-lg bg-red-500/10 text-red-500 text-[10px] font-black tracking-widest border border-red-500/20 flex items-center gap-2">
             <XCircle size={12} />
             Canceled
           </span>
         );
       default:
         return (
-          <span className="px-3 py-1 rounded-lg bg-gray-500/10 text-gray-500 text-[10px] font-black uppercase tracking-widest border border-gray-500/20">
+          <span className="px-3 py-1 rounded-lg bg-gray-500/10 text-gray-500 text-[10px] font-black tracking-widest border border-gray-500/20">
             {status || 'Unknown'}
           </span>
         );
@@ -128,7 +128,7 @@ export function BillingPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
               Financial
             </span>
             {!isLoading && getStatusBadge()}
@@ -153,40 +153,40 @@ export function BillingPage() {
                 </div>
                 <div>
                   <h3 className="text-2xl font-black text-white tracking-tight">Current Plan</h3>
-                  <p className="text-gray-400 text-sm font-bold uppercase tracking-widest mt-1">Enterprise Tier</p>
+                  <p className="text-gray-400 text-sm font-bold tracking-widest mt-1">Enterprise Tier</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-paymint-green/20 border border-paymint-green/30 backdrop-blur-sm">
                 <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
-                <span className="text-[10px] font-black text-paymint-green uppercase tracking-[0.2em]">Active License</span>
+                <span className="text-[10px] font-black text-paymint-green tracking-[0.2em]">Active License</span>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 relative z-10">
               <div className="p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-colors">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Monthly Fee</p>
+                <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2">Monthly Fee</p>
                 <div className="flex items-baseline gap-2">
                   <span className="text-4xl font-black text-white">{totalMonthly.toFixed(2)}</span>
-                  <span className="text-sm font-bold text-paymint-green">JOD</span>
+                  <span className="text-sm font-bold text-paymint-green">Jod</span>
                 </div>
               </div>
               <div className="p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-colors">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Service Node</p>
+                <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2">Service Node</p>
                 <p className="text-xl font-bold text-white truncate max-w-[200px]">{currentEstablishment?.name}</p>
-                <p className="text-[10px] text-gray-500 mt-1 uppercase tracking-wide">Primary Endpoint</p>
+                <p className="text-[10px] text-gray-500 mt-1 tracking-wide">Primary Endpoint</p>
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 relative z-10">
-              <button className="flex-1 px-8 py-4 bg-paymint-green text-black font-black text-xs rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20 uppercase tracking-widest flex items-center justify-center gap-2">
+              <button className="flex-1 px-8 py-4 bg-paymint-green text-black font-black text-xs rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20 tracking-widest flex items-center justify-center gap-2">
                 <Zap size={16} /> Upgrade Plan
               </button>
 
               {!isLoading && billingInfo?.subscriptionStatus === 'ACTIVE' && !billingInfo?.cancelAtPeriodEnd && (
                 <button
                   onClick={() => setIsSecurityModalOpen(true)}
-                  className="flex-1 px-8 py-4 bg-red-500/10 text-red-400 border border-red-500/20 font-black text-xs rounded-xl hover:bg-red-500 hover:text-white transition-all uppercase tracking-widest flex items-center justify-center gap-2"
+                  className="flex-1 px-8 py-4 bg-red-500/10 text-red-400 border border-red-500/20 font-black text-xs rounded-xl hover:bg-red-500 hover:text-white transition-all tracking-widest flex items-center justify-center gap-2"
                 >
                   <ShieldAlert size={16} />
                   Cancel Subscription
@@ -204,10 +204,10 @@ export function BillingPage() {
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-white/[0.02]">
                   <tr className="border-b border-gray-200 dark:border-white/5">
-                    <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Date</th>
-                    <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Amount</th>
-                    <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
-                    <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Action</th>
+                    <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Date</th>
+                    <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Amount</th>
+                    <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Status</th>
+                    <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -216,7 +216,7 @@ export function BillingPage() {
                       <td className="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 font-bold">{invoice.date}</td>
                       <td className="px-6 py-4 text-sm text-gray-900 dark:text-white font-black">{invoice.amount}</td>
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider rounded-lg border ${invoice.status === 'Paid'
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-black tracking-wider rounded-lg border ${invoice.status === 'Paid'
                           ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
                           : 'bg-red-500/10 text-red-500 border-red-500/20'
                           }`}>
@@ -250,17 +250,17 @@ export function BillingPage() {
                   </div>
                   <div>
                     <p className="text-sm font-bold text-gray-900 dark:text-white">•••• 4242</p>
-                    <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Expires 12/26</p>
+                    <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 tracking-wide">Expires 12/26</p>
                   </div>
                 </div>
-                <button className="text-[10px] font-black text-paymint-green uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Edit</button>
+                <button className="text-[10px] font-black text-paymint-green tracking-widest opacity-0 group-hover:opacity-100 transition-opacity hover:underline">Edit</button>
               </div>
 
               <button className="w-full flex flex-col items-center gap-2 p-6 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all group">
                 <div className="w-10 h-10 bg-white dark:bg-white/5 rounded-full flex items-center justify-center transition-transform group-hover:scale-110 border border-gray-200 dark:border-white/5">
                   <CreditCard className="w-5 h-5 text-gray-400 group-hover:text-paymint-green transition-colors" />
                 </div>
-                <span className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest group-hover:text-paymint-green transition-colors">Add New Method</span>
+                <span className="text-[10px] font-black text-gray-500 dark:text-gray-400 tracking-widest group-hover:text-paymint-green transition-colors">Add New Method</span>
               </button>
             </div>
           </div>
@@ -271,7 +271,7 @@ export function BillingPage() {
             <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
               Have questions about your billing or subscription? Our dedicated support team is ready to assist you.
             </p>
-            <button className="w-full py-3 bg-white dark:bg-white/5 border border-paymint-green/20 text-paymint-green font-bold rounded-xl text-xs uppercase tracking-widest hover:bg-paymint-green hover:text-black transition-all shadow-sm">
+            <button className="w-full py-3 bg-white dark:bg-white/5 border border-paymint-green/20 text-paymint-green font-bold rounded-xl text-xs tracking-widest hover:bg-paymint-green hover:text-black transition-all shadow-sm">
               Contact Support
             </button>
           </div>

@@ -2,8 +2,7 @@
     "name": "paymint-landing",
     "compatibility_date": "2026-01-27",
     "assets": {
-        "directory": "./dist",
-        "binding": "ASSETS"
+        "directory": "./dist"
     },
     "observability": {
         "enabled": true

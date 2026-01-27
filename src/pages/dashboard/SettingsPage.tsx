@@ -1227,7 +1227,7 @@ export function SettingsPage() {
                       value={watch('currency')}
                       onChange={(val) => { setValue('currency', val, { shouldDirty: true }); }}
                       options={[
-                        { label: 'JOD - Jordanian Dinar', value: 'JOD' },
+                        { label: 'Jod - Jordanian Dinar', value: 'Jod' },
                         { label: 'USD - US Dollar', value: 'USD' },
                         { label: 'SAR - Saudi Riyal', value: 'SAR' },
                         { label: 'AED - UAE Dirham', value: 'AED' },

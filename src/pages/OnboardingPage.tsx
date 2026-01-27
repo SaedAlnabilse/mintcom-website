@@ -400,7 +400,7 @@ export function OnboardingPage() {
                   />
                 ))}
               </div>
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Step {step} of {totalSteps}</span>
+              <span className="text-xs font-bold text-gray-400 tracking-widest">Step {step} of {totalSteps}</span>
             </div>
           )}
         </div>
@@ -427,7 +427,7 @@ export function OnboardingPage() {
                 <form onSubmit={form1.handleSubmit(onStep1Submit)} className="space-y-8">
                   <div className="space-y-6">
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1 flex items-center">
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
                         Establishment Name <span className="text-paymint-red mx-1">*</span>
                         <QuickInfo text="The legal or trade name of your business as shown on receipts." />
                       </label>
@@ -444,7 +444,7 @@ export function OnboardingPage() {
                     </div>
 
                     <div className="space-y-3">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1 flex items-center">
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
                         Business Category
                         <QuickInfo text="Select the category that best describes your business to help us tailor your experience." />
                       </label>
@@ -458,7 +458,7 @@ export function OnboardingPage() {
                               }`}
                           >
                             <type.icon size={24} />
-                            <span className="text-[10px] font-black uppercase tracking-widest">{type.label}</span>
+                            <span className="text-[10px] font-black tracking-widest">{type.label}</span>
                           </button>
                         ))}
                       </div>
@@ -466,7 +466,7 @@ export function OnboardingPage() {
 
                     {/* Phone Number Row */}
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1 flex items-center">
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
                         Phone Number <span className="text-paymint-red mx-1">*</span>
                         <QuickInfo text="Used for account verification and emergency support." />
                       </label>
@@ -560,7 +560,7 @@ export function OnboardingPage() {
 
                     {/* Base Currency Row */}
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1 flex items-center">
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
                         Base Currency <span className="text-paymint-red mx-1">*</span>
                         <QuickInfo text="The primary currency for your sales and inventory reports." />
                       </label>
@@ -588,7 +588,7 @@ export function OnboardingPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1 flex items-center">
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
                         Location Address <span className="text-paymint-red mx-1">*</span>
                         <QuickInfo text="Physical location of your establishment." />
                       </label>
@@ -609,11 +609,11 @@ export function OnboardingPage() {
                       <div className="pt-4 border-t border-gray-100 dark:border-white/5">
                         <div className="flex items-center gap-2 mb-4">
                           <Copy className="text-paymint-green" size={20} />
-                          <h3 className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">Quick Setup</h3>
+                          <h3 className="text-lg font-black text-gray-900 dark:text-white tracking-tight">Quick Setup</h3>
                         </div>
 
                         <div className="bg-gray-50 dark:bg-black/20 rounded-2xl p-5 border border-gray-100 dark:border-white/5">
-                          <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] mb-2 flex items-center">
+                          <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] mb-2 flex items-center">
                             Import Settings From
                             <QuickInfo text="Accelerate setup by copying your menu and settings from another location." />
                           </label>
@@ -737,7 +737,7 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-8">
-                  <button onClick={() => setStep(1)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 font-bold text-xs uppercase tracking-widest">
+                  <button onClick={() => setStep(1)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 font-bold text-xs tracking-widest">
                     <ArrowLeft size={14} /> Back
                   </button>
                   <div className="flex items-center gap-3 mb-4">
@@ -749,9 +749,9 @@ export function OnboardingPage() {
                         {isTrialFlow ? 'Start Free Trial' : 'Activate Subscription'}
                       </h2>
                       {isTrialFlow ? (
-                        <span className="bg-yellow-400 text-black text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">7 Days Free</span>
+                        <span className="bg-yellow-400 text-black text-[10px] font-bold px-2 py-0.5 rounded tracking-wider">7 Days Free</span>
                       ) : (
-                        <span className="bg-paymint-green text-black text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">$20/month</span>
+                        <span className="bg-paymint-green text-black text-[10px] font-bold px-2 py-0.5 rounded tracking-wider">$20/month</span>
                       )}
                     </div>
                   </div>
@@ -766,7 +766,7 @@ export function OnboardingPage() {
                 <form onSubmit={form2.handleSubmit(onStep2Submit)} className="space-y-6">
                   <div className="p-4 bg-gray-50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-300 dark:border-white/10">
                     <div className="flex justify-between items-center mb-4">
-                      <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">Total Due Today</span>
+                      <span className="text-sm font-bold text-gray-500 tracking-wider">Total Due Today</span>
                       <span className="text-xl font-black text-gray-900 dark:text-white">{isTrialFlow ? '$0.00' : '$20.00'}</span>
                     </div>
                     <div className="flex justify-between items-center text-xs text-gray-400">
@@ -828,7 +828,7 @@ export function OnboardingPage() {
                   {(!hasSavedCard || !useSavedCard) && (
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">Card Number</label>
+                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">Card Number</label>
                         <div className="relative group">
                           <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                           <input
@@ -848,7 +848,7 @@ export function OnboardingPage() {
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">Expiry</label>
+                          <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">Expiry</label>
                           <input
                             type="text"
                             {...form2.register('expiryDate')}
@@ -862,7 +862,7 @@ export function OnboardingPage() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">CVC</label>
+                          <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">CVC</label>
                           <input
                             type="text"
                             {...form2.register('cvc')}
@@ -878,7 +878,7 @@ export function OnboardingPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">Cardholder Name</label>
+                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">Cardholder Name</label>
                         <input
                           type="text"
                           {...form2.register('cardName')}
@@ -915,7 +915,7 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
-                  <button onClick={() => setStep(2)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 font-bold text-xs uppercase tracking-widest">
+                  <button onClick={() => setStep(2)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 font-bold text-xs tracking-widest">
                     <ArrowLeft size={14} /> Back
                   </button>
                   <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Create Establishment Login</h2>
@@ -927,7 +927,7 @@ export function OnboardingPage() {
 
                 <form onSubmit={form3.handleSubmit(onStep3Submit)} className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1 flex items-center">
+                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
                       Establishment ID <span className="text-paymint-red mx-1">*</span>
                       <QuickInfo text="A unique ID for this specific location. Used during the first step of POS login." />
                     </label>
@@ -944,7 +944,7 @@ export function OnboardingPage() {
                     <p className="text-[10px] text-gray-400 ml-1">Unique ID for this location's POS login (Step 1 of 2-step login).</p>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1 flex items-center">
+                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
                       Establishment Password <span className="text-paymint-red mx-1">*</span>
                       <QuickInfo text="The password for the Establishment ID. Shared by all staff at this location." />
                     </label>
@@ -992,7 +992,7 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
-                  <button onClick={() => setStep(3)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 font-bold text-xs uppercase tracking-widest">
+                  <button onClick={() => setStep(3)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 font-bold text-xs tracking-widest">
                     <ArrowLeft size={14} /> Back
                   </button>
                   <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Create Your POS Login</h2>
@@ -1005,7 +1005,7 @@ export function OnboardingPage() {
                 <form onSubmit={form4.handleSubmit(onStep4Submit)} className="space-y-6">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">
                         First Name <span className="text-paymint-red">*</span>
                       </label>
                       <div className="relative group">
@@ -1020,7 +1020,7 @@ export function OnboardingPage() {
                       {form4.formState.errors.firstName && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form4.formState.errors.firstName.message as string}</p>}
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1">
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">
                         Last Name <span className="text-paymint-red">*</span>
                       </label>
                       <div className="relative group">
@@ -1037,7 +1037,7 @@ export function OnboardingPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1 flex items-center">
+                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
                       Admin Username <span className="text-paymint-red mx-1">*</span>
                       <QuickInfo text="Your personal identifier for the second step of POS login." />
                     </label>
@@ -1054,7 +1054,7 @@ export function OnboardingPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.2em] ml-1 flex items-center">
+                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
                       Personal Password <span className="text-paymint-red mx-1">*</span>
                       <QuickInfo text="Your unique password to log into the system as an operator." />
                     </label>
@@ -1118,7 +1118,7 @@ export function OnboardingPage() {
                     <div className="w-8 h-8 bg-paymint-green/10 rounded-lg flex items-center justify-center">
                       <Monitor size={18} className="text-paymint-green" />
                     </div>
-                    <h3 className="text-sm font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">Access Your Portal</h3>
+                    <h3 className="text-sm font-black text-gray-500 dark:text-gray-400 tracking-widest">Access Your Portal</h3>
                   </div>
 
                   <div className="relative">
@@ -1132,7 +1132,7 @@ export function OnboardingPage() {
                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
                           <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
                         </span>
-                        START HERE
+                        Start Here
                         <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div>
                       </div>
                     </motion.div>
@@ -1187,7 +1187,7 @@ export function OnboardingPage() {
                         <h3 className="text-xl font-black mb-1 tracking-tight">Open Owner Portal in Browser</h3>
                         <p className="text-sm font-bold opacity-70">Manage your establishments, employees, menu, analytics, and billing from any browser.</p>
                       </div>
-                      <div className="relative z-10 flex items-center gap-2 font-black text-sm uppercase tracking-widest opacity-80">
+                      <div className="relative z-10 flex items-center gap-2 font-black text-sm tracking-widest opacity-80">
                         <ExternalLink size={18} />
                       </div>
                     </motion.button>
@@ -1200,7 +1200,7 @@ export function OnboardingPage() {
                     <div className="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
                       <Download size={18} className="text-blue-500" />
                     </div>
-                    <h3 className="text-sm font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">Download Apps</h3>
+                    <h3 className="text-sm font-black text-gray-500 dark:text-gray-400 tracking-widest">Download Apps</h3>
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -1286,7 +1286,7 @@ export function OnboardingPage() {
                     <div className="w-8 h-8 bg-emerald-500/10 rounded-lg flex items-center justify-center">
                       <BookOpen size={18} className="text-emerald-500" />
                     </div>
-                    <h3 className="text-sm font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest">Resources & Help</h3>
+                    <h3 className="text-sm font-black text-gray-500 dark:text-gray-400 tracking-widest">Resources & Help</h3>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
