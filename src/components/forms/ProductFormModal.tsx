@@ -980,7 +980,7 @@ export function ProductFormModal({
                   className="flex-1 h-14 border border-paymint-red/20 text-paymint-red font-black text-xs rounded-2xl hover:bg-paymint-red/5 transition-all uppercase tracking-widest flex items-center justify-center gap-2"
                 >
                   <Trash2 size={16} />
-                  <span>Delete Product</span>
+                  <span>Delete</span>
                 </button>
               )}
 
@@ -990,7 +990,7 @@ export function ProductFormModal({
                 disabled={isSubmitting || isGeneratingImage}
                 className="flex-1 h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
               >
-                Abort
+                Cancel
               </button>
 
               <button
@@ -1002,7 +1002,7 @@ export function ProductFormModal({
                 {isSubmitting ? (
                   <RefreshCw size={18} className="animate-spin" />
                 ) : (
-                  initialData?.id ? 'Commit Node Changes' : 'Deploy To Catalog'
+                  initialData?.id ? 'Save Changes' : 'Add Product'
                 )}
               </button>
             </div>

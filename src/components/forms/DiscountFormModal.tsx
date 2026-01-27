@@ -187,7 +187,7 @@ export function DiscountFormModal({
               {isSubmitting ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                initialData ? 'Save' : 'Add'
+                initialData ? 'Save Changes' : 'Add Discount'
               )}
             </button>
           </div>

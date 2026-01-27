@@ -200,7 +200,7 @@ export function CategoryFormModal({
               onClick={onClose}
               className="flex-1 h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-black uppercase tracking-[0.2em] text-[10px] hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
             >
-              Abort
+              Cancel
             </button>
             <button
               type="submit"
@@ -211,7 +211,7 @@ export function CategoryFormModal({
               {isSubmitting ? (
                 <RefreshCw size={18} className="animate-spin" />
               ) : (
-                initialData ? 'Commit Changes' : 'Deploy Category'
+                initialData ? 'Save Changes' : 'Add Category'
               )}
             </button>
           </div>

@@ -82,7 +82,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[75vh] overflow-y-auto custom-scrollbar">
+          <form id="reward-form" onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[75vh] overflow-y-auto custom-scrollbar">
             {/* Reward Type */}
             <div>
               <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 px-1">Redemption Protocol</label>
@@ -167,14 +167,26 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
               )}
             </div>
 
+          </form>
+
+          {/* Footer */}
+          <div className="p-6 border-t border-gray-100 dark:border-white/5 flex items-center gap-4 bg-gray-50 dark:bg-black/20 transition-colors">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-black uppercase tracking-[0.2em] text-[10px] hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
+            >
+              Cancel
+            </button>
             <button
               type="submit"
-              className="w-full py-4 bg-paymint-green text-black font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-paymint-green/20 flex items-center justify-center gap-2 mt-2"
+              form="reward-form"
+              className="flex-[2] h-14 rounded-xl bg-paymint-green text-black font-black uppercase tracking-[0.2em] text-[10px] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
             >
               <Check size={18} strokeWidth={3} />
-              Commit Reward Protocol
+              {initialData ? 'Save Changes' : 'Add Reward'}
             </button>
-          </form>
+          </div>
         </motion.div>
       </div>
     </AnimatePresence >
