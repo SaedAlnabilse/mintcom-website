@@ -188,9 +188,9 @@ export function OrdersPage() {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'JOD',
+      currency: 'Jod',
       minimumFractionDigits: 2,
-    }).format(value).replace('JOD', '').trim() + ' JOD';
+    }).format(value).replace('Jod', '').trim() + ' Jod';
   };
 
   const formatDate = (dateString: string) => {
@@ -284,7 +284,7 @@ export function OrdersPage() {
       orderNumber: 'Order #',
       date: 'Date',
       customer: 'Customer',
-      total: 'Total (JOD)',
+      total: 'Total (Jod)',
       status: 'Status',
       paymentMethod: 'Payment Method'
     });
@@ -296,7 +296,7 @@ export function OrdersPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
               Transactions
             </span>
           </div>
@@ -345,7 +345,7 @@ export function OrdersPage() {
               <button
                 key={range}
                 onClick={() => setQuickDate(range)}
-                className={`px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all ${selectedDateRange === range
+                className={`px-3 py-2 rounded-lg text-[10px] font-bold tracking-wide transition-all ${selectedDateRange === range
                   ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm'
                   : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
                   }`}
@@ -408,7 +408,7 @@ export function OrdersPage() {
                 <stat.icon size={20} />
               </div>
               <div>
-                <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-0.5">{stat.label}</p>
+                <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
                 <p className="text-xl font-black text-gray-900 dark:text-white">{stat.value}</p>
               </div>
             </div>
@@ -424,7 +424,7 @@ export function OrdersPage() {
           <div className="py-20 text-center">
             <div className="flex flex-col items-center justify-center">
               <div className="w-12 h-12 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
-              <p className="text-xs font-black uppercase text-gray-400">Loading Orders...</p>
+              <p className="text-xs font-black text-gray-400">Loading Orders...</p>
             </div>
           </div>
         )}
@@ -462,12 +462,12 @@ export function OrdersPage() {
                       </div>
                       <div>
                         <p className="font-bold text-gray-900 dark:text-white text-sm">#{order.orderNumber}</p>
-                        <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">
+                        <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium tracking-wide">
                           {formatDate(order.createdAt)}
                         </p>
                       </div>
                     </div>
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
                       {order.paymentStatus || order.status}
                     </span>
                   </div>
@@ -527,11 +527,11 @@ export function OrdersPage() {
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-white/[0.02]">
                 <tr className="border-b border-gray-200 dark:border-white/5">
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Order Details</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Customer</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Amount</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
-                  <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Actions</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Order Details</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Customer</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Amount</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Status</th>
+                  <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -552,7 +552,7 @@ export function OrdersPage() {
                           </div>
                           <div>
                             <p className="font-bold text-gray-900 dark:text-white text-sm">#{order.orderNumber}</p>
-                            <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">{formatDate(order.createdAt)}</p>
+                            <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium tracking-wide">{formatDate(order.createdAt)}</p>
                           </div>
                         </div>
                       </td>
@@ -562,10 +562,10 @@ export function OrdersPage() {
                       </td>
                       <td className="px-6 py-4">
                         <p className="font-bold text-gray-900 dark:text-white">{formatCurrency(order.total)}</p>
-                        <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">{order.paymentMethod}</p>
+                        <p className="text-[10px] text-gray-500 font-bold tracking-wider">{order.paymentMethod}</p>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
                           {order.paymentStatus || order.status}
                         </span>
                       </td>

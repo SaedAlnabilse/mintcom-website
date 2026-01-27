@@ -203,7 +203,7 @@ export function ActivityLogsPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
               Audit & Compliance
             </span>
           </div>
@@ -288,7 +288,7 @@ export function ActivityLogsPage() {
                     key={preset}
                     onClick={() => handlePresetChange(preset)}
                     className={`
-                      px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wide transition-all whitespace-nowrap
+                      px-3 py-2 rounded-lg text-[10px] font-bold tracking-wide transition-all whitespace-nowrap
                       ${activePreset === preset
                         ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm'
                         : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}
@@ -327,11 +327,11 @@ export function ActivityLogsPage() {
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-white/[0.02]">
               <tr className="border-b border-gray-200 dark:border-white/5">
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Execution Time</th>
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Operative</th>
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Protocol</th>
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Event Description</th>
-                <th className="px-8 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Payload</th>
+                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Execution Time</th>
+                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Operative</th>
+                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Protocol</th>
+                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Event Description</th>
+                <th className="px-8 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Payload</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -341,7 +341,7 @@ export function ActivityLogsPage() {
                     <td colSpan={5} className="py-32 text-center">
                       <div className="flex flex-col items-center gap-4">
                         <div className="w-10 h-10 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin" />
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Syncing Intelligence...</p>
+                        <p className="text-[10px] font-black text-gray-400 tracking-widest">Syncing Intelligence...</p>
                       </div>
                     </td>
                   </tr>
@@ -352,7 +352,7 @@ export function ActivityLogsPage() {
                         <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center">
                           <History size={24} className="text-gray-300" />
                         </div>
-                        <p className="text-gray-500 font-bold uppercase text-[10px] tracking-widest">No matching sequences found.</p>
+                        <p className="text-gray-500 font-bold text-[10px] tracking-widest">No matching sequences found.</p>
                       </div>
                     </td>
                   </tr>
@@ -367,7 +367,7 @@ export function ActivityLogsPage() {
                       <td className="px-8 py-4">
                         <div className="flex flex-col">
                           <span className="text-sm font-bold text-gray-900 dark:text-white whitespace-nowrap">{formatDate(log.timestamp).split(',')[1]}</span>
-                          <span className="text-[10px] font-bold text-gray-400 uppercase">{formatDate(log.timestamp).split(',')[0]}</span>
+                          <span className="text-[10px] font-bold text-gray-400">{formatDate(log.timestamp).split(',')[0]}</span>
                         </div>
                       </td>
                       <td className="px-8 py-4">
@@ -376,13 +376,13 @@ export function ActivityLogsPage() {
                             {log.performedBy?.username?.charAt(0).toUpperCase() || 'A'}
                           </div>
                           <div>
-                            <p className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-tight truncate max-w-[100px]">{log.performedBy?.username || 'Owner'}</p>
-                            <p className="text-[9px] text-gray-400 font-black uppercase">{log.ipAddress || 'Internal'}</p>
+                            <p className="text-sm font-bold text-gray-900 dark:text-white tracking-tight truncate max-w-[100px]">{log.performedBy?.username || 'Owner'}</p>
+                            <p className="text-[9px] text-gray-400 font-black">{log.ipAddress || 'Internal'}</p>
                           </div>
                         </div>
                       </td>
                       <td className="px-8 py-4">
-                        <span className={`inline-flex px-2 py-0.5 rounded-lg text-[9px] font-black uppercase tracking-widest border ${getActionColor(log.action)}`}>
+                        <span className={`inline-flex px-2 py-0.5 rounded-lg text-[9px] font-black tracking-widest border ${getActionColor(log.action)}`}>
                           {log.action?.replace(/_/g, ' ')}
                         </span>
                       </td>
@@ -400,7 +400,7 @@ export function ActivityLogsPage() {
                             <FileText size={16} />
                           </button>
                         ) : (
-                          <span className="text-[10px] font-black text-gray-200 dark:text-white/5 uppercase tracking-widest">—</span>
+                          <span className="text-[10px] font-black text-gray-200 dark:text-white/5 tracking-widest">—</span>
                         )}
                       </td>
                     </motion.tr>
@@ -414,7 +414,7 @@ export function ActivityLogsPage() {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="shrink-0 px-8 py-4 border-t border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-[#1E293B] flex items-center justify-between">
-            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+            <p className="text-[10px] font-black text-gray-400 tracking-widest">
               Showing <span className="text-gray-900 dark:text-white">{(page - 1) * 10 + 1} - {Math.min(page * 10, totalLogs)}</span> of {totalLogs}
             </p>
 
@@ -460,7 +460,7 @@ export function ActivityLogsPage() {
                   </div>
                   <div>
                     <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Event Details</h2>
-                    <p className="text-[10px] font-black text-paymint-green uppercase tracking-widest">{selectedLog.action}</p>
+                    <p className="text-[10px] font-black text-paymint-green tracking-widest">{selectedLog.action}</p>
                   </div>
                 </div>
                 <button onClick={() => setSelectedLog(null)} className="p-3 rounded-2xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-black dark:hover:text-white transition-colors">
@@ -471,17 +471,17 @@ export function ActivityLogsPage() {
               <div className="p-8 overflow-y-auto custom-scrollbar space-y-8">
                 <div className="grid grid-cols-2 gap-8">
                   <div>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Timestamp</p>
+                    <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2">Timestamp</p>
                     <p className="font-bold text-gray-900 dark:text-white">{formatDate(selectedLog.timestamp)}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">User Context</p>
+                    <p className="text-[10px] font-black text-gray-400 tracking-widest mb-2">User Context</p>
                     <p className="font-bold text-gray-900 dark:text-white">{selectedLog.performedBy?.name || 'Administrative Account'}</p>
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Structured Metadata</p>
+                  <p className="text-[10px] font-black text-gray-400 tracking-widest mb-3">Structured Metadata</p>
                   <pre className="bg-gray-50 dark:bg-black/40 p-6 rounded-[1.5rem] overflow-x-auto text-xs text-gray-700 dark:text-paymint-green font-mono leading-relaxed border border-gray-200 dark:border-white/5">
                     {JSON.stringify(selectedLog.metadata, null, 2)}
                   </pre>
@@ -489,7 +489,7 @@ export function ActivityLogsPage() {
               </div>
 
               <div className="p-8 border-t border-gray-200 dark:border-white/5">
-                <button onClick={() => setSelectedLog(null)} className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl uppercase tracking-widest text-xs hover:scale-[1.02] transition-transform">
+                <button onClick={() => setSelectedLog(null)} className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl tracking-widest text-xs hover:scale-[1.02] transition-transform">
                   Dismiss Protocol
                 </button>
               </div>

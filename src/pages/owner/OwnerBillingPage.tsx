@@ -178,7 +178,7 @@ export function OwnerBillingPage() {
     const getStatusBadge = (est: EstablishmentBilling) => {
         if (est.cancelAtPeriodEnd) {
             return (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-lg text-[10px] font-bold uppercase tracking-widest text-amber-500">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-lg text-[10px] font-bold tracking-widest text-amber-500">
                     <Calendar size={12} />
                     Cancels Soon
                 </span>
@@ -188,28 +188,28 @@ export function OwnerBillingPage() {
         switch (est.subscriptionStatus?.toUpperCase()) {
             case 'TRIAL':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-[10px] font-bold uppercase tracking-widest text-emerald-500">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-[10px] font-bold tracking-widest text-emerald-500">
                         <Zap size={12} />
                         Trial
                     </span>
                 );
             case 'ACTIVE':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg text-[10px] font-bold uppercase tracking-widest text-paymint-green">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg text-[10px] font-bold tracking-widest text-paymint-green">
                         <CheckCircle2 size={12} />
                         Active
                     </span>
                 );
             case 'CANCELED':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-[10px] font-bold uppercase tracking-widest text-red-500">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-[10px] font-bold tracking-widest text-red-500">
                         <XCircle size={12} />
                         Canceled
                     </span>
                 );
             default:
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-500/10 border border-gray-500/20 rounded-lg text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-500/10 border border-gray-500/20 rounded-lg text-[10px] font-bold tracking-widest text-gray-500">
                         {est.subscriptionStatus || 'Unknown'}
                     </span>
                 );
@@ -224,7 +224,7 @@ export function OwnerBillingPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
                             Financial Command
                         </span>
                     </div>
@@ -236,7 +236,7 @@ export function OwnerBillingPage() {
 
                 <div className="flex items-center gap-6">
                     <div className="text-right hidden sm:block">
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Monthly Burn Rate</p>
+                        <p className="text-[10px] font-bold text-gray-400 tracking-widest mb-1">Monthly Burn Rate</p>
                         <div className="flex items-baseline justify-end gap-1">
                             <span className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">${totalMonthlyCost.toFixed(2)}</span>
                             <span className="text-xs font-bold text-gray-400">/mo</span>
@@ -281,7 +281,7 @@ export function OwnerBillingPage() {
                                 <stat.icon size={20} />
                             </div>
                             <div>
-                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-0.5">{stat.label}</p>
+                                <p className="text-[10px] font-bold text-gray-400 tracking-wide mb-0.5">{stat.label}</p>
                                 <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                             </div>
                         </div>
@@ -313,7 +313,7 @@ export function OwnerBillingPage() {
                             <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center">
                                 <Plus size={24} />
                             </div>
-                            <span className="text-xs font-bold uppercase tracking-wide">Add Your First Card</span>
+                            <span className="text-xs font-bold tracking-wide">Add Your First Card</span>
                         </motion.button>
                     ) : (
                         <div className="space-y-4">
@@ -333,7 +333,7 @@ export function OwnerBillingPage() {
 
                                     <div className="relative z-10 flex justify-between items-start">
                                         <div className="space-y-1.5">
-                                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Secured Card</p>
+                                            <p className="text-[10px] font-black tracking-[0.2em] text-gray-400">Secured Card</p>
                                             <p className="text-xl font-bold tracking-[0.15em] text-gray-900 dark:text-white">
                                                 <span className="opacity-30">••••</span> {card.last4}
                                             </p>
@@ -341,7 +341,7 @@ export function OwnerBillingPage() {
 
                                         <div className="flex flex-col items-end gap-2">
                                             {card.isDefault && (
-                                                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-paymint-green text-black text-[8px] font-black rounded-full uppercase tracking-widest shadow-lg shadow-paymint-green/20">
+                                                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-paymint-green text-black text-[8px] font-black rounded-full tracking-widest shadow-lg shadow-paymint-green/20">
                                                     <div className="w-1 h-1 rounded-full bg-black animate-pulse" />
                                                     Primary
                                                 </div>
@@ -356,11 +356,11 @@ export function OwnerBillingPage() {
 
                                     <div className="relative z-10 flex justify-between items-end">
                                         <div className="space-y-1">
-                                            <p className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Card Holder</p>
-                                            <p className="font-bold uppercase tracking-wider text-xs text-gray-800 dark:text-gray-200">{card.cardholderName || 'USER'}</p>
+                                            <p className="text-[9px] font-black tracking-[0.2em] text-gray-400">Card Holder</p>
+                                            <p className="font-bold tracking-wider text-xs text-gray-800 dark:text-gray-200">{card.cardholderName || 'USER'}</p>
                                         </div>
                                         <div className="text-right space-y-1">
-                                            <p className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Expires</p>
+                                            <p className="text-[9px] font-black tracking-[0.2em] text-gray-400">Expires</p>
                                             <p className="font-bold text-xs text-gray-800 dark:text-gray-200">{card.expMonth}/{card.expYear.toString().slice(-2)}</p>
                                         </div>
                                     </div>
@@ -405,7 +405,7 @@ export function OwnerBillingPage() {
 
                     <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-visible shadow-sm">
                         {/* Table Header */}
-                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
                             <div className="col-span-4">Service</div>
                             <div className="col-span-3">Status</div>
                             <div className="col-span-2">Cost</div>
@@ -483,7 +483,7 @@ export function OwnerBillingPage() {
                                                             {est.subscriptionStatus === 'TRIAL' && !est.cancelAtPeriodEnd && (
                                                                 <button
                                                                     onClick={() => handleStopTrial(est.id, est.name)}
-                                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 uppercase tracking-wide transition-colors"
+                                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 tracking-wide transition-colors"
                                                                 >
                                                                     Stop Trial
                                                                 </button>
@@ -491,7 +491,7 @@ export function OwnerBillingPage() {
                                                             {est.subscriptionStatus === 'ACTIVE' && !est.cancelAtPeriodEnd && (
                                                                 <button
                                                                     onClick={() => handleCancelSubscription(est.id, est.name)}
-                                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 uppercase tracking-wide transition-colors"
+                                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 tracking-wide transition-colors"
                                                                 >
                                                                     Cancel Sub
                                                                 </button>
@@ -499,14 +499,14 @@ export function OwnerBillingPage() {
                                                             {(est.cancelAtPeriodEnd || est.subscriptionStatus === 'CANCELED') && (
                                                                 <button
                                                                     onClick={() => handleResumeSubscription(est.id, est.name, est.cancelAtPeriodEnd)}
-                                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-paymint-green hover:bg-paymint-green/10 uppercase tracking-wide transition-colors"
+                                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-paymint-green hover:bg-paymint-green/10 tracking-wide transition-colors"
                                                                 >
                                                                     {est.subscriptionStatus === 'CANCELED' ? 'Reactivate ($20)' : 'Resume'}
                                                                 </button>
                                                             )}
                                                             <button
                                                                 onClick={() => window.open(`/dashboard`, '_blank')}
-                                                                className="w-full px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 uppercase tracking-wide transition-colors flex items-center gap-2"
+                                                                className="w-full px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 tracking-wide transition-colors flex items-center gap-2"
                                                             >
                                                                 <Eye size={14} />
                                                                 View Dashboard
@@ -527,7 +527,7 @@ export function OwnerBillingPage() {
                         <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-3">
                             <AlertCircle size={18} className="text-amber-500 shrink-0 mt-0.5" />
                             <div>
-                                <h4 className="text-sm font-bold text-amber-500 uppercase tracking-wide mb-1">Scheduled Cancellations</h4>
+                                <h4 className="text-sm font-bold text-amber-500 tracking-wide mb-1">Scheduled Cancellations</h4>
                                 <p className="text-xs font-medium text-amber-600/80 dark:text-amber-500/80 leading-relaxed">
                                     Some subscriptions are set to cancel at the end of the billing period. Service will continue until the listed end date.
                                 </p>

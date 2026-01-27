@@ -49,8 +49,8 @@ export const DownloadApp = () => {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <a
-                href="/paymint-universal.apk"
-                download
+                href="#" // TODO: Replace with your hosted APK URL (e.g., from R2 or S3)
+                onClick={() => alert("Please update the APK link in src/components/DownloadApp.tsx")}
                 className="flex items-center justify-center gap-3 bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 py-4 px-8 rounded-xl transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 group"
               >
                 <Download className="w-6 h-6" />

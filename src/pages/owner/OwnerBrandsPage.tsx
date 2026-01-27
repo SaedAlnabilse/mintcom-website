@@ -346,7 +346,7 @@ export function OwnerBrandsPage() {
                     <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
                     <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
                 </div>
-                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Loading brands...</p>
+                <p className="text-sm font-bold text-gray-400 tracking-widest">Loading brands...</p>
             </div>
         );
     }
@@ -357,7 +357,7 @@ export function OwnerBrandsPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
                             Brand Engine
                         </span>
                     </div>
@@ -407,7 +407,7 @@ export function OwnerBrandsPage() {
                                 <stat.icon size={24} />
                             </div>
                             <div>
-                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide">{stat.label}</p>
+                                <p className="text-[10px] font-bold text-gray-400 tracking-wide">{stat.label}</p>
                                 <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                             </div>
                         </div>
@@ -468,7 +468,7 @@ export function OwnerBrandsPage() {
 
                 {hasActiveFilters && (
                     <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
-                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wide">Active filters:</span>
+                        <span className="text-xs font-bold text-gray-400 tracking-wide">Active filters:</span>
                         <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
                             Search: "{searchQuery}"
                         </span>
@@ -532,7 +532,7 @@ export function OwnerBrandsPage() {
                                                     </h3>
                                                 </div>
                                                 <div className="flex items-center gap-2">
-                                                    <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-[9px] font-black uppercase tracking-wide">
+                                                    <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-[9px] font-black tracking-wide">
                                                         Active
                                                     </span>
                                                     <span className="text-xs text-gray-500">
@@ -599,7 +599,7 @@ export function OwnerBrandsPage() {
                                         <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <Hash size={14} className="text-purple-500" />
-                                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">POS ID</span>
+                                                <span className="text-[9px] font-black text-gray-400 tracking-widest">POS ID</span>
                                             </div>
                                             <p className="text-sm font-mono font-bold text-gray-900 dark:text-white truncate">
                                                 {brand.establishmentLoginId}
@@ -608,7 +608,7 @@ export function OwnerBrandsPage() {
                                         <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <Calendar size={14} className="text-blue-500" />
-                                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Created</span>
+                                                <span className="text-[9px] font-black text-gray-400 tracking-widest">Created</span>
                                             </div>
                                             <p className="text-sm font-bold text-gray-900 dark:text-white">
                                                 {formatDate(brand.createdAt)}
@@ -619,7 +619,7 @@ export function OwnerBrandsPage() {
                                     {/* Establishments */}
                                     <div className="space-y-3 relative z-10">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Fleet Composition</span>
+                                            <span className="text-[10px] font-black text-gray-400 tracking-widest">Fleet Composition</span>
                                         </div>
                                         <div className="flex flex-wrap gap-2">
                                             {brand.establishments.slice(0, 4).map((est) => (
@@ -642,7 +642,7 @@ export function OwnerBrandsPage() {
                                     <div className="mt-6 pt-6 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
                                         <button
                                             onClick={() => window.open(`/brand/${brand.id}`, '_blank')}
-                                            className="flex-1 py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wide hover:bg-purple-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-purple-500 shadow-sm hover:shadow-purple-500/20"
+                                            className="flex-1 py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-purple-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-purple-500 shadow-sm hover:shadow-purple-500/20"
                                         >
                                             <span>Open Dashboard</span>
                                             <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
@@ -657,7 +657,7 @@ export function OwnerBrandsPage() {
                 /* List View */
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
                     {/* Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
                         <div className="col-span-4">Brand</div>
                         <div className="col-span-2">POS ID</div>
                         <div className="col-span-2">Locations</div>
@@ -694,7 +694,7 @@ export function OwnerBrandsPage() {
                                                 </h3>
 
                                             </div>
-                                            <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-[9px] font-black uppercase">
+                                            <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-[9px] font-black">
                                                 Active
                                             </span>
                                         </div>
@@ -728,7 +728,7 @@ export function OwnerBrandsPage() {
                                                 e.stopPropagation();
                                                 window.open(`/brand/${brand.id}`, '_blank');
                                             }}
-                                            className="px-4 py-2 rounded-lg bg-paymint-green text-black text-xs font-bold uppercase tracking-wide hover:bg-emerald-400 transition-all flex items-center gap-2"
+                                            className="px-4 py-2 rounded-lg bg-paymint-green text-black text-xs font-bold tracking-wide hover:bg-emerald-400 transition-all flex items-center gap-2"
                                         >
                                             <Eye size={14} />
                                             View
@@ -822,7 +822,7 @@ export function OwnerBrandsPage() {
                                             >
                                                 <div className="space-y-4">
                                                     <div className="space-y-2">
-                                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wide block">Brand Name</label>
+                                                        <label className="text-xs font-bold text-gray-500 tracking-wide block">Brand Name</label>
                                                         <input
                                                             {...register('name')}
                                                             placeholder="e.g. Alpha Group"
@@ -833,7 +833,7 @@ export function OwnerBrandsPage() {
 
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                         <div className="space-y-2">
-                                                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wide block">POS Login ID</label>
+                                                            <label className="text-xs font-bold text-gray-500 tracking-wide block">POS Login ID</label>
                                                             <div className="relative">
                                                                 <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                                                                 <input
@@ -845,7 +845,7 @@ export function OwnerBrandsPage() {
                                                             {errors.establishmentLoginId && <p className="text-paymint-red text-xs font-bold">{errors.establishmentLoginId.message as string}</p>}
                                                         </div>
                                                         <div className="space-y-2">
-                                                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wide block">Password</label>
+                                                            <label className="text-xs font-bold text-gray-500 tracking-wide block">Password</label>
                                                             <div className="relative">
                                                                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                                                                 <input
@@ -879,7 +879,7 @@ export function OwnerBrandsPage() {
                                                 className="space-y-6"
                                             >
                                                 <div>
-                                                    <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-4">Select Establishments to Merge</h4>
+                                                    <h4 className="text-xs font-bold text-gray-500 tracking-wide mb-4">Select Establishments to Merge</h4>
                                                     <p className="text-sm text-gray-500 mb-4">Select at least 2 establishments to create a brand.</p>
                                                     <div className="grid grid-cols-1 gap-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                                                         {availableEstablishments.map((est: any) => (
@@ -918,7 +918,7 @@ export function OwnerBrandsPage() {
                                             >
                                                 <div>
                                                     <div className="flex items-center justify-between mb-4">
-                                                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wide">Merge Staff (Optional)</h4>
+                                                        <h4 className="text-xs font-bold text-gray-500 tracking-wide">Merge Staff (Optional)</h4>
                                                         <span className="px-3 py-1 bg-paymint-green/10 rounded-lg text-xs font-bold text-paymint-green">
                                                             {selectedEmployees.length} selected
                                                         </span>
@@ -962,7 +962,7 @@ export function OwnerBrandsPage() {
                                                                                 </div>
                                                                                 <div className="flex-1 min-w-0">
                                                                                     <p className="text-xs font-bold text-gray-900 dark:text-white truncate">{emp.firstName} {emp.lastName}</p>
-                                                                                    <span className={`px-1.5 py-0.5 rounded text-[8px] font-bold border uppercase ${getRoleBadgeColor(emp.role)}`}>{emp.role}</span>
+                                                                                    <span className={`px-1.5 py-0.5 rounded text-[8px] font-bold border ${getRoleBadgeColor(emp.role)}`}>{emp.role}</span>
                                                                                 </div>
                                                                             </div>
                                                                         ))}

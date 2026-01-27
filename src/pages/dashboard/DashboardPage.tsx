@@ -166,7 +166,7 @@ export const DashboardPage = () => {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-JO', {
       style: 'currency',
-      currency: 'JOD',
+      currency: 'Jod',
       minimumFractionDigits: 3,
       maximumFractionDigits: 3
     }).format(value);
@@ -195,7 +195,7 @@ export const DashboardPage = () => {
           <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
           <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
         </div>
-        <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Loading Dashboard...</p>
+        <p className="text-sm font-bold text-gray-400 tracking-widest">Loading Dashboard...</p>
       </div>
     );
   }
@@ -209,7 +209,7 @@ export const DashboardPage = () => {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
               Live Operations
             </span>
             <div className="flex items-center gap-2">
@@ -217,7 +217,7 @@ export const DashboardPage = () => {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
               </span>
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">System Active</span>
+              <span className="text-[10px] font-bold text-gray-400 tracking-widest">System Active</span>
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{getGreeting()}</h1>
@@ -257,7 +257,7 @@ export const DashboardPage = () => {
       {/* Primary KPIs */}
       <div id="tour-kpi-cards" className="space-y-3">
         <div className="flex items-center gap-2">
-          <span className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-500 text-[9px] font-black uppercase tracking-widest border border-blue-500/20">
+          <span className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-500 text-[9px] font-black tracking-widest border border-blue-500/20">
             Financial Overview
           </span>
         </div>
@@ -327,7 +327,7 @@ export const DashboardPage = () => {
                   </div>
                   <QuickInfo text={stat.sub} />
                 </div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1 flex items-center gap-1">
+                <p className="text-[10px] font-bold text-gray-400 tracking-wide mb-1 flex items-center gap-1">
                   {stat.label}
                 </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{stat.value}</p>
@@ -353,7 +353,7 @@ export const DashboardPage = () => {
               </div>
               <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
                 <Activity size={12} className="text-paymint-green" />
-                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Real-time</span>
+                <span className="text-[10px] font-bold text-gray-500 tracking-wide">Real-time</span>
               </div>
             </div>
 
@@ -418,7 +418,7 @@ export const DashboardPage = () => {
               ) : (
                 <div className="flex flex-col items-center justify-center h-full text-gray-400">
                   <Zap size={32} className="mb-3 opacity-20" />
-                  <p className="text-xs font-bold uppercase tracking-wide">No revenue data</p>
+                  <p className="text-xs font-bold tracking-wide">No revenue data</p>
                 </div>
               )}
             </div>
@@ -435,7 +435,7 @@ export const DashboardPage = () => {
               </div>
               <div>
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">Capital Sources</h3>
-                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Today's Payment Distribution</p>
+                <p className="text-[10px] font-bold text-gray-500 tracking-widest">Today's Payment Distribution</p>
               </div>
             </div>
 
@@ -475,7 +475,7 @@ export const DashboardPage = () => {
                       <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                          <span className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase">{item.name}</span>
+                          <span className="text-xs font-bold text-gray-700 dark:text-gray-300">{item.name}</span>
                         </div>
                         <span className="text-xs font-bold text-gray-900 dark:text-white">{formatCurrency(item.value)}</span>
                       </div>
@@ -485,7 +485,7 @@ export const DashboardPage = () => {
               ) : (
                 <div className="flex flex-col items-center justify-center h-full text-gray-400">
                   <CreditCard size={32} className="mb-3 opacity-20" />
-                  <p className="text-xs font-bold uppercase tracking-wide">No payment data</p>
+                  <p className="text-xs font-bold tracking-wide">No payment data</p>
                 </div>
               )}
             </div>
@@ -508,7 +508,7 @@ export const DashboardPage = () => {
 
           <div className="relative z-10 w-full">
             <div className="flex items-start justify-between mb-4">
-              <p className="text-[10px] font-black uppercase tracking-widest text-cyan-600 dark:text-cyan-400">Pay In / Pay Out</p>
+              <p className="text-[10px] font-black tracking-widest text-cyan-600 dark:text-cyan-400">Pay In / Pay Out</p>
               <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-500 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-white transition-all duration-300">
                 <ArrowUpRight size={20} />
               </div>
@@ -516,20 +516,20 @@ export const DashboardPage = () => {
 
             <div className="space-y-3 mb-4">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] uppercase font-bold text-gray-400">Pay In</span>
-                <span className="text-sm font-bold text-paymint-green tracking-tight">+{formatCurrency(stats?.totalPayIn || 0).replace('JOD', '').trim()} JOD</span>
+                <span className="text-[10px] font-bold text-gray-400">Pay In</span>
+                <span className="text-sm font-bold text-paymint-green tracking-tight">+{formatCurrency(stats?.totalPayIn || 0).replace('Jod', '').trim()} Jod</span>
               </div>
               <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
               <div className="flex items-center justify-between">
-                <span className="text-[10px] uppercase font-bold text-gray-400">Pay Out</span>
-                <span className="text-sm font-bold text-red-500 tracking-tight">-{formatCurrency(stats?.totalPayOut || 0).replace('JOD', '').trim()} JOD</span>
+                <span className="text-[10px] font-bold text-gray-400">Pay Out</span>
+                <span className="text-sm font-bold text-red-500 tracking-tight">-{formatCurrency(stats?.totalPayOut || 0).replace('Jod', '').trim()} Jod</span>
               </div>
             </div>
 
             <div className="flex items-center justify-between pt-2 border-t border-dashed border-gray-200 dark:border-white/10">
               <span className="text-[10px] font-bold text-gray-400">Net Flow</span>
               <span className={`text-sm font-bold ${netCashFlow >= 0 ? 'text-paymint-green' : 'text-red-500'}`}>
-                {netCashFlow >= 0 ? '+' : ''}{formatCurrency(netCashFlow).replace('JOD', '').trim()} JOD
+                {netCashFlow >= 0 ? '+' : ''}{formatCurrency(netCashFlow).replace('Jod', '').trim()} Jod
               </span>
             </div>
           </div>
@@ -545,7 +545,7 @@ export const DashboardPage = () => {
           <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
           <div className="relative z-10 flex items-center justify-between">
             <div>
-              <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-1">Refunds</p>
+              <p className="text-[10px] font-black text-orange-500 tracking-widest mb-1">Refunds</p>
               <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(stats?.totalRefunds || 0)}</p>
               <p className="text-[10px] font-medium text-gray-400 mt-1">Today's Returned Value</p>
             </div>
@@ -565,7 +565,7 @@ export const DashboardPage = () => {
           <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
           <div className="relative z-10 flex items-center justify-between">
             <div>
-              <p className="text-[10px] font-black text-purple-500 uppercase tracking-widest mb-1">Top Category</p>
+              <p className="text-[10px] font-black text-purple-500 tracking-widest mb-1">Top Category</p>
               <p className="text-xl font-bold text-gray-900 dark:text-white truncate max-w-[150px]">
                 {stats?.categoryBreakdown?.[0]?.name || 'No data'}
               </p>
@@ -593,12 +593,12 @@ export const DashboardPage = () => {
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-gray-900 dark:text-white">Top Performers</h3>
-                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Today's best selling items</p>
+                  <p className="text-[10px] font-bold text-gray-500 tracking-widest">Today's best selling items</p>
                 </div>
               </div>
               <button
                 onClick={() => navigate('/dashboard/reports')}
-                className="text-xs font-bold text-paymint-green hover:underline uppercase tracking-wide"
+                className="text-xs font-bold text-paymint-green hover:underline tracking-wide"
               >
                 View All
               </button>
@@ -628,7 +628,7 @@ export const DashboardPage = () => {
               )) : (
                 <div className="text-center py-12">
                   <Package className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
-                  <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">No products data</p>
+                  <p className="text-xs font-bold text-gray-500 tracking-wide">No products data</p>
                 </div>
               )}
             </div>
@@ -646,7 +646,7 @@ export const DashboardPage = () => {
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-gray-900 dark:text-white">Traffic Heatmap</h3>
-                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Today's hourly distribution</p>
+                  <p className="text-[10px] font-bold text-gray-500 tracking-widest">Today's hourly distribution</p>
                 </div>
               </div>
             </div>
@@ -679,7 +679,7 @@ export const DashboardPage = () => {
                     <Clock size={28} className="text-gray-400 dark:text-gray-600" />
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wide">No Traffic Data</p>
+                    <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">No Traffic Data</p>
                     <p className="text-xs text-gray-500 mt-1">There is no transaction activity recorded today.</p>
                   </div>
                 </div>
