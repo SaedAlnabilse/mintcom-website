@@ -275,7 +275,7 @@ export function BrandDashboardPage() {
                     <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
                     <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
                 </div>
-                <p className="text-sm font-bold text-gray-400 tracking-widest">Loading dashboard...</p>
+                <p className="text-sm font-bold text-gray-400 tracking-widest">Loading Dashboard...</p>
             </div>
         );
     }

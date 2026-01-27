@@ -256,7 +256,7 @@ export function BrandTeamPage() {
     };
 
     const getRoleBadgeStyle = (role: string) => {
-        const base = "px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border";
+        const base = "px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wide border";
         if (role.toUpperCase() === 'ADMIN') {
             return `${base} bg-paymint-green/10 text-paymint-green border-paymint-green/20`;
         }
@@ -280,7 +280,7 @@ export function BrandTeamPage() {
                     <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
                     <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
                 </div>
-                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Loading team data...</p>
+                <p className="text-sm font-bold text-gray-400 tracking-widest">Loading Team Data...</p>
             </div>
         );
     }
@@ -291,7 +291,7 @@ export function BrandTeamPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-purple-500/10 text-purple-500 text-[10px] font-black uppercase tracking-widest border border-purple-500/20">
+                        <span className="px-3 py-1 rounded-lg bg-purple-500/10 text-purple-500 text-[10px] font-black tracking-widest border border-purple-500/20">
                             Staff Matrix
                         </span>
                     </div>
@@ -340,7 +340,7 @@ export function BrandTeamPage() {
                                     <stat.icon size={20} />
                                 </div>
                             </div>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">{stat.label}</p>
+                            <p className="text-[10px] font-bold text-gray-400 tracking-wide mb-1">{stat.label}</p>
                             <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                         </div>
                     </motion.div>
@@ -424,7 +424,7 @@ export function BrandTeamPage() {
                         {hasActiveFilters && (
                             <button
                                 onClick={clearFilters}
-                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-paymint-red/10 text-paymint-red text-xs font-bold uppercase tracking-wide hover:bg-paymint-red/20 transition-all"
+                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-paymint-red/10 text-paymint-red text-xs font-bold tracking-wide hover:bg-paymint-red/20 transition-all"
                             >
                                 <X size={14} />
                                 Clear
@@ -436,7 +436,7 @@ export function BrandTeamPage() {
                 {/* Active Filters Display */}
                 {hasActiveFilters && (
                     <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
-                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wide">Active filters:</span>
+                        <span className="text-xs font-bold text-gray-400 tracking-wide">Active filters:</span>
                         <div className="flex items-center gap-2 flex-wrap">
                             {searchQuery && (
                                 <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
@@ -560,7 +560,7 @@ export function BrandTeamPage() {
 
                                 {/* Status Badge */}
                                 <div className="mb-4">
-                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border ${emp.isActive
+                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold tracking-wide border ${emp.isActive
                                         ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
                                         : 'bg-gray-100 text-gray-500 border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10'
                                         }`}>
@@ -582,7 +582,7 @@ export function BrandTeamPage() {
                                 {/* Access Rights */}
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between">
-                                        <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Access Rights</p>
+                                        <p className="text-xs font-bold text-gray-500 tracking-wide">Access Rights</p>
                                         <span className="text-xs font-bold text-gray-900 dark:text-white">{emp.establishments.length} Location{emp.establishments.length !== 1 ? 's' : ''}</span>
                                     </div>
                                     <div className="space-y-2">
@@ -612,7 +612,7 @@ export function BrandTeamPage() {
 
                                 {/* Action Buttons */}
                                 <div className="flex items-center gap-3 pt-6 mt-6 border-t border-gray-100 dark:border-white/5">
-                                    <button className="flex-1 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-2 border border-gray-200 dark:border-white/5">
+                                    <button className="flex-1 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-2 border border-gray-200 dark:border-white/5">
                                         <Edit2 size={14} />
                                         Edit
                                     </button>
@@ -628,7 +628,7 @@ export function BrandTeamPage() {
                 /* List View */
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
                     {/* Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
                         <div className="col-span-4">Member</div>
                         <div className="col-span-2">Status</div>
                         <div className="col-span-2">Primary Role</div>
@@ -671,7 +671,7 @@ export function BrandTeamPage() {
 
                                     {/* Status */}
                                     <div className="col-span-2 flex items-center">
-                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border ${emp.isActive
+                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold tracking-wide border ${emp.isActive
                                             ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
                                             : 'bg-gray-100 text-gray-500 border-gray-200'
                                             }`}>
@@ -700,7 +700,7 @@ export function BrandTeamPage() {
                                     <div className="col-span-2 flex items-center justify-end gap-2">
                                         <button
                                             onClick={() => handleEditEmployee(emp)}
-                                            className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all flex items-center gap-2 border border-gray-200 dark:border-white/5"
+                                            className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all flex items-center gap-2 border border-gray-200 dark:border-white/5"
                                         >
                                             <Edit2 size={14} />
                                             Edit
@@ -762,7 +762,7 @@ export function BrandTeamPage() {
                                 <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-6">
                                     <AlertTriangle size={32} />
                                 </div>
-                                <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight mb-2">Remove Employee</h3>
+                                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Remove Employee</h3>
                                 <p className="text-gray-500 text-sm leading-relaxed">
                                     Are you sure you want to remove <span className="font-bold text-gray-900 dark:text-white">{employeeToDelete.firstName} {employeeToDelete.lastName}</span>? This action is irreversible.
                                 </p>
@@ -770,7 +770,7 @@ export function BrandTeamPage() {
 
                             <div className="px-8 pb-6 space-y-4">
                                 <div>
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block">
+                                    <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block">
                                         Verify Your Password
                                     </label>
                                     <div className="relative">
@@ -796,14 +796,14 @@ export function BrandTeamPage() {
                             <div className="p-6 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 bg-gray-50 dark:bg-white/[0.02]">
                                 <button
                                     onClick={closeDeleteModal}
-                                    className="flex-1 py-3.5 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-bold text-xs uppercase tracking-wider hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                                    className="flex-1 py-3.5 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-bold text-xs tracking-wider hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={confirmDelete}
                                     disabled={isDeleting}
-                                    className="flex-1 py-3.5 rounded-xl bg-red-500 text-white font-bold text-xs uppercase tracking-wider hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-red-500/20"
+                                    className="flex-1 py-3.5 rounded-xl bg-red-500 text-white font-bold text-xs tracking-wider hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-red-500/20"
                                 >
                                     {isDeleting ? (
                                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

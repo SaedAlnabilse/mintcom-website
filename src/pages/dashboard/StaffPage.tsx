@@ -219,7 +219,7 @@ export function StaffPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
               Human Capital
             </span>
             <div className="flex items-center gap-2">
@@ -227,7 +227,7 @@ export function StaffPage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
               </div>
-              <span className="text-[10px] font-bold text-paymint-green uppercase tracking-widest">Live</span>
+              <span className="text-[10px] font-bold text-paymint-green tracking-widest">Live</span>
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Team Management</h1>
@@ -280,7 +280,7 @@ export function StaffPage() {
                 <stat.icon size={20} />
               </div>
               <div>
-                <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-0.5">{stat.label}</p>
+                <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
                 <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">{stat.value}</p>
               </div>
             </div>
@@ -295,7 +295,7 @@ export function StaffPage() {
             <button
               key={role}
               onClick={() => { setFilterRole(role as any); setCurrentPage(1); }}
-              className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${filterRole === role
+              className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all whitespace-nowrap ${filterRole === role
                 ? 'bg-gray-900 dark:bg-white text-white dark:text-black shadow-sm'
                 : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10'
                 }`}
@@ -330,14 +330,14 @@ export function StaffPage() {
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-32">
             <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-xs font-black uppercase tracking-widest text-gray-400">Loading Team Data...</p>
+            <p className="text-xs font-black tracking-widest text-gray-400">Loading Team Data...</p>
           </div>
         ) : filteredStaff.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center p-32 text-center bg-gray-50/30 dark:bg-black/10">
             <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
               <Users size={40} className="text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 uppercase tracking-tight">Registry Empty</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Registry Empty</h3>
             <p className="text-gray-500 max-w-xs text-sm font-medium mx-auto">Initialize your first team member to build the operational workforce.</p>
           </div>
         ) : (
@@ -345,11 +345,11 @@ export function StaffPage() {
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-white/[0.02]">
                 <tr className="border-b border-gray-200 dark:border-white/5">
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Member Details</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Role & Access</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Contact</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
-                  <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">Actions</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Member Details</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Role & Access</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Contact</th>
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Status</th>
+                  <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 tracking-widest">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -377,7 +377,7 @@ export function StaffPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wide border ${getRoleStyle(member.role)}`}>
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black tracking-wide border ${getRoleStyle(member.role)}`}>
                           <Shield size={10} />
                           {member.role}
                         </span>
@@ -395,7 +395,7 @@ export function StaffPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className={`flex items-center gap-2 font-black text-[10px] uppercase tracking-wide ${!member.isActive
+                        <div className={`flex items-center gap-2 font-black text-[10px] tracking-wide ${!member.isActive
                           ? 'text-paymint-red'
                           : member.isClockedIn
                             ? 'text-paymint-green'
@@ -451,14 +451,14 @@ export function StaffPage() {
                                 >
                                   <button
                                     onClick={() => { setActiveDropdown(null); toast.success('Protocol sent to identity mail'); }}
-                                    className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
+                                    className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black tracking-widest text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
                                   >
                                     <Key size={14} className="text-paymint-green" />
                                     <span>Reset Access</span>
                                   </button>
                                   <button
                                     onClick={() => { setActiveDropdown(null); handleDelete(member.id, member.username); }}
-                                    className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
+                                    className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black tracking-widest text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
                                   >
                                     <Trash2 size={14} />
                                     <span>Purge Member</span>

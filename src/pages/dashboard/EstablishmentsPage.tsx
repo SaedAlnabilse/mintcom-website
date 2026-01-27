@@ -91,7 +91,7 @@ export function EstablishmentsPage() {
             </div>
             <div>
               <div className="flex items-center gap-3 mb-1">
-                <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+                <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
                   Global Network
                 </span>
               </div>
@@ -134,8 +134,8 @@ export function EstablishmentsPage() {
                   <Store size={24} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white uppercase tracking-tight leading-tight group-hover:text-paymint-green transition-colors">{est.name}</h3>
-                  <span className={`inline-flex items-center px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.2em] rounded-md mt-2 border transition-colors ${getStatusColor(est.subscriptionStatus)}`}>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight leading-tight group-hover:text-paymint-green transition-colors">{est.name}</h3>
+                  <span className={`inline-flex items-center px-2 py-0.5 text-[9px] font-black tracking-[0.2em] rounded-md mt-2 border transition-colors ${getStatusColor(est.subscriptionStatus)}`}>
                     {est.subscriptionStatus}
                   </span>
                 </div>
@@ -156,11 +156,11 @@ export function EstablishmentsPage() {
                       exit={{ opacity: 0, scale: 0.95, y: 10 }}
                       className="absolute right-0 mt-3 w-56 bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/[0.1] rounded-2xl z-50 overflow-hidden py-2 shadow-2xl"
                     >
-                      <button onClick={() => { handleSelectEstablishment(est); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-[10px] font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green hover:text-black transition-all flex items-center gap-3 uppercase tracking-widest">
+                      <button onClick={() => { handleSelectEstablishment(est); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-[10px] font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green hover:text-black transition-all flex items-center gap-3 tracking-widest">
                         <CheckCircle size={14} /> Switch Identity
                       </button>
-                      <button onClick={() => { navigate('/dashboard/settings'); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-[10px] font-black text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-all uppercase tracking-widest">Settings</button>
-                      <button onClick={() => { navigate('/dashboard/staff'); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-[10px] font-black text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-all uppercase tracking-widest">Team Access</button>
+                      <button onClick={() => { navigate('/dashboard/settings'); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-[10px] font-black text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-all tracking-widest">Settings</button>
+                      <button onClick={() => { navigate('/dashboard/staff'); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-[10px] font-black text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-all tracking-widest">Team Access</button>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -169,13 +169,13 @@ export function EstablishmentsPage() {
 
             {/* Details List */}
             <div className="relative z-10 space-y-3 mb-8 px-1">
-              <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest">
+              <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 text-[10px] font-black tracking-widest">
                 <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center border border-gray-100 dark:border-white/10">
                   <DollarSign size={14} className="text-paymint-green" />
                 </div>
                 <span>Currency: {est.currency}</span>
               </div>
-              <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest">
+              <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 text-[10px] font-black tracking-widest">
                 <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center border border-gray-100 dark:border-white/10">
                   <ShieldCheck size={14} className="text-blue-500" />
                 </div>
@@ -188,12 +188,12 @@ export function EstablishmentsPage() {
               {currentEstablishment?.id === est.id ? (
                 <div className="flex items-center justify-center gap-2 py-4 px-6 rounded-xl bg-paymint-green text-black shadow-lg shadow-paymint-green/20">
                   <CheckCircle size={18} strokeWidth={3} />
-                  <span className="font-black text-[10px] uppercase tracking-[0.2em]">Active Enterprise Node</span>
+                  <span className="font-black text-[10px] tracking-[0.2em]">Active Enterprise Node</span>
                 </div>
               ) : (
                 <button
                   onClick={() => handleSelectEstablishment(est)}
-                  className="w-full py-4 px-6 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl hover:scale-[1.02] transition-all active:scale-95 text-[10px] uppercase tracking-[0.2em] shadow-md"
+                  className="w-full py-4 px-6 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl hover:scale-[1.02] transition-all active:scale-95 text-[10px] tracking-[0.2em] shadow-md"
                 >
                   Initialize Switch
                 </button>
@@ -211,8 +211,8 @@ export function EstablishmentsPage() {
             <Plus size={40} className="text-gray-300 group-hover:text-paymint-green transition-colors" />
           </div>
           <div className="text-center">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 uppercase tracking-tight">Expand Node</h3>
-            <p className="text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] max-w-[200px] leading-loose">Deploy New Enterprise Location Profile</p>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Expand Node</h3>
+            <p className="text-gray-500 dark:text-gray-400 text-[10px] font-black tracking-[0.2em] max-w-[200px] leading-loose">Deploy New Enterprise Location Profile</p>
           </div>
         </motion.button>
       </div>
@@ -230,8 +230,8 @@ export function EstablishmentsPage() {
               <Loader2 size={40} className="text-paymint-green animate-spin" />
               <div className="absolute inset-0 bg-paymint-green/20 rounded-2xl animate-ping" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight uppercase">Syncing Node</h2>
-            <p className="text-paymint-green font-black uppercase tracking-[0.3em] text-sm mt-4">{selectedName}</p>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Syncing Node</h2>
+            <p className="text-paymint-green font-black tracking-[0.3em] text-sm mt-4">{selectedName}</p>
 
             <div className="mt-12 w-48 h-1 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
               <motion.div

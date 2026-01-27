@@ -237,7 +237,7 @@ export function BrandLocationsPage() {
                     <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
                     <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
                 </div>
-                <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Loading locations...</p>
+                <p className="text-sm font-bold text-gray-400 tracking-widest">Loading Locations...</p>
             </div>
         );
     }
@@ -248,7 +248,7 @@ export function BrandLocationsPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
                             Fleet Hub
                         </span>
                     </div>
@@ -293,7 +293,7 @@ export function BrandLocationsPage() {
                                     <stat.icon size={20} />
                                 </div>
                             </div>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">{stat.label}</p>
+                            <p className="text-[10px] font-bold text-gray-400 tracking-wide mb-1">{stat.label}</p>
                             <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                         </div>
                     </motion.div>
@@ -381,7 +381,7 @@ export function BrandLocationsPage() {
                         {hasActiveFilters && (
                             <button
                                 onClick={clearFilters}
-                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-paymint-red/10 text-paymint-red text-xs font-bold uppercase tracking-wide hover:bg-paymint-red/20 transition-all"
+                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-paymint-red/10 text-paymint-red text-xs font-bold tracking-wide hover:bg-paymint-red/20 transition-all"
                             >
                                 <X size={14} />
                                 Clear
@@ -393,7 +393,7 @@ export function BrandLocationsPage() {
                 {/* Active Filters Display */}
                 {hasActiveFilters && (
                     <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
-                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wide">Active filters:</span>
+                        <span className="text-xs font-bold text-gray-400 tracking-wide">Active filters:</span>
                         <div className="flex items-center gap-2 flex-wrap">
                             {searchQuery && (
                                 <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
@@ -522,7 +522,7 @@ export function BrandLocationsPage() {
 
                                 {/* Status Badge */}
                                 <div className="mb-6">
-                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border ${getStatusColor(loc.subscriptionStatus)}`}>
+                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold tracking-wide border ${getStatusColor(loc.subscriptionStatus)}`}>
                                         <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
                                         {loc.subscriptionStatus}
                                     </span>
@@ -531,19 +531,19 @@ export function BrandLocationsPage() {
                                 {/* Stats Grid */}
                                 <div className="grid grid-cols-2 gap-3 mb-6">
                                     <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">Revenue</p>
+                                        <p className="text-[10px] font-bold text-gray-400 tracking-wide mb-1">Revenue</p>
                                         <p className="text-base font-bold text-gray-900 dark:text-white">{formatCurrency(loc.totalRevenue || 0)}</p>
                                     </div>
                                     <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">Orders</p>
+                                        <p className="text-[10px] font-bold text-gray-400 tracking-wide mb-1">Orders</p>
                                         <p className="text-base font-bold text-gray-900 dark:text-white">{loc.orderCount}</p>
                                     </div>
                                     <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">Staff</p>
+                                        <p className="text-[10px] font-bold text-gray-400 tracking-wide mb-1">Staff</p>
                                         <p className="text-base font-bold text-gray-900 dark:text-white">{loc.employeeCount}</p>
                                     </div>
                                     <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1">Products</p>
+                                        <p className="text-[10px] font-bold text-gray-400 tracking-wide mb-1">Products</p>
                                         <p className="text-base font-bold text-gray-900 dark:text-white">{loc.itemCount}</p>
                                     </div>
                                 </div>
@@ -551,7 +551,7 @@ export function BrandLocationsPage() {
                                 {/* Action Button */}
                                 <button
                                     onClick={() => handleLocationClick(loc)}
-                                    className="w-full py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wide hover:bg-paymint-green hover:text-black transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-paymint-green"
+                                    className="w-full py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-paymint-green hover:text-black transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-paymint-green"
                                 >
                                     <span>Open Dashboard</span>
                                     <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
@@ -564,7 +564,7 @@ export function BrandLocationsPage() {
                 /* List View */
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-visible shadow-sm">
                     {/* Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
                         <div className="col-span-4">Location</div>
                         <div className="col-span-2">Status</div>
                         <div className="col-span-2 text-right">Revenue</div>
@@ -602,7 +602,7 @@ export function BrandLocationsPage() {
 
                                     {/* Status */}
                                     <div className="col-span-2 flex items-center">
-                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border ${getStatusColor(loc.subscriptionStatus)}`}>
+                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold tracking-wide border ${getStatusColor(loc.subscriptionStatus)}`}>
                                             <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
                                             {loc.subscriptionStatus}
                                         </span>

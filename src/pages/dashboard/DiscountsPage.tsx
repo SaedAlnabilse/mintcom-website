@@ -155,7 +155,7 @@ export function DiscountsPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black uppercase tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
               Sales & Growth
             </span>
           </div>
@@ -186,7 +186,7 @@ export function DiscountsPage() {
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
             <div className="relative z-10">
-              <p className="text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest">Total Discounts</p>
+              <p className="text-gray-500 dark:text-gray-400 text-[10px] font-black tracking-widest">Total Discounts</p>
               <p className="text-3xl font-black text-gray-900 dark:text-white mt-1">{stats.total}</p>
             </div>
             <div className="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center relative z-10 group-hover:scale-110 transition-transform">
@@ -202,7 +202,7 @@ export function DiscountsPage() {
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
             <div className="relative z-10">
-              <p className="text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-widest">Restricted</p>
+              <p className="text-gray-500 dark:text-gray-400 text-[10px] font-black tracking-widest">Restricted</p>
               <p className="text-3xl font-black text-amber-600 dark:text-yellow-400 mt-1">{stats.adminOnly}</p>
             </div>
             <div className="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center relative z-10 group-hover:scale-110 transition-transform">
@@ -273,14 +273,14 @@ export function DiscountsPage() {
 
               <div className="relative z-10">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 truncate group-hover:text-paymint-green transition-colors" title={discount.name}>{discount.name}</h3>
-                <p className="text-3xl font-black text-paymint-green mb-4 tracking-tight">{formatValue(discount)} <span className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">OFF</span></p>
+                <p className="text-3xl font-black text-paymint-green mb-4 tracking-tight">{formatValue(discount)} <span className="text-xs font-bold text-gray-500 tracking-widest ml-1">OFF</span></p>
 
                 <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100 dark:border-white/5">
-                  <span className="px-2.5 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-[10px] text-gray-600 dark:text-gray-400 font-bold uppercase tracking-wider">
+                  <span className="px-2.5 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-[10px] text-gray-600 dark:text-gray-400 font-bold tracking-wider">
                     {discount.type === 'percentage' ? 'Percentage' : 'Fixed Amount'}
                   </span>
                   {discount.adminOnly && (
-                    <span className="px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-yellow-500/10 border border-amber-200 dark:border-yellow-500/20 text-[10px] text-amber-700 dark:text-yellow-500 font-bold uppercase tracking-wider">
+                    <span className="px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-yellow-500/10 border border-amber-200 dark:border-yellow-500/20 text-[10px] text-amber-700 dark:text-yellow-500 font-bold tracking-wider">
                       Manager Only
                     </span>
                   )}
