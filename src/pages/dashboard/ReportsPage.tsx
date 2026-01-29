@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area
 } from 'recharts';
@@ -27,6 +27,7 @@ export function ReportsPage() {
   const isDark = resolvedTheme === 'dark';
   const { currentEstablishment } = useAuth();
   const { type } = useParams<{ type: string }>();
+  const navigate = useNavigate();
 
   const location = useLocation();
 
@@ -493,17 +494,17 @@ export function ReportsPage() {
                 key={type.id}
                 onClick={() => {
                   const newType = type.id as ReportType;
+                  // Navigate to the appropriate route so sidebar stays in sync
                   if (newType === 'top-categories') {
-                    setReportType('top-items');
-                    setItemReportTab('categories');
+                    navigate('/dashboard/reports/categories');
                   } else if (newType === 'top-modifiers') {
-                    setReportType('top-items');
-                    setItemReportTab('modifiers');
+                    navigate('/dashboard/reports/modifiers');
                   } else if (newType === 'top-items') {
-                    setReportType('top-items');
-                    setItemReportTab('items');
+                    navigate('/dashboard/reports/items');
+                  } else if (newType === 'peak-hours') {
+                    navigate('/dashboard/reports/shifts');
                   } else {
-                    setReportType(newType);
+                    navigate(`/dashboard/reports/${newType}`);
                   }
                 }}
                 className={`relative flex-1 flex flex-col xl:flex-row items-center justify-center gap-1.5 xl:gap-2 px-1 py-2.5 xl:py-3 rounded-xl transition-all duration-300 isolate min-w-0 ${isSelected

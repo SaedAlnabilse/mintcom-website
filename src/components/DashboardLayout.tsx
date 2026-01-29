@@ -95,6 +95,12 @@ const menuStructure: MenuItemOrGroup[] = [
     items: [
       { path: '/dashboard/staff', label: 'Team', icon: Users },
       { path: '/dashboard/roles', label: 'Roles', icon: Shield },
+    ],
+  },
+  {
+    label: 'Loyalty',
+    icon: Users,
+    items: [
       { path: '/dashboard/customers', label: 'Customers', icon: Users },
     ],
   },
@@ -135,9 +141,11 @@ const REQUIRED_PERMISSIONS: Record<string, string[]> = {
   '/dashboard/discounts': ['manage_discounts', 'manage_settings', 'settings'],
   '/dashboard/payment-methods': ['manage_payment_methods', 'manage_settings', 'settings'],
 
-  // Community
+  // People
   '/dashboard/staff': ['manage_employees', 'employees'],
   '/dashboard/roles': ['manage_employees', 'employees'],
+
+  // Loyalty
   '/dashboard/customers': ['manage_customers', 'manage_employees', 'employees'],
 
   // Settings

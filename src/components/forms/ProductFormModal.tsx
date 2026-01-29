@@ -224,8 +224,10 @@ export function ProductFormModal({
       }, 500);
       if (initialData) {
         setName(initialData.name || '');
-        setPrice(initialData.price == null || initialData.price === 0 ? '' : initialData.price.toFixed(2));
-        setCostPrice(!initialData.costPrice || initialData.costPrice === 0 ? '' : initialData.costPrice.toFixed(2));
+        const priceVal = typeof initialData.price === 'string' ? parseFloat(initialData.price) : initialData.price;
+        setPrice(priceVal == null || priceVal === 0 || isNaN(priceVal) ? '' : priceVal.toFixed(2));
+        const costVal = typeof initialData.costPrice === 'string' ? parseFloat(initialData.costPrice) : initialData.costPrice;
+        setCostPrice(!costVal || costVal === 0 || isNaN(costVal) ? '' : costVal.toFixed(2));
         setCategoryId(initialData.categoryId || '');
         setDescription(initialData.description || '');
         setType(initialData.type || 'ITEM');
