@@ -50,11 +50,13 @@ export default defineConfig({
         target: 'https://grateful-liberation-production-d036.up.railway.app',
         changeOrigin: true,
         secure: false,
+        rewrite: (path) => `/api${path}`,
       },
       '/app-settings': {
         target: 'https://grateful-liberation-production-d036.up.railway.app',
         changeOrigin: true,
         secure: false,
+        rewrite: (path) => `/api${path}`,
       },
       '/files': {
         target: 'https://grateful-liberation-production-d036.up.railway.app',
@@ -65,6 +67,13 @@ export default defineConfig({
         target: 'https://grateful-liberation-production-d036.up.railway.app',
         changeOrigin: true,
         secure: false,
+        rewrite: (path) => `/api${path}`,
+      },
+      '/employees': {
+        target: 'https://grateful-liberation-production-d036.up.railway.app',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => `/api${path}`,
       },
       '/uploads': {
         target: 'https://grateful-liberation-production-d036.up.railway.app',

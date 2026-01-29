@@ -35,11 +35,17 @@ export const stopGlobalLoading = () => {
   updateLoadingState();
 };
 
-// Request interceptor to add establishment ID
+// Request interceptor to add establishment ID and ensure /api prefix
 api.interceptors.request.use(
   (config) => {
     activeRequests++;
     updateLoadingState();
+
+    // Ensure all API calls have the /api prefix (except for static files like /uploads, /files)
+    if (config.url && !config.url.startsWith('/api') && !config.url.startsWith('/uploads') && !config.url.startsWith('/files') && !config.url.startsWith('http')) {
+      config.url = `/api${config.url}`;
+    }
+
     // Add current establishment ID for account owner requests
     // This is CRITICAL for multi-establishment isolation
     // Use sessionStorage to support multiple tabs with different establishments
