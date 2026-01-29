@@ -2,14 +2,8 @@ import axios from 'axios';
 
 // Api Base Url - In development, use empty string to leverage Vite proxy
 // In production, use the full Url
-// Check if we're in production by looking at the hostname
-const isProduction = typeof window !== 'undefined' &&
-  !window.location.hostname.includes('localhost') &&
-  !window.location.hostname.includes('127.0.0.1');
-
-export const API_BASE_URL = isProduction
-  ? 'https://grateful-liberation-production-d036.up.railway.app'
-  : '';
+export const API_BASE_URL = '';
+// export const API_BASE_URL = 'https://grateful-liberation-production-d036.up.railway.app';
 
 // Create axios instance with default config
 export const api = axios.create({
