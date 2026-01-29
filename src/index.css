@@ -113,21 +113,20 @@ body.app-loading #global-blocking-overlay {
   cursor: url('./assets/green-loading-cursor.svg') 16 16, wait;
 }
 
-/* Chatbot widget animation - subtle pulse */
+/* Chatbot widget animation - ring glow effect */
 iframe[src*="hf.space"],
 div[id*="chat"],
 div[class*="chat-widget"] {
-  animation: subtle-pulse 4s ease-in-out infinite;
+  animation: ring-glow 3s ease-in-out infinite;
+  border-radius: 50%;
 }
 
-@keyframes subtle-pulse {
+@keyframes ring-glow {
   0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(124, 195, 159, 0.15);
+    box-shadow: 0 0 0 0 rgba(124, 195, 159, 0.4);
   }
   50% {
-    transform: scale(1.01);
-    box-shadow: 0 0 6px 3px rgba(124, 195, 159, 0);
+    box-shadow: 0 0 0 8px rgba(124, 195, 159, 0);
   }
 }
 

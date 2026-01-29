@@ -24,7 +24,9 @@ import {
   Smartphone,
   Apple,
   Play,
-  Clock
+  Clock,
+  Heart,
+  Gift
 } from 'lucide-react';
 
 // Paymint Logo imports
@@ -58,15 +60,12 @@ const menuStructure: MenuItemOrGroup[] = [
     icon: FileBarChart,
     items: [
       { path: '/dashboard/reports/sales', label: 'Sales Summary', icon: FileBarChart },
-      { path: '/dashboard/reports/items', label: 'Item Sales', icon: Package },
-      { path: '/dashboard/reports/categories', label: 'Category Sales', icon: LayoutDashboard },
-      { path: '/dashboard/reports/employees', label: 'Staff Sales', icon: Users },
-      { path: '/dashboard/reports/payments', label: 'Payment Sales', icon: CreditCard },
-      { path: '/dashboard/reports/receipts', label: 'Receipts', icon: History },
+      { path: '/dashboard/reports/items', label: 'Items + Categories', icon: Package },
       { path: '/dashboard/reports/modifiers', label: 'Add-on Sales', icon: Package },
-      { path: '/dashboard/reports/discounts', label: 'Discounts', icon: Percent },
-      { path: '/dashboard/reports/taxes', label: 'Taxes', icon: Percent },
+      { path: '/dashboard/reports/employees', label: 'Staff Sales', icon: Users },
+      { path: '/dashboard/reports/payments', label: 'Payments', icon: CreditCard },
       { path: '/dashboard/reports/shifts', label: 'Shifts', icon: Clock },
+      { path: '/dashboard/reports/discounts', label: 'Discounts Report', icon: Percent },
     ],
   },
   { path: '/dashboard/orders', label: 'View Customer Orders', icon: ShoppingCart },
@@ -83,9 +82,8 @@ const menuStructure: MenuItemOrGroup[] = [
   },
   {
     label: 'Sales',
-    icon: Percent,
+    icon: CreditCard,
     items: [
-      { path: '/dashboard/discounts', label: 'Discounts', icon: Percent },
       { path: '/dashboard/payment-methods', label: 'Payment Methods', icon: CreditCard },
     ],
   },
@@ -98,9 +96,10 @@ const menuStructure: MenuItemOrGroup[] = [
     ],
   },
   {
-    label: 'Loyalty',
-    icon: Users,
+    label: 'Discounts and Loyalty',
+    icon: Heart,
     items: [
+      { path: '/dashboard/discounts', label: 'Discounts', icon: Percent },
       { path: '/dashboard/customers', label: 'Customers', icon: Users },
     ],
   },
@@ -137,15 +136,15 @@ const REQUIRED_PERMISSIONS: Record<string, string[]> = {
   '/dashboard/materials': ['manage_inventory', 'items'],
   '/dashboard/recipes': ['manage_inventory', 'items'],
 
-  // Sales & Growth
-  '/dashboard/discounts': ['manage_discounts', 'manage_settings', 'settings'],
+  // Sales
   '/dashboard/payment-methods': ['manage_payment_methods', 'manage_settings', 'settings'],
 
   // People
   '/dashboard/staff': ['manage_employees', 'employees'],
   '/dashboard/roles': ['manage_employees', 'employees'],
 
-  // Loyalty
+  // Discounts and Loyalty
+  '/dashboard/discounts': ['manage_discounts', 'manage_settings', 'settings'],
   '/dashboard/customers': ['manage_customers', 'manage_employees', 'employees'],
 
   // Settings

@@ -7,7 +7,7 @@ import { endOfDay, startOfDay, format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   TrendingUp, Clock, Activity, ShoppingBag, ArrowUpRight, RefreshCw,
-  DownloadCloud, ChevronRight, ChevronLeft, Wallet, CreditCard, ExternalLink, Percent, DollarSign, PieChart as PieChartIcon, Tag, Scale, ArrowUpDown, Calendar, LayoutGrid, Receipt
+  DownloadCloud, ChevronRight, ChevronLeft, Wallet, CreditCard, ExternalLink, Percent, DollarSign, PieChart as PieChartIcon, Tag, Scale, ArrowUpDown, Calendar, LayoutGrid, Receipt, Search, Users
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -87,6 +87,7 @@ export function ReportsPage() {
   const [endTime, setEndTime] = useState('23:59');
   const [selectedDateRange, setSelectedDateRange] = useState<string>('today');
   const [showPayInOutModal, setShowPayInOutModal] = useState(false);
+  const [itemSearchQuery, setItemSearchQuery] = useState('');
 
   // New states for advanced filtering
   const [employees, setEmployees] = useState<any[]>([]);
@@ -134,6 +135,16 @@ export function ReportsPage() {
   const sortedItems = useMemo(() => {
     if (!itemReportData?.breakdown) return [];
     let items = [...itemReportData.breakdown];
+
+    // Apply search filter
+    if (itemSearchQuery.trim()) {
+      const query = itemSearchQuery.toLowerCase();
+      items = items.filter(item => {
+        const name = (item.itemName || item.name || '').toLowerCase();
+        return name.includes(query);
+      });
+    }
+
     if (sortConfig) {
       items.sort((a, b) => {
         let aValue = a[sortConfig.key];
@@ -158,7 +169,7 @@ export function ReportsPage() {
       });
     }
     return items;
-  }, [itemReportData, sortConfig]);
+  }, [itemReportData, sortConfig, itemSearchQuery]);
 
   const sortedDiscounts = useMemo(() => {
     if (!salesData?.discountBreakdown) return [];
@@ -338,10 +349,7 @@ export function ReportsPage() {
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'Jod',
-    }).format(value).replace('Jod', '').trim() + ' Jod';
+    return value.toFixed(3) + ' JOD';
   };
 
   const setQuickDate = (range: string) => {
@@ -471,40 +479,30 @@ export function ReportsPage() {
         <div className="flex w-full gap-2">
           {[
             { id: 'sales', label: 'Overview', icon: TrendingUp },
-            { id: 'top-items', label: 'Items', icon: ShoppingBag },
-            { id: 'top-categories', label: 'Categories', icon: LayoutGrid },
-            { id: 'top-modifiers', label: 'Add-ons', icon: Tag },
-            { id: 'employees', label: 'Staff', icon: Activity },
+            { id: 'items-categories', label: 'Items + Categories', icon: ShoppingBag },
+            { id: 'addons', label: 'Add-ons', icon: Tag },
+            { id: 'employees', label: 'Staff Sales', icon: Activity },
             { id: 'shifts', label: 'Shifts', icon: Clock },
-            { id: 'peak-hours', label: 'Rush Hours', icon: Clock },
             { id: 'discounts', label: 'Discounts', icon: Percent },
-            { id: 'taxes', label: 'Taxes', icon: Scale },
-            { id: 'receipts', label: 'Receipts', icon: Receipt },
+            { id: 'payments', label: 'Payments', icon: CreditCard },
           ].map((type) => {
-            const isSelected = type.id === 'top-categories'
-              ? (reportType === 'top-items' && itemReportTab === 'categories')
-              : type.id === 'top-modifiers'
+            const isSelected = type.id === 'items-categories'
+              ? (reportType === 'top-items' && (itemReportTab === 'items' || itemReportTab === 'categories'))
+              : type.id === 'addons'
                 ? (reportType === 'top-items' && itemReportTab === 'modifiers')
-                : type.id === 'top-items'
-                  ? (reportType === 'top-items' && itemReportTab === 'items')
-                  : reportType === type.id;
+                : reportType === type.id;
 
             return (
               <button
                 key={type.id}
                 onClick={() => {
-                  const newType = type.id as ReportType;
                   // Navigate to the appropriate route so sidebar stays in sync
-                  if (newType === 'top-categories') {
-                    navigate('/dashboard/reports/categories');
-                  } else if (newType === 'top-modifiers') {
-                    navigate('/dashboard/reports/modifiers');
-                  } else if (newType === 'top-items') {
+                  if (type.id === 'items-categories') {
                     navigate('/dashboard/reports/items');
-                  } else if (newType === 'peak-hours') {
-                    navigate('/dashboard/reports/shifts');
+                  } else if (type.id === 'addons') {
+                    navigate('/dashboard/reports/modifiers');
                   } else {
-                    navigate(`/dashboard/reports/${newType}`);
+                    navigate(`/dashboard/reports/${type.id}`);
                   }
                 }}
                 className={`relative flex-1 flex flex-col xl:flex-row items-center justify-center gap-1.5 xl:gap-2 px-1 py-2.5 xl:py-3 rounded-xl transition-all duration-300 isolate min-w-0 ${isSelected
@@ -1140,7 +1138,51 @@ export function ReportsPage() {
             {reportType === 'top-items' && itemReportData && (
               <div className="space-y-6">
 
+                {/* Sub-tabs and Search Bar */}
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                  {/* Sub-tabs based on mode */}
+                  <div className="flex gap-2">
+                    {itemReportTab !== 'modifiers' ? (
+                      <>
+                        <button
+                          onClick={() => setItemReportTab('items')}
+                          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${itemReportTab === 'items'
+                            ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                            : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
+                            }`}
+                        >
+                          View All Items
+                        </button>
+                        <button
+                          onClick={() => setItemReportTab('categories')}
+                          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${itemReportTab === 'categories'
+                            ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                            : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
+                            }`}
+                        >
+                          By Category
+                        </button>
+                      </>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <Tag size={18} className="text-paymint-green" />
+                        <span className="text-sm font-bold text-gray-900 dark:text-white">Add-ons Report</span>
+                      </div>
+                    )}
+                  </div>
 
+                  {/* Search Bar */}
+                  <div className="relative w-full md:w-80">
+                    <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder={`Search ${itemReportTab === 'categories' ? 'categories' : itemReportTab === 'modifiers' ? 'add-ons' : 'items'}...`}
+                      value={itemSearchQuery}
+                      onChange={(e) => setItemSearchQuery(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+                    />
+                  </div>
+                </div>
 
 
                 {/* Data Table */}
@@ -1247,6 +1289,87 @@ export function ReportsPage() {
             {/* Staff Performance Report Section */}
             {reportType === 'employees' && (
               <div className="space-y-8">
+
+                {/* Staff Breakdown Stats - Show when employee is selected */}
+                {selectedEmployeeId && (() => {
+                  const selectedEmp = employees.find(e => e.value === selectedEmployeeId);
+                  const empName = selectedEmp?.label || 'Employee';
+
+                  // Calculate stats from employee shifts
+                  const empTotalHours = employeeShifts.reduce((acc, shift) => {
+                    if (shift.startTime) {
+                      const start = new Date(shift.startTime);
+                      const end = shift.endTime ? new Date(shift.endTime) : new Date();
+                      return acc + (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+                    }
+                    return acc;
+                  }, 0);
+
+                  const empTotalOrders = employeeShifts.reduce((acc, shift) => acc + (shift.orderCount || 0), 0);
+                  const empTotalSales = employeeShifts.reduce((acc, shift) => acc + (shift.totalSales || 0), 0);
+                  const empTotalDiscounts = employeeShifts.reduce((acc, shift) => acc + (shift.totalDiscounts || 0), 0);
+                  const empTotalRefunds = employeeShifts.reduce((acc, shift) => acc + (shift.totalRefunds || 0), 0);
+                  const empPositiveVariance = employeeShifts.reduce((acc, shift) => {
+                    const variance = (shift.variance || 0);
+                    return variance > 0 ? acc + variance : acc;
+                  }, 0);
+                  const empNegativeVariance = employeeShifts.reduce((acc, shift) => {
+                    const variance = (shift.variance || 0);
+                    return variance < 0 ? acc + Math.abs(variance) : acc;
+                  }, 0);
+
+                  return (
+                    <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-6 shadow-sm">
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-12 h-12 rounded-2xl bg-paymint-green/10 flex items-center justify-center">
+                          <Users size={24} className="text-paymint-green" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold text-gray-900 dark:text-white">{empName}'s Performance</h3>
+                          <p className="text-xs text-gray-500">Breakdown for selected period</p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                        <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                          <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Hours</p>
+                          <p className="text-xl font-bold text-gray-900 dark:text-white">{empTotalHours.toFixed(1)}</p>
+                          <p className="text-[10px] text-gray-500">By {empName}</p>
+                        </div>
+                        <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                          <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Orders</p>
+                          <p className="text-xl font-bold text-gray-900 dark:text-white">{empTotalOrders}</p>
+                          <p className="text-[10px] text-gray-500">By {empName}</p>
+                        </div>
+                        <div className="p-4 rounded-xl bg-paymint-green/10 border border-paymint-green/20">
+                          <p className="text-[10px] font-black text-paymint-green tracking-widest mb-1">Total Sales</p>
+                          <p className="text-xl font-bold text-paymint-green">{empTotalSales.toFixed(3)} JOD</p>
+                          <p className="text-[10px] text-paymint-green/70">By {empName}</p>
+                        </div>
+                        <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                          <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Discounts</p>
+                          <p className="text-xl font-bold text-orange-500">{empTotalDiscounts.toFixed(3)} JOD</p>
+                          <p className="text-[10px] text-gray-500">Issued by {empName}</p>
+                        </div>
+                        <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                          <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Refunds</p>
+                          <p className="text-xl font-bold text-red-500">{empTotalRefunds.toFixed(3)} JOD</p>
+                          <p className="text-[10px] text-gray-500">By {empName}</p>
+                        </div>
+                        <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                          <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Variances</p>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-bold text-emerald-500">+{empPositiveVariance.toFixed(2)}</span>
+                            <span className="text-gray-300">/</span>
+                            <span className="text-sm font-bold text-red-500">-{empNegativeVariance.toFixed(2)}</span>
+                          </div>
+                          <p className="text-[10px] text-gray-500">By {empName}</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+
                 {/* Employee Leaderboard / Scorecards */}
                 {shifts.length > 0 && (() => {
                   const employeeStats = shifts.reduce((acc: any, shift: any) => {
