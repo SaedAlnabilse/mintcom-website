@@ -288,13 +288,16 @@ export function ReportsPage() {
           break;
         case 'discounts':
           const discountRes = await api.get('/reports/discounts', { params: commonParams });
+          const rawReports = discountRes.data?.reports;
+          const discountReports = Array.isArray(rawReports) ? rawReports.filter((r: any) => r) : [];
+
           setSalesData({
-            totalDiscounts: discountRes.data.totalDiscountGiven,
-            totalDiscountCount: discountRes.data.reports.reduce((acc: number, curr: any) => acc + curr.count, 0),
-            discountBreakdown: discountRes.data.reports.map((r: any) => ({
-              name: r.name,
-              count: r.count,
-              value: r.totalAmount
+            totalDiscounts: discountRes.data?.totalDiscountGiven || 0,
+            totalDiscountCount: discountReports.reduce((acc: number, curr: any) => acc + (curr.count || 0), 0),
+            discountBreakdown: discountReports.map((r: any) => ({
+              name: r.name || 'Unknown',
+              count: r.count || 0,
+              value: r.totalAmount || 0
             }))
           });
           break;
