@@ -323,10 +323,10 @@ export function ProductsPage() {
                     <button
                         onClick={handleExport}
                         className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm group"
-                        title="Export Csv"
+                        title="Export to CSV"
                     >
                         <Download size={18} className="group-hover:text-paymint-green transition-colors" />
-                        <span className="font-bold text-sm">Export</span>
+                        <span className="font-bold text-sm">Export to CSV</span>
                     </button>
                     <button
                         onClick={handleCreateNew}

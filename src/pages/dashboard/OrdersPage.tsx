@@ -300,7 +300,7 @@ export function OrdersPage() {
               Sales
             </span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Orders</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">View Customer Orders</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-2">
             Manage orders
           </p>
@@ -312,7 +312,7 @@ export function OrdersPage() {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
           >
             <Download size={18} />
-            <span>Export Csv</span>
+            <span>Export to CSV</span>
           </button>
           <button
             onClick={fetchOrders}

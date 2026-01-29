@@ -156,7 +156,7 @@ export function DiscountsPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-              Offers
+              Discounts and Loyalty Programs
             </span>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Discounts</h1>

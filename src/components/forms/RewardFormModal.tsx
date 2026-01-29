@@ -63,7 +63,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md shadow-2xl relative overflow-hidden"
+          className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-[90vw] max-w-md shadow-2xl relative overflow-hidden"
         >
           <div className="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-white dark:bg-[#1E293B]">
             <div className="flex items-center gap-3">

@@ -54,7 +54,7 @@ const isMenuGroup = (item: MenuItemOrGroup): item is MenuGroup => {
 const menuStructure: MenuItemOrGroup[] = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   {
-    label: 'Reports',
+    label: 'Sales and Reporting',
     icon: FileBarChart,
     items: [
       { path: '/dashboard/reports/sales', label: 'Sales Summary', icon: FileBarChart },
@@ -69,9 +69,9 @@ const menuStructure: MenuItemOrGroup[] = [
       { path: '/dashboard/reports/shifts', label: 'Shifts', icon: Clock },
     ],
   },
-  { path: '/dashboard/orders', label: 'Orders', icon: ShoppingCart },
+  { path: '/dashboard/orders', label: 'View Customer Orders', icon: ShoppingCart },
   {
-    label: 'Menu',
+    label: "Item's Menu",
     icon: Package,
     items: [
       { path: '/dashboard/categories', label: 'Categories', icon: LayoutDashboard },

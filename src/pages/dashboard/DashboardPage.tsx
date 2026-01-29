@@ -210,14 +210,14 @@ export const DashboardPage = () => {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-              Live
+              {stats?.totalOrders && stats.totalOrders > 0 ? 'Currently on Active Shift' : 'No Current Active Shift'}
             </span>
             <div className="flex items-center gap-2">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
               </span>
-              <span className="text-[10px] font-bold text-gray-400 tracking-widest">Active</span>
+              <span className="text-[10px] font-bold text-gray-400 tracking-widest">Active (showing last 24 hours)</span>
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{getGreeting()}</h1>
@@ -508,7 +508,7 @@ export const DashboardPage = () => {
 
           <div className="relative z-10 w-full">
             <div className="flex items-start justify-between mb-4">
-              <p className="text-[10px] font-black tracking-widest text-cyan-600 dark:text-cyan-400">Pay In / Pay Out</p>
+              <p className="text-[10px] font-black text-cyan-600 dark:text-cyan-400">Cashflow Outside Sales</p>
               <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-500 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-white transition-all duration-300">
                 <ArrowUpRight size={20} />
               </div>
@@ -592,7 +592,7 @@ export const DashboardPage = () => {
                   <Package size={20} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-gray-900 dark:text-white">Top Items</h3>
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white">Your Best Sellers Today</h3>
                   <p className="text-[10px] font-bold text-gray-500 tracking-widest">Best sellers today</p>
                 </div>
               </div>
@@ -645,7 +645,7 @@ export const DashboardPage = () => {
                   <Clock size={20} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-gray-900 dark:text-white">Busy Hours</h3>
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white">Rush Hours</h3>
                   <p className="text-[10px] font-bold text-gray-500 tracking-widest">Hourly traffic</p>
                 </div>
               </div>

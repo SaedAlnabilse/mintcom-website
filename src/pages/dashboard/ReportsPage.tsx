@@ -432,7 +432,7 @@ export function ReportsPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-              Reports
+              Sales and Reporting
             </span>
             <div className="flex items-center gap-2">
               <span className="relative flex h-2 w-2">
@@ -442,8 +442,8 @@ export function ReportsPage() {
               <span className="text-[10px] font-bold text-gray-400 tracking-widest">Live</span>
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Reports</h1>
-          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Track business performance</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Sales and Reporting</h1>
+          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Tracking All Business Performance</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -452,7 +452,7 @@ export function ReportsPage() {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
           >
             <DownloadCloud size={18} className="text-paymint-green" />
-            <span>Export</span>
+            <span>Export to CSV</span>
           </button>
           <button
             onClick={fetchReportData}
@@ -475,7 +475,7 @@ export function ReportsPage() {
             { id: 'top-modifiers', label: 'Add-ons', icon: Tag },
             { id: 'employees', label: 'Staff', icon: Activity },
             { id: 'shifts', label: 'Shifts', icon: Clock },
-            { id: 'peak-hours', label: 'Busy Times', icon: Clock },
+            { id: 'peak-hours', label: 'Rush Hours', icon: Clock },
             { id: 'discounts', label: 'Discounts', icon: Percent },
             { id: 'taxes', label: 'Taxes', icon: Scale },
             { id: 'receipts', label: 'Receipts', icon: Receipt },
@@ -616,7 +616,7 @@ export function ReportsPage() {
 
             {/* Sector 3: Dropdowns (Integrated) */}
             <div className="flex-1 flex flex-col sm:flex-row gap-2 xl:max-w-[440px] xl:ml-auto">
-              <div className="flex-1 min-w-0 relative z-30">
+              <div className="flex-1 min-w-0 relative z-50">
                 <SingleSelect
                   value={selectedEmployeeId}
                   onChange={(val) => {
@@ -664,7 +664,7 @@ export function ReportsPage() {
 
                     return [
                       {
-                        label: 'Settlement',
+                        label: 'Total Sales',
                         value: ((salesData.totalRevenue || 0) + (salesData.taxCollected || 0)).toFixed(3),
                         icon: Wallet,
                         color: 'text-blue-500',
@@ -688,7 +688,7 @@ export function ReportsPage() {
                         sub: 'Net Sales - Cost'
                       },
                       {
-                        label: 'Tax',
+                        label: 'Total Tax',
                         value: (salesData.taxCollected || 0).toFixed(3),
                         icon: Percent,
                         color: 'text-orange-500',
@@ -696,7 +696,7 @@ export function ReportsPage() {
                         sub: 'Tax Amount'
                       },
                       {
-                        label: 'Orders',
+                        label: 'Number of Orders',
                         value: (salesData.totalOrders || 0).toString(),
                         suffix: 'Ord',
                         icon: ShoppingBag,
@@ -723,7 +723,7 @@ export function ReportsPage() {
                         onClick: () => setReportType('shifts')
                       },
                       {
-                        label: 'Pay In / Pay Out',
+                        label: 'Cashflow Outside Sales',
                         value: (
                           <div className="w-full mt-1 space-y-2">
                             <div className="flex items-center justify-between">
@@ -768,18 +768,18 @@ export function ReportsPage() {
                               <ExternalLink size={14} className="text-gray-300 dark:text-gray-600 group-hover:text-paymint-green transition-colors" />
                             )}
                           </div>
-                          <p className="text-[10px] font-bold text-gray-400 tracking-wide mb-1 flex items-center gap-1">
+                          <p className="text-xs font-bold text-gray-400 tracking-wide mb-1 flex items-center gap-1">
                             {stat.label}
                           </p>
                           {typeof stat.value === 'string' ? (
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                            <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                               {stat.value}
-                              {stat.suffix && <span className="text-sm ml-1 text-gray-300 dark:text-gray-500">{stat.suffix}</span>}
+                              {stat.suffix && <span className="text-base ml-1 text-gray-300 dark:text-gray-500">{stat.suffix}</span>}
                             </p>
                           ) : (
                             stat.value
                           )}
-                          <p className="text-[10px] font-medium text-gray-400 mt-1 opacity-70">
+                          <p className="text-xs font-medium text-gray-400 mt-1 opacity-70">
                             {stat.sub}
                           </p>
                         </div>
@@ -805,7 +805,7 @@ export function ReportsPage() {
                       <div>
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                           <TrendingUp className="text-paymint-green" size={20} />
-                          Revenue
+                          Revenue Stats
                         </h3>
                         <p className="text-xs text-gray-500 mt-1">Performance over time</p>
                       </div>
@@ -1071,8 +1071,8 @@ export function ReportsPage() {
                         <Wallet size={20} />
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Payments</h3>
-                        <p className="text-[10px] font-bold text-gray-500 tracking-widest">Payment breakdown</p>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Payment Methods</h3>
+                        <p className="text-[10px] font-bold text-gray-500 tracking-widest">Breakdown Chart</p>
                       </div>
                     </div>
                     <div className="flex-1 flex flex-col justify-center">

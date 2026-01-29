@@ -98,7 +98,7 @@ export function CategoryFormModal({
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-white dark:bg-[#1E293B] w-full max-w-lg rounded-2xl overflow-hidden flex flex-col max-h-[90vh] transition-colors duration-300 border border-gray-200 dark:border-white/5 shadow-2xl"
+          className="bg-white dark:bg-[#1E293B] w-[90vw] max-w-lg rounded-2xl overflow-hidden flex flex-col max-h-[90vh] transition-colors duration-300 border border-gray-200 dark:border-white/5 shadow-2xl"
         >
           {/* Header */}
           <div className="flex items-center justify-between p-8 pb-4 relative isolate">

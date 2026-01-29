@@ -198,9 +198,9 @@ export function CategoriesPage() {
       {/* Stats Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          { label: 'Total', value: stats.total, icon: Layers, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-          { label: 'Products', value: stats.products, icon: Package, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
-          { label: 'Popular', value: stats.top?.name || 'N/a', sub: `${stats.top?._count?.items || 0} items`, icon: TrendingUp, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+          { label: 'Total Categories', value: stats.total, icon: Layers, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+          { label: 'Total Items', value: stats.products, icon: Package, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+          { label: 'Most Selling Category', value: stats.top?.name || 'N/a', sub: `${stats.top?._count?.items || 0} items`, icon: TrendingUp, color: 'text-purple-500', bg: 'bg-purple-500/10' },
         ].map((stat, i) => (
 
           <motion.div

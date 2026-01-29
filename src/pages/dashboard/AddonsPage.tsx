@@ -357,7 +357,7 @@ export function AddonsPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
           {
-            label: 'Groups',
+            label: 'Attributes/Groups',
             value: stats.totalGroups,
             icon: Layers,
             color: 'text-blue-500',
@@ -365,7 +365,7 @@ export function AddonsPage() {
             action: () => handleQuickFilter('ALL')
           },
           {
-            label: 'Options',
+            label: 'Add-ons Options',
             value: stats.totalOptions,
             icon: Package,
             color: 'text-paymint-green',
@@ -373,7 +373,7 @@ export function AddonsPage() {
             action: () => handleQuickFilter('ALL', true)
           },
           {
-            label: 'Paid',
+            label: 'Sales from Paid Add-ons',
             value: stats.paidOptions,
             sub: 'With price',
             icon: DollarSign,
