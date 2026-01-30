@@ -1324,13 +1324,17 @@ export function ReportsPage() {
             {reportType === 'staff-sales' && (
               <div className="space-y-8">
 
-                {/* Staff Breakdown Stats - Show when employee is selected */}
-                {selectedEmployeeId && (() => {
-                  const selectedEmp = employees.find(e => e.value === selectedEmployeeId);
-                  const empName = selectedEmp?.label || 'Employee';
+                {/* Staff Breakdown Stats - Always show */}
+                {shifts.length > 0 && (() => {
+                  const selectedEmp = selectedEmployeeId ? employees.find(e => e.value === selectedEmployeeId) : null;
+                  const empName = selectedEmp?.label || 'All Staff';
+                  const isSpecificEmployee = !!selectedEmployeeId;
 
-                  // Calculate stats from employee shifts
-                  const empTotalHours = employeeShifts.reduce((acc, shift) => {
+                  // Use employee shifts if employee selected, otherwise use all shifts
+                  const dataSource = isSpecificEmployee ? employeeShifts : shifts;
+
+                  // Calculate stats
+                  const totalHours = dataSource.reduce((acc: number, shift: any) => {
                     if (shift.startTime) {
                       const start = new Date(shift.startTime);
                       const end = shift.endTime ? new Date(shift.endTime) : new Date();
@@ -1339,16 +1343,16 @@ export function ReportsPage() {
                     return acc;
                   }, 0);
 
-                  const empTotalOrders = employeeShifts.reduce((acc, shift) => acc + (shift.orderCount || 0), 0);
-                  const empTotalSales = employeeShifts.reduce((acc, shift) => acc + (shift.totalSales || 0), 0);
-                  const empTotalDiscounts = employeeShifts.reduce((acc, shift) => acc + (shift.totalDiscounts || 0), 0);
-                  const empTotalRefunds = employeeShifts.reduce((acc, shift) => acc + (shift.totalRefunds || 0), 0);
-                  const empPositiveVariance = employeeShifts.reduce((acc, shift) => {
-                    const variance = (shift.variance || 0);
+                  const totalOrders = dataSource.reduce((acc: number, shift: any) => acc + (shift.orderCount || 0), 0);
+                  const totalSales = dataSource.reduce((acc: number, shift: any) => acc + (shift.totalSales || 0), 0);
+                  const totalDiscounts = dataSource.reduce((acc: number, shift: any) => acc + (shift.totalDiscounts || 0), 0);
+                  const totalRefunds = dataSource.reduce((acc: number, shift: any) => acc + (shift.totalRefunds || 0), 0);
+                  const positiveVariance = dataSource.reduce((acc: number, shift: any) => {
+                    const variance = (shift.variance || shift.discrepancy || 0);
                     return variance > 0 ? acc + variance : acc;
                   }, 0);
-                  const empNegativeVariance = employeeShifts.reduce((acc, shift) => {
-                    const variance = (shift.variance || 0);
+                  const negativeVariance = dataSource.reduce((acc: number, shift: any) => {
+                    const variance = (shift.variance || shift.discrepancy || 0);
                     return variance < 0 ? acc + Math.abs(variance) : acc;
                   }, 0);
 
@@ -1359,43 +1363,45 @@ export function ReportsPage() {
                           <Users size={24} className="text-paymint-green" />
                         </div>
                         <div>
-                          <h3 className="text-lg font-bold text-gray-900 dark:text-white">{empName}'s Performance</h3>
+                          <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                            {isSpecificEmployee ? `${empName}'s Performance` : 'Staff Performance Overview'}
+                          </h3>
                           <p className="text-xs text-gray-500">Breakdown for selected period</p>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                         <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-                          <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Hours</p>
-                          <p className="text-xl font-bold text-gray-900 dark:text-white">{empTotalHours.toFixed(1)}</p>
+                          <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Hours Worked</p>
+                          <p className="text-xl font-bold text-gray-900 dark:text-white">{totalHours.toFixed(1)}</p>
                           <p className="text-[10px] text-gray-500">By {empName}</p>
                         </div>
                         <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
                           <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Orders</p>
-                          <p className="text-xl font-bold text-gray-900 dark:text-white">{empTotalOrders}</p>
+                          <p className="text-xl font-bold text-gray-900 dark:text-white">{totalOrders}</p>
                           <p className="text-[10px] text-gray-500">By {empName}</p>
                         </div>
                         <div className="p-4 rounded-xl bg-paymint-green/10 border border-paymint-green/20">
                           <p className="text-[10px] font-black text-paymint-green tracking-widest mb-1">Total Sales</p>
-                          <p className="text-xl font-bold text-paymint-green">{empTotalSales.toFixed(3)} JOD</p>
+                          <p className="text-xl font-bold text-paymint-green">{totalSales.toFixed(3)} JOD</p>
                           <p className="text-[10px] text-paymint-green/70">By {empName}</p>
                         </div>
                         <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-                          <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Discounts</p>
-                          <p className="text-xl font-bold text-orange-500">{empTotalDiscounts.toFixed(3)} JOD</p>
+                          <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Discounts Issued</p>
+                          <p className="text-xl font-bold text-orange-500">{totalDiscounts.toFixed(3)} JOD</p>
                           <p className="text-[10px] text-gray-500">Issued by {empName}</p>
                         </div>
                         <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
                           <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Refunds</p>
-                          <p className="text-xl font-bold text-red-500">{empTotalRefunds.toFixed(3)} JOD</p>
+                          <p className="text-xl font-bold text-red-500">{totalRefunds.toFixed(3)} JOD</p>
                           <p className="text-[10px] text-gray-500">By {empName}</p>
                         </div>
                         <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-                          <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Variances</p>
+                          <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Variances</p>
                           <div className="flex items-center gap-2">
-                            <span className="text-sm font-bold text-emerald-500">+{empPositiveVariance.toFixed(2)}</span>
+                            <span className="text-sm font-bold text-emerald-500">+{positiveVariance.toFixed(2)}</span>
                             <span className="text-gray-300">/</span>
-                            <span className="text-sm font-bold text-red-500">-{empNegativeVariance.toFixed(2)}</span>
+                            <span className="text-sm font-bold text-red-500">-{negativeVariance.toFixed(2)}</span>
                           </div>
                           <p className="text-[10px] text-gray-500">By {empName}</p>
                         </div>
