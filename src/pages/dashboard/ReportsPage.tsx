@@ -488,8 +488,7 @@ export function ReportsPage() {
             { id: 'sales', label: 'Overview', icon: TrendingUp },
             { id: 'items-categories', label: 'Items + Categories', icon: ShoppingBag },
             { id: 'addons', label: 'Add-ons', icon: Tag },
-            { id: 'employees', label: 'Staff Sales', icon: Activity },
-            { id: 'shifts', label: 'Shifts', icon: Clock },
+            { id: 'shifts', label: 'Staff Sales', icon: Activity },
             { id: 'discounts', label: 'Discounts', icon: Percent },
             { id: 'payments', label: 'Payments', icon: CreditCard },
           ].map((type) => {
