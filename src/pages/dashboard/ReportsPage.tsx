@@ -32,7 +32,7 @@ export function ReportsPage() {
   const location = useLocation();
 
   const [reportType, setReportType] = useState<ReportType>('sales');
-  const [itemReportTab, setItemReportTab] = useState<'items' | 'categories' | 'modifiers'>('items');
+  const [itemReportTab, setItemReportTab] = useState<'items' | 'categories' | 'modifiers' | 'attributes'>('items');
 
   // Sync URL params with internal state
   useEffect(() => {
@@ -317,7 +317,7 @@ export function ReportsPage() {
           let endpoint = '/reports/item-report';
           if (itemReportTab === 'categories') {
             endpoint = '/reports/category-report';
-          } else if (itemReportTab === 'modifiers') {
+          } else if (itemReportTab === 'modifiers' || itemReportTab === 'attributes') {
             endpoint = '/reports/modifier-report';
           }
 
@@ -326,7 +326,8 @@ export function ReportsPage() {
               ...commonParams,
               categoryId: '',
               itemId: '',
-              subAttributeIds: ''
+              subAttributeIds: '',
+              groupByAttribute: itemReportTab === 'attributes' ? 'true' : ''
             }
           });
           setItemReportData(itemRes.data);
@@ -489,7 +490,7 @@ export function ReportsPage() {
             const isSelected = type.id === 'items-categories'
               ? (reportType === 'top-items' && (itemReportTab === 'items' || itemReportTab === 'categories'))
               : type.id === 'addons'
-                ? (reportType === 'top-items' && itemReportTab === 'modifiers')
+                ? (reportType === 'top-items' && (itemReportTab === 'modifiers' || itemReportTab === 'attributes'))
                 : reportType === type.id;
 
             return (
@@ -498,8 +499,10 @@ export function ReportsPage() {
                 onClick={() => {
                   // Navigate to the appropriate route so sidebar stays in sync
                   if (type.id === 'items-categories') {
+                    setItemReportTab('items');
                     navigate('/dashboard/reports/items');
                   } else if (type.id === 'addons') {
+                    setItemReportTab('modifiers');
                     navigate('/dashboard/reports/modifiers');
                   } else {
                     navigate(`/dashboard/reports/${type.id}`);
@@ -1142,7 +1145,7 @@ export function ReportsPage() {
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                   {/* Sub-tabs based on mode */}
                   <div className="flex gap-2">
-                    {itemReportTab !== 'modifiers' ? (
+                    {(itemReportTab === 'items' || itemReportTab === 'categories') ? (
                       <>
                         <button
                           onClick={() => setItemReportTab('items')}
@@ -1164,10 +1167,26 @@ export function ReportsPage() {
                         </button>
                       </>
                     ) : (
-                      <div className="flex items-center gap-2">
-                        <Tag size={18} className="text-paymint-green" />
-                        <span className="text-sm font-bold text-gray-900 dark:text-white">Add-ons Report</span>
-                      </div>
+                      <>
+                        <button
+                          onClick={() => setItemReportTab('attributes')}
+                          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${itemReportTab === 'attributes'
+                            ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                            : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
+                            }`}
+                        >
+                          Attributes (Groups)
+                        </button>
+                        <button
+                          onClick={() => setItemReportTab('modifiers')}
+                          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${itemReportTab === 'modifiers'
+                            ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                            : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
+                            }`}
+                        >
+                          Add-ons
+                        </button>
+                      </>
                     )}
                   </div>
 
@@ -1176,7 +1195,7 @@ export function ReportsPage() {
                     <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input
                       type="text"
-                      placeholder={`Search ${itemReportTab === 'categories' ? 'categories' : itemReportTab === 'modifiers' ? 'add-ons' : 'items'}...`}
+                      placeholder={`Search ${itemReportTab === 'categories' ? 'categories' : itemReportTab === 'modifiers' ? 'add-ons' : itemReportTab === 'attributes' ? 'attributes' : 'items'}...`}
                       value={itemSearchQuery}
                       onChange={(e) => setItemSearchQuery(e.target.value)}
                       className="w-full pl-12 pr-4 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
@@ -1196,7 +1215,7 @@ export function ReportsPage() {
                             onClick={() => requestSort('name')}
                           >
                             <div className="flex items-center gap-2">
-                              {itemReportTab === 'categories' ? 'Category Name' : (itemReportTab === 'modifiers' ? 'Add-on Name' : 'Product Name')}
+                              {itemReportTab === 'categories' ? 'Category Name' : (itemReportTab === 'modifiers' ? 'Add-on Name' : itemReportTab === 'attributes' ? 'Attribute Group' : 'Product Name')}
                               <ArrowUpDown size={14} className={`transition-all ${sortConfig?.key === 'name' ? 'opacity-100 scale-110' : 'opacity-20 group-hover:opacity-100'}`} />
                             </div>
                           </th>
@@ -1826,7 +1845,7 @@ export function ReportsPage() {
                       <div className="relative z-10">
                         <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Top Method</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-                          {salesData.paymentMethodBreakdown?.sort((a: any, b: any) => b.value - a.value)[0]?.name || '—'}
+                          {[...(salesData.paymentMethodBreakdown || [])].sort((a: any, b: any) => b.value - a.value)[0]?.name || '—'}
                         </p>
                         <p className="text-xs text-gray-500 mt-2">Highest volume channel</p>
                       </div>
@@ -1980,7 +1999,7 @@ export function ReportsPage() {
                       <div className="relative z-10">
                         <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Top Discount</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-                          {salesData.discountBreakdown?.sort((a: any, b: any) => b.value - a.value)[0]?.name || '—'}
+                          {[...(salesData.discountBreakdown || [])].sort((a: any, b: any) => b.value - a.value)[0]?.name || '—'}
                         </p>
                         <p className="text-xs text-gray-500 mt-2">Most utilized promotion</p>
                       </div>
