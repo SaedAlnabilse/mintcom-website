@@ -18,7 +18,7 @@ import { ReceiptsReport } from '../../components/dashboard/reports/ReceiptsRepor
 import { SingleSelect } from '../../components/SingleSelect';
 import { exportToCSV } from '../../utils/export';
 
-type ReportType = 'sales' | 'top-items' | 'top-categories' | 'top-modifiers' | 'peak-hours' | 'shifts' | 'employees' | 'payments' | 'discounts' | 'taxes' | 'receipts';
+type ReportType = 'sales' | 'top-items' | 'top-categories' | 'top-modifiers' | 'peak-hours' | 'shifts' | 'staff-sales' | 'payments' | 'discounts' | 'taxes' | 'receipts';
 
 const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
@@ -62,7 +62,9 @@ export function ReportsPage() {
           setReportType('top-items');
           setItemReportTab('modifiers');
           break;
-        case 'employees':
+        case 'staff-sales':
+          setReportType('staff-sales');
+          break;
         case 'shifts':
           setReportType('shifts');
           break;
@@ -270,6 +272,7 @@ export function ReportsPage() {
       (reportType === 'taxes' && salesData) ||
       (reportType === 'top-items' && itemReportData) ||
       (reportType === 'peak-hours' && peakHours.length > 0) ||
+      (reportType === 'staff-sales' && shifts.length > 0) ||
       (reportType === 'shifts' && shifts.length > 0) ||
       (reportType === 'receipts' && true); // Receipts are fetched inside the component
 
@@ -341,6 +344,10 @@ export function ReportsPage() {
         case 'peak-hours':
           const peakRes = await api.get('/reports/peak-hours', { params: commonParams });
           setPeakHours(peakRes.data || []);
+          break;
+        case 'staff-sales':
+          const staffSalesRes = await api.get('/reports/shifts', { params: { ...commonParams, limit: 50 } });
+          setShifts(staffSalesRes.data || []);
           break;
         case 'shifts':
           const shiftsRes = await api.get('/reports/shifts', { params: { ...commonParams, limit: 20 } });
@@ -488,7 +495,8 @@ export function ReportsPage() {
             { id: 'sales', label: 'Overview', icon: TrendingUp },
             { id: 'items-categories', label: 'Items + Categories', icon: ShoppingBag },
             { id: 'addons', label: 'Add-ons', icon: Tag },
-            { id: 'shifts', label: 'Staff Sales', icon: Activity },
+            { id: 'staff-sales', label: 'Staff Sales', icon: Activity },
+            { id: 'shifts', label: 'Shifts', icon: Clock },
             { id: 'discounts', label: 'Discounts', icon: Percent },
             { id: 'payments', label: 'Payments', icon: CreditCard },
           ].map((type) => {
@@ -1312,9 +1320,9 @@ export function ReportsPage() {
 
 
 
-            {/* Shifts Report Section (Staff Sales) */}
-            {reportType === 'shifts' && (
-              <div className="space-y-6">
+            {/* Staff Sales Report Section */}
+            {reportType === 'staff-sales' && (
+              <div className="space-y-8">
 
                 {/* Staff Breakdown Stats - Show when employee is selected */}
                 {selectedEmployeeId && (() => {
@@ -1395,6 +1403,222 @@ export function ReportsPage() {
                     </div>
                   );
                 })()}
+
+                {/* Employee Leaderboard / Scorecards */}
+                {shifts.length > 0 && (() => {
+                  const employeeStats = shifts.reduce((acc: any, shift: any) => {
+                    const username = shift.user?.username || 'Unknown';
+                    if (!acc[username]) {
+                      acc[username] = {
+                        username,
+                        totalShifts: 0,
+                        totalSales: 0,
+                        totalHours: 0,
+                        avgTransaction: 0,
+                        transactionCount: shift.orderCount || 20,
+                      };
+                    }
+                    acc[username].totalShifts += 1;
+                    acc[username].totalSales += shift.totalSales || 0;
+                    acc[username].transactionCount += shift.orderCount || 0;
+                    if (shift.startTime) {
+                      const start = new Date(shift.startTime);
+                      const end = shift.endTime ? new Date(shift.endTime) : new Date();
+                      acc[username].totalHours += (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+                    }
+                    return acc;
+                  }, {});
+
+                  const sortedEmployees = Object.values(employeeStats).sort((a: any, b: any) => b.totalSales - a.totalSales);
+                  const totalStoreSales = sortedEmployees.reduce((acc: number, curr: any) => acc + curr.totalSales, 0);
+
+                  // Prepare Pie Chart Data (Top 4 + Others)
+                  let pieData = sortedEmployees.slice(0, 4).map((emp: any) => ({
+                    name: emp.username,
+                    value: emp.totalSales,
+                    color: ''
+                  }));
+                  if (sortedEmployees.length > 4) {
+                    pieData.push({
+                      name: 'Others',
+                      value: sortedEmployees.slice(4).reduce((acc: number, curr: any) => acc + curr.totalSales, 0),
+                      color: '#94A3B8'
+                    });
+                  }
+
+                  // Assign colors
+                  pieData.forEach((entry: any, index: number) => {
+                    if (entry.name !== 'Others') entry.color = COLORS[index % COLORS.length];
+                  });
+
+                  return (
+                    <div className="space-y-6">
+                      {/* Visual Analytics Row */}
+                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                        {/* 1. Revenue Share Chart (The "Slice" View) */}
+                        <div className="bg-white dark:bg-[#0B1120] p-6 rounded-[24px] border border-gray-100 dark:border-white/[0.05] shadow-sm flex flex-col">
+                          <div className="mb-4">
+                            <h3 className="text-lg font-black text-gray-900 dark:text-white">Sales Share</h3>
+                            <p className="text-[10px] font-black text-gray-400 tracking-widest">By Staff</p>
+                          </div>
+                          <div className="flex-1 min-h-[200px] relative">
+                            <ResponsiveContainer width="100%" height="100%">
+                              <PieChart>
+                                <Pie
+                                  data={pieData}
+                                  cx="50%"
+                                  cy="50%"
+                                  innerRadius={60}
+                                  outerRadius={80}
+                                  paddingAngle={5}
+                                  dataKey="value"
+                                  stroke="none"
+                                >
+                                  {pieData.map((entry: any, index: number) => (
+                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                  ))}
+                                </Pie>
+                                <Tooltip
+                                  formatter={(value: number | undefined) => formatCurrency(value || 0)}
+                                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                                />
+                              </PieChart>
+                            </ResponsiveContainer>
+                            {/* Center Stat */}
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                              <div className="text-center">
+                                <p className="text-[10px] font-black text-gray-400">Total</p>
+                                <p className="text-sm font-black text-gray-900 dark:text-white">{formatCurrency(totalStoreSales).replace(' Jod', '')}</p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="mt-4 grid grid-cols-2 gap-2">
+                            {pieData.map((entry: any) => (
+                              <div key={entry.name} className="flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
+                                <p className="text-[10px] font-bold text-gray-500 truncate">{entry.name}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* 2. Top Performer Spotlight (The "Star" View) */}
+                        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {sortedEmployees.slice(0, 2).map((emp: any, idx: number) => (
+                            <motion.div
+                              key={emp.username}
+                              initial={{ opacity: 0, scale: 0.95 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: idx * 0.1 }}
+                              className={`relative overflow-hidden p-6 rounded-[24px] border shadow-lg flex flex-col justify-between ${idx === 0
+                                ? 'bg-gradient-to-br from-[#7CC39F] to-[#5FAF87] text-black border-transparent'
+                                : 'bg-white dark:bg-[#0B1120] border-gray-100 dark:border-white/[0.05]'
+                                }`}
+                            >
+                              <div className="relative z-10">
+                                <div className="flex justify-between items-start mb-4">
+                                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg ${idx === 0 ? 'bg-black/10' : 'bg-paymint-green/10 text-paymint-green'}`}>
+                                    {emp.username.charAt(0).toUpperCase()}
+                                  </div>
+                                  <div className={`px-3 py-1 rounded-full text-[10px] font-black tracking-widest ${idx === 0 ? 'bg-black/10 text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                                    {idx === 0 ? '#1 Top' : '#2'}
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <h3 className={`text-xl font-black mb-1 ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>{emp.username}</h3>
+                                  <div className="flex gap-4 mt-4">
+                                    <div>
+                                      <p className={`text-[9px] font-black tracking-widest mb-1 ${idx === 0 ? 'text-black/60' : 'text-gray-400'}`}>Revenue</p>
+                                      <p className={`text-2xl font-black ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>{formatCurrency(emp.totalSales).replace(' Jod', '')}</p>
+                                    </div>
+                                    <div>
+                                      <p className={`text-[9px] font-black tracking-widest mb-1 ${idx === 0 ? 'text-black/60' : 'text-gray-400'}`}>Avg Ticket</p>
+                                      <p className={`text-2xl font-black ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>
+                                        {formatCurrency(emp.totalSales / (emp.transactionCount || 1)).replace(' Jod', '')}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              {idx === 0 && <Activity className="absolute -right-6 -bottom-6 w-40 h-40 text-black/5 rotate-12" />}
+                            </motion.div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* 3. Detailed Metrics Table */}
+                      <div className="bg-white dark:bg-[#0B1120] rounded-[24px] border border-gray-100 dark:border-white/[0.05] overflow-hidden shadow-sm">
+                        <div className="p-6 border-b border-gray-100 dark:border-white/[0.05] flex items-center justify-between">
+                          <div>
+                            <h3 className="text-lg font-black text-gray-900 dark:text-white">Staff Analysis</h3>
+                            <p className="text-[10px] font-black text-gray-400 tracking-widest">Performance Metrics</p>
+                          </div>
+                        </div>
+                        <div className="overflow-x-auto">
+                          <table className="w-full">
+                            <thead className="bg-gray-50/50 dark:bg-white/[0.01]">
+                              <tr className="border-b border-gray-100 dark:border-white/[0.05]">
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Rank</th>
+                                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Staff</th>
+                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Sales</th>
+                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Share</th>
+                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Avg Order</th>
+                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Sales/Hr</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 dark:divide-white/[0.03]">
+                              {sortedEmployees.map((emp: any, idx: number) => {
+                                const share = totalStoreSales > 0 ? ((emp.totalSales / totalStoreSales) * 100).toFixed(1) : '0';
+                                const avgTicket = emp.totalSales / (emp.transactionCount || 1);
+                                const efficiency = emp.totalSales / (emp.totalHours || 1);
+
+                                return (
+                                  <tr key={emp.username} className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                                    <td className="px-6 py-4 text-left">
+                                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs ${idx === 0 ? 'bg-[#7CC39F]/20 text-[#7CC39F]' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                                        {idx + 1}
+                                      </div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                      <span className="font-bold text-gray-900 dark:text-white text-sm">{emp.username}</span>
+                                    </td>
+                                    <td className="px-6 py-4 text-right font-black text-gray-900 dark:text-white">
+                                      {formatCurrency(emp.totalSales)}
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                      <div className="flex items-center justify-end gap-2">
+                                        <div className="w-16 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                                          <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${share}%` }} />
+                                        </div>
+                                        <span className="text-xs font-bold text-gray-500">{share}%</span>
+                                      </div>
+                                    </td>
+                                    <td className="px-6 py-4 text-right font-bold text-gray-900 dark:text-white">
+                                      {formatCurrency(avgTicket).replace(' Jod', '')}
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                      <span className="text-xs font-bold text-gray-500">
+                                        {formatCurrency(efficiency).replace(' Jod', '')} / hr
+                                      </span>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+
+            {/* Shifts Report Section */}
+            {reportType === 'shifts' && (
+              <div className="space-y-6">
 
                 {/* Audit Oversight Cards */}
                 {shifts.length > 0 && (() => {
