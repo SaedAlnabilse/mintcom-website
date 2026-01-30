@@ -25,8 +25,7 @@ import {
   Apple,
   Play,
   Clock,
-  Heart,
-  Gift
+  Heart
 } from 'lucide-react';
 
 // Paymint Logo imports
