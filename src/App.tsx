@@ -69,6 +69,7 @@ const ReportsPage = lazy(() => import('./pages/dashboard/ReportsPage').then(m =>
 const DiscountsPage = lazy(() => import('./pages/dashboard/DiscountsPage').then(m => ({ default: m.DiscountsPage })));
 const PaymentMethodsPage = lazy(() => import('./pages/dashboard/PaymentMethodsPage').then(m => ({ default: m.PaymentMethodsPage })));
 const SettingsPage = lazy(() => import('./pages/dashboard/SettingsPage').then(m => ({ default: m.SettingsPage })));
+const LoyaltyPage = lazy(() => import('./pages/dashboard/LoyaltyPage').then(m => ({ default: m.LoyaltyPage })));
 const ActivityLogsPage = lazy(() => import('./pages/dashboard/ActivityLogsPage').then(m => ({ default: m.ActivityLogsPage })));
 const AddonsPage = lazy(() => import('./pages/dashboard/AddonsPage').then(m => ({ default: m.AddonsPage })));
 const MaterialsPage = lazy(() => import('./pages/dashboard/MaterialsPage').then(m => ({ default: m.MaterialsPage })));
@@ -395,6 +396,14 @@ const router = createBrowserRouter([
                 element: (
                   <PageSuspense>
                     <SettingsPage />
+                  </PageSuspense>
+                ),
+              },
+              {
+                path: "loyalty",
+                element: (
+                  <PageSuspense>
+                    <LoyaltyPage />
                   </PageSuspense>
                 ),
               },

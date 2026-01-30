@@ -1,0 +1,456 @@
+import { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { Award, Plus, Edit2, Trash2, Percent, Gift } from 'lucide-react';
+import api from '../../config/api';
+import toast from 'react-hot-toast';
+import { ConfirmModal } from '../../components/ConfirmModal';
+import { RewardFormModal } from '../../components/forms/RewardFormModal';
+
+interface LoyaltyConfig {
+    enabled: boolean;
+    pointsPerCurrency: number;
+    currencyPerPoint: number;
+    rewards?: LoyaltyReward[];
+}
+
+interface LoyaltyReward {
+    id: string;
+    type: 'DISCOUNT' | 'FREE_ITEM';
+    name: string;
+    pointsRequired: number;
+    discountPercentage?: number;
+    freeCategoryId?: string;
+    freeCategoryName?: string;
+}
+
+export function LoyaltyPage() {
+    const [loyaltyConfig, setLoyaltyConfig] = useState<LoyaltyConfig | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [initialLoyaltyConfig, setInitialLoyaltyConfig] = useState<LoyaltyConfig | null>(null);
+    const [rewards, setRewards] = useState<LoyaltyReward[]>([]);
+    const [showRewardModal, setShowRewardModal] = useState(false);
+    const [editingReward, setEditingReward] = useState<LoyaltyReward | null>(null);
+
+    const [confirmConfig, setConfirmConfig] = useState<{
+        isOpen: boolean;
+        title: string;
+        message: string;
+        onConfirm: () => void;
+        onClose?: () => void;
+        type?: 'danger' | 'success' | 'warning' | 'info';
+        confirmText?: string;
+        showCancel?: boolean;
+    }>({
+        isOpen: false,
+        title: '',
+        message: '',
+        onConfirm: () => { },
+    });
+
+    // ATM-style input state for currencyPerPoint (stores value in cents)
+    const [currencyPerPointCents, setCurrencyPerPointCents] = useState(0);
+    const lastSyncedCurrencyPerPoint = useRef<number | null>(null);
+
+    // Input state for pointsPerCurrency (Integer)
+    const [pointsPerCurrency, setPointsPerCurrency] = useState(0);
+    const lastSyncedPointsPerCurrency = useRef<number | null>(null);
+
+    // Display values
+    const currencyPerPointDisplay = (currencyPerPointCents / 100).toFixed(2);
+    const pointsPerCurrencyDisplay = String(pointsPerCurrency);
+
+    const [categories, setCategories] = useState<any[]>([]);
+    const [currency, setCurrency] = useState('Jod');
+
+    useEffect(() => {
+        fetchLoyaltyConfig();
+        fetchAppSettings();
+        fetchCategories();
+    }, []);
+
+    const fetchAppSettings = async () => {
+        try {
+            const response = await api.get('/app-settings');
+            if (response.data?.currency) {
+                setCurrency(response.data.currency);
+            }
+        } catch (err) {
+            console.error("Failed to fetch app settings for currency", err);
+        }
+    }
+
+    const fetchCategories = async () => {
+        try {
+            const response = await api.get('/api/categories');
+            const data = Array.isArray(response.data) ? response.data : response.data?.data || [];
+            setCategories(data);
+        } catch (err) {
+            console.error('Failed to load categories:', err);
+        }
+    };
+
+    const fetchLoyaltyConfig = async () => {
+        try {
+            setIsLoading(true);
+            const response = await api.get('/app-settings/loyalty-config');
+            const config = {
+                pointsPerCurrency: 1,
+                currencyPerPoint: 1,
+                enabled: true,
+                ...response.data,
+                enabled: true // Ensure it is always true
+            };
+            setLoyaltyConfig(config);
+            setInitialLoyaltyConfig(JSON.parse(JSON.stringify(config)));
+            if (response.data?.rewards) {
+                setRewards(response.data.rewards);
+            } else {
+                setRewards([]);
+            }
+        } catch (err) {
+            console.error('Failed to load loyalty config');
+            toast.error('Failed to load loyalty configuration');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (loyaltyConfig?.currencyPerPoint !== undefined &&
+            loyaltyConfig.currencyPerPoint !== lastSyncedCurrencyPerPoint.current) {
+            lastSyncedCurrencyPerPoint.current = loyaltyConfig.currencyPerPoint;
+            setCurrencyPerPointCents(Math.round(loyaltyConfig.currencyPerPoint * 100));
+        }
+    }, [loyaltyConfig?.currencyPerPoint]);
+
+    useEffect(() => {
+        if (loyaltyConfig?.pointsPerCurrency !== undefined &&
+            loyaltyConfig.pointsPerCurrency !== lastSyncedPointsPerCurrency.current) {
+            lastSyncedPointsPerCurrency.current = loyaltyConfig.pointsPerCurrency;
+            setPointsPerCurrency(loyaltyConfig.pointsPerCurrency);
+        }
+    }, [loyaltyConfig?.pointsPerCurrency]);
+
+    const handleCurrencyPerPointChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const digitsOnly = e.target.value.replace(/[^0-9]/g, '');
+        const cents = parseInt(digitsOnly, 10) || 0;
+        if (cents <= 999999999) {
+            setCurrencyPerPointCents(cents);
+            // We update state immediately for UI, but also need to save effectively.
+            // In SettingsPage, this updated a local state object. Here we should likely auto-save or have a save button.
+            // The user moved this to a dedicated page. I'll implement auto-save for these toggles/inputs or a save button.
+            // For simplicity and consistency with modern settings, I'll add a "Save Changes" button at the top if changes are detected.
+
+            const newVal = cents / 100;
+            lastSyncedCurrencyPerPoint.current = newVal;
+            setLoyaltyConfig(prev => prev ? { ...prev, currencyPerPoint: newVal } : null);
+        }
+    };
+
+    const handlePointsPerCurrencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const digitsOnly = e.target.value.replace(/[^0-9]/g, '');
+        const points = parseInt(digitsOnly, 10) || 0;
+        if (points <= 999999) {
+            setPointsPerCurrency(points);
+            lastSyncedPointsPerCurrency.current = points;
+            setLoyaltyConfig(prev => prev ? { ...prev, pointsPerCurrency: points } : null);
+        }
+    };
+
+    const handleEditReward = (reward: LoyaltyReward) => {
+        setEditingReward(reward);
+        setShowRewardModal(true);
+    };
+
+    const handleDeleteReward = (rewardId: string) => {
+        setConfirmConfig({
+            isOpen: true,
+            title: 'Delete Reward',
+            message: 'Are you sure you want to permanently remove this reward from the loyalty catalog? This action cannot be reversed.',
+            type: 'danger',
+            confirmText: 'Delete Reward',
+            onConfirm: async () => {
+                const updatedRewards = rewards.filter(r => r.id !== rewardId);
+                try {
+                    await api.put('/app-settings/loyalty-config', {
+                        ...loyaltyConfig,
+                        enabled: true,
+                        rewards: updatedRewards,
+                    });
+                    setRewards(updatedRewards);
+                    setConfirmConfig({
+                        isOpen: true,
+                        title: 'Reward Deleted',
+                        message: 'Reward deleted',
+                        type: 'success',
+                        confirmText: 'OK',
+                        showCancel: false,
+                        onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+                    });
+                } catch (err: any) {
+                    toast.error(err.response?.data?.message || 'Failed to delete reward');
+                }
+            },
+            onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+        });
+    };
+
+    const handleSaveReward = async (rewardData: any) => {
+        const newReward: LoyaltyReward = {
+            id: editingReward?.id || `reward_${Date.now()}`,
+            type: rewardData.type,
+            name: rewardData.type === 'DISCOUNT'
+                ? `Discount ${rewardData.discountPercentage}%`
+                : 'Free Item',
+            pointsRequired: parseInt(rewardData.pointsRequired, 10),
+            discountPercentage: rewardData.type === 'DISCOUNT' ? parseFloat(rewardData.discountPercentage) : undefined,
+            freeCategoryId: rewardData.type === 'FREE_ITEM' ? rewardData.freeCategoryId : undefined,
+            freeCategoryName: rewardData.type === 'FREE_ITEM' ? rewardData.freeCategoryName : undefined,
+        };
+
+        let updatedRewards: LoyaltyReward[];
+        if (editingReward) {
+            updatedRewards = rewards.map(r => r.id === editingReward.id ? newReward : r);
+        } else {
+            updatedRewards = [...rewards, newReward];
+        }
+
+        try {
+            // We save the WHOLE config including rewards
+            await api.put('/app-settings/loyalty-config', {
+                ...loyaltyConfig,
+                enabled: true,
+                rewards: updatedRewards,
+            });
+            setRewards(updatedRewards);
+            setShowRewardModal(false);
+            setEditingReward(null);
+            setConfirmConfig({
+                isOpen: true,
+                title: editingReward ? 'Reward Updated' : 'Reward Added',
+                message: editingReward ? 'Reward updated' : 'Reward added',
+                type: 'success',
+                confirmText: 'OK',
+                showCancel: false,
+                onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+            });
+        } catch (err: any) {
+            toast.error(err.response?.data?.message || 'Failed to save reward');
+        }
+    };
+
+    const hasChanges = JSON.stringify(loyaltyConfig) !== JSON.stringify(initialLoyaltyConfig);
+
+    const saveConfig = async () => {
+        try {
+            await api.put('/app-settings/loyalty-config', {
+                ...loyaltyConfig,
+                enabled: true,
+                rewards: rewards
+            });
+            setInitialLoyaltyConfig(JSON.parse(JSON.stringify(loyaltyConfig)));
+            toast.success("Loyalty configuration saved");
+        } catch (err) {
+            toast.error("Failed to save configuration");
+        }
+    }
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
+                <div className="relative">
+                    <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
+                    <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
+                </div>
+                <p className="text-sm font-bold text-gray-400 tracking-widest">Loading loyalty settings...</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="max-w-7xl mx-auto space-y-8 pb-10">
+
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                <div>
+                    <div className="flex items-center gap-3 mb-2">
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+                            Loyalty Program
+                        </span>
+                    </div>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Loyalty & Rewards</h1>
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">
+                        Configure how customers earn points and redeem rewards
+                    </p>
+                </div>
+                {hasChanges && (
+                    <button
+                        onClick={saveConfig}
+                        className="px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20"
+                    >
+                        Save Changes
+                    </button>
+                )}
+            </div>
+
+            {loyaltyConfig && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-8 space-y-10 shadow-sm">
+                    <div className="flex items-center justify-between border-b border-gray-100 dark:border-white/5 pb-8">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm">
+                                <Award className="w-6 h-6" />
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Configuration</h3>
+                                <p className="text-[10px] text-gray-400 font-black tracking-widest px-1">Manage earning rules</p>
+                            </div>
+                        </div>
+                        {/* Toggle removed */}
+                    </div>
+
+                    <div className={`space-y-10 transition-all duration-500`}>
+                        <div className="space-y-5 pt-4">
+                            <div className="flex items-center gap-2">
+                                <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
+                                <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">Earning Rules</h4>
+                            </div>
+                            <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
+                                <div className="flex flex-col lg:flex-row items-center gap-8">
+                                    {/* Spend Input Section */}
+                                    <div className="flex-1 w-full lg:w-auto space-y-4">
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">For Every</span>
+                                        </div>
+                                        <div className="flex items-stretch bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
+                                            <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
+                                                <span className="text-sm font-black text-paymint-green">{currency}</span>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                value={currencyPerPointDisplay}
+                                                onChange={handleCurrencyPerPointChange}
+                                                className="flex-1 w-full bg-transparent font-bold text-3xl text-gray-900 dark:text-white focus:outline-none transition-all px-6 py-4"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Connector */}
+                                    <div className="flex flex-col items-center justify-center py-4 lg:py-0 self-end lg:pb-5">
+                                        <div className="text-[10px] font-black text-gray-400 tracking-widest">Equals</div>
+                                    </div>
+
+                                    {/* Points Input Section */}
+                                    <div className="flex-1 w-full lg:w-auto space-y-4">
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-[10px] font-black text-gray-400 tracking-[0.2em] opacity-0 lg:block hidden">Spacer</span>
+                                        </div>
+                                        <div className="flex items-stretch bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
+                                            <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
+                                                <span className="text-sm font-black text-paymint-green">Pts</span>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                value={pointsPerCurrencyDisplay}
+                                                onChange={handlePointsPerCurrencyChange}
+                                                className="flex-1 w-full bg-transparent font-bold text-3xl text-paymint-green focus:outline-none transition-all px-6 py-4"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="mt-8 pt-8 border-t border-gray-200 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
+                                    <div className="flex items-center gap-4 bg-white dark:bg-[#0B1120] px-6 py-4 rounded-2xl border border-gray-100 dark:border-white/[0.03] shadow-sm">
+                                        <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
+                                        <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                                            Active Rule: <span className="text-gray-900 dark:text-white">Customers earn {pointsPerCurrencyDisplay} points for every {currencyPerPointDisplay} {currency} spent</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Rewards List */}
+                        <div className="space-y-6 pt-4">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
+                                    <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">Rewards</h4>
+                                </div>
+                                <button type="button" onClick={() => { setEditingReward(null); setShowRewardModal(true); }} className="flex items-center gap-2 px-4 py-2 bg-paymint-green/10 text-paymint-green rounded-xl text-[10px] font-black tracking-widest hover:bg-paymint-green/20 transition-all border border-paymint-green/20">
+                                    <Plus size={14} /> Add Pattern
+                                </button>
+                            </div>
+                            {rewards.length === 0 ? (
+                                <div className="text-center py-16 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl bg-gray-50/50 dark:bg-black/5">
+                                    <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-paymint-green shadow-sm">
+                                        <Award size={24} />
+                                    </div>
+                                    <p className="text-xs font-black text-gray-400 tracking-widest">Catalog Empty</p>
+                                    <p className="text-[10px] font-black text-gray-400 mt-1 tracking-widest">Create reward tiers to activate redemption</p>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {rewards.map((reward) => (
+                                        <motion.div
+                                            layout
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            key={reward.id}
+                                            className="group relative flex items-center justify-between p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/5 transition-all duration-300 hover:shadow-lg overflow-hidden"
+                                        >
+                                            <div className="absolute inset-0 bg-gradient-to-br from-paymint-green/0 via-transparent to-paymint-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                                            <div className="relative z-10 flex items-center gap-4">
+                                                <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm group-hover:scale-110 transition-transform duration-300">
+                                                    {reward.type === 'DISCOUNT' ? <Percent size={22} /> : <Gift size={22} />}
+                                                </div>
+                                                <div>
+                                                    <p className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-paymint-green transition-colors">{reward.name}</p>
+                                                    <div className="flex items-center gap-1.5 mt-0.5">
+                                                        <span className="text-[10px] text-gray-400 font-black tracking-widest">{reward.pointsRequired} Points</span>
+                                                        <span className="text-[10px] text-gray-300 dark:text-gray-600">•</span>
+                                                        <span className="text-[10px] text-paymint-green font-black tracking-widest">
+                                                            {reward.type === 'DISCOUNT'
+                                                                ? `${reward.discountPercentage}% Off`
+                                                                : reward.freeCategoryName ? `Free from ${reward.freeCategoryName}` : 'Free Product'}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="relative z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                                                <button type="button" onClick={() => handleEditReward(reward)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
+                                                    <Edit2 size={16} />
+                                                </button>
+                                                <button type="button" onClick={() => handleDeleteReward(reward.id)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-red-500 border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </motion.div>
+            )}
+
+            <RewardFormModal
+                isOpen={showRewardModal}
+                onClose={() => { setShowRewardModal(false); setEditingReward(null); }}
+                onSave={handleSaveReward}
+                initialData={editingReward}
+                categories={categories}
+            />
+
+            <ConfirmModal
+                isOpen={confirmConfig.isOpen}
+                title={confirmConfig.title}
+                message={confirmConfig.message}
+                onConfirm={confirmConfig.onConfirm}
+                onClose={confirmConfig.onClose || (() => setConfirmConfig(prev => ({ ...prev, isOpen: false })))}
+                type={confirmConfig.type || 'info'}
+                confirmText={confirmConfig.confirmText}
+                cancelText={confirmConfig.showCancel === false ? undefined : 'Cancel'}
+            />
+        </div>
+    );
+}

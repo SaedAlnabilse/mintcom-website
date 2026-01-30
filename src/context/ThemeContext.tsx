@@ -58,7 +58,7 @@ export function ThemeProvider({
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
+
     const handleChange = () => {
       if (theme === 'system') {
         const root = window.document.documentElement;
@@ -72,6 +72,48 @@ export function ThemeProvider({
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, [theme]);
+
+  // Sync Theme with Chatbot Widget
+  useEffect(() => {
+    const sendThemeToChatbot = () => {
+      const iframe = document.querySelector('iframe[src*="hf.space"]') as HTMLIFrameElement;
+      if (iframe?.contentWindow) {
+        iframe.contentWindow.postMessage({
+          type: 'theme-change',
+          theme: resolvedTheme
+        }, '*');
+      }
+    };
+
+    // 1. Send immediately (if iframe exists)
+    sendThemeToChatbot();
+
+    // 2. Observe DOM to send when iframe is injected
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.addedNodes.length) {
+          const iframe = document.querySelector('iframe[src*="hf.space"]');
+          if (iframe) {
+            sendThemeToChatbot();
+            // Disconnect once found to save resources, or keep if iframe can be re-mounted
+            // observer.disconnect(); 
+          }
+        }
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // 3. Set a small interval to retry ensuring the message gets through during iframe load
+    const interval = setInterval(sendThemeToChatbot, 1000);
+    const timeout = setTimeout(() => clearInterval(interval), 5000); // Stop retrying after 5s
+
+    return () => {
+      observer.disconnect();
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [resolvedTheme]);
 
   const value = {
     theme,
@@ -95,7 +137,7 @@ export const useTheme = () => {
     throw new Error('useTheme must be used within a ThemeProvider');
 
   return context;
-}; 
+};
 
 
 

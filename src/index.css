@@ -113,19 +113,41 @@ body.app-loading #global-blocking-overlay {
   cursor: url('./assets/green-loading-cursor.svg') 16 16, wait;
 }
 
-/* Chatbot widget animation - small ring glow effect */
+/* Chatbot widget animation - subtle pulse using drop-shadow to hug the button content */
+:root {
+  --widget-pulse-color: rgba(124, 195, 159, 0.7);
+  /* Paymint Green */
+  --widget-filter: none;
+}
+
+.dark {
+  --widget-pulse-color: rgba(255, 255, 255, 0.5);
+  /* White/Light for Dark Mode */
+  /* Force dark mode on iframe by inverting colors and rotating hue back to preserve brand colors */
+  --widget-filter: invert(0.93) hue-rotate(180deg);
+}
+
 iframe[src*="hf.space"],
 div[id*="chat"],
 div[class*="chat-widget"] {
-  animation: ring-glow 3s ease-in-out infinite;
+  animation: ring-pulse 8s ease-in-out infinite;
+  /* border-radius removal: drop-shadow handles the shape, but we keep radius for the iframe container just in case */
+  border-radius: 50%;
+  filter: var(--widget-filter);
 }
 
-@keyframes ring-glow {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(124, 195, 159, 0.3);
+@keyframes ring-pulse {
+  0% {
+    filter: var(--widget-filter) drop-shadow(0 0 1px var(--widget-pulse-color));
   }
-  50% {
-    box-shadow: 0 0 0 4px rgba(124, 195, 159, 0);
+
+  10% {
+    filter: var(--widget-filter) drop-shadow(0 0 6px var(--widget-pulse-color));
+    opacity: 1;
+  }
+
+  100% {
+    filter: var(--widget-filter) drop-shadow(0 0 1px transparent);
   }
 }
 
@@ -141,9 +163,13 @@ div[class*="chat-widget"][style*="height: 600"],
 div[class*="chat-widget"][style*="height:500"],
 div[class*="chat-widget"][style*="height:600"],
 iframe[src*="hf.space"][style*="height: 500"],
-iframe[src*="hf.space"][style*="height: 600"] {
+iframe[src*="hf.space"][style*="height: 600"],
+iframe[src*="hf.space"][style*="height: 650"],
+iframe[src*="hf.space"][style*="height:650"] {
   animation: none !important;
   box-shadow: none !important;
+  filter: var(--widget-filter) !important;
+  border-radius: 0 !important;
 }
 
 /* Hide chatbot during loading */

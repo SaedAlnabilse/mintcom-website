@@ -2,13 +2,13 @@ import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBlocker } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Store, Save, CreditCard, Receipt, Award, Trash2, AlertTriangle, Clock, RefreshCw, Plus, Edit2, DollarSign, Percent, Gift, Database } from 'lucide-react';
+import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, Clock, RefreshCw, Plus, DollarSign, Database } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { EstablishmentDeletionWizard, PendingDeletionBanner } from '../../components/EstablishmentDeletionWizard';
 import { CustomSelect } from '../../components/CustomSelect';
-import { RewardFormModal } from '../../components/forms/RewardFormModal';
+
 import { DemoDataGeneratorComponent } from '../../components/DemoDataGenerator';
 
 interface AppSettings {
@@ -43,27 +43,9 @@ interface AppSettings {
   };
 }
 
-interface LoyaltyConfig {
-  enabled: boolean;
-  pointsPerCurrency: number;
-  currencyPerPoint: number;
-  rewards?: LoyaltyReward[];
-}
 
-interface LoyaltyReward {
-  id: string;
-  type: 'DISCOUNT' | 'FREE_ITEM';
-  name: string;
-  pointsRequired: number;
-  discountPercentage?: number;
-  freeCategoryId?: string;
-  freeCategoryName?: string;
-}
 
-interface Category {
-  id: string;
-  name: string;
-}
+
 
 type SettingsTab = 'profile' | 'sales' | 'receipt' | 'loyalty' | 'danger' | 'demo';
 
@@ -87,7 +69,6 @@ export function SettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
   const [selectedDays, setSelectedDays] = useState<string[]>(['monday']);
   const [, setSettings] = useState<AppSettings | null>(null);
-  const [loyaltyConfig, setLoyaltyConfig] = useState<LoyaltyConfig | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -95,12 +76,6 @@ export function SettingsPage() {
   const [receiptLogoPreview, setReceiptLogoPreview] = useState<string | null>(null);
   const [selectedReceiptLogo, setSelectedReceiptLogo] = useState<File | null>(null);
   const [initialSettings, setInitialSettings] = useState<AppSettings | null>(null);
-  const [initialLoyaltyConfig, setInitialLoyaltyConfig] = useState<LoyaltyConfig | null>(null);
-  const [initialRewards, setInitialRewards] = useState<LoyaltyReward[]>([]);
-  const [rewards, setRewards] = useState<LoyaltyReward[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [showRewardModal, setShowRewardModal] = useState(false);
-  const [editingReward, setEditingReward] = useState<LoyaltyReward | null>(null);
 
   const [confirmConfig, setConfirmConfig] = useState<{
     isOpen: boolean;
@@ -131,44 +106,9 @@ export function SettingsPage() {
   const showTaxId = watch('showTaxId');
   const showFarewellMessage = watch('showFarewellMessage');
 
-  // ATM-style input state for currencyPerPoint (stores value in cents)
-  const [currencyPerPointCents, setCurrencyPerPointCents] = useState(0);
-  const lastSyncedCurrencyPerPoint = useRef<number | null>(null);
 
-  // Input state for pointsPerCurrency (Integer)
-  const [pointsPerCurrency, setPointsPerCurrency] = useState(0);
-  const lastSyncedPointsPerCurrency = useRef<number | null>(null);
 
-  // Display values
-  const currencyPerPointDisplay = (currencyPerPointCents / 100).toFixed(2);
-  const pointsPerCurrencyDisplay = String(pointsPerCurrency);
 
-  // ATM-style input handler for spend amount
-  const handleCurrencyPerPointChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const digitsOnly = e.target.value.replace(/[^0-9]/g, '');
-    const cents = parseInt(digitsOnly, 10) || 0;
-    if (cents <= 999999999) {
-      setCurrencyPerPointCents(cents);
-      lastSyncedCurrencyPerPoint.current = cents / 100;
-      setLoyaltyConfig(prev => prev ? { ...prev, currencyPerPoint: cents / 100 } : null);
-    }
-  };
-
-  // Integer input handler for points awarded
-  const handlePointsPerCurrencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const digitsOnly = e.target.value.replace(/[^0-9]/g, '');
-    const points = parseInt(digitsOnly, 10) || 0;
-    if (points <= 999999) {
-      setPointsPerCurrency(points);
-      lastSyncedPointsPerCurrency.current = points;
-      setLoyaltyConfig(prev => prev ? { ...prev, pointsPerCurrency: points } : null);
-    }
-  };
-
-  // Check if loyalty config has changes
-  const hasLoyaltyChanges =
-    JSON.stringify(loyaltyConfig) !== JSON.stringify(initialLoyaltyConfig) ||
-    JSON.stringify(rewards) !== JSON.stringify(initialRewards);
 
   // Check if form has changes by comparing watched values with initial settings
   const hasFormChanges = (() => {
@@ -198,7 +138,7 @@ export function SettingsPage() {
   })();
 
   // Combined dirty state
-  const hasUnsavedChanges = hasFormChanges || hasLoyaltyChanges || !!selectedLogo || !!selectedReceiptLogo;
+  const hasUnsavedChanges = hasFormChanges || !!selectedLogo || !!selectedReceiptLogo;
 
   // Navigation blocker with proper dependency tracking
   const blocker = useBlocker(
@@ -226,26 +166,11 @@ export function SettingsPage() {
     }
   }, [blocker.state]);
 
-  useEffect(() => {
-    if (loyaltyConfig?.currencyPerPoint !== undefined &&
-      loyaltyConfig.currencyPerPoint !== lastSyncedCurrencyPerPoint.current) {
-      lastSyncedCurrencyPerPoint.current = loyaltyConfig.currencyPerPoint;
-      setCurrencyPerPointCents(Math.round(loyaltyConfig.currencyPerPoint * 100));
-    }
-  }, [loyaltyConfig?.currencyPerPoint]);
 
-  useEffect(() => {
-    if (loyaltyConfig?.pointsPerCurrency !== undefined &&
-      loyaltyConfig.pointsPerCurrency !== lastSyncedPointsPerCurrency.current) {
-      lastSyncedPointsPerCurrency.current = loyaltyConfig.pointsPerCurrency;
-      setPointsPerCurrency(loyaltyConfig.pointsPerCurrency);
-    }
-  }, [loyaltyConfig?.pointsPerCurrency]);
+
 
   useEffect(() => {
     fetchSettings();
-    fetchLoyaltyConfig();
-    fetchCategories();
   }, []);
 
   useEffect(() => {
@@ -319,121 +244,9 @@ export function SettingsPage() {
     }
   };
 
-  const fetchLoyaltyConfig = async () => {
-    try {
-      const response = await api.get('/app-settings/loyalty-config');
-      const config = {
-        pointsPerCurrency: 1,
-        currencyPerPoint: 1,
-        enabled: false,
-        ...response.data
-      };
-      setLoyaltyConfig(config);
-      setInitialLoyaltyConfig(JSON.parse(JSON.stringify(config)));
-      if (response.data?.rewards) {
-        setRewards(response.data.rewards);
-        setInitialRewards(JSON.parse(JSON.stringify(response.data.rewards)));
-      } else {
-        setRewards([]);
-        setInitialRewards([]);
-      }
-    } catch (err) {
-      console.error('Failed to load loyalty config');
-    }
-  };
 
-  const fetchCategories = async () => {
-    try {
-      const response = await api.get('/api/categories');
-      // Categories endpoint returns array directly
-      const data = Array.isArray(response.data) ? response.data : response.data?.data || [];
-      setCategories(data);
-    } catch (err) {
-      console.error('Failed to load categories:', err);
-    }
-  };
 
-  const handleEditReward = (reward: LoyaltyReward) => {
-    setEditingReward(reward);
-    setShowRewardModal(true);
-  };
 
-  const handleDeleteReward = (rewardId: string) => {
-    setConfirmConfig({
-      isOpen: true,
-      title: 'Delete Reward',
-      message: 'Are you sure you want to permanently remove this reward from the loyalty catalog? This action cannot be reversed.',
-      type: 'danger',
-      confirmText: 'Delete Reward',
-      onConfirm: async () => {
-        const updatedRewards = rewards.filter(r => r.id !== rewardId);
-        try {
-          await api.put('/app-settings/loyalty-config', {
-            ...loyaltyConfig,
-            rewards: updatedRewards,
-          });
-          setRewards(updatedRewards);
-          setInitialRewards(JSON.parse(JSON.stringify(updatedRewards)));
-          setConfirmConfig({
-            isOpen: true,
-            title: 'Reward Deleted',
-            message: 'Reward deleted',
-            type: 'success',
-            confirmText: 'OK',
-            showCancel: false,
-            onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
-          });
-        } catch (err: any) {
-          toast.error(err.response?.data?.message || 'Failed to delete reward');
-        }
-      },
-      onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
-    });
-  };
-
-  const handleSaveReward = async (rewardData: any) => {
-    // Create reward object
-    const newReward: LoyaltyReward = {
-      id: editingReward?.id || `reward_${Date.now()}`,
-      type: rewardData.type,
-      name: rewardData.type === 'DISCOUNT'
-        ? `Discount ${rewardData.discountPercentage}%`
-        : 'Free Item',
-      pointsRequired: parseInt(rewardData.pointsRequired, 10),
-      discountPercentage: rewardData.type === 'DISCOUNT' ? parseFloat(rewardData.discountPercentage) : undefined,
-      freeCategoryId: rewardData.type === 'FREE_ITEM' ? rewardData.freeCategoryId : undefined,
-      freeCategoryName: rewardData.type === 'FREE_ITEM' ? rewardData.freeCategoryName : undefined,
-    };
-
-    let updatedRewards: LoyaltyReward[];
-    if (editingReward) {
-      updatedRewards = rewards.map(r => r.id === editingReward.id ? newReward : r);
-    } else {
-      updatedRewards = [...rewards, newReward];
-    }
-
-    try {
-      await api.put('/app-settings/loyalty-config', {
-        ...loyaltyConfig,
-        rewards: updatedRewards,
-      });
-      setRewards(updatedRewards);
-      setInitialRewards(JSON.parse(JSON.stringify(updatedRewards)));
-      setShowRewardModal(false);
-      setEditingReward(null);
-      setConfirmConfig({
-        isOpen: true,
-        title: editingReward ? 'Reward Updated' : 'Reward Added',
-        message: editingReward ? 'Reward updated' : 'Reward added',
-        type: 'success',
-        confirmText: 'OK',
-        showCancel: false,
-        onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
-      });
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to save reward');
-    }
-  };
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -515,13 +328,7 @@ export function SettingsPage() {
 
       await api.put('/app-settings', submissionData);
 
-      // Save loyalty changes regardless of active tab if they exist
-      if (hasLoyaltyChanges && loyaltyConfig) {
-        await api.put('/app-settings/loyalty-config', {
-          ...loyaltyConfig,
-          rewards: rewards,
-        });
-      }
+
 
       setConfirmConfig({
         isOpen: true,
@@ -537,8 +344,7 @@ export function SettingsPage() {
 
       // Refresh data without showing loading spinner to keep form mounted for proper reset
       await Promise.all([
-        fetchSettings(false),
-        fetchLoyaltyConfig()
+        fetchSettings(false)
       ]);
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to save settings');
@@ -863,9 +669,7 @@ export function SettingsPage() {
           // Reset form data to initial state
           if (initialSettings) reset(initialSettings);
 
-          // Reset loyalty config and rewards to initial state
-          if (initialLoyaltyConfig) setLoyaltyConfig(JSON.parse(JSON.stringify(initialLoyaltyConfig)));
-          if (initialRewards) setRewards(JSON.parse(JSON.stringify(initialRewards)));
+
 
           // Reset image preview if it was changed
           if (initialSettings?.logo) {
@@ -897,7 +701,6 @@ export function SettingsPage() {
     { id: 'profile', label: 'Profile', icon: Store },
     { id: 'sales', label: 'Sales', icon: CreditCard },
     { id: 'receipt', label: 'Receipts', icon: Receipt },
-    { id: 'loyalty', label: 'Loyalty', icon: Award },
     { id: 'demo', label: 'Demo', icon: Database },
     { id: 'danger', label: 'Delete', icon: Trash2, isDanger: true },
   ];
@@ -1398,158 +1201,7 @@ export function SettingsPage() {
           </motion.div>
         )}
 
-        {activeTab === 'loyalty' && loyaltyConfig && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-8 space-y-10 shadow-sm">
-            <div className="flex items-center justify-between border-b border-gray-100 dark:border-white/5 pb-8">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm">
-                  <Award className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Loyalty</h3>
-                  <p className="text-[10px] text-gray-400 font-black tracking-widest px-1">Points and rewards</p>
-                </div>
-              </div>
 
-              <div className="flex items-center gap-4 bg-gray-50 dark:bg-white/[0.03] px-5 py-3 rounded-2xl border border-gray-200 dark:border-white/[0.08] shadow-sm">
-                <span className={`text-[10px] font-black tracking-widest ${loyaltyConfig.enabled ? 'text-paymint-green' : 'text-gray-400'}`}>{loyaltyConfig.enabled ? 'Active' : 'Off'}</span>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={loyaltyConfig.enabled}
-                    onChange={(e) => setLoyaltyConfig({ ...loyaltyConfig, enabled: e.target.checked })}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-sm"></div>
-                </label>
-              </div>
-            </div>
-
-            <div className={`space-y-10 transition-all duration-500 ${loyaltyConfig.enabled ? 'opacity-100' : 'opacity-40 grayscale pointer-events-none'}`}>
-              <div className="space-y-5 pt-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
-                  <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">Earning Rules</h4>
-                </div>
-                <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
-                  <div className="flex flex-col lg:flex-row items-center gap-8">
-                    {/* Spend Input Section */}
-                    <div className="flex-1 w-full lg:w-auto space-y-4">
-                      <div className="flex items-center gap-3">
-                        <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">For Every</span>
-                      </div>
-                      <div className="flex items-stretch bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
-                        <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
-                          <span className="text-sm font-black text-paymint-green">{watch('currency')}</span>
-                        </div>
-                        <input
-                          type="text"
-                          value={currencyPerPointDisplay}
-                          onChange={handleCurrencyPerPointChange}
-                          className="flex-1 w-full bg-transparent font-bold text-3xl text-gray-900 dark:text-white focus:outline-none transition-all px-6 py-4"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Connector */}
-                    <div className="flex flex-col items-center justify-center py-4 lg:py-0 self-end lg:pb-5">
-                      <div className="text-[10px] font-black text-gray-400 tracking-widest">Equals</div>
-                    </div>
-
-                    {/* Points Input Section */}
-                    <div className="flex-1 w-full lg:w-auto space-y-4">
-                      <div className="flex items-center gap-3">
-                        <span className="text-[10px] font-black text-gray-400 tracking-[0.2em] opacity-0 lg:block hidden">Spacer</span>
-                      </div>
-                      <div className="flex items-stretch bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
-                        <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
-                          <span className="text-sm font-black text-paymint-green">Pts</span>
-                        </div>
-                        <input
-                          type="text"
-                          value={pointsPerCurrencyDisplay}
-                          onChange={handlePointsPerCurrencyChange}
-                          className="flex-1 w-full bg-transparent font-bold text-3xl text-paymint-green focus:outline-none transition-all px-6 py-4"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-8 pt-8 border-t border-gray-200 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div className="flex items-center gap-4 bg-white dark:bg-[#0B1120] px-6 py-4 rounded-2xl border border-gray-100 dark:border-white/[0.03] shadow-sm">
-                      <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
-                      <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
-                        Active Rule: <span className="text-gray-900 dark:text-white">Customers earn {pointsPerCurrencyDisplay} points for every {currencyPerPointDisplay} {watch('currency')} spent</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Rewards List */}
-              <div className="space-y-6 pt-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
-                    <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">Rewards</h4>
-                  </div>
-                  <button type="button" onClick={() => { setEditingReward(null); setShowRewardModal(true); }} className="flex items-center gap-2 px-4 py-2 bg-paymint-green/10 text-paymint-green rounded-xl text-[10px] font-black tracking-widest hover:bg-paymint-green/20 transition-all border border-paymint-green/20">
-                    <Plus size={14} /> Add
-                  </button>
-                </div>
-                {rewards.length === 0 ? (
-                  <div className="text-center py-16 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl bg-gray-50/50 dark:bg-black/5">
-                    <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-paymint-green shadow-sm">
-                      <Award size={24} />
-                    </div>
-                    <p className="text-xs font-black text-gray-400 tracking-widest">Catalog Empty</p>
-                    <p className="text-[10px] font-black text-gray-400 mt-1 tracking-widest">Create reward tiers to activate redemption</p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {rewards.map((reward) => (
-                      <motion.div
-                        layout
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        key={reward.id}
-                        className="group relative flex items-center justify-between p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/5 transition-all duration-300 hover:shadow-lg overflow-hidden"
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-br from-paymint-green/0 via-transparent to-paymint-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-                        <div className="relative z-10 flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm group-hover:scale-110 transition-transform duration-300">
-                            {reward.type === 'DISCOUNT' ? <Percent size={22} /> : <Gift size={22} />}
-                          </div>
-                          <div>
-                            <p className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-paymint-green transition-colors">{reward.name}</p>
-                            <div className="flex items-center gap-1.5 mt-0.5">
-                              <span className="text-[10px] text-gray-400 font-black tracking-widest">{reward.pointsRequired} Points</span>
-                              <span className="text-[10px] text-gray-300 dark:text-gray-600">•</span>
-                              <span className="text-[10px] text-paymint-green font-black tracking-widest">
-                                {reward.type === 'DISCOUNT'
-                                  ? `${reward.discountPercentage}% Off`
-                                  : reward.freeCategoryName ? `Free from ${reward.freeCategoryName}` : 'Free Product'}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="relative z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                          <button type="button" onClick={() => handleEditReward(reward)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
-                            <Edit2 size={16} />
-                          </button>
-                          <button type="button" onClick={() => handleDeleteReward(reward.id)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-red-500 border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </motion.div>
-        )}
 
         {activeTab === 'demo' && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
@@ -1606,15 +1258,7 @@ export function SettingsPage() {
         )}
       </form>
 
-      {showRewardModal && (
-        <RewardFormModal
-          isOpen={showRewardModal}
-          onClose={() => setShowRewardModal(false)}
-          onSave={handleSaveReward}
-          initialData={editingReward}
-          categories={categories}
-        />
-      )}
+
 
       <ConfirmModal
         isOpen={confirmConfig.isOpen}
