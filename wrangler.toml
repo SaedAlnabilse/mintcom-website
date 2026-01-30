@@ -1,0 +1,10 @@
+name = "paymint-landing"
+compatibility_date = "2024-09-23"
+main = "src/worker.ts"
+
+[assets]
+directory = "dist"
+binding = "ASSETS"
+
+[vars]
+API_TARGET = "https://grateful-liberation-production-d036.up.railway.app"

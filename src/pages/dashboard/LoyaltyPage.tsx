@@ -96,7 +96,6 @@ export function LoyaltyPage() {
             const config = {
                 pointsPerCurrency: 1,
                 currencyPerPoint: 1,
-                enabled: true,
                 ...response.data,
                 enabled: true // Ensure it is always true
             };
