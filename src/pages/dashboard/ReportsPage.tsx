@@ -234,7 +234,12 @@ export function ReportsPage() {
           label: `${format(new Date(s.startTime), 'MMM d, HH:mm')} - ${s.endTime ? format(new Date(s.endTime), 'HH:mm') : 'Active'}`,
           value: s.id,
           startTime: s.startTime,
-          endTime: s.endTime
+          endTime: s.endTime,
+          totalSales: s.totalSales || 0,
+          orderCount: s.orderCount || 0,
+          totalDiscounts: s.totalDiscounts || 0,
+          totalRefunds: s.totalRefunds || 0,
+          variance: s.variance || s.discrepancy || 0,
         })) || []);
       } catch (error) {
         console.error('Failed to load employee shifts', error);
@@ -317,8 +322,10 @@ export function ReportsPage() {
           let endpoint = '/reports/item-report';
           if (itemReportTab === 'categories') {
             endpoint = '/reports/category-report';
-          } else if (itemReportTab === 'modifiers' || itemReportTab === 'attributes') {
+          } else if (itemReportTab === 'modifiers') {
             endpoint = '/reports/modifier-report';
+          } else if (itemReportTab === 'attributes') {
+            endpoint = '/reports/attribute-report';
           }
 
           const itemRes = await api.get(endpoint, {
@@ -326,8 +333,7 @@ export function ReportsPage() {
               ...commonParams,
               categoryId: '',
               itemId: '',
-              subAttributeIds: '',
-              groupByAttribute: itemReportTab === 'attributes' ? 'true' : ''
+              subAttributeIds: ''
             }
           });
           setItemReportData(itemRes.data);
