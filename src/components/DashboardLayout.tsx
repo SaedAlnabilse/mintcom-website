@@ -24,7 +24,6 @@ import {
   Smartphone,
   Apple,
   Play,
-  Clock,
   Heart
 } from 'lucide-react';
 
@@ -61,9 +60,8 @@ const menuStructure: MenuItemOrGroup[] = [
       { path: '/dashboard/reports/sales', label: 'Sales Summary', icon: FileBarChart },
       { path: '/dashboard/reports/items', label: 'Items + Categories', icon: Package },
       { path: '/dashboard/reports/modifiers', label: 'Add-on Sales', icon: Package },
-      { path: '/dashboard/reports/employees', label: 'Staff Sales', icon: Users },
+      { path: '/dashboard/reports/shifts', label: 'Staff Sales', icon: Users },
       { path: '/dashboard/reports/payments', label: 'Payments', icon: CreditCard },
-      { path: '/dashboard/reports/shifts', label: 'Shifts', icon: Clock },
       { path: '/dashboard/reports/discounts', label: 'Discounts Report', icon: Percent },
     ],
   },
