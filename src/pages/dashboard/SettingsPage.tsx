@@ -2,14 +2,14 @@ import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBlocker } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, Clock, RefreshCw, Plus, DollarSign, Database } from 'lucide-react';
+import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, Clock, RefreshCw, Plus, DollarSign } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { EstablishmentDeletionWizard, PendingDeletionBanner } from '../../components/EstablishmentDeletionWizard';
 import { CustomSelect } from '../../components/CustomSelect';
 
-import { DemoDataGeneratorComponent } from '../../components/DemoDataGenerator';
+
 
 interface AppSettings {
   id?: string;
@@ -47,7 +47,7 @@ interface AppSettings {
 
 
 
-type SettingsTab = 'profile' | 'sales' | 'receipt' | 'loyalty' | 'danger' | 'demo';
+type SettingsTab = 'profile' | 'sales' | 'receipt' | 'loyalty' | 'danger';
 
 interface DeletionStatus {
   id: string;
@@ -701,7 +701,7 @@ export function SettingsPage() {
     { id: 'profile', label: 'Profile', icon: Store },
     { id: 'sales', label: 'Sales', icon: CreditCard },
     { id: 'receipt', label: 'Receipts', icon: Receipt },
-    { id: 'demo', label: 'Demo', icon: Database },
+
     { id: 'danger', label: 'Delete', icon: Trash2, isDanger: true },
   ];
 
@@ -1203,11 +1203,7 @@ export function SettingsPage() {
 
 
 
-        {activeTab === 'demo' && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-            <DemoDataGeneratorComponent />
-          </motion.div>
-        )}
+
 
         {activeTab === 'danger' && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-red-50/30 dark:bg-red-900/5 rounded-2xl border border-red-200/50 dark:border-red-900/20 p-8 space-y-10 shadow-sm">

@@ -17,7 +17,7 @@ import { ProtectedRoute, EstablishmentRequiredRoute } from './components/Protect
 // ============================================================================
 // Landing page is the entry point - consider preloading for better UX
 const LandingPage = lazy(() => import('./pages/LandingPage').then(m => ({ default: m.LandingPage })));
-const DemoPage = lazy(() => import('./pages/DemoPage').then(m => ({ default: m.DemoPage })));
+
 const LoginPage = lazy(() => import('./pages/LoginPage').then(m => ({ default: m.LoginPage })));
 const SignUpPage = lazy(() => import('./pages/SignUpPage').then(m => ({ default: m.SignUpPage })));
 const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage').then(m => ({ default: m.VerifyEmailPage })));
@@ -123,14 +123,7 @@ const router = createBrowserRouter([
           </PageSuspense>
         ),
       },
-      {
-        path: "/demo",
-        element: (
-          <PageSuspense>
-            <DemoPage />
-          </PageSuspense>
-        ),
-      },
+
       {
         path: "/login",
         element: (
