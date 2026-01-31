@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   TrendingUp,
@@ -19,16 +19,48 @@ import {
   Activity,
   Zap,
   PieChart,
-  HelpCircle
+  HelpCircle,
+  Timer,
+  History,
+  PlayCircle,
+  ChevronDown
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, PieChart as RechartsPie, Pie, Cell, BarChart, Bar } from 'recharts';
-import { format, startOfDay, endOfDay, isSameDay } from 'date-fns';
+import { format, subHours } from 'date-fns';
 import api from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { TourGuide, type TourStep } from '../../components/TourGuide';
-import { QuickInfo } from '../../components/QuickInfo';
+
+// View mode types
+type ViewMode = 'current_shift' | 'previous_shift' | 'last_24_hours';
+
+interface ShiftInfo {
+  id: string;
+  employee: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    username: string;
+  };
+  startTime: string;
+  endTime?: string;
+  autoClose?: boolean;
+}
+
+interface ShiftStatus {
+  shiftStatus: 'ACTIVE' | 'LAST_SHIFT' | 'NO_SHIFT';
+  activeShift: ShiftInfo | null;
+  netSales: number;
+  numberOfOrders: number;
+  cashSales: number;
+  cardSales: number;
+  otherPayments: number;
+  payIn: number;
+  payOut: number;
+  totalTimeWorked: string;
+}
 
 interface DashboardStats {
   totalRevenue: number;
@@ -43,7 +75,7 @@ interface DashboardStats {
   totalPayIn: number;
   totalPayOut: number;
   paymentMethodBreakdown: { name: string; value: number }[];
-  categoryBreakdown: { name: string; value: number }[];
+  categoryBreakdown: { name: string; value: number; count?: number }[];
   dailyBreakdown: { date: string; revenue: number }[];
 }
 
@@ -55,6 +87,9 @@ interface TopProduct {
 
 const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899'];
 
+// Auto-refresh interval: 1 hour in milliseconds
+const AUTO_REFRESH_INTERVAL = 60 * 60 * 1000;
+
 export const DashboardPage = () => {
   const navigate = useNavigate();
   const { currentEstablishment } = useAuth();
@@ -65,10 +100,35 @@ export const DashboardPage = () => {
   const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
   const [peakHours, setPeakHours] = useState<any[]>([]);
 
+  // Shift and view mode state
+  const [shiftStatus, setShiftStatus] = useState<ShiftStatus | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('last_24_hours');
+  const [isViewModeOpen, setIsViewModeOpen] = useState(false);
+  const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
+
   // Tour State
   const [isTourOpen, setIsTourOpen] = useState(false);
 
+  // Ref for click outside handling
+  const viewModeRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (viewModeRef.current && !viewModeRef.current.contains(event.target as Node)) {
+        setIsViewModeOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const tourSteps: TourStep[] = [
+    {
+      targetId: 'tour-view-mode',
+      title: "View Mode Selector",
+      description: "Switch between Current Shift, Previous Shift, or Last 24 Hours data view."
+    },
     {
       targetId: 'tour-kpi-cards',
       title: "Sales Overview",
@@ -96,29 +156,66 @@ export const DashboardPage = () => {
     }
   ];
 
-  useEffect(() => {
-    fetchDashboardData();
+  // Fetch shift status from backend
+  const fetchShiftStatus = useCallback(async () => {
+    try {
+      const response = await api.get('/dashboard/live-shift');
+      setShiftStatus(response.data);
 
-    // Check for day change every minute to ensure data resets at midnight
-    const checkDayChange = setInterval(() => {
-      const lastFetchDate = localStorage.getItem('last_dashboard_fetch');
-      if (lastFetchDate && !isSameDay(new Date(lastFetchDate), new Date())) {
-        fetchDashboardData();
+      // Auto-select view mode based on shift status
+      if (response.data.shiftStatus === 'ACTIVE') {
+        // If there's an active shift, default to current shift view
+        setViewMode('current_shift');
+      } else if (response.data.shiftStatus === 'LAST_SHIFT') {
+        // If there's a last shift, default to 24 hours view
+        setViewMode('last_24_hours');
+      } else {
+        // No shifts, show 24 hours data
+        setViewMode('last_24_hours');
       }
-    }, 60000);
+    } catch (error) {
+      console.error('Failed to fetch shift status:', error);
+      setShiftStatus(null);
+    }
+  }, []);
 
-    return () => clearInterval(checkDayChange);
-  }, [currentEstablishment?.id]);
-
-  const fetchDashboardData = async () => {
+  // Fetch dashboard data based on view mode
+  const fetchDashboardData = useCallback(async () => {
     try {
       setIsLoading(true);
 
-      // Fetch today's sales summary using local timezone boundaries
-      const start = startOfDay(new Date()).toISOString();
-      const end = endOfDay(new Date()).toISOString();
+      let start: string;
+      let end: string;
 
-      localStorage.setItem('last_dashboard_fetch', new Date().toISOString());
+      if (viewMode === 'last_24_hours') {
+        // Last 24 hours from now
+        const now = new Date();
+        start = subHours(now, 24).toISOString();
+        end = now.toISOString();
+      } else if (viewMode === 'current_shift' && shiftStatus?.activeShift) {
+        // Current shift data
+        start = new Date(shiftStatus.activeShift.startTime).toISOString();
+        end = new Date().toISOString();
+      } else if (viewMode === 'previous_shift' && shiftStatus?.shiftStatus !== 'NO_SHIFT') {
+        // Previous shift - fetch last shift snapshot
+        const snapshotRes = await api.get('/dashboard/last-shift-snapshot').catch(() => ({ data: null }));
+        if (snapshotRes.data) {
+          start = new Date(snapshotRes.data.startTime).toISOString();
+          end = new Date(snapshotRes.data.timestamp).toISOString();
+        } else {
+          // Fallback to last 24 hours
+          const now = new Date();
+          start = subHours(now, 24).toISOString();
+          end = now.toISOString();
+        }
+      } else {
+        // Default to last 24 hours
+        const now = new Date();
+        start = subHours(now, 24).toISOString();
+        end = now.toISOString();
+      }
+
+      setLastRefresh(new Date());
 
       const [summaryRes, topItemsRes, peakRes] = await Promise.all([
         api.get('/reports/historical-summary', { params: { startDate: start, endDate: end } }).catch(() => ({ data: null })),
@@ -161,14 +258,67 @@ export const DashboardPage = () => {
     } finally {
       setIsLoading(false);
     }
+  }, [viewMode, shiftStatus]);
+
+  // Initial load: fetch shift status first
+  useEffect(() => {
+    fetchShiftStatus();
+  }, [currentEstablishment?.id, fetchShiftStatus]);
+
+  // Fetch dashboard data when view mode or shift status changes
+  useEffect(() => {
+    if (shiftStatus !== null) {
+      fetchDashboardData();
+    }
+  }, [viewMode, shiftStatus, fetchDashboardData]);
+
+  // Auto-refresh every hour for 24-hour data
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchShiftStatus();
+      fetchDashboardData();
+    }, AUTO_REFRESH_INTERVAL);
+
+    return () => clearInterval(interval);
+  }, [fetchShiftStatus, fetchDashboardData]);
+
+  // Get available view modes based on shift status
+  const getAvailableViewModes = (): { mode: ViewMode; label: string; icon: React.ReactNode; description: string }[] => {
+    const modes: { mode: ViewMode; label: string; icon: React.ReactNode; description: string }[] = [];
+
+    if (shiftStatus?.shiftStatus === 'ACTIVE') {
+      modes.push({
+        mode: 'current_shift',
+        label: 'Current Shift',
+        icon: <PlayCircle size={16} />,
+        description: `Started ${shiftStatus.activeShift ? format(new Date(shiftStatus.activeShift.startTime), 'h:mm a') : ''}`
+      });
+    }
+
+    if (shiftStatus?.shiftStatus === 'ACTIVE' || shiftStatus?.shiftStatus === 'LAST_SHIFT') {
+      modes.push({
+        mode: 'previous_shift',
+        label: 'Previous Shift',
+        icon: <History size={16} />,
+        description: 'Last completed shift'
+      });
+    }
+
+    modes.push({
+      mode: 'last_24_hours',
+      label: 'Last 24 Hours',
+      icon: <Timer size={16} />,
+      description: 'Rolling 24-hour window'
+    });
+
+    return modes;
   };
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-JO', {
       style: 'currency',
-      currency: 'Jod',
+      currency: 'JOD',
       minimumFractionDigits: 3,
-      maximumFractionDigits: 3
     }).format(value);
   };
 
@@ -188,7 +338,7 @@ export const DashboardPage = () => {
     return 'Good Evening';
   };
 
-  if (isLoading) {
+  if (isLoading && !stats) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
         <div className="relative">
@@ -200,25 +350,44 @@ export const DashboardPage = () => {
     );
   }
 
-  // Calculate cash flow
-  const netCashFlow = (stats?.totalPayIn || 0) - (stats?.totalPayOut || 0);
+
+
+  // Get current view mode info
+  const currentViewModeInfo = getAvailableViewModes().find(m => m.mode === viewMode);
+
+  // Format shift employee name
+  const getShiftEmployeeName = () => {
+    if (!shiftStatus?.activeShift?.employee) return '';
+    const emp = shiftStatus.activeShift.employee;
+    return `${emp.firstName || ''} ${emp.lastName || ''}`.trim() || emp.username;
+  };
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-10">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
-          <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
-              {stats?.totalOrders && stats.totalOrders > 0 ? 'Currently on Active Shift' : 'No Current Active Shift'}
+          <div className="flex items-center gap-3 mb-2 flex-wrap">
+            {/* Real Shift Status Badge */}
+            <span className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide border ${shiftStatus?.shiftStatus === 'ACTIVE'
+              ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
+              : 'bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/20'
+              }`}>
+              {shiftStatus?.shiftStatus === 'ACTIVE'
+                ? `Active Shift - ${getShiftEmployeeName()}`
+                : 'No Active Shift'}
             </span>
-            <div className="flex items-center gap-2">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
-              </span>
-              <span className="text-[10px] font-bold text-gray-400 tracking-widest">Active (showing last 24 hours)</span>
-            </div>
+
+            {/* Live indicator for active shift */}
+            {shiftStatus?.shiftStatus === 'ACTIVE' && (
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
+                </span>
+                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wide">LIVE</span>
+              </div>
+            )}
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{getGreeting()}</h1>
           <div className="flex items-center gap-3 mt-2 text-gray-500 dark:text-gray-400 font-medium text-sm">
@@ -230,6 +399,49 @@ export const DashboardPage = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          {/* View Mode Selector */}
+          <div id="tour-view-mode" className="relative" ref={viewModeRef}>
+            <button
+              onClick={() => setIsViewModeOpen(!isViewModeOpen)}
+              className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all min-w-[180px]"
+            >
+              {currentViewModeInfo?.icon}
+              <span className="flex-1 text-left">{currentViewModeInfo?.label}</span>
+              <ChevronDown size={16} className={`transition-transform ${isViewModeOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            <AnimatePresence>
+              {isViewModeOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden z-50"
+                >
+                  {getAvailableViewModes().map((mode) => (
+                    <button
+                      key={mode.mode}
+                      onClick={() => {
+                        setViewMode(mode.mode);
+                        setIsViewModeOpen(false);
+                      }}
+                      className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${viewMode === mode.mode ? 'bg-paymint-green/10' : ''
+                        }`}
+                    >
+                      <span className={viewMode === mode.mode ? 'text-paymint-green' : 'text-gray-400'}>{mode.icon}</span>
+                      <div className="flex-1 text-left">
+                        <p className={`text-sm font-bold ${viewMode === mode.mode ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>
+                          {mode.label}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{mode.description}</p>
+                      </div>
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
           <button
             onClick={() => setIsTourOpen(true)}
             className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-green border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
@@ -245,19 +457,43 @@ export const DashboardPage = () => {
             <span>Reports</span>
           </button>
           <button
-            onClick={fetchDashboardData}
+            onClick={() => {
+              fetchShiftStatus();
+              fetchDashboardData();
+            }}
             className="p-3 rounded-xl bg-paymint-green text-black hover:bg-emerald-400 transition-all shadow-sm"
-            title="Refresh Data"
+            title={`Refresh Data (Last updated: ${format(lastRefresh, 'h:mm a')})`}
           >
             <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
           </button>
         </div>
       </div>
 
+      {/* View Mode Info Bar */}
+      <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+        <div className="flex items-center gap-3">
+          {currentViewModeInfo?.icon && (
+            <span className="text-paymint-green">{currentViewModeInfo.icon}</span>
+          )}
+          <div>
+            <span className="text-sm font-bold text-gray-900 dark:text-white">
+              {viewMode === 'current_shift' && shiftStatus?.activeShift && (
+                <>Showing data since {format(new Date(shiftStatus.activeShift.startTime), 'MMM d, h:mm a')}</>
+              )}
+              {viewMode === 'previous_shift' && 'Showing data from last completed shift'}
+              {viewMode === 'last_24_hours' && 'Showing data from the last 24 hours'}
+            </span>
+          </div>
+        </div>
+        <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">
+          Updated {format(lastRefresh, 'h:mm a')} • Auto-refresh hourly
+        </span>
+      </div>
+
       {/* Primary KPIs */}
       <div id="tour-kpi-cards" className="space-y-3">
         <div className="flex items-center gap-2">
-          <span className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-500 text-[9px] font-black tracking-widest border border-blue-500/20">
+          <span className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-500 text-xs font-bold tracking-wide border border-blue-500/20">
             Overview
           </span>
         </div>
@@ -298,7 +534,7 @@ export const DashboardPage = () => {
             {
               label: 'Orders',
               value: stats?.totalOrders?.toString() || '0',
-              sub: "Today",
+              sub: viewMode === 'current_shift' ? 'This Shift' : viewMode === 'previous_shift' ? 'Previous Shift' : 'Last 24h',
               icon: Receipt,
               color: 'text-indigo-500',
               bg: 'bg-indigo-500/10'
@@ -311,26 +547,73 @@ export const DashboardPage = () => {
               color: 'text-pink-500',
               bg: 'bg-pink-500/10'
             }
-          ].map((stat, index) => (
+          ].concat(([
+            {
+              label: 'Refunds',
+              value: formatCurrency(stats?.totalRefunds || 0),
+              sub: viewMode === 'current_shift' ? 'This Shift' : viewMode === 'previous_shift' ? 'Previous Shift' : 'Last 24h',
+              icon: ArrowDownRight,
+              color: 'text-orange-500',
+              bg: 'bg-orange-500/10'
+            },
+            {
+              label: 'Cashflow Outside Sales',
+              value: null, // Custom content
+              sub: null,
+              icon: ArrowUpRight,
+              color: 'text-cyan-500',
+              bg: 'bg-cyan-500/10',
+              customContent: (
+                <div className="space-y-3 mt-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Pay In</span>
+                    <span className="text-sm font-bold text-paymint-green tracking-tight">+{formatCurrency(stats?.totalPayIn || 0)}</span>
+                  </div>
+                  <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Pay Out</span>
+                    <span className="text-sm font-bold text-red-500 tracking-tight">-{formatCurrency(stats?.totalPayOut || 0)}</span>
+                  </div>
+                </div>
+              ),
+              onClick: () => navigate('/dashboard/reports', { state: { showPayInOut: true, dateRange: 'today' } })
+            }
+          ] as any[])).map((stat: any, index) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="group relative p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
+              onClick={stat.onClick}
+              className={`group relative p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden ${stat.onClick ? 'cursor-pointer' : ''}`}
             >
               <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
               <div className="relative z-10">
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-2">
                   <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300 group-hover:scale-110`}>
                     <stat.icon size={20} />
                   </div>
-                  <QuickInfo text={stat.sub} />
+                  {stat.customContent && stat.onClick && (
+                    <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green transition-colors">
+                      <ArrowUpRight size={14} />
+                    </div>
+                  )}
                 </div>
-                <p className="text-[10px] font-bold text-gray-400 tracking-wide mb-1 flex items-center gap-1">
+
+                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 flex items-center gap-1">
                   {stat.label}
                 </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{stat.value}</p>
+
+                {stat.customContent ? (
+                  stat.customContent
+                ) : (
+                  <>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{stat.value}</p>
+                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
+                      {stat.sub}
+                    </p>
+                  </>
+                )}
               </div>
             </motion.div>
           ))}
@@ -347,13 +630,13 @@ export const DashboardPage = () => {
               <div>
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                   <TrendingUp className="text-paymint-green" size={20} />
-                  Today's Sales
+                  {viewMode === 'current_shift' ? 'Current Shift Sales' : viewMode === 'previous_shift' ? 'Previous Shift Sales' : 'Sales (Last 24h)'}
                 </h3>
                 <p className="text-xs text-gray-500 mt-1">Hourly sales breakdown</p>
               </div>
               <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
                 <Activity size={12} className="text-paymint-green" />
-                <span className="text-[10px] font-bold text-gray-500 tracking-wide">Real-time</span>
+                <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">Real-time</span>
               </div>
             </div>
 
@@ -435,7 +718,9 @@ export const DashboardPage = () => {
               </div>
               <div>
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">Payment Methods</h3>
-                <p className="text-[10px] font-bold text-gray-500 tracking-widest">Today's Distribution</p>
+                <p className="text-xs font-bold text-gray-500 tracking-wide">
+                  {viewMode === 'current_shift' ? 'This Shift' : viewMode === 'previous_shift' ? 'Previous Shift' : 'Last 24h'} Distribution
+                </p>
               </div>
             </div>
 
@@ -493,92 +778,7 @@ export const DashboardPage = () => {
         </div>
       </div>
 
-      {/* Secondary Insights Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Pay In / Pay Out Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          onClick={() => navigate('/dashboard/reports', { state: { showPayInOut: true, dateRange: 'today' } })}
-          className="p-6 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 group cursor-pointer relative overflow-hidden"
-        >
-          {/* Background decoration */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
 
-          <div className="relative z-10 w-full">
-            <div className="flex items-start justify-between mb-4">
-              <p className="text-[10px] font-black text-cyan-600 dark:text-cyan-400">Cashflow Outside Sales</p>
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-500 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-white transition-all duration-300">
-                <ArrowUpRight size={20} />
-              </div>
-            </div>
-
-            <div className="space-y-3 mb-4">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold text-gray-400">Pay In</span>
-                <span className="text-sm font-bold text-paymint-green tracking-tight">+{formatCurrency(stats?.totalPayIn || 0).replace('Jod', '').trim()} Jod</span>
-              </div>
-              <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold text-gray-400">Pay Out</span>
-                <span className="text-sm font-bold text-red-500 tracking-tight">-{formatCurrency(stats?.totalPayOut || 0).replace('Jod', '').trim()} Jod</span>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between pt-2 border-t border-dashed border-gray-200 dark:border-white/10">
-              <span className="text-[10px] font-bold text-gray-400">Total</span>
-              <span className={`text-sm font-bold ${netCashFlow >= 0 ? 'text-paymint-green' : 'text-red-500'}`}>
-                {netCashFlow >= 0 ? '+' : ''}{formatCurrency(netCashFlow).replace('Jod', '').trim()} Jod
-              </span>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Refunds Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="group relative p-6 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
-        >
-          <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-          <div className="relative z-10 flex items-center justify-between">
-            <div>
-              <p className="text-[10px] font-black text-orange-500 tracking-widest mb-1">Refunds</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(stats?.totalRefunds || 0)}</p>
-              <p className="text-[10px] font-medium text-gray-400 mt-1">Today's Total</p>
-            </div>
-            <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-              <ArrowDownRight size={20} className="text-orange-500" />
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Category Leader Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="group relative p-6 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
-        >
-          <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-          <div className="relative z-10 flex items-center justify-between">
-            <div>
-              <p className="text-[10px] font-black text-purple-500 tracking-widest mb-1">Top Category</p>
-              <p className="text-xl font-bold text-gray-900 dark:text-white truncate max-w-[150px]">
-                {stats?.categoryBreakdown?.[0]?.name || 'No data'}
-              </p>
-              <p className="text-[10px] font-medium text-gray-400 mt-1">
-                {stats?.categoryBreakdown?.[0] ? formatCurrency(stats.categoryBreakdown[0].value) : 'Today'}
-              </p>
-            </div>
-            <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-              <PieChart size={20} className="text-purple-500" />
-            </div>
-          </div>
-        </motion.div>
-      </div>
 
       {/* Top Products & Peak Hours */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -592,8 +792,10 @@ export const DashboardPage = () => {
                   <Package size={20} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-gray-900 dark:text-white">Your Best Sellers Today</h3>
-                  <p className="text-[10px] font-bold text-gray-500 tracking-widest">Best sellers today</p>
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white">Your Best Sellers</h3>
+                  <p className="text-xs font-bold text-gray-500 tracking-wide">
+                    {viewMode === 'current_shift' ? 'This Shift' : viewMode === 'previous_shift' ? 'Previous Shift' : 'Last 24h'}
+                  </p>
                 </div>
               </div>
               <button
@@ -603,34 +805,70 @@ export const DashboardPage = () => {
                 View All
               </button>
             </div>
-            <div className="p-4 space-y-3">
-              {topProducts.length > 0 ? topProducts.map((item, index) => (
-                <motion.div
-                  key={item.name}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="p-4 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex items-center justify-between group/item hover:bg-white dark:hover:bg-white/5 hover:border-paymint-green/30 hover:shadow-md transition-all"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-8 h-8 rounded-lg bg-white dark:bg-white/10 flex items-center justify-center text-sm font-black text-gray-500 group-hover/item:text-paymint-green transition-colors border border-gray-100 dark:border-white/5">
-                      {index + 1}
+            <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Top Items Column */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">Top 3 Items</h4>
+                {topProducts.length > 0 ? topProducts.slice(0, 3).map((item, index) => (
+                  <motion.div
+                    key={item.name}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="p-3 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex items-center justify-between group/item hover:bg-white dark:hover:bg-white/5 hover:border-paymint-green/30 hover:shadow-md transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 rounded-lg bg-white dark:bg-white/10 flex items-center justify-center text-xs font-black text-gray-500 group-hover/item:text-paymint-green transition-colors border border-gray-100 dark:border-white/5">
+                        {index + 1}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-bold text-xs text-gray-900 dark:text-white group-hover/item:text-paymint-green transition-colors truncate max-w-[120px]">{item.name}</p>
+                        <p className="text-xs text-gray-500 font-medium">{item.orders} sold</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-bold text-sm text-gray-900 dark:text-white group-hover/item:text-paymint-green transition-colors">{item.name}</p>
-                      <p className="text-[10px] text-gray-500 font-medium">{item.orders} sold</p>
+                    <p className="text-xs font-bold text-gray-900 dark:text-white">
+                      {formatCurrency(item.revenue)}
+                    </p>
+                  </motion.div>
+                )) : (
+                  <div className="flex flex-col items-center justify-center py-8 text-center">
+                    <Package className="w-8 h-8 text-gray-200 dark:text-gray-700 mb-2" />
+                    <p className="text-xs text-gray-400">No products data</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Top Categories Column */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">Top 3 Categories</h4>
+                {stats?.categoryBreakdown && stats.categoryBreakdown.length > 0 ? stats.categoryBreakdown.slice(0, 3).map((cat, index) => (
+                  <motion.div
+                    key={cat.name}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="p-3 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex items-center justify-between group/cat hover:bg-white dark:hover:bg-white/5 hover:border-purple-500/30 hover:shadow-md transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 rounded-lg bg-white dark:bg-white/10 flex items-center justify-center text-xs font-black text-gray-500 group-hover/cat:text-purple-500 transition-colors border border-gray-100 dark:border-white/5">
+                        {index + 1}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-bold text-xs text-gray-900 dark:text-white group-hover/cat:text-purple-500 transition-colors truncate max-w-[120px]">{cat.name}</p>
+                        <p className="text-xs text-gray-500 font-medium">{cat.count || 0} orders</p>
+                      </div>
                     </div>
+                    <p className="text-xs font-bold text-gray-900 dark:text-white">
+                      {formatCurrency(cat.value)}
+                    </p>
+                  </motion.div>
+                )) : (
+                  <div className="flex flex-col items-center justify-center py-8 text-center">
+                    <PieChart className="w-8 h-8 text-gray-200 dark:text-gray-700 mb-2" />
+                    <p className="text-xs text-gray-400">No category data</p>
                   </div>
-                  <div className="text-right">
-                    <p className="font-bold text-sm text-gray-900 dark:text-white">{formatCurrency(item.revenue)}</p>
-                  </div>
-                </motion.div>
-              )) : (
-                <div className="text-center py-12">
-                  <Package className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
-                  <p className="text-xs font-bold text-gray-500 tracking-wide">No products data</p>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -646,7 +884,7 @@ export const DashboardPage = () => {
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-gray-900 dark:text-white">Rush Hours</h3>
-                  <p className="text-[10px] font-bold text-gray-500 tracking-widest">Hourly traffic</p>
+                  <p className="text-xs font-bold text-gray-500 tracking-wide">Hourly traffic</p>
                 </div>
               </div>
             </div>
@@ -680,7 +918,7 @@ export const DashboardPage = () => {
                   </div>
                   <div className="text-center">
                     <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">No Traffic Data</p>
-                    <p className="text-xs text-gray-500 mt-1">There is no transaction activity recorded today.</p>
+                    <p className="text-xs text-gray-500 mt-1">There is no transaction activity recorded.</p>
                   </div>
                 </div>
               )}

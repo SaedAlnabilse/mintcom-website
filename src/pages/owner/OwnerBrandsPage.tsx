@@ -357,7 +357,7 @@ export function OwnerBrandsPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
                             Brands
                         </span>
                     </div>
@@ -407,7 +407,7 @@ export function OwnerBrandsPage() {
                                 <stat.icon size={24} />
                             </div>
                             <div>
-                                <p className="text-[10px] font-bold text-gray-400 tracking-wide">{stat.label}</p>
+                                <p className="text-xs font-bold text-gray-400 tracking-wide">{stat.label}</p>
                                 <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                             </div>
                         </div>
@@ -532,7 +532,7 @@ export function OwnerBrandsPage() {
                                                     </h3>
                                                 </div>
                                                 <div className="flex items-center gap-2">
-                                                    <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-[9px] font-black tracking-wide">
+                                                    <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-xs font-black tracking-wide">
                                                         Active
                                                     </span>
                                                     <span className="text-xs text-gray-500">
@@ -599,7 +599,7 @@ export function OwnerBrandsPage() {
                                         <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <Hash size={14} className="text-purple-500" />
-                                                <span className="text-[9px] font-black text-gray-400 tracking-widest">Login ID</span>
+                                                <span className="text-xs font-black text-gray-400 tracking-widest">Login ID</span>
                                             </div>
                                             <p className="text-sm font-mono font-bold text-gray-900 dark:text-white truncate">
                                                 {brand.establishmentLoginId}
@@ -608,7 +608,7 @@ export function OwnerBrandsPage() {
                                         <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <Calendar size={14} className="text-blue-500" />
-                                                <span className="text-[9px] font-black text-gray-400 tracking-widest">Created</span>
+                                                <span className="text-xs font-black text-gray-400 tracking-widest">Created</span>
                                             </div>
                                             <p className="text-sm font-bold text-gray-900 dark:text-white">
                                                 {formatDate(brand.createdAt)}
@@ -619,7 +619,7 @@ export function OwnerBrandsPage() {
                                     {/* Locations */}
                                     <div className="space-y-3 relative z-10">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-[10px] font-black text-gray-400 tracking-widest">Locations</span>
+                                            <span className="text-xs font-black text-gray-400 tracking-widest">Locations</span>
                                         </div>
                                         <div className="flex flex-wrap gap-2">
                                             {brand.establishments.slice(0, 4).map((est) => (
@@ -694,7 +694,7 @@ export function OwnerBrandsPage() {
                                                 </h3>
 
                                             </div>
-                                            <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-[9px] font-black">
+                                            <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-xs font-black">
                                                 Active
                                             </span>
                                         </div>

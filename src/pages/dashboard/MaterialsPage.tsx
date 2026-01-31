@@ -193,10 +193,11 @@ export function MaterialsPage() {
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-JO', {
       style: 'currency',
-      currency: 'Jod',
-    }).format(value).replace('Jod', '').trim() + ' Jod';
+      currency: 'JOD',
+      minimumFractionDigits: 3,
+    }).format(value);
   };
 
   return (
@@ -205,7 +206,7 @@ export function MaterialsPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
               Inventory
             </span>
           </div>
@@ -250,13 +251,13 @@ export function MaterialsPage() {
         <div className="flex p-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl">
           <button
             onClick={() => { setActiveTab('materials'); setPage(1); }}
-            className={`px-4 py-2 rounded-lg text-[10px] font-black tracking-widest transition-all ${activeTab === 'materials' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+            className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'materials' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
           >
             Ingredients
           </button>
           <button
             onClick={() => { setActiveTab('prepared'); setPage(1); }}
-            className={`px-4 py-2 rounded-lg text-[10px] font-black tracking-widest transition-all ${activeTab === 'prepared' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+            className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'prepared' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
           >
             Prepped
           </button>
@@ -268,7 +269,7 @@ export function MaterialsPage() {
         {isLoading ? (
           <div className="py-32 flex flex-col items-center">
             <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-[10px] font-black tracking-widest text-gray-400">Loading...</p>
+            <p className="text-xs font-black tracking-widest text-gray-400">Loading...</p>
           </div>
         ) : paginatedItems.length === 0 ? (
           <div className="py-24 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
@@ -286,11 +287,11 @@ export function MaterialsPage() {
                   <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-white/[0.02]">
                       <tr className="border-b border-gray-200 dark:border-white/5">
-                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Name</th>
-                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Qty</th>
-                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Cost</th>
-                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Status</th>
-                        <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Actions</th>
+                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Name</th>
+                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Qty</th>
+                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Cost</th>
+                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Status</th>
+                        <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -312,14 +313,14 @@ export function MaterialsPage() {
                             </td>
                             <td className="px-6 py-4 font-bold text-gray-900 dark:text-white text-sm">{formatCurrency(m.costPerUnit)}</td>
                             <td className="px-6 py-4">
-                              <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black tracking-wide border ${isLow ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'}`}>
+                              <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${isLow ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'}`}>
                                 {isLow ? <AlertTriangle size={10} /> : <TrendingUp size={10} />}
                                 {isLow ? 'Low Stock' : 'Optimal'}
                               </div>
                             </td>
                             <td className="px-6 py-4 text-right">
                               <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onClick={() => { setRestockMaterial(m); setRestockAmount(0); setShowRestockModal(true); }} className="px-3 py-1.5 bg-paymint-green/10 text-paymint-green text-[10px] font-bold tracking-wide rounded-lg hover:bg-paymint-green hover:text-black transition-all">
+                                <button onClick={() => { setRestockMaterial(m); setRestockAmount(0); setShowRestockModal(true); }} className="px-3 py-1.5 bg-paymint-green/10 text-paymint-green text-xs font-bold tracking-wide rounded-lg hover:bg-paymint-green hover:text-black transition-all">
                                   Restock
                                 </button>
                                 <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors">
@@ -363,12 +364,12 @@ export function MaterialsPage() {
 
                       <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Yield</p>
-                          <p className="font-bold text-gray-900 dark:text-white text-sm">{r.yield} <span className="text-[10px] text-gray-500">{r.yieldUnit}</span></p>
+                          <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Yield</p>
+                          <p className="font-bold text-gray-900 dark:text-white text-sm">{r.yield} <span className="text-xs text-gray-500">{r.yieldUnit}</span></p>
                         </div>
                         <div className="text-right">
-                          <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Stock</p>
-                          <p className="font-bold text-paymint-green text-sm">{r.quantity.toFixed(2)} <span className="text-[10px]">{r.yieldUnit}</span></p>
+                          <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Stock</p>
+                          <p className="font-bold text-paymint-green text-sm">{r.quantity.toFixed(2)} <span className="text-xs">{r.yieldUnit}</span></p>
                         </div>
                       </div>
                     </div>
@@ -412,7 +413,7 @@ export function MaterialsPage() {
               </div>
               <form onSubmit={handleMaterialSubmit} className="p-8 space-y-6">
                 <div>
-                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
+                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
                     Name <span className="text-paymint-red mx-1">*</span>
                     <QuickInfo text="Name (e.g., 'Flour Type 00')." />
                   </label>
@@ -437,13 +438,13 @@ export function MaterialsPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
+                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
                       Unit Cost
                       <QuickInfo text="Cost for one unit." />
                     </label>
                     <div className="relative group">
                       <div className="absolute left-3 top-1/2 -translate-y-1/2 px-2 py-0.5 bg-gray-200 dark:bg-white/10 rounded-md">
-                        <span className="text-gray-500 dark:text-gray-400 text-[10px] font-black">Jod</span>
+                        <span className="text-gray-500 dark:text-gray-400 text-xs font-black">JOD</span>
                       </div>
                       <input
                         type="text"
@@ -463,7 +464,7 @@ export function MaterialsPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
+                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
                       In Stock
                       <QuickInfo text="Quantity available." />
                     </label>
@@ -477,7 +478,7 @@ export function MaterialsPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
+                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
                       Low Stock
                       <QuickInfo text="Alert threshold." />
                     </label>
@@ -511,13 +512,13 @@ export function MaterialsPage() {
                   <Package size={32} />
                 </div>
                 <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">{restockMaterial.name}</h2>
-                <p className="text-gray-500 font-bold mt-1 text-[10px] tracking-widest">Available: {restockMaterial.quantity.toFixed(2)} {restockMaterial.unit}</p>
+                <p className="text-gray-500 font-bold mt-1 text-xs tracking-widest">Available: {restockMaterial.quantity.toFixed(2)} {restockMaterial.unit}</p>
               </div>
               <div className="p-8 space-y-6">
                 <div>
                   <input type="number" step="0.01" value={restockAmount} onChange={(e) => setRestockAmount(Number(e.target.value))} className="w-full bg-transparent text-center text-5xl font-black text-paymint-green focus:outline-none placeholder-gray-300" placeholder="0.00" autoFocus />
                   <div className="flex items-center justify-center mt-2 gap-1">
-                    <p className="text-[10px] font-black text-gray-400 tracking-widest">Qty to Add ({restockMaterial.unit})</p>
+                    <p className="text-xs font-black text-gray-400 tracking-widest">Qty to Add ({restockMaterial.unit})</p>
                   </div>
                 </div>
                 <button onClick={handleRestock} disabled={isSubmitting || restockAmount <= 0} className="w-full py-3.5 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 transition-all text-sm flex items-center justify-center gap-2">

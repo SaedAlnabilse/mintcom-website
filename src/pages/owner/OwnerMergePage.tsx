@@ -63,7 +63,7 @@ export function OwnerMergePage() {
                     <div className="space-y-6">
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-paymint-green/10 border border-paymint-green/20">
                             <GitMerge size={14} className="text-paymint-green" />
-                            <span className="text-[10px] font-black text-paymint-green tracking-[0.2em]">New Brand</span>
+                            <span className="text-xs font-black text-paymint-green tracking-[0.2em]">New Brand</span>
                         </div>
 
                         <div>
@@ -102,7 +102,7 @@ export function OwnerMergePage() {
                             {idx + 1}
                         </div>
                         <div className="flex flex-col">
-                            <span className={`text-[10px] tracking-[0.2em] font-black ${step === s.id ? 'text-paymint-green' : 'text-gray-400'}`}>
+                            <span className={`text-xs tracking-[0.2em] font-black ${step === s.id ? 'text-paymint-green' : 'text-gray-400'}`}>
                                 {s.label}
                             </span>
                         </div>
@@ -153,7 +153,7 @@ export function OwnerMergePage() {
                                                         <h4 className={`text-sm font-black tracking-tight ${isSelected ? 'text-gray-900 dark:text-white' : 'text-gray-500'}`}>
                                                             {est.name}
                                                         </h4>
-                                                        <p className="text-[10px] font-bold text-gray-400 tracking-widest">{est.type}</p>
+                                                        <p className="text-xs font-bold text-gray-400 tracking-widest">{est.type}</p>
                                                     </div>
                                                     <div className={`
                                                         w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all
@@ -188,7 +188,7 @@ export function OwnerMergePage() {
                                         <div className="h-px bg-gray-200 dark:bg-white/10" />
 
                                         <div className="space-y-2">
-                                            <p className="text-[10px] font-black text-gray-400 tracking-widest leading-none">Status</p>
+                                            <p className="text-xs font-black text-gray-400 tracking-widest leading-none">Status</p>
                                             <div className="flex items-center gap-2">
                                                 <div className={`w-2 h-2 rounded-full ${selectedEstablishments.length >= 2 ? 'bg-paymint-green' : 'bg-paymint-red'} animate-pulse`} />
                                                 <span className="text-xs font-black text-gray-900 dark:text-white">
@@ -202,7 +202,7 @@ export function OwnerMergePage() {
                                         <button
                                             onClick={handleContinue}
                                             disabled={selectedEstablishments.length < 2}
-                                            className="w-full py-5 bg-paymint-green text-black rounded-2xl font-black text-[10px] tracking-[0.2em] shadow-xl shadow-paymint-green/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:hover:scale-100"
+                                            className="w-full py-5 bg-paymint-green text-black rounded-2xl font-black text-xs tracking-[0.2em] shadow-xl shadow-paymint-green/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:hover:scale-100"
                                         >
                                             Next Step ({selectedEstablishments.length} Locations)
                                         </button>
@@ -227,7 +227,7 @@ export function OwnerMergePage() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-gray-400 tracking-[0.2em] px-2 block">Brand Name</label>
+                                <label className="text-xs font-black text-gray-400 tracking-[0.2em] px-2 block">Brand Name</label>
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-6 flex items-center text-gray-400 group-hover:text-paymint-green transition-colors">
                                         <Building2 size={20} />
@@ -257,14 +257,14 @@ export function OwnerMergePage() {
                             <div className="flex gap-4">
                                 <button
                                     onClick={() => setStep('select')}
-                                    className="flex-1 py-5 rounded-2xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black text-[10px] tracking-widest hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
+                                    className="flex-1 py-5 rounded-2xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black text-xs tracking-widest hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
                                 >
                                     Back
                                 </button>
                                 <button
                                     onClick={handleMerge}
                                     disabled={isSubmitting || !brandName.trim()}
-                                    className="flex-[2] py-5 bg-black dark:bg-white text-white dark:text-black rounded-2xl font-black text-[10px] tracking-[0.2em] shadow-2xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
+                                    className="flex-[2] py-5 bg-black dark:bg-white text-white dark:text-black rounded-2xl font-black text-xs tracking-[0.2em] shadow-2xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
                                 >
                                     {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
                                     Create Brand
@@ -274,12 +274,12 @@ export function OwnerMergePage() {
 
                         {/* Selected List */}
                         <div className="px-10 space-y-4">
-                            <h4 className="text-[10px] font-black text-gray-400 tracking-widest px-2">Selected Locations</h4>
+                            <h4 className="text-xs font-black text-gray-400 tracking-widest px-2">Selected Locations</h4>
                             <div className="flex flex-wrap gap-2">
                                 {selectedEstInfo.map((est) => (
                                     <div key={est.id} className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 rounded-xl shadow-sm group">
                                         <Store size={14} className="text-paymint-green" />
-                                        <span className="text-[10px] font-black text-gray-900 dark:text-white tracking-tight">{est.name}</span>
+                                        <span className="text-xs font-black text-gray-900 dark:text-white tracking-tight">{est.name}</span>
                                         <button onClick={() => toggleEstablishment(est.id)} className="text-gray-300 hover:text-paymint-red transition-colors ml-2">
                                             <X size={12} />
                                         </button>

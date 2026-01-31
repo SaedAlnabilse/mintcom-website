@@ -211,7 +211,7 @@ export function CustomersPage() {
         email: 'Email',
         tier: 'Tier level',
         points: 'Loyalty Points',
-        totalSpent: 'Total Spent (Jod)',
+        totalSpent: 'Total Spent (JOD)',
         visits: 'Total Visits'
       });
       toast.success('Export complete', { id: 'export' });
@@ -222,10 +222,11 @@ export function CustomersPage() {
 
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-JO', {
       style: 'currency',
-      currency: 'Jod',
-    }).format(value).replace('Jod', '').trim() + ' Jod';
+      currency: 'JOD',
+      minimumFractionDigits: 3,
+    }).format(value);
   };
 
   return (
@@ -234,7 +235,7 @@ export function CustomersPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
               Loyalty
             </span>
             <div className="flex items-center gap-2">
@@ -242,7 +243,7 @@ export function CustomersPage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
               </div>
-              <span className="text-[10px] font-bold text-paymint-green tracking-widest">Live</span>
+              <span className="text-xs font-bold text-paymint-green tracking-widest">Live</span>
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Customers</h1>
@@ -280,7 +281,7 @@ export function CustomersPage() {
               <User size={24} />
             </div>
             <div>
-              <p className="text-[10px] font-black text-gray-400 tracking-widest">Total Customers</p>
+              <p className="text-xs font-black text-gray-400 tracking-widest">Total Customers</p>
               <p className="text-2xl font-black text-gray-900 dark:text-white mt-0.5">{customers.length}</p>
             </div>
           </div>
@@ -298,7 +299,7 @@ export function CustomersPage() {
               <Award size={24} />
             </div>
             <div>
-              <p className="text-[10px] font-black text-gray-400 tracking-widest">Total Points</p>
+              <p className="text-xs font-black text-gray-400 tracking-widest">Total Points</p>
               <p className="text-2xl font-black text-gray-900 dark:text-white mt-0.5">
                 {customers.reduce((acc, curr) => acc + curr.points, 0).toLocaleString()}
               </p>
@@ -318,7 +319,7 @@ export function CustomersPage() {
               <ShoppingBag size={24} />
             </div>
             <div>
-              <p className="text-[10px] font-black text-gray-400 tracking-widest">Total Spent</p>
+              <p className="text-xs font-black text-gray-400 tracking-widest">Total Spent</p>
               <p className="text-2xl font-black text-gray-900 dark:text-white mt-0.5">
                 {formatCurrency(customers.reduce((acc, curr) => acc + curr.totalSpent, 0))}
               </p>
@@ -346,7 +347,7 @@ export function CustomersPage() {
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-32">
             <div className="w-12 h-12 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-[10px] font-black tracking-widest text-gray-400">Loading customers...</p>
+            <p className="text-xs font-black tracking-widest text-gray-400">Loading customers...</p>
           </div>
         ) : customers.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center p-32 text-center bg-gray-50/30 dark:bg-black/10">
@@ -361,11 +362,11 @@ export function CustomersPage() {
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-white/[0.02]">
                 <tr className="border-b border-gray-200 dark:border-white/5">
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Name</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Points</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Contact</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Total Spent</th>
-                  <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 tracking-widest">Actions</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Name</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Points</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Contact</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Total Spent</th>
+                  <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -385,14 +386,14 @@ export function CustomersPage() {
                         </div>
                         <div>
                           <p className="font-bold text-gray-900 dark:text-white text-sm">{customer.name}</p>
-                          <p className="text-[10px] font-black text-gray-400 tracking-widest">{customer.totalVisits} Total Visits</p>
+                          <p className="text-xs font-black text-gray-400 tracking-widest">{customer.totalVisits} Total Visits</p>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
                         <p className="text-sm font-black text-paymint-green">{customer.points}</p>
-                        <p className="text-[10px] font-black text-gray-400 tracking-widest">Points</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest">Points</p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -409,7 +410,7 @@ export function CustomersPage() {
                     </td>
                     <td className="px-6 py-4">
                       <p className="font-black text-gray-900 dark:text-white text-sm">{formatCurrency(customer.totalSpent)}</p>
-                      <p className="text-[10px] text-paymint-green font-black tracking-widest">Active</p>
+                      <p className="text-xs text-paymint-green font-black tracking-widest">Active</p>
                     </td>
                     <td className="px-6 py-4 text-center" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-center gap-2">
@@ -473,7 +474,7 @@ export function CustomersPage() {
       {/* Pagination Controls */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-4">
-          <p className="text-[10px] font-black tracking-widest text-gray-500 dark:text-gray-400">
+          <p className="text-xs font-black tracking-widest text-gray-500 dark:text-gray-400">
             Node <span className="text-gray-900 dark:text-white">{page}</span> of <span className="text-gray-900 dark:text-white">{totalPages}</span>
           </p>
           <div className="flex items-center gap-2">
@@ -489,7 +490,7 @@ export function CustomersPage() {
                 <button
                   key={i}
                   onClick={() => setPage(i + 1)}
-                  className={`w-9 h-9 rounded-xl text-[10px] font-black transition-all ${page === i + 1
+                  className={`w-9 h-9 rounded-xl text-xs font-black transition-all ${page === i + 1
                     ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
                     : 'bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10'
                     }`}
@@ -532,7 +533,7 @@ export function CustomersPage() {
               </div>
               <form onSubmit={handleSubmit(handleSaveCustomer)} className="p-8 space-y-8">
                 <div className="space-y-3">
-                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
+                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
                     Name <span className="text-paymint-red mx-1">*</span>
                   </label>
                   <div className="relative group">
@@ -544,12 +545,12 @@ export function CustomersPage() {
                       className={`w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                     />
                   </div>
-                  {errors.name && <p className="text-paymint-red text-[10px] px-1 font-black tracking-widest mt-1.5">{errors.name.message}</p>}
+                  {errors.name && <p className="text-paymint-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.name.message}</p>}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-3">
-                    <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1">
+                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">
                       Phone
                     </label>
                     <input
@@ -558,22 +559,22 @@ export function CustomersPage() {
                       placeholder="+000 000 000"
                       className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.phone ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                     />
-                    {errors.phone && <p className="text-paymint-red text-[10px] px-1 font-black tracking-widest mt-1.5">{errors.phone.message}</p>}
+                    {errors.phone && <p className="text-paymint-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.phone.message}</p>}
                   </div>
                   <div className="space-y-3">
-                    <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1">Email</label>
+                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">Email</label>
                     <input
                       type="email"
                       {...register('email')}
                       placeholder="client@example.com"
                       className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                     />
-                    {errors.email && <p className="text-paymint-red text-[10px] px-1 font-black tracking-widest mt-1.5">{errors.email.message}</p>}
+                    {errors.email && <p className="text-paymint-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.email.message}</p>}
                   </div>
                 </div>
 
                 <div className="space-y-3">
-                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1">Address</label>
+                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">Address</label>
                   <input
                     type="text"
                     {...register('address')}
@@ -586,14 +587,14 @@ export function CustomersPage() {
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="flex-1 py-4 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black tracking-[0.2em] text-[10px] rounded-2xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm"
+                    className="flex-1 py-4 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black tracking-[0.2em] text-xs rounded-2xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex-[2] py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 tracking-[0.2em] text-[10px] shadow-lg shadow-paymint-green/20"
+                    className="flex-[2] py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 tracking-[0.2em] text-xs shadow-lg shadow-paymint-green/20"
                   >
                     {editingCustomer ? 'Update Customer' : 'Save Customer'}
                   </button>
@@ -630,7 +631,7 @@ export function CustomersPage() {
                   <Award size={40} />
                 </div>
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Adjust Loyalty</h2>
-                <p className="text-gray-500 font-bold mt-1 text-[10px] tracking-widest">Partner: {selectedCustomer.name}</p>
+                <p className="text-gray-500 font-bold mt-1 text-xs tracking-widest">Partner: {selectedCustomer.name}</p>
               </div>
               <div className="p-8 space-y-8">
                 <div className="flex gap-2 p-1 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
@@ -641,7 +642,7 @@ export function CustomersPage() {
                         setPointsAction(action as 'add' | 'deduct');
                         setPointsError(null);
                       }}
-                      className={`flex-1 py-3 rounded-xl text-[10px] font-black tracking-[0.2em] transition-all ${pointsAction === action
+                      className={`flex-1 py-3 rounded-xl text-xs font-black tracking-[0.2em] transition-all ${pointsAction === action
                         ? (action === 'deduct' ? 'bg-paymint-red text-white shadow-lg shadow-paymint-red/20' : 'bg-gray-900 dark:bg-white text-white dark:text-black shadow-lg')
                         : 'text-gray-400'
                         }`}
@@ -669,7 +670,7 @@ export function CustomersPage() {
                           initial={{ opacity: 0, y: 5 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -5 }}
-                          className="w-full text-center text-[10px] font-black text-paymint-red tracking-widest bg-paymint-red/10 py-2 px-3 rounded-lg border border-paymint-red/20"
+                          className="w-full text-center text-xs font-black text-paymint-red tracking-widest bg-paymint-red/10 py-2 px-3 rounded-lg border border-paymint-red/20"
                         >
                           {pointsError}
                         </motion.p>
@@ -678,7 +679,7 @@ export function CustomersPage() {
                           key="label"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          className="text-center text-[10px] font-black text-gray-400 tracking-widest"
+                          className="text-center text-xs font-black text-gray-400 tracking-widest"
                         >
                           Points Allocation
                         </motion.p>
@@ -726,7 +727,7 @@ export function CustomersPage() {
                     { label: 'Points', value: `${selectedCustomer.points} Pts`, icon: Award },
                   ].map((stat, i) => (
                     <div key={i} className="p-5 bg-white dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
-                      <p className="text-[10px] font-black text-gray-400 tracking-widest mb-3">{stat.label}</p>
+                      <p className="text-xs font-black text-gray-400 tracking-widest mb-3">{stat.label}</p>
                       <p className="text-lg font-black text-gray-900 dark:text-white">{stat.value}</p>
                     </div>
                   ))}
@@ -736,7 +737,7 @@ export function CustomersPage() {
               <div className="p-10 space-y-10">
                 <div className="grid grid-cols-2 gap-10">
                   <div className="space-y-6">
-                    <h3 className="text-[10px] font-black text-gray-400 tracking-[0.2em] flex items-center gap-2">
+                    <h3 className="text-xs font-black text-gray-400 tracking-[0.2em] flex items-center gap-2">
                       <Mail size={12} className="text-paymint-green" /> Contact Info
                     </h3>
                     <div className="space-y-4">
@@ -752,11 +753,11 @@ export function CustomersPage() {
                     </div>
                   </div>
                   <div className="space-y-6">
-                    <h3 className="text-[10px] font-black text-gray-400 tracking-[0.2em] flex items-center gap-2">
+                    <h3 className="text-xs font-black text-gray-400 tracking-[0.2em] flex items-center gap-2">
                       <History size={12} className="text-paymint-green" /> Insights
                     </h3>
                     <div className="p-6 bg-paymint-green/5 border border-paymint-green/10 rounded-2xl">
-                      <p className="text-[10px] font-black text-paymint-green tracking-widest mb-2">Notes</p>
+                      <p className="text-xs font-black text-paymint-green tracking-widest mb-2">Notes</p>
                       <p className="text-sm font-medium text-gray-600 dark:text-gray-400 leading-relaxed">
                         {selectedCustomer.notes || "No notes."}
                       </p>
@@ -768,10 +769,10 @@ export function CustomersPage() {
                   <button onClick={() => { setShowDetailModal(false); handleDeleteCustomer(selectedCustomer); }} className="px-6 py-4 bg-paymint-red/10 text-paymint-red font-black rounded-2xl text-xs tracking-widest transition-all hover:bg-paymint-red hover:text-white active:scale-95 shadow-sm">
                     <Trash2 size={18} />
                   </button>
-                  <button onClick={() => { setShowDetailModal(false); openEditModal(selectedCustomer); }} className="flex-1 py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl text-[10px] tracking-[0.2em] transition-all hover:scale-[1.02] shadow-lg active:scale-95">
+                  <button onClick={() => { setShowDetailModal(false); openEditModal(selectedCustomer); }} className="flex-1 py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl text-xs tracking-[0.2em] transition-all hover:scale-[1.02] shadow-lg active:scale-95">
                     Edit
                   </button>
-                  <button onClick={() => { setShowDetailModal(false); setShowPointsModal(true); setPointsAmount(0); }} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl text-[10px] tracking-[0.2em] transition-all hover:scale-[1.02] shadow-lg shadow-paymint-green/20 active:scale-95">
+                  <button onClick={() => { setShowDetailModal(false); setShowPointsModal(true); setPointsAmount(0); }} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl text-xs tracking-[0.2em] transition-all hover:scale-[1.02] shadow-lg shadow-paymint-green/20 active:scale-95">
                     Points
                   </button>
                 </div>

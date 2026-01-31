@@ -174,7 +174,7 @@ export function OnboardingPage() {
   // Forms
   const form1 = useForm({
     resolver: zodResolver(step1Schema),
-    defaultValues: { currency: 'Jod', type: 'restaurant' }
+    defaultValues: { currency: 'JOD', type: 'restaurant' }
   });
 
   const form2 = useForm({
@@ -458,7 +458,7 @@ export function OnboardingPage() {
                               }`}
                           >
                             <type.icon size={24} />
-                            <span className="text-[10px] font-black tracking-widest">{type.label}</span>
+                            <span className="text-xs font-black tracking-widest">{type.label}</span>
                           </button>
                         ))}
                       </div>
@@ -570,18 +570,18 @@ export function OnboardingPage() {
                           {...form1.register('currency')}
                           className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.currency ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all appearance-none`}
                         >
-                          <option value="Jod">Jod - Jordanian Dinar</option>
-                          <option value="Usd">Usd - Us Dollar</option>
-                          <option value="Aed">Aed - Uae Dirham</option>
-                          <option value="Sar">Sar - Saudi Riyal</option>
-                          <option value="Kwd">Kwd - Kuwaiti Dinar</option>
-                          <option value="Qar">Qar - Qatari Riyal</option>
-                          <option value="Bhd">Bhd - Bahraini Dinar</option>
-                          <option value="Omr">Omr - Omani Rial</option>
-                          <option value="Egp">Egp - Egyptian Pound</option>
-                          <option value="Gbp">Gbp - British Pound</option>
-                          <option value="Eur">Eur - Euro</option>
-                          <option value="Try">Try - Turkish Lira</option>
+                          <option value="JOD">JOD - Jordanian Dinar</option>
+                          <option value="USD">USD - US Dollar</option>
+                          <option value="AED">AED - UAE Dirham</option>
+                          <option value="SAR">SAR - Saudi Riyal</option>
+                          <option value="KWD">KWD - Kuwaiti Dinar</option>
+                          <option value="QAR">QAR - Qatari Riyal</option>
+                          <option value="BHD">BHD - Bahraini Dinar</option>
+                          <option value="OMR">OMR - Omani Rial</option>
+                          <option value="EGP">EGP - Egyptian Pound</option>
+                          <option value="GBP">GBP - British Pound</option>
+                          <option value="EUR">EUR - Euro</option>
+                          <option value="TRY">TRY - Turkish Lira</option>
                         </select>
                       </div>
                       {form1.formState.errors.currency && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form1.formState.errors.currency.message as string}</p>}
@@ -659,7 +659,7 @@ export function OnboardingPage() {
                                     <Box size={16} className={duplicateInventory ? 'text-paymint-green' : 'text-gray-400'} />
                                     <div>
                                       <p className="text-sm font-bold text-gray-900 dark:text-white">Menu</p>
-                                      <p className="text-[10px] text-gray-500 font-medium">Items & categories</p>
+                                      <p className="text-xs text-gray-500 font-medium">Items & categories</p>
                                     </div>
                                   </div>
                                 </label>
@@ -679,7 +679,7 @@ export function OnboardingPage() {
                                     <Tags size={16} className={duplicateDiscounts ? 'text-paymint-green' : 'text-gray-400'} />
                                     <div>
                                       <p className="text-sm font-bold text-gray-900 dark:text-white">Discounts</p>
-                                      <p className="text-[10px] text-gray-500 font-medium">Promo codes and discount rules</p>
+                                      <p className="text-xs text-gray-500 font-medium">Promo codes and discount rules</p>
                                     </div>
                                   </div>
                                 </label>
@@ -699,7 +699,7 @@ export function OnboardingPage() {
                                     <CreditCard size={16} className={duplicatePaymentMethods ? 'text-paymint-green' : 'text-gray-400'} />
                                     <div>
                                       <p className="text-sm font-bold text-gray-900 dark:text-white">Payment Methods</p>
-                                      <p className="text-[10px] text-gray-500 font-medium">Card types and custom payment options</p>
+                                      <p className="text-xs text-gray-500 font-medium">Card types and custom payment options</p>
                                     </div>
                                   </div>
                                 </label>
@@ -749,9 +749,9 @@ export function OnboardingPage() {
                         {isTrialFlow ? 'Start Free Trial' : 'Activate Subscription'}
                       </h2>
                       {isTrialFlow ? (
-                        <span className="bg-yellow-400 text-black text-[10px] font-bold px-2 py-0.5 rounded tracking-wider">7 Days Free</span>
+                        <span className="bg-yellow-400 text-black text-xs font-bold px-2 py-0.5 rounded tracking-wider">7 Days Free</span>
                       ) : (
-                        <span className="bg-paymint-green text-black text-[10px] font-bold px-2 py-0.5 rounded tracking-wider">$20/month</span>
+                        <span className="bg-paymint-green text-black text-xs font-bold px-2 py-0.5 rounded tracking-wider">$20/month</span>
                       )}
                     </div>
                   </div>
@@ -941,7 +941,7 @@ export function OnboardingPage() {
                       />
                     </div>
                     {form3.formState.errors.establishmentLoginId && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form3.formState.errors.establishmentLoginId.message as string}</p>}
-                    <p className="text-[10px] text-gray-400 ml-1">Unique ID for this location.</p>
+                    <p className="text-xs text-gray-400 ml-1">Unique ID for this location.</p>
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
@@ -1185,7 +1185,7 @@ export function OnboardingPage() {
                       </div>
                       <div className="relative z-10 flex-1">
                         <h3 className="text-xl font-black mb-1 tracking-tight">Open Owner Portal</h3>
-                        <p className="text-sm font-bold opacity-70">Manage your business from any browser.</p>
+                        <p className="text-sm font-bold text-black/70">Manage your business from any browser.</p>
                       </div>
                       <div className="relative z-10 flex items-center gap-2 font-black text-sm tracking-widest opacity-80">
                         <ExternalLink size={18} />

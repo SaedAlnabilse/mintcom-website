@@ -174,7 +174,7 @@ export function CategoriesPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
               Menu
             </span>
           </div>
@@ -216,10 +216,10 @@ export function CategoriesPage() {
                 <stat.icon size={20} />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
+                <p className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
                 <p className="text-xl font-black text-gray-900 dark:text-white truncate">{stat.value}</p>
                 {stat.sub && (
-                  <p className="text-[10px] font-bold text-paymint-green tracking-wide mt-1">{stat.sub}</p>
+                  <p className="text-xs font-bold text-paymint-green tracking-wide mt-1">{stat.sub}</p>
                 )}
               </div>
             </div>
@@ -379,7 +379,7 @@ export function CategoriesPage() {
                         <div className="min-w-0">
                           <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
                           <p className="text-xs font-black text-paymint-green mt-0.5">
-                            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'Jod' }).format(p.price).replace('Jod', '').trim()} Jod
+                            {new Intl.NumberFormat('en-JO', { style: 'currency', currency: 'JOD', minimumFractionDigits: 3 }).format(p.price)}
                           </p>
                         </div>
                       </div>
@@ -490,7 +490,7 @@ export function CategoriesPage() {
                       <div className="min-w-0">
                         <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
                         <p className="text-xs font-black text-paymint-green mt-0.5">
-                          {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'Jod' }).format(p.price).replace('Jod', '').trim()} Jod
+                          {new Intl.NumberFormat('en-JO', { style: 'currency', currency: 'JOD', minimumFractionDigits: 3 }).format(p.price)}
                         </p>
                       </div>
                     </div>

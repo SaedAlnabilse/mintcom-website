@@ -149,7 +149,7 @@ export function OwnerOverviewPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
                             Overview
                         </span>
                         <span className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
@@ -184,7 +184,7 @@ export function OwnerOverviewPage() {
                             <span className="flex items-center gap-2">
                                 <span>{selectedFilterLabel}</span>
                                 {timeRange !== 'today' && (
-                                    <span className={`px-1.5 py-0.5 rounded text-[9px] ${showDatePicker
+                                    <span className={`px-1.5 py-0.5 rounded text-xs ${showDatePicker
                                         ? 'bg-black/20 text-black'
                                         : 'bg-paymint-green/20 text-paymint-green'
                                         }`}>
@@ -228,7 +228,7 @@ export function OwnerOverviewPage() {
                                     </div>
 
                                     <div className="space-y-3 pt-3 border-t border-gray-100 dark:border-white/5">
-                                        <p className="text-[10px] font-bold text-gray-400">Custom Range</p>
+                                        <p className="text-xs font-bold text-gray-400">Custom Range</p>
                                         <input
                                             type="date"
                                             value={customStartDate}

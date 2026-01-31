@@ -359,7 +359,7 @@ export function EmployeeFormModal({
 
               {/* Name */}
               <div>
-                <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
                   Name <span className="text-paymint-red">*</span>
                 </label>
                 <input
@@ -374,7 +374,7 @@ export function EmployeeFormModal({
 
               {/* Username */}
               <div>
-                <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
                   Username <span className="text-paymint-red">*</span>
                 </label>
                 <input
@@ -389,7 +389,7 @@ export function EmployeeFormModal({
 
               {/* Email */}
               <div>
-                <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
                   Email {role === 'ADMIN' ? <span className="text-paymint-red">*</span> : '(Optional)'}
                 </label>
                 <input
@@ -404,7 +404,7 @@ export function EmployeeFormModal({
 
               {/* Phone */}
               <div>
-                <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block">
+                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
                   Phone (Optional)
                 </label>
                 <input
@@ -419,7 +419,7 @@ export function EmployeeFormModal({
               {/* Establishment Selection (Only if establishments prop is provided) */}
               {establishments && (
                 <div className="relative">
-                  <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+                  <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
                     Access <span className="text-paymint-red">*</span>
                   </label>
                   <button
@@ -489,7 +489,7 @@ export function EmployeeFormModal({
 
               {/* Role Selection - Now uses Role Template dropdown */}
               <div className="relative">
-                <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block flex items-center justify-between">
+                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center justify-between">
                   <span className="flex items-center gap-1">Role <span className="text-paymint-red">*</span></span>
                   {isModifiedFromTemplate() && (
                     <span className="text-paymint-red lowercase font-bold tracking-normal">(Modified)</span>
@@ -533,7 +533,7 @@ export function EmployeeFormModal({
                           <span className={`text-xs font-bold ${role === 'ADMIN' ? 'text-purple-500' : 'text-gray-700 dark:text-gray-300'}`}>
                             Admin (Full Access)
                           </span>
-                          <p className="text-[10px] text-gray-500 mt-0.5">All permissions enabled</p>
+                          <p className="text-xs text-gray-500 mt-0.5">All permissions enabled</p>
                         </div>
                         {role === 'ADMIN' && <Check size={14} className="text-purple-500" />}
                       </button>
@@ -555,7 +555,7 @@ export function EmployeeFormModal({
                             <span className={`text-xs font-bold ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
                               {customRole.name}
                             </span>
-                            <p className="text-[10px] text-gray-500 mt-0.5">{customRole.permissions.length} Permissions</p>
+                            <p className="text-xs text-gray-500 mt-0.5">{customRole.permissions.length} Permissions</p>
                           </div>
                           {selectedCustomRoleId === customRole.id && role !== 'ADMIN' && <Check size={14} className="text-paymint-green" />}
                         </button>
@@ -565,7 +565,7 @@ export function EmployeeFormModal({
                       {customRoles.length === 0 && (
                         <div className="p-3 text-center">
                           <p className="text-xs text-gray-500">No Roles</p>
-                          <p className="text-[10px] text-gray-400 mt-1">Create roles in settings</p>
+                          <p className="text-xs text-gray-400 mt-1">Create roles in settings</p>
                         </div>
                       )}
                     </div>
@@ -578,7 +578,7 @@ export function EmployeeFormModal({
 
               {/* Password wrapper start (to match existing indentation/structure) */}
               <div className="pt-4 border-t border-gray-100 dark:border-white/5">
-                <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
                   {initialData ? 'New Password (Optional)' : 'Password'} {(!initialData) && <span className="text-paymint-red">*</span>}
                 </label>
                 <div className="relative">
@@ -601,7 +601,7 @@ export function EmployeeFormModal({
               </div>
 
               <div>
-                <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
                   Confirm Password {(!initialData || password) && <span className="text-paymint-red">*</span>}
                 </label>
                 <div className="relative">

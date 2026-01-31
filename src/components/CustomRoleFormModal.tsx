@@ -270,7 +270,7 @@ export function CustomRoleFormModal({
                               </div>
                               <div>
                                 <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{perm.label}</p>
-                                {perm.description && <p className="text-[10px] text-gray-400 mt-1 font-medium">{perm.description}</p>}
+                                {perm.description && <p className="text-xs text-gray-400 mt-1 font-medium">{perm.description}</p>}
                               </div>
                             </div>
                           ))}
@@ -391,7 +391,7 @@ export function CustomRoleFormModal({
                             </div>
                             <div>
                               <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{perm.label}</p>
-                              {perm.description && <p className="text-[10px] text-gray-400 mt-1 font-medium">{perm.description}</p>}
+                              {perm.description && <p className="text-xs text-gray-400 mt-1 font-medium">{perm.description}</p>}
                             </div>
                           </div>
                         ))}

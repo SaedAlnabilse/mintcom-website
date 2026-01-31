@@ -17,6 +17,7 @@ interface CustomSelectProps {
     error?: string;
     required?: boolean;
     direction?: 'up' | 'down';
+    disabled?: boolean;
 }
 
 export function CustomSelect({
@@ -28,7 +29,8 @@ export function CustomSelect({
     className = '',
     error,
     required,
-    direction = 'down'
+    direction = 'down',
+    disabled = false
 }: CustomSelectProps) {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -82,15 +84,20 @@ export function CustomSelect({
     return (
         <div className={`relative ${className}`} ref={containerRef}>
             {label && (
-                <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-3 px-1">
+                <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1">
                     {label} {required && <span className="text-paymint-red">*</span>}
                 </label>
             )}
 
             <button
                 type="button"
-                onClick={() => setIsOpen(!isOpen)}
-                className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-left flex items-center justify-between transition-all outline-none shadow-sm hover:border-paymint-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06] hover:shadow-lg hover:shadow-black/10 ${error ? 'ring-2 ring-paymint-red border-paymint-red' : isOpen ? 'ring-2 ring-paymint-green/20 border-paymint-green bg-gray-50 dark:bg-white/[0.08] shadow-inner shadow-black/20' : ''
+                onClick={() => !disabled && setIsOpen(!isOpen)}
+                disabled={disabled}
+                className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-left flex items-center justify-between transition-all outline-none shadow-sm 
+                    ${disabled
+                        ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-white/[0.01]'
+                        : 'hover:border-paymint-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06] hover:shadow-lg hover:shadow-black/10'} 
+                    ${error ? 'ring-2 ring-paymint-red border-paymint-red' : isOpen ? 'ring-2 ring-paymint-green/20 border-paymint-green bg-gray-50 dark:bg-white/[0.08] shadow-inner shadow-black/20' : ''
                     }`}
             >
                 <span className={`text-sm font-bold truncate pr-2 ${selectedOption ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>

@@ -143,7 +143,7 @@ export function OwnerRolesPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-indigo-500/10 text-indigo-500 text-[10px] font-black tracking-widest border border-indigo-500/20">
+            <span className="px-3 py-1 rounded-lg bg-indigo-500/10 text-indigo-500 text-xs font-black tracking-widest border border-indigo-500/20">
               Roles
             </span>
           </div>
@@ -211,11 +211,11 @@ export function OwnerRolesPage() {
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-white/[0.02]">
                 <tr className="border-b border-gray-200 dark:border-white/5">
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Role Name</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Role Type</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Permissions</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Applied To</th>
-                  <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 tracking-widest">Actions</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Role Name</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Role Type</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Permissions</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Applied To</th>
+                  <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -241,7 +241,7 @@ export function OwnerRolesPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                           <UserCheck size={10} />
                           {role.baseRole.charAt(0).toUpperCase() + role.baseRole.slice(1).toLowerCase()}
                         </span>
@@ -252,7 +252,7 @@ export function OwnerRolesPage() {
                         </p>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 border border-gray-200 dark:border-white/10 text-[10px] font-black tracking-wide">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 border border-gray-200 dark:border-white/10 text-xs font-black tracking-wide">
                           <Globe size={10} />
                           Global
                         </span>

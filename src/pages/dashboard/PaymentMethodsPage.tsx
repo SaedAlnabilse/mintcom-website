@@ -282,7 +282,7 @@ export function PaymentMethodsPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
               Payments
             </span>
             <div className="flex items-center gap-2">
@@ -290,7 +290,7 @@ export function PaymentMethodsPage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
               </span>
-              <span className="text-[10px] font-bold text-gray-400 tracking-widest">Active</span>
+              <span className="text-xs font-bold text-gray-400 tracking-widest">Active</span>
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Payment Methods</h1>
@@ -313,7 +313,7 @@ export function PaymentMethodsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {cardTypes.length === 0 ? (
             <div className="col-span-full py-12 text-center">
-              <p className="text-gray-400 font-black tracking-widest text-[10px]">No card brands added yet.</p>
+              <p className="text-gray-400 font-black tracking-widest text-xs">No card brands added yet.</p>
             </div>
           ) : (
             Array.isArray(cardTypes) && cardTypes.map((card) => (
@@ -359,7 +359,7 @@ export function PaymentMethodsPage() {
               <Plus size={20} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
             </div>
             <h3 className="text-base font-bold text-gray-900 dark:text-white">Add Brand</h3>
-            <p className="text-gray-500 text-[10px] font-black tracking-widest mt-1">Show Logo</p>
+            <p className="text-gray-500 text-xs font-black tracking-widest mt-1">Show Logo</p>
           </motion.div>
         </div>
       </section>
@@ -419,7 +419,7 @@ export function PaymentMethodsPage() {
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate">{method.name}</h3>
                 {method.isDefault && (
                   <div className="mt-4 flex items-center justify-between">
-                    <span className="text-[10px] font-black text-blue-500 tracking-widest flex items-center gap-1">
+                    <span className="text-xs font-black text-blue-500 tracking-widest flex items-center gap-1">
                       <Star size={10} fill="currentColor" /> System
                     </span>
                   </div>
@@ -437,7 +437,7 @@ export function PaymentMethodsPage() {
                 <Plus size={20} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
               </div>
               <h3 className="text-base font-bold text-gray-900 dark:text-white">Add Payment</h3>
-              <p className="text-gray-500 text-[10px] font-black tracking-widest mt-1">New Type</p>
+              <p className="text-gray-500 text-xs font-black tracking-widest mt-1">New Type</p>
             </motion.div>
           </div>
         )}
@@ -482,13 +482,13 @@ export function PaymentMethodsPage() {
                   </div>
 
                   <div className="flex items-center">
-                    <p className="text-[10px] font-black text-gray-400 tracking-widest">Icon (Optional)</p>
+                    <p className="text-xs font-black text-gray-400 tracking-widest">Icon (Optional)</p>
                     <QuickInfo text="Icon displayed for this payment method." />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
+                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
                     Name <span className="text-paymint-red mx-1">*</span>
                     <QuickInfo text="The name used for reporting." />
                   </label>
@@ -498,7 +498,7 @@ export function PaymentMethodsPage() {
                     className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-none'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
                     placeholder="e.g. Digital Wallet"
                   />
-                  {errors.name && <p className="text-paymint-red text-[10px] font-black mt-2 px-1">{errors.name.message}</p>}
+                  {errors.name && <p className="text-paymint-red text-xs font-black mt-2 px-1">{errors.name.message}</p>}
                 </div>
 
 
@@ -548,13 +548,13 @@ export function PaymentMethodsPage() {
                   </div>
 
                   <div className="flex items-center">
-                    <p className="text-[10px] font-black text-gray-400 tracking-widest">Logo</p>
+                    <p className="text-xs font-black text-gray-400 tracking-widest">Logo</p>
                     <QuickInfo text="Logo displayed to customers." />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
+                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
                     Name <span className="text-paymint-red mx-1">*</span>
                     <QuickInfo text="Brand name (e.g. Visa)." />
                   </label>
@@ -568,7 +568,7 @@ export function PaymentMethodsPage() {
                     className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${cardErrors.cardName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-none'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
                     placeholder="e.g. Mastercard"
                   />
-                  {cardErrors.cardName && <p className="text-paymint-red text-[10px] font-black mt-2 px-1">{cardErrors.cardName}</p>}
+                  {cardErrors.cardName && <p className="text-paymint-red text-xs font-black mt-2 px-1">{cardErrors.cardName}</p>}
                 </div>
 
                 <button

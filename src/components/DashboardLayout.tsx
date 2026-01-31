@@ -355,7 +355,7 @@ export function DashboardLayout() {
                     <Store size={18} className="text-paymint-green" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[9px] font-bold text-paymint-green tracking-[0.15em] mb-0.5">Active Location</p>
+                    <p className="text-xs font-bold text-paymint-green tracking-wide mb-0.5">Active Location</p>
                     <h2 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight leading-[1.2] font-sans truncate">
                       {currentEstablishment?.name || 'Loading...'}
                     </h2>
@@ -364,9 +364,9 @@ export function DashboardLayout() {
                 <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-gray-100 dark:border-white/10">
                   <div className="flex items-center gap-1.5">
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] dark:shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                    <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400">Online</span>
+                    <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Online</span>
                   </div>
-                  <div className="flex items-center gap-1 text-[10px] font-bold text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                  <div className="flex items-center gap-1 text-xs font-bold text-gray-500 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                     Switch <ChevronRight size={10} className="mt-0.5" />
                   </div>
                 </div>
@@ -391,7 +391,7 @@ export function DashboardLayout() {
           className={`flex-1 px-3 space-y-1.5 scrollbar-none pb-4 ${sidebarOpen ? 'overflow-y-auto' : 'overflow-visible'}`}
         >
           {sidebarOpen && (
-            <p className="px-3 py-2 text-[10px] font-bold text-gray-400 tracking-widest">Main Menu</p>
+            <p className="px-3 py-2 text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wide">Main Menu</p>
           )}
 
           {filteredMenu.map((item, index) => {
@@ -426,7 +426,7 @@ export function DashboardLayout() {
                       <div className="absolute left-[calc(100%+8px)] top-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] pointer-events-none group-hover:pointer-events-auto translate-x-1 group-hover:translate-x-0">
                         <div className="bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden min-w-[200px] py-2">
                           <div className="px-4 py-2 border-b border-gray-100 dark:border-white/5 mb-1 bg-gray-50/50 dark:bg-white/[0.02]">
-                            <p className="text-[9px] font-black text-paymint-green tracking-[0.2em]">{item.label}</p>
+                            <p className="text-xs font-bold text-paymint-green tracking-wide">{item.label}</p>
                           </div>
                           <div className="px-2 space-y-1">
                             {item.items.map((subItem) => (
@@ -628,7 +628,7 @@ export function DashboardLayout() {
                 <p className="text-xs font-bold text-gray-900 dark:text-white truncate">
                   {account?.firstName} {account?.lastName}
                 </p>
-                <p className="text-[10px] text-gray-500 truncate">Manager</p>
+                <p className="text-xs text-gray-500 truncate">Manager</p>
               </div>
             )}
 

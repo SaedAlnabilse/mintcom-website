@@ -225,7 +225,7 @@ export function OwnerEmployeesPage() {
     const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
 
     const getRoleBadge = (role: string) => {
-        const base = "px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wide border";
+        const base = "px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide border";
         switch (role?.toUpperCase()) {
             case 'ADMIN':
                 return <span className={`${base} bg-paymint-green/10 text-paymint-green border-paymint-green/20`}>Admin</span>;
@@ -241,14 +241,14 @@ export function OwnerEmployeesPage() {
     const getStatusBadge = (isActive: boolean | undefined) => {
         if (isActive) {
             return (
-                <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[10px] font-bold tracking-wide w-fit mx-auto">
+                <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-xs font-bold tracking-wide w-fit mx-auto">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                     Active
                 </span>
             );
         }
         return (
-            <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 border border-gray-200 dark:border-white/10 text-[10px] font-bold tracking-wide w-fit mx-auto">
+            <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 border border-gray-200 dark:border-white/10 text-xs font-bold tracking-wide w-fit mx-auto">
                 Not Active
             </span>
         );
@@ -269,7 +269,7 @@ export function OwnerEmployeesPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
                             Team Access
                         </span>
                     </div>
@@ -329,7 +329,7 @@ export function OwnerEmployeesPage() {
                                 </div>
                             </div>
                             <div className="flex items-center gap-1 mb-1">
-                                <p className="text-[10px] font-bold text-gray-400 tracking-wide">{stat.label}</p>
+                                <p className="text-xs font-bold text-gray-400 tracking-wide">{stat.label}</p>
                                 <QuickInfo text={stat.info} />
                             </div>
                             <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
@@ -507,7 +507,7 @@ export function OwnerEmployeesPage() {
                                         <div className="flex flex-wrap gap-2">
                                             {emp.assignments?.length > 0 ? (
                                                 emp.assignments.slice(0, 3).map((assign, idx) => (
-                                                    <span key={idx} className="px-2 py-1 bg-gray-50 dark:bg-white/5 rounded text-[10px] font-medium text-gray-700 dark:text-gray-300 border border-gray-100 dark:border-white/5 hover:border-indigo-500/20 transition-colors">
+                                                    <span key={idx} className="px-2 py-1 bg-gray-50 dark:bg-white/5 rounded text-xs font-medium text-gray-700 dark:text-gray-300 border border-gray-100 dark:border-white/5 hover:border-indigo-500/20 transition-colors">
                                                         {assign.establishmentName}
                                                     </span>
                                                 ))
@@ -515,7 +515,7 @@ export function OwnerEmployeesPage() {
                                                 <span className="text-xs text-gray-400 italic">No locations assigned</span>
                                             )}
                                             {emp.assignments?.length > 3 && (
-                                                <span className="px-2 py-1 bg-gray-50 dark:bg-white/5 rounded text-[10px] font-medium text-gray-500">
+                                                <span className="px-2 py-1 bg-gray-50 dark:bg-white/5 rounded text-xs font-medium text-gray-500">
                                                     +{emp.assignments.length - 3} more
                                                 </span>
                                             )}
@@ -672,7 +672,7 @@ export function OwnerEmployeesPage() {
 
                             <div className="px-8 pb-6 space-y-4">
                                 <div>
-                                    <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block">
+                                    <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
                                         Verify Password
                                     </label>
                                     <div className="relative">

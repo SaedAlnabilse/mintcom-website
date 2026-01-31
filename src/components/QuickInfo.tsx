@@ -55,7 +55,7 @@ export function QuickInfo({ text }: { text: string }) {
       </div>
       {isVisible && createPortal(
         <div
-          className="fixed z-[9999] w-48 p-2.5 bg-gray-900 dark:bg-white text-white dark:text-black text-[10px] font-bold text-center rounded-xl shadow-2xl pointer-events-none leading-relaxed tracking-wide animate-in fade-in zoom-in-95 duration-150"
+          className="fixed z-[9999] w-48 p-2.5 bg-gray-900 dark:bg-white text-white dark:text-black text-xs font-bold text-center rounded-xl shadow-2xl pointer-events-none leading-relaxed tracking-wide animate-in fade-in zoom-in-95 duration-150"
           style={{
             top: coords.top,
             left: coords.left,

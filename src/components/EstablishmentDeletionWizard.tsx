@@ -183,7 +183,7 @@ export function EstablishmentDeletionWizard({
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <div className="bg-white dark:bg-[#1E293B] rounded-2xl p-8 border border-gray-200 dark:border-white/5 shadow-xl">
                 <div className="w-12 h-12 border-4 border-paymint-red/10 border-t-paymint-red rounded-full animate-spin mx-auto" />
-                <p className="text-[10px] font-black tracking-widest text-gray-400 mt-4 text-center">Loading Location Data...</p>
+                <p className="text-xs font-black tracking-widest text-gray-400 mt-4 text-center">Loading Location Data...</p>
             </div>
             </div>
         );
@@ -220,7 +220,7 @@ export function EstablishmentDeletionWizard({
                         {['warning', 'export', 'confirm'].map((s, i) => (
                             <div key={s} className="flex items-center">
                                 <div
-                                    className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black transition-colors ${step === s
+                                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-colors ${step === s
                                         ? 'bg-white text-paymint-red shadow-sm'
                                         : ['warning', 'export', 'confirm'].indexOf(step) > i
                                             ? 'bg-white/30 text-white'
@@ -269,7 +269,7 @@ export function EstablishmentDeletionWizard({
                                 </div>
 
                                 <div>
-                                    <h3 className="text-[10px] font-black text-gray-400 dark:text-gray-500 tracking-[0.2em] mb-4 flex items-center gap-2 px-1">
+                                    <h3 className="text-xs font-black text-gray-400 dark:text-gray-500 tracking-[0.2em] mb-4 flex items-center gap-2 px-1">
                                         <Package size={14} className="text-paymint-red" />
                                         Deletion Summary
                                     </h3>
@@ -598,7 +598,7 @@ function StatCard({
             <div className="text-2xl font-bold text-gray-900 dark:text-white tracking-tighter">
                 {value.toLocaleString()}
             </div>
-            <div className="text-[10px] text-gray-500 dark:text-gray-400 font-black tracking-widest mt-1">
+            <div className="text-xs text-gray-500 dark:text-gray-400 font-black tracking-widest mt-1">
                 {label}
             </div>
         </div>

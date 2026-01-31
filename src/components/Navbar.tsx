@@ -136,7 +136,7 @@ export const Navbar = () => {
                   <Globe size={20} className="text-gray-900 dark:text-white" />
                   <Laptop size={20} className="text-gray-900 dark:text-white" />
                 </div>
-                <p className="text-[10px] font-bold tracking-widest text-gray-500">Paymint Enterprise v2.0</p>
+                <p className="text-xs font-bold tracking-widest text-gray-500">Paymint Enterprise v2.0</p>
               </div>
             </div>
           </motion.div>

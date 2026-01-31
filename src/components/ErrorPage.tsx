@@ -110,7 +110,7 @@ export function ErrorPage() {
                                 <span className="group-open:rotate-180 transition-transform ml-1">▼</span>
                             </summary>
                             <div className="mt-3 text-left bg-gray-50 dark:bg-paymint-dark/50 p-3 rounded-lg border border-gray-100 dark:border-gray-800 overflow-hidden">
-                                <pre className="text-[10px] text-red-500/80 font-mono whitespace-pre-wrap break-words">
+                                <pre className="text-xs text-red-500/80 font-mono whitespace-pre-wrap break-words">
                                     {error.stack || error.message}
                                 </pre>
                             </div>

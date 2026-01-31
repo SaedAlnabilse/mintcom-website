@@ -136,11 +136,11 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
     };
 
     const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat('en-US', {
+        return new Intl.NumberFormat('en-JO', {
             style: 'currency',
-            currency: 'Jod',
-            minimumFractionDigits: 2,
-        }).format(value).replace('Jod', '').trim() + ' Jod';
+            currency: 'JOD',
+            minimumFractionDigits: 3,
+        }).format(value);
     };
 
     const formatDate = (dateString: string) => {
@@ -172,7 +172,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
             orderNumber: 'Receipt #',
             date: 'Date',
             customer: 'Customer',
-            total: 'Total (Jod)',
+            total: 'Total (JOD)',
             status: 'Status',
             paymentMethod: 'Payment Method'
         });
@@ -198,7 +198,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                             <stat.icon size={20} />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
+                            <p className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
                             <p className="text-xl font-black text-gray-900 dark:text-white">{stat.value}</p>
                         </div>
                     </motion.div>
@@ -262,11 +262,11 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                             <table className="w-full">
                                 <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
                                     <tr>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest uppercase">Receipt</th>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest uppercase">Customer</th>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest uppercase">Amount</th>
-                                        <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest uppercase">Status</th>
-                                        <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest uppercase">Action</th>
+                                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest uppercase">Receipt</th>
+                                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest uppercase">Customer</th>
+                                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest uppercase">Amount</th>
+                                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest uppercase">Status</th>
+                                        <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest uppercase">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -287,25 +287,25 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                                                         </div>
                                                         <div>
                                                             <p className="font-bold text-gray-900 dark:text-white text-xs">#{order.orderNumber}</p>
-                                                            <p className="text-[10px] text-gray-500 font-medium">{formatDate(order.createdAt)}</p>
+                                                            <p className="text-xs text-gray-500 font-medium">{formatDate(order.createdAt)}</p>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <p className="font-bold text-gray-700 dark:text-gray-300 text-xs">{order.customer?.name || 'Walk-in'}</p>
-                                                    <p className="text-[10px] text-gray-400">{order.user?.username ? `Staff: ${order.user.username}` : 'POS'}</p>
+                                                    <p className="text-xs text-gray-400">{order.user?.username ? `Staff: ${order.user.username}` : 'POS'}</p>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <p className="font-bold text-gray-900 dark:text-white text-xs">{formatCurrency(order.total)}</p>
-                                                    <p className="text-[10px] text-gray-400 uppercase">{order.paymentMethod}</p>
+                                                    <p className="text-xs text-gray-400 uppercase">{order.paymentMethod}</p>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
+                                                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-black border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
                                                         {(order.paymentStatus || order.status || 'PENDING').toUpperCase()}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
-                                                    <button className="text-[10px] font-bold text-paymint-green hover:underline">View Details</button>
+                                                    <button className="text-xs font-bold text-paymint-green hover:underline">View Details</button>
                                                 </td>
                                             </motion.tr>
                                         ))}
@@ -324,7 +324,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                                             <span className="mx-2 text-gray-300">|</span>
                                             <span className="text-xs text-gray-500">{formatDate(order.createdAt)}</span>
                                         </div>
-                                        <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
+                                        <span className={`px-1.5 py-0.5 rounded text-xs font-bold ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
                                             {(order.paymentStatus || order.status || 'PENDING').toUpperCase()}
                                         </span>
                                     </div>
@@ -344,7 +344,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                 <div className="flex justify-center">
                     <div className="flex items-center gap-2 p-1 rounded-xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm">
                         <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500 disabled:opacity-30"><ChevronLeft size={16} /></button>
-                        <span className="px-4 text-[10px] font-bold text-gray-600 dark:text-gray-400">Page {page} of {totalPages}</span>
+                        <span className="px-4 text-xs font-bold text-gray-600 dark:text-gray-400">Page {page} of {totalPages}</span>
                         <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500 disabled:opacity-30"><ChevronRight size={16} /></button>
                     </div>
                 </div>

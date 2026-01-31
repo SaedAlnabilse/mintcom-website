@@ -248,7 +248,7 @@ export function BrandLocationsPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
                             Fleet Hub
                         </span>
                     </div>
@@ -293,7 +293,7 @@ export function BrandLocationsPage() {
                                     <stat.icon size={20} />
                                 </div>
                             </div>
-                            <p className="text-[10px] font-bold text-gray-400 tracking-wide mb-1">{stat.label}</p>
+                            <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">{stat.label}</p>
                             <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                         </div>
                     </motion.div>
@@ -522,7 +522,7 @@ export function BrandLocationsPage() {
 
                                 {/* Status Badge */}
                                 <div className="mb-6">
-                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold tracking-wide border ${getStatusColor(loc.subscriptionStatus)}`}>
+                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${getStatusColor(loc.subscriptionStatus)}`}>
                                         <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
                                         {loc.subscriptionStatus ? loc.subscriptionStatus.charAt(0).toUpperCase() + loc.subscriptionStatus.slice(1).toLowerCase() : ''}
                                     </span>
@@ -531,19 +531,19 @@ export function BrandLocationsPage() {
                                 {/* Stats Grid */}
                                 <div className="grid grid-cols-2 gap-3 mb-6">
                                     <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="text-[10px] font-bold text-gray-400 tracking-wide mb-1">Revenue</p>
+                                        <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">Revenue</p>
                                         <p className="text-base font-bold text-gray-900 dark:text-white">{formatCurrency(loc.totalRevenue || 0)}</p>
                                     </div>
                                     <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="text-[10px] font-bold text-gray-400 tracking-wide mb-1">Orders</p>
+                                        <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">Orders</p>
                                         <p className="text-base font-bold text-gray-900 dark:text-white">{loc.orderCount}</p>
                                     </div>
                                     <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="text-[10px] font-bold text-gray-400 tracking-wide mb-1">Staff</p>
+                                        <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">Staff</p>
                                         <p className="text-base font-bold text-gray-900 dark:text-white">{loc.employeeCount}</p>
                                     </div>
                                     <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="text-[10px] font-bold text-gray-400 tracking-wide mb-1">Products</p>
+                                        <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">Products</p>
                                         <p className="text-base font-bold text-gray-900 dark:text-white">{loc.itemCount}</p>
                                     </div>
                                 </div>
@@ -602,7 +602,7 @@ export function BrandLocationsPage() {
 
                                     {/* Status */}
                                     <div className="col-span-2 flex items-center">
-                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold tracking-wide border ${getStatusColor(loc.subscriptionStatus)}`}>
+                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${getStatusColor(loc.subscriptionStatus)}`}>
                                             <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
                                             {loc.subscriptionStatus ? loc.subscriptionStatus.charAt(0).toUpperCase() + loc.subscriptionStatus.slice(1).toLowerCase() : ''}
                                         </span>

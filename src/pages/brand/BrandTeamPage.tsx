@@ -256,7 +256,7 @@ export function BrandTeamPage() {
     };
 
     const getRoleBadgeStyle = (role: string) => {
-        const base = "px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wide border";
+        const base = "px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide border";
         if (role.toUpperCase() === 'ADMIN') {
             return `${base} bg-paymint-green/10 text-paymint-green border-paymint-green/20`;
         }
@@ -291,7 +291,7 @@ export function BrandTeamPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-purple-500/10 text-purple-500 text-[10px] font-black tracking-widest border border-purple-500/20">
+                        <span className="px-3 py-1 rounded-lg bg-purple-500/10 text-purple-500 text-xs font-black tracking-widest border border-purple-500/20">
                             Team
                         </span>
                     </div>
@@ -340,7 +340,7 @@ export function BrandTeamPage() {
                                     <stat.icon size={20} />
                                 </div>
                             </div>
-                            <p className="text-[10px] font-bold text-gray-400 tracking-wide mb-1">{stat.label}</p>
+                            <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">{stat.label}</p>
                             <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                         </div>
                     </motion.div>
@@ -560,7 +560,7 @@ export function BrandTeamPage() {
 
                                 {/* Status Badge */}
                                 <div className="mb-4">
-                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold tracking-wide border ${emp.isActive
+                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${emp.isActive
                                         ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
                                         : 'bg-gray-100 text-gray-500 border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10'
                                         }`}>
@@ -604,7 +604,7 @@ export function BrandTeamPage() {
                                         ))}
                                         {emp.establishments.length > 2 && (
                                             <div className="text-center py-1">
-                                                <span className="text-[10px] font-medium text-gray-400">+ {emp.establishments.length - 2} more locations</span>
+                                                <span className="text-xs font-medium text-gray-400">+ {emp.establishments.length - 2} more locations</span>
                                             </div>
                                         )}
                                     </div>
@@ -671,7 +671,7 @@ export function BrandTeamPage() {
 
                                     {/* Status */}
                                     <div className="col-span-2 flex items-center">
-                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold tracking-wide border ${emp.isActive
+                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${emp.isActive
                                             ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
                                             : 'bg-gray-100 text-gray-500 border-gray-200'
                                             }`}>
@@ -770,7 +770,7 @@ export function BrandTeamPage() {
 
                             <div className="px-8 pb-6 space-y-4">
                                 <div>
-                                    <label className="text-[10px] font-black text-gray-400 tracking-widest mb-2 block">
+                                    <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
                                         Password
                                     </label>
                                     <div className="relative">

@@ -733,7 +733,7 @@ export function BrandDashboardPage() {
                                         <h4 className="font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors truncate">
                                             {loc.name}
                                         </h4>
-                                        <div className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold ${loc.growth >= 0
+                                        <div className={`flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold ${loc.growth >= 0
                                             ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
                                             : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
                                             }`}>

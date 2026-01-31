@@ -60,7 +60,7 @@ export function LoyaltyPage() {
     const pointsPerCurrencyDisplay = String(pointsPerCurrency);
 
     const [categories, setCategories] = useState<any[]>([]);
-    const [currency, setCurrency] = useState('Jod');
+    const [currency, setCurrency] = useState('JOD');
 
     useEffect(() => {
         fetchLoyaltyConfig();
@@ -272,7 +272,7 @@ export function LoyaltyPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
                             Loyalty Program
                         </span>
                     </div>
@@ -300,7 +300,7 @@ export function LoyaltyPage() {
                             </div>
                             <div>
                                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">Configuration</h3>
-                                <p className="text-[10px] text-gray-400 font-black tracking-widest px-1">Manage earning rules</p>
+                                <p className="text-xs text-gray-400 font-black tracking-widest px-1">Manage earning rules</p>
                             </div>
                         </div>
                         {/* Toggle removed */}
@@ -317,7 +317,7 @@ export function LoyaltyPage() {
                                     {/* Spend Input Section */}
                                     <div className="flex-1 w-full lg:w-auto space-y-4">
                                         <div className="flex items-center gap-3">
-                                            <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">For Every</span>
+                                            <span className="text-xs font-black text-gray-400 tracking-[0.2em]">For Every</span>
                                         </div>
                                         <div className="flex items-stretch bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
                                             <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
@@ -334,13 +334,13 @@ export function LoyaltyPage() {
 
                                     {/* Connector */}
                                     <div className="flex flex-col items-center justify-center py-4 lg:py-0 self-end lg:pb-5">
-                                        <div className="text-[10px] font-black text-gray-400 tracking-widest">Equals</div>
+                                        <div className="text-xs font-black text-gray-400 tracking-widest">Equals</div>
                                     </div>
 
                                     {/* Points Input Section */}
                                     <div className="flex-1 w-full lg:w-auto space-y-4">
                                         <div className="flex items-center gap-3">
-                                            <span className="text-[10px] font-black text-gray-400 tracking-[0.2em] opacity-0 lg:block hidden">Spacer</span>
+                                            <span className="text-xs font-black text-gray-400 tracking-[0.2em] opacity-0 lg:block hidden">Spacer</span>
                                         </div>
                                         <div className="flex items-stretch bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
                                             <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
@@ -374,7 +374,7 @@ export function LoyaltyPage() {
                                     <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
                                     <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">Rewards</h4>
                                 </div>
-                                <button type="button" onClick={() => { setEditingReward(null); setShowRewardModal(true); }} className="flex items-center gap-2 px-4 py-2 bg-paymint-green/10 text-paymint-green rounded-xl text-[10px] font-black tracking-widest hover:bg-paymint-green/20 transition-all border border-paymint-green/20">
+                                <button type="button" onClick={() => { setEditingReward(null); setShowRewardModal(true); }} className="flex items-center gap-2 px-4 py-2 bg-paymint-green/10 text-paymint-green rounded-xl text-xs font-black tracking-widest hover:bg-paymint-green/20 transition-all border border-paymint-green/20">
                                     <Plus size={14} /> Add Pattern
                                 </button>
                             </div>
@@ -384,7 +384,7 @@ export function LoyaltyPage() {
                                         <Award size={24} />
                                     </div>
                                     <p className="text-xs font-black text-gray-400 tracking-widest">Catalog Empty</p>
-                                    <p className="text-[10px] font-black text-gray-400 mt-1 tracking-widest">Create reward tiers to activate redemption</p>
+                                    <p className="text-xs font-black text-gray-400 mt-1 tracking-widest">Create reward tiers to activate redemption</p>
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -405,9 +405,9 @@ export function LoyaltyPage() {
                                                 <div>
                                                     <p className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-paymint-green transition-colors">{reward.name}</p>
                                                     <div className="flex items-center gap-1.5 mt-0.5">
-                                                        <span className="text-[10px] text-gray-400 font-black tracking-widest">{reward.pointsRequired} Points</span>
-                                                        <span className="text-[10px] text-gray-300 dark:text-gray-600">•</span>
-                                                        <span className="text-[10px] text-paymint-green font-black tracking-widest">
+                                                        <span className="text-xs text-gray-400 font-black tracking-widest">{reward.pointsRequired} Points</span>
+                                                        <span className="text-xs text-gray-300 dark:text-gray-600">•</span>
+                                                        <span className="text-xs text-paymint-green font-black tracking-widest">
                                                             {reward.type === 'DISCOUNT'
                                                                 ? `${reward.discountPercentage}% Off`
                                                                 : reward.freeCategoryName ? `Free from ${reward.freeCategoryName}` : 'Free Product'}

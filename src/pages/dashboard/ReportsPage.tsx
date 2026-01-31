@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area
@@ -125,6 +125,7 @@ export function ReportsPage() {
   }, [location]);
 
   const [salesData, setSalesData] = useState<any>(null);
+  const [expandedPaymentMethod, setExpandedPaymentMethod] = useState<string | null>(null);
 
   const [peakHours, setPeakHours] = useState<any[]>([]);
   const [shifts, setShifts] = useState<any[]>([]);
@@ -363,7 +364,11 @@ export function ReportsPage() {
   };
 
   const formatCurrency = (value: number) => {
-    return value.toFixed(3) + ' JOD';
+    return new Intl.NumberFormat('en-JO', {
+      style: 'currency',
+      currency: 'JOD',
+      minimumFractionDigits: 3,
+    }).format(value);
   };
 
   const setQuickDate = (range: string) => {
@@ -412,7 +417,7 @@ export function ReportsPage() {
       case 'discounts':
       case 'taxes':
         dataToExport = salesData?.dailyBreakdown || [];
-        headers = { date: 'Date', revenue: 'Revenue (Jod)', count: 'Orders' };
+        headers = { date: 'Date', revenue: 'Revenue (JOD)', count: 'Orders' };
         break;
       case 'top-items':
         dataToExport = itemReportData?.breakdown || [];
@@ -454,7 +459,7 @@ export function ReportsPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-wide border border-paymint-green/20">
               Sales and Reporting
             </span>
             <div className="flex items-center gap-2">
@@ -462,7 +467,7 @@ export function ReportsPage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
               </span>
-              <span className="text-[10px] font-bold text-gray-400 tracking-widest">Live</span>
+              <span className="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wide">Live</span>
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Sales and Reporting</h1>
@@ -536,7 +541,7 @@ export function ReportsPage() {
                 <div className="flex items-center justify-center relative z-10">
                   <type.icon size={14} className={isSelected ? 'text-black' : 'text-gray-400'} />
                 </div>
-                <span className="text-[10px] font-black tracking-wide truncate relative z-10">{type.label}</span>
+                <span className="text-xs font-black tracking-wide truncate relative z-10">{type.label}</span>
               </button>
             );
           })}
@@ -578,7 +583,7 @@ export function ReportsPage() {
                   <div className="flex-1 w-full bg-transparent flex flex-col justify-center px-2 group">
                     <div className="flex items-center gap-2 mb-1">
                       <Calendar size={12} className={isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
-                      <span className={`text-[9px] font-black tracking-widest transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Date Range</span>
+                      <span className={`text-xs font-black tracking-widest transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Date Range</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <input
@@ -604,7 +609,7 @@ export function ReportsPage() {
                   <div className="flex-1 w-full bg-transparent flex flex-col justify-center px-2 group">
                     <div className="flex items-center gap-2 mb-1">
                       <Clock size={12} className={isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
-                      <span className={`text-[9px] font-black tracking-widest transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Active Hours</span>
+                      <span className={`text-xs font-black tracking-widest transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Active Hours</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <input
@@ -666,7 +671,7 @@ export function ReportsPage() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-32">
             <div className="w-16 h-16 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-[10px] font-black tracking-widest text-gray-400">Processing Analytics...</p>
+            <p className="text-xs font-black tracking-widest text-gray-400">Processing Analytics...</p>
           </div>
         ) : (
           <motion.div key={reportType} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
@@ -742,18 +747,18 @@ export function ReportsPage() {
                         value: (
                           <div className="w-full mt-1 space-y-2">
                             <div className="flex items-center justify-between">
-                              <span className="text-[10px] font-bold text-gray-400">Pay In</span>
-                              <span className="text-sm font-bold text-paymint-green tracking-tight">+{formatCurrency(salesData.totalPayIn || 0).replace(' Jod', '')}</span>
+                              <span className="text-xs font-bold text-gray-400">Pay In</span>
+                              <span className="text-sm font-bold text-paymint-green tracking-tight">+{formatCurrency(salesData.totalPayIn || 0).replace('JOD', '').trim()}</span>
                             </div>
                             <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
                             <div className="flex items-center justify-between">
-                              <span className="text-[10px] font-bold text-gray-400">Pay Out</span>
-                              <span className="text-sm font-bold text-red-500 tracking-tight">-{formatCurrency(salesData.totalPayOut || 0).replace(' Jod', '')}</span>
+                              <span className="text-xs font-bold text-gray-400">Pay Out</span>
+                              <span className="text-sm font-bold text-red-500 tracking-tight">-{formatCurrency(salesData.totalPayOut || 0).replace('JOD', '').trim()}</span>
                             </div>
                             <div className="flex items-center justify-between pt-2 border-t border-dashed border-gray-200 dark:border-white/10">
-                              <span className="text-[10px] font-bold text-gray-400">Net Flow</span>
+                              <span className="text-xs font-bold text-gray-400">Net Flow</span>
                               <span className={`text-sm font-bold ${netPayInOut >= 0 ? 'text-paymint-green' : 'text-red-500'}`}>
-                                {netPayInOut >= 0 ? '+' : ''}{formatCurrency(netPayInOut).replace(' Jod', '')}
+                                {netPayInOut >= 0 ? '+' : ''}{formatCurrency(netPayInOut).replace('JOD', '').trim()}
                               </span>
                             </div>
                           </div>
@@ -794,7 +799,7 @@ export function ReportsPage() {
                           ) : (
                             stat.value
                           )}
-                          <p className="text-xs font-medium text-gray-400 mt-1 opacity-70">
+                          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
                             {stat.sub}
                           </p>
                         </div>
@@ -826,7 +831,7 @@ export function ReportsPage() {
                       </div>
                       <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
                         <Activity size={12} className="text-paymint-green" />
-                        <span className="text-[10px] font-bold text-gray-500 tracking-wide">Real-time</span>
+                        <span className="text-xs font-bold text-gray-500 tracking-wide">Real-time</span>
                       </div>
                     </div>
                     <div className="h-[300px]">
@@ -1087,7 +1092,7 @@ export function ReportsPage() {
                       </div>
                       <div>
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white">Payment Methods</h3>
-                        <p className="text-[10px] font-bold text-gray-500 tracking-widest">Breakdown Chart</p>
+                        <p className="text-xs font-bold text-gray-500 tracking-widest">Breakdown Chart</p>
                       </div>
                     </div>
                     <div className="flex-1 flex flex-col justify-center">
@@ -1224,7 +1229,7 @@ export function ReportsPage() {
                       <thead className="bg-gray-50 dark:bg-white/[0.02]">
                         <tr className="border-b border-gray-200 dark:border-white/5">
                           <th
-                            className={`px-8 py-5 text-left text-[10px] font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'name' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                            className={`px-8 py-5 text-left text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'name' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                             onClick={() => requestSort('name')}
                           >
                             <div className="flex items-center gap-2">
@@ -1233,7 +1238,7 @@ export function ReportsPage() {
                             </div>
                           </th>
                           <th
-                            className={`px-8 py-5 text-right text-[10px] font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'quantity' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                            className={`px-8 py-5 text-right text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'quantity' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                             onClick={() => requestSort('quantity')}
                           >
                             <div className="flex items-center justify-end gap-2">
@@ -1242,7 +1247,7 @@ export function ReportsPage() {
                             </div>
                           </th>
                           <th
-                            className={`px-8 py-5 text-right text-[10px] font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'revenue' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                            className={`px-8 py-5 text-right text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'revenue' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                             onClick={() => requestSort('revenue')}
                           >
                             <div className="flex items-center justify-end gap-2">
@@ -1266,7 +1271,7 @@ export function ReportsPage() {
                               >
                                 <td className="px-8 py-5">
                                   <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center font-black text-[10px] text-gray-500 border border-gray-200 dark:border-white/5 shadow-sm">
+                                    <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center font-black text-xs text-gray-500 border border-gray-200 dark:border-white/5 shadow-sm">
                                       {(currentPage - 1) * itemsPerPage + idx + 1}
                                     </div>
                                     <span className="font-bold text-gray-900 dark:text-white text-sm">{item.itemName || item.name}</span>
@@ -1282,7 +1287,7 @@ export function ReportsPage() {
                             ))
                         ) : (
                           <tr>
-                            <td colSpan={3} className="py-20 text-center text-gray-400 font-black text-[10px] tracking-[0.2em]">No transactional data identified for this period</td>
+                            <td colSpan={3} className="py-20 text-center text-gray-400 font-black text-xs tracking-[0.2em]">No transactional data identified for this period</td>
                           </tr>
                         )}
                       </tbody>
@@ -1292,7 +1297,7 @@ export function ReportsPage() {
                   {/* Pagination */}
                   {itemReportData.breakdown && itemReportData.breakdown.length > itemsPerPage && (
                     <div className="flex items-center justify-between px-8 py-4 border-t border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.01]">
-                      <p className="text-[10px] font-black text-gray-400 tracking-widest">
+                      <p className="text-xs font-black text-gray-400 tracking-widest">
                         Page {currentPage} of {Math.ceil(itemReportData.breakdown.length / itemsPerPage)}
                       </p>
                       <div className="flex gap-2">
@@ -1384,38 +1389,38 @@ export function ReportsPage() {
 
                       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                         <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-                          <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Hours Worked</p>
+                          <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Total Hours Worked</p>
                           <p className="text-xl font-bold text-gray-900 dark:text-white">{totalHours.toFixed(1)}</p>
-                          <p className="text-[10px] text-gray-500">By {empName}</p>
+                          <p className="text-xs text-gray-500">By {empName}</p>
                         </div>
                         <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-                          <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Orders</p>
+                          <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Total Orders</p>
                           <p className="text-xl font-bold text-gray-900 dark:text-white">{totalOrders}</p>
-                          <p className="text-[10px] text-gray-500">By {empName}</p>
+                          <p className="text-xs text-gray-500">By {empName}</p>
                         </div>
                         <div className="p-4 rounded-xl bg-paymint-green/10 border border-paymint-green/20">
-                          <p className="text-[10px] font-black text-paymint-green tracking-widest mb-1">Total Sales</p>
+                          <p className="text-xs font-black text-paymint-green tracking-widest mb-1">Total Sales</p>
                           <p className="text-xl font-bold text-paymint-green">{totalSales.toFixed(3)} JOD</p>
-                          <p className="text-[10px] text-paymint-green/70">By {empName}</p>
+                          <p className="text-xs text-paymint-green/70">By {empName}</p>
                         </div>
                         <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-                          <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Discounts Issued</p>
+                          <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Total Discounts Issued</p>
                           <p className="text-xl font-bold text-orange-500">{totalDiscounts.toFixed(3)} JOD</p>
-                          <p className="text-[10px] text-gray-500">Issued by {empName}</p>
+                          <p className="text-xs text-gray-500">Issued by {empName}</p>
                         </div>
                         <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-                          <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Refunds</p>
+                          <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Total Refunds</p>
                           <p className="text-xl font-bold text-red-500">{totalRefunds.toFixed(3)} JOD</p>
-                          <p className="text-[10px] text-gray-500">By {empName}</p>
+                          <p className="text-xs text-gray-500">By {empName}</p>
                         </div>
                         <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-                          <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Variances</p>
+                          <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Total Variances</p>
                           <div className="flex items-center gap-2">
                             <span className="text-sm font-bold text-emerald-500">+{positiveVariance.toFixed(2)}</span>
                             <span className="text-gray-300">/</span>
                             <span className="text-sm font-bold text-red-500">-{negativeVariance.toFixed(2)}</span>
                           </div>
-                          <p className="text-[10px] text-gray-500">By {empName}</p>
+                          <p className="text-xs text-gray-500">By {empName}</p>
                         </div>
                       </div>
                     </div>
@@ -1479,7 +1484,7 @@ export function ReportsPage() {
                           <div className="bg-white dark:bg-[#0B1120] p-6 rounded-[24px] border border-gray-100 dark:border-white/[0.05] shadow-sm flex flex-col">
                             <div className="mb-4">
                               <h3 className="text-lg font-black text-gray-900 dark:text-white">Sales Share</h3>
-                              <p className="text-[10px] font-black text-gray-400 tracking-widest">By Staff</p>
+                              <p className="text-xs font-black text-gray-400 tracking-widest">By Staff</p>
                             </div>
                             <div className="flex-1 min-h-[200px] relative">
                               <ResponsiveContainer width="100%" height="100%">
@@ -1507,8 +1512,8 @@ export function ReportsPage() {
                               {/* Center Stat */}
                               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                                 <div className="text-center">
-                                  <p className="text-[10px] font-black text-gray-400">Total</p>
-                                  <p className="text-sm font-black text-gray-900 dark:text-white">{formatCurrency(totalStoreSales).replace(' Jod', '')}</p>
+                                  <p className="text-xs font-black text-gray-400">Total</p>
+                                  <p className="text-sm font-black text-gray-900 dark:text-white">{formatCurrency(totalStoreSales).replace('JOD', '').trim()}</p>
                                 </div>
                               </div>
                             </div>
@@ -1516,7 +1521,7 @@ export function ReportsPage() {
                               {pieData.map((entry: any) => (
                                 <div key={entry.name} className="flex items-center gap-2">
                                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
-                                  <p className="text-[10px] font-bold text-gray-500 truncate">{entry.name}</p>
+                                  <p className="text-xs font-bold text-gray-500 truncate">{entry.name}</p>
                                 </div>
                               ))}
                             </div>
@@ -1540,7 +1545,7 @@ export function ReportsPage() {
                                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg ${idx === 0 ? 'bg-black/10' : 'bg-paymint-green/10 text-paymint-green'}`}>
                                       {emp.username.charAt(0).toUpperCase()}
                                     </div>
-                                    <div className={`px-3 py-1 rounded-full text-[10px] font-black tracking-widest ${idx === 0 ? 'bg-black/10 text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                                    <div className={`px-3 py-1 rounded-full text-xs font-black tracking-widest ${idx === 0 ? 'bg-black/10 text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
                                       {idx === 0 ? '#1 Top' : '#2'}
                                     </div>
                                   </div>
@@ -1549,13 +1554,13 @@ export function ReportsPage() {
                                     <h3 className={`text-xl font-black mb-1 ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>{emp.username}</h3>
                                     <div className="flex gap-4 mt-4">
                                       <div>
-                                        <p className={`text-[9px] font-black tracking-widest mb-1 ${idx === 0 ? 'text-black/60' : 'text-gray-400'}`}>Revenue</p>
-                                        <p className={`text-2xl font-black ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>{formatCurrency(emp.totalSales).replace(' Jod', '')}</p>
+                                        <p className={`text-xs font-black tracking-widest mb-1 ${idx === 0 ? 'text-black/60' : 'text-gray-400'}`}>Revenue</p>
+                                        <p className={`text-2xl font-black ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>{formatCurrency(emp.totalSales).replace('JOD', '').trim()}</p>
                                       </div>
                                       <div>
-                                        <p className={`text-[9px] font-black tracking-widest mb-1 ${idx === 0 ? 'text-black/60' : 'text-gray-400'}`}>Avg Ticket</p>
+                                        <p className={`text-xs font-black tracking-widest mb-1 ${idx === 0 ? 'text-black/60' : 'text-gray-400'}`}>Avg Ticket</p>
                                         <p className={`text-2xl font-black ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>
-                                          {formatCurrency(emp.totalSales / (emp.transactionCount || 1)).replace(' Jod', '')}
+                                          {formatCurrency(emp.totalSales / (emp.transactionCount || 1)).replace('JOD', '').trim()}
                                         </p>
                                       </div>
                                     </div>
@@ -1573,19 +1578,19 @@ export function ReportsPage() {
                         <div className="p-6 border-b border-gray-100 dark:border-white/[0.05] flex items-center justify-between">
                           <div>
                             <h3 className="text-lg font-black text-gray-900 dark:text-white">Staff Analysis</h3>
-                            <p className="text-[10px] font-black text-gray-400 tracking-widest">Performance Metrics</p>
+                            <p className="text-xs font-black text-gray-400 tracking-widest">Performance Metrics</p>
                           </div>
                         </div>
                         <div className="overflow-x-auto">
                           <table className="w-full">
                             <thead className="bg-gray-50/50 dark:bg-white/[0.01]">
                               <tr className="border-b border-gray-100 dark:border-white/[0.05]">
-                                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Rank</th>
-                                <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Staff</th>
-                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Sales</th>
-                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Share</th>
-                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Avg Order</th>
-                                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Sales/Hr</th>
+                                <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Rank</th>
+                                <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Staff</th>
+                                <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Sales</th>
+                                <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Share</th>
+                                <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Avg Order</th>
+                                <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Sales/Hr</th>
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100 dark:divide-white/[0.03]">
@@ -1616,11 +1621,11 @@ export function ReportsPage() {
                                       </div>
                                     </td>
                                     <td className="px-6 py-4 text-right font-bold text-gray-900 dark:text-white">
-                                      {formatCurrency(avgTicket).replace(' Jod', '')}
+                                      {formatCurrency(avgTicket).replace('JOD', '').trim()}
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                       <span className="text-xs font-bold text-gray-500">
-                                        {formatCurrency(efficiency).replace(' Jod', '')} / hr
+                                        {formatCurrency(efficiency).replace('JOD', '').trim()} / hr
                                       </span>
                                     </td>
                                   </tr>
@@ -1650,28 +1655,28 @@ export function ReportsPage() {
                       <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
                         <div className="flex items-center gap-3 mb-4 text-orange-500">
                           <Activity size={20} />
-                          <h4 className="text-[10px] font-black tracking-widest text-gray-400">Cash Variance</h4>
+                          <h4 className="text-xs font-black tracking-widest text-gray-400">Cash Variance</h4>
                         </div>
                         <p className={`text-3xl font-black ${totalVariance < -0.01 ? 'text-red-500' : 'text-paymint-green'}`}>
                           {totalVariance > 0 ? '+' : ''}{formatCurrency(totalVariance)}
                         </p>
-                        <p className="text-[10px] font-bold text-gray-500 mt-2">Total over/short</p>
+                        <p className="text-xs font-bold text-gray-500 mt-2">Total over/short</p>
                       </div>
                       <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
                         <div className="flex items-center gap-3 mb-4 text-blue-500">
                           <Clock size={20} />
-                          <h4 className="text-[10px] font-black tracking-widest text-gray-400">Shifts</h4>
+                          <h4 className="text-xs font-black tracking-widest text-gray-400">Shifts</h4>
                         </div>
                         <p className="text-3xl font-black text-gray-900 dark:text-white">{shifts.length}</p>
-                        <p className="text-[10px] font-bold text-gray-500 mt-2">{activeShifts} active shifts</p>
+                        <p className="text-xs font-bold text-gray-500 mt-2">{activeShifts} active shifts</p>
                       </div>
                       <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
                         <div className="flex items-center gap-3 mb-4 text-paymint-green">
                           <Wallet size={20} />
-                          <h4 className="text-[10px] font-black tracking-widest text-gray-400">Audited</h4>
+                          <h4 className="text-xs font-black tracking-widest text-gray-400">Audited</h4>
                         </div>
                         <p className="text-3xl font-black text-paymint-green">100%</p>
-                        <p className="text-[10px] font-bold text-gray-500 mt-2">Shifts closed</p>
+                        <p className="text-xs font-bold text-gray-500 mt-2">Shifts closed</p>
                       </div>
                     </div>
                   );
@@ -1683,13 +1688,13 @@ export function ReportsPage() {
                     <table className="w-full">
                       <thead className="bg-gray-50 dark:bg-white/[0.02]">
                         <tr className="border-b border-gray-200 dark:border-white/5">
-                          <th className="px-5 py-5 text-left text-[10px] font-black text-gray-400 tracking-widest">Staff</th>
-                          <th className="px-5 py-5 text-left text-[10px] font-black text-gray-400 tracking-widest">Time</th>
-                          <th className="px-5 py-5 text-right text-[10px] font-black text-gray-400 tracking-widest">Opening</th>
-                          <th className="px-5 py-5 text-right text-[10px] font-black text-gray-400 tracking-widest">Sales</th>
-                          <th className="px-5 py-5 text-right text-[10px] font-black text-gray-400 tracking-widest">Closing</th>
-                          <th className="px-5 py-5 text-center text-[10px] font-black text-gray-400 tracking-widest">Variance</th>
-                          <th className="px-5 py-5 text-center text-[10px] font-black text-gray-400 tracking-widest">Status</th>
+                          <th className="px-5 py-5 text-left text-xs font-black text-gray-400 tracking-widest">Staff</th>
+                          <th className="px-5 py-5 text-left text-xs font-black text-gray-400 tracking-widest">Time</th>
+                          <th className="px-5 py-5 text-right text-xs font-black text-gray-400 tracking-widest">Opening</th>
+                          <th className="px-5 py-5 text-right text-xs font-black text-gray-400 tracking-widest">Sales</th>
+                          <th className="px-5 py-5 text-right text-xs font-black text-gray-400 tracking-widest">Closing</th>
+                          <th className="px-5 py-5 text-center text-xs font-black text-gray-400 tracking-widest">Variance</th>
+                          <th className="px-5 py-5 text-center text-xs font-black text-gray-400 tracking-widest">Status</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -1704,7 +1709,7 @@ export function ReportsPage() {
                             >
                               <td className="px-5 py-5">
                                 <div className="flex items-center gap-3">
-                                  <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center font-black text-[10px]">
+                                  <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center font-black text-xs">
                                     {shift.user?.username?.charAt(0).toUpperCase()}
                                   </div>
                                   <span className="font-bold text-gray-900 dark:text-white text-sm">{shift.user?.username || 'Unknown'}</span>
@@ -1715,7 +1720,7 @@ export function ReportsPage() {
                                   <span className="text-xs font-bold text-gray-900 dark:text-white">
                                     {format(new Date(shift.startTime), 'MMM d, HH:mm')}
                                   </span>
-                                  <span className="text-[10px] font-medium text-gray-500">
+                                  <span className="text-xs font-medium text-gray-500">
                                     to {shift.endTime ? format(new Date(shift.endTime), 'HH:mm') : 'Present'}
                                   </span>
                                 </div>
@@ -1734,31 +1739,31 @@ export function ReportsPage() {
                                       : '—'}
                                   </span>
                                 ) : (
-                                  <span className="text-[10px] font-black text-gray-400 tracking-widest">Active</span>
+                                  <span className="text-xs font-black text-gray-400 tracking-widest">Active</span>
                                 )}
                               </td>
                               <td className="px-5 py-5 text-center">
                                 {shift.status === 'CLOSED' && shift.discrepancy !== null && shift.discrepancy !== undefined ? (
                                   <div className="flex flex-col items-center">
-                                    <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black tracking-widest border ${shift.discrepancy > 0.001
+                                    <span className={`px-2.5 py-1 rounded-lg text-xs font-black tracking-widest border ${shift.discrepancy > 0.001
                                       ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
                                       : shift.discrepancy < -0.001
                                         ? 'bg-red-500/10 text-red-500 border-red-500/20'
                                         : 'bg-gray-100 dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10'
                                       }`}>
                                       {shift.discrepancy > 0.001
-                                        ? `+${formatCurrency(shift.discrepancy).replace(' Jod', '')} Over`
+                                        ? `+${formatCurrency(shift.discrepancy).replace('JOD', '').trim()} Over`
                                         : shift.discrepancy < -0.001
-                                          ? `${formatCurrency(shift.discrepancy).replace(' Jod', '')} Short`
+                                          ? `${formatCurrency(shift.discrepancy).replace('JOD', '').trim()} Short`
                                           : '0'}
                                     </span>
                                   </div>
                                 ) : (
-                                  <span className="text-[10px] font-black text-gray-400 tracking-widest">—</span>
+                                  <span className="text-xs font-black text-gray-400 tracking-widest">—</span>
                                 )}
                               </td>
                               <td className="px-5 py-5 text-center">
-                                <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black tracking-widest border transition-all ${shift.status === 'OPEN'
+                                <span className={`px-2.5 py-1 rounded-lg text-xs font-black tracking-widest border transition-all ${shift.status === 'OPEN'
                                   ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
                                   : 'bg-gray-100 dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10'
                                   }`}>
@@ -1769,7 +1774,7 @@ export function ReportsPage() {
                           ))
                         ) : (
                           <tr>
-                            <td colSpan={7} className="py-20 text-center text-gray-400 font-black text-[10px] tracking-[0.2em]">No shift records found in cluster</td>
+                            <td colSpan={7} className="py-20 text-center text-gray-400 font-black text-xs tracking-[0.2em]">No shift records found in cluster</td>
                           </tr>
                         )}
                       </tbody>
@@ -1800,7 +1805,7 @@ export function ReportsPage() {
                       </div>
                       <div>
                         <h3 className="text-base font-bold text-gray-900 dark:text-white">Busy Times</h3>
-                        <p className="text-[10px] font-bold text-gray-500 tracking-widest">Sales by hour</p>
+                        <p className="text-xs font-bold text-gray-500 tracking-widest">Sales by hour</p>
                       </div>
                     </div>
                   </div>
@@ -1829,7 +1834,7 @@ export function ReportsPage() {
                             fontSize={10}
                             tickLine={false}
                             axisLine={false}
-                            tickFormatter={(val) => formatCurrency(val).replace(' Jod', '')}
+                            tickFormatter={(val) => formatCurrency(val).replace('JOD', '').trim()}
                           />
                           <Tooltip
                             cursor={{ fill: 'transparent' }}
@@ -1869,7 +1874,7 @@ export function ReportsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Collected</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Total Collected</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {formatCurrency(salesData.totalRevenue || 0)}
                         </p>
@@ -1880,7 +1885,7 @@ export function ReportsPage() {
 
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Top Method</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Top Method</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {[...(salesData.paymentMethodBreakdown || [])].sort((a: any, b: any) => b.value - a.value)[0]?.name || '—'}
                         </p>
@@ -1891,7 +1896,7 @@ export function ReportsPage() {
 
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Transaction Count</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Transaction Count</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {salesData.totalOrders || 0}
                         </p>
@@ -1955,7 +1960,7 @@ export function ReportsPage() {
                             <span className="text-3xl font-black text-gray-900 dark:text-white">
                               {salesData.paymentMethodBreakdown.length}
                             </span>
-                            <span className="text-[10px] font-bold text-gray-500 tracking-widest">Methods</span>
+                            <span className="text-xs font-bold text-gray-500 tracking-widest">Methods</span>
                           </div>
                         )}
                       </div>
@@ -1968,43 +1973,131 @@ export function ReportsPage() {
                           <Activity size={20} className="text-blue-500" />
                           Details
                         </h3>
+                        <p className="text-xs text-gray-500 mt-1">Click on CARD or other methods to see breakdown</p>
                       </div>
                       <div className="flex-1 overflow-x-auto">
                         <table className="w-full">
                           <thead className="bg-gray-50 dark:bg-white/[0.02]">
                             <tr>
-                              <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Method</th>
-                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Revenue</th>
-                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Share</th>
+                              <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Method</th>
+                              <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Revenue</th>
+                              <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Share</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                             {salesData.paymentMethodBreakdown?.map((item: any, i: number) => {
                               const total = salesData.totalRevenue || 1;
                               const percentage = ((item.value / total) * 100).toFixed(1);
+                              const hasDetails = (item.name === 'CARD' && salesData.cardTypeBreakdown?.length > 0) ||
+                                                (item.name !== 'CARD' && item.name !== 'CASH' && salesData.otherPaymentBreakdown?.length > 0);
+                              const isExpanded = expandedPaymentMethod === item.name;
 
                               return (
-                                <tr key={i} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
-                                  <td className="px-6 py-4">
-                                    <div className="flex items-center gap-3">
-                                      <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-white/5 text-gray-500" style={{ color: COLORS[i % COLORS.length], backgroundColor: `${COLORS[i % COLORS.length]}20` }}>
-                                        <Wallet size={16} />
+                                <React.Fragment key={i}>
+                                  <tr
+                                    className={`group transition-colors ${hasDetails ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-white/[0.02]' : ''} ${isExpanded ? 'bg-gray-50 dark:bg-white/[0.02]' : ''}`}
+                                    onClick={() => {
+                                      if (hasDetails) {
+                                        setExpandedPaymentMethod(isExpanded ? null : item.name);
+                                      }
+                                    }}
+                                  >
+                                    <td className="px-6 py-4">
+                                      <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-white/5 text-gray-500" style={{ color: COLORS[i % COLORS.length], backgroundColor: `${COLORS[i % COLORS.length]}20` }}>
+                                          {item.name === 'CARD' ? <CreditCard size={16} /> : <Wallet size={16} />}
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <span className="font-bold text-sm text-gray-900 dark:text-white">{item.name}</span>
+                                          {hasDetails && (
+                                            <ChevronRight size={16} className={`text-gray-400 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                                          )}
+                                        </div>
                                       </div>
-                                      <span className="font-bold text-sm text-gray-900 dark:text-white">{item.name}</span>
-                                    </div>
-                                  </td>
-                                  <td className="px-6 py-4 text-right font-bold text-gray-900 dark:text-white">
-                                    {formatCurrency(item.value)}
-                                  </td>
-                                  <td className="px-6 py-4 text-right">
-                                    <div className="flex items-center justify-end gap-2">
-                                      <span className="text-xs font-bold text-gray-500">{percentage}%</span>
-                                      <div className="w-16 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
-                                        <div className="h-full rounded-full" style={{ width: `${percentage}%`, backgroundColor: COLORS[i % COLORS.length] }} />
+                                    </td>
+                                    <td className="px-6 py-4 text-right font-bold text-gray-900 dark:text-white">
+                                      {formatCurrency(item.value)}
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                      <div className="flex items-center justify-end gap-2">
+                                        <span className="text-xs font-bold text-gray-500">{percentage}%</span>
+                                        <div className="w-16 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                                          <div className="h-full rounded-full" style={{ width: `${percentage}%`, backgroundColor: COLORS[i % COLORS.length] }} />
+                                        </div>
                                       </div>
-                                    </div>
-                                  </td>
-                                </tr>
+                                    </td>
+                                  </tr>
+
+                                  {/* Expanded Card Type Details */}
+                                  {isExpanded && item.name === 'CARD' && salesData.cardTypeBreakdown?.length > 0 && (
+                                    <tr>
+                                      <td colSpan={3} className="p-0">
+                                        <motion.div
+                                          initial={{ opacity: 0, height: 0 }}
+                                          animate={{ opacity: 1, height: 'auto' }}
+                                          exit={{ opacity: 0, height: 0 }}
+                                          className="bg-gray-50/50 dark:bg-white/[0.01] border-t border-gray-100 dark:border-white/5"
+                                        >
+                                          <div className="p-4 pl-16 space-y-2">
+                                            <p className="text-xs font-black text-gray-400 tracking-widest mb-3">CARD TYPE BREAKDOWN</p>
+                                            {salesData.cardTypeBreakdown.map((card: any, j: number) => {
+                                              const cardPercentage = ((card.value / item.value) * 100).toFixed(1);
+                                              return (
+                                                <div key={j} className="flex items-center justify-between p-3 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/5">
+                                                  <div className="flex items-center gap-3">
+                                                    <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                                                      <CreditCard size={14} className="text-blue-500" />
+                                                    </div>
+                                                    <span className="font-bold text-sm text-gray-900 dark:text-white">{card.name}</span>
+                                                  </div>
+                                                  <div className="flex items-center gap-4">
+                                                    <span className="font-bold text-gray-900 dark:text-white">{formatCurrency(card.value)}</span>
+                                                    <span className="text-xs font-bold text-gray-400 w-12 text-right">{cardPercentage}%</span>
+                                                  </div>
+                                                </div>
+                                              );
+                                            })}
+                                          </div>
+                                        </motion.div>
+                                      </td>
+                                    </tr>
+                                  )}
+
+                                  {/* Expanded Other Payment Method Details */}
+                                  {isExpanded && item.name !== 'CARD' && item.name !== 'CASH' && salesData.otherPaymentBreakdown?.length > 0 && (
+                                    <tr>
+                                      <td colSpan={3} className="p-0">
+                                        <motion.div
+                                          initial={{ opacity: 0, height: 0 }}
+                                          animate={{ opacity: 1, height: 'auto' }}
+                                          exit={{ opacity: 0, height: 0 }}
+                                          className="bg-gray-50/50 dark:bg-white/[0.01] border-t border-gray-100 dark:border-white/5"
+                                        >
+                                          <div className="p-4 pl-16 space-y-2">
+                                            <p className="text-xs font-black text-gray-400 tracking-widest mb-3">OTHER PAYMENT BREAKDOWN</p>
+                                            {salesData.otherPaymentBreakdown.map((other: any, j: number) => {
+                                              const otherPercentage = ((other.value / item.value) * 100).toFixed(1);
+                                              return (
+                                                <div key={j} className="flex items-center justify-between p-3 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/5">
+                                                  <div className="flex items-center gap-3">
+                                                    <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                                                      <Wallet size={14} className="text-purple-500" />
+                                                    </div>
+                                                    <span className="font-bold text-sm text-gray-900 dark:text-white">{other.name}</span>
+                                                  </div>
+                                                  <div className="flex items-center gap-4">
+                                                    <span className="font-bold text-gray-900 dark:text-white">{formatCurrency(other.value)}</span>
+                                                    <span className="text-xs font-bold text-gray-400 w-12 text-right">{otherPercentage}%</span>
+                                                  </div>
+                                                </div>
+                                              );
+                                            })}
+                                          </div>
+                                        </motion.div>
+                                      </td>
+                                    </tr>
+                                  )}
+                                </React.Fragment>
                               );
                             })}
                           </tbody>
@@ -2023,7 +2116,7 @@ export function ReportsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Discounted</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Total Discounted</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {formatCurrency(salesData.totalDiscounts || 0)}
                         </p>
@@ -2034,7 +2127,7 @@ export function ReportsPage() {
 
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Top Discount</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Top Discount</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {[...(salesData.discountBreakdown || [])].sort((a: any, b: any) => b.value - a.value)[0]?.name || '—'}
                         </p>
@@ -2045,7 +2138,7 @@ export function ReportsPage() {
 
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Usage Count</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Usage Count</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {salesData.totalDiscountCount || salesData.discountBreakdown?.reduce((acc: number, curr: any) => acc + (curr.count || 0), 0) || 0}
                         </p>
@@ -2109,7 +2202,7 @@ export function ReportsPage() {
                             <span className="text-3xl font-black text-gray-900 dark:text-white">
                               {salesData.discountBreakdown.length}
                             </span>
-                            <span className="text-[10px] font-bold text-gray-500 tracking-widest">Types</span>
+                            <span className="text-xs font-bold text-gray-500 tracking-widest">Types</span>
                           </div>
                         )}
                       </div>
@@ -2128,7 +2221,7 @@ export function ReportsPage() {
                           <thead className="bg-gray-50 dark:bg-white/[0.02]">
                             <tr>
                               <th
-                                className={`px-6 py-4 text-left text-[10px] font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'name' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                                className={`px-6 py-4 text-left text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'name' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                                 onClick={() => requestSort('name')}
                               >
                                 <div className="flex items-center gap-2">
@@ -2137,7 +2230,7 @@ export function ReportsPage() {
                                 </div>
                               </th>
                               <th
-                                className={`px-6 py-4 text-right text-[10px] font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'count' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                                className={`px-6 py-4 text-right text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'count' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                                 onClick={() => requestSort('count')}
                               >
                                 <div className="flex items-center justify-end gap-2">
@@ -2146,7 +2239,7 @@ export function ReportsPage() {
                                 </div>
                               </th>
                               <th
-                                className={`px-6 py-4 text-right text-[10px] font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'value' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                                className={`px-6 py-4 text-right text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'value' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                                 onClick={() => requestSort('value')}
                               >
                                 <div className="flex items-center justify-end gap-2">
@@ -2198,7 +2291,7 @@ export function ReportsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Total Tax</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Total Tax</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {formatCurrency(salesData.taxCollected || 0)}
                         </p>
@@ -2209,7 +2302,7 @@ export function ReportsPage() {
 
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Taxable Sales</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Taxable Sales</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {formatCurrency(salesData.totalRevenue || 0)}
                         </p>
@@ -2220,7 +2313,7 @@ export function ReportsPage() {
 
                     <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
                       <div className="relative z-10">
-                        <p className="text-[10px] font-black text-gray-400 tracking-widest mb-1">Avg. Rate</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Avg. Rate</p>
                         <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                           {salesData.totalRevenue > 0
                             ? ((salesData.taxCollected / salesData.totalRevenue) * 100).toFixed(1)
@@ -2245,11 +2338,11 @@ export function ReportsPage() {
                         <table className="w-full">
                           <thead className="bg-gray-50 dark:bg-white/[0.02]">
                             <tr>
-                              <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Type</th>
-                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Rate</th>
-                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Taxable</th>
-                              <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Tax</th>
-                              <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 tracking-widest">Share</th>
+                              <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Type</th>
+                              <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Rate</th>
+                              <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Taxable</th>
+                              <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Tax</th>
+                              <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">Share</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -2266,7 +2359,7 @@ export function ReportsPage() {
                                         </div>
                                         <div className="flex flex-col">
                                           <span className="font-bold text-sm text-gray-900 dark:text-white">{tax.name}</span>
-                                          <span className="text-[10px] text-gray-400 font-bold">{tax.transactions || 0} Txns</span>
+                                          <span className="text-xs text-gray-400 font-bold">{tax.transactions || 0} Txns</span>
                                         </div>
                                       </div>
                                     </td>
@@ -2299,7 +2392,7 @@ export function ReportsPage() {
                                     </div>
                                     <div className="flex flex-col">
                                       <span className="font-bold text-sm text-gray-900 dark:text-white">Sales Tax (Standard)</span>
-                                      <span className="text-[10px] text-gray-400 font-bold">{salesData.totalOrders || 0} Txns</span>
+                                      <span className="text-xs text-gray-400 font-bold">{salesData.totalOrders || 0} Txns</span>
                                     </div>
                                   </div>
                                 </td>
@@ -2341,7 +2434,7 @@ export function ReportsPage() {
                           <p className="text-2xl font-black text-gray-900 dark:text-white">
                             {formatCurrency(salesData.taxExemptSales || 0)}
                           </p>
-                          <p className="text-[10px] font-bold text-gray-400 tracking-widest mt-1">Tax-Free Sales</p>
+                          <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">Tax-Free Sales</p>
                         </div>
                         <div className="w-full h-px bg-gray-100 dark:bg-white/5 my-4" />
                         <div className="w-full space-y-3">

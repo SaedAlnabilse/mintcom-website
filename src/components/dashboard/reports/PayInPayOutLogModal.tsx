@@ -117,10 +117,11 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
     };
 
     const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat('en-US', {
+        return new Intl.NumberFormat('en-JO', {
             style: 'currency',
-            currency: 'Jod',
-        }).format(value).replace('Jod', '').trim() + ' Jod';
+            currency: 'JOD',
+            minimumFractionDigits: 3,
+        }).format(value);
     };
 
     return (
@@ -143,7 +144,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                                     Cash Management Log
                                 </h2>
                                 <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-[10px] font-bold text-gray-500 tracking-wide">
+                                    <span className="text-xs font-bold text-gray-500 tracking-wide">
                                         {format(new Date(startDate), 'MMM dd')} - {format(new Date(endDate), 'MMM dd, yyyy')}
                                     </span>
                                 </div>
@@ -201,7 +202,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                             {/* 2. Divider */}
                             <div className="flex items-center gap-4">
                                 <div className="h-px bg-gray-100 dark:bg-white/5 flex-1" />
-                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Transaction History</span>
+                                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Transaction History</span>
                                 <div className="h-px bg-gray-100 dark:bg-white/5 flex-1" />
                             </div>
 
@@ -210,7 +211,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                                 {isLoading ? (
                                     <div className="py-12 flex flex-col items-center justify-center space-y-3 opacity-50">
                                         <div className="w-6 h-6 border-2 border-paymint-green border-t-transparent rounded-full animate-spin" />
-                                        <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Loading...</p>
+                                        <p className="text-xs font-bold text-gray-400 tracking-widest uppercase">Loading...</p>
                                     </div>
                                 ) : logs.length > 0 ? (
                                     <div className="space-y-3">
@@ -234,19 +235,19 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                                                             <h4 className="text-sm font-bold text-gray-900 dark:text-white">
                                                                 {log.reason}
                                                             </h4>
-                                                            <span className="text-[10px] font-medium text-gray-400 bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded border border-gray-200 dark:border-white/10">
+                                                            <span className="text-xs font-medium text-gray-400 bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded border border-gray-200 dark:border-white/10">
                                                                 {format(new Date(log.createdAt), 'MMM dd, HH:mm')}
                                                             </span>
                                                         </div>
                                                         <div className="flex items-center gap-3">
                                                             <div className="flex items-center gap-1">
                                                                 <User size={10} className="text-gray-400" />
-                                                                <span className="text-[10px] text-gray-500">{log.userName}</span>
+                                                                <span className="text-xs text-gray-500">{log.userName}</span>
                                                             </div>
                                                             {log.note && (
                                                                 <>
                                                                     <div className="w-0.5 h-0.5 rounded-full bg-gray-300 dark:bg-white/20" />
-                                                                    <span className="text-[10px] text-gray-500 truncate max-w-[150px]">{log.note}</span>
+                                                                    <span className="text-xs text-gray-500 truncate max-w-[150px]">{log.note}</span>
                                                                 </>
                                                             )}
                                                         </div>

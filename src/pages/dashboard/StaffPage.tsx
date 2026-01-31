@@ -219,7 +219,7 @@ export function StaffPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
               Team
             </span>
             <div className="flex items-center gap-2">
@@ -227,7 +227,7 @@ export function StaffPage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
               </div>
-              <span className="text-[10px] font-bold text-paymint-green tracking-widest">Live</span>
+              <span className="text-xs font-bold text-paymint-green tracking-widest">Live</span>
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Staff</h1>
@@ -280,7 +280,7 @@ export function StaffPage() {
                 <stat.icon size={20} />
               </div>
               <div>
-                <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
+                <p className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
                 <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">{stat.value}</p>
               </div>
             </div>
@@ -345,11 +345,11 @@ export function StaffPage() {
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-white/[0.02]">
                 <tr className="border-b border-gray-200 dark:border-white/5">
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Name</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Role</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Contact</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Status</th>
-                  <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 tracking-widest">Actions</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Name</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Role</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Contact</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Status</th>
+                  <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -377,7 +377,7 @@ export function StaffPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black tracking-wide border ${getRoleStyle(member.role)}`}>
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getRoleStyle(member.role)}`}>
                           <Shield size={10} />
                           {member.role}
                         </span>
@@ -395,7 +395,7 @@ export function StaffPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className={`flex items-center gap-2 font-black text-[10px] tracking-wide ${!member.isActive
+                        <div className={`flex items-center gap-2 font-black text-xs tracking-wide ${!member.isActive
                           ? 'text-paymint-red'
                           : member.isClockedIn
                             ? 'text-paymint-green'
@@ -451,14 +451,14 @@ export function StaffPage() {
                                 >
                                   <button
                                     onClick={() => { setActiveDropdown(null); toast.success('Reset email sent'); }}
-                                    className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black tracking-widest text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
+                                    className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black tracking-widest text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
                                   >
                                     <Key size={14} className="text-paymint-green" />
                                     <span>Reset Password</span>
                                   </button>
                                   <button
                                     onClick={() => { setActiveDropdown(null); handleDelete(member.id, member.username); }}
-                                    className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black tracking-widest text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
+                                    className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black tracking-widest text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
                                   >
                                     <Trash2 size={14} />
                                     <span>Delete</span>

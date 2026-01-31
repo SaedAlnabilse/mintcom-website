@@ -58,7 +58,7 @@ export function SelectEstablishmentPage() {
               <Crown size={18} className="text-white" />
             </div>
             <div className="hidden sm:block text-left">
-              <p className="text-[10px] font-black text-amber-600 dark:text-amber-400 tracking-[0.15em]">Owner Portal</p>
+              <p className="text-xs font-black text-amber-600 dark:text-amber-400 tracking-[0.15em]">Owner Portal</p>
               <p className="text-sm font-bold text-gray-900 dark:text-white truncate max-w-[120px]">{account?.firstName} {account?.lastName}</p>
             </div>
             <ArrowLeft size={16} className="text-amber-500 group-hover:-translate-x-1 transition-transform hidden sm:block" />
@@ -119,10 +119,10 @@ export function SelectEstablishmentPage() {
               <h3 className="text-xl font-black text-gray-900 dark:text-white mb-3 px-2 leading-tight text-center">{est.name}</h3>
 
               <div className="flex items-center gap-3 mb-10">
-                <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] font-black tracking-[0.15em] text-gray-500">
+                <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-black tracking-[0.15em] text-gray-500">
                   {est.currency.charAt(0).toUpperCase() + est.currency.slice(1).toLowerCase()}
                 </span>
-                <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-[10px] font-black tracking-[0.15em] text-paymint-green border border-paymint-green/20">
+                <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-xs font-black tracking-[0.15em] text-paymint-green border border-paymint-green/20">
                   {est.subscriptionStatus.charAt(0).toUpperCase() + est.subscriptionStatus.slice(1).toLowerCase()}
                 </span>
               </div>
@@ -153,7 +153,7 @@ export function SelectEstablishmentPage() {
 
       {/* Footer Info */}
       <div className="p-12 text-center relative z-10">
-        <div className="inline-flex items-center gap-3 px-6 py-3 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-100 dark:border-white/5 text-gray-400 text-[10px] font-black tracking-[0.2em] shadow-sm">
+        <div className="inline-flex items-center gap-3 px-6 py-3 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-100 dark:border-white/5 text-gray-400 text-xs font-black tracking-[0.2em] shadow-sm">
           <CheckCircle2 size={14} className="text-paymint-green" />
           Paymint v2.0
         </div>

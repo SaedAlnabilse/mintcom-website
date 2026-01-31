@@ -324,7 +324,7 @@ export function RecipesPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
               Kitchen
             </span>
           </div>
@@ -373,8 +373,8 @@ export function RecipesPage() {
           <input type="text" value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }} placeholder="Search recipes..." className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all" />
         </div>
         <div className="flex p-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl">
-          <button onClick={() => { setActiveTab('final'); setPage(1); }} className={`px-4 py-2 rounded-lg text-[10px] font-black tracking-widest transition-all ${activeTab === 'final' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>Products</button>
-          <button onClick={() => { setActiveTab('sub'); setPage(1); }} className={`px-4 py-2 rounded-lg text-[10px] font-black tracking-widest transition-all ${activeTab === 'sub' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>Prep</button>
+          <button onClick={() => { setActiveTab('final'); setPage(1); }} className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'final' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>Products</button>
+          <button onClick={() => { setActiveTab('sub'); setPage(1); }} className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'sub' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>Prep</button>
         </div>
       </div>
 
@@ -382,7 +382,7 @@ export function RecipesPage() {
         {isLoading ? (
           <div className="py-32 flex flex-col items-center">
             <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-[10px] font-black tracking-widest text-gray-400">Loading...</p>
+            <p className="text-xs font-black tracking-widest text-gray-400">Loading...</p>
           </div>
         ) : paginatedItems.length === 0 ? (
           <div className="py-24 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
@@ -414,7 +414,7 @@ export function RecipesPage() {
                           <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[150px] group-hover:text-paymint-green transition-colors">
                             {activeTab === 'final' ? recipe.item?.name : recipe.name}
                           </h3>
-                          <p className="text-[10px] font-black text-gray-400 tracking-widest">{recipe.ingredients.length} Ingredients</p>
+                          <p className="text-xs font-black text-gray-400 tracking-widest">{recipe.ingredients.length} Ingredients</p>
                         </div>
                       </div>
                       <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
@@ -441,12 +441,12 @@ export function RecipesPage() {
                           <div key={i} className="flex items-center justify-between">
                             <span className="text-xs font-bold text-gray-500 dark:text-gray-400 truncate max-w-[120px]">{ing.rawMaterial?.name || ing.subRecipe?.name}</span>
                             <span className="text-xs font-bold text-gray-900 dark:text-white">
-                              {Number(displayQty.toFixed(4))} <span className="text-[10px] opacity-50">{currentUnit}</span>
+                              {Number(displayQty.toFixed(4))} <span className="text-xs opacity-50">{currentUnit}</span>
                             </span>
                           </div>
                         );
                       })}
-                      {recipe.ingredients.length > 3 && <p className="text-[9px] font-black text-paymint-green text-center mt-2 tracking-widest">+ {recipe.ingredients.length - 3} Additional Elements</p>}
+                      {recipe.ingredients.length > 3 && <p className="text-xs font-black text-paymint-green text-center mt-2 tracking-widest">+ {recipe.ingredients.length - 3} Additional Elements</p>}
                     </div>
                     {activeTab === 'sub' && (
                       <button onClick={() => openManufactureModal(recipe)} className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
@@ -482,7 +482,7 @@ export function RecipesPage() {
               </div>
               <div className="p-8 space-y-6 overflow-y-auto custom-scrollbar flex-1">
                 <div>
-                  <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
+                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
                     Name <span className="text-paymint-red mx-1">*</span>
                     <QuickInfo text="Name of the sub-recipe (e.g., 'Pizza Dough')." />
                   </label>
@@ -500,7 +500,7 @@ export function RecipesPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col">
-                    <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
+                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
                       Yield
                       <QuickInfo text="Total quantity produced by this formula." />
                     </label>
@@ -512,7 +512,7 @@ export function RecipesPage() {
                     />
                   </div>
                   <div className="flex flex-col">
-                    <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
+                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
                       Unit
                     </label>
                     <CustomSelect
@@ -526,10 +526,10 @@ export function RecipesPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between px-1">
                     <div className="flex items-center">
-                      <label className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Ingredients</label>
+                      <label className="text-xs font-black text-gray-400 tracking-[0.2em]">Ingredients</label>
                       <QuickInfo text="Ingredients required to make one batch." />
                     </div>
-                    <span className="text-[10px] font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{subRecipeForm.ingredients.length} items</span>
+                    <span className="text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{subRecipeForm.ingredients.length} items</span>
                   </div>
 
                   <div className="space-y-3 min-h-[40px]">
@@ -580,7 +580,7 @@ export function RecipesPage() {
                               />
                               <div className="border-l border-gray-300 dark:border-white/10">
                                 <select
-                                  className="h-full px-2 bg-transparent text-[10px] font-black text-gray-500 hover:text-black dark:hover:text-white cursor-pointer outline-none appearance-none"
+                                  className="h-full px-2 bg-transparent text-xs font-black text-gray-500 hover:text-black dark:hover:text-white cursor-pointer outline-none appearance-none"
                                   value={currentUnit}
                                   onChange={(e) => {
                                     const newUnit = e.target.value;
@@ -612,7 +612,7 @@ export function RecipesPage() {
                     {subRecipeForm.ingredients.length === 0 && (
                       <div className="py-8 text-center border-2 border-dashed border-gray-200 dark:border-white/5 rounded-2xl">
                         <Package size={24} className="mx-auto text-gray-300 mb-2 opacity-50" />
-                        <p className="text-[10px] font-black text-gray-400 tracking-widest">No Ingredients Yet</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest">No Ingredients Yet</p>
                       </div>
                     )}
                   </div>
@@ -634,7 +634,7 @@ export function RecipesPage() {
                         }
                         setSubRecipeForm(prev => ({ ...prev, ingredients: [...prev.ingredients, { rawMaterialId: '', quantity: 0 }] }));
                       }}
-                      className="w-full flex items-center justify-center gap-2 py-4 bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl text-[10px] font-black text-paymint-green tracking-widest hover:bg-paymint-green/5 hover:border-paymint-green/30 transition-all group"
+                      className="w-full flex items-center justify-center gap-2 py-4 bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl text-xs font-black text-paymint-green tracking-widest hover:bg-paymint-green/5 hover:border-paymint-green/30 transition-all group"
                     >
                       <Plus size={16} className="group-hover:scale-125 transition-transform" />
                       <span>Add Ingredient</span>
@@ -664,7 +664,7 @@ export function RecipesPage() {
               <div className="p-8 space-y-6 overflow-y-auto custom-scrollbar flex-1">
                 <div>
                   <div className="flex items-center mb-1">
-                    <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em]">Target Menu Item <span className="text-paymint-red">*</span></label>
+                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em]">Target Menu Item <span className="text-paymint-red">*</span></label>
                     <QuickInfo text="The menu product this recipe defines." />
                   </div>
                   <CustomSelect
@@ -681,10 +681,10 @@ export function RecipesPage() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between px-1">
                     <div className="flex items-center">
-                      <label className="text-[10px] font-black text-gray-400 tracking-[0.2em]">Ingredients</label>
+                      <label className="text-xs font-black text-gray-400 tracking-[0.2em]">Ingredients</label>
                       <QuickInfo text="Ingredients and sub-recipes used for one serving." />
                     </div>
-                    <span className="text-[10px] font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{finalRecipeForm.ingredients.length} items</span>
+                    <span className="text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{finalRecipeForm.ingredients.length} items</span>
                   </div>
 
                   <div className="space-y-3 min-h-[40px]">
@@ -777,7 +777,7 @@ export function RecipesPage() {
                                     }}
                                     className="h-full px-4 flex items-center gap-2 bg-gray-100/50 dark:bg-white/5 hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors rounded-r-2xl"
                                   >
-                                    <span className="text-[10px] font-black text-gray-600 dark:text-gray-400 group-hover/input:text-gray-900 dark:group-hover/input:text-white transition-colors">{currentUnit}</span>
+                                    <span className="text-xs font-black text-gray-600 dark:text-gray-400 group-hover/input:text-gray-900 dark:group-hover/input:text-white transition-colors">{currentUnit}</span>
                                     <ChevronDown size={12} className="text-gray-400" />
                                   </button>
 
@@ -803,7 +803,7 @@ export function RecipesPage() {
                                                 setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
                                                 setActiveDropdown(null);
                                               }}
-                                              className={`w-full px-4 py-2 text-center text-[10px] font-black transition-colors ${u === currentUnit ? 'bg-paymint-green text-gray-900' : 'text-gray-500 hover:text-black dark:hover:text-white'
+                                              className={`w-full px-4 py-2 text-center text-xs font-black transition-colors ${u === currentUnit ? 'bg-paymint-green text-gray-900' : 'text-gray-500 hover:text-black dark:hover:text-white'
                                                 }`}
                                             >
                                               {u}
@@ -832,7 +832,7 @@ export function RecipesPage() {
                       <div className="py-12 text-center border-2 border-dashed border-gray-200 dark:border-white/5 rounded-[2rem]">
                         <Pizza size={32} className="mx-auto text-gray-300 mb-4 opacity-50" />
                         <p className="text-sm font-bold text-gray-500">No ingredients mapped</p>
-                        <p className="text-[10px] font-black text-gray-400 tracking-widest mt-1">Add Ingredients Below</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest mt-1">Add Ingredients Below</p>
                       </div>
                     )}
                   </div>
@@ -854,7 +854,7 @@ export function RecipesPage() {
                         }
                         setFinalRecipeForm(prev => ({ ...prev, ingredients: [...prev.ingredients, { rawMaterialId: '', quantity: 0, type: 'raw' }] }));
                       }}
-                      className="flex items-center justify-center gap-2 py-4 bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl text-[10px] font-black text-paymint-green tracking-widest hover:bg-paymint-green/5 hover:border-paymint-green/30 transition-all group"
+                      className="flex items-center justify-center gap-2 py-4 bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl text-xs font-black text-paymint-green tracking-widest hover:bg-paymint-green/5 hover:border-paymint-green/30 transition-all group"
                     >
                       <Package size={16} className="group-hover:scale-125 transition-transform" />
                       <span>+ Material</span>
@@ -878,7 +878,7 @@ export function RecipesPage() {
                         }
                         setFinalRecipeForm(prev => ({ ...prev, ingredients: [...prev.ingredients, { subRecipeId: '', quantity: 0, type: 'sub' }] }));
                       }}
-                      className="flex items-center justify-center gap-2 py-4 bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl text-[10px] font-black text-blue-500 tracking-widest hover:bg-blue-500/5 hover:border-blue-500/30 transition-all group"
+                      className="flex items-center justify-center gap-2 py-4 bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl text-xs font-black text-blue-500 tracking-widest hover:bg-blue-500/5 hover:border-blue-500/30 transition-all group"
                     >
                       <Pizza size={16} className="group-hover:scale-125 transition-transform" />
                       <span>+ Sub-Formula</span>
@@ -906,22 +906,22 @@ export function RecipesPage() {
                   <RefreshCw size={40} />
                 </div>
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Run Batch</h2>
-                <p className="text-gray-500 font-bold mt-1 text-[10px] tracking-widest">{manufactureRecipe.name}</p>
+                <p className="text-gray-500 font-bold mt-1 text-xs tracking-widest">{manufactureRecipe.name}</p>
               </div>
               <div className="p-8 space-y-8">
                 <div>
                   <input type="number" min="1" value={numBatches} onChange={(e) => setNumBatches(parseInt(e.target.value) || 1)} className="w-full bg-transparent text-center text-6xl font-black text-paymint-green focus:outline-none placeholder-gray-300" autoFocus />
                   <div className="flex items-center justify-center mt-4 gap-1">
-                    <p className="text-[10px] font-black text-gray-400 tracking-widest">Number of Batches</p>
+                    <p className="text-xs font-black text-gray-400 tracking-widest">Number of Batches</p>
                   </div>
                 </div>
                 <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-[10px] font-black text-gray-500 tracking-widest">Total Output</span>
+                    <span className="text-xs font-black text-gray-500 tracking-widest">Total Output</span>
                     <span className="text-sm font-black text-gray-900 dark:text-white">{(numBatches * manufactureRecipe.yield).toFixed(2)} {manufactureRecipe.yieldUnit}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-black text-gray-500 tracking-widest">Material Cost</span>
+                    <span className="text-xs font-black text-gray-500 tracking-widest">Material Cost</span>
                     <span className="text-sm font-black text-gray-900 dark:text-white">High</span>
                   </div>
                 </div>

@@ -130,7 +130,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                 <form onSubmit={handleSubmit} className="space-y-6">
                                     {/* Card Number */}
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-gray-400 tracking-widest block pl-1">Card Number</label>
+                                        <label className="text-xs font-black text-gray-400 tracking-widest block pl-1">Card Number</label>
                                         <div className="relative group">
                                             <input
                                                 type="text"
@@ -142,7 +142,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                             <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                                             <div className="absolute right-4 top-1/2 -translate-y-1/2">
                                                 {getCardBrand(cardNumber) !== 'Unknown' && (
-                                                    <span className="text-[10px] font-black text-paymint-green tracking-wider bg-paymint-green/10 px-2 py-1 rounded-md border border-paymint-green/20">
+                                                    <span className="text-xs font-black text-paymint-green tracking-wider bg-paymint-green/10 px-2 py-1 rounded-md border border-paymint-green/20">
                                                         {getCardBrand(cardNumber)}
                                                     </span>
                                                 )}
@@ -153,7 +153,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                     {/* Expiry & Cvc */}
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-gray-400 tracking-widest block pl-1">Expiry</label>
+                                            <label className="text-xs font-black text-gray-400 tracking-widest block pl-1">Expiry</label>
                                             <input
                                                 type="text"
                                                 value={expiry}
@@ -164,7 +164,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-gray-400 tracking-widest block pl-1">Cvc</label>
+                                            <label className="text-xs font-black text-gray-400 tracking-widest block pl-1">Cvc</label>
                                             <div className="relative group">
                                                 <input
                                                     type="password"
@@ -181,7 +181,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
 
                                     {/* Cardholder Name */}
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-gray-400 tracking-widest block pl-1">Cardholder Name</label>
+                                        <label className="text-xs font-black text-gray-400 tracking-widest block pl-1">Cardholder Name</label>
                                         <input
                                             type="text"
                                             value={name}
@@ -206,7 +206,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                         )}
                                     </button>
 
-                                    <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-gray-400 tracking-wider">
+                                    <div className="flex items-center justify-center gap-2 text-xs font-bold text-gray-400 tracking-wider">
                                         <Lock size={10} />
                                         <span>256-Bit Ssl Encrypted</span>
                                     </div>

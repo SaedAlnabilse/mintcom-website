@@ -157,7 +157,7 @@ export function CustomRolesPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
               Team
             </span>
           </div>
@@ -225,11 +225,11 @@ export function CustomRolesPage() {
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-white/[0.02]">
                 <tr className="border-b border-gray-200 dark:border-white/5">
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Name</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Type</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Access</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Date</th>
-                  <th className="px-6 py-4 text-center text-[10px] font-black text-gray-400 tracking-widest">Actions</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Name</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Type</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Access</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Date</th>
+                  <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -255,7 +255,7 @@ export function CustomRolesPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                           <UserCheck size={10} />
                           {role.baseRole ? role.baseRole.charAt(0).toUpperCase() + role.baseRole.slice(1).toLowerCase() : ''}
                         </span>

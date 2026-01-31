@@ -149,7 +149,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
                       <span className="text-gray-500 dark:text-gray-400 text-xs">Customers</span>
                     </div>
                     <div className="text-lg font-bold text-gray-900 dark:text-white">89</div>
-                    <div className="text-[10px] text-purple-500">+12 today</div>
+                    <div className="text-xs text-purple-500">+12 today</div>
                   </div>
                   <div className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-100 dark:border-gray-800 transition-colors">
                     <div className="flex items-center gap-2 mb-1">
@@ -157,7 +157,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
                       <span className="text-gray-500 dark:text-gray-400 text-xs">Avg Order</span>
                     </div>
                     <div className="text-lg font-bold text-gray-900 dark:text-white">$87</div>
-                    <div className="text-[10px] text-amber-500">+8% this week</div>
+                    <div className="text-xs text-amber-500">+8% this week</div>
                   </div>
                   <div className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-100 dark:border-gray-800 transition-colors">
                     <div className="flex items-center gap-2 mb-1">
@@ -165,7 +165,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
                       <span className="text-gray-500 dark:text-gray-400 text-xs">Growth</span>
                     </div>
                     <div className="text-lg font-bold text-gray-900 dark:text-white">23%</div>
-                    <div className="text-[10px] text-paymint-green">This month</div>
+                    <div className="text-xs text-paymint-green">This month</div>
                   </div>
                 </div>
 

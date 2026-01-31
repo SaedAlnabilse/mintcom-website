@@ -413,10 +413,10 @@ export function SettingsPage() {
       <div className={`relative group ${compact ? 'w-full' : ''}`}>
         {!compact && (
           <div className="flex flex-col gap-1 mb-4 px-6">
-            <label className={`text-[10px] font-black tracking-widest transition-colors ${colorClass === 'paymint-green' ? 'text-paymint-green/60' : 'text-orange-500/60'}`}>
+            <label className={`text-xs font-black tracking-widest transition-colors ${colorClass === 'paymint-green' ? 'text-paymint-green/60' : 'text-orange-500/60'}`}>
               {label}
             </label>
-            <label className="text-[10px] font-black text-gray-500 dark:text-gray-400 tracking-tight">
+            <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-tight">
               {subLabel}
             </label>
           </div>
@@ -430,7 +430,7 @@ export function SettingsPage() {
             <span className={`${compact ? 'text-sm' : 'text-2xl'} font-bold text-gray-900 dark:text-white tracking-tighter`}>
               {hour}:{minute}
             </span>
-            <span className={`${compact ? 'text-[10px]' : 'text-xs'} font-black text-gray-400`}>{period}</span>
+            <span className={`${compact ? 'text-xs' : 'text-xs'} font-black text-gray-400`}>{period}</span>
           </div>
 
           <div className={`text-gray-400 group-hover:text-paymint-green transition-colors ${compact ? '' : 'absolute right-6 top-1/2 -translate-y-1/2'}`}>
@@ -458,7 +458,7 @@ export function SettingsPage() {
               >
                 <div className="grid grid-cols-3 gap-4 mb-6">
                   <div className="space-y-2">
-                    <p className="text-[10px] font-black text-gray-400 text-center mb-2">Hour</p>
+                    <p className="text-xs font-black text-gray-400 text-center mb-2">Hour</p>
                     <div ref={hourScrollRef} className="h-40 overflow-y-auto no-scrollbar space-y-1 scroll-smooth">
                       {hours.map(h => (
                         <button
@@ -474,7 +474,7 @@ export function SettingsPage() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <p className="text-[10px] font-black text-gray-400 text-center mb-2">Min</p>
+                    <p className="text-xs font-black text-gray-400 text-center mb-2">Min</p>
                     <div ref={minScrollRef} className="h-40 overflow-y-auto no-scrollbar space-y-1 scroll-smooth">
                       {minutes.map(m => (
                         <button
@@ -490,7 +490,7 @@ export function SettingsPage() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <p className="text-[10px] font-black text-gray-400 text-center mb-2">Period</p>
+                    <p className="text-xs font-black text-gray-400 text-center mb-2">Period</p>
                     <div className="space-y-1">
                       {['Am', 'Pm'].map(p => (
                         <button
@@ -510,14 +510,14 @@ export function SettingsPage() {
                   <button
                     type="button"
                     onClick={() => setIsOpen(false)}
-                    className="flex-1 py-3 bg-gray-100 dark:bg-white/5 text-gray-500 rounded-2xl font-black text-[10px] tracking-widest hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
+                    className="flex-1 py-3 bg-gray-100 dark:bg-white/5 text-gray-500 rounded-2xl font-black text-xs tracking-widest hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
                     onClick={handleApply}
-                    className="flex-[2] py-3 bg-paymint-green text-black rounded-2xl font-black text-[10px] tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-paymint-green/20"
+                    className="flex-[2] py-3 bg-paymint-green text-black rounded-2xl font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-paymint-green/20"
                   >
                     Apply Changes
                   </button>
@@ -722,7 +722,7 @@ export function SettingsPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
               Config
             </span>
             <div className="flex items-center gap-2">
@@ -730,7 +730,7 @@ export function SettingsPage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
               </span>
-              <span className="text-[10px] font-bold text-gray-400 tracking-widest">Live</span>
+              <span className="text-xs font-bold text-gray-400 tracking-widest">Live</span>
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Settings</h1>
@@ -813,7 +813,7 @@ export function SettingsPage() {
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">Profile</h3>
             <div>
-              <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-4 tracking-wider">Logo</label>
+              <label className="block text-xs font-black text-gray-500 dark:text-gray-400 mb-4 tracking-wider">Logo</label>
               <div className="flex items-center gap-8">
                 <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-2xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
                   {previewImage ? <img src={previewImage} alt="Logo" className="w-full h-full object-cover" /> : <Store className="w-12 h-12 text-gray-300 dark:text-gray-600" />}
@@ -825,28 +825,28 @@ export function SettingsPage() {
               </div>
             </div>
             <div>
-              <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Name</label>
+              <label className="block text-xs font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Name</label>
               <input type="text" {...register('restaurantName')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
             </div>
             <div>
-              <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">About</label>
+              <label className="block text-xs font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">About</label>
               <textarea {...register('restaurantDescription')} rows={3} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium resize-none" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Address</label>
+                <label className="block text-xs font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Address</label>
                 <input type="text" {...register('restaurantAddress')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
               <div>
-                <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Phone</label>
+                <label className="block text-xs font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Phone</label>
                 <input type="text" {...register('phone')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
               <div>
-                <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Email</label>
+                <label className="block text-xs font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Email</label>
                 <input type="email" {...register('email')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
               <div>
-                <label className="block text-[10px] font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Tax Id / Trn</label>
+                <label className="block text-xs font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Tax Id / Trn</label>
                 <input type="text" {...register('taxIdNumber')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
             </div>
@@ -857,7 +857,7 @@ export function SettingsPage() {
                 </div>
                 <div>
                   <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">Opening Hours</h4>
-                  <p className="text-[10px] text-gray-400 font-black tracking-widest px-1">Set service times</p>
+                  <p className="text-xs text-gray-400 font-black tracking-widest px-1">Set service times</p>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2 mb-6">
@@ -868,7 +868,7 @@ export function SettingsPage() {
                   const isSelected = selectedDays.includes(day);
                   return (
                     <button key={day} type="button" onClick={() => setSelectedDays(prev => prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day])} className={`relative flex-1 min-w-[3.5rem] h-14 rounded-xl flex flex-col items-center justify-center gap-1 transition-all duration-300 border ${isSelected ? 'bg-gray-900 dark:bg-white text-white dark:text-black border-transparent shadow-lg scale-105 z-10' : 'bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 shadow-sm'}`}>
-                      <span className="text-[10px] font-black tracking-widest">{day.slice(0, 3)}</span>
+                      <span className="text-xs font-black tracking-widest">{day.slice(0, 3)}</span>
                       <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? (isOpen ? 'bg-paymint-green' : 'bg-gray-500') : (isOpen ? 'bg-paymint-green' : 'bg-gray-300 dark:bg-white/20')}`} />
                     </button>
                   );
@@ -897,11 +897,11 @@ export function SettingsPage() {
                         <div className="space-y-8">
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-[10px] font-black text-paymint-green tracking-[0.2em] mb-1">Days</p>
+                              <p className="text-xs font-black text-paymint-green tracking-[0.2em] mb-1">Days</p>
                               <p className="text-sm font-bold text-gray-900 dark:text-white truncate max-w-[200px] md:max-w-md">{selectedDays.length === 7 ? 'Every Day' : selectedDays.map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ')}</p>
                             </div>
                             <div className="flex items-center gap-4 bg-white dark:bg-white/[0.03] px-5 py-3 rounded-2xl border border-gray-200 dark:border-white/[0.08] shadow-sm">
-                              <span className={`text-[10px] font-black tracking-widest ${refConfig.isOpen ? 'text-paymint-green' : 'text-gray-400'}`}>{refConfig.isOpen ? 'Active' : 'Offline'}</span>
+                              <span className={`text-xs font-black tracking-widest ${refConfig.isOpen ? 'text-paymint-green' : 'text-gray-400'}`}>{refConfig.isOpen ? 'Active' : 'Offline'}</span>
                               <label className="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" checked={refConfig.isOpen} onChange={(e) => updateSelectedDays('isOpen', e.target.checked)} className="sr-only peer" />
                                 <div className="w-11 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-sm"></div>
@@ -918,7 +918,7 @@ export function SettingsPage() {
                               <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center mb-3 shadow-sm border border-gray-200 dark:border-white/5">
                                 <Clock className="w-6 h-6 text-gray-400" />
                               </div>
-                              <span className="text-[10px] font-black text-gray-400 tracking-widest">Status: Closed</span>
+                              <span className="text-xs font-black text-gray-400 tracking-widest">Status: Closed</span>
                             </div>
                           )}
                         </div>
@@ -931,7 +931,7 @@ export function SettingsPage() {
                       <Plus size={24} />
                     </div>
                     <p className="text-xs font-black text-gray-400 tracking-widest">Select a day</p>
-                    <p className="text-[10px] font-black text-gray-400 mt-1 tracking-widest">Choose days to edit hours</p>
+                    <p className="text-xs font-black text-gray-400 mt-1 tracking-widest">Choose days to edit hours</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -948,7 +948,7 @@ export function SettingsPage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sales Setup</h3>
-                  <p className="text-[10px] text-gray-400 font-black tracking-widest px-1">Set tax and currency</p>
+                  <p className="text-xs text-gray-400 font-black tracking-widest px-1">Set tax and currency</p>
                 </div>
               </div>
 
@@ -956,10 +956,10 @@ export function SettingsPage() {
                 <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all hover:border-paymint-green/20 group/card">
                   <div className="flex items-center justify-between mb-6">
                     <div>
-                      <p className="text-[10px] font-black text-paymint-green tracking-[0.2em] mb-1">Tax</p>
+                      <p className="text-xs font-black text-paymint-green tracking-[0.2em] mb-1">Tax</p>
                       <h4 className="text-sm font-bold text-gray-900 dark:text-white">Tax Rate (%)</h4>
                     </div>
-                    <button type="button" onClick={updateTaxRate} className="px-4 py-2 bg-paymint-green text-black text-[10px] font-black tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md shadow-paymint-green/10">Update</button>
+                    <button type="button" onClick={updateTaxRate} className="px-4 py-2 bg-paymint-green text-black text-xs font-black tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md shadow-paymint-green/10">Update</button>
                   </div>
                   <div className={`relative group transition-all`}>
                     <input
@@ -1008,12 +1008,12 @@ export function SettingsPage() {
                         <AlertTriangle size={18} className="text-red-500" />
                       </div>
                       <div>
-                        <p className="text-[10px] font-black text-red-500 tracking-widest leading-none mb-1">Invalid Input</p>
-                        <p className="text-[10px] font-bold text-red-500/80 tracking-tight">{errors.taxRate.message as string || 'Tax rate error'}</p>
+                        <p className="text-xs font-black text-red-500 tracking-widest leading-none mb-1">Invalid Input</p>
+                        <p className="text-xs font-bold text-red-500/80 tracking-tight">{errors.taxRate.message as string || 'Tax rate error'}</p>
                       </div>
                     </motion.div>
                   )}
-                  <p className="text-[9px] font-black text-gray-400 mt-6 leading-relaxed tracking-tight flex items-start gap-2">
+                  <p className="text-xs font-black text-gray-400 mt-6 leading-relaxed tracking-tight flex items-start gap-2">
                     <span className="text-paymint-green">•</span>
                     Modifying this will affect future transactions and net revenue calculations.
                   </p>
@@ -1021,7 +1021,7 @@ export function SettingsPage() {
 
                 <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all hover:border-paymint-green/20 group/card">
                   <div className="mb-6">
-                    <p className="text-[10px] font-black text-blue-500 tracking-[0.2em] mb-1">Currency</p>
+                    <p className="text-xs font-black text-blue-500 tracking-[0.2em] mb-1">Currency</p>
                     <h4 className="text-sm font-bold text-gray-900 dark:text-white">System Currency</h4>
                   </div>
                   <div className="relative">
@@ -1030,14 +1030,14 @@ export function SettingsPage() {
                       value={watch('currency')}
                       onChange={(val) => { setValue('currency', val, { shouldDirty: true }); }}
                       options={[
-                        { label: 'Jod - Jordanian Dinar', value: 'Jod' },
-                        { label: 'Usd - Us Dollar', value: 'Usd' },
-                        { label: 'Sar - Saudi Riyal', value: 'Sar' },
-                        { label: 'Aed - Uae Dirham', value: 'Aed' },
+                        { label: 'JOD - Jordanian Dinar', value: 'JOD' },
+                        { label: 'USD - US Dollar', value: 'USD' },
+                        { label: 'SAR - Saudi Riyal', value: 'SAR' },
+                        { label: 'AED - UAE Dirham', value: 'AED' },
                       ]}
                     />
                   </div>
-                  <p className="text-[9px] font-black text-gray-400 mt-6 leading-relaxed tracking-tight flex items-start gap-2">
+                  <p className="text-xs font-black text-gray-400 mt-6 leading-relaxed tracking-tight flex items-start gap-2">
                     <span className="text-blue-500">•</span>
                     Main currency for sales and reports.
                   </p>
@@ -1069,8 +1069,8 @@ export function SettingsPage() {
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <div>
-                            <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Name</span>
-                            <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Show business name</span>
+                            <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">Name</span>
+                            <span className="block text-xs font-bold text-gray-400 mt-0.5">Show business name</span>
                           </div>
                           <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" {...register('showRestaurantName')} className="sr-only peer" />
@@ -1089,8 +1089,8 @@ export function SettingsPage() {
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <div>
-                            <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Tagline</span>
-                            <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Show secondary text</span>
+                            <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">Tagline</span>
+                            <span className="block text-xs font-bold text-gray-400 mt-0.5">Show secondary text</span>
                           </div>
                           <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" {...register('showDescription')} className="sr-only peer" />
@@ -1112,8 +1112,8 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Logo</span>
-                        <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Show logo at top</span>
+                        <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">Logo</span>
+                        <span className="block text-xs font-bold text-gray-400 mt-0.5">Show logo at top</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" {...register('showLogoOnReceipt')} className="sr-only peer" />
@@ -1137,8 +1137,8 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Address</span>
-                        <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Show full address</span>
+                        <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">Address</span>
+                        <span className="block text-xs font-bold text-gray-400 mt-0.5">Show full address</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" {...register('showAddress')} className="sr-only peer" />
@@ -1158,8 +1158,8 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Tax ID</span>
-                        <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Show Tax ID on footer</span>
+                        <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">Tax ID</span>
+                        <span className="block text-xs font-bold text-gray-400 mt-0.5">Show Tax ID on footer</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" {...register('showTaxId')} className="sr-only peer" />
@@ -1179,8 +1179,8 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-[10px] font-black text-gray-700 dark:text-gray-300 tracking-tight">Footer Message</span>
-                        <span className="block text-[10px] font-bold text-gray-400 mt-0.5">Show custom message</span>
+                        <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">Footer Message</span>
+                        <span className="block text-xs font-bold text-gray-400 mt-0.5">Show custom message</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" {...register('showFarewellMessage')} className="sr-only peer" />
@@ -1215,10 +1215,10 @@ export function SettingsPage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white">Delete Location</h3>
-                  <p className="text-[10px] text-red-600/80 dark:text-red-400/80 font-black tracking-widest px-1">Danger Zone</p>
+                  <p className="text-xs text-red-600/80 dark:text-red-400/80 font-black tracking-widest px-1">Danger Zone</p>
                 </div>
               </div>
-              <span className="px-3 py-1 rounded-lg bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-[10px] font-black tracking-widest border border-red-200 dark:border-red-900/30">
+              <span className="px-3 py-1 rounded-lg bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-xs font-black tracking-widest border border-red-200 dark:border-red-900/30">
                 Warning
               </span>
             </div>
@@ -1235,7 +1235,7 @@ export function SettingsPage() {
                     All data including orders, products, and customer info will be deleted.
                   </p>
                   <div className="mt-6 flex flex-col gap-3">
-                    <div className="flex items-center gap-2 text-[10px] font-black text-red-500 tracking-tight">
+                    <div className="flex items-center gap-2 text-xs font-black text-red-500 tracking-tight">
                       <AlertTriangle size={14} />
                       You cannot undo this after 30 days.
                     </div>

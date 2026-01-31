@@ -209,7 +209,7 @@ export function AdminUsersPage() {
                 {isLoading ? (
                     <div className="py-32 flex flex-col items-center">
                         <div className="w-16 h-16 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
-                        <p className="text-[10px] font-black tracking-widest text-gray-400">Loading admins...</p>
+                        <p className="text-xs font-black tracking-widest text-gray-400">Loading admins...</p>
                     </div>
                 ) : adminUsers.length === 0 ? (
                     <div className="py-32 text-center flex flex-col items-center">
@@ -273,18 +273,18 @@ export function AdminUsersPage() {
                                 </div>
 
                                 <div className="relative z-10 mt-6 pt-4 border-t border-gray-100 dark:border-white/5">
-                                    <p className="text-[9px] font-black text-gray-400 tracking-widest mb-2">Locations</p>
+                                    <p className="text-xs font-black text-gray-400 tracking-widest mb-2">Locations</p>
                                     <div className="flex flex-wrap gap-2">
                                         {admin.establishments.map((est) => (
                                             <span
                                                 key={est.id}
-                                                className="px-2.5 py-1 bg-paymint-green/5 text-paymint-green text-[9px] font-black tracking-widest rounded-lg border border-paymint-green/10"
+                                                className="px-2.5 py-1 bg-paymint-green/5 text-paymint-green text-xs font-black tracking-widest rounded-lg border border-paymint-green/10"
                                             >
                                                 {est.name}
                                             </span>
                                         ))}
                                         {admin.establishments.length === 0 && (
-                                            <span className="text-[10px] text-gray-400 italic">No locations</span>
+                                            <span className="text-xs text-gray-400 italic">No locations</span>
                                         )}
                                     </div>
                                 </div>
@@ -327,7 +327,7 @@ export function AdminUsersPage() {
                             <form onSubmit={handleSubmit} className="p-8 space-y-6">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="block text-[10px] font-black text-gray-400 tracking-widest px-1">
+                                        <label className="block text-xs font-black text-gray-400 tracking-widest px-1">
                                             First Name <span className="text-paymint-red">*</span>
                                         </label>
                                         <input
@@ -339,7 +339,7 @@ export function AdminUsersPage() {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="block text-[10px] font-black text-gray-400 tracking-widest px-1">
+                                        <label className="block text-xs font-black text-gray-400 tracking-widest px-1">
                                             Last Name <span className="text-paymint-red">*</span>
                                         </label>
                                         <input
@@ -353,7 +353,7 @@ export function AdminUsersPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="block text-[10px] font-black text-gray-400 tracking-widest px-1">
+                                    <label className="block text-xs font-black text-gray-400 tracking-widest px-1">
                                         Email / Login ID <span className="text-paymint-red">*</span>
                                     </label>
                                     <input
@@ -369,7 +369,7 @@ export function AdminUsersPage() {
 
                                 {!editingAdmin && (
                                     <div className="space-y-2">
-                                        <label className="block text-[10px] font-black text-gray-400 tracking-widest px-1">
+                                        <label className="block text-xs font-black text-gray-400 tracking-widest px-1">
                                             Password <span className="text-paymint-red">*</span>
                                         </label>
                                         <div className="relative group">
@@ -389,14 +389,14 @@ export function AdminUsersPage() {
                                                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                             </button>
                                         </div>
-                                        <p className="text-[9px] font-bold text-gray-400 mt-1 px-1 tracking-tight">
+                                        <p className="text-xs font-bold text-gray-400 mt-1 px-1 tracking-tight">
                                             Min 8 chars
                                         </p>
                                     </div>
                                 )}
 
                                 <div className="space-y-2">
-                                    <label className="block text-[10px] font-black text-gray-400 tracking-widest px-1">
+                                    <label className="block text-xs font-black text-gray-400 tracking-widest px-1">
                                         Phone
                                     </label>
                                     <input
@@ -409,7 +409,7 @@ export function AdminUsersPage() {
                                 </div>
 
                                 <div className="space-y-3">
-                                    <label className="block text-[10px] font-black text-gray-400 tracking-widest px-1">
+                                    <label className="block text-xs font-black text-gray-400 tracking-widest px-1">
                                         Location Access
                                     </label>
                                     <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar pr-1">
@@ -440,14 +440,14 @@ export function AdminUsersPage() {
                                     <button
                                         type="button"
                                         onClick={() => setShowModal(false)}
-                                        className="flex-1 py-4 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black tracking-[0.2em] text-[10px] rounded-xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5"
+                                        className="flex-1 py-4 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black tracking-[0.2em] text-xs rounded-xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5"
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="flex-1 py-4 bg-paymint-green text-black font-black tracking-[0.2em] text-[10px] rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+                                        className="flex-1 py-4 bg-paymint-green text-black font-black tracking-[0.2em] text-xs rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
                                     >
                                         {isSubmitting && <Loader2 size={16} className="animate-spin" />}
                                         {editingAdmin ? 'Save Admin' : 'Save Admin'}

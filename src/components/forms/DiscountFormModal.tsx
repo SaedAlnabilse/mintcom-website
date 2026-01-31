@@ -99,7 +99,7 @@ export function DiscountFormModal({
 
               {/* Name */}
               <div>
-                <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 mb-2 flex items-center">
+                <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1 mb-2 flex items-center">
                   Name <span className="text-paymint-red mx-1">*</span>
                   <QuickInfo text="Name on receipt." />
                 </label>
@@ -110,12 +110,12 @@ export function DiscountFormModal({
                   placeholder="E.g. Employee Discount"
                   className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-bold shadow-sm`}
                 />
-                {errors.name && <p className="mt-1.5 px-1 text-paymint-red text-[10px] font-black tracking-widest">{errors.name}</p>}
+                {errors.name && <p className="mt-1.5 px-1 text-paymint-red text-xs font-black tracking-widest">{errors.name}</p>}
               </div>
 
               {/* Percentage */}
               <div>
-                <label className="block text-[10px] font-black text-gray-400 tracking-[0.2em] px-1 mb-2 flex items-center">
+                <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1 mb-2 flex items-center">
                   Percentage (%) <span className="text-paymint-red mx-1">*</span>
                   <QuickInfo text="Value to deduct." />
                 </label>
@@ -136,10 +136,10 @@ export function DiscountFormModal({
                     className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.percentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-bold shadow-sm`}
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg shadow-sm">
-                    <span className="text-paymint-green text-[10px] font-black">%</span>
+                    <span className="text-paymint-green text-xs font-black">%</span>
                   </div>
                 </div>
-                {errors.percentage && <p className="mt-1.5 px-1 text-paymint-red text-[10px] font-black tracking-widest">{errors.percentage}</p>}
+                {errors.percentage && <p className="mt-1.5 px-1 text-paymint-red text-xs font-black tracking-widest">{errors.percentage}</p>}
               </div>
 
               {/* Manager Only Toggle */}
@@ -178,7 +178,7 @@ export function DiscountFormModal({
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="flex-1 h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black tracking-[0.2em] text-[10px] rounded-2xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
+              className="flex-1 h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black tracking-[0.2em] text-xs rounded-2xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
             >
               Cancel
             </button>
@@ -186,7 +186,7 @@ export function DiscountFormModal({
               type="submit"
               form="discount-form"
               disabled={isSubmitting}
-              className="flex-1 h-14 bg-paymint-green text-black font-black tracking-[0.2em] text-[10px] rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+              className="flex-1 h-14 bg-paymint-green text-black font-black tracking-[0.2em] text-xs rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
             >
               {isSubmitting ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

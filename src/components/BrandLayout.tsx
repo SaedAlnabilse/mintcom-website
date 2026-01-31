@@ -163,7 +163,7 @@ export function BrandLayout() {
                                     onClick={() => setSidebarOpen(true)}
                                 >
                                     <img src={PaymintLeafIcon} className="w-7 h-7 object-contain scale-110" alt="P" />
-                                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-[10px] font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
+                                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-bold tracking-wide rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
                                         Expand Sidebar
                                     </div>
                                 </div>
@@ -197,7 +197,7 @@ export function BrandLayout() {
                             className="w-12 h-12 mx-auto flex items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/[0.03] text-gray-600 dark:text-gray-400 hover:text-paymint-green transition-all border border-gray-200 dark:border-white/[0.05] hover:border-paymint-green/30 group relative"
                         >
                             <PanelLeft size={20} />
-                            <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-[10px] font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
+                            <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
                                 Expand Sidebar
                             </div>
                         </button>
@@ -215,7 +215,7 @@ export function BrandLayout() {
                                         <Building2 size={20} />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-[9px] font-bold text-paymint-green tracking-widest mb-1">
+                                        <p className="text-xs font-bold text-paymint-green tracking-wide mb-1">
                                             {brandId === 'cmkek5eme0001vjjqvfm3wjwa' ? 'Top Performance' : 'Active Brand'}
                                         </p>
                                         <h2 className="text-base font-bold text-gray-900 dark:text-white tracking-tight leading-tight truncate">
@@ -226,11 +226,11 @@ export function BrandLayout() {
                                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100 dark:border-white/10">
                                     <div className="flex items-center gap-1.5">
                                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                        <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400">Online</span>
+                                        <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Online</span>
                                     </div>
                                     <div className="flex items-center gap-1.5">
                                         <Store size={12} className="text-gray-400" />
-                                        <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400">
+                                        <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
                                             {brand?.establishments?.length || 0} locations
                                         </span>
                                     </div>
@@ -243,7 +243,7 @@ export function BrandLayout() {
                 {/* Navigation */}
                 <nav className="flex-1 px-3 space-y-1.5 overflow-y-auto scrollbar-none">
                     {sidebarOpen && (
-                        <p className="px-3 py-2 text-[10px] font-bold text-gray-400 tracking-widest">Navigation</p>
+                        <p className="px-3 py-2 text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wide">Navigation</p>
                     )}
                     {menuItems.map((item) => {
                         const Icon = item.icon;
@@ -268,13 +268,13 @@ export function BrandLayout() {
                                     <div className="flex-1 min-w-0">
                                         <span className="text-sm font-bold block">{item.label}</span>
                                         {!isActive && (
-                                            <span className="text-[10px] text-gray-400 truncate block">{item.description}</span>
+                                            <span className="text-xs text-gray-500 dark:text-gray-400 truncate block">{item.description}</span>
                                         )}
                                     </div>
                                 ) : (
                                     <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-2 bg-gray-900 text-white rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 whitespace-nowrap shadow-xl">
                                         <p className="text-xs font-bold">{item.label}</p>
-                                        <p className="text-[10px] text-gray-400">{item.description}</p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">{item.description}</p>
                                     </div>
                                 )}
 
@@ -393,7 +393,7 @@ export function BrandLayout() {
                                 <p className="text-xs font-bold text-gray-900 dark:text-white truncate">
                                     {account?.firstName} {account?.lastName}
                                 </p>
-                                <p className="text-[10px] text-gray-500 truncate">Brand Administrator</p>
+                                <p className="text-xs text-gray-500 truncate">Brand Administrator</p>
                             </div>
 
                             <div className="flex items-center gap-1">
@@ -489,7 +489,7 @@ export function BrandLayout() {
                                         <Building2 size={20} className="text-paymint-green" />
                                     </div>
                                     <div>
-                                        <p className="text-[9px] font-bold text-paymint-green">Active Brand</p>
+                                        <p className="text-xs font-bold text-paymint-green">Active Brand</p>
                                         <h2 className="text-sm font-bold text-white truncate">{brand?.name}</h2>
                                     </div>
                                 </div>

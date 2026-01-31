@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
@@ -6,13 +6,65 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================
+   PAYMINT UNIFIED TYPOGRAPHY SYSTEM
+   Matched to POS App Design System
+   ============================================ */
+
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
-    @apply font-sans text-gray-900 bg-cream-50 dark:text-paymint-light dark:bg-paymint-dark antialiased transition-colors duration-300;
+    @apply font-barlow text-text-primary bg-cream-50 dark:text-paymint-text dark:bg-paymint-dark antialiased transition-colors duration-300;
+    font-feature-settings: 'kern' 1, 'liga' 1;
+  }
+
+  /* Headings - POS Style */
+  h1 {
+    @apply text-heading-1 text-text-primary dark:text-paymint-text tracking-tight;
+  }
+
+  h2 {
+    @apply text-heading-2 text-text-primary dark:text-paymint-text tracking-tight;
+  }
+
+  h3 {
+    @apply text-heading-3 text-text-primary dark:text-paymint-text;
+  }
+
+  h4 {
+    @apply text-heading-4 text-text-primary dark:text-paymint-text;
+  }
+
+  h5 {
+    @apply text-subheading text-text-primary dark:text-paymint-text;
+  }
+
+  h6 {
+    @apply text-body-lg font-semibold text-text-primary dark:text-paymint-text;
+  }
+
+  /* Body text defaults */
+  p {
+    @apply text-body text-text-secondary dark:text-paymint-textSecondary leading-body;
+  }
+
+  /* Labels and small text */
+  label {
+    @apply text-label text-text-secondary dark:text-paymint-textSecondary font-medium;
+  }
+
+  small {
+    @apply text-body-sm text-text-tertiary dark:text-paymint-gray;
+  }
+
+  /* Links */
+  a {
+    @apply text-paymint-green hover:text-mint-dark transition-colors;
   }
 
   /* Chrome, Safari, Edge, Opera */
@@ -25,6 +77,135 @@
   /* Firefox */
   input[type=number] {
     -moz-appearance: textfield;
+  }
+
+  /* Form inputs - POS style */
+  input, textarea, select {
+    @apply font-barlow text-body text-text-primary dark:text-paymint-text;
+  }
+
+  input::placeholder, textarea::placeholder {
+    @apply text-text-placeholder dark:text-paymint-gray;
+  }
+}
+
+/* ============================================
+   PAYMINT COMPONENT TYPOGRAPHY CLASSES
+   ============================================ */
+
+@layer components {
+  /* Card Labels - Used for stat card labels */
+  .card-label {
+    @apply text-label-xs uppercase tracking-widest text-text-muted dark:text-paymint-gray;
+  }
+
+  /* Card Values - Used for stat card values */
+  .card-value {
+    @apply text-value font-bold text-text-primary dark:text-paymint-text tracking-tight;
+  }
+
+  .card-value-lg {
+    @apply text-value-lg font-bold text-text-primary dark:text-paymint-text tracking-tight;
+  }
+
+  .card-value-xl {
+    @apply text-value-xl font-bold text-text-primary dark:text-paymint-text tracking-tight;
+  }
+
+  /* Primary card (green bg) - white text */
+  .primary-card-value {
+    @apply text-value-xl font-bold text-white tracking-tight;
+  }
+
+  .primary-card-label {
+    @apply text-body-lg font-medium text-white/90;
+  }
+
+  /* Section titles */
+  .section-title {
+    @apply text-heading-3 text-text-primary dark:text-paymint-text;
+  }
+
+  .section-subtitle {
+    @apply text-body text-text-secondary dark:text-paymint-textSecondary;
+  }
+
+  /* Chart labels */
+  .chart-title {
+    @apply text-chart-title text-text-primary dark:text-paymint-text;
+  }
+
+  .chart-legend {
+    @apply text-legend text-text-muted dark:text-paymint-gray;
+  }
+
+  /* Table headers */
+  .table-header {
+    @apply text-label-xs uppercase tracking-widest text-text-muted dark:text-paymint-gray font-bold;
+  }
+
+  /* Table cells */
+  .table-cell {
+    @apply text-body text-text-primary dark:text-paymint-text;
+  }
+
+  .table-cell-muted {
+    @apply text-body text-text-secondary dark:text-paymint-textSecondary;
+  }
+
+  /* Button text */
+  .btn-text {
+    @apply text-button font-semibold;
+  }
+
+  .btn-text-sm {
+    @apply text-button-sm font-semibold;
+  }
+
+  /* Status badges */
+  .badge-text {
+    @apply text-label-xs uppercase tracking-widest font-bold;
+  }
+
+  /* Empty state text */
+  .empty-title {
+    @apply text-body-lg font-bold text-text-primary dark:text-paymint-text tracking-wide;
+  }
+
+  .empty-description {
+    @apply text-body text-text-muted dark:text-paymint-gray;
+  }
+
+  /* Tooltip text */
+  .tooltip-text {
+    @apply text-body-sm font-medium;
+  }
+
+  /* Modal titles */
+  .modal-title {
+    @apply text-heading-3 text-text-primary dark:text-paymint-text;
+  }
+
+  .modal-subtitle {
+    @apply text-body text-text-secondary dark:text-paymint-textSecondary;
+  }
+
+  /* Nav items */
+  .nav-item {
+    @apply text-body font-semibold text-text-secondary dark:text-paymint-textSecondary;
+  }
+
+  .nav-item-active {
+    @apply text-body font-bold text-paymint-green;
+  }
+
+  /* Dropdown items */
+  .dropdown-item {
+    @apply text-body font-medium text-text-primary dark:text-paymint-text;
+  }
+
+  .dropdown-description {
+    @apply text-body-sm text-text-muted dark:text-paymint-gray;
   }
 }
 
@@ -51,6 +232,28 @@
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
     @apply bg-gray-300 dark:bg-white/10 rounded-full hover:bg-gray-400 dark:hover:bg-white/20 transition-colors;
+  }
+
+  /* Text color utilities matching POS */
+  .text-primary-pos {
+    @apply text-text-primary dark:text-paymint-text;
+  }
+
+  .text-secondary-pos {
+    @apply text-text-secondary dark:text-paymint-textSecondary;
+  }
+
+  .text-muted-pos {
+    @apply text-text-muted dark:text-paymint-gray;
+  }
+
+  /* Value colors - for positive/negative numbers */
+  .text-positive {
+    @apply text-success;
+  }
+
+  .text-negative {
+    @apply text-paymint-red;
   }
 }
 

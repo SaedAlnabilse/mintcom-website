@@ -178,7 +178,7 @@ export function OwnerBillingPage() {
     const getStatusBadge = (est: EstablishmentBilling) => {
         if (est.cancelAtPeriodEnd) {
             return (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-lg text-[10px] font-bold tracking-widest text-amber-500">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-lg text-xs font-bold tracking-widest text-amber-500">
                     <Calendar size={12} />
                     Cancels Soon
                 </span>
@@ -188,28 +188,28 @@ export function OwnerBillingPage() {
         switch (est.subscriptionStatus?.toUpperCase()) {
             case 'TRIAL':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-[10px] font-bold tracking-widest text-emerald-500">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-xs font-bold tracking-widest text-emerald-500">
                         <Zap size={12} />
                         Trial
                     </span>
                 );
             case 'ACTIVE':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg text-[10px] font-bold tracking-widest text-paymint-green">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg text-xs font-bold tracking-widest text-paymint-green">
                         <CheckCircle2 size={12} />
                         Active
                     </span>
                 );
             case 'CANCELED':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-[10px] font-bold tracking-widest text-red-500">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-xs font-bold tracking-widest text-red-500">
                         <XCircle size={12} />
                         Canceled
                     </span>
                 );
             default:
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-500/10 border border-gray-500/20 rounded-lg text-[10px] font-bold tracking-widest text-gray-500">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-500/10 border border-gray-500/20 rounded-lg text-xs font-bold tracking-widest text-gray-500">
                         {est.subscriptionStatus ? est.subscriptionStatus.charAt(0).toUpperCase() + est.subscriptionStatus.slice(1).toLowerCase() : 'Unknown'}
                     </span>
                 );
@@ -224,7 +224,7 @@ export function OwnerBillingPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
                             Billing
                         </span>
                     </div>
@@ -236,7 +236,7 @@ export function OwnerBillingPage() {
 
                 <div className="flex items-center gap-6">
                     <div className="text-right hidden sm:block">
-                        <p className="text-[10px] font-bold text-gray-400 tracking-widest mb-1">Monthly Cost</p>
+                        <p className="text-xs font-bold text-gray-400 tracking-widest mb-1">Monthly Cost</p>
                         <div className="flex items-baseline justify-end gap-1">
                             <span className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">${totalMonthlyCost.toFixed(2)}</span>
                             <span className="text-xs font-bold text-gray-400">/mo</span>
@@ -281,7 +281,7 @@ export function OwnerBillingPage() {
                                 <stat.icon size={20} />
                             </div>
                             <div>
-                                <p className="text-[10px] font-bold text-gray-400 tracking-wide mb-0.5">{stat.label}</p>
+                                <p className="text-xs font-bold text-gray-400 tracking-wide mb-0.5">{stat.label}</p>
                                 <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                             </div>
                         </div>
@@ -333,7 +333,7 @@ export function OwnerBillingPage() {
 
                                     <div className="relative z-10 flex justify-between items-start">
                                         <div className="space-y-1.5">
-                                            <p className="text-[10px] font-black tracking-[0.2em] text-gray-400">Card</p>
+                                            <p className="text-xs font-black tracking-[0.2em] text-gray-400">Card</p>
                                             <p className="text-xl font-bold tracking-[0.15em] text-gray-900 dark:text-white">
                                                 <span className="opacity-30">••••</span> {card.last4}
                                             </p>
@@ -356,11 +356,11 @@ export function OwnerBillingPage() {
 
                                     <div className="relative z-10 flex justify-between items-end">
                                         <div className="space-y-1">
-                                            <p className="text-[9px] font-black tracking-[0.2em] text-gray-400">Name</p>
+                                            <p className="text-xs font-black tracking-[0.2em] text-gray-400">Name</p>
                                             <p className="font-bold tracking-wider text-xs text-gray-800 dark:text-gray-200">{card.cardholderName || 'User'}</p>
                                         </div>
                                         <div className="text-right space-y-1">
-                                            <p className="text-[9px] font-black tracking-[0.2em] text-gray-400">Expires</p>
+                                            <p className="text-xs font-black tracking-[0.2em] text-gray-400">Expires</p>
                                             <p className="font-bold text-xs text-gray-800 dark:text-gray-200">{card.expMonth}/{card.expYear.toString().slice(-2)}</p>
                                         </div>
                                     </div>
@@ -451,7 +451,7 @@ export function OwnerBillingPage() {
                                         {/* Cost */}
                                         <div className="col-span-2">
                                             <p className="font-bold text-gray-900 dark:text-white text-sm">${est.monthlyPrice}</p>
-                                            <p className="text-[10px] text-gray-400">/month</p>
+                                            <p className="text-xs text-gray-400">/month</p>
                                         </div>
 
                                         {/* Payment & Actions */}

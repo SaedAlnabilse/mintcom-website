@@ -98,7 +98,7 @@ export function OwnerEstablishmentsPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
                             Locations
                         </span>
                     </div>
@@ -139,7 +139,7 @@ export function OwnerEstablishmentsPage() {
                             <Store size={24} />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-gray-400 tracking-wide">Total</p>
+                            <p className="text-xs font-bold text-gray-400 tracking-wide">Total</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">{establishments.length}</p>
                         </div>
                     </div>
@@ -157,7 +157,7 @@ export function OwnerEstablishmentsPage() {
                             <Zap size={24} />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-gray-400 tracking-wide">Active</p>
+                            <p className="text-xs font-bold text-gray-400 tracking-wide">Active</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">
                                 {establishments.filter(e => e.subscriptionStatus === 'ACTIVE').length}
                             </p>
@@ -177,7 +177,7 @@ export function OwnerEstablishmentsPage() {
                             <Settings size={24} />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-gray-400 tracking-wide">Trial</p>
+                            <p className="text-xs font-bold text-gray-400 tracking-wide">Trial</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">
                                 {establishments.filter(e => e.subscriptionStatus === 'TRIAL').length}
                             </p>
@@ -275,7 +275,7 @@ export function OwnerEstablishmentsPage() {
 
                                 {est.id === highlightId && (
                                     <div className="absolute top-0 right-0 p-2">
-                                        <span className="bg-paymint-green text-black text-[10px] font-black px-2 py-1 rounded-bl-xl rounded-tr-xl tracking-widest shadow-sm">New</span>
+                                        <span className="bg-paymint-green text-black text-xs font-black px-2 py-1 rounded-bl-xl rounded-tr-xl tracking-widest shadow-sm">New</span>
                                     </div>
                                 )}
 
@@ -294,7 +294,7 @@ export function OwnerEstablishmentsPage() {
                                                 <div className="flex items-center gap-2 mt-1">
                                                     <span className="text-xs font-medium text-gray-500">{est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : 'Standard'}</span>
                                                     <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                                                    <span className="text-xs font-medium text-gray-500">{est.currency || 'Jod'}</span>
+                                                    <span className="text-xs font-medium text-gray-500">{est.currency || 'JOD'}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -343,7 +343,7 @@ export function OwnerEstablishmentsPage() {
 
                                     {/* Status Badge */}
                                     <div className="mb-6">
-                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] font-bold tracking-wide border ${getStatusColor(est.subscriptionStatus)}`}>
+                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${getStatusColor(est.subscriptionStatus)}`}>
                                             <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' :
                                                 est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
                                                     'bg-red-500'
@@ -357,14 +357,14 @@ export function OwnerEstablishmentsPage() {
                                         <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5 group-hover:border-blue-500/10 transition-colors">
                                             <div className="flex items-center gap-2 mb-1 text-gray-400">
                                                 <DollarSign size={12} />
-                                                <p className="text-[10px] font-bold tracking-wide">Currency</p>
+                                                <p className="text-xs font-bold tracking-wide">Currency</p>
                                             </div>
-                                            <p className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'Jod'}</p>
+                                            <p className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'JOD'}</p>
                                         </div>
                                         <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5 group-hover:border-blue-500/10 transition-colors">
                                             <div className="flex items-center gap-2 mb-1 text-gray-400">
                                                 <Zap size={12} />
-                                                <p className="text-[10px] font-bold tracking-wide">Status</p>
+                                                <p className="text-xs font-bold tracking-wide">Status</p>
                                             </div>
                                             <p className="text-sm font-bold text-emerald-500">Online</p>
                                         </div>
@@ -427,7 +427,7 @@ export function OwnerEstablishmentsPage() {
                                             </h3>
                                             <p className="text-xs text-gray-500 mt-0.5 md:hidden">{est.type}</p>
                                             {est.id === highlightId && (
-                                                <span className="text-[10px] text-paymint-green font-bold tracking-wider ml-2">New</span>
+                                                <span className="text-xs text-paymint-green font-bold tracking-wider ml-2">New</span>
                                             )}
                                         </div>
                                     </div>
@@ -441,7 +441,7 @@ export function OwnerEstablishmentsPage() {
 
                                     {/* Status */}
                                     <div className="col-span-2 flex items-center">
-                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wide border ${getStatusColor(est.subscriptionStatus)}`}>
+                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide border ${getStatusColor(est.subscriptionStatus)}`}>
                                             <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' :
                                                 est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
                                                     'bg-red-500'
@@ -453,7 +453,7 @@ export function OwnerEstablishmentsPage() {
                                     {/* Currency */}
                                     <div className="col-span-2 flex items-center">
                                         <span className="text-sm font-bold text-gray-900 dark:text-white">
-                                            {est.currency || 'Jod'}
+                                            {est.currency || 'JOD'}
                                         </span>
                                     </div>
 

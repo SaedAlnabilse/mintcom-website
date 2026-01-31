@@ -222,7 +222,7 @@ export const WorkflowSupport = () => {
                     />
                   </svg>
                   {/* X-axis labels */}
-                  <div className="absolute bottom-0 left-0 right-0 flex justify-between text-[10px] text-gray-600 px-2">
+                  <div className="absolute bottom-0 left-0 right-0 flex justify-between text-xs text-gray-600 px-2">
                     <span>We</span>
                     <span>Th</span>
                     <span>Fr</span>

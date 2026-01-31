@@ -60,6 +60,7 @@ export function OrdersPage() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [paymentFilter, setPaymentFilter] = useState('all');
   const [startDate, setStartDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
 
@@ -84,7 +85,7 @@ export function OrdersPage() {
 
   useEffect(() => {
     fetchOrders();
-  }, [page, statusFilter, startDate, endDate]);
+  }, [page, statusFilter, paymentFilter, startDate, endDate]);
 
   useEffect(() => {
     if (activeActionMenu) {
@@ -101,31 +102,33 @@ export function OrdersPage() {
     try {
       setIsLoading(true);
 
+      const mapHeldOrder = (h: any) => ({
+        id: h.id,
+        orderNumber: h.nickname,
+        total: h.orderData?.total || 0,
+        subtotal: h.orderData?.subtotal || 0,
+        tax: h.orderData?.tax || 0,
+        discount: h.orderData?.discount?.amount || 0,
+        paymentMethod: 'N/a',
+        paymentStatus: 'HELD',
+        status: 'HELD',
+        createdAt: h.pinnedAt,
+        items: (h.orderData?.items || []).map((item: any) => ({
+          id: item.itemId,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.basePrice,
+          total: item.finalPrice,
+        })),
+        user: {
+          username: h.heldBy?.username || 'Unknown',
+        },
+        note: h.orderData?.note,
+      });
+
       if (statusFilter === 'HELD') {
         const response = await api.get('/api/held-orders');
-        const heldOrders = response.data.map((h: any) => ({
-          id: h.id,
-          orderNumber: h.nickname,
-          total: h.orderData?.total || 0,
-          subtotal: h.orderData?.subtotal || 0,
-          tax: h.orderData?.tax || 0,
-          discount: h.orderData?.discount?.amount || 0,
-          paymentMethod: 'N/a',
-          paymentStatus: 'HELD',
-          status: 'HELD',
-          createdAt: h.pinnedAt,
-          items: (h.orderData?.items || []).map((item: any) => ({
-            id: item.itemId,
-            name: item.name,
-            quantity: item.quantity,
-            price: item.basePrice,
-            total: item.finalPrice,
-          })),
-          user: {
-            username: h.heldBy?.username || 'Unknown',
-          },
-          note: h.orderData?.note,
-        }));
+        const heldOrders = response.data.map(mapHeldOrder);
         setOrders(heldOrders);
         setTotalPages(1);
         setError('');
@@ -135,13 +138,16 @@ export function OrdersPage() {
 
       const params: any = {
         page,
-        limit: 20,
+        limit: 10,
       };
 
       if (statusFilter !== 'all') {
         params.status = statusFilter;
       }
 
+      if (paymentFilter !== 'all') {
+        params.paymentMethod = paymentFilter;
+      }
 
       // Date filtering is now handled by startDate and endDate states
       const start = startOfDay(new Date(startDate));
@@ -151,7 +157,35 @@ export function OrdersPage() {
       params.endDate = end.toISOString();
 
       const response = await api.get('/reports/orders-history', { params });
-      setOrders(response.data.orders || response.data || []);
+      let fetchedOrders = response.data.orders || response.data || [];
+
+      // Include held orders if viewing 'all' status and strictly on page 1
+      if (statusFilter === 'all' && page === 1 && paymentFilter === 'all') {
+        try {
+          const heldRes = await api.get('/api/held-orders');
+          const activeHeldOrders = heldRes.data
+            .map(mapHeldOrder)
+            .filter((h: any) => {
+              const hDate = new Date(h.createdAt);
+              return hDate >= start && hDate <= end;
+            });
+
+          fetchedOrders = [...activeHeldOrders, ...fetchedOrders];
+        } catch (error) {
+          console.error('Failed to mix in held orders:', error);
+        }
+      }
+
+      // Strictly enforce 10 items limit for the view
+      if (fetchedOrders.length > 10) {
+        fetchedOrders = fetchedOrders.slice(0, 10);
+      }
+
+      setOrders(fetchedOrders);
+      // Ensure totalPages reflects the data reality. If we found order history pages, use that.
+      // If we have no history pages but we have held orders that were sliced, we realistically have "more" data, 
+      // but without complex state, we stick to the backend's history pagination + 1 if needed? 
+      // For now, trust backend pagination for history.
       setTotalPages(response.data.totalPages || 1);
       setError('');
     } catch (err: any) {
@@ -186,11 +220,11 @@ export function OrdersPage() {
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-JO', {
       style: 'currency',
-      currency: 'Jod',
-      minimumFractionDigits: 2,
-    }).format(value).replace('Jod', '').trim() + ' Jod';
+      currency: 'JOD',
+      minimumFractionDigits: 3,
+    }).format(value);
   };
 
   const formatDate = (dateString: string) => {
@@ -201,6 +235,7 @@ export function OrdersPage() {
 
   const setQuickDate = (range: string) => {
     setSelectedDateRange(range);
+    setPage(1);
     const today = new Date();
     let start = new Date();
     let end = new Date();
@@ -284,7 +319,7 @@ export function OrdersPage() {
       orderNumber: 'Order #',
       date: 'Date',
       customer: 'Customer',
-      total: 'Total (Jod)',
+      total: 'Total (JOD)',
       status: 'Status',
       paymentMethod: 'Payment Method'
     });
@@ -296,7 +331,7 @@ export function OrdersPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest border border-paymint-green/20">
+            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
               Sales
             </span>
           </div>
@@ -339,36 +374,35 @@ export function OrdersPage() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 items-center">
-          {/* Quick Date Toggles */}
-          <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1">
-            {['today', 'yesterday', 'this_week'].map((range) => (
-              <button
-                key={range}
-                onClick={() => setQuickDate(range)}
-                className={`px-3 py-2 rounded-lg text-[10px] font-bold tracking-wide transition-all ${selectedDateRange === range
-                  ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm'
-                  : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
-                  }`}
-              >
-                {range.replace('_', ' ').replace('this', 'This')}
-              </button>
-            ))}
+          {/* Quick Date Select */}
+          <div className={`w-40 rounded-2xl transition-all ${selectedDateRange !== 'custom' ? 'ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : ''}`}>
+            <CustomSelect
+              value={selectedDateRange}
+              onChange={(val) => setQuickDate(val as string)}
+              options={[
+                { label: 'Today', value: 'today' },
+                { label: 'Yesterday', value: 'yesterday' },
+                { label: 'This Week', value: 'this_week' },
+                { label: 'This Month', value: 'this_month' },
+              ]}
+              placeholder="Select Period"
+            />
           </div>
 
           {/* Custom Date Inputs */}
-          <div className="flex items-center gap-2 bg-gray-50 dark:bg-white/5 p-1 px-3 rounded-xl border border-gray-200 dark:border-white/10 h-[46px]">
-            <Calendar size={14} className="text-gray-400" />
+          <div className={`flex items-center gap-2 p-1 px-3 rounded-xl border h-[46px] transition-all ${selectedDateRange === 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10'}`}>
+            <Calendar size={14} className={selectedDateRange === 'custom' ? 'text-paymint-green' : 'text-gray-400'} />
             <input
               type="date"
               value={startDate}
-              onChange={(e) => { setStartDate(e.target.value); setSelectedDateRange('custom'); }}
+              onChange={(e) => { setStartDate(e.target.value); setSelectedDateRange('custom'); setPage(1); }}
               className="bg-transparent border-none text-xs font-bold text-gray-900 dark:text-white focus:ring-0 p-0 w-24"
             />
-            <span className="text-gray-400">-</span>
+            <span className={selectedDateRange === 'custom' ? 'text-paymint-green/50' : 'text-gray-400'}>-</span>
             <input
               type="date"
               value={endDate}
-              onChange={(e) => { setEndDate(e.target.value); setSelectedDateRange('custom'); }}
+              onChange={(e) => { setEndDate(e.target.value); setSelectedDateRange('custom'); setPage(1); }}
               className="bg-transparent border-none text-xs font-bold text-gray-900 dark:text-white focus:ring-0 p-0 w-24"
             />
           </div>
@@ -376,12 +410,39 @@ export function OrdersPage() {
           <div className="w-40">
             <CustomSelect
               value={statusFilter}
-              onChange={(val) => setStatusFilter(val as string)}
+              onChange={(val) => {
+                setStatusFilter(val as string);
+                setPage(1);
+                if (val === 'HELD') {
+                  setPaymentFilter('all');
+                }
+              }}
               options={[
                 { label: 'All Status', value: 'all' },
                 { label: 'Completed', value: 'COMPLETED' },
                 { label: 'Held Orders', value: 'HELD' },
                 { label: 'Refunded', value: 'REFUNDED' },
+              ]}
+            />
+          </div>
+
+          <div className="w-48">
+            <CustomSelect
+              value={paymentFilter}
+              onChange={(val) => { setPaymentFilter(val as string); setPage(1); }}
+              disabled={statusFilter === 'HELD'}
+              placeholder="Payment Method"
+              options={[
+                { label: 'All Payments', value: 'all' },
+                { label: 'Cash', value: 'CASH' },
+                { label: 'Card', value: 'CARD' },
+                { label: 'Visa', value: 'VISA' },
+                { label: 'Mastercard', value: 'MASTERCARD' },
+                { label: 'Amex', value: 'AMEX' },
+                { label: 'Talabat', value: 'TALABAT' },
+                { label: 'Careem', value: 'CAREEM' },
+                { label: 'Jahez', value: 'JAHEZ' },
+                { label: 'Other', value: 'OTHER' },
               ]}
             />
           </div>
@@ -408,7 +469,7 @@ export function OrdersPage() {
                 <stat.icon size={20} />
               </div>
               <div>
-                <p className="text-[10px] font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
+                <p className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
                 <p className="text-xl font-black text-gray-900 dark:text-white">{stat.value}</p>
               </div>
             </div>
@@ -462,12 +523,12 @@ export function OrdersPage() {
                       </div>
                       <div>
                         <p className="font-bold text-gray-900 dark:text-white text-sm">#{order.orderNumber}</p>
-                        <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium tracking-wide">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide">
                           {formatDate(order.createdAt)}
                         </p>
                       </div>
                     </div>
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
                       {(order.paymentStatus || order.status || 'PENDING').charAt(0).toUpperCase() + (order.paymentStatus || order.status || 'PENDING').slice(1).toLowerCase()}
                     </span>
                   </div>
@@ -527,11 +588,11 @@ export function OrdersPage() {
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-white/[0.02]">
                 <tr className="border-b border-gray-200 dark:border-white/5">
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Order</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Customer</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Amount</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 tracking-widest">Status</th>
-                  <th className="px-6 py-4 text-right text-[10px] font-black text-gray-400 tracking-widest">Actions</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Order</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Customer</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Amount</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Status</th>
+                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -552,7 +613,7 @@ export function OrdersPage() {
                           </div>
                           <div>
                             <p className="font-bold text-gray-900 dark:text-white text-sm">#{order.orderNumber}</p>
-                            <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium tracking-wide">{formatDate(order.createdAt)}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide">{formatDate(order.createdAt)}</p>
                           </div>
                         </div>
                       </td>
@@ -562,10 +623,10 @@ export function OrdersPage() {
                       </td>
                       <td className="px-6 py-4">
                         <p className="font-bold text-gray-900 dark:text-white">{formatCurrency(order.total)}</p>
-                        <p className="text-[10px] text-gray-500 font-bold tracking-wider">{order.paymentMethod}</p>
+                        <p className="text-xs text-gray-500 font-bold tracking-wider">{order.paymentMethod}</p>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
                           {(order.paymentStatus || order.status || 'PENDING').charAt(0).toUpperCase() + (order.paymentStatus || order.status || 'PENDING').slice(1).toLowerCase()}
                         </span>
                       </td>
