@@ -341,7 +341,7 @@ export function OwnerBrandsPage() {
 
     if (isLoading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[500px] space-y-6">
+            <div className="flex flex-col items-center justify-center min-h-[300px] lg:min-h-[400px] space-y-6">
                 <div className="relative">
                     <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
                     <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
@@ -780,7 +780,7 @@ export function OwnerBrandsPage() {
                             initial={{ scale: 0.9, opacity: 0, y: 30 }}
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.9, opacity: 0, y: 30 }}
-                            className="relative w-full max-w-4xl bg-white dark:bg-[#1E293B] rounded-3xl border border-gray-200 dark:border-white/10 shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]"
+                            className="relative w-full max-w-4xl bg-white dark:bg-[#1E293B] rounded-3xl border border-gray-200 dark:border-white/10 shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[85vh]"
                         >
                             {/* Modal Sidebar */}
                             <div className="w-full md:w-72 bg-gray-50 dark:bg-white/[0.02] p-8 border-b md:border-b-0 md:border-r border-gray-200 dark:border-white/5 flex flex-col justify-between shrink-0">
@@ -881,7 +881,7 @@ export function OwnerBrandsPage() {
                                                 <div>
                                                     <h4 className="text-xs font-bold text-gray-500 tracking-wide mb-4">Select Locations</h4>
                                                     <p className="text-sm text-gray-500 mb-4">Choose locations to group under this brand.</p>
-                                                    <div className="grid grid-cols-1 gap-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
+                                                    <div className="grid grid-cols-1 gap-3 max-h-[280px] lg:max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                                                         {availableEstablishments.map((est: any) => (
                                                             <div
                                                                 key={est.id}
@@ -931,7 +931,7 @@ export function OwnerBrandsPage() {
                                                             <p className="text-sm text-gray-400">Loading staff data...</p>
                                                         </div>
                                                     ) : (
-                                                        <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
+                                                        <div className="space-y-4 max-h-[280px] lg:max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                                                             {employeesForMerging.map((group) => (
                                                                 <div key={group.establishmentId} className="bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 rounded-xl overflow-hidden">
                                                                     <div className="px-5 py-4 border-b border-gray-200 dark:border-white/5 flex items-center justify-between bg-white dark:bg-white/5">

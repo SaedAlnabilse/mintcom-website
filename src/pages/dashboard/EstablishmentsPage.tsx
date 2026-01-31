@@ -173,7 +173,7 @@ export function EstablishmentsPage() {
                 <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center border border-gray-100 dark:border-white/10">
                   <DollarSign size={14} className="text-paymint-green" />
                 </div>
-                <span>Currency: {est.currency}</span>
+                <span>Currency: {est.currency?.toUpperCase()}</span>
               </div>
               <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 text-xs font-black tracking-widest">
                 <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center border border-gray-100 dark:border-white/10">
@@ -205,7 +205,7 @@ export function EstablishmentsPage() {
         {/* Add New Establishment Card */}
         <motion.button
           onClick={() => navigate('/onboarding')}
-          className="bg-white dark:bg-[#1E293B] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl p-10 flex flex-col items-center justify-center gap-8 hover:border-paymint-green dark:hover:border-paymint-green hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all min-h-[400px] group shadow-sm"
+          className="bg-white dark:bg-[#1E293B] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl p-10 flex flex-col items-center justify-center gap-8 hover:border-paymint-green dark:hover:border-paymint-green hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all min-h-[250px] lg:min-h-[350px] group shadow-sm"
         >
           <div className="w-24 h-24 bg-gray-50 dark:bg-white/[0.03] rounded-full flex items-center justify-center border border-gray-200 dark:border-white/5 group-hover:scale-110 transition-transform duration-500 shadow-sm">
             <Plus size={40} className="text-gray-300 group-hover:text-paymint-green transition-colors" />

@@ -305,7 +305,7 @@ export const WorkflowSupport = () => {
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.9, opacity: 0, y: 20 }}
                 onClick={(e) => e.stopPropagation()}
-                className="bg-white dark:bg-[#1a1a1a] rounded-3xl border border-gray-100 dark:border-white/5 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+                className="bg-white dark:bg-[#1a1a1a] rounded-3xl border border-gray-100 dark:border-white/5 max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl"
               >
                 {/* Header */}
                 <div className="sticky top-0 bg-white dark:bg-[#1a1a1a] border-b border-gray-100 dark:border-white/5 p-6 flex items-start justify-between rounded-t-3xl">

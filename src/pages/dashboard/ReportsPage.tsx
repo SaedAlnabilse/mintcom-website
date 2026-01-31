@@ -7,7 +7,7 @@ import { endOfDay, startOfDay, format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   TrendingUp, Clock, Activity, ShoppingBag, ArrowUpRight, RefreshCw,
-  DownloadCloud, ChevronRight, ChevronLeft, Wallet, CreditCard, ExternalLink, Percent, DollarSign, PieChart as PieChartIcon, Tag, Scale, ArrowUpDown, Calendar, Search, Users
+  Download, ChevronRight, ChevronLeft, Wallet, CreditCard, ExternalLink, Percent, DollarSign, PieChart as PieChartIcon, Tag, Scale, ArrowUpDown, Calendar, Search, Users
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -133,6 +133,7 @@ export function ReportsPage() {
   // itemReportTab moved up
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [discountPage, setDiscountPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
 
   const sortedItems = useMemo(() => {
@@ -479,7 +480,7 @@ export function ReportsPage() {
             onClick={handleExport}
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
           >
-            <DownloadCloud size={18} className="text-paymint-green" />
+            <Download size={18} className="text-paymint-green" />
             <span>Export to CSV</span>
           </button>
           <button
@@ -497,13 +498,13 @@ export function ReportsPage() {
         {/* Report Type Selector */}
         <div className="flex w-full gap-2">
           {[
-            { id: 'sales', label: 'Overview', icon: TrendingUp },
-            { id: 'items-categories', label: 'Items + Categories', icon: ShoppingBag },
-            { id: 'addons', label: 'Add-ons', icon: Tag },
-            { id: 'staff-sales', label: 'Staff Sales', icon: Activity },
-            { id: 'shifts', label: 'Shifts', icon: Clock },
-            { id: 'payments', label: 'Payments', icon: CreditCard },
-            { id: 'discounts', label: 'Discounts', icon: Percent },
+            { id: 'sales', label: 'Sales Summary', icon: TrendingUp },
+            { id: 'items-categories', label: 'Sales By Items', icon: ShoppingBag },
+            { id: 'addons', label: 'Sales By Add-Ons', icon: Tag },
+            { id: 'staff-sales', label: 'Sales By Staff', icon: Activity },
+            { id: 'shifts', label: 'Shifts Reports', icon: Clock },
+            { id: 'payments', label: 'Payments Reports', icon: CreditCard },
+            { id: 'discounts', label: 'Discount Reports', icon: Percent },
           ].map((type) => {
             const isSelected = type.id === 'items-categories'
               ? (reportType === 'top-items' && (itemReportTab === 'items' || itemReportTab === 'categories'))
@@ -553,7 +554,7 @@ export function ReportsPage() {
           <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0">
 
             {/* Sector 1: Quick Period Dropdown */}
-            <div className="flex-none w-[180px]">
+            <div className={`flex-none w-[180px] rounded-2xl transition-all ${selectedDateRange !== 'custom' ? 'ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : ''}`}>
               <SingleSelect
                 value={selectedDateRange === 'custom' ? null : selectedDateRange}
                 onChange={(val) => setQuickDate(val || 'today')}
@@ -563,6 +564,7 @@ export function ReportsPage() {
                   { label: 'This Week', value: 'this_week' },
                   { label: 'This Month', value: 'this_month' },
                 ]}
+                showAllOption={false}
                 placeholder="Select Period"
                 className="w-full"
                 buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-3.5 !h-full !text-sm !font-bold ${selectedDateRange !== 'custom' ? '!text-paymint-green' : ''}`}
@@ -580,7 +582,7 @@ export function ReportsPage() {
               return (
                 <div className="flex-1 flex flex-col md:flex-row gap-4 items-center">
                   {/* Date Input Group */}
-                  <div className="flex-1 w-full bg-transparent flex flex-col justify-center px-2 group">
+                  <div className={`flex-1 w-full flex flex-col justify-center px-2 py-1 rounded-xl border transition-all group ${isDateFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-transparent border-transparent'}`}>
                     <div className="flex items-center gap-2 mb-1">
                       <Calendar size={12} className={isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
                       <span className={`text-xs font-black tracking-widest transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Date Range</span>
@@ -606,7 +608,7 @@ export function ReportsPage() {
                   <div className="hidden md:block w-px h-8 bg-gray-100 dark:bg-white/10" />
 
                   {/* Time Input Group */}
-                  <div className="flex-1 w-full bg-transparent flex flex-col justify-center px-2 group">
+                  <div className={`flex-1 w-full flex flex-col justify-center px-2 py-1 rounded-xl border transition-all group ${isTimeFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-transparent border-transparent'}`}>
                     <div className="flex items-center gap-2 mb-1">
                       <Clock size={12} className={isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
                       <span className={`text-xs font-black tracking-widest transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Active Hours</span>
@@ -678,7 +680,7 @@ export function ReportsPage() {
             {/* Sales Dashboard Section */}
             {reportType === 'sales' && salesData && (
               <div className="space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {(() => {
                     const netPayInOut = (salesData.totalPayIn || 0) - (salesData.totalPayOut || 0);
 
@@ -740,7 +742,7 @@ export function ReportsPage() {
                         color: 'text-orange-500',
                         bg: 'bg-orange-500/10',
                         sub: 'Staff Hours',
-                        onClick: () => setReportType('shifts')
+                        onClick: () => navigate('/dashboard/reports/shifts')
                       },
                       {
                         label: 'Cashflow Outside Sales',
@@ -1968,12 +1970,27 @@ export function ReportsPage() {
 
                     {/* Breakdown Table */}
                     <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden flex flex-col">
-                      <div className="p-6 border-b border-gray-100 dark:border-white/5">
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                          <Activity size={20} className="text-blue-500" />
-                          Details
-                        </h3>
-                        <p className="text-xs text-gray-500 mt-1">Click on CARD or other methods to see breakdown</p>
+                      <div className="p-6 border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                          <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                            <Activity size={20} className="text-blue-500" />
+                            Details
+                          </h3>
+                          <p className="text-xs text-gray-500 mt-1">Click on CARD or other methods to see breakdown</p>
+                        </div>
+                        <button
+                          onClick={() => navigate('/dashboard/orders', {
+                            state: {
+                              startDate: effectiveDateRange.start,
+                              endDate: effectiveDateRange.end,
+                              selectedDateRange: selectedDateRange
+                            }
+                          })}
+                          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-all text-xs font-black tracking-widest border border-gray-200 dark:border-white/10"
+                        >
+                          <span>View All Orders</span>
+                          <ChevronRight size={14} className="text-paymint-green" />
+                        </button>
                       </div>
                       <div className="flex-1 overflow-x-auto">
                         <table className="w-full">
@@ -1989,7 +2006,7 @@ export function ReportsPage() {
                               const total = salesData.totalRevenue || 1;
                               const percentage = ((item.value / total) * 100).toFixed(1);
                               const hasDetails = (item.name === 'CARD' && salesData.cardTypeBreakdown?.length > 0) ||
-                                                (item.name !== 'CARD' && item.name !== 'CASH' && salesData.otherPaymentBreakdown?.length > 0);
+                                (item.name !== 'CARD' && item.name !== 'CASH' && salesData.otherPaymentBreakdown?.length > 0);
                               const isExpanded = expandedPaymentMethod === item.name;
 
                               return (
@@ -2250,7 +2267,7 @@ export function ReportsPage() {
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                            {sortedDiscounts.map((item: any, i: number) => {
+                            {sortedDiscounts.slice((discountPage - 1) * 4, discountPage * 4).map((item: any, i: number) => {
                               return (
                                 <tr key={i} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
                                   <td className="px-6 py-4">
@@ -2275,6 +2292,29 @@ export function ReportsPage() {
                         {(!salesData.discountBreakdown || salesData.discountBreakdown.length === 0) && (
                           <div className="p-8 text-center text-gray-400 text-xs font-bold tracking-widest">
                             No discount data available
+                          </div>
+                        )}
+                        {sortedDiscounts.length > 4 && (
+                          <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100 dark:border-white/5">
+                            <p className="text-xs font-bold text-gray-500 dark:text-gray-400">
+                              Page {discountPage} of {Math.ceil(sortedDiscounts.length / 4)}
+                            </p>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => setDiscountPage((p) => Math.max(1, p - 1))}
+                                disabled={discountPage === 1}
+                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                              >
+                                <ChevronLeft size={16} />
+                              </button>
+                              <button
+                                onClick={() => setDiscountPage((p) => Math.min(Math.ceil(sortedDiscounts.length / 4), p + 1))}
+                                disabled={discountPage === Math.ceil(sortedDiscounts.length / 4)}
+                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                              >
+                                <ChevronRight size={16} />
+                              </button>
+                            </div>
                           </div>
                         )}
                       </div>

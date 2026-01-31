@@ -206,7 +206,7 @@ export function CustomRolesPage() {
       </div>
 
       {/* Main List */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-h-[400px] flex flex-col">
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-h-[250px] lg:min-h-[350px] flex flex-col">
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-32">
             <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />

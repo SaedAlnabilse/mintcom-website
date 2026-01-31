@@ -475,7 +475,7 @@ export function RecipesPage() {
       <AnimatePresence>
         {showSubRecipeModal && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{editingRecipe ? 'Edit Recipe' : 'New Recipe'}</h2>
                 <button onClick={() => setShowSubRecipeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={24} /></button>
@@ -656,7 +656,7 @@ export function RecipesPage() {
       <AnimatePresence>
         {showFinalRecipeModal && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-lg max-h-[90vh] flex flex-col overflow-visible shadow-2xl">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-lg max-h-[85vh] flex flex-col overflow-visible shadow-2xl">
               <div className="p-8 border-b border-gray-200 dark:border-white/5 flex items-center justify-between">
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{editingRecipe ? 'Edit Product Recipe' : 'Map Product'}</h2>
                 <button onClick={() => setShowFinalRecipeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={24} /></button>

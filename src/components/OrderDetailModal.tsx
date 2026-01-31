@@ -81,7 +81,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl relative"
+                className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-2xl max-h-[85vh] overflow-y-auto shadow-2xl relative"
             >
                 <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between relative isolate">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />

@@ -57,12 +57,12 @@ const menuStructure: MenuItemOrGroup[] = [
     icon: FileBarChart,
     items: [
       { path: '/dashboard/reports/sales', label: 'Sales Summary', icon: FileBarChart },
-      { path: '/dashboard/reports/items', label: 'Items + Categories', icon: Package },
-      { path: '/dashboard/reports/modifiers', label: 'Add-on Sales', icon: Package },
-      { path: '/dashboard/reports/staff-sales', label: 'Staff Sales', icon: Users },
-      { path: '/dashboard/reports/shifts', label: 'Shifts', icon: FileBarChart },
-      { path: '/dashboard/reports/payments', label: 'Payments', icon: CreditCard },
-      { path: '/dashboard/reports/discounts', label: 'Discounts Report', icon: Percent },
+      { path: '/dashboard/reports/items', label: 'Sales By Items', icon: Package },
+      { path: '/dashboard/reports/modifiers', label: 'Sales By Add-Ons', icon: Package },
+      { path: '/dashboard/reports/staff-sales', label: 'Sales By Staff', icon: Users },
+      { path: '/dashboard/reports/shifts', label: 'Shifts Reports', icon: FileBarChart },
+      { path: '/dashboard/reports/payments', label: 'Payments Reports', icon: CreditCard },
+      { path: '/dashboard/reports/discounts', label: 'Discount Reports', icon: Percent },
     ],
   },
   { path: '/dashboard/orders', label: 'View Customer Orders', icon: ShoppingCart },
@@ -77,13 +77,7 @@ const menuStructure: MenuItemOrGroup[] = [
       { path: '/dashboard/recipes', label: 'Recipes', icon: FileBarChart },
     ],
   },
-  {
-    label: 'Sales',
-    icon: CreditCard,
-    items: [
-      { path: '/dashboard/payment-methods', label: 'Payment Methods', icon: CreditCard },
-    ],
-  },
+  { path: '/dashboard/payment-methods', label: 'Payment Methods', icon: CreditCard },
   {
     label: 'Team Management',
     icon: Users,
@@ -160,6 +154,10 @@ export function DashboardLayout() {
 
   const [sidebarOpen, setSidebarOpen] = useState(() => {
     const saved = localStorage.getItem(SIDEBAR_STATE_KEY);
+    // Default to closed on smaller screens (under 1400px)
+    if (saved === null && typeof window !== 'undefined' && window.innerWidth < 1400) {
+      return false;
+    }
     return saved !== null ? saved === 'true' : false;
   });
 

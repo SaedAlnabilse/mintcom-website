@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { startOfDay, endOfDay } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -54,6 +55,7 @@ interface OrderItem {
 }
 
 export function OrdersPage() {
+  const location = useLocation();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [, setError] = useState('');
@@ -61,10 +63,22 @@ export function OrdersPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [paymentFilter, setPaymentFilter] = useState('all');
-  const [startDate, setStartDate] = useState(() => new Date().toISOString().split('T')[0]);
-  const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [startDate, setStartDate] = useState(() => {
+    if (location.state?.startDate) {
+      return new Date(location.state.startDate).toISOString().split('T')[0];
+    }
+    return new Date().toISOString().split('T')[0];
+  });
+  const [endDate, setEndDate] = useState(() => {
+    if (location.state?.endDate) {
+      return new Date(location.state.endDate).toISOString().split('T')[0];
+    }
+    return new Date().toISOString().split('T')[0];
+  });
 
-  const [selectedDateRange, setSelectedDateRange] = useState<string>('today');
+  const [selectedDateRange, setSelectedDateRange] = useState<string>(() => {
+    return location.state?.selectedDateRange || 'today';
+  });
   const [activeActionMenu, setActiveActionMenu] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -305,6 +319,11 @@ export function OrdersPage() {
     }
   };
 
+  const getStatusLabel = (status: string) => {
+    if (status === 'PENDING' || status === 'HELD') return 'On Hold';
+    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+  };
+
   const handleExport = () => {
     const exportData = orders.map(o => ({
       orderNumber: o.orderNumber,
@@ -420,7 +439,7 @@ export function OrdersPage() {
               options={[
                 { label: 'All Status', value: 'all' },
                 { label: 'Completed', value: 'COMPLETED' },
-                { label: 'Held Orders', value: 'HELD' },
+                { label: 'On Hold', value: 'HELD' },
                 { label: 'Refunded', value: 'REFUNDED' },
               ]}
             />
@@ -454,7 +473,7 @@ export function OrdersPage() {
         {[
           { label: 'Total Sales', value: formatCurrency(orders.reduce((acc, o) => acc + (o.total || 0), 0)), icon: TrendingUp, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
           { label: 'Total Orders', value: orders.length, icon: ShoppingCart, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-          { label: 'Pending', value: orders.filter(o => o.status === 'HELD' || o.paymentStatus === 'PENDING').length, icon: Clock, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+          { label: 'On Hold', value: orders.filter(o => o.status === 'HELD' || o.paymentStatus === 'PENDING').length, icon: Clock, color: 'text-orange-500', bg: 'bg-orange-500/10' },
         ].map((stat, i) => (
           <motion.div
             key={i}
@@ -478,7 +497,7 @@ export function OrdersPage() {
       </div>
 
       {/* Orders List Container */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col min-h-[400px]">
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col min-h-[250px] lg:min-h-[350px]">
 
         {/* Loading State */}
         {isLoading && orders.length === 0 && (
@@ -529,7 +548,7 @@ export function OrdersPage() {
                       </div>
                     </div>
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
-                      {(order.paymentStatus || order.status || 'PENDING').charAt(0).toUpperCase() + (order.paymentStatus || order.status || 'PENDING').slice(1).toLowerCase()}
+                      {getStatusLabel(order.paymentStatus || order.status || 'PENDING')}
                     </span>
                   </div>
 
@@ -627,7 +646,7 @@ export function OrdersPage() {
                       </td>
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
-                          {(order.paymentStatus || order.status || 'PENDING').charAt(0).toUpperCase() + (order.paymentStatus || order.status || 'PENDING').slice(1).toLowerCase()}
+                          {getStatusLabel(order.paymentStatus || order.status || 'PENDING')}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">

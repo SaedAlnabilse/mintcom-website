@@ -102,7 +102,7 @@ export function BrandLocationsPage() {
                     return {
                         ...loc,
                         type: loc.type || 'Restaurant',
-                        currency: loc.currency || 'Usd',
+                        currency: loc.currency?.toUpperCase() || 'USD',
                         subscriptionStatus: loc.subscriptionStatus || 'ACTIVE',
                         employeeCount: stats.employees || 0,
                         orderCount: stats.orders || 0,
@@ -214,7 +214,7 @@ export function BrandLocationsPage() {
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat('en-US', {
             style: 'currency',
-            currency: 'Usd',
+            currency: 'USD',
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
         }).format(value);
@@ -465,7 +465,7 @@ export function BrandLocationsPage() {
                                             <div className="flex items-center gap-2 mt-1">
                                                 <span className="text-xs font-medium text-gray-500">{loc.type ? loc.type.charAt(0).toUpperCase() + loc.type.slice(1).toLowerCase() : 'Restaurant'}</span>
                                                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                                                <span className="text-xs font-medium text-gray-500">{loc.currency ? loc.currency.charAt(0).toUpperCase() + loc.currency.slice(1).toLowerCase() : 'Usd'}</span>
+                                                <span className="text-xs font-medium text-gray-500">{loc.currency ? loc.currency.toUpperCase() : 'USD'}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -596,7 +596,7 @@ export function BrandLocationsPage() {
                                             <h3 className="font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
                                                 {loc.name}
                                             </h3>
-                                            <p className="text-xs text-gray-500 mt-0.5">{loc.type ? loc.type.charAt(0).toUpperCase() + loc.type.slice(1).toLowerCase() : 'Restaurant'} - {loc.currency ? loc.currency.charAt(0).toUpperCase() + loc.currency.slice(1).toLowerCase() : 'Usd'}</p>
+                                            <p className="text-xs text-gray-500 mt-0.5">{loc.type ? loc.type.charAt(0).toUpperCase() + loc.type.slice(1).toLowerCase() : 'Restaurant'} - {loc.currency ? loc.currency.toUpperCase() : 'USD'}</p>
                                         </div>
                                     </div>
 

@@ -1,4 +1,5 @@
 import { useState, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronRight, ChevronLeft, HelpCircle } from 'lucide-react';
 
@@ -34,8 +35,8 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
       const rect = element.getBoundingClientRect();
       setTargetRect(rect);
     } else {
-        // If element not found, move to next step or nullify
-        // console.warn(`Tour target #${currentStep?.targetId} not found`);
+      // If element not found, move to next step or nullify
+      // console.warn(`Tour target #${currentStep?.targetId} not found`);
     }
   };
 
@@ -69,50 +70,50 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] overflow-hidden">
+        <div className="fixed inset-0 z-[9999] overflow-hidden font-sans">
           {/* Backdrop with cutout using SVG mask */}
           <div className="absolute inset-0 w-full h-full pointer-events-none">
-             {targetRect && (
-                 <svg className="w-full h-full">
-                     <defs>
-                         <mask id="tour-mask" x="0" y="0" width="100%" height="100%">
-                             <rect x="0" y="0" width="100%" height="100%" fill="white" />
-                             <rect
-                                x={targetRect.left - 8}
-                                y={targetRect.top - 8}
-                                width={targetRect.width + 16}
-                                height={targetRect.height + 16}
-                                rx="12"
-                                fill="black"
-                             />
-                         </mask>
-                     </defs>
-                     <rect
-                        x="0"
-                        y="0"
-                        width="100%"
-                        height="100%"
-                        fill="rgba(0,0,0,0.6)"
-                        mask="url(#tour-mask)"
-                     />
-                     {/* Highlight Border */}
-                     <rect
-                        x={targetRect.left - 8}
-                        y={targetRect.top - 8}
-                        width={targetRect.width + 16}
-                        height={targetRect.height + 16}
-                        rx="12"
-                        fill="none"
-                        stroke="#00D084" // paymint-green
-                        strokeWidth="2"
-                        className="animate-pulse"
-                     />
-                 </svg>
-             )}
-             {!targetRect && <div className="absolute inset-0 bg-black/60" />}
+            {targetRect && (
+              <svg className="w-full h-full">
+                <defs>
+                  <mask id="tour-mask" x="0" y="0" width="100%" height="100%">
+                    <rect x="0" y="0" width="100%" height="100%" fill="white" />
+                    <rect
+                      x={targetRect.left - 8}
+                      y={targetRect.top - 8}
+                      width={targetRect.width + 16}
+                      height={targetRect.height + 16}
+                      rx="12"
+                      fill="black"
+                    />
+                  </mask>
+                </defs>
+                <rect
+                  x="0"
+                  y="0"
+                  width="100%"
+                  height="100%"
+                  fill="rgba(0,0,0,0.6)"
+                  mask="url(#tour-mask)"
+                />
+                {/* Highlight Border */}
+                <rect
+                  x={targetRect.left - 8}
+                  y={targetRect.top - 8}
+                  width={targetRect.width + 16}
+                  height={targetRect.height + 16}
+                  rx="12"
+                  fill="none"
+                  stroke="#00D084" // paymint-green
+                  strokeWidth="2"
+                  className="animate-pulse"
+                />
+              </svg>
+            )}
+            {!targetRect && <div className="absolute inset-0 bg-black/60" />}
           </div>
 
           {/* Interactive Tooltip Card */}
@@ -121,25 +122,25 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               key={currentStepIndex}
-              className="absolute z-[101] w-80 bg-white dark:bg-[#1E293B] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 p-5"
+              className="absolute z-[10000] w-80 bg-white dark:bg-[#1E293B] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 p-5"
               style={{
                 // Simple positioning logic - can be enhanced with Popper.js if needed
                 top: targetRect.bottom + 20 < window.innerHeight - 200
-                     ? targetRect.bottom + 20
-                     : targetRect.top - 200, // Flip to top if not enough space below
+                  ? targetRect.bottom + 20
+                  : targetRect.top - 220, // Adjusted to ensure it clears the element and fits
                 left: Math.min(Math.max(20, targetRect.left + (targetRect.width / 2) - 160), window.innerWidth - 340)
               }}
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2 text-paymint-green">
-                    <HelpCircle size={18} />
-                    <span className="text-xs font-black tracking-widest">Guide</span>
+                  <HelpCircle size={18} />
+                  <span className="text-xs font-black tracking-widest">Guide</span>
                 </div>
                 <button
-                    onClick={onClose}
-                    className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                  onClick={onClose}
+                  className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                 >
-                    <X size={16} />
+                  <X size={16} />
                 </button>
               </div>
 
@@ -155,9 +156,8 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
                 <div className="flex gap-1">
                   {steps.map((_, idx) => (
                     <div
-                        key={idx}
-                        className={`h-1.5 rounded-full transition-all duration-300 ${
-                            idx === currentStepIndex ? 'w-6 bg-paymint-green' : 'w-1.5 bg-gray-200 dark:bg-white/10'
+                      key={idx}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentStepIndex ? 'w-6 bg-paymint-green' : 'w-1.5 bg-gray-200 dark:bg-white/10'
                         }`}
                     />
                   ))}
@@ -185,6 +185,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
           )}
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };

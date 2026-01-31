@@ -308,7 +308,7 @@ export function AdminUsersPage() {
                             initial={{ scale: 0.95, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.95, opacity: 0 }}
-                            className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl relative"
+                            className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md max-h-[85vh] overflow-y-auto shadow-2xl relative"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between relative isolate">

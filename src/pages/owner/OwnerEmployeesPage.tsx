@@ -307,7 +307,7 @@ export function OwnerEmployeesPage() {
             </div>
 
             {/* Stats Grid */}
-            <div id="tour-stats-grid" className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div id="tour-stats-grid" className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {[
                     { label: 'Total Staff', info: 'Total number of registered employees across all locations.', value: stats.total, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
                     { label: 'Active Now', info: 'Employees clocked in or active.', value: stats.active, icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },

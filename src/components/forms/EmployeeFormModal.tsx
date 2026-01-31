@@ -336,7 +336,7 @@ export function EmployeeFormModal({
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-white dark:bg-[#1E293B] w-[90vw] max-w-lg rounded-[2rem] overflow-hidden max-h-[90vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/10 shadow-2xl"
+          className="bg-white dark:bg-[#1E293B] w-[95vw] sm:w-[90vw] max-w-xl rounded-2xl overflow-hidden max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/10 shadow-2xl"
         >
           {/* Header */}
           <div className="flex items-center justify-between p-8 pb-4 border-b border-gray-100 dark:border-white/5">

@@ -242,7 +242,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
             </div>
 
             {/* Table */}
-            <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm flex flex-col min-h-[400px]">
+            <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm flex flex-col min-h-[250px] lg:min-h-[350px]">
                 {isLoading ? (
                     <div className="flex-1 flex flex-col items-center justify-center py-20">
                         <div className="w-10 h-10 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />

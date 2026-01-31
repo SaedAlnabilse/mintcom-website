@@ -310,7 +310,7 @@ export function PaymentMethodsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {cardTypes.length === 0 ? (
             <div className="col-span-full py-12 text-center">
               <p className="text-gray-400 font-black tracking-widest text-xs">No card brands added yet.</p>
@@ -384,7 +384,7 @@ export function PaymentMethodsPage() {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {Array.isArray(paymentMethods) && paymentMethods.map((method) => (
               <motion.div
                 layout

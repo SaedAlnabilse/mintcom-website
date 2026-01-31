@@ -321,7 +321,7 @@ export function CustomersPage() {
             <div>
               <p className="text-xs font-black text-gray-400 tracking-widest">Total Spent</p>
               <p className="text-2xl font-black text-gray-900 dark:text-white mt-0.5">
-                {formatCurrency(customers.reduce((acc, curr) => acc + curr.totalSpent, 0))}
+                {formatCurrency(customers.reduce((acc, curr) => acc + (Number(curr.totalSpent) || 0), 0))}
               </p>
             </div>
           </div>
@@ -343,7 +343,7 @@ export function CustomersPage() {
       </div>
 
       {/* Main List */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-h-[400px] flex flex-col">
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-h-[250px] lg:min-h-[350px] flex flex-col">
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-32">
             <div className="w-12 h-12 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />

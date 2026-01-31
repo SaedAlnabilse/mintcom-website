@@ -15,6 +15,7 @@ interface SingleSelectProps {
     placeholder?: string;
     className?: string;
     allOptionLabel?: string; // Label for the "All" option
+    showAllOption?: boolean;
 }
 
 export function SingleSelect({
@@ -25,6 +26,7 @@ export function SingleSelect({
     placeholder = 'All',
     className = '',
     allOptionLabel = 'All',
+    showAllOption = true,
     buttonClassName = ''
 }: SingleSelectProps & { buttonClassName?: string }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -144,7 +146,7 @@ export function SingleSelect({
 
                         <div className="flex-1 overflow-y-auto custom-scrollbar">
                             {/* "All" Option */}
-                            {!searchQuery && (
+                            {showAllOption && !searchQuery && (
                                 <button
                                     type="button"
                                     onClick={() => handleSelect(null)}

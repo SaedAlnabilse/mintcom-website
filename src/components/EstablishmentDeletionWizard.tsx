@@ -195,7 +195,7 @@ export function EstablishmentDeletionWizard({
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white dark:bg-[#1E293B] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col border border-gray-200 dark:border-white/5 shadow-2xl"
+                className="bg-white dark:bg-[#1E293B] rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col border border-gray-200 dark:border-white/5 shadow-2xl"
             >
                 {/* Header */}
                 <div className="bg-gradient-to-r from-paymint-red to-paymint-red p-6 text-white relative">

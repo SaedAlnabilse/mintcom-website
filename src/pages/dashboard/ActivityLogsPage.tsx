@@ -280,9 +280,10 @@ export function ActivityLogsPage() {
               />
             </div>
 
-            {/* Date Filters Container */}
-            <div className="flex items-center gap-3 bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/10 w-full md:w-auto overflow-x-auto">
-              <div className="flex items-center gap-1">
+            {/* Date Filters Container - Split for visual feedback */}
+            <div className="flex items-center gap-3 overflow-x-auto">
+              {/* Presets Group */}
+              <div className={`flex items-center gap-1 p-1 rounded-xl border transition-all ${activePreset !== 'custom' ? 'bg-white dark:bg-white/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10'}`}>
                 {['today', 'yesterday', 'week'].map((preset) => (
                   <button
                     key={preset}
@@ -290,30 +291,29 @@ export function ActivityLogsPage() {
                     className={`
                       px-3 py-2 rounded-lg text-xs font-bold tracking-wide transition-all whitespace-nowrap
                       ${activePreset === preset
-                        ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm'
-                        : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}
+                        ? 'bg-paymint-green text-white shadow-sm'
+                        : 'text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10'}
                     `}
                   >
-                    {preset === 'week' ? 'This Week' : preset}
+                    {preset === 'week' ? 'This Week' : preset.charAt(0).toUpperCase() + preset.slice(1)}
                   </button>
                 ))}
               </div>
 
-              <div className="w-px h-6 bg-gray-200 dark:bg-white/10" />
-
-              <div className="flex items-center gap-2 px-2">
+              {/* Custom Date Inputs Group */}
+              <div className={`flex items-center gap-2 p-1 px-3 rounded-xl border transition-all ${activePreset === 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10'}`}>
                 <input
                   type="date"
                   value={dateRange.start}
                   onChange={(e) => handleCustomDateChange('start', e.target.value)}
-                  className="bg-transparent border-none text-gray-900 dark:text-white font-bold text-xs p-0 focus:ring-0 cursor-pointer w-[85px]"
+                  className={`bg-transparent border-none font-bold text-xs p-0 focus:ring-0 cursor-pointer w-[85px] transition-colors ${activePreset === 'custom' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}
                 />
-                <span className="text-gray-400 text-xs">-</span>
+                <span className={`text-xs ${activePreset === 'custom' ? 'text-paymint-green/50' : 'text-gray-400'}`}>-</span>
                 <input
                   type="date"
                   value={dateRange.end}
                   onChange={(e) => handleCustomDateChange('end', e.target.value)}
-                  className="bg-transparent border-none text-gray-900 dark:text-white font-bold text-xs p-0 focus:ring-0 cursor-pointer w-[85px]"
+                  className={`bg-transparent border-none font-bold text-xs p-0 focus:ring-0 cursor-pointer w-[85px] transition-colors ${activePreset === 'custom' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}
                 />
               </div>
             </div>
@@ -322,7 +322,7 @@ export function ActivityLogsPage() {
       </div>
 
       {/* Main Logs Area */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col min-h-[500px]">
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col min-h-[300px] lg:min-h-[250px] lg:min-h-[350px]">
         <div className="overflow-x-auto flex-1">
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-white/[0.02]">

@@ -241,7 +241,7 @@ export function CategoriesPage() {
           <p className="text-gray-500 max-w-xs text-sm">Create a category to organize your items.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {categories.map((category, idx) => {
             const IconComponent = ICON_MAP[category.icon || 'tag'] || Tag;
             return (
