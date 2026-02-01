@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Award, Check } from 'lucide-react';
 import { CustomSelect } from '../CustomSelect';
+import { useScrollLock } from '../../hooks/useScrollLock';
 
 interface Category {
   id: string;
@@ -22,6 +24,8 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
   const [discountPercentage, setDiscountPercentage] = useState('');
   const [freeCategoryId, setFreeCategoryId] = useState('');
   const [freeCategoryName, setFreeCategoryName] = useState('');
+
+  useScrollLock(isOpen);
 
   useEffect(() => {
     if (initialData) {
@@ -56,14 +60,14 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm font-sans">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-[95vw] sm:w-[90vw] max-w-lg shadow-2xl relative overflow-hidden"
+          className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-[95vw] sm:w-[90vw] max-w-lg shadow-2xl relative overflow-hidden flex flex-col max-h-[85vh]"
         >
           <div className="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-white dark:bg-[#1E293B]">
             <div className="flex items-center gap-3">
@@ -82,7 +86,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
             </button>
           </div>
 
-          <form id="reward-form" onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[70vh] overflow-y-auto custom-scrollbar">
+          <form id="reward-form" onSubmit={handleSubmit} className="p-6 space-y-5 flex-1 overflow-y-auto custom-scrollbar">
             {/* Reward Type */}
             <div>
               <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1">Type</label>
@@ -189,6 +193,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
           </div>
         </motion.div>
       </div>
-    </AnimatePresence >
+    </AnimatePresence >,
+    document.body
   );
 }

@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Shield, Key, CheckCircle2, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
+import { useScrollLock } from '../hooks/useScrollLock';
 
 interface PasswordResetOtpModalProps {
     isOpen: boolean;
@@ -34,6 +36,8 @@ export function PasswordResetOtpModal({
     const [error, setError] = useState('');
 
     const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+    useScrollLock(isOpen);
 
     useEffect(() => {
         if (isOpen) {
@@ -172,13 +176,13 @@ export function PasswordResetOtpModal({
 
     if (!isOpen) return null;
 
-    return (
+    return createPortal(
         <AnimatePresence>
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 font-sans"
                 onClick={handleClose}
             >
                 <motion.div
@@ -422,6 +426,7 @@ export function PasswordResetOtpModal({
                     </div>
                 </motion.div>
             </motion.div>
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 }

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, RefreshCw, MousePointerClick, CheckSquare, AlertCircle } from 'lucide-react';
 import { QuickInfo } from '../QuickInfo';
+import { useScrollLock } from '../../hooks/useScrollLock';
 
 interface Attribute {
     id: string;
@@ -31,6 +33,8 @@ export function AttributeFormModal({
     const [isRequired, setIsRequired] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
 
+    useScrollLock(isOpen);
+
     useEffect(() => {
         if (isOpen) {
             setErrors({});
@@ -57,9 +61,9 @@ export function AttributeFormModal({
 
     if (!isOpen) return null;
 
-    return (
+    return createPortal(
         <AnimatePresence>
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20 dark:bg-black/60 backdrop-blur-sm">
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/20 dark:bg-black/60 backdrop-blur-sm font-sans">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -217,6 +221,7 @@ export function AttributeFormModal({
                     </div>
                 </motion.div>
             </div>
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 }

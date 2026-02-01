@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown, Check, Smartphone, Monitor } from 'lucide-react';
 import api from '../config/api';
+import { useScrollLock } from '../hooks/useScrollLock';
 
 interface CustomRole {
   id: string;
@@ -67,6 +69,8 @@ export function CustomRoleFormModal({
 }: CustomRoleFormModalProps) {
   const [name, setName] = useState('');
 
+  useScrollLock(isOpen);
+
   // Access Control State
   const [posAccess, setPosAccess] = useState(true);
   const [backofficeAccess, setBackofficeAccess] = useState(false);
@@ -82,7 +86,16 @@ export function CustomRoleFormModal({
 
   // UI State
   const [showDiscountsDropdown, setShowDiscountsDropdown] = useState(false);
+  const discountsContainerRef = useRef<HTMLDivElement>(null); // Ref for scrolling
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (showDiscountsDropdown && discountsContainerRef.current) {
+      setTimeout(() => {
+        discountsContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 150);
+    }
+  }, [showDiscountsDropdown]);
 
   useEffect(() => {
     if (isOpen) {
@@ -92,7 +105,7 @@ export function CustomRoleFormModal({
         setPosAccess(initialData.posAccess !== false); // Default true
         setBackofficeAccess(initialData.backofficeAccess || false);
         setPermissions(initialData.permissions || []);
-        
+
         // Handle Backoffice Permissions (with legacy mapping)
         const initialBackofficePerms = [...(initialData.backofficePermissions || [])];
         if (initialBackofficePerms.includes('manage_items') && !initialBackofficePerms.includes('manage_inventory')) {
@@ -104,7 +117,7 @@ export function CustomRoleFormModal({
         if (initialBackofficePerms.includes('manage_payment_types') && !initialBackofficePerms.includes('manage_payment_methods')) {
           initialBackofficePerms.push('manage_payment_methods');
         }
-        
+
         setBackofficePermissions(initialBackofficePerms);
         setAllowedDiscounts(initialData.allowedDiscounts || []);
         setAllDiscountsSelected(initialData.allowedDiscounts?.length === 0);
@@ -182,9 +195,9 @@ export function CustomRoleFormModal({
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm font-sans">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -223,7 +236,7 @@ export function CustomRoleFormModal({
 
               {/* Pos Section */}
               <div className="rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 overflow-hidden transition-all duration-300">
-                <div 
+                <div
                   className="flex items-center justify-between p-5 cursor-pointer hover:bg-gray-100/50 dark:hover:bg-white/[0.02]"
                   onClick={() => setPosAccess(!posAccess)}
                 >
@@ -256,16 +269,15 @@ export function CustomRoleFormModal({
                         {/* Pos Permissions List */}
                         <div className="space-y-3">
                           {POS_PERMISSIONS.map(perm => (
-                            <div 
-                              key={perm.id} 
+                            <div
+                              key={perm.id}
                               className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
                               onClick={() => togglePermission(perm.id)}
                             >
-                              <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-all duration-200 ${
-                                permissions.includes(perm.id)
-                                  ? 'bg-paymint-green border-paymint-green shadow-sm'
-                                  : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
-                              }`}>
+                              <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-all duration-200 ${permissions.includes(perm.id)
+                                ? 'bg-paymint-green border-paymint-green shadow-sm'
+                                : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
+                                }`}>
                                 {permissions.includes(perm.id) && <Check size={14} className="text-white" />}
                               </div>
                               <div>
@@ -277,7 +289,7 @@ export function CustomRoleFormModal({
                         </div>
 
                         {/* Discounts Section */}
-                        <div className="pt-4 border-t border-gray-200 dark:border-white/10">
+                        <div className="pt-4 border-t border-gray-200 dark:border-white/10" ref={discountsContainerRef}>
                           <div
                             className="flex items-center justify-between py-2 cursor-pointer group"
                             onClick={() => setShowDiscountsDropdown(!showDiscountsDropdown)}
@@ -299,34 +311,32 @@ export function CustomRoleFormModal({
                                 exit={{ height: 0, opacity: 0 }}
                                 className="space-y-2 pt-3 overflow-hidden"
                               >
-                                <div 
+                                <div
                                   className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
                                   onClick={() => {
                                     setAllDiscountsSelected(!allDiscountsSelected);
                                     if (!allDiscountsSelected) setAllowedDiscounts([]);
                                   }}
                                 >
-                                  <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-all ${
-                                    allDiscountsSelected
-                                      ? 'bg-paymint-green border-paymint-green shadow-sm'
-                                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
-                                  }`}>
+                                  <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-all ${allDiscountsSelected
+                                    ? 'bg-paymint-green border-paymint-green shadow-sm'
+                                    : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
+                                    }`}>
                                     {allDiscountsSelected && <Check size={14} className="text-white" />}
                                   </div>
                                   <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Allow all discounts</p>
                                 </div>
 
                                 {!allDiscountsSelected && availableDiscounts.map(discount => (
-                                  <div 
-                                    key={discount.id} 
+                                  <div
+                                    key={discount.id}
                                     className="flex items-start gap-3 pl-4 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
                                     onClick={() => toggleDiscount(discount.id)}
                                   >
-                                    <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-all ${
-                                      allowedDiscounts.includes(discount.id)
-                                        ? 'bg-paymint-green border-paymint-green shadow-sm'
-                                        : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
-                                    }`}>
+                                    <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-all ${allowedDiscounts.includes(discount.id)
+                                      ? 'bg-paymint-green border-paymint-green shadow-sm'
+                                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
+                                      }`}>
                                       {allowedDiscounts.includes(discount.id) && <Check size={14} className="text-white" />}
                                     </div>
                                     <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -346,7 +356,7 @@ export function CustomRoleFormModal({
 
               {/* Back Office Section */}
               <div className="rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 overflow-hidden transition-all duration-300">
-                <div 
+                <div
                   className="flex items-center justify-between p-5 cursor-pointer hover:bg-gray-100/50 dark:hover:bg-white/[0.02]"
                   onClick={() => setBackofficeAccess(!backofficeAccess)}
                 >
@@ -377,16 +387,15 @@ export function CustomRoleFormModal({
                     >
                       <div className="p-5 space-y-3">
                         {BACKOFFICE_PERMISSIONS.map(perm => (
-                          <div 
-                            key={perm.id} 
+                          <div
+                            key={perm.id}
                             className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
                             onClick={() => toggleBackofficePermission(perm.id)}
                           >
-                            <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-all duration-200 ${
-                              backofficePermissions.includes(perm.id)
-                                ? 'bg-paymint-green border-paymint-green shadow-sm'
-                                : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
-                            }`}>
+                            <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-all duration-200 ${backofficePermissions.includes(perm.id)
+                              ? 'bg-paymint-green border-paymint-green shadow-sm'
+                              : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
+                              }`}>
                               {backofficePermissions.includes(perm.id) && <Check size={14} className="text-white" />}
                             </div>
                             <div>
@@ -428,6 +437,7 @@ export function CustomRoleFormModal({
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

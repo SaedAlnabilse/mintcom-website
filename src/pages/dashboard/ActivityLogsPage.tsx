@@ -14,7 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { exportToCSV } from '../../utils/export';
-import { CustomSelect } from '../../components/CustomSelect';
+import { SingleSelect } from '../../components/SingleSelect';
 
 interface ActivityLog {
   id: string;
@@ -248,60 +248,60 @@ export function ActivityLogsPage() {
           <div className="flex flex-col md:flex-row items-center gap-4 w-full xl:w-auto">
             {/* Action Filter */}
             <div className="w-full md:w-64">
-              <CustomSelect
-                value={actionFilter}
-                onChange={(val) => { setActionFilter(val as string); setPage(1); }}
+              <SingleSelect
+                value={actionFilter === 'all' ? null : actionFilter}
+                onChange={(val) => { setActionFilter(val || 'all'); setPage(1); }}
                 options={[
-                  { label: 'All Actions', value: 'all' },
-                  ...[
-                    { label: 'Product: Add', value: 'Added product' },
-                    { label: 'Product: Update', value: 'Updated product' },
-                    { label: 'Product: Delete', value: 'Deleted product' },
-                    { label: 'Product: Remove Image', value: 'Removed product image' },
-                    { label: 'Category: Add', value: 'Added category' },
-                    { label: 'Category: Update', value: 'Updated category' },
-                    { label: 'Category: Delete', value: 'Deleted category' },
-                    { label: 'Staff: Add', value: 'Added employee' },
-                    { label: 'Staff: Delete', value: 'Deleted employee' },
-                    { label: 'Update: Name', value: 'Updated restaurant name' },
-                    { label: 'Update: Hours', value: 'Updated working hours' },
-                    { label: 'Update: Message', value: 'Updated farewell message' },
-                    { label: 'Update: Logo', value: 'Updated restaurant logo' },
-                    { label: 'Update: Tax', value: 'Updated tax rate' },
-                    { label: 'Update: Loyalty', value: 'Updated loyalty program' },
-                    { label: 'Discount: Add', value: 'Added discount' },
-                    { label: 'Discount: Update', value: 'Updated discount' },
-                    { label: 'Discount: Delete', value: 'Deleted discount' },
-                    { label: 'Payment: Add', value: 'Added payment method' },
-                    { label: 'Payment: Update', value: 'Updated payment method' },
-                    { label: 'Payment: Delete', value: 'Deleted payment method' },
-                  ]
+                  { label: 'Product: Add', value: 'Added product' },
+                  { label: 'Product: Update', value: 'Updated product' },
+                  { label: 'Product: Delete', value: 'Deleted product' },
+                  { label: 'Product: Remove Image', value: 'Removed product image' },
+                  { label: 'Category: Add', value: 'Added category' },
+                  { label: 'Category: Update', value: 'Updated category' },
+                  { label: 'Category: Delete', value: 'Deleted category' },
+                  { label: 'Staff: Add', value: 'Added employee' },
+                  { label: 'Staff: Delete', value: 'Deleted employee' },
+                  { label: 'Update: Name', value: 'Updated restaurant name' },
+                  { label: 'Update: Hours', value: 'Updated working hours' },
+                  { label: 'Update: Message', value: 'Updated farewell message' },
+                  { label: 'Update: Logo', value: 'Updated restaurant logo' },
+                  { label: 'Update: Tax', value: 'Updated tax rate' },
+                  { label: 'Update: Loyalty', value: 'Updated loyalty program' },
+                  { label: 'Discount: Add', value: 'Added discount' },
+                  { label: 'Discount: Update', value: 'Updated discount' },
+                  { label: 'Discount: Delete', value: 'Deleted discount' },
+                  { label: 'Payment: Add', value: 'Added payment method' },
+                  { label: 'Payment: Update', value: 'Updated payment method' },
+                  { label: 'Payment: Delete', value: 'Deleted payment method' },
                 ]}
+                allOptionLabel="All Actions"
+                placeholder="All Actions"
               />
             </div>
 
             {/* Date Filters Container - Split for visual feedback */}
-            <div className="flex items-center gap-3 overflow-x-auto">
-              {/* Presets Group */}
-              <div className={`flex items-center gap-1 p-1 rounded-xl border transition-all ${activePreset !== 'custom' ? 'bg-white dark:bg-white/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10'}`}>
-                {['today', 'yesterday', 'week'].map((preset) => (
-                  <button
-                    key={preset}
-                    onClick={() => handlePresetChange(preset)}
-                    className={`
-                      px-3 py-2 rounded-lg text-xs font-bold tracking-wide transition-all whitespace-nowrap
-                      ${activePreset === preset
-                        ? 'bg-paymint-green text-white shadow-sm'
-                        : 'text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10'}
-                    `}
-                  >
-                    {preset === 'week' ? 'This Week' : preset.charAt(0).toUpperCase() + preset.slice(1)}
-                  </button>
-                ))}
+            <div className="flex items-center gap-3">
+              {/* Presets Dropdown */}
+              <div className={`w-40 rounded-2xl transition-all ${activePreset !== 'custom' ? 'ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : ''}`}>
+                <SingleSelect
+                  value={activePreset === 'custom' ? null : activePreset}
+                  onChange={(val) => {
+                    if (val) handlePresetChange(val);
+                  }}
+                  options={[
+                    { label: 'Today', value: 'today' },
+                    { label: 'Yesterday', value: 'yesterday' },
+                    { label: 'This Week', value: 'week' },
+                    { label: 'This Month', value: 'month' },
+                  ]}
+                  placeholder="Custom Range"
+                  showAllOption={false}
+                  allowClear={false}
+                />
               </div>
 
               {/* Custom Date Inputs Group */}
-              <div className={`flex items-center gap-2 p-1 px-3 rounded-xl border transition-all ${activePreset === 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10'}`}>
+              <div className={`flex items-center gap-2 px-4 py-3.5 rounded-2xl border transition-all h-[52px] ${activePreset === 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-white dark:bg-white/[0.03] border-gray-200 dark:border-white/[0.08]'}`}>
                 <input
                   type="date"
                   value={dateRange.start}

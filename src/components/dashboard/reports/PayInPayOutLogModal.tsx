@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, ArrowUpRight, ArrowDownLeft, User, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import api from '../../../config/api';
+import { useScrollLock } from '../../../hooks/useScrollLock';
 
 interface PayInPayOutLogModalProps {
     isOpen: boolean;
@@ -33,6 +35,8 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
     const [isLoading, setIsLoading] = useState(true);
     const [totals, setTotals] = useState({ payIn: 0, payOut: 0 });
     const [sidebarOffset, setSidebarOffset] = useState(0);
+
+    useScrollLock(isOpen);
 
     useEffect(() => {
         const updateOffset = () => {
@@ -124,11 +128,13 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
         }).format(value);
     };
 
-    return (
+    if (!isOpen) return null;
+
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-[padding] duration-300 ease-in-out"
+                    className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-[padding] duration-300 ease-in-out font-sans"
                     style={{ paddingLeft: `calc(1rem + ${sidebarOffset}px)` }}
                 >
                     <motion.div
@@ -275,6 +281,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                     </motion.div>
                 </div>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 };

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     ShieldAlert,
@@ -15,6 +16,7 @@ import {
 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
+import { useScrollLock } from '../hooks/useScrollLock';
 
 
 interface SecurityVerificationModalProps {
@@ -38,6 +40,8 @@ export function SecurityVerificationModal({
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    useScrollLock(isOpen);
 
 
 
@@ -162,23 +166,25 @@ export function SecurityVerificationModal({
         }
     };
 
-    return (
+    if (!isOpen) return null;
+
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 font-sans">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="absolute inset-0 bg-black/80 backdrop-blur-xl"
+                        className="fixed inset-0 bg-black/80 backdrop-blur-xl"
                     />
 
                     <motion.div
                         initial={{ scale: 0.9, opacity: 0, y: 20 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                        className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-3xl border border-gray-200 dark:border-white/10 shadow-[0_32px_128px_-16px_rgba(0,0,0,0.5)] overflow-hidden"
+                        className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-3xl border border-gray-200 dark:border-white/10 shadow-[0_32px_128px_-16px_rgba(0,0,0,0.5)] overflow-hidden z-10"
                     >
                         {/* Header */}
                         <div className="p-6 border-b border-gray-100 dark:border-white/5 relative bg-gray-50/50 dark:bg-white/[0.02]">
@@ -283,12 +289,13 @@ export function SecurityVerificationModal({
 
                             <p className="text-xs font-black text-gray-400 tracking-widest text-center mt-4 flex items-center justify-center gap-2">
                                 <ShieldCheck size={12} className="text-paymint-green" />
-                                End-to-End Encrypted Security Session
+                                <span className="text-xs font-black text-paymint-green tracking-[0.2em]">End-to-End Encrypted Security Session</span>
                             </p>
                         </form>
                     </motion.div>
                 </div>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 }

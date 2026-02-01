@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X, Trash2, Tag, Coffee, IceCream, Pizza, ShoppingBag, Gift, Star, Heart,
@@ -6,6 +7,7 @@ import {
   Sandwich, Drumstick, Fish, Apple, Carrot, RefreshCw
 } from 'lucide-react';
 import { QuickInfo } from '../QuickInfo';
+import { useScrollLock } from '../../hooks/useScrollLock';
 
 // Mapping main app icons (MaterialCommunityIcons) to Lucide equivalents
 export const ICON_MAP: Record<string, React.ElementType> = {
@@ -63,6 +65,8 @@ export function CategoryFormModal({
   const [sortOrder, setSortOrder] = useState(0);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  useScrollLock(isOpen);
+
   useEffect(() => {
     if (isOpen) {
       setErrors({});
@@ -91,9 +95,9 @@ export function CategoryFormModal({
 
   const SelectedIconComponent = ICON_MAP[selectedIcon] || Tag;
 
-  return (
+  return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20 dark:bg-black/60 backdrop-blur-sm">
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/20 dark:bg-black/60 backdrop-blur-sm font-sans">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -217,7 +221,8 @@ export function CategoryFormModal({
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
 

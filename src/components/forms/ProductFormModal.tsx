@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Upload, Trash2, ChevronDown, Check, Wand2, Plus, RefreshCw, Search, AlertCircle } from 'lucide-react';
@@ -12,6 +13,7 @@ import { AttributeFormModal } from './AttributeFormModal';
 
 
 import { CategoryFormModal } from './CategoryFormModal';
+import { useScrollLock } from '../../hooks/useScrollLock';
 
 
 
@@ -93,6 +95,8 @@ export function ProductFormModal({
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const categoryRef = useRef<HTMLDivElement>(null);
   const addonsRef = useRef<HTMLDivElement>(null);
+  const categoryTriggerRef = useRef<HTMLButtonElement>(null);
+  const addonsTriggerRef = useRef<HTMLButtonElement>(null);
 
   // New states for FE parity
   const [attributes, setAttributes] = useState<Attribute[]>([]);
@@ -106,6 +110,8 @@ export function ProductFormModal({
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [isCategorySubmitting, setIsCategorySubmitting] = useState(false);
   const isInitialLoad = useRef(true);
+
+  useScrollLock(isOpen);
 
   useEffect(() => {
     setLocalCategories(categories);
@@ -137,6 +143,24 @@ export function ProductFormModal({
     if (cents === 0) return '';
     return (cents / 100).toFixed(2);
   };
+
+  // Auto-scroll to category when opened
+  useEffect(() => {
+    if (showCategoryDropdown && categoryRef.current) {
+      setTimeout(() => {
+        categoryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 150);
+    }
+  }, [showCategoryDropdown]);
+
+  // Auto-scroll to addons when opened
+  useEffect(() => {
+    if (showAddonsDropdown && addonsRef.current) {
+      setTimeout(() => {
+        addonsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 150);
+    }
+  }, [showAddonsDropdown]);
 
   const [showAttributeModal, setShowAttributeModal] = useState(false);
   const [isAttributeSubmitting, setIsAttributeSubmitting] = useState(false);
@@ -408,10 +432,10 @@ export function ProductFormModal({
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <>
       <AnimatePresence>
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20 dark:bg-black/60 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/20 dark:bg-black/60 backdrop-blur-sm font-sans">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -646,6 +670,7 @@ export function ProductFormModal({
                     <QuickInfo text="Group." />
                   </label>
                   <button
+                    ref={categoryTriggerRef}
                     type="button"
                     onClick={() => {
                       setShowCategoryDropdown(!showCategoryDropdown);
@@ -668,7 +693,7 @@ export function ProductFormModal({
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl z-[30] max-h-80 flex flex-col shadow-2xl overflow-hidden"
+                        className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl z-[50] max-h-80 flex flex-col shadow-2xl overflow-hidden"
                       >
                         {/* Search Bar */}
                         <div className="bg-white dark:bg-[#1E293B] p-3 border-b border-gray-100 dark:border-white/5 z-10 shrink-0">
@@ -760,6 +785,7 @@ export function ProductFormModal({
                     </div>
                   )}
                   <button
+                    ref={addonsTriggerRef}
                     type="button"
                     onClick={() => {
                       if (attributes.length === 0) return;
@@ -789,7 +815,7 @@ export function ProductFormModal({
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl z-[30] max-h-80 flex flex-col shadow-2xl overflow-hidden"
+                        className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl z-[50] max-h-80 flex flex-col shadow-2xl overflow-hidden"
                       >
                         {/* Search Bar */}
                         <div className="bg-white dark:bg-[#1E293B] p-3 border-b border-gray-100 dark:border-white/5 z-10 shrink-0">
@@ -971,10 +997,10 @@ export function ProductFormModal({
                 </div>
 
               </form>
-            </div>
+            </div >
 
             {/* Footer */}
-            <div className="p-8 border-t border-gray-100 dark:border-white/5 flex items-center gap-4 bg-gray-50 dark:bg-black/20 transition-colors">
+            < div className="p-8 border-t border-gray-100 dark:border-white/5 flex items-center gap-4 bg-gray-50 dark:bg-black/20 transition-colors" >
               {initialData?.id && onDelete && (
                 <button
                   type="button"
@@ -1007,9 +1033,9 @@ export function ProductFormModal({
                   initialData?.id ? 'Save' : 'Add'
                 )}
               </button>
-            </div>
-          </motion.div>
-        </div>
+            </div >
+          </motion.div >
+        </div >
 
         <ConfirmModal
           isOpen={showAddonsWarning}
@@ -1024,7 +1050,7 @@ export function ProductFormModal({
           cancelText="Cancel"
           type="warning"
         />
-      </AnimatePresence>
+      </AnimatePresence >
 
       <CategoryFormModal
         isOpen={showCategoryModal}
@@ -1039,7 +1065,8 @@ export function ProductFormModal({
         onSubmit={handleAttributeSubmit}
         isSubmitting={isAttributeSubmitting}
       />
-    </>
+    </>,
+    document.body
   );
 }
 

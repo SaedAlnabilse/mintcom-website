@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, Eye, EyeOff, ChevronDown, Check } from 'lucide-react';
 import api from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
+import { useScrollLock } from '../../hooks/useScrollLock';
 
 interface StaffMember {
   id: string;
@@ -93,6 +95,8 @@ export function EmployeeFormModal({
   // Get current establishment from context (for dashboard-level pages)
   const { currentEstablishment } = useAuth();
 
+  useScrollLock(isOpen);
+
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -111,12 +115,14 @@ export function EmployeeFormModal({
   const [selectedEstablishmentIds, setSelectedEstablishmentIds] = useState<string[]>([]);
   const [establishmentSearch, setEstablishmentSearch] = useState('');
   const [showEstablishmentDropdown, setShowEstablishmentDropdown] = useState(false);
+  const establishmentButtonRef = useRef<HTMLButtonElement>(null);
 
   // Custom Roles
   const [customRoles, setCustomRoles] = useState<CustomRole[]>([]);
   const [selectedCustomRoleId, setSelectedCustomRoleId] = useState<string>('');
   const [lastAppliedTemplate, setLastAppliedTemplate] = useState<CustomRole | null>(null);
   const [showRolesDropdown, setShowRolesDropdown] = useState(false);
+  const rolesButtonRef = useRef<HTMLButtonElement>(null);
 
   // Platform Access Control
   const [posAccess, setPosAccess] = useState(true);
@@ -148,6 +154,22 @@ export function EmployeeFormModal({
       console.error('Error fetching custom roles:', error);
     }
   };
+
+  useEffect(() => {
+    if (showEstablishmentDropdown && establishmentButtonRef.current) {
+      setTimeout(() => {
+        establishmentButtonRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 150);
+    }
+  }, [showEstablishmentDropdown]);
+
+  useEffect(() => {
+    if (showRolesDropdown && rolesButtonRef.current) {
+      setTimeout(() => {
+        rolesButtonRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 150);
+    }
+  }, [showRolesDropdown]);
 
   useEffect(() => {
     if (isOpen) {
@@ -329,9 +351,9 @@ export function EmployeeFormModal({
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm font-sans">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -423,6 +445,7 @@ export function EmployeeFormModal({
                     Access <span className="text-paymint-red">*</span>
                   </label>
                   <button
+                    ref={establishmentButtonRef}
                     type="button"
                     onClick={() => setShowEstablishmentDropdown(!showEstablishmentDropdown)}
                     className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.establishments ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-left flex items-center justify-between transition-colors`}
@@ -438,52 +461,59 @@ export function EmployeeFormModal({
                   </button>
                   {errors.establishments && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.establishments}</p>}
 
-                  {/* Dropdown */}
-                  {showEstablishmentDropdown && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-xl z-20 max-h-60 overflow-hidden flex flex-col shadow-2xl">
-                      {/* Search */}
-                      <div className="p-3 border-b border-gray-100 dark:border-white/5">
-                        <input
-                          type="text"
-                          placeholder="Search locations..."
-                          value={establishmentSearch}
-                          onChange={(e) => setEstablishmentSearch(e.target.value)}
-                          className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-lg px-3 py-2 text-xs font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:ring-0"
-                          autoFocus
-                        />
-                      </div>
-                      {/* List */}
-                      <div className="overflow-y-auto p-2 custom-scrollbar">
-                        {establishments
-                          .filter(e => e.name.toLowerCase().includes(establishmentSearch.toLowerCase()))
-                          .map(est => {
-                            const isSelected = selectedEstablishmentIds.includes(est.id);
-                            return (
-                              <button
-                                key={est.id}
-                                type="button"
-                                onClick={() => {
-                                  setSelectedEstablishmentIds(prev =>
-                                    prev.includes(est.id)
-                                      ? prev.filter(id => id !== est.id)
-                                      : [...prev, est.id]
-                                  );
-                                }}
-                                className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${isSelected ? 'bg-paymint-green/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
-                              >
-                                <span className={`text-xs font-bold ${isSelected ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
-                                  {est.name}
-                                </span>
-                                {isSelected && <Check size={14} className="text-paymint-green" />}
-                              </button>
-                            );
-                          })}
-                        {establishments.filter(e => e.name.toLowerCase().includes(establishmentSearch.toLowerCase())).length === 0 && (
-                          <div className="p-4 text-center text-xs font-bold text-gray-500">No Locations Found</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
+                  {/* Portal Dropdown */}
+                  <AnimatePresence>
+                    {showEstablishmentDropdown && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl z-[50] max-h-60 flex flex-col shadow-2xl overflow-hidden"
+                      >
+                        {/* Search */}
+                        <div className="p-3 border-b border-gray-100 dark:border-white/5">
+                          <input
+                            type="text"
+                            placeholder="Search locations..."
+                            value={establishmentSearch}
+                            onChange={(e) => setEstablishmentSearch(e.target.value)}
+                            className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-lg px-3 py-2 text-xs font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:ring-0"
+                            autoFocus
+                          />
+                        </div>
+                        {/* List */}
+                        <div className="overflow-y-auto p-2 custom-scrollbar max-h-48">
+                          {establishments
+                            .filter(e => e.name.toLowerCase().includes(establishmentSearch.toLowerCase()))
+                            .map(est => {
+                              const isSelected = selectedEstablishmentIds.includes(est.id);
+                              return (
+                                <button
+                                  key={est.id}
+                                  type="button"
+                                  onClick={() => {
+                                    setSelectedEstablishmentIds(prev =>
+                                      prev.includes(est.id)
+                                        ? prev.filter(id => id !== est.id)
+                                        : [...prev, est.id]
+                                    );
+                                  }}
+                                  className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${isSelected ? 'bg-paymint-green/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                                >
+                                  <span className={`text-xs font-bold ${isSelected ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
+                                    {est.name}
+                                  </span>
+                                  {isSelected && <Check size={14} className="text-paymint-green" />}
+                                </button>
+                              );
+                            })}
+                          {establishments.filter(e => e.name.toLowerCase().includes(establishmentSearch.toLowerCase())).length === 0 && (
+                            <div className="p-4 text-center text-xs font-bold text-gray-500">No Locations Found</div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               )}
 
@@ -496,6 +526,7 @@ export function EmployeeFormModal({
                   )}
                 </label>
                 <button
+                  ref={rolesButtonRef}
                   type="button"
                   onClick={() => setShowRolesDropdown(!showRolesDropdown)}
                   className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-left flex items-center justify-between transition-colors"
@@ -510,67 +541,74 @@ export function EmployeeFormModal({
                   <ChevronDown size={16} className={`text-gray-400 transition-transform ${showRolesDropdown ? 'rotate-180' : ''}`} />
                 </button>
 
-                {showRolesDropdown && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-xl z-30 max-h-60 overflow-y-auto custom-scrollbar shadow-2xl">
-                    <div className="p-2">
-                      {/* Admin Option */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setRole('ADMIN');
-                          setSelectedCustomRoleId('');
-                          setLastAppliedTemplate(null);
-                          setPermissions(POS_PERMISSIONS.map(p => p.id));
-                          setBackofficePermissions(BACKOFFICE_PERMISSIONS.map(p => p.id));
-                          setAllDiscountsSelected(true);
-                          setShowRolesDropdown(false);
-                          setPosAccess(true);
-                          setBackofficeAccess(true);
-                        }}
-                        className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${role === 'ADMIN' ? 'bg-purple-500/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
-                      >
-                        <div>
-                          <span className={`text-xs font-bold ${role === 'ADMIN' ? 'text-purple-500' : 'text-gray-700 dark:text-gray-300'}`}>
-                            Admin (Full Access)
-                          </span>
-                          <p className="text-xs text-gray-500 mt-0.5">All permissions enabled</p>
-                        </div>
-                        {role === 'ADMIN' && <Check size={14} className="text-purple-500" />}
-                      </button>
-
-                      {/* Divider */}
-                      {customRoles.length > 0 && (
-                        <div className="border-t border-gray-100 dark:border-white/5 my-2" />
-                      )}
-
-                      {/* Custom Roles */}
-                      {customRoles.map(customRole => (
+                <AnimatePresence>
+                  {showRolesDropdown && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl z-[50] max-h-60 flex flex-col shadow-2xl overflow-hidden"
+                    >
+                      <div className="p-2 max-h-60 overflow-y-auto custom-scrollbar">
+                        {/* Admin Option */}
                         <button
-                          key={customRole.id}
                           type="button"
-                          onClick={() => handleTemplateSelect(customRole)}
-                          className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'bg-paymint-green/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                          onClick={() => {
+                            setRole('ADMIN');
+                            setSelectedCustomRoleId('');
+                            setLastAppliedTemplate(null);
+                            setPermissions(POS_PERMISSIONS.map(p => p.id));
+                            setBackofficePermissions(BACKOFFICE_PERMISSIONS.map(p => p.id));
+                            setAllDiscountsSelected(true);
+                            setShowRolesDropdown(false);
+                            setPosAccess(true);
+                            setBackofficeAccess(true);
+                          }}
+                          className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${role === 'ADMIN' ? 'bg-purple-500/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
                         >
                           <div>
-                            <span className={`text-xs font-bold ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
-                              {customRole.name}
+                            <span className={`text-xs font-bold ${role === 'ADMIN' ? 'text-purple-500' : 'text-gray-700 dark:text-gray-300'}`}>
+                              Admin (Full Access)
                             </span>
-                            <p className="text-xs text-gray-500 mt-0.5">{customRole.permissions.length} Permissions</p>
+                            <p className="text-xs text-gray-500 mt-0.5">All permissions enabled</p>
                           </div>
-                          {selectedCustomRoleId === customRole.id && role !== 'ADMIN' && <Check size={14} className="text-paymint-green" />}
+                          {role === 'ADMIN' && <Check size={14} className="text-purple-500" />}
                         </button>
-                      ))}
 
-                      {/* No custom roles message */}
-                      {customRoles.length === 0 && (
-                        <div className="p-3 text-center">
-                          <p className="text-xs text-gray-500">No Roles</p>
-                          <p className="text-xs text-gray-400 mt-1">Create roles in settings</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
+                        {/* Divider */}
+                        {customRoles.length > 0 && (
+                          <div className="border-t border-gray-100 dark:border-white/5 my-2" />
+                        )}
+
+                        {/* Custom Roles */}
+                        {customRoles.map(customRole => (
+                          <button
+                            key={customRole.id}
+                            type="button"
+                            onClick={() => handleTemplateSelect(customRole)}
+                            className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'bg-paymint-green/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                          >
+                            <div>
+                              <span className={`text-xs font-bold ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
+                                {customRole.name}
+                              </span>
+                              <p className="text-xs text-gray-500 mt-0.5">{customRole.permissions.length} Permissions</p>
+                            </div>
+                            {selectedCustomRoleId === customRole.id && role !== 'ADMIN' && <Check size={14} className="text-paymint-green" />}
+                          </button>
+                        ))}
+
+                        {/* No custom roles message */}
+                        {customRoles.length === 0 && (
+                          <div className="p-3 text-center">
+                            <p className="text-xs text-gray-500">No Roles</p>
+                            <p className="text-xs text-gray-400 mt-1">Create roles in settings</p>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
                 {errors.role && (
                   <p className="text-paymint-red text-xs font-bold mt-2">{errors.role}</p>
                 )}
@@ -659,6 +697,7 @@ export function EmployeeFormModal({
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

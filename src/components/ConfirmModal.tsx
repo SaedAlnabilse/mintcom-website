@@ -1,5 +1,7 @@
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, CheckCircle2, AlertCircle, X, Info } from 'lucide-react';
+import { useScrollLock } from '../hooks/useScrollLock';
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -24,6 +26,8 @@ export function ConfirmModal({
   type = 'success',
   showCancel = true
 }: ConfirmModalProps) {
+
+  useScrollLock(isOpen);
 
   const getTheme = () => {
     switch (type) {
@@ -74,10 +78,10 @@ export function ConfirmModal({
   const theme = getTheme();
   const Icon = theme.icon;
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 font-sans">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -156,7 +160,8 @@ export function ConfirmModal({
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
 

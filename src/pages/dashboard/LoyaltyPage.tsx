@@ -7,6 +7,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { RewardFormModal } from '../../components/forms/RewardFormModal';
 
 interface LoyaltyConfig {
+    id?: string;
     enabled: boolean;
     pointsPerCurrency: number;
     currencyPerPoint: number;
@@ -130,16 +131,41 @@ export function LoyaltyPage() {
         }
     }, [loyaltyConfig?.pointsPerCurrency]);
 
+    const safeUpdateLoyaltyConfig = async (newConfig: any) => {
+        const payload = {
+            id: newConfig.id,
+            enabled: true,
+            pointsPerCurrency: newConfig.pointsPerCurrency,
+            currencyPerPoint: newConfig.currencyPerPoint,
+            rewards: newConfig.rewards
+        };
+
+        try {
+            // First try the dedicated endpoint
+            await api.put('/app-settings/loyalty-config', payload);
+        } catch (err: any) {
+            // If 403/404, valid fallback to main settings endpoint
+            if (err.response && (err.response.status === 403 || err.response.status === 404)) {
+                try {
+                    const { data: fullSettings } = await api.get('/app-settings');
+                    await api.put('/app-settings', {
+                        ...fullSettings,
+                        loyaltyConfig: payload
+                    });
+                } catch (fallbackErr) {
+                    throw err; // Throw original error if fallback also fails
+                }
+            } else {
+                throw err;
+            }
+        }
+    };
+
     const handleCurrencyPerPointChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const digitsOnly = e.target.value.replace(/[^0-9]/g, '');
         const cents = parseInt(digitsOnly, 10) || 0;
         if (cents <= 999999999) {
             setCurrencyPerPointCents(cents);
-            // We update state immediately for UI, but also need to save effectively.
-            // In SettingsPage, this updated a local state object. Here we should likely auto-save or have a save button.
-            // The user moved this to a dedicated page. I'll implement auto-save for these toggles/inputs or a save button.
-            // For simplicity and consistency with modern settings, I'll add a "Save Changes" button at the top if changes are detected.
-
             const newVal = cents / 100;
             lastSyncedCurrencyPerPoint.current = newVal;
             setLoyaltyConfig(prev => prev ? { ...prev, currencyPerPoint: newVal } : null);
@@ -170,12 +196,13 @@ export function LoyaltyPage() {
             confirmText: 'Delete Reward',
             onConfirm: async () => {
                 const updatedRewards = rewards.filter(r => r.id !== rewardId);
+                const updatedConfig = {
+                    ...loyaltyConfig,
+                    rewards: updatedRewards,
+                };
+
                 try {
-                    await api.put('/app-settings/loyalty-config', {
-                        ...loyaltyConfig,
-                        enabled: true,
-                        rewards: updatedRewards,
-                    });
+                    await safeUpdateLoyaltyConfig(updatedConfig);
                     setRewards(updatedRewards);
                     setConfirmConfig({
                         isOpen: true,
@@ -214,13 +241,13 @@ export function LoyaltyPage() {
             updatedRewards = [...rewards, newReward];
         }
 
+        const updatedConfig = {
+            ...loyaltyConfig,
+            rewards: updatedRewards,
+        };
+
         try {
-            // We save the WHOLE config including rewards
-            await api.put('/app-settings/loyalty-config', {
-                ...loyaltyConfig,
-                enabled: true,
-                rewards: updatedRewards,
-            });
+            await safeUpdateLoyaltyConfig(updatedConfig);
             setRewards(updatedRewards);
             setShowRewardModal(false);
             setEditingReward(null);
@@ -241,16 +268,20 @@ export function LoyaltyPage() {
     const hasChanges = JSON.stringify(loyaltyConfig) !== JSON.stringify(initialLoyaltyConfig);
 
     const saveConfig = async () => {
+        if (!loyaltyConfig || loyaltyConfig.pointsPerCurrency <= 0 || loyaltyConfig.currencyPerPoint <= 0) {
+            toast.error("Please enter valid positive values for points and currency");
+            return;
+        }
+
         try {
-            await api.put('/app-settings/loyalty-config', {
-                ...loyaltyConfig,
-                enabled: true,
-                rewards: rewards
-            });
+            await safeUpdateLoyaltyConfig(loyaltyConfig);
+
             setInitialLoyaltyConfig(JSON.parse(JSON.stringify(loyaltyConfig)));
             toast.success("Loyalty configuration saved");
-        } catch (err) {
-            toast.error("Failed to save configuration");
+        } catch (err: any) {
+            console.error("Save config error:", err);
+            const errorMessage = err.response?.data?.message || err.message || "Failed to save configuration";
+            toast.error(errorMessage);
         }
     }
 

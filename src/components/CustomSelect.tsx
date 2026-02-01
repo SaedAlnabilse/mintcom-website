@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronDown, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -34,43 +35,75 @@ export function CustomSelect({
 }: CustomSelectProps) {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
+    const listRef = useRef<HTMLDivElement>(null);
 
     const [smartDirection, setSmartDirection] = useState<'up' | 'down'>(direction);
+    const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
+
+    // Calculate dropdown position
+    const updateDropdownPosition = () => {
+        if (!buttonRef.current) return;
+
+        const rect = buttonRef.current.getBoundingClientRect();
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const spaceAbove = rect.top;
+        const dropdownHeight = 320; // Approx max height (max-h-80 is 20rem = 320px)
+
+        const shouldGoUp = spaceBelow < dropdownHeight && spaceAbove > spaceBelow;
+        setSmartDirection(shouldGoUp ? 'up' : 'down');
+
+        setDropdownStyle({
+            position: 'fixed',
+            left: rect.left,
+            width: rect.width,
+            top: shouldGoUp ? 'auto' : rect.bottom + 8,
+            bottom: shouldGoUp ? window.innerHeight - rect.top + 8 : 'auto',
+            zIndex: 9999,
+        });
+    };
 
     // Close when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+            if (
+                containerRef.current &&
+                !containerRef.current.contains(event.target as Node) &&
+                listRef.current &&
+                !listRef.current.contains(event.target as Node)
+            ) {
                 setIsOpen(false);
             }
         };
 
-        if (isOpen && containerRef.current) {
-            // Smart positioning logic
-            const rect = containerRef.current.getBoundingClientRect();
-            const spaceBelow = window.innerHeight - rect.bottom;
-            const spaceAbove = rect.top;
-            const dropdownHeight = 320; // Approx max height (max-h-80 is 20rem = 320px)
-
-            if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
-                setSmartDirection('up');
-            } else {
-                setSmartDirection('down');
-            }
+        if (isOpen) {
+            updateDropdownPosition();
+            document.addEventListener('mousedown', handleClickOutside);
+            window.addEventListener('scroll', updateDropdownPosition, true);
+            window.addEventListener('resize', updateDropdownPosition);
         }
 
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            window.removeEventListener('scroll', updateDropdownPosition, true);
+            window.removeEventListener('resize', updateDropdownPosition);
+        };
     }, [isOpen]);
 
     // Effect to scroll active option into view
-    const listRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
         if (isOpen && listRef.current) {
             const activeItem = listRef.current.querySelector('[data-active="true"]');
             if (activeItem) {
                 activeItem.scrollIntoView({ behavior: 'auto', block: 'center' });
             }
+        }
+
+        // Auto-scroll container into view when opening
+        if (isOpen && containerRef.current) {
+            setTimeout(() => {
+                containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         }
     }, [isOpen]);
 
@@ -81,6 +114,50 @@ export function CustomSelect({
 
     const selectedOption = formattedOptions.find(opt => opt.value === value);
 
+    const dropdownContent = (
+        <AnimatePresence>
+            {isOpen && (
+                <motion.div
+                    ref={listRef}
+                    initial={{ opacity: 0, y: smartDirection === 'up' ? 5 : -5, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: smartDirection === 'up' ? 5 : -5, scale: 0.98 }}
+                    transition={{ duration: 0.15, ease: "easeOut" }}
+                    style={dropdownStyle}
+                    className={`bg-white/95 dark:bg-[#0B1120]/95 backdrop-blur-xl border border-gray-100 dark:border-white/[0.08] rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden max-h-80 overflow-y-auto custom-scrollbar ring-1 ring-black/5`}
+                >
+                    {formattedOptions.length === 0 ? (
+                        <div className="px-5 py-4 text-sm text-gray-400 font-bold italic text-center">No options available</div>
+                    ) : (
+                        formattedOptions.map((opt) => (
+                            <button
+                                key={opt.value}
+                                type="button"
+                                data-active={value === opt.value}
+                                onClick={() => {
+                                    onChange(opt.value);
+                                    setIsOpen(false);
+                                }}
+                                className={`w-full px-5 py-3.5 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors ${value === opt.value ? 'bg-paymint-green/10 text-paymint-green' : 'text-gray-900 dark:text-gray-200'
+                                    }`}
+                            >
+                                <span className={`text-sm ${value === opt.value ? 'font-black' : 'font-bold'}`}>{opt.label}</span>
+                                {value === opt.value && (
+                                    <motion.div
+                                        initial={{ scale: 0.5, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                    >
+                                        <Check size={16} className="text-paymint-green" />
+                                    </motion.div>
+                                )}
+                            </button>
+                        ))
+                    )}
+                </motion.div>
+            )}
+        </AnimatePresence>
+    );
+
     return (
         <div className={`relative ${className}`} ref={containerRef}>
             {label && (
@@ -90,13 +167,14 @@ export function CustomSelect({
             )}
 
             <button
+                ref={buttonRef}
                 type="button"
                 onClick={() => !disabled && setIsOpen(!isOpen)}
                 disabled={disabled}
-                className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-left flex items-center justify-between transition-all outline-none shadow-sm 
+                className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-left flex items-center justify-between transition-all outline-none shadow-sm
                     ${disabled
                         ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-white/[0.01]'
-                        : 'hover:border-paymint-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06] hover:shadow-lg hover:shadow-black/10'} 
+                        : 'hover:border-paymint-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06] hover:shadow-lg hover:shadow-black/10'}
                     ${error ? 'ring-2 ring-paymint-red border-paymint-red' : isOpen ? 'ring-2 ring-paymint-green/20 border-paymint-green bg-gray-50 dark:bg-white/[0.08] shadow-inner shadow-black/20' : ''
                     }`}
             >
@@ -109,46 +187,8 @@ export function CustomSelect({
                 />
             </button>
 
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        ref={listRef}
-                        initial={{ opacity: 0, y: smartDirection === 'up' ? 5 : -5, scale: 0.98 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: smartDirection === 'up' ? 5 : -5, scale: 0.98 }}
-                        transition={{ duration: 0.15, ease: "easeOut" }}
-                        className={`absolute ${smartDirection === 'up' ? 'bottom-full mb-2 origin-bottom' : 'top-full mt-2 origin-top'} left-0 right-0 z-[100] bg-white/95 dark:bg-[#0B1120]/95 backdrop-blur-xl border border-gray-100 dark:border-white/[0.08] rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden max-h-80 overflow-y-auto custom-scrollbar ring-1 ring-black/5`}
-                    >
-                        {formattedOptions.length === 0 ? (
-                            <div className="px-5 py-4 text-sm text-gray-400 font-bold italic text-center">No options available</div>
-                        ) : (
-                            formattedOptions.map((opt) => (
-                                <button
-                                    key={opt.value}
-                                    type="button"
-                                    data-active={value === opt.value}
-                                    onClick={() => {
-                                        onChange(opt.value);
-                                        setIsOpen(false);
-                                    }}
-                                    className={`w-full px-5 py-3.5 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors ${value === opt.value ? 'bg-paymint-green/10 text-paymint-green' : 'text-gray-900 dark:text-gray-200'
-                                        }`}
-                                >
-                                    <span className={`text-sm ${value === opt.value ? 'font-black' : 'font-bold'}`}>{opt.label}</span>
-                                    {value === opt.value && (
-                                        <motion.div
-                                            initial={{ scale: 0.5, opacity: 0 }}
-                                            animate={{ scale: 1, opacity: 1 }}
-                                        >
-                                            <Check size={16} className="text-paymint-green" />
-                                        </motion.div>
-                                    )}
-                                </button>
-                            ))
-                        )}
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {/* Portal the dropdown to body to escape overflow:hidden containers */}
+            {typeof document !== 'undefined' && createPortal(dropdownContent, document.body)}
 
             {error && <p className="mt-1 text-xs font-bold text-paymint-red px-1">{error}</p>}
         </div>

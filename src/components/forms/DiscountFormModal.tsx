@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2 } from 'lucide-react';
 import { QuickInfo } from '../QuickInfo';
+import { useScrollLock } from '../../hooks/useScrollLock';
 
 interface Discount {
   id: string;
@@ -31,6 +33,8 @@ export function DiscountFormModal({
   const [percentage, setPercentage] = useState<string>('');
   const [adminOnly, setAdminOnly] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useScrollLock(isOpen);
 
   useEffect(() => {
     if (isOpen) {
@@ -72,14 +76,14 @@ export function DiscountFormModal({
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20 dark:bg-black/60 backdrop-blur-sm">
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/20 dark:bg-black/60 backdrop-blur-sm font-sans">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-white dark:bg-[#1e1e1e] w-[95vw] sm:w-[90vw] max-w-lg rounded-2xl overflow-hidden flex flex-col max-h-[85vh] transition-colors duration-300 border border-gray-200 dark:border-white/10"
+          className="bg-white dark:bg-[#1e1e1e] w-[95vw] sm:w-[90vw] max-w-lg rounded-2xl overflow-hidden flex flex-col max-h-[85vh] transition-colors duration-300 border border-gray-200 dark:border-white/10 shadow-2xl"
         >
           {/* Header */}
           <div className="flex items-center justify-between p-6 pb-2">
@@ -94,7 +98,7 @@ export function DiscountFormModal({
             </button>
           </div>
 
-          <div className="p-6 pt-2 flex-1">
+          <div className="p-6 pt-2 flex-1 overflow-y-auto custom-scrollbar">
             <form id="discount-form" onSubmit={handleSubmit} className="space-y-6">
 
               {/* Name */}
@@ -197,7 +201,8 @@ export function DiscountFormModal({
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
 

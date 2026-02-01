@@ -24,6 +24,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
 import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { exportToCSV } from '../../utils/export';
+import { SingleSelect } from '../../components/SingleSelect';
 
 interface Staff {
   id: string;
@@ -290,19 +291,20 @@ export function StaffPage() {
 
       {/* Filters & Search */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
-          {['ALL', 'ADMIN', 'USER'].map((role) => (
-            <button
-              key={role}
-              onClick={() => { setFilterRole(role as any); setCurrentPage(1); }}
-              className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all whitespace-nowrap ${filterRole === role
-                ? 'bg-gray-900 dark:bg-white text-white dark:text-black shadow-sm'
-                : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10'
-                }`}
-            >
-              {role === 'USER' ? 'Users' : role === 'ADMIN' ? 'Admins' : 'All Staff'}
-            </button>
-          ))}
+        <div className="w-full md:w-48">
+          <SingleSelect
+            value={filterRole === 'ALL' ? null : filterRole}
+            onChange={(val) => {
+              setFilterRole((val as 'ALL' | 'ADMIN' | 'USER') || 'ALL');
+              setCurrentPage(1);
+            }}
+            options={[
+              { label: 'Admin', value: 'ADMIN' },
+              { label: 'User', value: 'USER' },
+            ]}
+            allOptionLabel="All Roles"
+            placeholder="All Roles"
+          />
         </div>
 
         <div className="relative flex-1 max-w-md">
