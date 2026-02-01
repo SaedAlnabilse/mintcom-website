@@ -1163,6 +1163,18 @@ export function ReportsPage() {
 
                 {/* Sub-tabs and Search Bar */}
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                  {/* Search Bar */}
+                  <div className="relative w-full md:flex-1">
+                    <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder={`Search ${itemReportTab === 'categories' ? 'categories' : itemReportTab === 'modifiers' ? 'add-ons' : itemReportTab === 'attributes' ? 'attributes' : 'items'}...`}
+                      value={itemSearchQuery}
+                      onChange={(e) => setItemSearchQuery(e.target.value)}
+                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+                    />
+                  </div>
+
                   {/* Sub-tabs based on mode */}
                   <div className="flex gap-2">
                     {(itemReportTab === 'items' || itemReportTab === 'categories') ? (
@@ -1174,7 +1186,7 @@ export function ReportsPage() {
                             : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
                             }`}
                         >
-                          View All Items
+                          By Products
                         </button>
                         <button
                           onClick={() => setItemReportTab('categories')}
@@ -1195,7 +1207,7 @@ export function ReportsPage() {
                             : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
                             }`}
                         >
-                          Add-ons
+                          By Add-ons
                         </button>
                         <button
                           onClick={() => setItemReportTab('attributes')}
@@ -1204,22 +1216,10 @@ export function ReportsPage() {
                             : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
                             }`}
                         >
-                          Attributes (Groups)
+                          By Attributes (Groups)
                         </button>
                       </>
                     )}
-                  </div>
-
-                  {/* Search Bar */}
-                  <div className="relative w-full md:w-80">
-                    <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder={`Search ${itemReportTab === 'categories' ? 'categories' : itemReportTab === 'modifiers' ? 'add-ons' : itemReportTab === 'attributes' ? 'attributes' : 'items'}...`}
-                      value={itemSearchQuery}
-                      onChange={(e) => setItemSearchQuery(e.target.value)}
-                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
-                    />
                   </div>
                 </div>
 

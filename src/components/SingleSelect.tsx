@@ -17,6 +17,7 @@ interface SingleSelectProps {
     className?: string;
     allOptionLabel?: string; // Label for the "All" option
     showAllOption?: boolean;
+    scrollIntoViewOnOpen?: boolean; // Only scroll into view when inside modals/popups
 }
 
 export function SingleSelect({
@@ -29,7 +30,8 @@ export function SingleSelect({
     allOptionLabel = 'All',
     showAllOption = true,
     buttonClassName = '',
-    allowClear = true
+    allowClear = true,
+    scrollIntoViewOnOpen = false
 }: SingleSelectProps & { buttonClassName?: string, allowClear?: boolean }) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -95,8 +97,8 @@ export function SingleSelect({
                 searchInputRef.current?.focus();
             }, 100);
 
-            // Auto-scroll container into view when opening
-            if (containerRef.current) {
+            // Auto-scroll container into view when opening (only for modals/popups)
+            if (scrollIntoViewOnOpen && containerRef.current) {
                 setTimeout(() => {
                     containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 150);
@@ -104,7 +106,7 @@ export function SingleSelect({
 
             return () => clearTimeout(timer);
         }
-    }, [isOpen]);
+    }, [isOpen, scrollIntoViewOnOpen]);
 
     const handleSelect = (optionValue: string | null) => {
         if (optionValue === null) {

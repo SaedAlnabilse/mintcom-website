@@ -19,6 +19,7 @@ interface CustomSelectProps {
     required?: boolean;
     direction?: 'up' | 'down';
     disabled?: boolean;
+    scrollIntoViewOnOpen?: boolean; // Only scroll into view when inside modals/popups
 }
 
 export function CustomSelect({
@@ -31,7 +32,8 @@ export function CustomSelect({
     error,
     required,
     direction = 'down',
-    disabled = false
+    disabled = false,
+    scrollIntoViewOnOpen = false
 }: CustomSelectProps) {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -99,13 +101,13 @@ export function CustomSelect({
             }
         }
 
-        // Auto-scroll container into view when opening
-        if (isOpen && containerRef.current) {
+        // Auto-scroll container into view when opening (only for modals/popups)
+        if (isOpen && scrollIntoViewOnOpen && containerRef.current) {
             setTimeout(() => {
                 containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 100);
         }
-    }, [isOpen]);
+    }, [isOpen, scrollIntoViewOnOpen]);
 
     // Normalize options
     const formattedOptions: Option[] = options.map(opt =>

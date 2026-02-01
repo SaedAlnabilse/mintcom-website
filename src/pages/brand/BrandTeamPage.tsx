@@ -356,9 +356,9 @@ export function BrandTeamPage() {
 
             {/* Filters Bar */}
             <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm">
-                <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     {/* Search */}
-                    <div className="relative flex-1 max-w-md">
+                    <div className="relative flex-1">
                         <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input
                             type="text"
@@ -640,7 +640,7 @@ export function BrandTeamPage() {
                         <div className="col-span-2">Status</div>
                         <div className="col-span-2">Primary Role</div>
                         <div className="col-span-2">Locations</div>
-                        <div className="col-span-2 text-right">Actions</div>
+                        <div className="col-span-2 text-center">Actions</div>
                     </div>
 
                     {/* Table Body */}
@@ -704,7 +704,7 @@ export function BrandTeamPage() {
                                     </div>
 
                                     {/* Actions */}
-                                    <div className="col-span-2 flex items-center justify-end gap-2">
+                                    <div className="col-span-2 flex items-center justify-center gap-2">
                                         <button
                                             onClick={() => handleEditEmployee(emp)}
                                             className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all flex items-center gap-2 border border-gray-200 dark:border-white/5"

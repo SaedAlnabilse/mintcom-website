@@ -16,8 +16,7 @@ import {
     Award,
     ArrowRight,
     ChevronRight,
-    Calendar,
-    X
+    Calendar
 } from 'lucide-react';
 import {
     AreaChart,
@@ -32,6 +31,7 @@ import {
     Cell
 } from 'recharts';
 import api from '../../config/api';
+import { SingleSelect } from '../../components/SingleSelect';
 import toast from 'react-hot-toast';
 
 interface BrandStats {
@@ -60,15 +60,10 @@ interface RevenueDataPoint {
     orders: number;
 }
 
-type TimeRange = '24h' | '7d' | '30d' | '90d' | 'custom';
+// Ported State Logic from OwnerOverviewPage for Unified Filter
+type DateRangePreset = 'today' | 'yesterday' | 'this_week' | 'this_month' | 'last_30' | 'custom';
 
-const TIME_RANGES: { value: TimeRange; label: string }[] = [
-    { value: '24h', label: 'Today' },
-    { value: '7d', label: '7 Days' },
-    { value: '30d', label: '30 Days' },
-    { value: '90d', label: '90 Days' },
-    { value: 'custom', label: 'Custom' },
-];
+
 
 const CHART_COLORS = ['#7CC39F', '#8B5CF6', '#F59E0B', '#EF4444', '#3B82F6', '#EC4899'];
 
@@ -80,28 +75,59 @@ export function BrandDashboardPage() {
     const [brandName, setBrandName] = useState('Brand Overview');
     const [stats, setStats] = useState<BrandStats | null>(null);
     const [locations, setLocations] = useState<LocationPerformance[]>([]);
-    const [timeRange, setTimeRange] = useState<TimeRange>('7d');
-    const [revenueData, setRevenueData] = useState<RevenueDataPoint[]>([]);
-    const [showDatePicker, setShowDatePicker] = useState(false);
-    const [customStartDate, setCustomStartDate] = useState<string>('');
-    const [customEndDate, setCustomEndDate] = useState<string>('');
-    // Temporary state for the date picker modal
-    const [tempStartDate, setTempStartDate] = useState<string>('');
-    const [tempEndDate, setTempEndDate] = useState<string>('');
+    const [selectedDateRange, setSelectedDateRange] = useState<DateRangePreset>('this_week');
+    const [startDate, setStartDate] = useState<string>(new Date().toISOString().split('T')[0]);
+    const [endDate, setEndDate] = useState<string>(new Date().toISOString().split('T')[0]);
+    const [startTime, setStartTime] = useState<string>('00:00');
+    const [endTime, setEndTime] = useState<string>('23:59');
 
-    // Get today's date in YYYY-MM-DD format for max date constraint
-    const today = new Date().toISOString().split('T')[0];
+    // Remove old state mapping
+    const [revenueData, setRevenueData] = useState<RevenueDataPoint[]>([]);
+
+    const setQuickDate = (range: DateRangePreset) => {
+        setSelectedDateRange(range);
+        const todayDate = new Date();
+        let start = new Date();
+        let end = new Date();
+
+        switch (range) {
+            case 'today':
+                // start and end are already today
+                break;
+            case 'yesterday':
+                start.setDate(todayDate.getDate() - 1);
+                end.setDate(todayDate.getDate() - 1);
+                break;
+            case 'this_week':
+                const dayOfWeek = todayDate.getDay(); // 0 is Sunday
+                const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Make Monday start
+                start.setDate(todayDate.getDate() - daysToSubtract);
+                // End is today
+                break;
+            case 'this_month':
+                start.setDate(1);
+                // End is today
+                break;
+            case 'last_30':
+                start.setDate(todayDate.getDate() - 30);
+                // End is today
+                break;
+        }
+
+        setStartDate(start.toISOString().split('T')[0]);
+        setEndDate(end.toISOString().split('T')[0]);
+        setStartTime('00:00');
+        setEndTime('23:59');
+    };
 
     useEffect(() => {
-        // For custom range, only fetch when both dates are set
-        if (timeRange === 'custom') {
-            if (customStartDate && customEndDate) {
-                fetchBrandData();
-            }
-        } else {
-            fetchBrandData();
-        }
-    }, [brandId, timeRange, customStartDate, customEndDate]);
+        // Initialize default range
+        setQuickDate('this_week');
+    }, []);
+
+    useEffect(() => {
+        fetchBrandData();
+    }, [brandId, startDate, endDate, startTime, endTime, selectedDateRange]);
 
     const fetchBrandData = async (refresh = false) => {
         try {
@@ -112,10 +138,18 @@ export function BrandDashboardPage() {
             }
 
             // Fetch real dashboard stats from the backend
-            const params: any = { timeRange };
-            if (timeRange === 'custom' && customStartDate && customEndDate) {
-                params.startDate = customStartDate;
-                params.endDate = customEndDate;
+            const params: Record<string, any> = {};
+
+            // Map our UI state to backend params
+            if (selectedDateRange === 'yesterday') {
+                params.timeRange = 'yesterday';
+            } else if (selectedDateRange === 'today') {
+                params.timeRange = '24h'; // or 'today' depending on backend support
+            } else {
+                // For all other cases, use custom range with full time precision
+                params.timeRange = 'custom';
+                params.startDate = `${startDate}T${startTime}:00`;
+                params.endDate = `${endDate}T${endTime}:00`;
             }
 
             const [brandResponse, statsResponse] = await Promise.all([
@@ -158,8 +192,10 @@ export function BrandDashboardPage() {
             locationData.sort((a: LocationPerformance, b: LocationPerformance) => b.revenue - a.revenue);
             setLocations(locationData);
 
-            // Generate time series data for chart (still mock for now as backend doesn't have time-series endpoint)
-            const chartData = generateChartData(timeRange, totalRevenue, totalOrders);
+            // Generate chart data based on loaded stats or simple mapping
+            // Note: generateChartData logic needs to be updated to use new state or just standard mapping
+            // For now, we'll keep using generateChartData but adapt the 'range' arg
+            const chartData = generateChartData(selectedDateRange, totalRevenue, totalOrders, startDate, endDate);
             setRevenueData(chartData);
 
         } catch (error) {
@@ -171,55 +207,43 @@ export function BrandDashboardPage() {
         }
     };
 
-    const generateChartData = (range: TimeRange, totalRevenue: number, totalOrders: number): RevenueDataPoint[] => {
+    const generateChartData = (range: DateRangePreset, totalRevenue: number, totalOrders: number, startStr: string, endStr: string): RevenueDataPoint[] => {
         const data: RevenueDataPoint[] = [];
         let points = 7;
         let labels: string[] = [];
 
         switch (range) {
-            case '24h':
+            case 'today':
                 points = 24;
                 labels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
                 break;
-            case '7d':
-                points = 7;
-                labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                break;
-            case '30d':
-                points = 30;
-                labels = Array.from({ length: 30 }, (_, i) => `Day ${i + 1}`);
-                break;
-            case '90d':
-                points = 12;
-                labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8', 'Week 9', 'Week 10', 'Week 11', 'Week 12'];
-                break;
+            case 'this_week':
+            case 'last_30':
+            case 'this_month':
             case 'custom':
-                if (customStartDate && customEndDate) {
-                    const start = new Date(customStartDate);
-                    const end = new Date(customEndDate);
-                    const diffTime = Math.abs(end.getTime() - start.getTime());
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                const start = new Date(startStr);
+                const end = new Date(endStr);
+                const diffTime = Math.abs(end.getTime() - start.getTime());
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
 
-                    if (diffDays <= 7) {
-                        points = diffDays;
-                        labels = Array.from({ length: diffDays }, (_, i) => {
-                            const date = new Date(start);
-                            date.setDate(date.getDate() + i);
-                            return date.toLocaleDateString('en-US', { weekday: 'short' });
-                        });
-                    } else if (diffDays <= 31) {
-                        points = diffDays;
-                        labels = Array.from({ length: diffDays }, (_, i) => {
-                            const date = new Date(start);
-                            date.setDate(date.getDate() + i);
-                            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                        });
-                    } else {
-                        // Group by weeks for longer periods
-                        const weeks = Math.ceil(diffDays / 7);
-                        points = Math.min(weeks, 12);
-                        labels = Array.from({ length: points }, (_, i) => `Week ${i + 1}`);
-                    }
+                if (diffDays <= 7) {
+                    points = diffDays || 7; // prevent 0
+                    labels = Array.from({ length: points }, (_, i) => {
+                        const date = new Date(start);
+                        date.setDate(date.getDate() + i);
+                        return date.toLocaleDateString('en-US', { weekday: 'short' });
+                    });
+                } else if (diffDays <= 31) {
+                    points = diffDays;
+                    labels = Array.from({ length: diffDays }, (_, i) => {
+                        const date = new Date(start);
+                        date.setDate(date.getDate() + i);
+                        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    });
+                } else {
+                    const weeks = Math.ceil(diffDays / 7);
+                    points = Math.min(weeks, 12);
+                    labels = Array.from({ length: points }, (_, i) => `Week ${i + 1}`);
                 }
                 break;
         }
@@ -313,53 +337,6 @@ export function BrandDashboardPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    {/* Time Range Selector */}
-                    <div className="flex items-center gap-2">
-                        <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl">
-                            {TIME_RANGES.map((range) => (
-                                <button
-                                    key={range.value}
-                                    onClick={() => {
-                                        if (range.value === 'custom') {
-                                            setTempStartDate(customStartDate);
-                                            setTempEndDate(customEndDate);
-                                            setShowDatePicker(true);
-                                            // Don't set timeRange to custom yet if we don't have dates
-                                            if (customStartDate && customEndDate) {
-                                                setTimeRange('custom');
-                                            }
-                                        } else {
-                                            setTimeRange(range.value);
-                                            setShowDatePicker(false);
-                                        }
-                                    }}
-                                    className={`px-4 py-2.5 rounded-lg text-xs font-bold tracking-wide transition-all flex items-center gap-1.5 ${timeRange === range.value
-                                        ? 'bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm'
-                                        : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
-                                        }`}
-                                >
-                                    {range.value === 'custom' && <Calendar size={14} />}
-                                    {range.label}
-                                </button>
-                            ))}
-                        </div>
-
-                        {/* Custom Date Range Display */}
-                        {timeRange === 'custom' && customStartDate && customEndDate && !showDatePicker && (
-                            <button
-                                onClick={() => {
-                                    setTempStartDate(customStartDate);
-                                    setTempEndDate(customEndDate);
-                                    setShowDatePicker(true);
-                                }}
-                                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-medium border border-paymint-green/20 hover:bg-paymint-green/20 transition-all"
-                            >
-                                <Calendar size={14} />
-                                <span>{new Date(customStartDate).toLocaleDateString()} - {new Date(customEndDate).toLocaleDateString()}</span>
-                            </button>
-                        )}
-                    </div>
-
                     <button
                         onClick={() => fetchBrandData(true)}
                         disabled={isRefreshing}
@@ -368,92 +345,94 @@ export function BrandDashboardPage() {
                     >
                         <RefreshCw size={18} className={isRefreshing ? 'animate-spin' : ''} />
                     </button>
+
+                    {/* Unified Filter Control Deck */}
+                    <div className="bg-white dark:bg-[#0B1120] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5 ">
+                        <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0 h-full">
+
+                            {/* Sector 1: Quick Period Dropdown */}
+                            <div className={`flex-none w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-1 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'border-transparent'}`}>
+                                <SingleSelect
+                                    value={selectedDateRange === 'custom' ? null : selectedDateRange}
+                                    onChange={(val) => setQuickDate(val as DateRangePreset || 'today')}
+                                    options={[
+                                        { label: 'Today', value: 'today' },
+                                        { label: 'Yesterday', value: 'yesterday' },
+                                        { label: 'This Week', value: 'this_week' },
+                                        { label: 'This Month', value: 'this_month' },
+                                    ]}
+                                    showAllOption={false}
+                                    placeholder="Select Period"
+                                    className="w-full"
+                                    buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-2.5 !h-full !text-xs !font-bold ${selectedDateRange !== 'custom' ? '!text-paymint-green' : ''}`}
+                                />
+                            </div>
+
+                            {/* Vertical Divider (Desktop) */}
+                            <div className="hidden xl:block w-px h-8 bg-gray-100 dark:bg-white/10 mx-3" />
+
+                            {/* Sector 2: Time & Date Controls */}
+                            {(() => {
+                                const isDateFiltered = selectedDateRange === 'custom';
+                                const isTimeFiltered = startTime !== '00:00' || endTime !== '23:59';
+
+                                return (
+                                    <div className="flex-1 flex flex-col md:flex-row gap-4 items-center">
+                                        {/* Date Input Group */}
+                                        <div className={`flex-1 flex flex-col justify-center px-3 py-1 rounded-xl border transition-all group ${isDateFiltered ? 'bg-paymint-green/5 border-paymint-green ring-1 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-transparent border-transparent'}`}>
+                                            <div className="flex items-center gap-2 mb-0.5">
+                                                <Calendar size={10} className={isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
+                                                <span className={`text-[10px] uppercase font-black tracking-widest transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Date Range</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="date"
+                                                    value={startDate}
+                                                    onChange={(e) => { setStartDate(e.target.value); setSelectedDateRange('custom'); }}
+                                                    className={`bg-transparent p-0 text-xs font-bold border-none focus:ring-0 w-full h-auto dark:[color-scheme:dark] cursor-pointer transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400 dark:text-white/40"}`}
+                                                />
+                                                <span className={`font-light transition-colors ${isDateFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/10"}`}>/</span>
+                                                <input
+                                                    type="date"
+                                                    value={endDate}
+                                                    onChange={(e) => { setEndDate(e.target.value); setSelectedDateRange('custom'); }}
+                                                    className={`bg-transparent p-0 text-xs font-bold border-none focus:ring-0 w-full h-auto dark:[color-scheme:dark] text-right cursor-pointer transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400 dark:text-white/40"}`}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* Vertical Divider (Inner) */}
+                                        <div className="hidden md:block w-px h-6 bg-gray-100 dark:bg-white/10" />
+
+                                        {/* Time Input Group */}
+                                        <div className={`flex-1 flex flex-col justify-center px-3 py-1 rounded-xl border transition-all group ${isTimeFiltered ? 'bg-paymint-green/5 border-paymint-green ring-1 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-transparent border-transparent'}`}>
+                                            <div className="flex items-center gap-2 mb-0.5">
+                                                <Clock size={10} className={isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
+                                                <span className={`text-[10px] uppercase font-black tracking-widest transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Active Hours</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="time"
+                                                    value={startTime}
+                                                    onChange={(e) => { setStartTime(e.target.value); setSelectedDateRange('custom'); }}
+                                                    className={`bg-transparent p-0 text-xs font-bold border-none focus:ring-0 w-[60px] h-auto dark:[color-scheme:dark] cursor-pointer transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400 dark:text-white/40"}`}
+                                                />
+                                                <span className={`font-light transition-colors ${isTimeFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
+                                                <input
+                                                    type="time"
+                                                    value={endTime}
+                                                    onChange={(e) => { setEndTime(e.target.value); setSelectedDateRange('custom'); }}
+                                                    className={`bg-transparent p-0 text-xs font-bold border-none focus:ring-0 w-[60px] h-auto dark:[color-scheme:dark] text-right cursor-pointer transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400 dark:text-white/40"}`}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })()}
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            {/* Custom Date Range Picker Modal */}
-            {showDatePicker && (
-                <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/10 shadow-xl p-6"
-                >
-                    <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Select Date Range</h3>
-                        <button
-                            onClick={() => setShowDatePicker(false)}
-                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-                        >
-                            <X size={18} className="text-gray-500" />
-                        </button>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-xs font-bold text-gray-500 tracking-wide mb-2">
-                                Start Date
-                            </label>
-                            <input
-                                type="date"
-                                value={tempStartDate}
-                                max={tempEndDate || today}
-                                onChange={(e) => setTempStartDate(e.target.value)}
-                                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50 focus:border-paymint-green transition-all"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-bold text-gray-500 tracking-wide mb-2">
-                                End Date
-                            </label>
-                            <input
-                                type="date"
-                                value={tempEndDate}
-                                min={tempStartDate}
-                                max={today}
-                                onChange={(e) => setTempEndDate(e.target.value)}
-                                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50 focus:border-paymint-green transition-all"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="flex items-center justify-between mt-6">
-                        <div className="flex gap-2">
-                            {/* Quick select buttons */}
-                            {[
-                                { label: 'Last 7 Days', days: 7 },
-                                { label: 'Last 14 Days', days: 14 },
-                                { label: 'Last 30 Days', days: 30 },
-                            ].map((option) => (
-                                <button
-                                    key={option.days}
-                                    onClick={() => {
-                                        const end = new Date();
-                                        const start = new Date();
-                                        start.setDate(start.getDate() - option.days);
-                                        setTempStartDate(start.toISOString().split('T')[0]);
-                                        setTempEndDate(end.toISOString().split('T')[0]);
-                                    }}
-                                    className="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 text-xs font-medium hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
-                                >
-                                    {option.label}
-                                </button>
-                            ))}
-                        </div>
-                        <button
-                            onClick={() => {
-                                setCustomStartDate(tempStartDate);
-                                setCustomEndDate(tempEndDate);
-                                setTimeRange('custom');
-                                setShowDatePicker(false);
-                            }}
-                            disabled={!tempStartDate || !tempEndDate}
-                            className="px-6 py-2.5 rounded-xl bg-paymint-green text-white font-bold text-sm hover:bg-paymint-green/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            Apply Filter
-                        </button>
-                    </div>
-                </motion.div>
-            )}
 
             {/* Kpi Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -525,169 +504,11 @@ export function BrandDashboardPage() {
                 ))}
             </div>
 
-            {/* Charts Section */}
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                {/* Revenue Chart */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="xl:col-span-2 p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm"
-                >
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Revenue Trend</h3>
-                            <p className="text-xs text-gray-500 mt-1">Consolidated performance across all locations</p>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 rounded-full bg-paymint-green" />
-                                <span className="text-xs font-medium text-gray-500">Revenue</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 rounded-full bg-blue-500" />
-                                <span className="text-xs font-medium text-gray-500">Orders</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="h-[300px] w-full">
-                        {revenueData.length > 0 && revenueData.some(d => d.value > 0 || d.orders > 0) ? (
-                            <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={revenueData}>
-                                    <defs>
-                                        <linearGradient id="brandRevenue" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#7CC39F" stopOpacity={0.2} />
-                                            <stop offset="95%" stopColor="#7CC39F" stopOpacity={0} />
-                                        </linearGradient>
-                                        <linearGradient id="brandOrders" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.1} />
-                                            <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
-                                        </linearGradient>
-                                    </defs>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" strokeOpacity={0.3} />
-                                    <XAxis
-                                        dataKey="name"
-                                        axisLine={false}
-                                        tickLine={false}
-                                        tick={{ fill: '#9CA3AF', fontSize: 11 }}
-                                        dy={10}
-                                        interval={timeRange === '30d' ? 4 : 0}
-                                    />
-                                    <YAxis
-                                        axisLine={false}
-                                        tickLine={false}
-                                        tick={{ fill: '#9CA3AF', fontSize: 11 }}
-                                        tickFormatter={(value) => formatCurrency(value)}
-                                        dx={-10}
-                                    />
-                                    <Tooltip
-                                        contentStyle={{
-                                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                                            borderColor: '#E5E7EB',
-                                            borderRadius: '12px',
-                                            fontSize: '12px',
-                                            boxShadow: '0 10px 40px -10px rgba(0,0,0,0.2)'
-                                        }}
-                                        formatter={(value, name) => [
-                                            name === 'value' ? formatCurrency(value as number) : String(value),
-                                            name === 'value' ? 'Revenue' : 'Orders'
-                                        ]}
-                                    />
-                                    <Area
-                                        type="monotone"
-                                        dataKey="value"
-                                        stroke="#7CC39F"
-                                        strokeWidth={2.5}
-                                        fillOpacity={1}
-                                        fill="url(#brandRevenue)"
-                                    />
-                                    <Area
-                                        type="monotone"
-                                        dataKey="orders"
-                                        stroke="#3B82F6"
-                                        strokeWidth={2}
-                                        fillOpacity={1}
-                                        fill="url(#brandOrders)"
-                                    />
-                                </AreaChart>
-                            </ResponsiveContainer>
-                        ) : (
-                            <div className="h-full w-full flex flex-col items-center justify-center space-y-4 bg-gray-50/50 dark:bg-white/[0.02] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
-                                <div className="p-4 rounded-full bg-gray-100 dark:bg-white/5">
-                                    <BarChart3 size={32} className="text-gray-400 dark:text-gray-600" />
-                                </div>
-                                <div className="text-center">
-                                    <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">No Performance Data</p>
-                                    <p className="text-xs text-gray-500 mt-1">There are no sales or order records for this period.</p>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </motion.div>
-
-                {/* Category Distribution */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm"
-                >
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Sales by Category</h3>
-                            <p className="text-xs text-gray-500 mt-1">Revenue distribution</p>
-                        </div>
-                    </div>
-
-                    <div className="h-[200px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <RechartsPieChart>
-                                <Pie
-                                    data={categoryData}
-                                    cx="50%"
-                                    cy="50%"
-                                    innerRadius={50}
-                                    outerRadius={80}
-                                    paddingAngle={4}
-                                    dataKey="value"
-                                >
-                                    {categoryData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.color} />
-                                    ))}
-                                </Pie>
-                                <Tooltip
-                                    contentStyle={{
-                                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                                        borderColor: '#E5E7EB',
-                                        borderRadius: '12px',
-                                        fontSize: '12px',
-                                    }}
-                                    formatter={(value) => [`${value}%`, 'Share']}
-                                />
-                            </RechartsPieChart>
-                        </ResponsiveContainer>
-                    </div>
-
-                    <div className="space-y-3 mt-4">
-                        {categoryData.map((cat, i) => (
-                            <div key={i} className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: cat.color }} />
-                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{cat.name}</span>
-                                </div>
-                                <span className="text-sm font-bold text-gray-900 dark:text-white">{cat.value}%</span>
-                            </div>
-                        ))}
-                    </div>
-                </motion.div>
-            </div>
-
             {/* Location Performance */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
+                transition={{ delay: 0.2 }}
                 className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm overflow-hidden"
             >
                 <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-white/5">
@@ -782,8 +603,166 @@ export function BrandDashboardPage() {
                 )}
             </motion.div>
 
+            {/* Charts Section */}
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                {/* Revenue Chart */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="xl:col-span-2 p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm"
+                >
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Revenue Trend</h3>
+                            <p className="text-xs text-gray-500 mt-1">Consolidated performance across all locations</p>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full bg-paymint-green" />
+                                <span className="text-xs font-medium text-gray-500">Revenue</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full bg-blue-500" />
+                                <span className="text-xs font-medium text-gray-500">Orders</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="h-[300px] w-full">
+                        {revenueData.length > 0 && revenueData.some(d => d.value > 0 || d.orders > 0) ? (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={revenueData}>
+                                    <defs>
+                                        <linearGradient id="brandRevenue" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#7CC39F" stopOpacity={0.2} />
+                                            <stop offset="95%" stopColor="#7CC39F" stopOpacity={0} />
+                                        </linearGradient>
+                                        <linearGradient id="brandOrders" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.1} />
+                                            <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" strokeOpacity={0.3} />
+                                    <XAxis
+                                        dataKey="name"
+                                        axisLine={false}
+                                        tickLine={false}
+                                        tick={{ fill: '#9CA3AF', fontSize: 11 }}
+                                        dy={10}
+                                        interval={selectedDateRange === 'last_30' || selectedDateRange === 'this_month' ? 4 : 0}
+                                    />
+                                    <YAxis
+                                        axisLine={false}
+                                        tickLine={false}
+                                        tick={{ fill: '#9CA3AF', fontSize: 11 }}
+                                        tickFormatter={(value) => formatCurrency(value)}
+                                        dx={-10}
+                                    />
+                                    <Tooltip
+                                        contentStyle={{
+                                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                            borderColor: '#E5E7EB',
+                                            borderRadius: '12px',
+                                            fontSize: '12px',
+                                            boxShadow: '0 10px 40px -10px rgba(0,0,0,0.2)'
+                                        }}
+                                        formatter={(value, name) => [
+                                            name === 'value' ? formatCurrency(value as number) : String(value),
+                                            name === 'value' ? 'Revenue' : 'Orders'
+                                        ]}
+                                    />
+                                    <Area
+                                        type="monotone"
+                                        dataKey="value"
+                                        stroke="#7CC39F"
+                                        strokeWidth={2.5}
+                                        fillOpacity={1}
+                                        fill="url(#brandRevenue)"
+                                    />
+                                    <Area
+                                        type="monotone"
+                                        dataKey="orders"
+                                        stroke="#3B82F6"
+                                        strokeWidth={2}
+                                        fillOpacity={1}
+                                        fill="url(#brandOrders)"
+                                    />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <div className="h-full w-full flex flex-col items-center justify-center space-y-4 bg-gray-50/50 dark:bg-white/[0.02] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
+                                <div className="p-4 rounded-full bg-gray-100 dark:bg-white/5">
+                                    <BarChart3 size={32} className="text-gray-400 dark:text-gray-600" />
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">No Performance Data</p>
+                                    <p className="text-xs text-gray-500 mt-1">There are no sales or order records for this period.</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </motion.div>
+
+                {/* Category Distribution */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm"
+                >
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Sales by Category</h3>
+                            <p className="text-xs text-gray-500 mt-1">Revenue distribution</p>
+                        </div>
+                    </div>
+
+                    <div className="h-[200px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <RechartsPieChart>
+                                <Pie
+                                    data={categoryData}
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={50}
+                                    outerRadius={80}
+                                    paddingAngle={4}
+                                    dataKey="value"
+                                >
+                                    {categoryData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={entry.color} />
+                                    ))}
+                                </Pie>
+                                <Tooltip
+                                    contentStyle={{
+                                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                        borderColor: '#E5E7EB',
+                                        borderRadius: '12px',
+                                        fontSize: '12px',
+                                    }}
+                                    formatter={(value) => [`${value}%`, 'Share']}
+                                />
+                            </RechartsPieChart>
+                        </ResponsiveContainer>
+                    </div>
+
+                    <div className="space-y-3 mt-4">
+                        {categoryData.map((cat, i) => (
+                            <div key={i} className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: cat.color }} />
+                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{cat.name}</span>
+                                </div>
+                                <span className="text-sm font-bold text-gray-900 dark:text-white">{cat.value}%</span>
+                            </div>
+                        ))}
+                    </div>
+                </motion.div>
+            </div>
+
             {/* Quick Actions */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
                     {
                         title: 'View All Locations',
@@ -800,14 +779,6 @@ export function BrandDashboardPage() {
                         color: 'text-purple-500',
                         bg: 'bg-purple-500/10',
                         action: () => navigate(`/brand/${brandId}/team`)
-                    },
-                    {
-                        title: 'Analytics',
-                        description: 'Deep dive into performance analytics',
-                        icon: BarChart3,
-                        color: 'text-orange-500',
-                        bg: 'bg-orange-500/10',
-                        action: () => { }
                     },
                 ].map((action, i) => (
                     <motion.button

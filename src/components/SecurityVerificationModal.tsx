@@ -114,9 +114,9 @@ export function SecurityVerificationModal({
                 };
             case 'dissolve-establishment':
                 return {
-                    title: 'Delete Location',
-                    warning: `You are about to delete "${targetName}". This will permanently remove the location and all associated data. This action cannot be undone.`,
-                    buttonText: 'Delete Location',
+                    title: 'Dissolve Location',
+                    warning: `You are about to dissolve "${targetName}". This will permanently cease operations and remove this location from your brand portfolio.`,
+                    buttonText: 'Dissolve Location',
                     icon: Building2,
                     color: 'text-red-500',
                     bg: 'bg-red-500/10',

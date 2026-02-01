@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
     TrendingUp,
@@ -11,7 +11,7 @@ import {
     Activity,
     Zap,
     Calendar,
-    X,
+    Clock,
     DollarSign,
     UserPlus
 } from 'lucide-react';
@@ -26,6 +26,7 @@ import {
 } from 'recharts';
 import api from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
+import { SingleSelect } from '../../components/SingleSelect';
 
 interface OverviewStats {
     totalRevenue: number;
@@ -52,39 +53,88 @@ export function OwnerOverviewPage() {
         revenueByDay: []
     });
     const [isLoading, setIsLoading] = useState(true);
-    const [timeRange, setTimeRange] = useState('today');
-    const [chartData, setChartData] = useState<{ name: string; value: number }[]>([]);
 
-    // Custom Date Picker State
-    const [showDatePicker, setShowDatePicker] = useState(false);
-    const [customStartDate, setCustomStartDate] = useState('');
-    const [customEndDate, setCustomEndDate] = useState('');
+    // New Filter State
+    const [startDate, setStartDate] = useState(() => new Date().toISOString().split('T')[0]);
+    const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
+    const [startTime, setStartTime] = useState('00:00');
+    const [endTime, setEndTime] = useState('23:59');
+    const [selectedDateRange, setSelectedDateRange] = useState<string>('today');
+
+    const [chartData, setChartData] = useState<{ name: string; value: number }[]>([]);
 
     // No longer need manual brands count fetch as it's included in overview-stats
 
     useEffect(() => {
-        if (timeRange !== 'custom') {
-            fetchOverviewStats();
+        fetchOverviewStats();
+    }, [startDate, endDate, startTime, endTime, selectedDateRange]);
+
+    const setQuickDate = (range: string) => {
+        setSelectedDateRange(range);
+        const today = new Date();
+        let start = new Date();
+        let end = new Date();
+
+        switch (range) {
+            case 'today':
+                // already set to today
+                break;
+            case 'yesterday':
+                start.setDate(today.getDate() - 1);
+                end.setDate(today.getDate() - 1);
+                break;
+            case 'this_week':
+                const dayOfWeek = today.getDay();
+                if (dayOfWeek === 0) {
+                    start.setDate(today.getDate() - 6);
+                } else {
+                    start.setDate(today.getDate() - dayOfWeek);
+                }
+                end = new Date(today);
+                break;
+            case 'this_month':
+                start.setDate(1);
+                end = new Date(today);
+                break;
+            case 'last_30':
+                start.setDate(today.getDate() - 30);
+                end = new Date(today);
+                break;
         }
-    }, [timeRange]);
+
+        setStartDate(start.toISOString().split('T')[0]);
+        setEndDate(end.toISOString().split('T')[0]);
+        setStartTime('00:00');
+        setEndTime('23:59');
+    };
 
     const fetchOverviewStats = async () => {
         try {
             setIsLoading(true);
 
             // Map UI filter IDs to API expected parameters
-            let apiRange = timeRange;
+            // Map UI filter IDs to API expected parameters
             let query = '';
 
-            if (timeRange === 'yesterday') {
+            // If using quick selects that map directly to backend presets, we can use them
+            // But strict date/time usage is better for specific checks.
+            // However, existing backend logic supports 'yesterday', '7d', '30d', 'all'.
+            // For now, we will construct custom range query to be precise with the inputs.
+
+            // Note: The backend might not support time in the date strings for the simple overview endpoint 
+            // if it expects "YYYY-MM-DD". We will send startDate and endDate as dates.
+            // If the user modified time, we might strictly want to send full ISO. 
+            // Let's assume standard date filtering for overview.
+
+            if (selectedDateRange === 'yesterday') {
                 query = `?range=yesterday`;
-            } else if (timeRange === 'custom' && customStartDate && customEndDate) {
-                query = `?range=custom&startDate=${customStartDate}&endDate=${customEndDate}`;
+            } else if (selectedDateRange === 'today') {
+                query = `?range=today`;
             } else {
-                if (timeRange === 'last_week') apiRange = '7d';
-                if (timeRange === 'last_month') apiRange = '30d';
-                if (timeRange === 'all_time') apiRange = 'all';
-                query = `?range=${apiRange}`;
+                // For last_30, custom, etc. use explicit dates
+                const startISO = `${startDate}T${startTime}:00`;
+                const endISO = `${endDate}T${endTime}:00`;
+                query = `?range=custom&startDate=${startISO}&endDate=${endISO}`;
             }
 
             const response = await api.get(`/api/accounts/overview-stats${query}`);
@@ -114,13 +164,13 @@ export function OwnerOverviewPage() {
         }
     };
 
-    const handleCustomDateApply = () => {
-        if (customStartDate && customEndDate) {
-            setTimeRange('custom');
-            setShowDatePicker(false);
-            fetchOverviewStats();
-        }
-    };
+    const selectedFilterLabel = selectedDateRange === 'custom'
+        ? `${startDate} - ${endDate}`
+        : selectedDateRange === 'today' ? 'Today'
+            : selectedDateRange === 'yesterday' ? 'Yesterday'
+                : selectedDateRange === 'this_week' ? 'This Week'
+                    : selectedDateRange === 'this_month' ? 'This Month'
+                        : 'Custom Range';
 
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('en-US', {
@@ -130,18 +180,6 @@ export function OwnerOverviewPage() {
             maximumFractionDigits: 0,
         }).format(amount);
     };
-
-    const filterOptions = [
-        { id: 'today', label: 'Today' },
-        { id: 'yesterday', label: 'Yesterday' },
-        { id: 'last_week', label: 'Last Week' },
-        { id: 'last_month', label: 'Last Month' },
-        { id: 'all_time', label: 'All Time' }
-    ];
-
-    const selectedFilterLabel = timeRange === 'custom'
-        ? `${customStartDate} - ${customEndDate}`
-        : filterOptions.find(f => f.id === timeRange)?.label || 'Custom Range';
 
     return (
         <div className="space-y-8 pb-8">
@@ -172,86 +210,90 @@ export function OwnerOverviewPage() {
                         <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
                     </button>
 
-                    <div className="relative">
-                        <button
-                            onClick={() => setShowDatePicker(!showDatePicker)}
-                            className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide border transition-all ${showDatePicker
-                                ? 'bg-paymint-green text-black border-paymint-green'
-                                : 'bg-white dark:bg-white/5 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10'
-                                }`}
-                        >
-                            <Calendar size={16} />
-                            <span className="flex items-center gap-2">
-                                <span>{selectedFilterLabel}</span>
-                                {timeRange !== 'today' && (
-                                    <span className={`px-1.5 py-0.5 rounded text-xs ${showDatePicker
-                                        ? 'bg-black/20 text-black'
-                                        : 'bg-paymint-green/20 text-paymint-green'
-                                        }`}>
-                                        Active
-                                    </span>
-                                )}
-                            </span>
-                        </button>
+                    {/* Unified Filter Control Deck */}
+                    <div className="bg-white dark:bg-[#0B1120] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5">
+                        <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0">
 
-                        <AnimatePresence>
-                            {showDatePicker && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                    className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/10 shadow-xl z-50 p-4"
-                                >
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h4 className="text-xs font-bold text-gray-900 dark:text-white tracking-wide">Select Period</h4>
-                                        <button onClick={() => setShowDatePicker(false)}>
-                                            <X size={16} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" />
-                                        </button>
-                                    </div>
+                            {/* Sector 1: Quick Period Dropdown */}
+                            <div className={`flex-none w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-1 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'border-transparent'}`}>
+                                <SingleSelect
+                                    value={selectedDateRange === 'custom' ? null : selectedDateRange}
+                                    onChange={(val) => setQuickDate(val || 'today')}
+                                    options={[
+                                        { label: 'Today', value: 'today' },
+                                        { label: 'Yesterday', value: 'yesterday' },
+                                        { label: 'This Week', value: 'this_week' },
+                                        { label: 'This Month', value: 'this_month' },
+                                    ]}
+                                    showAllOption={false}
+                                    placeholder="Select Period"
+                                    className="w-full"
+                                    buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-2.5 !h-full !text-xs !font-bold ${selectedDateRange !== 'custom' ? '!text-paymint-green' : ''}`}
+                                />
+                            </div>
 
-                                    <div className="grid grid-cols-2 gap-2 mb-4">
-                                        {filterOptions.map((opt) => (
-                                            <button
-                                                key={opt.id}
-                                                onClick={() => {
-                                                    setTimeRange(opt.id);
-                                                    setShowDatePicker(false);
-                                                }}
-                                                className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors ${timeRange === opt.id
-                                                    ? 'bg-paymint-green/20 text-paymint-green'
-                                                    : 'bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'
-                                                    }`}
-                                            >
-                                                {opt.label}
-                                            </button>
-                                        ))}
-                                    </div>
+                            {/* Vertical Divider (Desktop) */}
+                            <div className="hidden xl:block w-px h-8 bg-gray-100 dark:bg-white/10 mx-3" />
 
-                                    <div className="space-y-3 pt-3 border-t border-gray-100 dark:border-white/5">
-                                        <p className="text-xs font-bold text-gray-400">Custom Range</p>
-                                        <input
-                                            type="date"
-                                            value={customStartDate}
-                                            onChange={(e) => setCustomStartDate(e.target.value)}
-                                            className="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-medium text-gray-900 dark:text-white focus:outline-none focus:border-paymint-green"
-                                        />
-                                        <input
-                                            type="date"
-                                            value={customEndDate}
-                                            onChange={(e) => setCustomEndDate(e.target.value)}
-                                            className="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-medium text-gray-900 dark:text-white focus:outline-none focus:border-paymint-green"
-                                        />
-                                        <button
-                                            onClick={handleCustomDateApply}
-                                            disabled={!customStartDate || !customEndDate}
-                                            className="w-full py-2.5 rounded-lg bg-paymint-green text-black text-xs font-bold tracking-wide hover:bg-emerald-400 transition-all disabled:opacity-50"
-                                        >
-                                            Apply
-                                        </button>
+                            {/* Sector 2: Time & Date Controls */}
+                            {(() => {
+                                const isDateFiltered = selectedDateRange === 'custom';
+                                const isTimeFiltered = startTime !== '00:00' || endTime !== '23:59';
+
+                                return (
+                                    <div className="flex-1 flex flex-col md:flex-row gap-4 items-center">
+                                        {/* Date Input Group */}
+                                        <div className={`flex-1 flex flex-col justify-center px-3 py-1 rounded-xl border transition-all group ${isDateFiltered ? 'bg-paymint-green/5 border-paymint-green ring-1 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-transparent border-transparent'}`}>
+                                            <div className="flex items-center gap-2 mb-0.5">
+                                                <Calendar size={10} className={isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
+                                                <span className={`text-[10px] uppercase font-black tracking-widest transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Date Range</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="date"
+                                                    value={startDate}
+                                                    onChange={(e) => { setStartDate(e.target.value); setSelectedDateRange('custom'); }}
+                                                    className={`bg-transparent p-0 text-xs font-bold border-none focus:ring-0 w-full h-auto dark:[color-scheme:dark] cursor-pointer transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400 dark:text-white/40"}`}
+                                                />
+                                                <span className={`font-light transition-colors ${isDateFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/10"}`}>/</span>
+                                                <input
+                                                    type="date"
+                                                    value={endDate}
+                                                    onChange={(e) => { setEndDate(e.target.value); setSelectedDateRange('custom'); }}
+                                                    className={`bg-transparent p-0 text-xs font-bold border-none focus:ring-0 w-full h-auto dark:[color-scheme:dark] text-right cursor-pointer transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400 dark:text-white/40"}`}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* Vertical Divider (Inner) */}
+                                        <div className="hidden md:block w-px h-6 bg-gray-100 dark:bg-white/10" />
+
+                                        {/* Time Input Group */}
+                                        <div className={`flex-1 flex flex-col justify-center px-3 py-1 rounded-xl border transition-all group ${isTimeFiltered ? 'bg-paymint-green/5 border-paymint-green ring-1 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-transparent border-transparent'}`}>
+                                            <div className="flex items-center gap-2 mb-0.5">
+                                                <Clock size={10} className={isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
+                                                <span className={`text-[10px] uppercase font-black tracking-widest transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Active Hours</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="time"
+                                                    value={startTime}
+                                                    onChange={(e) => { setStartTime(e.target.value); setSelectedDateRange('custom'); }}
+                                                    className={`bg-transparent p-0 text-xs font-bold border-none focus:ring-0 w-[60px] h-auto dark:[color-scheme:dark] cursor-pointer transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400 dark:text-white/40"}`}
+                                                />
+                                                <span className={`font-light transition-colors ${isTimeFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
+                                                <input
+                                                    type="time"
+                                                    value={endTime}
+                                                    onChange={(e) => { setEndTime(e.target.value); setSelectedDateRange('custom'); }}
+                                                    className={`bg-transparent p-0 text-xs font-bold border-none focus:ring-0 w-[60px] h-auto dark:[color-scheme:dark] text-right cursor-pointer transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400 dark:text-white/40"}`}
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                                );
+                            })()}
+                        </div>
                     </div>
                 </div>
             </div>
