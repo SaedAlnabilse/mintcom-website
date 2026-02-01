@@ -61,6 +61,7 @@ interface ProductFormModalProps {
   categories: Category[];
   isSubmitting?: boolean;
   canViewCosts?: boolean;
+  defaultCategoryId?: string;
 }
 
 export function ProductFormModal({
@@ -72,6 +73,7 @@ export function ProductFormModal({
   categories,
   isSubmitting = false,
   canViewCosts = false,
+  defaultCategoryId,
 }: ProductFormModalProps) {
   const navigate = useNavigate();
   const [name, setName] = useState('');
@@ -291,7 +293,7 @@ export function ProductFormModal({
         setName('');
         setPrice('');
         setCostPrice('');
-        setCategoryId('');
+        setCategoryId(defaultCategoryId || '');
         setDescription('');
         setType('ITEM');
         setTrackStock(false);

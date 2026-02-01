@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Check,
@@ -51,6 +51,7 @@ interface Product {
 
 export function ProductsPage() {
     const location = useLocation();
+    const navigate = useNavigate();
     const [products, setProducts] = useState<Product[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -113,10 +114,10 @@ export function ProductsPage() {
             setEditingProduct(null);
             if (state.categoryId) setSelectedCategoryId(state.categoryId);
             setShowModal(true);
-            // Clear state to prevent reopening on refresh
-            window.history.replaceState({}, document.title);
+            // Clear state to prevent reopening on refresh or re-render
+            navigate(location.pathname, { replace: true, state: {} });
         }
-    }, [location, products]);
+    }, [location]);
 
 
     const fetchData = async () => {
@@ -695,6 +696,7 @@ export function ProductsPage() {
                 categories={categories}
                 isSubmitting={isSubmitting}
                 canViewCosts={true}
+                defaultCategoryId={selectedCategoryId !== 'all' ? selectedCategoryId : undefined}
             />
 
             <ConfirmModal
