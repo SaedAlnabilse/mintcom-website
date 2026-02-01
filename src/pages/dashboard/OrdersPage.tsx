@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { startOfDay, endOfDay } from 'date-fns';
+import { startOfDay, endOfDay, format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
@@ -12,7 +12,8 @@ import {
   Download,
   MoreVertical,
   ChevronLeft,
-
+  PlayCircle,
+  History,
   Eye,
   Undo2,
   Calendar
@@ -52,6 +53,22 @@ interface OrderItem {
   quantity: number;
   price: number;
   total: number;
+}
+
+interface ShiftInfo {
+  id: string;
+  employee: {
+    firstName: string;
+    lastName: string;
+    username: string;
+  };
+  startTime: string;
+  endTime?: string;
+}
+
+interface ShiftStatus {
+  shiftStatus: 'ACTIVE' | 'LAST_SHIFT' | 'NO_SHIFT';
+  activeShift: ShiftInfo | null;
 }
 
 export function OrdersPage() {
@@ -97,9 +114,39 @@ export function OrdersPage() {
     onConfirm: () => { },
   });
 
+  // Shift status for shift-based filtering
+  const [shiftStatus, setShiftStatus] = useState<ShiftStatus | null>(null);
+  const [lastShiftSnapshot, setLastShiftSnapshot] = useState<{ startTime: string; timestamp: string } | null>(null);
+
+  // Fetch shift status on mount
+  useEffect(() => {
+    const fetchShiftData = async () => {
+      try {
+        // Fetch shift status
+        const res = await api.get('/dashboard/shift-status');
+        console.log('Shift status:', res.data);
+        setShiftStatus(res.data);
+
+        // Always try to fetch last shift snapshot (for previous shift option)
+        try {
+          const snapshotRes = await api.get('/dashboard/last-shift-snapshot');
+          console.log('Last shift snapshot:', snapshotRes.data);
+          if (snapshotRes.data) {
+            setLastShiftSnapshot(snapshotRes.data);
+          }
+        } catch (snapshotErr) {
+          console.log('No previous shift snapshot available');
+        }
+      } catch (err) {
+        console.error('Failed to fetch shift status:', err);
+      }
+    };
+    fetchShiftData();
+  }, []);
+
   useEffect(() => {
     fetchOrders();
-  }, [page, statusFilter, paymentFilter, startDate, endDate]);
+  }, [page, statusFilter, paymentFilter, startDate, endDate, selectedDateRange]);
 
   useEffect(() => {
     if (activeActionMenu) {
@@ -110,6 +157,30 @@ export function OrdersPage() {
         }
       }, 50);
     }
+  }, [activeActionMenu]);
+
+  // Close action menu when clicking outside or scrolling
+  useEffect(() => {
+    if (!activeActionMenu) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('[data-action-menu]')) {
+        setActiveActionMenu(null);
+      }
+    };
+
+    const handleScroll = () => {
+      setActiveActionMenu(null);
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('scroll', handleScroll, true);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('scroll', handleScroll, true);
+    };
   }, [activeActionMenu]);
 
   const fetchOrders = async () => {
@@ -163,9 +234,23 @@ export function OrdersPage() {
         params.paymentMethod = paymentFilter;
       }
 
-      // Date filtering is now handled by startDate and endDate states
-      const start = startOfDay(new Date(startDate));
-      const end = endOfDay(new Date(endDate));
+      // Handle shift-based date ranges
+      let start: Date;
+      let end: Date;
+
+      if (selectedDateRange === 'current_shift' && shiftStatus?.activeShift) {
+        // Current shift data
+        start = new Date(shiftStatus.activeShift.startTime);
+        end = new Date();
+      } else if (selectedDateRange === 'previous_shift' && lastShiftSnapshot) {
+        // Previous shift data
+        start = new Date(lastShiftSnapshot.startTime);
+        end = new Date(lastShiftSnapshot.timestamp);
+      } else {
+        // Regular date-based filtering
+        start = startOfDay(new Date(startDate));
+        end = endOfDay(new Date(endDate));
+      }
 
       params.startDate = start.toISOString();
       params.endDate = end.toISOString();
@@ -250,6 +335,12 @@ export function OrdersPage() {
   const setQuickDate = (range: string) => {
     setSelectedDateRange(range);
     setPage(1);
+
+    // For shift-based ranges, don't update the date inputs
+    if (range === 'current_shift' || range === 'previous_shift') {
+      return;
+    }
+
     const today = new Date();
     let start = new Date();
     let end = new Date();
@@ -282,6 +373,37 @@ export function OrdersPage() {
     }
     setStartDate(start.toISOString().split('T')[0]);
     setEndDate(end.toISOString().split('T')[0]);
+  };
+
+  // Build dynamic date range options based on shift status
+  const getDateRangeOptions = () => {
+    const options: { label: string; value: string }[] = [];
+
+    // Add Active Shift option if there's an active shift
+    if (shiftStatus?.shiftStatus === 'ACTIVE' && shiftStatus.activeShift) {
+      options.push({
+        label: `Active Shift (${format(new Date(shiftStatus.activeShift.startTime), 'h:mm a')})`,
+        value: 'current_shift'
+      });
+    }
+
+    // Add Previous Shift option if we have snapshot data
+    if (lastShiftSnapshot) {
+      options.push({
+        label: 'Previous Shift',
+        value: 'previous_shift'
+      });
+    }
+
+    // Add standard date options
+    options.push(
+      { label: 'Today', value: 'today' },
+      { label: 'Yesterday', value: 'yesterday' },
+      { label: 'This Week', value: 'this_week' },
+      { label: 'This Month', value: 'this_month' }
+    );
+
+    return options;
   };
 
   const handleRefund = (order: Order) => {
@@ -394,16 +516,11 @@ export function OrdersPage() {
 
         <div className="flex flex-col sm:flex-row gap-3 items-center">
           {/* Quick Date Select */}
-          <div className={`w-40 rounded-2xl transition-all ${selectedDateRange !== 'custom' ? 'ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : ''}`}>
+          <div className={`w-52 rounded-2xl transition-all ${selectedDateRange !== 'custom' ? 'ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : ''}`}>
             <CustomSelect
               value={selectedDateRange}
               onChange={(val) => setQuickDate(val as string)}
-              options={[
-                { label: 'Today', value: 'today' },
-                { label: 'Yesterday', value: 'yesterday' },
-                { label: 'This Week', value: 'this_week' },
-                { label: 'This Month', value: 'this_month' },
-              ]}
+              options={getDateRangeOptions()}
               placeholder="Select Period"
             />
           </div>
@@ -467,6 +584,27 @@ export function OrdersPage() {
           </div>
         </div>
       </div>
+
+      {/* Shift Info Bar - shows when viewing shift data */}
+      {(selectedDateRange === 'current_shift' || selectedDateRange === 'previous_shift') && (
+        <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+          <div className="flex items-center gap-3">
+            <span className="text-paymint-green">
+              {selectedDateRange === 'current_shift' ? <PlayCircle size={16} /> : <History size={16} />}
+            </span>
+            <div>
+              <span className="text-sm font-bold text-gray-900 dark:text-white">
+                {selectedDateRange === 'current_shift' && shiftStatus?.activeShift && (
+                  <>Showing orders since {format(new Date(shiftStatus.activeShift.startTime), 'MMM d, h:mm a')}</>
+                )}
+                {selectedDateRange === 'previous_shift' && lastShiftSnapshot && (
+                  <>Showing orders from {format(new Date(lastShiftSnapshot.startTime), 'MMM d, h:mm a')} to {format(new Date(lastShiftSnapshot.timestamp), 'h:mm a')}</>
+                )}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Kpi Strip */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -651,7 +789,7 @@ export function OrdersPage() {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2 relative">
-                          <div className="relative">
+                          <div className="relative" data-action-menu>
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -667,15 +805,7 @@ export function OrdersPage() {
 
                             <AnimatePresence>
                               {activeActionMenu === order.id && (
-                                <>
-                                  <div
-                                    className="fixed inset-0 z-40"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setActiveActionMenu(null);
-                                    }}
-                                  />
-                                  <motion.div
+                                <motion.div
                                     initial={{ opacity: 0, scale: 0.95, y: 5 }}
                                     animate={{ opacity: 1, scale: 1, y: 0 }}
                                     exit={{ opacity: 0, scale: 0.95, y: 5 }}
@@ -709,7 +839,6 @@ export function OrdersPage() {
                                       )}
                                     </div>
                                   </motion.div>
-                                </>
                               )}
                             </AnimatePresence>
                           </div>

@@ -100,7 +100,7 @@ export function SelectEstablishmentPage() {
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl w-full">
           {establishments.map((est, index) => (
             <motion.div
               key={est.id}
@@ -110,26 +110,26 @@ export function SelectEstablishmentPage() {
               onMouseEnter={() => setHoveredId(est.id)}
               onMouseLeave={() => setHoveredId(null)}
               onClick={() => handleSelect(est)}
-              className="group relative bg-white dark:bg-[#1E293B] rounded-[3rem] border-2 border-gray-100 dark:border-white/[0.05] p-10 cursor-pointer hover:border-paymint-green shadow-xl shadow-gray-200/50 dark:shadow-none transition-all flex flex-col items-center text-center"
+              className="group relative bg-white dark:bg-[#1E293B] rounded-[2.5rem] border-2 border-gray-100 dark:border-white/[0.05] p-8 cursor-pointer hover:border-paymint-green shadow-xl shadow-gray-200/50 dark:shadow-none transition-all flex flex-col items-center text-center"
             >
-              <div className="w-24 h-24 bg-gray-50 dark:bg-white/[0.03] rounded-[2rem] flex items-center justify-center mb-8 border border-gray-100 dark:border-white/5 transition-transform duration-500 group-hover:scale-110 group-hover:bg-paymint-green/10">
-                <Store size={40} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
+              <div className="w-20 h-20 bg-gray-50 dark:bg-white/[0.03] rounded-[1.5rem] flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 transition-transform duration-500 group-hover:scale-110 group-hover:bg-paymint-green/10">
+                <Store size={32} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
               </div>
 
-              <h3 className="text-xl font-black text-gray-900 dark:text-white mb-3 px-2 leading-tight text-center">{est.name}</h3>
+              <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2 px-2 leading-tight text-center">{est.name}</h3>
 
-              <div className="flex items-center gap-3 mb-10">
-                <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-black tracking-[0.15em] text-gray-500">
+              <div className="flex items-center gap-2.5 mb-8">
+                <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] font-black tracking-[0.15em] text-gray-500">
                   {est.currency.charAt(0).toUpperCase() + est.currency.slice(1).toLowerCase()}
                 </span>
-                <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-xs font-black tracking-[0.15em] text-paymint-green border border-paymint-green/20">
+                <span className="px-2.5 py-1 rounded-lg bg-paymint-green/10 text-[10px] font-black tracking-[0.15em] text-paymint-green border border-paymint-green/20">
                   {est.subscriptionStatus.charAt(0).toUpperCase() + est.subscriptionStatus.slice(1).toLowerCase()}
                 </span>
               </div>
 
               <div className={`flex items-center gap-2 text-xs font-black tracking-[0.2em] transition-all ${hoveredId === est.id ? 'text-paymint-green' : 'text-gray-400'}`}>
                 Open Dashboard
-                <ChevronRight size={16} />
+                <ChevronRight size={14} />
               </div>
             </motion.div>
           ))}
@@ -140,13 +140,13 @@ export function SelectEstablishmentPage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: establishments.length * 0.05 }}
             onClick={() => navigate('/onboarding')}
-            className="bg-gray-100/50 dark:bg-white/[0.02] border-2 border-dashed border-gray-300 dark:border-white/[0.1] rounded-[3rem] p-10 cursor-pointer hover:border-paymint-green hover:bg-white dark:hover:bg-white/[0.05] transition-all flex flex-col items-center justify-center group min-h-[350px]"
+            className="bg-gray-100/50 dark:bg-white/[0.02] border-2 border-dashed border-gray-300 dark:border-white/[0.1] rounded-[2.5rem] p-8 cursor-pointer hover:border-paymint-green hover:bg-white dark:hover:bg-white/[0.05] transition-all flex flex-col items-center justify-center group min-h-[280px]"
           >
-            <div className="w-20 h-20 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-6 border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all">
-              <Plus size={36} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
+            <div className="w-16 h-16 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all">
+              <Plus size={28} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
             </div>
-            <h3 className="text-xl font-black text-gray-900 dark:text-white mb-2">Add Location</h3>
-            <p className="text-gray-500 text-xs font-black tracking-widest">New Business</p>
+            <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2">Add Location</h3>
+            <p className="text-gray-500 text-[10px] font-black tracking-widest">New Business</p>
           </motion.div>
         </div>
       </div>

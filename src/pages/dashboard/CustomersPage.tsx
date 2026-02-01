@@ -89,6 +89,30 @@ export function CustomersPage() {
     fetchCustomers();
   }, [page, searchQuery]);
 
+  // Close action menu when clicking outside or scrolling
+  useEffect(() => {
+    if (!activeMenu) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('[data-action-menu]')) {
+        setActiveMenu(null);
+      }
+    };
+
+    const handleScroll = () => {
+      setActiveMenu(null);
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('scroll', handleScroll, true);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('scroll', handleScroll, true);
+    };
+  }, [activeMenu]);
+
   const fetchCustomers = async () => {
     try {
       setIsLoading(true);
@@ -424,7 +448,7 @@ export function CustomersPage() {
                         <button onClick={() => openEditModal(customer)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-all">
                           <Edit2 size={16} />
                         </button>
-                        <div className="relative">
+                        <div className="relative" data-action-menu>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();

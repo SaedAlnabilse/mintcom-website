@@ -47,6 +47,22 @@ export function OwnerEstablishmentsPage() {
     const [viewMode, setViewMode] = useState<ViewMode>('list');
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
+    // Close menu when clicking outside or scrolling
+    useEffect(() => {
+        if (!activeMenu) return;
+
+        const handleClick = () => setActiveMenu(null);
+        const handleScroll = () => setActiveMenu(null);
+
+        document.addEventListener('click', handleClick);
+        window.addEventListener('scroll', handleScroll, true);
+
+        return () => {
+            document.removeEventListener('click', handleClick);
+            window.removeEventListener('scroll', handleScroll, true);
+        };
+    }, [activeMenu]);
+
     const filteredEstablishments = useMemo(() => {
         return establishments.filter(est => {
             const matchesSearch = est.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

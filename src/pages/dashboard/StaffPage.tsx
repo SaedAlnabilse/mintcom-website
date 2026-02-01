@@ -86,25 +86,27 @@ export function StaffPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside or scrolling
   useEffect(() => {
+    if (!activeDropdown) return;
+
     const handleClickOutside = (event: MouseEvent) => {
-      if (activeDropdown && !(event.target as Element).closest('.dropdown-container')) {
+      if (!(event.target as Element).closest('.dropdown-container')) {
         setActiveDropdown(null);
       }
     };
 
-    if (activeDropdown) {
-      setTimeout(() => {
-        const row = document.querySelector(`[data-member-id="${activeDropdown}"]`);
-        if (row) {
-          row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-      }, 50);
-    }
+    const handleScroll = () => {
+      setActiveDropdown(null);
+    };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    window.addEventListener('scroll', handleScroll, true);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('scroll', handleScroll, true);
+    };
   }, [activeDropdown]);
 
   useEffect(() => {

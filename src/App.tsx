@@ -11,6 +11,7 @@ import { LoadingFallback } from './components/LoadingFallback';
 // These are loaded immediately as they're needed for the auth flow
 import { ErrorPage } from './components/ErrorPage';
 import { ProtectedRoute, EstablishmentRequiredRoute } from './components/ProtectedRoute';
+import { ChatWidgetEnhancer } from './components/ChatWidgetEnhancer';
 
 // ============================================================================
 // Lazy Imports - Public Pages
@@ -111,6 +112,7 @@ const router = createBrowserRouter([
     element: (
       <>
         <Outlet />
+        <ChatWidgetEnhancer />
       </>
     ),
     children: [

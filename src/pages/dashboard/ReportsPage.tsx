@@ -554,7 +554,7 @@ export function ReportsPage() {
           <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0">
 
             {/* Sector 1: Quick Period Dropdown */}
-            <div className={`flex-none w-[180px] rounded-2xl transition-all ${selectedDateRange !== 'custom' ? 'ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : ''}`}>
+            <div className={`flex-none w-[180px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'border-transparent'}`}>
               <SingleSelect
                 value={selectedDateRange === 'custom' ? null : selectedDateRange}
                 onChange={(val) => setQuickDate(val || 'today')}
@@ -1189,15 +1189,6 @@ export function ReportsPage() {
                     ) : (
                       <>
                         <button
-                          onClick={() => setItemReportTab('attributes')}
-                          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${itemReportTab === 'attributes'
-                            ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
-                            : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
-                            }`}
-                        >
-                          Attributes (Groups)
-                        </button>
-                        <button
                           onClick={() => setItemReportTab('modifiers')}
                           className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${itemReportTab === 'modifiers'
                             ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
@@ -1205,6 +1196,15 @@ export function ReportsPage() {
                             }`}
                         >
                           Add-ons
+                        </button>
+                        <button
+                          onClick={() => setItemReportTab('attributes')}
+                          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${itemReportTab === 'attributes'
+                            ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                            : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
+                            }`}
+                        >
+                          Attributes (Groups)
                         </button>
                       </>
                     )}

@@ -64,13 +64,20 @@ export function OwnerBillingPage() {
         fetchBillingInfo();
     }, []);
 
-    // Close menu when clicking outside
+    // Close menu when clicking outside or scrolling
     useEffect(() => {
+        if (!activeMenu) return;
+
         const handleClick = () => setActiveMenu(null);
-        if (activeMenu) {
-            document.addEventListener('click', handleClick);
-            return () => document.removeEventListener('click', handleClick);
-        }
+        const handleScroll = () => setActiveMenu(null);
+
+        document.addEventListener('click', handleClick);
+        window.addEventListener('scroll', handleScroll, true);
+
+        return () => {
+            document.removeEventListener('click', handleClick);
+            window.removeEventListener('scroll', handleScroll, true);
+        };
     }, [activeMenu]);
 
     const fetchBillingInfo = async (silent = false) => {
