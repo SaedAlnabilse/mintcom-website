@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CreditCard, Lock, ShieldCheck } from 'lucide-react';
@@ -18,6 +18,8 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
     const [cvc, setCvc] = useState('');
     const [name, setName] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errors, setErrors] = useState<Record<string, string>>({});
+    const errorBannerRef = useRef<HTMLDivElement>(null);
 
     useScrollLock(isOpen);
 
@@ -27,6 +29,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
         const formatted = value.replace(/(\d{4})/g, '$1 ').trim();
         if (formatted.length <= 19) {
             setCardNumber(formatted);
+            if (errors.cardNumber) setErrors({ ...errors, cardNumber: '' });
         }
     };
 
@@ -39,6 +42,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
             } else {
                 setExpiry(value);
             }
+            if (errors.expiry) setErrors({ ...errors, expiry: '' });
         }
     };
 
@@ -53,23 +57,33 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!cardNumber || !expiry || !cvc || !name) {
-            toast.error('Please fill in all fields');
+        const newErrors: Record<string, string> = {};
+
+        if (!cardNumber) newErrors.cardNumber = 'Required';
+        if (!expiry) newErrors.expiry = 'Required';
+        if (!cvc) newErrors.cvc = 'Required';
+        if (!name) newErrors.name = 'Required';
+
+        const cleanNumber = cardNumber.replace(/\D/g, '');
+        const [expMonth, expYear] = expiry.split('/').map(p => parseInt(p, 10));
+
+        if (expiry && (!expMonth || !expYear || expMonth < 1 || expMonth > 12)) {
+            newErrors.expiry = 'Invalid expiry date';
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            // Scroll to error
+            setTimeout(() => {
+                errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
             return;
         }
 
         try {
             setIsSubmitting(true);
-
-            const cleanNumber = cardNumber.replace(/\D/g, '');
-            const [expMonth, expYear] = expiry.split('/').map(p => parseInt(p, 10));
             const brand = getCardBrand(cleanNumber);
             const last4 = cleanNumber.slice(-4);
-
-            if (!expMonth || !expYear || expMonth < 1 || expMonth > 12) {
-                toast.error('Invalid expiry date');
-                return;
-            }
 
             await api.post('/api/accounts/cards', {
                 last4,
@@ -89,8 +103,13 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
             setExpiry('');
             setCvc('');
             setName('');
+            setErrors({});
         } catch (err: any) {
-            toast.error(err.response?.data?.message || 'Failed to add card');
+            const msg = err.response?.data?.message || 'Failed to add card';
+            setErrors({ general: msg });
+            setTimeout(() => {
+                errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
         } finally {
             setIsSubmitting(false);
         }
@@ -118,7 +137,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                         {/* Decorative Background */}
                         <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/10 rounded-full blur-[80px] pointer-events-none -translate-y-1/2 translate-x-1/2" />
 
-                        <div className="p-8">
+                        <div className="p-8 max-h-[90vh] overflow-y-auto custom-scrollbar">
                             <div className="flex items-center justify-between mb-8">
                                 <div>
                                     <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">New Card</h2>
@@ -133,6 +152,13 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                             </div>
 
                             <form onSubmit={handleSubmit} className="space-y-6">
+                                {/* Error Banner */}
+                                {Object.keys(errors).length > 0 && (
+                                    <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold animate-pulse">
+                                        {errors.general || errors.expiry || errors.cardNumber || errors.cvc || errors.name || "Please correct the errors below"}
+                                    </div>
+                                )}
+
                                 {/* Card Number */}
                                 <div className="space-y-2">
                                     <label className="text-xs font-black text-gray-400 tracking-widest block pl-1">Card Number</label>
@@ -142,7 +168,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                             value={cardNumber}
                                             onChange={handleCardNumberChange}
                                             placeholder="0000 0000 0000 0000"
-                                            className="w-full h-14 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 pl-12 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all font-mono"
+                                            className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.cardNumber ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 pl-12 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all font-mono`}
                                         />
                                         <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                                         <div className="absolute right-4 top-1/2 -translate-y-1/2">
@@ -153,6 +179,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                             )}
                                         </div>
                                     </div>
+                                    {errors.cardNumber && <p className="text-xs font-bold text-red-500 pl-1">{errors.cardNumber}</p>}
                                 </div>
 
                                 {/* Expiry & Cvc */}
@@ -165,8 +192,9 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                             onChange={handleExpiryChange}
                                             placeholder="Mm/Yy"
                                             maxLength={5}
-                                            className="w-full h-14 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all text-center font-mono"
+                                            className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.expiry ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all text-center font-mono`}
                                         />
+                                        {errors.expiry && <p className="text-xs font-bold text-red-500 pl-1">{errors.expiry}</p>}
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-xs font-black text-gray-400 tracking-widest block pl-1">Cvc</label>
@@ -174,13 +202,14 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                             <input
                                                 type="password"
                                                 value={cvc}
-                                                onChange={(e) => setCvc(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                                                onChange={(e) => { setCvc(e.target.value.replace(/\D/g, '').slice(0, 4)); if (errors.cvc) setErrors({ ...errors, cvc: '' }); }}
                                                 placeholder="123"
                                                 maxLength={4}
-                                                className="w-full h-14 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 pl-10 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all font-mono"
+                                                className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.cvc ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 pl-10 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all font-mono`}
                                             />
                                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={16} />
                                         </div>
+                                        {errors.cvc && <p className="text-xs font-bold text-red-500 pl-1">{errors.cvc}</p>}
                                     </div>
                                 </div>
 
@@ -190,10 +219,11 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                     <input
                                         type="text"
                                         value={name}
-                                        onChange={(e) => setName(e.target.value)}
+                                        onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
                                         placeholder="John Doe"
-                                        className="w-full h-14 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all"
+                                        className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all`}
                                     />
+                                    {errors.name && <p className="text-xs font-bold text-red-500 pl-1">{errors.name}</p>}
                                 </div>
 
                                 <button

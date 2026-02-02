@@ -174,6 +174,14 @@ export function CustomRoleFormModal({
     const newErrors: Record<string, string> = {};
     if (!name.trim()) newErrors.name = 'Required';
 
+    // Validation: At least one permission must be enabled
+    const finalPermissions = posAccess ? permissions : [];
+    const finalBackofficePermissions = backofficeAccess ? backofficePermissions : [];
+
+    if (finalPermissions.length === 0 && finalBackofficePermissions.length === 0) {
+      newErrors.general = 'Role must have at least one permission enabled';
+    }
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -182,12 +190,12 @@ export function CustomRoleFormModal({
     const payload = {
       name: name.trim(),
       baseRole: 'USER', // Default base role for custom roles
-      permissions: posAccess ? permissions : [],
+      permissions: finalPermissions,
       allowedDiscounts: allDiscountsSelected ? [] : allowedDiscounts,
       // Access Control
       posAccess,
       backofficeAccess,
-      backofficePermissions: backofficeAccess ? backofficePermissions : [],
+      backofficePermissions: finalBackofficePermissions,
     };
 
     await onSubmit(payload);
@@ -222,6 +230,12 @@ export function CustomRoleFormModal({
 
           <div className="overflow-y-auto p-8 pt-4 custom-scrollbar flex-1">
             <form id="role-form" onSubmit={handleSubmit} className="space-y-8">
+              {errors.general && (
+                <div className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
+                  {errors.general}
+                </div>
+              )}
               {/* Name Input */}
               <div className="relative">
                 <input

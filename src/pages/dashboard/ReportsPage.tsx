@@ -480,7 +480,7 @@ export function ReportsPage() {
             onClick={handleExport}
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
           >
-            <Download size={18} className="text-paymint-green" />
+            <Download size={18} className="text-gray-900 dark:text-white" />
             <span>Export to CSV</span>
           </button>
           <button

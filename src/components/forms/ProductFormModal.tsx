@@ -322,6 +322,8 @@ export function ProductFormModal({
     }
   };
 
+  const errorBannerRef = useRef<HTMLDivElement>(null);
+
   // Clear errors when any field changes
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
@@ -353,9 +355,10 @@ export function ProductFormModal({
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      // Show first error in toast for immediate feedback
-      const firstError = Object.values(newErrors)[0];
-      toast.error(firstError);
+      // Scroll to error
+      setTimeout(() => {
+        errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
       return;
     }
 
@@ -468,6 +471,13 @@ export function ProductFormModal({
 
             <div className="overflow-y-auto p-8 pt-2 custom-scrollbar flex-1" ref={scrollRef}>
               <form id="product-form" onSubmit={handleSubmit} className="space-y-8">
+                {/* Error Banner */}
+                {Object.keys(errors).length > 0 && (
+                  <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
+                    Please correct the highlighted errors below
+                  </div>
+                )}
 
                 {/* Image Picker */}
                 <div className="flex flex-col items-center justify-center py-6 bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/5 shadow-inner mb-2">

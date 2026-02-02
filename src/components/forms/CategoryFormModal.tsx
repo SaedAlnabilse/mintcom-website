@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -82,10 +82,16 @@ export function CategoryFormModal({
     }
   }, [isOpen, initialData]);
 
+  const errorBannerRef = useRef<HTMLDivElement>(null);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
       setErrors({ name: 'Name is required' });
+      // Scroll to error
+      setTimeout(() => {
+        errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
       return;
     }
     await onSubmit(name, selectedIcon, sortOrder);
@@ -137,6 +143,13 @@ export function CategoryFormModal({
             </div>
 
             <form id="category-form" onSubmit={handleSubmit} className="space-y-8">
+              {/* Error Banner */}
+              {Object.keys(errors).length > 0 && (
+                <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
+                  Please correct the highlighted errors below
+                </div>
+              )}
 
               {/* Name */}
               <div className="space-y-3">

@@ -268,8 +268,8 @@ export function LoyaltyPage() {
     const hasChanges = JSON.stringify(loyaltyConfig) !== JSON.stringify(initialLoyaltyConfig);
 
     const saveConfig = async () => {
-        if (!loyaltyConfig || loyaltyConfig.pointsPerCurrency <= 0 || loyaltyConfig.currencyPerPoint <= 0) {
-            toast.error("Please enter valid positive values for points and currency");
+        if (!loyaltyConfig || loyaltyConfig.pointsPerCurrency < 0 || loyaltyConfig.currencyPerPoint <= 0) {
+            toast.error("Please enter valid values (Currency must be positive, Points can be 0 or more)");
             return;
         }
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -41,9 +41,10 @@ export function SecurityVerificationModal({
     const [showPassword, setShowPassword] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const [errors, setErrors] = useState<Record<string, string>>({});
+    const errorBannerRef = useRef<HTMLDivElement>(null);
+
     useScrollLock(isOpen);
-
-
 
     const getModeConfig = () => {
         switch (mode) {
@@ -91,16 +92,6 @@ export function SecurityVerificationModal({
                     endpoint: `/api/brands/${targetId}/dissolve`,
                     method: 'delete'
                 };
-                return {
-                    title: 'Delete Team Member',
-                    warning: `You are about to permanently remove "${targetName}" from the team. This will revoke all their access permissions immediately.`,
-                    buttonText: 'Delete Member',
-                    icon: ShieldAlert,
-                    color: 'text-red-500',
-                    bg: 'bg-red-500/10',
-                    endpoint: `/api/users/${targetId}`,
-                    method: 'delete'
-                };
             case 'delete-employee':
                 return {
                     title: 'Delete Team Member',
@@ -143,13 +134,22 @@ export function SecurityVerificationModal({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!email || !password) {
-            toast.error('Please enter your login details');
+
+        const newErrors: Record<string, string> = {};
+        if (!email) newErrors.email = 'Email is required';
+        if (!password) newErrors.password = 'Password is required';
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            setTimeout(() => {
+                errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
             return;
         }
 
         try {
             setIsSubmitting(true);
+            setErrors({});
             const res = await (config.method === 'post'
                 ? api.post(config.endpoint, { email, password })
                 : api.delete(config.endpoint, { data: { email, password } }));
@@ -160,7 +160,11 @@ export function SecurityVerificationModal({
             setEmail('');
             setPassword('');
         } catch (err: any) {
-            toast.error(err.response?.data?.message || 'Verification failed');
+            const msg = err.response?.data?.message || 'Verification failed';
+            setErrors({ general: msg });
+            setTimeout(() => {
+                errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
         } finally {
             setIsSubmitting(false);
         }
@@ -220,6 +224,14 @@ export function SecurityVerificationModal({
 
                         {/* Form */}
                         <form onSubmit={handleSubmit} className="p-6 space-y-5">
+                            {/* Error Banner */}
+                            {Object.keys(errors).length > 0 && (
+                                <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
+                                    Please correct the highlighted errors below
+                                </div>
+                            )}
+
                             <div className="space-y-4">
                                 <div className="space-y-2">
                                     <label className="text-xs font-black text-gray-400 tracking-[0.3em] block ml-1">Identity Confirmation (Email)</label>
@@ -228,12 +240,16 @@ export function SecurityVerificationModal({
                                         <input
                                             type="email"
                                             value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
+                                            onChange={(e) => {
+                                                setEmail(e.target.value);
+                                                if (errors.email) setErrors({ ...errors, email: '' });
+                                            }}
                                             placeholder="your@email.com"
-                                            className="w-full bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-xl py-3 pl-12 pr-4 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-paymint-green/10 transition-all placeholder-gray-300 dark:placeholder-gray-700"
+                                            className={`w-full bg-gray-50 dark:bg-white/[0.03] border ${errors.email ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl py-3 pl-12 pr-4 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-paymint-green/10 transition-all placeholder-gray-300 dark:placeholder-gray-700`}
                                             disabled={isSubmitting}
                                         />
                                     </div>
+                                    {errors.email && <p className="ml-1 text-xs font-black text-paymint-red tracking-wide">{errors.email}</p>}
                                 </div>
 
                                 <div className="space-y-2">
@@ -243,9 +259,12 @@ export function SecurityVerificationModal({
                                         <input
                                             type={showPassword ? 'text' : 'password'}
                                             value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
+                                            onChange={(e) => {
+                                                setPassword(e.target.value);
+                                                if (errors.password) setErrors({ ...errors, password: '' });
+                                            }}
                                             placeholder="••••••••"
-                                            className="w-full bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-xl py-3 pl-12 pr-10 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-paymint-green/10 transition-all placeholder-gray-300 dark:placeholder-gray-700"
+                                            className={`w-full bg-gray-50 dark:bg-white/[0.03] border ${errors.password ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl py-3 pl-12 pr-10 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-paymint-green/10 transition-all placeholder-gray-300 dark:placeholder-gray-700`}
                                             disabled={isSubmitting}
                                         />
                                         <button
@@ -256,6 +275,7 @@ export function SecurityVerificationModal({
                                             {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                                         </button>
                                     </div>
+                                    {errors.password && <p className="ml-1 text-xs font-black text-paymint-red tracking-wide">{errors.password}</p>}
                                 </div>
                             </div>
 

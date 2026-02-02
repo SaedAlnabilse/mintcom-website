@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Award, Check } from 'lucide-react';
@@ -47,8 +47,37 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
     setFreeCategoryName('');
   };
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const errorBannerRef = useRef<HTMLDivElement>(null);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const newErrors: Record<string, string> = {};
+    if (!pointsRequired || parseFloat(pointsRequired) <= 0) {
+      newErrors.pointsRequired = 'Valid points required';
+    }
+
+    if (type === 'DISCOUNT') {
+      if (!discountPercentage || parseFloat(discountPercentage) <= 0 || parseFloat(discountPercentage) > 100) {
+        newErrors.discountPercentage = 'Valid percentage (1-100) required';
+      }
+    } else {
+      if (!freeCategoryId) {
+        newErrors.freeCategoryId = 'Category required';
+      }
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      // Scroll to error
+      setTimeout(() => {
+        errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+      return;
+    }
+
+    setErrors({});
     onSave({
       type,
       pointsRequired,
@@ -87,6 +116,14 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
           </div>
 
           <form id="reward-form" onSubmit={handleSubmit} className="p-6 space-y-5 flex-1 overflow-y-auto custom-scrollbar">
+            {/* Error Banner */}
+            {Object.keys(errors).length > 0 && (
+              <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
+                Please correct the highlighted errors below
+              </div>
+            )}
+
             {/* Reward Type */}
             <div>
               <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1">Type</label>
@@ -123,15 +160,18 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                 <input
                   type="number"
                   value={pointsRequired}
-                  onChange={(e) => setPointsRequired(e.target.value)}
-                  className="w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white font-bold text-xl focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all pr-12 group-hover:border-paymint-green/50 shadow-sm"
+                  onChange={(e) => {
+                    setPointsRequired(e.target.value);
+                    if (errors.pointsRequired) setErrors({ ...errors, pointsRequired: '' });
+                  }}
+                  className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.pointsRequired ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold text-xl focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all pr-12 group-hover:border-paymint-green/50 shadow-sm`}
                   placeholder="0"
                 />
                 <div className="absolute right-5 top-1/2 -translate-y-1/2 text-paymint-green">
                   <Award size={20} strokeWidth={2.5} />
                 </div>
               </div>
-              <p className="text-xs font-black text-gray-400 mt-2 px-1 tracking-tight">Points required</p>
+              {errors.pointsRequired && <p className="mt-1 px-1 text-xs font-black text-paymint-red tracking-wide">{errors.pointsRequired}</p>}
             </div>
 
             {/* Dynamic Fields - Height Stabilized */}
@@ -143,30 +183,40 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                     <input
                       type="number"
                       value={discountPercentage}
-                      onChange={(e) => setDiscountPercentage(e.target.value)}
-                      className="w-full px-5 py-3.5 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white font-bold text-2xl focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all pr-12 group-hover:border-paymint-green/50 shadow-sm"
+                      onChange={(e) => {
+                        setDiscountPercentage(e.target.value);
+                        if (errors.discountPercentage) setErrors({ ...errors, discountPercentage: '' });
+                      }}
+                      className={`w-full px-5 py-3.5 bg-gray-50 dark:bg-black/20 border ${errors.discountPercentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold text-2xl focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all pr-12 group-hover:border-paymint-green/50 shadow-sm`}
                       placeholder="0"
                     />
                     <div className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg group-focus-within:text-paymint-green transition-colors">%</div>
                   </div>
+                  {errors.discountPercentage && <p className="mt-1 px-1 text-xs font-black text-paymint-red tracking-wide">{errors.discountPercentage}</p>}
                 </motion.div>
               ) : (
                 <motion.div key="category" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-2.5 px-1">Category</label>
-                  <CustomSelect
-                    value={freeCategoryId}
-                    onChange={(val) => {
-                      setFreeCategoryId(val);
-                      const cat = categories.find(c => c.id === val);
-                      setFreeCategoryName(cat ? cat.name : '');
-                    }}
-                    options={[
-                      { label: 'Select category...', value: '' },
-                      ...categories.map(c => ({ label: c.name, value: c.id }))
-                    ]}
-                    placeholder="Select category..."
-                    direction="up"
-                  />
+                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-2.5 px-1 flex items-center justify-between">
+                    <span>Category</span>
+                    {errors.freeCategoryId && <span className="text-paymint-red normal-case tracking-normal font-bold text-[10px]">{errors.freeCategoryId}</span>}
+                  </label>
+                  <div className={errors.freeCategoryId ? 'ring-2 ring-paymint-red/20 rounded-2xl' : ''}>
+                    <CustomSelect
+                      value={freeCategoryId}
+                      onChange={(val) => {
+                        setFreeCategoryId(val);
+                        const cat = categories.find(c => c.id === val);
+                        setFreeCategoryName(cat ? cat.name : '');
+                        if (errors.freeCategoryId) setErrors({ ...errors, freeCategoryId: '' });
+                      }}
+                      options={[
+                        { label: 'Select category...', value: '' },
+                        ...categories.map(c => ({ label: c.name, value: c.id }))
+                      ]}
+                      placeholder="Select category..."
+                      direction="up"
+                    />
+                  </div>
                 </motion.div>
               )}
             </div>

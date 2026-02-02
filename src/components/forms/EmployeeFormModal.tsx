@@ -114,14 +114,13 @@ export function EmployeeFormModal({
   // Establishment selection for Owner Dashboard
   const [selectedEstablishmentIds, setSelectedEstablishmentIds] = useState<string[]>([]);
   const [establishmentSearch, setEstablishmentSearch] = useState('');
-  const [showEstablishmentDropdown, setShowEstablishmentDropdown] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<'ESTABLISHMENT' | 'ROLE' | null>(null);
   const establishmentButtonRef = useRef<HTMLButtonElement>(null);
 
   // Custom Roles
   const [customRoles, setCustomRoles] = useState<CustomRole[]>([]);
   const [selectedCustomRoleId, setSelectedCustomRoleId] = useState<string>('');
   const [lastAppliedTemplate, setLastAppliedTemplate] = useState<CustomRole | null>(null);
-  const [showRolesDropdown, setShowRolesDropdown] = useState(false);
   const rolesButtonRef = useRef<HTMLButtonElement>(null);
 
   // Platform Access Control
@@ -156,20 +155,16 @@ export function EmployeeFormModal({
   };
 
   useEffect(() => {
-    if (showEstablishmentDropdown && establishmentButtonRef.current) {
+    if (activeDropdown === 'ESTABLISHMENT' && establishmentButtonRef.current) {
       setTimeout(() => {
         establishmentButtonRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 150);
-    }
-  }, [showEstablishmentDropdown]);
-
-  useEffect(() => {
-    if (showRolesDropdown && rolesButtonRef.current) {
+    } else if (activeDropdown === 'ROLE' && rolesButtonRef.current) {
       setTimeout(() => {
         rolesButtonRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 150);
     }
-  }, [showRolesDropdown]);
+  }, [activeDropdown]);
 
   useEffect(() => {
     if (isOpen) {
@@ -232,8 +227,7 @@ export function EmployeeFormModal({
           setSelectedEstablishmentIds([]);
         }
       }
-      setShowEstablishmentDropdown(false);
-      setShowRolesDropdown(false);
+      setActiveDropdown(null);
     }
   }, [isOpen, initialData]);
 
@@ -253,7 +247,7 @@ export function EmployeeFormModal({
     setPosAccess(roleTemplate.posAccess !== false);
     setBackofficeAccess(roleTemplate.backofficeAccess || false);
 
-    setShowRolesDropdown(false);
+    setActiveDropdown(null);
   };
 
   const isModifiedFromTemplate = () => {
@@ -283,6 +277,8 @@ export function EmployeeFormModal({
     }
   }, [isOpen]);
 
+  const errorBannerRef = useRef<HTMLDivElement>(null);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -310,6 +306,10 @@ export function EmployeeFormModal({
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      // Scroll to error
+      setTimeout(() => {
+        errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
       return;
     }
 
@@ -378,6 +378,13 @@ export function EmployeeFormModal({
 
           <div className="overflow-y-auto p-8 pt-4 custom-scrollbar flex-1">
             <form id="employee-form" onSubmit={handleSubmit} className="space-y-6">
+              {/* Error Banner */}
+              {Object.keys(errors).length > 0 && (
+                <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
+                  Please correct the highlighted errors below
+                </div>
+              )}
 
               {/* Name */}
               <div>
@@ -447,7 +454,7 @@ export function EmployeeFormModal({
                   <button
                     ref={establishmentButtonRef}
                     type="button"
-                    onClick={() => setShowEstablishmentDropdown(!showEstablishmentDropdown)}
+                    onClick={() => setActiveDropdown(activeDropdown === 'ESTABLISHMENT' ? null : 'ESTABLISHMENT')}
                     className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.establishments ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-left flex items-center justify-between transition-colors`}
                   >
                     <span className={`text-sm font-bold ${selectedEstablishmentIds.length ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}>
@@ -457,13 +464,13 @@ export function EmployeeFormModal({
                           ? 'All Locations'
                           : `${selectedEstablishmentIds.length} Location${selectedEstablishmentIds.length === 1 ? '' : 's'}`}
                     </span>
-                    <ChevronDown size={16} className={`text-gray-400 transition-transform ${showEstablishmentDropdown ? 'rotate-180' : ''}`} />
+                    <ChevronDown size={16} className={`text-gray-400 transition-transform ${activeDropdown === 'ESTABLISHMENT' ? 'rotate-180' : ''}`} />
                   </button>
                   {errors.establishments && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.establishments}</p>}
 
                   {/* Portal Dropdown */}
                   <AnimatePresence>
-                    {showEstablishmentDropdown && (
+                    {activeDropdown === 'ESTABLISHMENT' && (
                       <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -528,7 +535,7 @@ export function EmployeeFormModal({
                 <button
                   ref={rolesButtonRef}
                   type="button"
-                  onClick={() => setShowRolesDropdown(!showRolesDropdown)}
+                  onClick={() => setActiveDropdown(activeDropdown === 'ROLE' ? null : 'ROLE')}
                   className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-left flex items-center justify-between transition-colors"
                 >
                   <span className={`text-sm font-bold ${(selectedCustomRoleId || role === 'ADMIN') ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}>
@@ -538,11 +545,11 @@ export function EmployeeFormModal({
                         ? customRoles.find(r => r.id === selectedCustomRoleId)?.name || 'Select Role...'
                         : 'Select Role...'}
                   </span>
-                  <ChevronDown size={16} className={`text-gray-400 transition-transform ${showRolesDropdown ? 'rotate-180' : ''}`} />
+                  <ChevronDown size={16} className={`text-gray-400 transition-transform ${activeDropdown === 'ROLE' ? 'rotate-180' : ''}`} />
                 </button>
 
                 <AnimatePresence>
-                  {showRolesDropdown && (
+                  {activeDropdown === 'ROLE' && (
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -557,10 +564,9 @@ export function EmployeeFormModal({
                             setRole('ADMIN');
                             setSelectedCustomRoleId('');
                             setLastAppliedTemplate(null);
-                            setPermissions(POS_PERMISSIONS.map(p => p.id));
                             setBackofficePermissions(BACKOFFICE_PERMISSIONS.map(p => p.id));
                             setAllDiscountsSelected(true);
-                            setShowRolesDropdown(false);
+                            setActiveDropdown(null);
                             setPosAccess(true);
                             setBackofficeAccess(true);
                           }}

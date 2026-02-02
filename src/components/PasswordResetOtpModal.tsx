@@ -36,6 +36,7 @@ export function PasswordResetOtpModal({
     const [error, setError] = useState('');
 
     const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+    const errorRef = useRef<HTMLDivElement>(null);
 
     useScrollLock(isOpen);
 
@@ -48,6 +49,12 @@ export function PasswordResetOtpModal({
             setError('');
         }
     }, [isOpen]);
+
+    useEffect(() => {
+        if (error && errorRef.current) {
+            errorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, [error]);
 
     const getTitle = () => {
         switch (type) {
@@ -228,7 +235,7 @@ export function PasswordResetOtpModal({
                                 </div>
 
                                 {error && (
-                                    <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 text-sm">
+                                    <div ref={errorRef} className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 text-sm">
                                         <AlertCircle size={16} />
                                         {error}
                                     </div>
@@ -288,7 +295,7 @@ export function PasswordResetOtpModal({
                                 </div>
 
                                 {error && (
-                                    <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 text-sm">
+                                    <div ref={errorRef} className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 text-sm">
                                         <AlertCircle size={16} />
                                         {error}
                                     </div>
@@ -377,7 +384,7 @@ export function PasswordResetOtpModal({
                                 </div>
 
                                 {error && (
-                                    <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 text-sm">
+                                    <div ref={errorRef} className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 text-sm">
                                         <AlertCircle size={16} />
                                         {error}
                                     </div>

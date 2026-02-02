@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, RefreshCw, MousePointerClick, CheckSquare, AlertCircle } from 'lucide-react';
@@ -50,12 +50,25 @@ export function AttributeFormModal({
         }
     }, [isOpen, initialData]);
 
+    const errorBannerRef = useRef<HTMLDivElement>(null);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        const newErrors: Record<string, string> = {};
         if (!name.trim()) {
-            setErrors({ name: 'Name is required' });
+            newErrors.name = 'Name is required';
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            // Scroll to error
+            setTimeout(() => {
+                errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
             return;
         }
+
         await onSubmit(name, inputType, isRequired);
     };
 
@@ -93,6 +106,13 @@ export function AttributeFormModal({
 
                     <div className="overflow-y-auto p-8 pt-2 custom-scrollbar flex-1">
                         <form id="attribute-form" onSubmit={handleSubmit} className="space-y-8">
+                            {/* Error Banner */}
+                            {Object.keys(errors).length > 0 && (
+                                <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
+                                    Please correct the highlighted errors below
+                                </div>
+                            )}
 
                             {/* Name */}
                             <div className="space-y-3">

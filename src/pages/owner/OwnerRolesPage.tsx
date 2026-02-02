@@ -247,9 +247,16 @@ export function OwnerRolesPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <p className="text-xs text-gray-500 font-medium">
-                          {role.permissions?.length || 0} permissions active
-                        </p>
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-paymint-green"></span>
+                            <span className="text-xs text-gray-500 font-medium">POS: {role.permissions?.length || 0}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                            <span className="text-xs text-gray-500 font-medium">Office: {role.backofficePermissions?.length || 0}</span>
+                          </div>
+                        </div>
                       </td>
                       <td className="px-6 py-4">
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 border border-gray-200 dark:border-white/10 text-xs font-black tracking-wide">
