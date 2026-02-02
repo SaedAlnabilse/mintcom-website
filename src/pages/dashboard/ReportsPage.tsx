@@ -7,7 +7,7 @@ import { endOfDay, startOfDay, format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   TrendingUp, Clock, Activity, ShoppingBag, ArrowUpRight, RefreshCw,
-  Download, ChevronRight, ChevronLeft, Wallet, CreditCard, ExternalLink, Percent, DollarSign, PieChart as PieChartIcon, Tag, Scale, ArrowUpDown, Calendar, Search, Users
+  Download, ChevronRight, ChevronLeft, Wallet, CreditCard, ExternalLink, Percent, DollarSign, PieChart as PieChartIcon, Tag, Scale, ArrowUpDown, Search, Users
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -557,7 +557,6 @@ export function ReportsPage() {
                 <div className={`flex-none w-auto min-w-[145px] sm:min-w-[170px] relative z-[60]`}>
                   <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isDateFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
                     <div className="flex items-center gap-1.5 mb-0.5">
-                      <Calendar size={11} className={isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
                       <span className={`text-[9px] font-black tracking-wider transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>DATE RANGE</span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -589,7 +588,6 @@ export function ReportsPage() {
                 <div className={`flex-none w-auto min-w-[155px] sm:min-w-[180px] relative z-[55]`}>
                   <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isTimeFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
                     <div className="flex items-center gap-1.5 mb-0.5">
-                      <Clock size={11} className={isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
                       <span className={`text-[9px] font-black tracking-wider transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>ACTIVE HOURS</span>
                     </div>
                     <div className="flex items-center gap-2 justify-between relative">

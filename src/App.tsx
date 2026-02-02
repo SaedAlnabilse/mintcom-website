@@ -14,6 +14,7 @@ import { FeedbackWidget } from './components/FeedbackWidget';
 import { ErrorPage } from './components/ErrorPage';
 import { ProtectedRoute, EstablishmentRequiredRoute } from './components/ProtectedRoute';
 import { ChatWidgetEnhancer } from './components/ChatWidgetEnhancer';
+import { ScrollToTop } from './components/ScrollToTop';
 
 // ============================================================================
 // Lazy Imports - Public Pages
@@ -118,6 +119,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     element: (
       <>
+        <ScrollToTop />
         <Outlet />
         <CookieConsent />
         <FeedbackWidget />

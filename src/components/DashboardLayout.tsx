@@ -7,6 +7,8 @@ import { DeletionRestorationBanner } from './DeletionRestorationBanner';
 import { BottomNavigation } from './mobile/BottomNavigation';
 import {
   LayoutDashboard,
+
+  MapPin,
   ShoppingCart,
   Package,
   Users,
@@ -19,6 +21,7 @@ import {
   LogOut,
   ChevronRight,
   PanelLeftClose,
+  PanelLeft,
   Menu,
   X,
   Smartphone,
@@ -153,14 +156,7 @@ export function DashboardLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [sidebarOpen, setSidebarOpen] = useState(() => {
-    const saved = localStorage.getItem(SIDEBAR_STATE_KEY);
-    // Default to closed on smaller screens (under 1400px)
-    if (saved === null && typeof window !== 'undefined' && window.innerWidth < 1400) {
-      return false;
-    }
-    return saved !== null ? saved === 'true' : false;
-  });
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -219,7 +215,15 @@ export function DashboardLayout() {
   const confirmLogout = () => { logout(); };
 
   const sidebarNavRef = useRef<HTMLElement>(null);
+  const mainContentRef = useRef<HTMLDivElement>(null);
   const prevSidebarOpen = useRef(sidebarOpen);
+
+  // Scroll to top on route change
+  useEffect(() => {
+    if (mainContentRef.current) {
+      mainContentRef.current.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, [location.pathname]);
 
   // 1. Auto-expand group when location changes OR sidebar opens
   useEffect(() => {
@@ -295,7 +299,7 @@ export function DashboardLayout() {
           transition: { duration: 0.4, type: "spring", damping: 25, stiffness: 200 }
         }}
         className={`
-          relative z-50 flex flex-col h-screen p-4 bg-white dark:bg-[#1E293B] border-r border-gray-200 dark:border-white/5 shadow-lg
+          relative z-50 flex flex-col h-screen py-4 bg-white dark:bg-[#1E293B] border-r border-gray-200 dark:border-white/5 shadow-lg group/sidebar
           ${mobileMenuOpen ? 'fixed left-0 top-0 w-[280px]' : 'hidden lg:flex'}
         `}
       >
@@ -322,12 +326,19 @@ export function DashboardLayout() {
                 exit={{ opacity: 0, scale: 0.8 }}
                 className="mx-auto"
               >
-                <div
-                  className="w-12 h-12 rounded-2xl flex items-center justify-center cursor-pointer overflow-hidden bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 hover:border-paymint-green/40 transition-all hover:scale-105 group relative"
+                <button
+                  className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 hover:border-paymint-green/40 text-paymint-green transition-all group relative"
                   onClick={() => setSidebarOpen(true)}
                 >
-                  <img src={PaymintLeafIcon} className="w-7 h-7 object-contain scale-110" alt="P" />
-                </div>
+                  <img src={PaymintLeafIcon} className="w-6 h-6 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt="P" />
+                  <PanelLeft
+                    size={24}
+                    className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
+                  />
+                  <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
+                    Open sidebar
+                  </div>
+                </button>
               </motion.div>
             )}
           </AnimatePresence>
@@ -368,20 +379,23 @@ export function DashboardLayout() {
                     <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Online</span>
                   </div>
                   <div className="flex items-center gap-1 text-xs font-bold text-gray-500 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
-                    Switch <ChevronRight size={10} className="mt-0.5" />
+                    Switch Location <ChevronRight size={10} className="mt-0.5" />
                   </div>
                 </div>
               </div>
             </div>
           </div>
         ) : (
-          <div className="px-2 py-4 flex justify-center">
+          <div className="px-2 py-4 flex flex-col items-center gap-4">
+
             <button
-              onClick={() => setSidebarOpen(true)}
-              className="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-white/5 flex items-center justify-center hover:bg-paymint-green/10 hover:text-paymint-green transition-all"
-              title={currentEstablishment?.name}
+              onClick={() => navigate('/select-establishment')}
+              className="w-12 h-12 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all bg-gray-50 dark:bg-white/[0.03] group relative"
             >
-              <CurrentEstIcon size={20} />
+              <MapPin size={24} />
+              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
+                Switch Location
+              </div>
             </button>
           </div>
         )}
@@ -400,6 +414,7 @@ export function DashboardLayout() {
               const isExpanded = expandedGroup === item.label;
               const isActive = isGroupActive(item.items);
               const Icon = item.icon;
+              const isBottomItem = ['Team Management', 'Discounts and Loyalty', 'Settings'].includes(item.label);
 
               return (
                 <div key={index} className="mb-1">
@@ -407,14 +422,15 @@ export function DashboardLayout() {
                     data-group={item.label}
                     onClick={() => sidebarOpen && toggleGroup(item.label)}
                     className={`
-                      w-full flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group relative
+                      flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group relative
+                      ${sidebarOpen ? 'w-full' : ''}
                       ${isActive
                         ? (!sidebarOpen ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20' : 'bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white')
                         : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}
-                      ${!sidebarOpen ? 'justify-center' : ''}
+                      ${!sidebarOpen ? 'justify-center w-12 h-12 mx-auto' : ''}
                     `}
                   >
-                    <Icon size={20} className={isActive && !sidebarOpen ? 'text-black' : (isActive ? 'text-paymint-green' : '')} />
+                    <Icon size={!sidebarOpen ? 24 : 20} className={isActive && !sidebarOpen ? 'text-black' : (isActive ? 'text-paymint-green' : '')} />
 
                     {sidebarOpen && (
                       <>
@@ -424,7 +440,7 @@ export function DashboardLayout() {
                     )}
 
                     {!sidebarOpen && (
-                      <div className="absolute left-[calc(100%+8px)] top-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] pointer-events-none group-hover:pointer-events-auto translate-x-1 group-hover:translate-x-0">
+                      <div className={`absolute left-[calc(100%+8px)] ${isBottomItem ? 'bottom-0' : 'top-0'} opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] pointer-events-none group-hover:pointer-events-auto translate-x-1 group-hover:translate-x-0`}>
                         <div className="bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden min-w-[200px] py-2">
                           <div className="px-4 py-2 border-b border-gray-100 dark:border-white/5 mb-1 bg-gray-50/50 dark:bg-white/[0.02]">
                             <p className="text-xs font-bold text-paymint-green tracking-wide">{item.label}</p>
@@ -434,6 +450,7 @@ export function DashboardLayout() {
                               <NavLink
                                 key={subItem.path}
                                 to={subItem.path}
+                                onClick={() => setSidebarOpen(false)}
                                 className={({ isActive }) =>
                                   `flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${isActive
                                     ? 'bg-paymint-green text-black shadow-md shadow-paymint-green/20 active-menu-item'
@@ -447,7 +464,7 @@ export function DashboardLayout() {
                           </div>
                         </div>
                         {/* Bridge hitbox to allow mouse movement to the popover */}
-                        <div className="absolute -left-4 top-0 bottom-0 w-4 bg-transparent" />
+                        <div className={`absolute -left-4 w-4 bg-transparent ${isBottomItem ? 'bottom-0 h-full' : 'top-0 bottom-0'}`} />
                       </div>
                     )}
                   </button>
@@ -465,6 +482,7 @@ export function DashboardLayout() {
                             <NavLink
                               key={subItem.path}
                               to={subItem.path}
+                              onClick={() => setSidebarOpen(false)}
                               className={({ isActive }) =>
                                 `flex items-center gap-3 p-3.5 rounded-xl text-sm font-bold transition-all ${isActive
                                   ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20 active-menu-item'
@@ -488,23 +506,24 @@ export function DashboardLayout() {
                   key={item.path}
                   to={item.path}
                   end
+                  onClick={() => setSidebarOpen(false)}
                   className={({ isActive }) =>
                     `relative flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group
                     ${isActive
                       ? 'bg-paymint-green text-black font-bold shadow-lg shadow-paymint-green/20 active-menu-item'
                       : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}
-                    ${!sidebarOpen ? 'justify-center' : ''}`
+                    ${!sidebarOpen ? 'justify-center w-12 h-12 mx-auto' : ''}`
                   }
                 >
-                  <Icon size={20} />
+                  <Icon size={!sidebarOpen ? 24 : 20} />
 
                   {sidebarOpen && (
                     <span className="text-sm font-bold">{item.label}</span>
                   )}
 
                   {!sidebarOpen && (
-                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-2 bg-gray-900 text-white rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 whitespace-nowrap shadow-xl">
-                      <p className="text-xs font-bold">{item.label}</p>
+                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
+                      {item.label}
                     </div>
                   )}
                 </NavLink>
@@ -514,160 +533,140 @@ export function DashboardLayout() {
         </nav>
 
         {/* Mobile App Download - With QR Code Popup */}
-        <div className="px-3 mt-auto mb-2">
-          <div className="relative group">
-            {sidebarOpen ? (
+        {sidebarOpen && (
+          <div className="px-3 mt-auto mb-2">
+            <div className="relative group">
               <button className="w-full flex items-center gap-3 px-3 py-2.5 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
                 <Smartphone size={16} className="text-gray-400" />
                 <span className="text-sm font-bold">Mobile App</span>
               </button>
-            ) : (
-              <div className="flex justify-center">
-                <button className="w-12 h-12 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
-                  <Smartphone size={20} />
-                </button>
-              </div>
-            )}
 
-            {/* QR Code Popup */}
-            <div className="absolute left-full bottom-0 ml-3 bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[70] translate-x-2 group-hover:translate-x-0 w-[200px]">
-              {/* QR Code Container */}
-              <div className="bg-white rounded-xl p-3 mb-4 shadow-inner">
-                {/* Fake QR Code Pattern */}
-                <div className="w-full aspect-square bg-white relative overflow-hidden rounded-lg">
-                  <svg viewBox="0 0 100 100" className="w-full h-full">
-                    {/* QR code pattern - simplified fake version */}
-                    <rect width="100" height="100" fill="white" />
-                    {/* Corner squares */}
-                    <rect x="5" y="5" width="25" height="25" fill="black" />
-                    <rect x="8" y="8" width="19" height="19" fill="white" />
-                    <rect x="11" y="11" width="13" height="13" fill="black" />
+              {/* QR Code Popup */}
+              <div className="absolute left-full bottom-0 ml-3 bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[70] translate-x-2 group-hover:translate-x-0 w-[200px]">
+                {/* QR Code Container */}
+                <div className="bg-white rounded-xl p-3 mb-4 shadow-inner">
+                  {/* Fake QR Code Pattern */}
+                  <div className="w-full aspect-square bg-white relative overflow-hidden rounded-lg">
+                    <svg viewBox="0 0 100 100" className="w-full h-full">
+                      {/* QR code pattern - simplified fake version */}
+                      <rect width="100" height="100" fill="white" />
+                      {/* Corner squares */}
+                      <rect x="5" y="5" width="25" height="25" fill="black" />
+                      <rect x="8" y="8" width="19" height="19" fill="white" />
+                      <rect x="11" y="11" width="13" height="13" fill="black" />
 
-                    <rect x="70" y="5" width="25" height="25" fill="black" />
-                    <rect x="73" y="8" width="19" height="19" fill="white" />
-                    <rect x="76" y="11" width="13" height="13" fill="black" />
+                      <rect x="70" y="5" width="25" height="25" fill="black" />
+                      <rect x="73" y="8" width="19" height="19" fill="white" />
+                      <rect x="76" y="11" width="13" height="13" fill="black" />
 
-                    <rect x="5" y="70" width="25" height="25" fill="black" />
-                    <rect x="8" y="73" width="19" height="19" fill="white" />
-                    <rect x="11" y="76" width="13" height="13" fill="black" />
+                      <rect x="5" y="70" width="25" height="25" fill="black" />
+                      <rect x="8" y="73" width="19" height="19" fill="white" />
+                      <rect x="11" y="76" width="13" height="13" fill="black" />
 
-                    {/* Random pattern blocks */}
-                    <rect x="35" y="5" width="5" height="5" fill="black" />
-                    <rect x="45" y="5" width="5" height="5" fill="black" />
-                    <rect x="55" y="5" width="5" height="5" fill="black" />
-                    <rect x="35" y="15" width="5" height="5" fill="black" />
-                    <rect x="50" y="15" width="5" height="5" fill="black" />
-                    <rect x="60" y="15" width="5" height="5" fill="black" />
-                    <rect x="40" y="25" width="5" height="5" fill="black" />
-                    <rect x="55" y="25" width="5" height="5" fill="black" />
+                      {/* Random pattern blocks */}
+                      <rect x="35" y="5" width="5" height="5" fill="black" />
+                      <rect x="45" y="5" width="5" height="5" fill="black" />
+                      <rect x="55" y="5" width="5" height="5" fill="black" />
+                      <rect x="35" y="15" width="5" height="5" fill="black" />
+                      <rect x="50" y="15" width="5" height="5" fill="black" />
+                      <rect x="60" y="15" width="5" height="5" fill="black" />
+                      <rect x="40" y="25" width="5" height="5" fill="black" />
+                      <rect x="55" y="25" width="5" height="5" fill="black" />
 
-                    <rect x="5" y="35" width="5" height="5" fill="black" />
-                    <rect x="15" y="35" width="5" height="5" fill="black" />
-                    <rect x="25" y="35" width="5" height="5" fill="black" />
-                    <rect x="5" y="45" width="5" height="5" fill="black" />
-                    <rect x="20" y="45" width="5" height="5" fill="black" />
-                    <rect x="5" y="55" width="5" height="5" fill="black" />
-                    <rect x="15" y="55" width="5" height="5" fill="black" />
-                    <rect x="25" y="55" width="5" height="5" fill="black" />
+                      <rect x="5" y="35" width="5" height="5" fill="black" />
+                      <rect x="15" y="35" width="5" height="5" fill="black" />
+                      <rect x="25" y="35" width="5" height="5" fill="black" />
+                      <rect x="5" y="45" width="5" height="5" fill="black" />
+                      <rect x="20" y="45" width="5" height="5" fill="black" />
+                      <rect x="5" y="55" width="5" height="5" fill="black" />
+                      <rect x="15" y="55" width="5" height="5" fill="black" />
+                      <rect x="25" y="55" width="5" height="5" fill="black" />
 
-                    <rect x="35" y="35" width="30" height="30" fill="black" />
-                    <rect x="40" y="40" width="20" height="20" fill="white" />
-                    <rect x="45" y="45" width="10" height="10" fill="black" />
+                      <rect x="35" y="35" width="30" height="30" fill="black" />
+                      <rect x="40" y="40" width="20" height="20" fill="white" />
+                      <rect x="45" y="45" width="10" height="10" fill="black" />
 
-                    <rect x="70" y="35" width="5" height="5" fill="black" />
-                    <rect x="80" y="35" width="5" height="5" fill="black" />
-                    <rect x="90" y="35" width="5" height="5" fill="black" />
-                    <rect x="75" y="45" width="5" height="5" fill="black" />
-                    <rect x="85" y="45" width="5" height="5" fill="black" />
-                    <rect x="70" y="55" width="5" height="5" fill="black" />
-                    <rect x="80" y="55" width="5" height="5" fill="black" />
+                      <rect x="70" y="35" width="5" height="5" fill="black" />
+                      <rect x="80" y="35" width="5" height="5" fill="black" />
+                      <rect x="90" y="35" width="5" height="5" fill="black" />
+                      <rect x="75" y="45" width="5" height="5" fill="black" />
+                      <rect x="85" y="45" width="5" height="5" fill="black" />
+                      <rect x="70" y="55" width="5" height="5" fill="black" />
+                      <rect x="80" y="55" width="5" height="5" fill="black" />
 
-                    <rect x="35" y="70" width="5" height="5" fill="black" />
-                    <rect x="45" y="70" width="5" height="5" fill="black" />
-                    <rect x="55" y="70" width="5" height="5" fill="black" />
-                    <rect x="70" y="70" width="5" height="5" fill="black" />
-                    <rect x="80" y="70" width="5" height="5" fill="black" />
-                    <rect x="90" y="70" width="5" height="5" fill="black" />
-                    <rect x="40" y="80" width="5" height="5" fill="black" />
-                    <rect x="50" y="80" width="5" height="5" fill="black" />
-                    <rect x="75" y="80" width="5" height="5" fill="black" />
-                    <rect x="85" y="80" width="5" height="5" fill="black" />
-                    <rect x="35" y="90" width="5" height="5" fill="black" />
-                    <rect x="55" y="90" width="5" height="5" fill="black" />
-                    <rect x="70" y="90" width="5" height="5" fill="black" />
-                    <rect x="90" y="90" width="5" height="5" fill="black" />
-                  </svg>
-                  {/* Center logo placeholder */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                      <img src={PaymintLeafIcon} alt="P" className="w-5 h-5 object-contain" />
+                      <rect x="35" y="70" width="5" height="5" fill="black" />
+                      <rect x="45" y="70" width="5" height="5" fill="black" />
+                      <rect x="55" y="70" width="5" height="5" fill="black" />
+                      <rect x="70" y="70" width="5" height="5" fill="black" />
+                      <rect x="80" y="70" width="5" height="5" fill="black" />
+                      <rect x="90" y="70" width="5" height="5" fill="black" />
+                      <rect x="40" y="80" width="5" height="5" fill="black" />
+                      <rect x="50" y="80" width="5" height="5" fill="black" />
+                      <rect x="75" y="80" width="5" height="5" fill="black" />
+                      <rect x="85" y="80" width="5" height="5" fill="black" />
+                      <rect x="35" y="90" width="5" height="5" fill="black" />
+                      <rect x="55" y="90" width="5" height="5" fill="black" />
+                      <rect x="70" y="90" width="5" height="5" fill="black" />
+                      <rect x="90" y="90" width="5" height="5" fill="black" />
+                    </svg>
+                    {/* Center logo placeholder */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                        <img src={PaymintLeafIcon} alt="P" className="w-5 h-5 object-contain" />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Text */}
-              <p className="text-center text-sm font-bold text-gray-900 dark:text-white leading-tight">
-                Scan to download<br />
-                <span className="text-paymint-green">Paymint App</span>
-              </p>
+                {/* Text */}
+                <p className="text-center text-sm font-bold text-gray-900 dark:text-white leading-tight">
+                  Scan to download<br />
+                  <span className="text-paymint-green">Paymint App</span>
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
+
 
         {/* Footer User Profile */}
-        <div className="p-3 border-t border-gray-100 dark:border-white/5">
-          <div className={`flex items-center gap-3 ${!sidebarOpen ? 'flex-col' : ''}`}>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-paymint-green/20 outline outline-2 outline-white dark:outline-black">
-              <span className="text-black font-bold text-xs">
-                {account?.firstName?.charAt(0).toUpperCase()}
-              </span>
-            </div>
+        {sidebarOpen && (
+          <div className="p-3 border-t border-gray-100 dark:border-white/5">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-paymint-green/20 outline outline-2 outline-white dark:outline-black">
+                <span className="text-black font-bold text-xs">
+                  {account?.firstName?.charAt(0).toUpperCase()}
+                </span>
+              </div>
 
-            {sidebarOpen && (
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-bold text-gray-900 dark:text-white truncate">
                   {account?.firstName} {account?.lastName}
                 </p>
                 <p className="text-xs text-gray-500 truncate">Manager</p>
               </div>
-            )}
 
-            {/* Actions: Theme & Logout */}
-            <div className={`flex items-center gap-1 ${!sidebarOpen ? 'flex-col gap-2 mt-1' : ''}`}>
-              {sidebarOpen ? (
-                <div className="flex items-center gap-1">
-                  <ThemeToggle dropdownDirection="up" />
-                  <button
-                    onClick={handleLogout}
-                    className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all"
-                    title="Sign Out"
-                  >
-                    <LogOut size={16} />
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <div className="relative group">
-                    <ThemeToggle dropdownDirection="up" />
-                  </div>
-                  <div className="relative group">
-                    <button
-                      onClick={handleLogout}
-                      className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all"
-                    >
-                      <LogOut size={16} />
-                    </button>
-                  </div>
-                </>
-              )}
+              {/* Actions: Theme & Logout */}
+              <div className="flex items-center gap-1">
+                <ThemeToggle dropdownDirection="up" className="w-12 h-12 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white" />
+                <button
+                  onClick={handleLogout}
+                  className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all"
+                  title="Sign Out"
+                >
+                  <LogOut size={20} />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </motion.aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div
+        className="flex-1 flex flex-col overflow-hidden"
+        onClick={() => sidebarOpen && setSidebarOpen(false)}
+      >
         <DeletionRestorationBanner />
         {/* Top Bar (Mobile) */}
         <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-[#1E293B] border-b border-gray-200 dark:border-white/5">
@@ -688,7 +687,7 @@ export function DashboardLayout() {
 
         {/* Content Landscape */}
         <main className="flex-1 relative bg-gray-50 dark:bg-[#050505] overflow-hidden">
-          <div className="h-full overflow-y-auto relative z-10 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
+          <div ref={mainContentRef} className="h-full overflow-y-auto relative z-10 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
             <div className="p-4 md:p-6 lg:p-8 pb-24 max-w-[1920px] mx-auto">
               <Outlet context={{ sidebarOpen }} />
             </div>

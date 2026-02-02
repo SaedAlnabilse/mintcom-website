@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -13,9 +13,9 @@ import {
     PanelLeft,
     ArrowLeft,
     Building2,
-    ChevronRight,
     Menu,
     X,
+    ChevronRight,
     Smartphone
 } from 'lucide-react';
 
@@ -51,17 +51,22 @@ export function BrandLayout() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [sidebarOpen, setSidebarOpen] = useState(() => {
-        const saved = localStorage.getItem(SIDEBAR_STATE_KEY);
-        return saved !== null ? saved === 'true' : true;
-    });
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const [brand, setBrand] = useState<Brand | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const mainContentRef = useRef<HTMLDivElement>(null);
 
     const menuItems = brandId ? getMenuItems(brandId) : [];
+
+    // Scroll to top on route change
+    useEffect(() => {
+        if (mainContentRef.current) {
+            mainContentRef.current.scrollTo({ top: 0, behavior: 'instant' });
+        }
+    }, [location.pathname]);
 
     useEffect(() => {
         localStorage.setItem(SIDEBAR_STATE_KEY, String(sidebarOpen));
@@ -128,11 +133,11 @@ export function BrandLayout() {
             <motion.aside
                 initial={false}
                 animate={{
-                    width: sidebarOpen ? 280 : 80,
+                    width: sidebarOpen ? 280 : 100,
                     transition: { duration: 0.3, type: "spring", damping: 25, stiffness: 200 }
                 }}
                 className={`
-                    relative z-50 flex flex-col h-screen bg-white dark:bg-[#1E293B] border-r border-gray-200 dark:border-white/5 shadow-lg
+                    relative z-50 flex flex-col h-screen bg-white dark:bg-[#1E293B] border-r border-gray-200 dark:border-white/5 shadow-lg group/sidebar
                     ${mobileMenuOpen ? 'fixed left-0 top-0 w-[280px]' : 'hidden lg:flex'}
                 `}
             >
@@ -158,15 +163,19 @@ export function BrandLayout() {
                                 exit={{ opacity: 0, scale: 0.8 }}
                                 className="mx-auto"
                             >
-                                <div
-                                    className="w-12 h-12 rounded-2xl flex items-center justify-center cursor-pointer overflow-hidden bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 hover:border-paymint-green/40 transition-all hover:scale-105 group relative"
+                                <button
+                                    className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 hover:border-paymint-green/40 text-paymint-green transition-all group relative"
                                     onClick={() => setSidebarOpen(true)}
                                 >
-                                    <img src={PaymintLeafIcon} className="w-7 h-7 object-contain scale-110" alt="P" />
-                                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-bold tracking-wide rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
-                                        Expand Sidebar
+                                    <img src={PaymintLeafIcon} className="w-6 h-6 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt="P" />
+                                    <PanelLeft
+                                        size={24}
+                                        className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
+                                    />
+                                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
+                                        Open sidebar
                                     </div>
-                                </div>
+                                </button>
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -181,105 +190,85 @@ export function BrandLayout() {
                     )}
                 </div>
 
-                {/* Back Link */}
-                <div className="px-4 py-4">
+                {/* Combined Back & Brand Card */}
+                <div className={`px-2 py-4 ${sidebarOpen ? '' : 'flex justify-center'}`}>
                     {sidebarOpen ? (
-                        <button
+                        <div
                             onClick={goBackToOwner}
-                            className="w-full flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/[0.03] text-gray-500 dark:text-gray-400 hover:text-paymint-green hover:bg-paymint-green/5 transition-all group border border-transparent hover:border-paymint-green/20"
+                            className="p-3.5 bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm relative overflow-hidden group cursor-pointer transition-all duration-300 hover:border-paymint-green/30"
                         >
-                            <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1" />
-                            <span className="text-xs font-bold tracking-wide">Back to Brands</span>
-                        </button>
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 dark:bg-paymint-green/10 rounded-full blur-3xl pointer-events-none group-hover:scale-150 transition-transform duration-1000" />
+                            <div className="relative z-10">
+                                <div className="flex items-center gap-3 mb-2.5">
+                                    <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center flex-shrink-0 text-paymint-green">
+                                        <Building2 size={20} />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-xs font-bold text-paymint-green tracking-wide mb-0.5">
+                                            {brandId === 'cmkek5eme0001vjjqvfm3wjwa' ? 'Top Performance' : 'Active Brand'}
+                                        </p>
+                                        <h2 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight leading-[1.2] font-sans truncate">
+                                            {brand?.name || 'Loading...'}
+                                        </h2>
+                                    </div>
+                                </div>
+                                <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-gray-100 dark:border-white/10">
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] dark:shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                                        <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Online</span>
+                                    </div>
+                                    <div className="flex items-center gap-1 text-xs font-bold text-gray-500 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                                        Switch Brand <ChevronRight size={10} className="mt-0.5" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     ) : (
                         <button
-                            onClick={() => setSidebarOpen(true)}
-                            className="w-12 h-12 mx-auto flex items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/[0.03] text-gray-600 dark:text-gray-400 hover:text-paymint-green transition-all border border-gray-200 dark:border-white/[0.05] hover:border-paymint-green/30 group relative"
+                            onClick={goBackToOwner}
+                            className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all group relative"
                         >
-                            <PanelLeft size={20} />
+                            <ArrowLeft size={24} />
                             <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
-                                Expand Sidebar
+                                Switch Brand
                             </div>
                         </button>
                     )}
                 </div>
 
-                {/* Brand Entity Card */}
-                {sidebarOpen && (
-                    <div className="px-4 mb-6">
-                        <div className="p-5 bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm relative overflow-hidden group cursor-pointer transition-all duration-300 hover:border-paymint-green/30">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 dark:bg-paymint-green/10 rounded-full blur-3xl pointer-events-none group-hover:scale-150 transition-transform duration-1000" />
-                            <div className="relative z-10">
-                                <div className="flex items-center gap-3 mb-3">
-                                    <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
-                                        <Building2 size={20} />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-xs font-bold text-paymint-green tracking-wide mb-1">
-                                            {brandId === 'cmkek5eme0001vjjqvfm3wjwa' ? 'Top Performance' : 'Active Brand'}
-                                        </p>
-                                        <h2 className="text-base font-bold text-gray-900 dark:text-white tracking-tight leading-tight truncate">
-                                            {brand?.name || 'Loading...'}
-                                        </h2>
-                                    </div>
-                                </div>
-                                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100 dark:border-white/10">
-                                    <div className="flex items-center gap-1.5">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                        <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Online</span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5">
-                                        <Store size={12} className="text-gray-400" />
-                                        <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
-                                            {brand?.establishments?.length || 0} locations
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
                 {/* Navigation */}
-                <nav className="flex-1 px-3 space-y-1.5 overflow-y-auto scrollbar-none">
+                <nav className={`flex-1 px-3 space-y-1.5 scrollbar-none ${sidebarOpen ? 'overflow-y-auto' : 'overflow-visible'}`}>
                     {sidebarOpen && (
                         <p className="px-3 py-2 text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wide">Navigation</p>
                     )}
                     {menuItems.map((item) => {
                         const Icon = item.icon;
-                        const isActive = location.pathname === item.path ||
-                            (item.path !== `/brand/${brandId}` && location.pathname.startsWith(item.path));
+
 
                         return (
                             <NavLink
                                 key={item.path}
                                 to={item.path}
-                                className={`
-                                    relative flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group
+                                end={item.path === `/brand/${brandId}`}
+                                onClick={() => setSidebarOpen(false)}
+                                className={({ isActive }) =>
+                                    `relative flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group
                                     ${isActive
-                                        ? 'bg-paymint-green text-black font-bold shadow-lg shadow-paymint-green/20'
+                                        ? 'bg-paymint-green text-black font-bold shadow-lg shadow-paymint-green/20 active-menu-item'
                                         : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}
-                                    ${!sidebarOpen ? 'justify-center' : ''}
-                                `}
+                                    ${!sidebarOpen ? 'justify-center w-12 h-12 mx-auto' : ''}`
+                                }
                             >
-                                <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+                                <Icon size={!sidebarOpen ? 24 : 20} />
 
-                                {sidebarOpen ? (
-                                    <div className="flex-1 min-w-0">
-                                        <span className="text-sm font-bold block">{item.label}</span>
-                                        {!isActive && (
-                                            <span className="text-xs text-gray-500 dark:text-gray-400 truncate block">{item.description}</span>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-2 bg-gray-900 text-white rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 whitespace-nowrap shadow-xl">
-                                        <p className="text-xs font-bold">{item.label}</p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">{item.description}</p>
-                                    </div>
+                                {sidebarOpen && (
+                                    <span className="text-sm font-bold">{item.label}</span>
                                 )}
 
-                                {isActive && sidebarOpen && (
-                                    <ChevronRight size={16} className="text-black/50" />
+                                {!sidebarOpen && (
+                                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
+                                        {item.label}
+                                    </div>
                                 )}
                             </NavLink>
                         );
@@ -288,96 +277,90 @@ export function BrandLayout() {
 
                 {/* Owner Portal App Download - Compact */}
                 {/* Owner Portal App Download - Compact */}
-                <div className="px-3 mt-auto mb-2">
-                    <div className="relative group">
-                        {sidebarOpen ? (
+                {sidebarOpen && (
+                    <div className="px-3 mt-auto mb-2">
+                        <div className="relative group">
                             <button className="w-full flex items-center gap-3 px-3 py-2.5 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
                                 <Smartphone size={16} className="text-gray-400" />
                                 <span className="text-sm font-bold">Mobile App</span>
                             </button>
-                        ) : (
-                            <div className="flex justify-center">
-                                <button className="w-12 h-12 flex items-center justify-center rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
-                                    <Smartphone size={20} />
-                                </button>
-                            </div>
-                        )}
 
-                        {/* QR Code Popup */}
-                        <div className="absolute left-full bottom-0 ml-3 bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[70] translate-x-2 group-hover:translate-x-0 w-[200px]">
-                            {/* QR Code Container */}
-                            <div className="bg-white rounded-xl p-3 mb-4 shadow-inner">
-                                {/* Fake QR Code Pattern */}
-                                <div className="w-full aspect-square bg-white relative overflow-hidden rounded-lg">
-                                    <svg viewBox="0 0 100 100" className="w-full h-full">
-                                        <rect width="100" height="100" fill="white" />
-                                        <rect x="5" y="5" width="25" height="25" fill="black" />
-                                        <rect x="8" y="8" width="19" height="19" fill="white" />
-                                        <rect x="11" y="11" width="13" height="13" fill="black" />
-                                        <rect x="70" y="5" width="25" height="25" fill="black" />
-                                        <rect x="73" y="8" width="19" height="19" fill="white" />
-                                        <rect x="76" y="11" width="13" height="13" fill="black" />
-                                        <rect x="5" y="70" width="25" height="25" fill="black" />
-                                        <rect x="8" y="73" width="19" height="19" fill="white" />
-                                        <rect x="11" y="76" width="13" height="13" fill="black" />
-                                        <rect x="35" y="5" width="5" height="5" fill="black" />
-                                        <rect x="45" y="5" width="5" height="5" fill="black" />
-                                        <rect x="55" y="5" width="5" height="5" fill="black" />
-                                        <rect x="35" y="15" width="5" height="5" fill="black" />
-                                        <rect x="50" y="15" width="5" height="5" fill="black" />
-                                        <rect x="60" y="15" width="5" height="5" fill="black" />
-                                        <rect x="40" y="25" width="5" height="5" fill="black" />
-                                        <rect x="55" y="25" width="5" height="5" fill="black" />
-                                        <rect x="5" y="35" width="5" height="5" fill="black" />
-                                        <rect x="15" y="35" width="5" height="5" fill="black" />
-                                        <rect x="25" y="35" width="5" height="5" fill="black" />
-                                        <rect x="5" y="45" width="5" height="5" fill="black" />
-                                        <rect x="20" y="45" width="5" height="5" fill="black" />
-                                        <rect x="5" y="55" width="5" height="5" fill="black" />
-                                        <rect x="15" y="55" width="5" height="5" fill="black" />
-                                        <rect x="25" y="55" width="5" height="5" fill="black" />
-                                        <rect x="35" y="35" width="30" height="30" fill="black" />
-                                        <rect x="40" y="40" width="20" height="20" fill="white" />
-                                        <rect x="45" y="45" width="10" height="10" fill="black" />
-                                        <rect x="70" y="35" width="5" height="5" fill="black" />
-                                        <rect x="80" y="35" width="5" height="5" fill="black" />
-                                        <rect x="90" y="35" width="5" height="5" fill="black" />
-                                        <rect x="75" y="45" width="5" height="5" fill="black" />
-                                        <rect x="85" y="45" width="5" height="5" fill="black" />
-                                        <rect x="70" y="55" width="5" height="5" fill="black" />
-                                        <rect x="80" y="55" width="5" height="5" fill="black" />
-                                        <rect x="35" y="70" width="5" height="5" fill="black" />
-                                        <rect x="45" y="70" width="5" height="5" fill="black" />
-                                        <rect x="55" y="70" width="5" height="5" fill="black" />
-                                        <rect x="70" y="70" width="5" height="5" fill="black" />
-                                        <rect x="80" y="70" width="5" height="5" fill="black" />
-                                        <rect x="90" y="70" width="5" height="5" fill="black" />
-                                        <rect x="40" y="80" width="5" height="5" fill="black" />
-                                        <rect x="50" y="80" width="5" height="5" fill="black" />
-                                        <rect x="75" y="80" width="5" height="5" fill="black" />
-                                        <rect x="85" y="80" width="5" height="5" fill="black" />
-                                        <rect x="35" y="90" width="5" height="5" fill="black" />
-                                        <rect x="55" y="90" width="5" height="5" fill="black" />
-                                        <rect x="70" y="90" width="5" height="5" fill="black" />
-                                        <rect x="90" y="90" width="5" height="5" fill="black" />
-                                    </svg>
-                                    {/* Center logo placeholder */}
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                                            <img src={PaymintLeafIcon} alt="P" className="w-5 h-5 object-contain" />
+                            {/* QR Code Popup */}
+                            <div className="absolute left-full bottom-0 ml-3 bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[70] translate-x-2 group-hover:translate-x-0 w-[200px]">
+                                {/* QR Code Container */}
+                                <div className="bg-white rounded-xl p-3 mb-4 shadow-inner">
+                                    {/* Fake QR Code Pattern */}
+                                    <div className="w-full aspect-square bg-white relative overflow-hidden rounded-lg">
+                                        <svg viewBox="0 0 100 100" className="w-full h-full">
+                                            <rect width="100" height="100" fill="white" />
+                                            <rect x="5" y="5" width="25" height="25" fill="black" />
+                                            <rect x="8" y="8" width="19" height="19" fill="white" />
+                                            <rect x="11" y="11" width="13" height="13" fill="black" />
+                                            <rect x="70" y="5" width="25" height="25" fill="black" />
+                                            <rect x="73" y="8" width="19" height="19" fill="white" />
+                                            <rect x="76" y="11" width="13" height="13" fill="black" />
+                                            <rect x="5" y="70" width="25" height="25" fill="black" />
+                                            <rect x="8" y="73" width="19" height="19" fill="white" />
+                                            <rect x="11" y="76" width="13" height="13" fill="black" />
+                                            <rect x="35" y="5" width="5" height="5" fill="black" />
+                                            <rect x="45" y="5" width="5" height="5" fill="black" />
+                                            <rect x="55" y="5" width="5" height="5" fill="black" />
+                                            <rect x="35" y="15" width="5" height="5" fill="black" />
+                                            <rect x="50" y="15" width="5" height="5" fill="black" />
+                                            <rect x="60" y="15" width="5" height="5" fill="black" />
+                                            <rect x="40" y="25" width="5" height="5" fill="black" />
+                                            <rect x="55" y="25" width="5" height="5" fill="black" />
+                                            <rect x="5" y="35" width="5" height="5" fill="black" />
+                                            <rect x="15" y="35" width="5" height="5" fill="black" />
+                                            <rect x="25" y="35" width="5" height="5" fill="black" />
+                                            <rect x="5" y="45" width="5" height="5" fill="black" />
+                                            <rect x="20" y="45" width="5" height="5" fill="black" />
+                                            <rect x="5" y="55" width="5" height="5" fill="black" />
+                                            <rect x="15" y="55" width="5" height="5" fill="black" />
+                                            <rect x="25" y="55" width="5" height="5" fill="black" />
+                                            <rect x="35" y="35" width="30" height="30" fill="black" />
+                                            <rect x="40" y="40" width="20" height="20" fill="white" />
+                                            <rect x="45" y="45" width="10" height="10" fill="black" />
+                                            <rect x="70" y="35" width="5" height="5" fill="black" />
+                                            <rect x="80" y="35" width="5" height="5" fill="black" />
+                                            <rect x="90" y="35" width="5" height="5" fill="black" />
+                                            <rect x="75" y="45" width="5" height="5" fill="black" />
+                                            <rect x="85" y="45" width="5" height="5" fill="black" />
+                                            <rect x="70" y="55" width="5" height="5" fill="black" />
+                                            <rect x="80" y="55" width="5" height="5" fill="black" />
+                                            <rect x="35" y="70" width="5" height="5" fill="black" />
+                                            <rect x="45" y="70" width="5" height="5" fill="black" />
+                                            <rect x="55" y="70" width="5" height="5" fill="black" />
+                                            <rect x="70" y="70" width="5" height="5" fill="black" />
+                                            <rect x="80" y="70" width="5" height="5" fill="black" />
+                                            <rect x="90" y="70" width="5" height="5" fill="black" />
+                                            <rect x="40" y="80" width="5" height="5" fill="black" />
+                                            <rect x="50" y="80" width="5" height="5" fill="black" />
+                                            <rect x="75" y="80" width="5" height="5" fill="black" />
+                                            <rect x="85" y="80" width="5" height="5" fill="black" />
+                                            <rect x="35" y="90" width="5" height="5" fill="black" />
+                                            <rect x="55" y="90" width="5" height="5" fill="black" />
+                                            <rect x="70" y="90" width="5" height="5" fill="black" />
+                                            <rect x="90" y="90" width="5" height="5" fill="black" />
+                                        </svg>
+                                        {/* Center logo placeholder */}
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                                                <img src={PaymintLeafIcon} alt="P" className="w-5 h-5 object-contain" />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            {/* Text */}
-                            <p className="text-center text-sm font-bold text-gray-900 dark:text-white leading-tight">
-                                Scan to download<br />
-                                <span className="text-paymint-green">Paymint App</span>
-                            </p>
+                                {/* Text */}
+                                <p className="text-center text-sm font-bold text-gray-900 dark:text-white leading-tight">
+                                    Scan to download<br />
+                                    <span className="text-paymint-green">Paymint App</span>
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
 
                 {/* Footer User Profile */}
                 <div className="p-3 border-t border-gray-100 dark:border-white/5">
@@ -409,17 +392,12 @@ export function BrandLayout() {
                         </div>
                     ) : (
                         <div className="flex flex-col items-center gap-2">
-                            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-paymint-green/20 outline outline-2 outline-white dark:outline-black mb-1">
-                                <span className="text-black font-bold text-xs">
-                                    {account?.firstName?.charAt(0).toUpperCase()}
-                                </span>
+                            <div className="relative group">
+                                <ThemeToggle dropdownDirection="up" className="w-12 h-12 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white" iconSize={24} />
                             </div>
                             <div className="relative group">
-                                <ThemeToggle dropdownDirection="up" />
-                            </div>
-                            <div className="relative group">
-                                <button onClick={handleLogout} className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all">
-                                    <LogOut size={16} />
+                                <button onClick={handleLogout} className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all">
+                                    <LogOut size={24} />
                                 </button>
                             </div>
                         </div>
@@ -428,7 +406,10 @@ export function BrandLayout() {
             </motion.aside>
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col overflow-hidden">
+            <div
+                className="flex-1 flex flex-col overflow-hidden"
+                onClick={() => sidebarOpen && setSidebarOpen(false)}
+            >
                 <DeletionRestorationBanner />
                 {/* Top Bar (Mobile) */}
                 <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white dark:bg-[#1E293B] border-b border-gray-200 dark:border-white/5">
@@ -449,7 +430,7 @@ export function BrandLayout() {
 
                 {/* Content Landscape */}
                 <main className="flex-1 relative bg-gray-50 dark:bg-[#050505] overflow-hidden">
-                    <div className="h-full overflow-y-auto relative z-10 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
+                    <div ref={mainContentRef} className="h-full overflow-y-auto relative z-10 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
                         <div className="p-4 md:p-6 lg:p-8 max-w-[1920px] mx-auto">
                             <Outlet context={{ brand }} />
                         </div>

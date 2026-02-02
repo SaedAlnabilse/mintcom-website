@@ -5,9 +5,11 @@ import { useState, useRef, useEffect } from 'react';
 
 interface ThemeToggleProps {
   dropdownDirection?: 'up' | 'down';
+  className?: string;
+  iconSize?: number;
 }
 
-export const ThemeToggle = ({ dropdownDirection = 'down' }: ThemeToggleProps) => {
+export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSize = 20 }: ThemeToggleProps) => {
   const { theme, setTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -34,23 +36,23 @@ export const ThemeToggle = ({ dropdownDirection = 'down' }: ThemeToggleProps) =>
     <div className="relative" ref={containerRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-9 h-9 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-paymint-green dark:hover:text-paymint-green transition-all active:scale-90"
+        className={`flex items-center justify-center transition-all active:scale-90 ${className || 'w-9 h-9 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green dark:hover:text-paymint-green'}`}
         title="Toggle theme"
       >
         <AnimatePresence mode="wait">
           {theme === 'light' && (
             <motion.div key="light" initial={{ opacity: 0, rotate: -90 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: 90 }}>
-              <Sun size={20} />
+              <Sun size={iconSize} />
             </motion.div>
           )}
           {theme === 'dark' && (
             <motion.div key="dark" initial={{ opacity: 0, rotate: -90 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: 90 }}>
-              <Moon size={20} />
+              <Moon size={iconSize} />
             </motion.div>
           )}
           {theme === 'system' && (
             <motion.div key="system" initial={{ opacity: 0, rotate: -90 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: 90 }}>
-              <Monitor size={20} />
+              <Monitor size={iconSize} />
             </motion.div>
           )}
         </AnimatePresence>

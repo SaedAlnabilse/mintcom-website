@@ -154,7 +154,8 @@ export function CustomDatePicker({
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.1 }}
-                        className={`absolute top-full ${align === 'right' ? 'right-0' : 'left-0'} mt-2 z-50 !bg-white dark:!bg-[#1E293B] border border-gray-100 dark:border-white/10 rounded-2xl shadow-2xl w-[280px] p-4`}
+                        style={{ opacity: 1 }}
+                        className={`absolute top-full ${align === 'right' ? 'right-0' : 'left-0'} mt-2 z-[9999] !bg-white dark:!bg-[#0F172A] !bg-opacity-100 !opacity-100 !backdrop-blur-none border border-gray-100 dark:border-white/10 rounded-2xl shadow-2xl w-[280px] p-4`}
                     >
                         {renderHeader()}
                         {renderDays()}

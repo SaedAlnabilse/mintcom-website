@@ -42,7 +42,8 @@ export const FeedbackWidget = () => {
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: 100, opacity: 0 }}
                         onClick={() => setIsOpen(true)}
-                        className="fixed right-0 top-[40%] -translate-y-1/2 z-[9998] bg-white dark:bg-[#1E293B] border-y border-l border-gray-200 dark:border-white/10 py-4 px-2 rounded-l-2xl shadow-[-5px_0_15px_rgba(0,0,0,0.05)] hover:bg-gray-50 dark:hover:bg-white/5 transition-all flex flex-col items-center gap-3 group ring-1 ring-black/5"
+                        style={{ opacity: 1 }}
+                        className="fixed right-0 top-[40%] -translate-y-1/2 z-[9999] !bg-white dark:!bg-[#0F172A] !bg-opacity-100 !opacity-100 border-y border-l border-gray-200 dark:border-white/10 py-4 px-2 rounded-l-2xl shadow-2xl hover:bg-gray-50 dark:hover:!bg-[#334155] transition-all flex flex-col items-center gap-3 group ring-1 ring-black/5"
                     >
                         <MessageSquare size={18} className="text-paymint-green group-hover:scale-110 transition-transform" />
                         <span className="text-[10px] font-black text-gray-800 dark:text-gray-100 tracking-widest uppercase [writing-mode:vertical-rl] rotate-180">Feedback</span>
@@ -77,7 +78,7 @@ export const FeedbackWidget = () => {
                                 </div>
                                 <button 
                                     onClick={() => setIsOpen(false)} 
-                                    className="p-2 bg-gray-100 dark:bg-white/5 rounded-xl text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                                    className="p-2 !bg-gray-100 dark:!bg-[#1E293B] rounded-xl text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                                 >
                                     <X size={18} />
                                 </button>
@@ -109,7 +110,7 @@ export const FeedbackWidget = () => {
                                                         className={`flex-1 aspect-square rounded-xl flex items-center justify-center transition-all duration-200 ${
                                                             rating >= s 
                                                             ? 'bg-paymint-green text-black shadow-md shadow-paymint-green/20' 
-                                                            : 'bg-gray-50 dark:bg-white/5 text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'
+                                                            : '!bg-gray-50 dark:!bg-[#1E293B] text-gray-300 hover:bg-gray-100 dark:hover:!bg-[#334155]'
                                                         }`}
                                                     >
                                                         <Star size={20} fill={rating >= s ? "currentColor" : "none"} strokeWidth={2.5} />
@@ -125,7 +126,7 @@ export const FeedbackWidget = () => {
                                                 value={comment}
                                                 onChange={(e) => setComment(e.target.value)}
                                                 rows={6}
-                                                className="w-full px-4 py-4 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none placeholder-gray-400"
+                                                className="w-full px-4 py-4 !bg-gray-50 dark:!bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none placeholder-gray-400"
                                                 placeholder="What can we do better?"
                                             />
                                         </div>

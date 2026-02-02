@@ -15,8 +15,7 @@ import {
   PlayCircle,
   History,
   Eye,
-  Undo2,
-  Calendar
+  Undo2
 } from 'lucide-react';
 import api from '../../config/api';
 import { ConfirmModal } from '../../components/ConfirmModal';
@@ -535,7 +534,6 @@ export function OrdersPage() {
               return (
                 <div className={`flex flex-col justify-center px-4 py-1.5 rounded-xl border h-full transition-all ${isDateFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
                   <div className="flex items-center gap-1.5 mb-1">
-                    <Calendar size={11} className={isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
                     <span className={`text-[9px] font-black tracking-wider transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>DATE RANGE</span>
                   </div>
                   <div className="flex items-center gap-2">

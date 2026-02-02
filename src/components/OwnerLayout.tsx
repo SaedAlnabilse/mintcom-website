@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -14,7 +14,6 @@ import {
     LogOut,
     Smartphone,
     Building2,
-    ChevronRight,
     PanelLeftClose,
     PanelLeft,
     KeyRound
@@ -39,8 +38,16 @@ export function OwnerLayout() {
     const { account, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+    const mainContentRef = useRef<HTMLDivElement>(null);
+
+    // Scroll to top on route change
+    useEffect(() => {
+        if (mainContentRef.current) {
+            mainContentRef.current.scrollTo({ top: 0, behavior: 'instant' });
+        }
+    }, [location.pathname]);
 
     const handleLogout = () => {
         setIsLogoutModalOpen(true);
@@ -57,16 +64,16 @@ export function OwnerLayout() {
             <motion.aside
                 initial={false}
                 animate={{
-                    width: sidebarOpen ? 300 : 80,
+                    width: sidebarOpen ? 300 : 100,
                     transition: { duration: 0.4, type: "spring", damping: 25, stiffness: 200 }
                 }}
-                className="relative z-[60] flex flex-col h-screen py-4 bg-white dark:bg-[#1E293B] border-r border-gray-200 dark:border-white/[0.05] transition-colors duration-500"
+                className="relative z-[60] flex flex-col h-screen py-4 bg-white dark:bg-[#1E293B] border-r border-gray-200 dark:border-white/[0.05] transition-colors duration-500 group/sidebar"
             >
                 {/* Sidebar Glow Decor */}
                 <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-b from-transparent via-paymint-green/20 to-transparent opacity-50" />
 
                 {/* Brand Header & Toggle */}
-                <div className="h-20 flex items-center justify-between px-6 mb-6 relative shrink-0">
+                <div className="h-20 flex items-center justify-between px-6 mb-2 relative shrink-0">
                     <AnimatePresence mode="wait">
                         {sidebarOpen ? (
                             <motion.div
@@ -96,19 +103,19 @@ export function OwnerLayout() {
                                 exit={{ opacity: 0, scale: 0.8 }}
                                 className="mx-auto"
                             >
-                                <div
-                                    className="w-10 h-10 rounded-xl flex items-center justify-center cursor-pointer overflow-hidden bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 hover:border-paymint-green/40 transition-all hover:scale-105 group relative"
+                                <button
+                                    className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 hover:border-paymint-green/40 text-paymint-green transition-all group relative"
                                     onClick={() => setSidebarOpen(true)}
                                 >
-                                    <img
-                                        src={PaymintLeafIcon}
-                                        alt="PayMint"
-                                        className="h-6 w-6 object-contain scale-110"
+                                    <img src={PaymintLeafIcon} className="w-6 h-6 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt="P" />
+                                    <PanelLeft
+                                        size={24}
+                                        className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
                                     />
                                     <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
-                                        Expand Sidebar
+                                        Open sidebar
                                     </div>
-                                </div>
+                                </button>
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -123,43 +130,34 @@ export function OwnerLayout() {
                     )}
                 </div>
 
-                {!sidebarOpen && (
-                    <button
-                        onClick={() => setSidebarOpen(true)}
-                        className="w-10 h-10 mx-auto mb-6 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/[0.03] text-gray-600 dark:text-gray-400 hover:text-paymint-green transition-all border border-gray-200 dark:border-white/[0.05] hover:border-paymint-green/30 group relative"
-                    >
-                        <PanelLeft size={18} />
-                        <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
-                            Expand Sidebar
-                        </div>
-                    </button>
-                )}
-
                 {/* User Profile Summary - Only when open */}
 
 
                 {/* Navigation Section */}
-                <div className={`flex-1 ${sidebarOpen ? 'overflow-y-auto' : 'overflow-visible'} px-4 space-y-1.5 scrollbar-none scroll-smooth pb-4 relative z-10`}>
+                <div className={`flex-1 ${sidebarOpen ? 'overflow-y-auto' : 'overflow-visible'} px-3 space-y-1.5 scrollbar-none scroll-smooth pb-4 relative z-10`}>
                     {sidebarOpen && <p className="px-3 text-xs font-black text-gray-400 tracking-[0.2em] mb-4 mt-2">Main Menu</p>}
                     {menuItems.map((item) => {
                         const Icon = item.icon;
-                        const isActive = item.path === '/owner'
-                            ? location.pathname === '/owner'
-                            : location.pathname.startsWith(item.path);
 
                         return (
                             <NavLink
                                 key={item.path}
                                 to={item.path}
                                 end={item.path === '/owner'}
-                                className={`group flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 relative ${isActive
-                                    ? 'bg-paymint-green text-black shadow-md shadow-paymint-green/20'
-                                    : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/[0.03] hover:text-gray-900 dark:hover:text-white'
-                                    } ${!sidebarOpen ? 'w-10 h-10 justify-center px-0 mx-auto' : ''}`}
+                                onClick={() => setSidebarOpen(false)}
+                                className={({ isActive }) =>
+                                    `relative flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group
+                                    ${isActive
+                                        ? 'bg-paymint-green text-black font-bold shadow-lg shadow-paymint-green/20 active-menu-item'
+                                        : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}
+                                    ${!sidebarOpen ? 'justify-center w-12 h-12 mx-auto' : ''}`
+                                }
                             >
-                                <Icon size={20} strokeWidth={2.5} className={`${isActive ? 'text-black' : 'text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors'}`} />
-                                {sidebarOpen && <span className="flex-1 tracking-wide">{item.label}</span>}
-                                {sidebarOpen && isActive && <ChevronRight size={14} strokeWidth={3} className="opacity-40" />}
+                                <Icon size={!sidebarOpen ? 24 : 20} />
+
+                                {sidebarOpen && (
+                                    <span className="text-sm font-bold">{item.label}</span>
+                                )}
 
                                 {!sidebarOpen && (
                                     <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
@@ -181,8 +179,8 @@ export function OwnerLayout() {
                                 <span className="text-sm font-bold">Mobile App</span>
                             </button>
                         ) : (
-                            <button className="w-10 h-10 mx-auto flex items-center justify-center rounded-xl bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
-                                <Smartphone size={18} />
+                            <button className="w-12 h-12 mx-auto flex items-center justify-center rounded-2xl bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
+                                <Smartphone size={24} />
                             </button>
                         )}
 
@@ -289,26 +287,22 @@ export function OwnerLayout() {
                         </div>
                     ) : (
                         <div className="flex flex-col items-center gap-2">
-                            <div className="w-9 h-9 rounded-full bg-paymint-green flex items-center justify-center font-black text-black shrink-0 outline outline-2 outline-white dark:outline-black mb-1 mx-auto">
-                                {account?.firstName?.charAt(0).toUpperCase()}
-                            </div>
-                            <div className="relative group w-10 h-10 mx-auto flex items-center justify-center">
-                                <ThemeToggle dropdownDirection="up" />
-                            </div>
-                            <div className="relative group w-10 h-10 mx-auto flex items-center justify-center">
-                                <button onClick={handleLogout} className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-paymint-red/10 hover:text-paymint-red transition-all">
-                                    <LogOut size={16} />
-                                </button>
-                            </div>
+                            <ThemeToggle dropdownDirection="up" iconSize={24} className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-500 hover:text-paymint-green transition-all" />
+                            <button onClick={handleLogout} className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:bg-paymint-red/10 hover:text-paymint-red transition-all">
+                                <LogOut size={24} />
+                            </button>
                         </div>
                     )}
                 </div>
             </motion.aside >
 
             {/* Main Content Area */}
-            < main className="flex-1 relative overflow-hidden bg-gray-100 dark:bg-paymint-dark transition-all duration-500 border-l border-gray-200 dark:border-white/[0.05] flex flex-col" >
+            <main
+                className="flex-1 relative overflow-hidden bg-gray-100 dark:bg-paymint-dark transition-all duration-500 border-l border-gray-200 dark:border-white/[0.05] flex flex-col"
+                onClick={() => sidebarOpen && setSidebarOpen(false)}
+            >
                 <DeletionRestorationBanner />
-                <div className="flex-1 overflow-y-auto custom-scrollbar relative p-4 lg:px-10 lg:pt-10 lg:pb-6">
+                <div ref={mainContentRef} className="flex-1 overflow-y-auto custom-scrollbar relative p-4 lg:px-10 lg:pt-10 lg:pb-6">
                     <Outlet />
                 </div>
             </main >

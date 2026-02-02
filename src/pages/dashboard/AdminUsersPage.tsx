@@ -170,7 +170,7 @@ export function AdminUsersPage() {
                             <Shield size={28} className="text-black" />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Admins</h1>
+                            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Admins</h1>
                             <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Manage admin access</p>
                         </div>
                     </div>

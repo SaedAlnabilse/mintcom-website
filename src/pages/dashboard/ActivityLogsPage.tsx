@@ -8,8 +8,7 @@ import {
   ChevronLeft,
   ChevronRight,
   FileText,
-  Download,
-  Calendar
+  Download
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../config/api';
@@ -285,7 +284,6 @@ export function ActivityLogsPage() {
               <div className={`flex-none w-auto min-w-[145px] sm:min-w-[170px] relative z-[60]`}>
                 <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${activePreset === 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
                   <div className="flex items-center gap-1.5 mb-0.5">
-                    <Calendar size={11} className={activePreset === 'custom' ? "text-[#7CC39F]" : "text-gray-400"} />
                     <span className={`text-[9px] font-black tracking-wider transition-colors ${activePreset === 'custom' ? "text-[#7CC39F]" : "text-gray-400"}`}>DATE RANGE</span>
                   </div>
                   <div className="flex items-center gap-2">
