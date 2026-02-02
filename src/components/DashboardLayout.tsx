@@ -57,9 +57,9 @@ const menuStructure: MenuItemOrGroup[] = [
     icon: FileBarChart,
     items: [
       { path: '/dashboard/reports/sales', label: 'Sales Summary', icon: FileBarChart },
-      { path: '/dashboard/reports/items', label: 'Sales By Items', icon: Package },
-      { path: '/dashboard/reports/modifiers', label: 'Sales By Add-Ons', icon: Package },
-      { path: '/dashboard/reports/staff-sales', label: 'Sales By Staff', icon: Users },
+      { path: '/dashboard/reports/items', label: 'Sales by Items', icon: Package },
+      { path: '/dashboard/reports/modifiers', label: 'Sales by Add-Ons', icon: Package },
+      { path: '/dashboard/reports/staff-sales', label: 'Sales by Staff', icon: Users },
       { path: '/dashboard/reports/shifts', label: 'Shifts Reports', icon: FileBarChart },
       { path: '/dashboard/reports/payments', label: 'Payments Reports', icon: CreditCard },
       { path: '/dashboard/reports/discounts', label: 'Discount Reports', icon: Percent },

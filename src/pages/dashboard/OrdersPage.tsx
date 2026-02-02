@@ -24,6 +24,8 @@ import { OrderDetailModal } from '../../components/OrderDetailModal';
 import { exportToCSV } from '../../utils/export';
 import { toast } from 'react-hot-toast';
 import { CustomSelect } from '../../components/CustomSelect';
+import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
+import type { DatePeriod } from '../../utils/datePeriods';
 
 interface Order {
   id: string;
@@ -341,38 +343,9 @@ export function OrdersPage() {
       return;
     }
 
-    const today = new Date();
-    let start = new Date();
-    let end = new Date();
-    switch (range) {
-      case 'today':
-        start = new Date(today);
-        end = new Date(today);
-        break;
-      case 'yesterday':
-        start.setDate(today.getDate() - 1);
-        end.setDate(today.getDate() - 1);
-        break;
-      case 'this_week':
-        const dayOfWeek = today.getDay();
-        if (dayOfWeek === 0) {
-          start.setDate(today.getDate() - 6);
-        } else {
-          start.setDate(today.getDate() - dayOfWeek);
-        }
-        end = new Date(today);
-        break;
-      case 'this_month':
-        start.setDate(1);
-        end = new Date(today);
-        break;
-      case 'last_30':
-        start.setDate(today.getDate() - 30);
-        end = new Date(today);
-        break;
-    }
-    setStartDate(start.toISOString().split('T')[0]);
-    setEndDate(end.toISOString().split('T')[0]);
+    const { start, end } = calculateDateRange(range as DatePeriod);
+    setStartDate(formatDateForInput(start));
+    setEndDate(formatDateForInput(end));
   };
 
   // Build dynamic date range options based on shift status
@@ -395,13 +368,8 @@ export function OrdersPage() {
       });
     }
 
-    // Add standard date options
-    options.push(
-      { label: 'Today', value: 'today' },
-      { label: 'Yesterday', value: 'yesterday' },
-      { label: 'This Week', value: 'this_week' },
-      { label: 'This Month', value: 'this_month' }
-    );
+    // Add all standard date period options
+    options.push(...DATE_PERIOD_OPTIONS);
 
     return options;
   };

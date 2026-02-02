@@ -33,6 +33,8 @@ import {
 import api from '../../config/api';
 import { SingleSelect } from '../../components/SingleSelect';
 import toast from 'react-hot-toast';
+import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
+import type { DatePeriod } from '../../utils/datePeriods';
 
 interface BrandStats {
     totalRevenue: number;
@@ -61,7 +63,7 @@ interface RevenueDataPoint {
 }
 
 // Ported State Logic from OwnerOverviewPage for Unified Filter
-type DateRangePreset = 'today' | 'yesterday' | 'this_week' | 'this_month' | 'last_30' | 'custom';
+type DateRangePreset = DatePeriod;
 
 
 
@@ -86,36 +88,9 @@ export function BrandDashboardPage() {
 
     const setQuickDate = (range: DateRangePreset) => {
         setSelectedDateRange(range);
-        const todayDate = new Date();
-        let start = new Date();
-        let end = new Date();
-
-        switch (range) {
-            case 'today':
-                // start and end are already today
-                break;
-            case 'yesterday':
-                start.setDate(todayDate.getDate() - 1);
-                end.setDate(todayDate.getDate() - 1);
-                break;
-            case 'this_week':
-                const dayOfWeek = todayDate.getDay(); // 0 is Sunday
-                const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Make Monday start
-                start.setDate(todayDate.getDate() - daysToSubtract);
-                // End is today
-                break;
-            case 'this_month':
-                start.setDate(1);
-                // End is today
-                break;
-            case 'last_30':
-                start.setDate(todayDate.getDate() - 30);
-                // End is today
-                break;
-        }
-
-        setStartDate(start.toISOString().split('T')[0]);
-        setEndDate(end.toISOString().split('T')[0]);
+        const { start, end } = calculateDateRange(range);
+        setStartDate(formatDateForInput(start));
+        setEndDate(formatDateForInput(end));
         setStartTime('00:00');
         setEndTime('23:59');
     };
@@ -355,12 +330,7 @@ export function BrandDashboardPage() {
                                 <SingleSelect
                                     value={selectedDateRange === 'custom' ? null : selectedDateRange}
                                     onChange={(val) => setQuickDate(val as DateRangePreset || 'today')}
-                                    options={[
-                                        { label: 'Today', value: 'today' },
-                                        { label: 'Yesterday', value: 'yesterday' },
-                                        { label: 'This Week', value: 'this_week' },
-                                        { label: 'This Month', value: 'this_month' },
-                                    ]}
+                                    options={DATE_PERIOD_OPTIONS}
                                     showAllOption={false}
                                     placeholder="Select Period"
                                     className="w-full"
@@ -650,7 +620,7 @@ export function BrandDashboardPage() {
                                         tickLine={false}
                                         tick={{ fill: '#9CA3AF', fontSize: 11 }}
                                         dy={10}
-                                        interval={selectedDateRange === 'last_30' || selectedDateRange === 'this_month' ? 4 : 0}
+                                        interval={selectedDateRange === 'last_30' || selectedDateRange === 'last_30_days' || selectedDateRange === 'this_month' || selectedDateRange === 'last_28_days' || selectedDateRange === 'last_90_days' ? 4 : 0}
                                     />
                                     <YAxis
                                         axisLine={false}

@@ -17,6 +17,10 @@ import { PayInPayOutLogModal } from '../../components/dashboard/reports/PayInPay
 import { ReceiptsReport } from '../../components/dashboard/reports/ReceiptsReport';
 import { SingleSelect } from '../../components/SingleSelect';
 import { exportToCSV } from '../../utils/export';
+import { CustomDatePicker } from '../../components/CustomDatePicker';
+import { CustomTimePicker } from '../../components/CustomTimePicker';
+import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
+import type { DatePeriod } from '../../utils/datePeriods';
 
 type ReportType = 'sales' | 'top-items' | 'top-categories' | 'top-modifiers' | 'peak-hours' | 'shifts' | 'staff-sales' | 'payments' | 'discounts' | 'taxes' | 'receipts';
 
@@ -37,6 +41,7 @@ export function ReportsPage() {
   // Sync URL params with internal state
   useEffect(() => {
     if (type) {
+      window.scrollTo({ top: 0, behavior: 'auto' });
       switch (type) {
         case 'sales':
           setReportType('sales');
@@ -375,34 +380,9 @@ export function ReportsPage() {
   const setQuickDate = (range: string) => {
     setSelectedDateRange(range);
     setSelectedShiftId(null);
-    const today = new Date();
-    let start = new Date();
-    let end = new Date();
-    switch (range) {
-      case 'yesterday':
-        start.setDate(today.getDate() - 1);
-        end.setDate(today.getDate() - 1);
-        break;
-      case 'this_week':
-        const dayOfWeek = today.getDay();
-        if (dayOfWeek === 0) {
-          start.setDate(today.getDate() - 6);
-        } else {
-          start.setDate(today.getDate() - dayOfWeek);
-        }
-        end = new Date(today);
-        break;
-      case 'this_month':
-        start.setDate(1);
-        end = new Date(today);
-        break;
-      case 'last_30':
-        start.setDate(today.getDate() - 30);
-        end = new Date(today);
-        break;
-    }
-    setStartDate(start.toISOString().split('T')[0]);
-    setEndDate(end.toISOString().split('T')[0]);
+    const { start, end } = calculateDateRange(range as DatePeriod);
+    setStartDate(formatDateForInput(start));
+    setEndDate(formatDateForInput(end));
     setStartTime('00:00');
     setEndTime('23:59');
   };
@@ -499,9 +479,9 @@ export function ReportsPage() {
         <div className="flex w-full gap-2">
           {[
             { id: 'sales', label: 'Sales Summary', icon: TrendingUp },
-            { id: 'items-categories', label: 'Sales By Items', icon: ShoppingBag },
-            { id: 'addons', label: 'Sales By Add-Ons', icon: Tag },
-            { id: 'staff-sales', label: 'Sales By Staff', icon: Activity },
+            { id: 'items-categories', label: 'Sales by Items', icon: ShoppingBag },
+            { id: 'addons', label: 'Sales by Add-Ons', icon: Tag },
+            { id: 'staff-sales', label: 'Sales by Staff', icon: Activity },
             { id: 'shifts', label: 'Shifts Reports', icon: Clock },
             { id: 'payments', label: 'Payments Reports', icon: CreditCard },
             { id: 'discounts', label: 'Discount Reports', icon: Percent },
@@ -547,85 +527,53 @@ export function ReportsPage() {
             );
           })}
         </div>        {/* Unified Filter Dashboard */}
-        {/* Unified Filter Control Deck */}
-        {/* Unified Filter Control Deck */}
-        {/* Premium Command Bar Control Deck */}
-        <div className="bg-white dark:bg-[#0B1120] rounded-[20px] shadow-xl shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-2">
-          <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0">
 
-            {/* Sector 1: Quick Period Dropdown */}
-            <div className={`flex-none w-[180px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'border-transparent'}`}>
+        {/* Unified Filter Control Deck */}
+        <div className="bg-white dark:bg-[#0B1120] rounded-[20px] shadow-xl shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-2">
+          {/* Single Row Layout - wraps on smaller screens */}
+          <div className="flex flex-wrap items-stretch gap-2">
+
+            {/* Quick Period Dropdown */}
+            <div className="w-full xs:w-auto xs:flex-1 sm:flex-none sm:w-[130px] md:w-[150px]">
               <SingleSelect
                 value={selectedDateRange === 'custom' ? null : selectedDateRange}
                 onChange={(val) => setQuickDate(val || 'today')}
-                options={[
-                  { label: 'Today', value: 'today' },
-                  { label: 'Yesterday', value: 'yesterday' },
-                  { label: 'This Week', value: 'this_week' },
-                  { label: 'This Month', value: 'this_month' },
-                ]}
+                options={DATE_PERIOD_OPTIONS}
                 showAllOption={false}
-                placeholder="Select Period"
-                className="w-full"
-                buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-3.5 !h-full !text-sm !font-bold ${selectedDateRange !== 'custom' ? '!text-paymint-green' : ''}`}
+                placeholder="Period"
+                className="w-full h-full"
+                buttonClassName={`!rounded-xl !px-3 !py-2 !h-full !text-xs sm:!text-sm !font-bold border transition-all ${selectedDateRange !== 'custom'
+                  ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
+                  : '!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10'
+                  }`}
               />
             </div>
 
-            {/* Vertical Divider (Desktop) */}
-            <div className="hidden xl:block w-px h-10 bg-gray-100 dark:bg-white/10 mx-4" />
-
-            {/* Sector 2: Time & Date Controls (Transparent Layout) */}
+            {/* Date Range Group */}
             {(() => {
               const isDateFiltered = selectedDateRange === 'custom';
-              const isTimeFiltered = startTime !== '00:00' || endTime !== '23:59';
-
               return (
-                <div className="flex-1 flex flex-col md:flex-row gap-4 items-center">
-                  {/* Date Input Group */}
-                  <div className={`flex-1 w-full flex flex-col justify-center px-2 py-1 rounded-xl border transition-all group ${isDateFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-transparent border-transparent'}`}>
-                    <div className="flex items-center gap-2 mb-1">
-                      <Calendar size={12} className={isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
-                      <span className={`text-xs font-black tracking-widest transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Date Range</span>
+                <div className={`flex-none w-auto min-w-[145px] sm:min-w-[170px] relative z-[60]`}>
+                  <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isDateFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <Calendar size={11} className={isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
+                      <span className={`text-[9px] font-black tracking-wider transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>DATE RANGE</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <input
-                        type="date"
+                      <CustomDatePicker
                         value={startDate}
-                        onChange={(e) => { setStartDate(e.target.value); setSelectedDateRange('custom'); setSelectedShiftId(null); }}
-                        className={`bg-transparent p-0 text-sm font-bold border-none focus:ring-0 w-full h-auto dark:[color-scheme:dark] cursor-pointer transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400 dark:text-white/40"}`}
+                        onChange={(val) => { setStartDate(val); setSelectedDateRange('custom'); setSelectedShiftId(null); }}
+                        className="w-[95px] sm:w-[105px]"
+                        maxDate={endDate}
+                        showIcon={true}
                       />
-                      <span className={`font-light transition-colors ${isDateFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/10"}`}>/</span>
-                      <input
-                        type="date"
+                      <span className={`text-xs font-light transition-colors flex-shrink-0 ${isDateFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/20"}`}>→</span>
+                      <CustomDatePicker
                         value={endDate}
-                        onChange={(e) => { setEndDate(e.target.value); setSelectedDateRange('custom'); setSelectedShiftId(null); }}
-                        className={`bg-transparent p-0 text-sm font-bold border-none focus:ring-0 w-full h-auto dark:[color-scheme:dark] text-right cursor-pointer transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400 dark:text-white/40"}`}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Vertical Divider (Inner) */}
-                  <div className="hidden md:block w-px h-8 bg-gray-100 dark:bg-white/10" />
-
-                  {/* Time Input Group */}
-                  <div className={`flex-1 w-full flex flex-col justify-center px-2 py-1 rounded-xl border transition-all group ${isTimeFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-transparent border-transparent'}`}>
-                    <div className="flex items-center gap-2 mb-1">
-                      <Clock size={12} className={isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
-                      <span className={`text-xs font-black tracking-widest transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Active Hours</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="time"
-                        value={startTime}
-                        onChange={(e) => { setStartTime(e.target.value); setSelectedShiftId(null); }}
-                        className={`bg-transparent p-0 text-sm font-bold border-none focus:ring-0 w-[94px] h-auto dark:[color-scheme:dark] cursor-pointer transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400 dark:text-white/40"}`}
-                      />
-                      <span className={`font-light transition-colors ${isTimeFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
-                      <input
-                        type="time"
-                        value={endTime}
-                        onChange={(e) => { setEndTime(e.target.value); setSelectedShiftId(null); }}
-                        className={`bg-transparent p-0 text-sm font-bold border-none focus:ring-0 w-[94px] h-auto dark:[color-scheme:dark] text-right cursor-pointer transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400 dark:text-white/40"}`}
+                        onChange={(val) => { setEndDate(val); setSelectedDateRange('custom'); setSelectedShiftId(null); }}
+                        className="w-[95px] sm:w-[105px]"
+                        minDate={startDate}
+                        showIcon={true}
                       />
                     </div>
                   </div>
@@ -633,35 +581,64 @@ export function ReportsPage() {
               );
             })()}
 
-            {/* Vertical Divider (Desktop) */}
-            <div className="hidden xl:block w-px h-10 bg-gray-100 dark:bg-white/10 mx-4" />
+            {/* Time Range Group */}
+            {(() => {
+              const isTimeFiltered = startTime !== '00:00' || endTime !== '23:59';
+              return (
+                <div className={`flex-none w-auto min-w-[155px] sm:min-w-[180px] relative z-[55]`}>
+                  <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isTimeFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <Clock size={11} className={isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
+                      <span className={`text-[9px] font-black tracking-wider transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>ACTIVE HOURS</span>
+                    </div>
+                    <div className="flex items-center gap-2 justify-between relative">
+                      <CustomTimePicker
+                        value={startTime}
+                        onChange={(val) => { setStartTime(val); setSelectedShiftId(null); }}
+                        className="w-[85px] sm:w-[95px]"
+                        showIcon={true}
+                      />
+                      <span className={`text-xs font-bold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
+                      <CustomTimePicker
+                        value={endTime}
+                        onChange={(val) => { setEndTime(val); setSelectedShiftId(null); }}
+                        className="w-[85px] sm:w-[95px]"
+                        showIcon={true}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
 
-            {/* Sector 3: Dropdowns (Integrated) */}
-            <div className="flex-1 flex flex-col sm:flex-row gap-2 xl:max-w-[440px] xl:ml-auto">
-              <div className="flex-1 min-w-0 relative z-50">
-                <SingleSelect
-                  value={selectedEmployeeId}
-                  onChange={(val) => {
-                    setSelectedEmployeeId(val);
-                    setSelectedShiftId(null);
-                  }}
-                  options={employees}
-                  placeholder="All Staff"
-                  className="w-full"
-                  buttonClassName="!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-3.5 !h-full !text-sm !font-bold"
-                />
-              </div>
+            {/* Vertical Divider (visible on larger screens) */}
+            <div className="hidden xl:block w-px self-stretch bg-gray-100 dark:bg-white/10 my-1" />
 
-              <div className={`flex-1 min-w-0 relative z-20 ${!selectedEmployeeId ? 'opacity-50 pointer-events-none grayscale' : 'opacity-100'}`}>
-                <SingleSelect
-                  value={selectedShiftId}
-                  onChange={setSelectedShiftId}
-                  options={employeeShifts}
-                  placeholder="Select Shift"
-                  className="w-full"
-                  buttonClassName="!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-3.5 !h-full !text-sm !font-bold"
-                />
-              </div>
+            {/* Staff Dropdown */}
+            <div className="flex-1 min-w-[120px] sm:min-w-[150px] relative z-50">
+              <SingleSelect
+                value={selectedEmployeeId}
+                onChange={(val) => {
+                  setSelectedEmployeeId(val);
+                  setSelectedShiftId(null);
+                }}
+                options={employees}
+                placeholder="All Staff"
+                className="w-full h-full"
+                buttonClassName="!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !px-3 !py-2 !h-full !text-xs sm:!text-sm !font-bold"
+              />
+            </div>
+
+            {/* Shift Dropdown */}
+            <div className={`flex-1 min-w-[120px] sm:min-w-[150px] relative z-40 ${!selectedEmployeeId ? 'opacity-50 pointer-events-none grayscale' : 'opacity-100'}`}>
+              <SingleSelect
+                value={selectedShiftId}
+                onChange={setSelectedShiftId}
+                options={employeeShifts}
+                placeholder="Select Shift"
+                className="w-full h-full"
+                buttonClassName="!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !px-3 !py-2 !h-full !text-xs sm:!text-sm !font-bold"
+              />
             </div>
 
           </div>
@@ -742,12 +719,15 @@ export function ReportsPage() {
                         color: 'text-orange-500',
                         bg: 'bg-orange-500/10',
                         sub: 'Staff Hours',
-                        onClick: () => navigate('/dashboard/reports/shifts')
+                        onClick: () => {
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                          setTimeout(() => navigate('/dashboard/reports/shifts'), 700);
+                        }
                       },
                       {
-                        label: 'Cashflow Outside Sales',
+                        label: 'Non Sales',
                         value: (
-                          <div className="w-full mt-1 space-y-2">
+                          <div className="w-full mt-6 space-y-2">
                             <div className="flex items-center justify-between">
                               <span className="text-xs font-bold text-gray-400">Pay In</span>
                               <span className="text-sm font-bold text-paymint-green tracking-tight">+{formatCurrency(salesData.totalPayIn || 0).replace('JOD', '').trim()}</span>
@@ -836,7 +816,7 @@ export function ReportsPage() {
                         <span className="text-xs font-bold text-gray-500 tracking-wide">Real-time</span>
                       </div>
                     </div>
-                    <div className="h-[300px]">
+                    <div className="h-[400px]">
 
                       <div className="flex h-full relative">
                         {(() => {
@@ -924,11 +904,11 @@ export function ReportsPage() {
                           return (
                             <>
                               {/* Fixed Y-Axis Container */}
-                              <div className="absolute left-0 top-0 bottom-0 w-[50px] z-20 pointer-events-none" style={{ background: 'linear-gradient(to right, ' + (isDark ? '#0B1120 80%, transparent' : '#FAF9F7 80%, transparent') + ')' }}>
+                              <div className="absolute left-0 top-0 bottom-0 w-[50px] z-20 pointer-events-none" style={{ background: 'linear-gradient(to right, ' + (isDark ? '#0B1120 80%, transparent' : '#FFFFFF 80%, transparent') + ')' }}>
                                 <ResponsiveContainer width="100%" height="100%">
                                   <AreaChart
                                     data={chartData}
-                                    margin={{ top: 10, right: 0, left: 0, bottom: 60 }}
+                                    margin={{ top: 10, right: 0, left: 0, bottom: 20 }}
                                   >
                                     <YAxis
                                       stroke="#94a3b8"
@@ -947,14 +927,14 @@ export function ReportsPage() {
                               </div>
 
                               {/* Scrollable Chart Area */}
-                              <div className="flex-1 overflow-x-auto overflow-y-hidden pl-[50px] custom-scrollbar scroll-smooth">
+                              <div className="flex-1 overflow-x-auto overflow-y-hidden pl-[50px] scrollbar-none scroll-smooth">
                                 {isHourly && !needsDailyAggregation ? (
                                   <div style={{ width: `${Math.max(800, chartData.length * 85)}px`, height: '100%' }}>
                                     <AreaChart
                                       width={Math.max(800, chartData.length * 85)}
                                       height={400}
                                       data={chartData}
-                                      margin={{ top: 10, right: 30, left: 0, bottom: 60 }}
+                                      margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
                                     >
                                       <defs>
                                         <linearGradient id="colorRevenuePremium" x1="0" y1="0" x2="0" y2="1">
@@ -982,12 +962,13 @@ export function ReportsPage() {
                                       <YAxis hide domain={[0, maxY]} />
                                       <Tooltip
                                         cursor={{ stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' }}
+                                        formatter={(val: any) => [Number(val).toFixed(3), 'Revenue']}
                                         contentStyle={{
                                           backgroundColor: isDark ? '#0B1120' : '#fff',
-                                          borderRadius: '24px',
+                                          borderRadius: '16px',
                                           border: '1px solid rgba(255,255,255,0.05)',
                                           boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
-                                          padding: '16px'
+                                          padding: '12px'
                                         }}
                                         itemStyle={{ color: '#7CC39F', fontWeight: '900', fontSize: '12px', textTransform: 'capitalize' }}
                                         labelStyle={{ fontWeight: '900', color: isDark ? '#fff' : '#000', marginBottom: '8px', fontSize: '10px' }}
@@ -1013,7 +994,7 @@ export function ReportsPage() {
                                   <ResponsiveContainer width="100%" height="100%">
                                     <AreaChart
                                       data={chartData}
-                                      margin={{ top: 10, right: 30, left: 0, bottom: 60 }}
+                                      margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
                                     >
                                       <defs>
                                         <linearGradient id="colorRevenuePremium" x1="0" y1="0" x2="0" y2="1">
@@ -1043,12 +1024,13 @@ export function ReportsPage() {
                                       <YAxis hide domain={[0, maxY]} />
                                       <Tooltip
                                         cursor={{ stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' }}
+                                        formatter={(val: any) => [Number(val).toFixed(3), 'Revenue']}
                                         contentStyle={{
                                           backgroundColor: isDark ? '#0B1120' : '#fff',
-                                          borderRadius: '24px',
+                                          borderRadius: '16px',
                                           border: '1px solid rgba(255,255,255,0.05)',
                                           boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
-                                          padding: '16px'
+                                          padding: '12px'
                                         }}
                                         itemStyle={{ color: '#7CC39F', fontWeight: '900', fontSize: '12px', textTransform: 'capitalize' }}
                                         labelStyle={{ fontWeight: '900', color: isDark ? '#fff' : '#000', marginBottom: '8px', fontSize: '10px' }}
@@ -1088,14 +1070,22 @@ export function ReportsPage() {
 
                   {/* Payment Source Breakdown */}
                   <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col">
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
-                        <Wallet size={20} />
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+                          <Wallet size={20} />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold text-gray-900 dark:text-white">Payment Methods</h3>
+                          <p className="text-xs font-bold text-gray-500 tracking-wide">Breakdown Chart</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Payment Methods</h3>
-                        <p className="text-xs font-bold text-gray-500 tracking-widest">Breakdown Chart</p>
-                      </div>
+                      <button
+                        onClick={() => navigate('/dashboard/reports/payments')}
+                        className="text-xs font-bold text-blue-500 hover:underline tracking-wide"
+                      >
+                        View All
+                      </button>
                     </div>
                     <div className="flex-1 flex flex-col justify-center">
 
@@ -1186,7 +1176,7 @@ export function ReportsPage() {
                             : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
                             }`}
                         >
-                          By Products
+                          by Products
                         </button>
                         <button
                           onClick={() => setItemReportTab('categories')}
@@ -1195,7 +1185,7 @@ export function ReportsPage() {
                             : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
                             }`}
                         >
-                          By Category
+                          by Category
                         </button>
                       </>
                     ) : (
@@ -1207,7 +1197,7 @@ export function ReportsPage() {
                             : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
                             }`}
                         >
-                          By Add-ons
+                          by Add-ons
                         </button>
                         <button
                           onClick={() => setItemReportTab('attributes')}
@@ -1216,7 +1206,7 @@ export function ReportsPage() {
                             : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
                             }`}
                         >
-                          By Attributes (Groups)
+                          by Attributes (Groups)
                         </button>
                       </>
                     )}

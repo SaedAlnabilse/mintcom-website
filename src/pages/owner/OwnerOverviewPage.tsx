@@ -27,6 +27,8 @@ import {
 import api from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
 import { SingleSelect } from '../../components/SingleSelect';
+import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput, getDatePeriodLabel } from '../../utils/datePeriods';
+import type { DatePeriod } from '../../utils/datePeriods';
 
 interface OverviewStats {
     totalRevenue: number;
@@ -71,39 +73,9 @@ export function OwnerOverviewPage() {
 
     const setQuickDate = (range: string) => {
         setSelectedDateRange(range);
-        const today = new Date();
-        let start = new Date();
-        let end = new Date();
-
-        switch (range) {
-            case 'today':
-                // already set to today
-                break;
-            case 'yesterday':
-                start.setDate(today.getDate() - 1);
-                end.setDate(today.getDate() - 1);
-                break;
-            case 'this_week':
-                const dayOfWeek = today.getDay();
-                if (dayOfWeek === 0) {
-                    start.setDate(today.getDate() - 6);
-                } else {
-                    start.setDate(today.getDate() - dayOfWeek);
-                }
-                end = new Date(today);
-                break;
-            case 'this_month':
-                start.setDate(1);
-                end = new Date(today);
-                break;
-            case 'last_30':
-                start.setDate(today.getDate() - 30);
-                end = new Date(today);
-                break;
-        }
-
-        setStartDate(start.toISOString().split('T')[0]);
-        setEndDate(end.toISOString().split('T')[0]);
+        const { start, end } = calculateDateRange(range as DatePeriod);
+        setStartDate(formatDateForInput(start));
+        setEndDate(formatDateForInput(end));
         setStartTime('00:00');
         setEndTime('23:59');
     };
@@ -166,11 +138,7 @@ export function OwnerOverviewPage() {
 
     const selectedFilterLabel = selectedDateRange === 'custom'
         ? `${startDate} - ${endDate}`
-        : selectedDateRange === 'today' ? 'Today'
-            : selectedDateRange === 'yesterday' ? 'Yesterday'
-                : selectedDateRange === 'this_week' ? 'This Week'
-                    : selectedDateRange === 'this_month' ? 'This Month'
-                        : 'Custom Range';
+        : getDatePeriodLabel(selectedDateRange);
 
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('en-US', {
@@ -219,12 +187,7 @@ export function OwnerOverviewPage() {
                                 <SingleSelect
                                     value={selectedDateRange === 'custom' ? null : selectedDateRange}
                                     onChange={(val) => setQuickDate(val || 'today')}
-                                    options={[
-                                        { label: 'Today', value: 'today' },
-                                        { label: 'Yesterday', value: 'yesterday' },
-                                        { label: 'This Week', value: 'this_week' },
-                                        { label: 'This Month', value: 'this_month' },
-                                    ]}
+                                    options={DATE_PERIOD_OPTIONS}
                                     showAllOption={false}
                                     placeholder="Select Period"
                                     className="w-full"

@@ -557,14 +557,14 @@ export const DashboardPage = () => {
               bg: 'bg-orange-500/10'
             },
             {
-              label: 'Cashflow Outside Sales',
+              label: 'Non Sales',
               value: null, // Custom content
               sub: null,
               icon: ArrowUpRight,
               color: 'text-cyan-500',
               bg: 'bg-cyan-500/10',
               customContent: (
-                <div className="space-y-3 mt-2">
+                <div className="space-y-3 mt-6">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Pay In</span>
                     <span className="text-sm font-bold text-paymint-green tracking-tight">+{formatCurrency(stats?.totalPayIn || 0)}</span>
@@ -712,16 +712,24 @@ export const DashboardPage = () => {
         <div id="tour-capital-sources" className="group relative p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden">
           <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
           <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform duration-300">
-                <Wallet size={20} />
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform duration-300">
+                  <Wallet size={20} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">Payment Methods</h3>
+                  <p className="text-xs font-bold text-gray-500 tracking-wide">
+                    {viewMode === 'current_shift' ? 'This Shift' : viewMode === 'previous_shift' ? 'Previous Shift' : 'Last 24h'} Distribution
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Payment Methods</h3>
-                <p className="text-xs font-bold text-gray-500 tracking-wide">
-                  {viewMode === 'current_shift' ? 'This Shift' : viewMode === 'previous_shift' ? 'Previous Shift' : 'Last 24h'} Distribution
-                </p>
-              </div>
+              <button
+                onClick={() => navigate('/dashboard/reports/payments')}
+                className="text-xs font-bold text-blue-500 hover:underline tracking-wide"
+              >
+                View All
+              </button>
             </div>
 
             <div className="flex-1 flex flex-col justify-center">
@@ -808,7 +816,7 @@ export const DashboardPage = () => {
             <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Top Items Column */}
               <div className="space-y-3">
-                <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">Top 3 Items</h4>
+                <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 text-center">Top 3 Items</h4>
                 {topProducts.length > 0 ? topProducts.slice(0, 3).map((item, index) => (
                   <motion.div
                     key={item.name}
@@ -840,7 +848,7 @@ export const DashboardPage = () => {
 
               {/* Top Categories Column */}
               <div className="space-y-3">
-                <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">Top 3 Categories</h4>
+                <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 text-center">Top 3 Categories</h4>
                 {stats?.categoryBreakdown && stats.categoryBreakdown.length > 0 ? stats.categoryBreakdown.slice(0, 3).map((cat, index) => (
                   <motion.div
                     key={cat.name}

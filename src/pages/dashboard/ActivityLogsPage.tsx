@@ -15,6 +15,8 @@ import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { exportToCSV } from '../../utils/export';
 import { SingleSelect } from '../../components/SingleSelect';
+import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
+import type { DatePeriod } from '../../utils/datePeriods';
 
 interface ActivityLog {
   id: string;
@@ -89,33 +91,15 @@ export function ActivityLogsPage() {
 
   const handlePresetChange = (preset: string) => {
     setActivePreset(preset);
-    const now = new Date();
-    let start = new Date();
-    let end = new Date();
 
-    switch (preset) {
-      case 'today':
-        // Start/End are already now
-        break;
-      case 'yesterday':
-        start.setDate(now.getDate() - 1);
-        end.setDate(now.getDate() - 1);
-        break;
-      case 'week':
-        const day = now.getDay(); // 0 is Sunday
-        const diff = now.getDate() - day; // adjust when day is sunday
-        start.setDate(diff);
-        break;
-      case 'month': // This Month
-        start.setDate(1);
-        break;
-      case 'custom':
-        return; // Don't change dates on click if custom
+    if (preset === 'custom') {
+      return; // Don't change dates on click if custom
     }
 
+    const { start, end } = calculateDateRange(preset as DatePeriod);
     setDateRange({
-      start: start.toISOString().split('T')[0],
-      end: end.toISOString().split('T')[0]
+      start: formatDateForInput(start),
+      end: formatDateForInput(end)
     });
     setPage(1);
   };
@@ -288,12 +272,7 @@ export function ActivityLogsPage() {
                   onChange={(val) => {
                     if (val) handlePresetChange(val);
                   }}
-                  options={[
-                    { label: 'Today', value: 'today' },
-                    { label: 'Yesterday', value: 'yesterday' },
-                    { label: 'This Week', value: 'week' },
-                    { label: 'This Month', value: 'month' },
-                  ]}
+                  options={DATE_PERIOD_OPTIONS}
                   placeholder="Custom Range"
                   showAllOption={false}
                   allowClear={false}
