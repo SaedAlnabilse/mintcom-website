@@ -238,6 +238,3 @@ export function CategoryFormModal({
     document.body
   );
 }
-
-
-

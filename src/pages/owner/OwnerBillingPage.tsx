@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, CreditCard, DollarSign, Trash2, Star, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye } from 'lucide-react';
+import { Plus, CreditCard, DollarSign, Trash2, Star, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import api from '../../config/api';
 import { AddPaymentMethodModal } from '../../components/AddPaymentMethodModal';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
@@ -43,6 +43,8 @@ export function OwnerBillingPage() {
     const [billingData, setBillingData] = useState<BillingData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isAddCardModalOpen, setIsAddCardModalOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
     const [securityModal, setSecurityModal] = useState<{
         isOpen: boolean,
         targetId: string,
@@ -223,7 +225,15 @@ export function OwnerBillingPage() {
         }
     };
 
+
     const totalMonthlyCost = billingData?.totalMonthlyCost || 0;
+
+    const paginatedEstablishments = billingData?.establishments.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    ) || [];
+
+    const totalPages = Math.ceil((billingData?.establishments.length || 0) / itemsPerPage);
 
     return (
         <div className="max-w-7xl mx-auto space-y-8 pb-10">
@@ -431,7 +441,7 @@ export function OwnerBillingPage() {
                             </div>
                         ) : (
                             <div className="divide-y divide-gray-100 dark:divide-white/5">
-                                {billingData?.establishments.map((est, index) => (
+                                {paginatedEstablishments.map((est, index) => (
                                     <motion.div
                                         key={est.id}
                                         initial={{ opacity: 0, y: 10 }}
@@ -525,6 +535,34 @@ export function OwnerBillingPage() {
                                         </div>
                                     </motion.div>
                                 ))}
+                            </div>
+                        )}
+
+                        {/* Pagination Controls */}
+                        {!isLoading && (billingData?.establishments.length || 0) > itemsPerPage && (
+                            <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
+                                <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                                    Showing {Math.min((currentPage - 1) * itemsPerPage + 1, billingData?.establishments.length || 0)} to {Math.min(currentPage * itemsPerPage, billingData?.establishments.length || 0)} of {billingData?.establishments.length}
+                                </span>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                        disabled={currentPage === 1}
+                                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        <ChevronLeft size={16} />
+                                    </button>
+                                    <span className="text-xs font-bold text-gray-900 dark:text-white px-2">
+                                        Page {currentPage} of {totalPages}
+                                    </span>
+                                    <button
+                                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                        disabled={currentPage === totalPages}
+                                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        <ChevronRight size={16} />
+                                    </button>
+                                </div>
                             </div>
                         )}
                     </div>

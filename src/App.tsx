@@ -4,6 +4,8 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { LoadingFallback } from './components/LoadingFallback';
+import { CookieConsent } from './components/CookieConsent';
+import { FeedbackWidget } from './components/FeedbackWidget';
 
 // ============================================================================
 // Eager Imports (Critical path - always needed)
@@ -24,6 +26,11 @@ const SignUpPage = lazy(() => import('./pages/SignUpPage').then(m => ({ default:
 const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage').then(m => ({ default: m.VerifyEmailPage })));
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage').then(m => ({ default: m.ForgotPasswordPage })));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage').then(m => ({ default: m.ResetPasswordPage })));
+const CookiePolicyPage = lazy(() => import('./pages/CookiePolicyPage').then(m => ({ default: m.CookiePolicyPage })));
+const AboutUsPage = lazy(() => import('./pages/AboutUsPage').then(m => ({ default: m.AboutUsPage })));
+const QAPage = lazy(() => import('./pages/QAPage').then(m => ({ default: m.QAPage })));
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage').then(m => ({ default: m.PrivacyPolicyPage })));
+const TermsPage = lazy(() => import('./pages/TermsPage').then(m => ({ default: m.TermsPage })));
 
 // ============================================================================
 // Lazy Imports - Onboarding
@@ -112,6 +119,8 @@ const router = createBrowserRouter([
     element: (
       <>
         <Outlet />
+        <CookieConsent />
+        <FeedbackWidget />
         <ChatWidgetEnhancer />
       </>
     ),
@@ -163,6 +172,46 @@ const router = createBrowserRouter([
         element: (
           <PageSuspense>
             <ResetPasswordPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/legal/cookie-policy",
+        element: (
+          <PageSuspense>
+            <CookiePolicyPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/about",
+        element: (
+          <PageSuspense>
+            <AboutUsPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/qa",
+        element: (
+          <PageSuspense>
+            <QAPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/legal/privacy",
+        element: (
+          <PageSuspense>
+            <PrivacyPolicyPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/legal/terms",
+        element: (
+          <PageSuspense>
+            <TermsPage />
           </PageSuspense>
         ),
       },

@@ -32,6 +32,7 @@ import api from '../../config/api';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
 import { useAuth } from '../../context/AuthContext';
 import { CustomSelect } from '../../components/CustomSelect';
+import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 
 interface Brand {
     id: string;
@@ -629,12 +630,14 @@ export function OwnerBrandsPage() {
                                             <span className="text-xs font-black text-gray-400 tracking-widest">Locations</span>
                                         </div>
                                         <div className="flex flex-wrap gap-2">
-                                            {brand.establishments.slice(0, 4).map((est) => (
+                                            {brand.establishments.slice(0, 4).map((est) => {
+                                                const Icon = getBusinessTypeIcon(est.type);
+                                                return (
                                                 <div key={est.id} className="px-3 py-2 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-lg flex items-center gap-2 hover:border-purple-500/30 transition-all">
-                                                    <Store size={12} className="text-gray-400" />
+                                                    <Icon size={12} className="text-gray-400" />
                                                     <span className="text-[11px] font-bold text-gray-600 dark:text-gray-400 truncate max-w-[100px]">{est.name}</span>
                                                 </div>
-                                            ))}
+                                            )})}
                                             {brand.establishments.length > 4 && (
                                                 <div className="px-3 py-2 bg-gray-100 dark:bg-white/5 rounded-lg">
                                                     <span className="text-[11px] font-bold text-gray-500">
@@ -889,7 +892,9 @@ export function OwnerBrandsPage() {
                                                     <h4 className="text-xs font-bold text-gray-500 tracking-wide mb-4">Select Locations</h4>
                                                     <p className="text-sm text-gray-500 mb-4">Choose locations to group under this brand.</p>
                                                     <div className="grid grid-cols-1 gap-3 max-h-[280px] lg:max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
-                                                        {availableEstablishments.map((est: any) => (
+                                                        {availableEstablishments.map((est: any) => {
+                                                            const Icon = getBusinessTypeIcon(est.type);
+                                                            return (
                                                             <div
                                                                 key={est.id}
                                                                 onClick={() => toggleEstablishment(est.id)}
@@ -897,7 +902,7 @@ export function OwnerBrandsPage() {
                                                             >
                                                                 <div className="flex items-center gap-4">
                                                                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${selectedEstablishments.includes(est.id) ? 'bg-paymint-green text-black' : 'bg-white dark:bg-white/5 text-gray-400 border border-gray-200 dark:border-white/5'}`}>
-                                                                        <Store size={20} />
+                                                                        <Icon size={20} />
                                                                     </div>
                                                                     <div>
                                                                         <p className="font-bold text-gray-900 dark:text-white">{est.name}</p>
@@ -908,7 +913,7 @@ export function OwnerBrandsPage() {
                                                                     {selectedEstablishments.includes(est.id) && <UserCheck size={14} />}
                                                                 </div>
                                                             </div>
-                                                        ))}
+                                                        )})}
                                                     </div>
                                                 </div>
                                                 {error && <p className="p-4 bg-paymint-red/10 border border-paymint-red/20 rounded-xl text-paymint-red text-xs font-bold text-center">{error}</p>}

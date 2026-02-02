@@ -18,6 +18,7 @@ interface SingleSelectProps {
     allOptionLabel?: string; // Label for the "All" option
     showAllOption?: boolean;
     scrollIntoViewOnOpen?: boolean; // Only scroll into view when inside modals/popups
+    disabled?: boolean;
 }
 
 export function SingleSelect({
@@ -31,7 +32,8 @@ export function SingleSelect({
     showAllOption = true,
     buttonClassName = '',
     allowClear = true,
-    scrollIntoViewOnOpen = false
+    scrollIntoViewOnOpen = false,
+    disabled = false
 }: SingleSelectProps & { buttonClassName?: string, allowClear?: boolean }) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -217,9 +219,9 @@ export function SingleSelect({
             <button
                 ref={buttonRef}
                 type="button"
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => !disabled && setIsOpen(!isOpen)}
                 className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-left flex items-center justify-between transition-all outline-none shadow-sm
-                    hover:border-paymint-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06] hover:shadow-lg hover:shadow-black/10
+                    ${disabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:border-paymint-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06] hover:shadow-lg hover:shadow-black/10'}
                     ${isOpen ? 'ring-2 ring-paymint-green/20 border-paymint-green bg-gray-50 dark:bg-white/[0.08] shadow-inner shadow-black/20' : ''
                     } ${buttonClassName}`}
             >

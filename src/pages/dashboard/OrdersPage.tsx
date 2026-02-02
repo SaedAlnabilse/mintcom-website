@@ -23,7 +23,8 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { OrderDetailModal } from '../../components/OrderDetailModal';
 import { exportToCSV } from '../../utils/export';
 import { toast } from 'react-hot-toast';
-import { CustomSelect } from '../../components/CustomSelect';
+import { SingleSelect } from '../../components/SingleSelect';
+import { CustomDatePicker } from '../../components/CustomDatePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
 
@@ -119,6 +120,7 @@ export function OrdersPage() {
   // Shift status for shift-based filtering
   const [shiftStatus, setShiftStatus] = useState<ShiftStatus | null>(null);
   const [lastShiftSnapshot, setLastShiftSnapshot] = useState<{ startTime: string; timestamp: string } | null>(null);
+  const [totalHeldCount, setTotalHeldCount] = useState(0);
 
   // Fetch shift status on mount
   useEffect(() => {
@@ -189,6 +191,40 @@ export function OrdersPage() {
     try {
       setIsLoading(true);
 
+      // Handle shift-based date ranges
+      let start: Date;
+      let end: Date;
+
+      if (selectedDateRange === 'current_shift' && shiftStatus?.activeShift) {
+        // Current shift data
+        start = new Date(shiftStatus.activeShift.startTime);
+        end = new Date();
+      } else if (selectedDateRange === 'previous_shift' && lastShiftSnapshot) {
+        // Previous shift data
+        start = new Date(lastShiftSnapshot.startTime);
+        end = new Date(lastShiftSnapshot.timestamp);
+      } else if (selectedDateRange === 'all') {
+        // All time - use a very early date
+        start = new Date(0);
+        end = new Date(8640000000000000); // Far future
+      } else {
+        // Regular date-based filtering
+        start = startOfDay(new Date(startDate));
+        end = endOfDay(new Date(endDate));
+      }
+
+      // Always fetch held orders count to keep the KPI accurate
+      try {
+        const heldCountRes = await api.get('/api/held-orders');
+        const filteredHeldCount = heldCountRes.data.filter((h: any) => {
+          const hDate = new Date(h.pinnedAt);
+          return hDate >= start && hDate <= end;
+        }).length;
+        setTotalHeldCount(filteredHeldCount);
+      } catch (e) {
+        console.error('Failed to fetch held count', e);
+      }
+
       const mapHeldOrder = (h: any) => ({
         id: h.id,
         orderNumber: h.nickname,
@@ -215,7 +251,12 @@ export function OrdersPage() {
 
       if (statusFilter === 'HELD') {
         const response = await api.get('/api/held-orders');
-        const heldOrders = response.data.map(mapHeldOrder);
+        const heldOrders = response.data
+          .map(mapHeldOrder)
+          .filter((h: any) => {
+            const hDate = new Date(h.createdAt);
+            return hDate >= start && hDate <= end;
+          });
         setOrders(heldOrders);
         setTotalPages(1);
         setError('');
@@ -226,6 +267,8 @@ export function OrdersPage() {
       const params: any = {
         page,
         limit: 10,
+        startDate: start.toISOString(),
+        endDate: end.toISOString()
       };
 
       if (statusFilter !== 'all') {
@@ -235,27 +278,6 @@ export function OrdersPage() {
       if (paymentFilter !== 'all') {
         params.paymentMethod = paymentFilter;
       }
-
-      // Handle shift-based date ranges
-      let start: Date;
-      let end: Date;
-
-      if (selectedDateRange === 'current_shift' && shiftStatus?.activeShift) {
-        // Current shift data
-        start = new Date(shiftStatus.activeShift.startTime);
-        end = new Date();
-      } else if (selectedDateRange === 'previous_shift' && lastShiftSnapshot) {
-        // Previous shift data
-        start = new Date(lastShiftSnapshot.startTime);
-        end = new Date(lastShiftSnapshot.timestamp);
-      } else {
-        // Regular date-based filtering
-        start = startOfDay(new Date(startDate));
-        end = endOfDay(new Date(endDate));
-      }
-
-      params.startDate = start.toISOString();
-      params.endDate = end.toISOString();
 
       const response = await api.get('/reports/orders-history', { params });
       let fetchedOrders = response.data.orders || response.data || [];
@@ -371,6 +393,9 @@ export function OrdersPage() {
     // Add all standard date period options
     options.push(...DATE_PERIOD_OPTIONS);
 
+    // Add All Time option
+    options.push({ label: 'All Time', value: 'all' });
+
     return options;
   };
 
@@ -468,76 +493,110 @@ export function OrdersPage() {
         </div>
       </div>
 
-      {/* Filters Bar */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm flex flex-col lg:flex-row gap-4">
-        <div className="flex-1 relative group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && searchOrder()}
-            placeholder="Search orders..."
-            className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
-          />
-        </div>
+      {/* Unified Filter Control Deck */}
+      <div className="bg-white dark:bg-[#1E293B] rounded-[24px] border border-gray-100 dark:border-white/5 p-2 shadow-sm">
+        <div className="flex flex-wrap items-stretch gap-2">
+          {/* Search Bar */}
+          <div className="flex-1 lg:flex-none lg:w-64 relative group">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none z-10">
+              <Search size={16} />
+            </div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && searchOrder()}
+              placeholder="Search orders..."
+              className="w-full h-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border-transparent rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green focus:bg-white dark:focus:bg-white/10 transition-all shadow-inner"
+            />
+          </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 items-center">
           {/* Quick Date Select */}
-          <div className={`w-52 rounded-2xl transition-all ${selectedDateRange !== 'custom' ? 'ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : ''}`}>
-            <CustomSelect
-              value={selectedDateRange}
-              onChange={(val) => setQuickDate(val as string)}
+          <div className="flex-none w-40 sm:w-44 relative z-[70]">
+            <SingleSelect
+              value={selectedDateRange === 'custom' ? null : selectedDateRange}
+              onChange={(val) => setQuickDate(val || 'today')}
               options={getDateRangeOptions()}
-              placeholder="Select Period"
+              showAllOption={false}
+              placeholder="Period"
+              className="w-full h-full"
+              buttonClassName={`!rounded-xl !px-4 !py-3 !h-full !text-sm !font-bold border transition-all ${selectedDateRange !== 'custom'
+                ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
+                : '!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10'
+                }`}
             />
           </div>
 
-          {/* Custom Date Inputs */}
-          <div className={`flex items-center gap-2 p-1 px-3 rounded-xl border h-[46px] transition-all ${selectedDateRange === 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10'}`}>
-            <Calendar size={14} className={selectedDateRange === 'custom' ? 'text-paymint-green' : 'text-gray-400'} />
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => { setStartDate(e.target.value); setSelectedDateRange('custom'); setPage(1); }}
-              className="bg-transparent border-none text-xs font-bold text-gray-900 dark:text-white focus:ring-0 p-0 w-24"
-            />
-            <span className={selectedDateRange === 'custom' ? 'text-paymint-green/50' : 'text-gray-400'}>-</span>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => { setEndDate(e.target.value); setSelectedDateRange('custom'); setPage(1); }}
-              className="bg-transparent border-none text-xs font-bold text-gray-900 dark:text-white focus:ring-0 p-0 w-24"
-            />
-          </div>
+          {/* Date Range Group */}
+          {(() => {
+            const isDateFiltered = selectedDateRange === 'custom';
+            return (
+              <div className={`flex-none w-auto min-w-[170px] relative z-[60]`}>
+                <div className={`flex flex-col justify-center px-4 py-1.5 rounded-xl border h-full transition-all ${isDateFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <Calendar size={11} className={isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
+                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>DATE RANGE</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CustomDatePicker
+                      value={startDate}
+                      onChange={(val) => { setStartDate(val); setSelectedDateRange('custom'); setPage(1); }}
+                      className="w-[90px]"
+                      maxDate={endDate}
+                      showIcon={true}
+                    />
+                    <span className={`text-xs font-light transition-colors flex-shrink-0 ${isDateFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/20"}`}>→</span>
+                    <CustomDatePicker
+                      value={endDate}
+                      onChange={(val) => { setEndDate(val); setSelectedDateRange('custom'); setPage(1); }}
+                      className="w-[90px]"
+                      minDate={startDate}
+                      showIcon={true}
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
 
-          <div className="w-40">
-            <CustomSelect
-              value={statusFilter}
+          {/* Vertical Divider */}
+          <div className="hidden 2xl:block w-px self-stretch bg-gray-100 dark:bg-white/10 my-1" />
+
+          {/* Status Select */}
+          <div className="flex-1 min-w-[140px] relative z-[50]">
+            <SingleSelect
+              value={statusFilter === 'all' ? null : statusFilter}
               onChange={(val) => {
-                setStatusFilter(val as string);
+                setStatusFilter(val || 'all');
                 setPage(1);
                 if (val === 'HELD') {
                   setPaymentFilter('all');
                 }
               }}
               options={[
-                { label: 'All Status', value: 'all' },
                 { label: 'Completed', value: 'COMPLETED' },
                 { label: 'On Hold', value: 'HELD' },
                 { label: 'Refunded', value: 'REFUNDED' },
               ]}
+              showAllOption={true}
+              allOptionLabel="All Status"
+              placeholder="All Status"
+              className="w-full h-full"
+              buttonClassName={`!rounded-xl !px-4 !py-3 !h-full !text-sm !font-bold border transition-all ${statusFilter !== 'all'
+                ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
+                : '!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10'
+                }`}
             />
           </div>
 
-          <div className="w-48">
-            <CustomSelect
-              value={paymentFilter}
-              onChange={(val) => { setPaymentFilter(val as string); setPage(1); }}
+          {/* Payment Method Select */}
+          <div className="flex-1 min-w-[160px] relative z-[40]">
+            <SingleSelect
+              value={paymentFilter === 'all' ? null : paymentFilter}
+              onChange={(val) => { setPaymentFilter(val || 'all'); setPage(1); }}
               disabled={statusFilter === 'HELD'}
-              placeholder="Payment Method"
+              placeholder="All Payments"
               options={[
-                { label: 'All Payments', value: 'all' },
                 { label: 'Cash', value: 'CASH' },
                 { label: 'Card', value: 'CARD' },
                 { label: 'Visa', value: 'VISA' },
@@ -548,6 +607,13 @@ export function OrdersPage() {
                 { label: 'Jahez', value: 'JAHEZ' },
                 { label: 'Other', value: 'OTHER' },
               ]}
+              showAllOption={true}
+              allOptionLabel="All Payments"
+              className="w-full h-full"
+              buttonClassName={`!rounded-xl !px-4 !py-3 !h-full !text-sm !font-bold border transition-all ${paymentFilter !== 'all'
+                ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
+                : '!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10'
+                }`}
             />
           </div>
         </div>
@@ -577,16 +643,40 @@ export function OrdersPage() {
       {/* Kpi Strip */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          { label: 'Total Sales', value: formatCurrency(orders.reduce((acc, o) => acc + (o.total || 0), 0)), icon: TrendingUp, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
-          { label: 'Total Orders', value: orders.length, icon: ShoppingCart, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-          { label: 'On Hold', value: orders.filter(o => o.status === 'HELD' || o.paymentStatus === 'PENDING').length, icon: Clock, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+          {
+            label: 'Total Sales',
+            value: formatCurrency(orders.reduce((acc, o) => acc + (o.total || 0), 0)),
+            icon: TrendingUp,
+            color: 'text-paymint-green',
+            bg: 'bg-paymint-green/10',
+            onClick: undefined
+          },
+          {
+            label: 'Total Orders',
+            value: orders.length,
+            icon: ShoppingCart,
+            color: 'text-blue-500',
+            bg: 'bg-blue-500/10',
+            onClick: () => { setStatusFilter('all'); setPage(1); },
+            active: statusFilter === 'all'
+          },
+          {
+            label: 'On Hold',
+            value: totalHeldCount,
+            icon: Clock,
+            color: 'text-orange-500',
+            bg: 'bg-orange-500/10',
+            onClick: () => { setStatusFilter('HELD'); setPaymentFilter('all'); setPage(1); },
+            active: statusFilter === 'HELD'
+          },
         ].map((stat, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="group relative p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
+            onClick={stat.onClick}
+            className={`group relative p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden ${stat.onClick ? 'cursor-pointer' : ''} ${stat.active ? 'ring-2 ring-paymint-green' : ''}`}
           >
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
             <div className="relative z-10 flex items-center gap-4">
@@ -774,39 +864,39 @@ export function OrdersPage() {
                             <AnimatePresence>
                               {activeActionMenu === order.id && (
                                 <motion.div
-                                    initial={{ opacity: 0, scale: 0.95, y: 5 }}
-                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.95, y: 5 }}
-                                    className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
-                                  >
-                                    <div className="p-1">
+                                  initial={{ opacity: 0, scale: 0.95, y: 5 }}
+                                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                                  exit={{ opacity: 0, scale: 0.95, y: 5 }}
+                                  className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                >
+                                  <div className="p-1">
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setSelectedOrder(order);
+                                        setActiveActionMenu(null);
+                                      }}
+                                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                                    >
+                                      <Eye size={14} />
+                                      View Details
+                                    </button>
+
+                                    {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
                                       <button
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          setSelectedOrder(order);
+                                          handleRefund(order);
                                           setActiveActionMenu(null);
                                         }}
-                                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-paymint-red hover:bg-paymint-red/10 transition-colors"
                                       >
-                                        <Eye size={14} />
-                                        View Details
+                                        <Undo2 size={14} />
+                                        Refund Order
                                       </button>
-
-                                      {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
-                                        <button
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleRefund(order);
-                                            setActiveActionMenu(null);
-                                          }}
-                                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-paymint-red hover:bg-paymint-red/10 transition-colors"
-                                        >
-                                          <Undo2 size={14} />
-                                          Refund Order
-                                        </button>
-                                      )}
-                                    </div>
-                                  </motion.div>
+                                    )}
+                                  </div>
+                                </motion.div>
                               )}
                             </AnimatePresence>
                           </div>

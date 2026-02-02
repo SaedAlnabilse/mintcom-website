@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { createPortal } from 'react-dom';
+import { useNavigate, useLocation, useOutletContext } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+
 import {
   Plus,
   Package,
@@ -42,6 +44,7 @@ interface Product {
 export function CategoriesPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { sidebarOpen } = useOutletContext<{ sidebarOpen: boolean }>();
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -169,7 +172,7 @@ export function CategoriesPage() {
   const ViewingIcon = viewingCategory ? (ICON_MAP[viewingCategory.icon || 'tag'] || Tag) : Tag;
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-10">
+    <div className="max-w-7xl mx-auto space-y-8 pb-10 font-inter">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
@@ -298,112 +301,115 @@ export function CategoriesPage() {
       )}
 
       {/* Detail Modal */}
-      <AnimatePresence>
-        {viewingCategory && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-            onClick={() => setViewingCategory(null)}
-          >
+      {createPortal(
+        <AnimatePresence>
+          {viewingCategory && (
             <motion.div
-              initial={{ scale: 0.95, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 20 }}
-              className="bg-white dark:bg-[#1E293B] w-full max-w-4xl rounded-2xl overflow-hidden flex flex-col max-h-[85vh] border border-gray-200 dark:border-white/10 shadow-2xl"
-              onClick={e => e.stopPropagation()}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className={`fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-all duration-300 ${sidebarOpen ? 'lg:pl-[300px]' : 'lg:pl-[100px]'}`}
+              onClick={() => setViewingCategory(null)}
             >
-              <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center bg-paymint-green/10 text-paymint-green"
-                  >
-                    <ViewingIcon size={24} />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{viewingCategory.name}</h2>
-                    <p className="text-xs font-black text-paymint-green tracking-widest">{categoryProducts.length} Items</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => navigate('/dashboard/products', { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
-                    className="p-2 rounded-xl hover:bg-paymint-green/10 text-paymint-green hover:scale-105 transition-all"
-                    title="Add Product"
-                  >
-                    <Plus size={20} />
-                  </button>
-                  <button
-                    onClick={() => setViewingCategory(null)}
-                    className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
-              </div>
-
-              <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
-                {categoryProducts.length === 0 ? (
-                  <div className="py-20 text-center flex flex-col items-center">
-                    <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 shadow-sm">
-                      <Package size={40} strokeWidth={1.5} className="text-gray-300" />
+              <motion.div
+                initial={{ scale: 0.95, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.95, y: 20 }}
+                className="bg-white dark:bg-[#1E293B] w-full max-w-4xl rounded-2xl overflow-hidden flex flex-col max-h-[85vh] border border-gray-200 dark:border-white/10 shadow-2xl"
+                onClick={e => e.stopPropagation()}
+              >
+                <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center bg-paymint-green/10 text-paymint-green"
+                    >
+                      <ViewingIcon size={24} />
                     </div>
-                    <p className="font-bold text-gray-900 dark:text-white tracking-tight text-lg mb-2">No items in this category</p>
-                    <p className="text-sm text-gray-500 font-medium max-w-xs mx-auto mb-8">Start building your menu by adding products to this category.</p>
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{viewingCategory.name}</h2>
+                      <p className="text-xs font-black text-paymint-green tracking-widest">{categoryProducts.length} Items</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
                     <button
                       onClick={() => navigate('/dashboard/products', { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
-                      className="flex items-center gap-2 px-6 py-3.5 bg-paymint-green text-black font-black text-xs rounded-xl hover:scale-[1.02] transition-all shadow-lg active:scale-95 tracking-widest"
+                      className="p-2 rounded-xl hover:bg-paymint-green/10 text-paymint-green hover:scale-105 transition-all"
+                      title="Add Product"
                     >
-                      <Plus size={18} strokeWidth={3} />
-                      <span>New Category</span>
+                      <Plus size={20} />
+                    </button>
+                    <button
+                      onClick={() => setViewingCategory(null)}
+                      className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                    >
+                      <X size={20} />
                     </button>
                   </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {categoryProducts.map((p) => (
-                      <div
-                        key={p.id}
-                        onClick={() => navigate('/dashboard/products', { state: { productId: p.id, categoryId: viewingCategory.id } })}
-                        className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group hover:border-paymint-green/30 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4"
-                      >
-                        <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 overflow-hidden shrink-0">
-                          {p.image ? (
-                            <img src={p.image} alt="" className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-300">
-                              <ImageIcon size={16} />
-                            </div>
-                          )}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
-                          <p className="text-xs font-black text-paymint-green mt-0.5">
-                            {new Intl.NumberFormat('en-JO', { style: 'currency', currency: 'JOD', minimumFractionDigits: 3 }).format(p.price)}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
+                </div>
 
-                    {/* Add New Product Card */}
-                    <button
-                      onClick={() => navigate('/dashboard/products', { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
-                      className="p-4 bg-gray-50 dark:bg-white/[0.02] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-xl group hover:border-paymint-green hover:bg-paymint-green/5 transition-all cursor-pointer active:scale-[0.98] flex items-center justify-center gap-3 h-full min-h-[80px]"
-                    >
-                      <div className="w-10 h-10 rounded-full bg-white dark:bg-white/5 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                        <Plus size={20} className="text-gray-400 group-hover:text-paymint-green" />
+                <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
+                  {categoryProducts.length === 0 ? (
+                    <div className="py-20 text-center flex flex-col items-center">
+                      <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 shadow-sm">
+                        <Package size={40} strokeWidth={1.5} className="text-gray-300" />
                       </div>
-                      <span className="text-sm font-bold text-gray-400 group-hover:text-paymint-green">
-                        Add New Item
-                      </span>
-                    </button>
-                  </div>
-                )}
-              </div>
+                      <p className="font-bold text-gray-900 dark:text-white tracking-tight text-lg mb-2">No items in this category</p>
+                      <p className="text-sm text-gray-500 font-medium max-w-xs mx-auto mb-8">Start building your menu by adding products to this category.</p>
+                      <button
+                        onClick={() => navigate('/dashboard/products', { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
+                        className="flex items-center gap-2 px-6 py-3.5 bg-paymint-green text-black font-black text-xs rounded-xl hover:scale-[1.02] transition-all shadow-lg active:scale-95 tracking-widest"
+                      >
+                        <Plus size={18} strokeWidth={3} />
+                        <span>New Category</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {categoryProducts.map((p) => (
+                        <div
+                          key={p.id}
+                          onClick={() => navigate('/dashboard/products', { state: { productId: p.id, categoryId: viewingCategory.id } })}
+                          className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group hover:border-paymint-green/30 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4"
+                        >
+                          <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 overflow-hidden shrink-0">
+                            {p.image ? (
+                              <img src={p.image} alt="" className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-gray-300">
+                                <ImageIcon size={16} />
+                              </div>
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
+                            <p className="text-xs font-black text-paymint-green mt-0.5">
+                              {new Intl.NumberFormat('en-JO', { style: 'currency', currency: 'JOD', minimumFractionDigits: 3 }).format(p.price)}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* Add New Product Card */}
+                      <button
+                        onClick={() => navigate('/dashboard/products', { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
+                        className="p-4 bg-gray-50 dark:bg-white/[0.02] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-xl group hover:border-paymint-green hover:bg-paymint-green/5 transition-all cursor-pointer active:scale-[0.98] flex items-center justify-center gap-3 h-full min-h-[80px]"
+                      >
+                        <div className="w-10 h-10 rounded-full bg-white dark:bg-white/5 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                          <Plus size={20} className="text-gray-400 group-hover:text-paymint-green" />
+                        </div>
+                        <span className="text-sm font-bold text-gray-400 group-hover:text-paymint-green">
+                          Add New Item
+                        </span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
       <CategoryFormModal
         isOpen={showModal}
@@ -424,83 +430,86 @@ export function CategoriesPage() {
       />
 
       {/* Delete Blocked Modal */}
-      <AnimatePresence>
-        {deleteBlockedCategory && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
-            onClick={() => setDeleteBlockedCategory(null)}
-          >
+      {createPortal(
+        <AnimatePresence>
+          {deleteBlockedCategory && (
             <motion.div
-              initial={{ scale: 0.95, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 20 }}
-              className="bg-white dark:bg-[#1E293B] w-full max-w-4xl rounded-2xl overflow-hidden flex flex-col max-h-[85vh] border border-gray-200 dark:border-white/10 shadow-2xl"
-              onClick={e => e.stopPropagation()}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className={`fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-all duration-300 ${sidebarOpen ? 'lg:pl-[300px]' : 'lg:pl-[100px]'}`}
+              onClick={() => setDeleteBlockedCategory(null)}
             >
-              <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center bg-red-500/10 text-red-500"
-                  >
-                    {(() => {
-                      const Icon = ICON_MAP[deleteBlockedCategory.icon || 'tag'] || Tag;
-                      return <Icon size={24} />;
-                    })()}
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{deleteBlockedCategory.name}</h2>
-                    <p className="text-xs font-black text-red-500 tracking-widest">{categoryProducts.length} Items</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setDeleteBlockedCategory(null)}
-                  className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-
-              <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
-                <div className="mb-6 p-4 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
-                  <p className="text-sm text-red-600 dark:text-red-400 font-medium flex items-center gap-2">
-                    <AlertTriangle size={16} />
-                    You cannot delete this category while it has items. Please remove the items first.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {categoryProducts.map((p) => (
+              <motion.div
+                initial={{ scale: 0.95, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.95, y: 20 }}
+                className="bg-white dark:bg-[#1E293B] w-full max-w-4xl rounded-2xl overflow-hidden flex flex-col max-h-[85vh] border border-gray-200 dark:border-white/10 shadow-2xl"
+                onClick={e => e.stopPropagation()}
+              >
+                <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
                     <div
-                      key={p.id}
-                      onClick={() => navigate('/dashboard/products', { state: { productId: p.id, categoryId: deleteBlockedCategory.id } })}
-                      className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group hover:border-paymint-green/30 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4"
+                      className="w-12 h-12 rounded-xl flex items-center justify-center bg-red-500/10 text-red-500"
                     >
-                      <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 overflow-hidden shrink-0">
-                        {p.image ? (
-                          <img src={p.image} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-300">
-                            <ImageIcon size={16} />
-                          </div>
-                        )}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
-                        <p className="text-xs font-black text-paymint-green mt-0.5">
-                          {new Intl.NumberFormat('en-JO', { style: 'currency', currency: 'JOD', minimumFractionDigits: 3 }).format(p.price)}
-                        </p>
-                      </div>
+                      {(() => {
+                        const Icon = ICON_MAP[deleteBlockedCategory.icon || 'tag'] || Tag;
+                        return <Icon size={24} />;
+                      })()}
                     </div>
-                  ))}
+                    <div>
+                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{deleteBlockedCategory.name}</h2>
+                      <p className="text-xs font-black text-red-500 tracking-widest">{categoryProducts.length} Items</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setDeleteBlockedCategory(null)}
+                    className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                  >
+                    <X size={20} />
+                  </button>
                 </div>
-              </div>
+
+                <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
+                  <div className="mb-6 p-4 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
+                    <p className="text-sm text-red-600 dark:text-red-400 font-medium flex items-center gap-2">
+                      <AlertTriangle size={16} />
+                      You cannot delete this category while it has items. Please remove the items first.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {categoryProducts.map((p) => (
+                      <div
+                        key={p.id}
+                        onClick={() => navigate('/dashboard/products', { state: { productId: p.id, categoryId: deleteBlockedCategory.id } })}
+                        className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group hover:border-paymint-green/30 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4"
+                      >
+                        <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 overflow-hidden shrink-0">
+                          {p.image ? (
+                            <img src={p.image} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-gray-300">
+                              <ImageIcon size={16} />
+                            </div>
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
+                          <p className="text-xs font-black text-paymint-green mt-0.5">
+                            {new Intl.NumberFormat('en-JO', { style: 'currency', currency: 'JOD', minimumFractionDigits: 3 }).format(p.price)}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 }

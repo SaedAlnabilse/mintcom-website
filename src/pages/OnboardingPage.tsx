@@ -37,7 +37,11 @@ import {
   Settings,
   PlayCircle,
   ExternalLink,
-  Sparkles
+  Sparkles,
+  HelpCircle,
+  Shield,
+  Scale,
+  Info
 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
@@ -125,7 +129,7 @@ export function OnboardingPage() {
     {
       targetId: 'tour-resources',
       title: 'Guides & Tutorials',
-      description: 'Download the User Manual for software help, Setup Manual for hardware/printers, or watch our 7-minute video tutorial to get started quickly.'
+      description: 'Find everything you need here: User & Setup Manuals, Video Tutorials, Q&A, Legal Policies, and more about us.'
     }
   ];
 
@@ -1336,6 +1340,74 @@ export function OnboardingPage() {
                       <div className="flex-1 min-w-0">
                         <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">Video Tutorial</h4>
                         <p className="text-xs text-gray-500 dark:text-gray-400 truncate">7-min quick start guide</p>
+                      </div>
+                      <ExternalLink size={16} className="text-gray-400 flex-shrink-0" />
+                    </a>
+
+                    {/* Q&A Center */}
+                    <a
+                      href="/qa"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group flex items-center gap-4"
+                    >
+                      <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <HelpCircle size={20} className="text-purple-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">Q&A Center</h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Common questions</p>
+                      </div>
+                      <ExternalLink size={16} className="text-gray-400 flex-shrink-0" />
+                    </a>
+
+                    {/* Privacy Policy */}
+                    <a
+                      href="/legal/privacy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group flex items-center gap-4"
+                    >
+                      <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <Shield size={20} className="text-emerald-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">Privacy Policy</h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Data protection</p>
+                      </div>
+                      <ExternalLink size={16} className="text-gray-400 flex-shrink-0" />
+                    </a>
+
+                    {/* Terms of Use */}
+                    <a
+                      href="/legal/terms"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group flex items-center gap-4"
+                    >
+                      <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <Scale size={20} className="text-blue-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">Terms of Use</h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">User agreement</p>
+                      </div>
+                      <ExternalLink size={16} className="text-gray-400 flex-shrink-0" />
+                    </a>
+
+                    {/* About Us */}
+                    <a
+                      href="/about"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group flex items-center gap-4"
+                    >
+                      <div className="w-10 h-10 bg-paymint-green/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <Info size={20} className="text-paymint-green" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">About Us</h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Our story</p>
                       </div>
                       <ExternalLink size={16} className="text-gray-400 flex-shrink-0" />
                     </a>

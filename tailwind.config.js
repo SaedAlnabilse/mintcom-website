@@ -65,10 +65,11 @@ export default {
         info: '#17a2b8',
       },
       fontFamily: {
-        sans: ['Barlow', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'Barlow', 'system-ui', 'sans-serif'],
         barlow: ['Barlow', 'system-ui', 'sans-serif'],
         paymint: ['Crimson Text', 'serif'],
         poppins: ['Poppins', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
       },
       fontSize: {
         // POS Typography System - Headings

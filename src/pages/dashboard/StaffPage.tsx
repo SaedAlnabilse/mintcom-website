@@ -9,14 +9,15 @@ import {
   Shield,
   Edit2,
   Trash2,
-  CheckCircle2,
   XCircle,
   MoreVertical,
   Download,
   Key,
   ChevronLeft,
   ChevronRight,
-  RefreshCw
+  RefreshCw,
+  UserCheck,
+  Star
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -262,13 +263,12 @@ export function StaffPage() {
         </div>
       </div>
 
-      {/* Quick Stats Summary */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
-          { label: 'Total Staff', value: staff.length, icon: Users, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
-          { label: 'Online', value: staff.filter(s => s.isClockedIn).length, icon: CheckCircle2, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-          { label: 'Admins', value: staff.filter(s => s.role === 'ADMIN').length, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-          { label: 'Staff', value: staff.filter(s => s.role !== 'ADMIN').length, icon: Users, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+          { label: 'Total Users', info: 'Total number of registered users.', value: staff.length, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+          { label: 'Active Now', info: 'Users currently clocked in.', value: staff.filter(s => s.isClockedIn).length, icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+          { label: 'Admins', info: 'Users with full system access.', value: staff.filter(s => s.role === 'ADMIN').length, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+          { label: 'Users', info: 'Standard users with restricted access.', value: staff.filter(s => s.role !== 'ADMIN').length, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
         ].map((stat, i) => (
           <motion.div
             key={i}
@@ -278,13 +278,16 @@ export function StaffPage() {
             className="group relative p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
           >
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
-            <div className="relative z-10 flex items-center gap-4">
-              <div className={`p-3 rounded-xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform duration-300`}>
-                <stat.icon size={20} />
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-3">
+                <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                  <stat.icon size={20} />
+                </div>
               </div>
               <div>
-                <p className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">{stat.value}</p>
+                <p className="text-base font-bold text-gray-500 dark:text-gray-400 mb-1">{stat.label}</p>
+                <p className="text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight leading-none mb-2">{stat.value}</p>
+                <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{stat.info}</p>
               </div>
             </div>
           </motion.div>

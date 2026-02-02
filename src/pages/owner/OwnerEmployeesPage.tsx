@@ -20,7 +20,6 @@ import {
     UserCheck,
     HelpCircle
 } from 'lucide-react';
-import { QuickInfo } from '../../components/QuickInfo';
 import api from '../../config/api';
 import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { useAuth } from '../../context/AuthContext';
@@ -316,10 +315,10 @@ export function OwnerEmployeesPage() {
             {/* Stats Grid */}
             <div id="tour-stats-grid" className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {[
-                    { label: 'Total Staff', info: 'Total number of registered employees across all locations.', value: stats.total, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: 'Active Now', info: 'Employees clocked in or active.', value: stats.active, icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+                    { label: 'Total Users', info: 'Total number of registered users across all locations.', value: stats.total, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                    { label: 'Active Now', info: 'Users clocked in or active.', value: stats.active, icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
                     { label: 'Admins', info: 'Users with full access to settings.', value: stats.admins, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-                    { label: 'Staff', info: 'Standard users with restricted access based on assigned roles.', value: stats.staff, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+                    { label: 'Users', info: 'Standard users with restricted access based on assigned roles.', value: stats.staff, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
                 ].map((stat, i) => (
                     <motion.div
                         key={i}
@@ -335,11 +334,11 @@ export function OwnerEmployeesPage() {
                                     <stat.icon size={20} />
                                 </div>
                             </div>
-                            <div className="flex items-center gap-1 mb-1">
-                                <p className="text-xs font-bold text-gray-400 tracking-wide">{stat.label}</p>
-                                <QuickInfo text={stat.info} />
+                            <div>
+                                <p className="text-base font-bold text-gray-500 dark:text-gray-400 mb-1">{stat.label}</p>
+                                <p className="text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight leading-none mb-2">{stat.value}</p>
+                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{stat.info}</p>
                             </div>
-                            <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                         </div>
                     </motion.div>
                 ))

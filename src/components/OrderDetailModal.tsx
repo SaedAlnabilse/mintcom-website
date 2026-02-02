@@ -86,7 +86,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-2xl max-h-[85vh] overflow-y-auto overflow-x-hidden shadow-2xl relative"
+                    className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-2xl max-h-[85vh] overflow-y-auto overflow-x-hidden shadow-2xl relative scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10 scrollbar-track-transparent hover:scrollbar-thumb-gray-300 dark:hover:scrollbar-thumb-white/20 custom-scrollbar-modal"
                 >
                     <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between relative isolate">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
@@ -166,7 +166,6 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                         {/* Order Items */}
                         <div>
                             <div className="flex items-center gap-2 mb-4">
-                                <div className="w-1 h-4 bg-paymint-green rounded-full" />
                                 <h3 className="text-sm font-black text-gray-900 dark:text-white tracking-widest">Items</h3>
                             </div>
                             <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/5 overflow-hidden shadow-inner">

@@ -15,7 +15,6 @@ import {
   Settings,
   Shield,
   History,
-  Store,
   LogOut,
   ChevronRight,
   PanelLeftClose,
@@ -31,6 +30,7 @@ import PaymintLogoGreen from '../assets/green-full-logo.png';
 import PaymintLogoWhite from '../assets/white-green-full-logo.png';
 import PaymintLeafIcon from '../assets/small-logo.png';
 import { ConfirmModal } from './ConfirmModal';
+import { getBusinessTypeIcon } from '../utils/businessTypeIcons';
 
 interface MenuItem {
   path: string;
@@ -269,6 +269,8 @@ export function DashboardLayout() {
     return items.some((item) => location.pathname === item.path);
   };
 
+  const CurrentEstIcon = getBusinessTypeIcon(currentEstablishment?.type || '');
+
   return (
     <div className="h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden transition-colors duration-500">
       {/* Mobile Menu Overlay */}
@@ -350,7 +352,7 @@ export function DashboardLayout() {
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-2.5">
                   <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center flex-shrink-0">
-                    <Store size={18} className="text-paymint-green" />
+                    <CurrentEstIcon size={18} className="text-paymint-green" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-bold text-paymint-green tracking-wide mb-0.5">Active Location</p>
@@ -378,7 +380,7 @@ export function DashboardLayout() {
               className="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-white/5 flex items-center justify-center hover:bg-paymint-green/10 hover:text-paymint-green transition-all"
               title={currentEstablishment?.name}
             >
-              <Store size={20} />
+              <CurrentEstIcon size={20} />
             </button>
           </div>
         )}
@@ -686,8 +688,8 @@ export function DashboardLayout() {
         {/* Content Landscape */}
         <main className="flex-1 relative bg-gray-50 dark:bg-[#050505] overflow-hidden">
           <div className="h-full overflow-y-auto relative z-10 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
-            <div className="p-4 md:p-6 lg:p-8 max-w-[1920px] mx-auto">
-              <Outlet />
+            <div className="p-4 md:p-6 lg:p-8 pb-24 max-w-[1920px] mx-auto">
+              <Outlet context={{ sidebarOpen }} />
             </div>
           </div>
         </main>

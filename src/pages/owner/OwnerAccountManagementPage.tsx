@@ -28,11 +28,14 @@ import {
     Settings,
     PlayCircle,
     ExternalLink,
+    HelpCircle,
+    Scale,
 } from 'lucide-react';
 import api from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
 import { PasswordResetOtpModal } from '../../components/PasswordResetOtpModal';
 import toast from 'react-hot-toast';
+import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 
 interface AccountDetails {
     id: string;
@@ -441,12 +444,7 @@ export function OwnerAccountManagementPage() {
                         </p>
                     </div>
                 </div>
-                <button
-                    onClick={fetchAccountData}
-                    className="p-3 rounded-xl bg-gray-100 dark:bg-white/[0.05] hover:bg-gray-200 dark:hover:bg-white/[0.1] text-gray-600 dark:text-gray-400 transition-all"
-                >
-                    <RefreshCw size={20} />
-                </button>
+
             </motion.div>
 
             {/* Quick Stats */}
@@ -702,66 +700,83 @@ export function OwnerAccountManagementPage() {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 gap-4">
-                                {establishments.map((est: any) => (
-                                    <div
-                                        key={est.id}
-                                        className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-5 shadow-sm hover:shadow-lg hover:border-blue-500/30 transition-all duration-300 overflow-hidden"
-                                    >
-                                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                                        <div className="relative z-10 space-y-5">
-                                            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                                                <div className="flex items-start gap-4">
-                                                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500/10 to-indigo-500/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shrink-0">
-                                                        <Store className="w-6 h-6 text-blue-500" />
-                                                    </div>
-                                                    <div>
-                                                        <div className="flex items-center flex-wrap gap-2">
-                                                            <h3 className="text-base font-bold text-gray-900 dark:text-white">{est.name}</h3>
-                                                            {getStatusBadge(est.subscriptionStatus)}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {establishments.map((est: any) => {
+                                    const Icon = getBusinessTypeIcon(est.type);
+                                    return (
+                                        <div
+                                            key={est.id}
+                                            className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-5 shadow-sm hover:shadow-lg hover:border-blue-500/30 transition-all duration-300 overflow-hidden flex flex-col justify-between h-full"
+                                        >
+                                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                                            <div className="relative z-10 flex flex-col h-full">
+                                                {/* Header Section */}
+                                                <div className="flex items-start justify-between gap-3 mb-4">
+                                                    <div className="flex items-start gap-3">
+                                                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/10 to-indigo-500/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300">
+                                                            <Icon className="w-5 h-5 text-blue-500" />
                                                         </div>
-                                                        <div className="flex items-center gap-2 mt-1.5 text-xs font-medium text-gray-500 dark:text-gray-400">
-                                                            <span className="capitalize px-2 py-0.5 rounded-md bg-gray-100 dark:bg-white/[0.05] border border-gray-200 dark:border-white/[0.05]">
-                                                                {est.type?.toLowerCase()}
-                                                            </span>
-                                                            <span>•</span>
-                                                            <span>{est.currency}</span>
+                                                        <div className="min-w-0">
+                                                            <h3 className="text-sm font-bold text-gray-900 dark:text-white truncate pr-1" title={est.name}>
+                                                                {est.name}
+                                                            </h3>
+                                                            <div className="flex flex-wrap gap-1.5 mt-1">
+                                                                {getStatusBadge(est.subscriptionStatus)}
+                                                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-gray-100 dark:bg-white/[0.05] border border-gray-200 dark:border-white/[0.05] text-[10px] uppercase font-bold text-gray-500 dark:text-gray-400">
+                                                                    {est.currency}
+                                                                </span>
+                                                            </div>
                                                         </div>
-                                                        <p className="text-xs text-gray-400 mt-1">
-                                                            Created {formatDate(est.createdAt || new Date().toISOString())}
-                                                        </p>
                                                     </div>
+
+                                                    <button
+                                                        onClick={() => window.open(`/dashboard`, '_blank')}
+                                                        className="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-all ml-auto shrink-0"
+                                                        title="View Dashboard"
+                                                    >
+                                                        <ExternalLink size={16} />
+                                                    </button>
                                                 </div>
 
-                                                <button
-                                                    onClick={() => openPasswordModal('establishment', est.id, est.name)}
-                                                    className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-white/[0.05] border border-gray-200 dark:border-white/[0.1] hover:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-900/10 text-gray-600 dark:text-gray-300 hover:text-red-500 rounded-xl text-xs font-bold transition-all shadow-sm shrink-0 self-start sm:self-center"
-                                                >
-                                                    <Lock size={14} />
-                                                    Reset Password
-                                                </button>
-                                            </div>
+                                                {/* Login ID Section */}
+                                                <div className="mt-auto">
+                                                    <div className="p-3 bg-gray-50 dark:bg-[#0F172A] rounded-xl border border-gray-100 dark:border-white/[0.05] group-hover:border-blue-500/20 transition-colors">
+                                                        <div className="flex items-center justify-between gap-2 mb-1">
+                                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
+                                                                <Key size={10} />
+                                                                Login ID
+                                                            </label>
+                                                            <button
+                                                                onClick={() => copyToClipboard(est.establishmentLoginId, `est-login-${est.id}`)}
+                                                                className="text-xs font-bold text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1"
+                                                            >
+                                                                {copiedId === `est-login-${est.id}` ? (
+                                                                    <span className="flex items-center gap-1 text-emerald-500"><CheckCircle2 size={10} /> Copied</span>
+                                                                ) : (
+                                                                    <span className="flex items-center gap-1"><Copy size={10} /> Copy</span>
+                                                                )}
+                                                            </button>
+                                                        </div>
+                                                        <code className="block text-xs font-mono font-bold text-gray-900 dark:text-white truncate select-all">
+                                                            {est.establishmentLoginId}
+                                                        </code>
+                                                    </div>
 
-                                            <div className="mt-5 p-4 bg-white dark:bg-[#020617] rounded-xl border border-gray-200 dark:border-white/[0.05] group-hover:border-paymint-green/20 transition-colors">
-                                                <label className="text-xs font-bold text-gray-400 tracking-widest mb-2 flex items-center gap-1.5">
-                                                    <Key size={10} />
-                                                    Login ID
-                                                </label>
-                                                <div className="flex items-center justify-between gap-3">
-                                                    <code className="text-sm font-mono font-bold text-gray-900 dark:text-white tracking-wide truncate">
-                                                        {est.establishmentLoginId}
-                                                    </code>
-                                                    <button
-                                                        onClick={() => copyToClipboard(est.establishmentLoginId, `est-login-${est.id}`)}
-                                                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/[0.1] text-gray-400 hover:text-paymint-green transition-colors"
-                                                    >
-                                                        {copiedId === `est-login-${est.id}` ? <CheckCircle2 size={18} className="text-paymint-green" /> : <Copy size={18} />}
-                                                    </button>
+                                                    <div className="mt-3 flex justify-end">
+                                                        <button
+                                                            onClick={() => openPasswordModal('establishment', est.id, est.name)}
+                                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all ml-auto"
+                                                        >
+                                                            <Lock size={12} />
+                                                            Reset Password
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    )
+                                })}
                             </div>
                         </motion.div>
                     )}
@@ -936,6 +951,74 @@ export function OwnerAccountManagementPage() {
                                         <p className="text-xs text-gray-500 dark:text-gray-400">7-min quick start guide</p>
                                     </div>
                                     <ExternalLink size={16} className="text-gray-400 group-hover/item:text-red-500 transition-colors" />
+                                </a>
+
+                                {/* Q&A */}
+                                <a
+                                    href="/qa"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 hover:bg-gray-100 dark:hover:bg-white/[0.05] border border-gray-100 dark:border-white/[0.05] transition-all group/item"
+                                >
+                                    <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
+                                        <HelpCircle size={20} className="text-purple-500 group-hover/item:scale-110 transition-transform" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white">Q&A Center</h4>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">Common questions</p>
+                                    </div>
+                                    <ExternalLink size={16} className="text-gray-400 group-hover/item:text-purple-500 transition-colors" />
+                                </a>
+
+                                {/* Privacy Policy */}
+                                <a
+                                    href="/legal/privacy"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 hover:bg-gray-100 dark:hover:bg-white/[0.05] border border-gray-100 dark:border-white/[0.05] transition-all group/item"
+                                >
+                                    <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
+                                        <Shield size={20} className="text-emerald-500 group-hover/item:scale-110 transition-transform" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white">Privacy Policy</h4>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">Data protection rules</p>
+                                    </div>
+                                    <ExternalLink size={16} className="text-gray-400 group-hover/item:text-emerald-500 transition-colors" />
+                                </a>
+
+                                {/* Terms of Use */}
+                                <a
+                                    href="/legal/terms"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 hover:bg-gray-100 dark:hover:bg-white/[0.05] border border-gray-100 dark:border-white/[0.05] transition-all group/item"
+                                >
+                                    <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
+                                        <Scale size={20} className="text-blue-500 group-hover/item:scale-110 transition-transform" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white">Terms of Use</h4>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">User agreement & terms</p>
+                                    </div>
+                                    <ExternalLink size={16} className="text-gray-400 group-hover/item:text-blue-500 transition-colors" />
+                                </a>
+
+                                {/* About Us */}
+                                <a
+                                    href="/about"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 hover:bg-gray-100 dark:hover:bg-white/[0.05] border border-gray-100 dark:border-white/[0.05] transition-all group/item"
+                                >
+                                    <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
+                                        <Info size={20} className="text-paymint-green group-hover/item:scale-110 transition-transform" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white">About Us</h4>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">Our story & mission</p>
+                                    </div>
+                                    <ExternalLink size={16} className="text-gray-400 group-hover/item:text-paymint-green transition-colors" />
                                 </a>
                             </div>
                         </div>
@@ -1249,16 +1332,19 @@ export function OwnerAccountManagementPage() {
                                         <p className="text-xs font-bold text-gray-400 tracking-widest">Active Locations</p>
                                     </div>
                                     <div className="max-h-40 overflow-y-auto p-2 space-y-1">
-                                        {activeBlockingEsts.map((est) => (
-                                            <div key={est.id} className="flex items-center gap-3 p-2 rounded-xl hover:bg-white dark:hover:bg-white/[0.05] transition-colors">
-                                                <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
-                                                    <Store className="w-4 h-4 text-blue-500" />
+                                        {activeBlockingEsts.map((est) => {
+                                            const Icon = getBusinessTypeIcon(est.type);
+                                            return (
+                                                <div key={est.id} className="flex items-center gap-3 p-2 rounded-xl hover:bg-white dark:hover:bg-white/[0.05] transition-colors">
+                                                    <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
+                                                        <Icon className="w-4 h-4 text-blue-500" />
+                                                    </div>
+                                                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">
+                                                        {est.name}
+                                                    </span>
                                                 </div>
-                                                <span className="text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">
-                                                    {est.name}
-                                                </span>
-                                            </div>
-                                        ))}
+                                            )
+                                        })}
                                     </div>
                                 </div>
 

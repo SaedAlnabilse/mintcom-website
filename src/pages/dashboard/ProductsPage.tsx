@@ -12,6 +12,7 @@ import {
     Trash2,
     Edit2,
     Package,
+    Infinity,
 
     ArrowUpDown,
     AlertCircle,
@@ -63,6 +64,7 @@ export function ProductsPage() {
     const categoryDropdownRef = useRef<HTMLDivElement>(null);
     const [sortConfig, setSortConfig] = useState<{ key: keyof Product | 'category'; direction: 'asc' | 'desc' } | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [stockFilter, setStockFilter] = useState<'all' | 'yellow' | 'red' | 'out'>('all');
     const ITEMS_PER_PAGE = 10;
 
     // Click outside handler for category dropdown
@@ -105,7 +107,7 @@ export function ProductsPage() {
     // Reset pagination when filters change
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchQuery, selectedCategoryId, sortConfig]);
+    }, [searchQuery, selectedCategoryId, sortConfig, stockFilter]);
 
     // Handle navigation state opening modal automatically
     useEffect(() => {
@@ -255,6 +257,27 @@ export function ProductsPage() {
             );
         }
 
+        // Filter by Stock Status
+        if (stockFilter !== 'all') {
+            result = result.filter(p => {
+                if (!p.trackStock) return false;
+                const stock = p.availableStock || 0;
+                const yellowLimit = p.lowStockThresholdYellow || 5;
+                const redLimit = p.lowStockThresholdRed || 2;
+
+                switch (stockFilter) {
+                    case 'out':
+                        return stock <= 0;
+                    case 'red':
+                        return stock > 0 && stock <= redLimit;
+                    case 'yellow':
+                        return stock > redLimit && stock <= yellowLimit;
+                    default:
+                        return true;
+                }
+            });
+        }
+
         // Sorting
         if (sortConfig) {
             result.sort((a, b) => {
@@ -286,7 +309,7 @@ export function ProductsPage() {
         }
 
         return result;
-    }, [products, selectedCategoryId, searchQuery, sortConfig, categories]);
+    }, [products, selectedCategoryId, searchQuery, sortConfig, stockFilter, categories]);
 
     const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
     const paginatedProducts = useMemo(() => {
@@ -296,18 +319,42 @@ export function ProductsPage() {
         );
     }, [filteredProducts, currentPage]);
 
-    // Statistics
-    const stats = useMemo(() => ({
-        total: filteredProducts.length,
-        lowStock: filteredProducts.filter(p => p.trackStock && (p.availableStock || 0) <= (p.lowStockThresholdYellow || 5)).length,
-        totalValue: filteredProducts.reduce((acc, curr) => acc + (curr.price * (curr.availableStock || 0)), 0),
-        categories: categories.length
-    }), [filteredProducts, categories]);
+    // Statistics - calculated from all products (not filtered) so counts remain accurate
+    const stats = useMemo(() => {
+        const trackingProducts = products.filter(p => p.trackStock);
+
+        // Out of stock: stock is 0 or negative
+        const outOfStock = trackingProducts.filter(p => (p.availableStock || 0) <= 0).length;
+
+        // Red threshold: stock > 0 and stock <= red threshold
+        const redThreshold = trackingProducts.filter(p => {
+            const stock = p.availableStock || 0;
+            const redLimit = p.lowStockThresholdRed || 2;
+            return stock > 0 && stock <= redLimit;
+        }).length;
+
+        // Yellow threshold: stock > red threshold and stock <= yellow threshold
+        const yellowThreshold = trackingProducts.filter(p => {
+            const stock = p.availableStock || 0;
+            const yellowLimit = p.lowStockThresholdYellow || 5;
+            const redLimit = p.lowStockThresholdRed || 2;
+            return stock > redLimit && stock <= yellowLimit;
+        }).length;
+
+        return {
+            total: products.length,
+            yellowThreshold,
+            redThreshold,
+            outOfStock,
+            totalValue: products.reduce((acc, curr) => acc + (curr.price * (curr.availableStock || 0)), 0),
+            categories: categories.length
+        };
+    }, [products, categories]);
 
     if (isLoading) return <LoadingFallback message="Loading Inventory..." />;
 
     return (
-        <div className="max-w-7xl mx-auto space-y-8 pb-10">
+        <div className="max-w-7xl mx-auto space-y-8 pb-10 font-inter">
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
@@ -453,40 +500,94 @@ export function ProductsPage() {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div className="bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 rounded-lg bg-blue-500/10 text-blue-500"><Package size={18} /></div>
-                        <span className="text-xs font-black text-gray-400 tracking-widest flex items-center gap-2">
-                            Total
-                            <QuickInfo text="Total count of unique products." />
-                        </span>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {/* Total Products */}
+                <button
+                    onClick={() => setStockFilter('all')}
+                    className={`text-left bg-white dark:bg-[#1E293B] p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'all'
+                            ? 'border-blue-500/50 ring-2 ring-blue-500/10 bg-blue-50/10'
+                            : 'border-gray-100 dark:border-white/5 hover:border-blue-300'
+                        }`}
+                >
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-500">
+                            <Package size={20} />
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                            <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Total</span>
+                            <QuickInfo text="Total count of unique products. Click to show all." />
+                        </div>
                     </div>
-                    <p className="text-2xl font-black text-gray-900 dark:text-white">{stats.total}</p>
-                </div>
-                <div className="bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 rounded-lg bg-yellow-500/10 text-yellow-500"><AlertCircle size={18} /></div>
-                        <span className="text-xs font-black text-gray-400 tracking-widest flex items-center gap-2">
-                            Low Stock
-                            <QuickInfo text="Items running low on stock." />
-                        </span>
-                    </div>
-                    <p className="text-2xl font-black text-gray-900 dark:text-white">{stats.lowStock}</p>
-                </div>
-
-                <div className="bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 rounded-lg bg-paymint-green/10 text-paymint-green"><ArrowUpDown size={18} /></div>
-                        <span className="text-xs font-black text-gray-400 tracking-widest flex items-center gap-2">
-                            Value
-                            <QuickInfo text="Total value of your current inventory." />
-                        </span>
-                    </div>
-                    <p className="text-xl font-black text-gray-900 dark:text-white truncate">
-                        {new Intl.NumberFormat('en-JO', { style: 'currency', currency: 'JOD', minimumFractionDigits: 3 }).format(stats.totalValue)}
+                    <p className={`text-3xl font-black ${stockFilter === 'all' ? 'text-blue-500' : 'text-gray-900 dark:text-white'}`}>
+                        {stats.total}
                     </p>
-                </div>
+                </button>
+
+                {/* Low Stock (Yellow) */}
+                <button
+                    onClick={() => setStockFilter(stockFilter === 'yellow' ? 'all' : 'yellow')}
+                    className={`text-left bg-white dark:bg-[#1E293B] p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'yellow'
+                            ? 'border-[#ffc107]/50 ring-2 ring-[#ffc107]/10 bg-[#ffc107]/5'
+                            : 'border-gray-100 dark:border-white/5 hover:border-[#ffc107]/30'
+                        }`}
+                >
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2.5 rounded-xl bg-[#ffc107]/10 text-[#ffc107]">
+                            <AlertCircle size={20} />
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                            <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Low Stock</span>
+                            <QuickInfo text="Products with stock at yellow warning level. Click to filter." />
+                        </div>
+                    </div>
+                    <p className="text-3xl font-black text-[#ffc107]">
+                        {stats.yellowThreshold}
+                    </p>
+                </button>
+
+                {/* Critical (Red) */}
+                <button
+                    onClick={() => setStockFilter(stockFilter === 'red' ? 'all' : 'red')}
+                    className={`text-left bg-white dark:bg-[#1E293B] p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'red'
+                            ? 'border-[#D55263]/50 ring-2 ring-[#D55263]/10 bg-[#D55263]/5'
+                            : 'border-gray-100 dark:border-white/5 hover:border-[#D55263]/30'
+                        }`}
+                >
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2.5 rounded-xl bg-[#D55263]/10 text-[#D55263]">
+                            <AlertCircle size={20} />
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                            <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Critical</span>
+                            <QuickInfo text="Products with stock at critical red level. Click to filter." />
+                        </div>
+                    </div>
+                    <p className="text-3xl font-black text-[#D55263]">
+                        {stats.redThreshold}
+                    </p>
+                </button>
+
+                {/* Out of Stock (Gray) */}
+                <button
+                    onClick={() => setStockFilter(stockFilter === 'out' ? 'all' : 'out')}
+                    className={`text-left bg-white dark:bg-[#1E293B] p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'out'
+                            ? 'border-slate-500/50 ring-2 ring-slate-500/10 bg-slate-50/10'
+                            : 'border-gray-100 dark:border-white/5 hover:border-slate-400'
+                        }`}
+                >
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2.5 rounded-xl bg-slate-500/10 text-slate-500">
+                            <Package size={20} />
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                            <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Out of Stock</span>
+                            <QuickInfo text="Products with zero or negative stock. Click to filter." />
+                        </div>
+                    </div>
+                    <p className="text-3xl font-black text-slate-500">
+                        {stats.outOfStock}
+                    </p>
+                </button>
             </div>
 
 
@@ -550,15 +651,20 @@ export function ProductsPage() {
                                                         {new Intl.NumberFormat('en-JO', { style: 'currency', currency: 'JOD', minimumFractionDigits: 3 }).format(p.price)}
                                                     </p>
                                                 </div>
-                                                {p.trackStock && (
-                                                    <div className="text-right">
-                                                        <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">Stock</p>
+                                                <div className="text-right">
+                                                    <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">Stock</p>
+                                                    {p.trackStock ? (
                                                         <div className={`text-xs font-bold flex items-center justify-end gap-1 ${(p.availableStock || 0) <= (p.lowStockThresholdYellow || 0) ? 'text-amber-500' : 'text-gray-900 dark:text-white'}`}>
                                                             {(p.availableStock || 0) <= (p.lowStockThresholdYellow || 0) && <AlertCircle size={10} />}
                                                             {p.availableStock}
                                                         </div>
-                                                    </div>
-                                                )}
+                                                    ) : (
+                                                        <div className="text-xs font-bold text-gray-400 dark:text-gray-500 flex items-center justify-end gap-1">
+                                                            <Infinity size={12} strokeWidth={3} />
+                                                            <span>Unlimited</span>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     </motion.div>
@@ -637,7 +743,10 @@ export function ProductsPage() {
                                                             {p.availableStock} Units
                                                         </span>
                                                     ) : (
-                                                        <span className="text-xs text-gray-400 italic">Unlimited</span>
+                                                        <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200/50 dark:border-white/5">
+                                                            <Infinity size={14} className="text-gray-400" strokeWidth={2.5} />
+                                                            <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Unlimited</span>
+                                                        </div>
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4 text-right">

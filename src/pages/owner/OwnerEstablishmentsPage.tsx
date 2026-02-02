@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { CustomSelect } from '../../components/CustomSelect';
+import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 
 const STATUS_OPTIONS = [
     { label: 'All Statuses', value: 'all' },
@@ -271,9 +272,11 @@ export function OwnerEstablishmentsPage() {
                 /* Grid View */
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     <AnimatePresence mode="popLayout">
-                        {filteredEstablishments.map((est, index) => (
-                            <motion.div
-                                key={est.id}
+                        {filteredEstablishments.map((est, index) => {
+                            const Icon = getBusinessTypeIcon(est.type);
+                            return (
+                                <motion.div
+                                    key={est.id}
                                 id={`establishment-${est.id}`}
                                 layout
                                 initial={{ opacity: 0, y: 20 }}
@@ -299,12 +302,11 @@ export function OwnerEstablishmentsPage() {
                                 <div className="relative z-10">
                                     {/* Header */}
                                     <div className="flex items-start justify-between mb-6">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform duration-300">
-                                                <Store size={28} />
-                                            </div>
-                                            <div>
-                                                <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors truncate max-w-[180px]">
+                                                                                    <div className="flex items-center gap-4">
+                                                                                        <div className="w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform duration-300">
+                                                                                            <Icon size={28} />
+                                                                                        </div>
+                                                                                        <div>                                                <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors truncate max-w-[180px]">
                                                     {est.name}
                                                 </h3>
                                                 <div className="flex items-center gap-2 mt-1">
@@ -397,9 +399,10 @@ export function OwnerEstablishmentsPage() {
                                         <span>Open</span>
                                         <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
                                     </button>
-                                </div>
-                            </motion.div>
-                        ))}
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
                     </AnimatePresence>
                 </div>
             ) : (
@@ -417,9 +420,11 @@ export function OwnerEstablishmentsPage() {
                     {/* Table Body */}
                     <div className="divide-y divide-gray-100 dark:divide-white/5">
                         <AnimatePresence mode="popLayout">
-                            {filteredEstablishments.map((est, index) => (
-                                <motion.div
-                                    key={est.id}
+                            {filteredEstablishments.map((est, index) => {
+                                const Icon = getBusinessTypeIcon(est.type);
+                                return (
+                                    <motion.div
+                                        key={est.id}
                                     id={`establishment-${est.id}`}
                                     layout
                                     initial={{ opacity: 0, y: 10 }}
@@ -435,7 +440,7 @@ export function OwnerEstablishmentsPage() {
                                     {/* Info */}
                                     <div className="col-span-4 flex items-center gap-4">
                                         <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green transition-colors">
-                                            <Store size={20} />
+                                            <Icon size={20} />
                                         </div>
                                         <div>
                                             <h3 className="font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
@@ -486,7 +491,8 @@ export function OwnerEstablishmentsPage() {
                                         </button>
                                     </div>
                                 </motion.div>
-                            ))}
+                            );
+                        })}
                         </AnimatePresence>
                     </div>
                 </div>

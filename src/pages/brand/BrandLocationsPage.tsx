@@ -22,6 +22,7 @@ import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { CustomSelect } from '../../components/CustomSelect';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
+import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 
 interface LocationStats {
     id: string;
@@ -446,9 +447,11 @@ export function BrandLocationsPage() {
                 /* Grid View */
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     <AnimatePresence mode="popLayout">
-                        {filteredLocations.map((loc, index) => (
-                            <motion.div
-                                key={loc.id}
+                        {filteredLocations.map((loc, index) => {
+                            const Icon = getBusinessTypeIcon(loc.type);
+                            return (
+                                <motion.div
+                                    key={loc.id}
                                 layout
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -463,7 +466,7 @@ export function BrandLocationsPage() {
                                 <div className="flex items-start justify-between mb-6 relative z-10">
                                     <div className="flex items-center gap-4">
                                         <div className="w-14 h-14 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 flex items-center justify-center text-gray-500 group-hover:text-paymint-green group-hover:border-paymint-green/30 transition-all">
-                                            <Store size={28} />
+                                            <Icon size={28} />
                                         </div>
                                         <div>
                                             <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
@@ -564,7 +567,8 @@ export function BrandLocationsPage() {
                                     <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
                                 </button>
                             </motion.div>
-                        ))}
+                        );
+                    })}
                     </AnimatePresence>
                 </div>
             ) : (
@@ -583,9 +587,11 @@ export function BrandLocationsPage() {
                     {/* Table Body */}
                     <div className="divide-y divide-gray-100 dark:divide-white/5">
                         <AnimatePresence mode="popLayout">
-                            {filteredLocations.map((loc, index) => (
-                                <motion.div
-                                    key={loc.id}
+                            {filteredLocations.map((loc, index) => {
+                                const Icon = getBusinessTypeIcon(loc.type);
+                                return (
+                                    <motion.div
+                                        key={loc.id}
                                     layout
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
@@ -597,7 +603,7 @@ export function BrandLocationsPage() {
                                     {/* Location Info */}
                                     <div className="col-span-4 flex items-center gap-4">
                                         <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green transition-colors">
-                                            <Store size={24} />
+                                            <Icon size={24} />
                                         </div>
                                         <div>
                                             <h3 className="font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
@@ -683,7 +689,8 @@ export function BrandLocationsPage() {
                                         </AnimatePresence>
                                     </div>
                                 </motion.div>
-                            ))}
+                            );
+                        })}
                         </AnimatePresence>
                     </div>
                 </div>

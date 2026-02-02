@@ -1,127 +1,177 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Bot, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { DualLauncher } from './Chat/DualLauncher';
+import { FAQModal } from './Chat/FAQModal';
 
 export const ChatWidgetEnhancer = () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [showBubble, setShowBubble] = useState(true);
-    const [isWidgetLoaded, setIsWidgetLoaded] = useState(false);
-    const location = useLocation();
-
-    // Reset bubble on route change
-    useEffect(() => {
-        if (!isOpen) {
-            setShowBubble(true);
-        }
-    }, [location.pathname, isOpen]);
+    const [isChatOpen, setIsChatOpen] = useState(false);
+    const [isFAQOpen, setIsFAQOpen] = useState(false);
 
     useEffect(() => {
-        // 1. Check if widget is loaded and handle entrance animation
-        const checkWidget = () => {
-            const iframe = document.querySelector('iframe[src*="sa3d100-paymint-test.hf.space"]') as HTMLIFrameElement;
-            if (iframe) {
-                // Handle manual fade-in to avoid CSS animation resets
-                if (!iframe.dataset.hasFadedIn) {
-                    iframe.style.opacity = '0';
-                    iframe.style.transition = 'opacity 0.5s ease';
-
-                    // Force reflow
-                    void iframe.offsetWidth;
-
-                    iframe.style.opacity = '1';
-                    iframe.dataset.hasFadedIn = 'true';
-                }
-                setIsWidgetLoaded(true);
-            } else {
-                setIsWidgetLoaded(false);
-            }
-        };
-
-        // Initial check
-        checkWidget();
-
-        // Poll for it briefly - keep polling to detect if it disappears
-        const interval = setInterval(checkWidget, 500);
-
-        // 2. Move the iframe using CSS injection to override inline styles
-        // We removed the CSS animation to prevent the widget from disappearing (resetting to opacity 0)
-        // when its style/dimensions change upon opening.
-        const style = document.createElement('style');
-        style.innerHTML = `
-            iframe[src*="sa3d100-paymint-test.hf.space"] {
-                right: 30px !important;
-                bottom: 30px !important;
-            }
-        `;
-        document.head.appendChild(style);
-
-        // 3. Listen for open/close events from the widget to toggle bubble visibility
+        // 1. Listen for messages from the HF widget
         const handleMessage = (event: MessageEvent) => {
-            if (event.data.type === 'chat-open') {
-                setIsOpen(true);
-                setShowBubble(false);
-            } else if (event.data.type === 'chat-closed') {
-                setIsOpen(false);
+            if (event.origin.includes('hf.space')) {
+                if (event.data.type === 'chat-open' || event.data.event === 'open') {
+                    setIsChatOpen(true);
+                    setIsFAQOpen(false);
+                } else if (event.data.type === 'chat-closed' || event.data.event === 'close') {
+                    setIsChatOpen(false);
+                }
             }
         };
 
         window.addEventListener('message', handleMessage);
+
+        // 2. Inject Styles for the "Transparent Overlay" strategy
+        const style = document.createElement('style');
+        style.innerHTML = `
+            /* 
+               TARGET: The Widget Launcher (Closed State - Collapsed Orb)
+               Aligned with the Sparkles Orb at Bottom Right.
+               IMPORTANT: pointer-events: none so the underlying React button receives the click to EXPAND the menu.
+            */
+            iframe[src*="hf.space"]:not([style*="height: 600px"]),
+            iframe[src*="hf.space"][style*="height: 0"], 
+            #gradio-chat-launcher,
+            .gradio-chat-launcher {
+                position: fixed !important;
+                bottom: 24px !important;
+                right: 24px !important;
+                width: 50px !important;
+                height: 50px !important;
+                opacity: 0.001 !important;
+                z-index: 9999999 !important;
+                pointer-events: none !important; /* Let React handle the expand click */
+                border: none !important;
+                transform: none !important;
+                border-radius: 9999px !important;
+                display: block !important;
+                transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            }
+
+            /* 
+               TARGET: The Widget Launcher (Expanded State)
+               When the menu is expanded, the "Ask AI" button shifts to the left.
+               We move the invisible overlay to match it and ENABLE clicks so it opens the chat.
+               
+               MEGA OVERLAY STRATEGY:
+               We make it huge (300px wide) and anchor it to the left of the 'Help' button (approx 105px).
+               This ensures it covers the 'Ask AI' button regardless of minor layout shifts.
+            */
+            body.launcher-expanded iframe[src*="hf.space"]:not([style*="height: 600px"]) {
+                right: 105px !important; /* Starts to the left of the divider */
+                width: 300px !important; /* Extends far left */
+                height: 120px !important; /* Covers top/bottom well */
+                bottom: 0px !important; /* Anchored to bottom edge */
+                pointer-events: auto !important;
+            }
+
+            /* 
+               TARGET: The Widget Window (Open State)
+               Pops up from the bottom right.
+            */
+            body.chat-open iframe[src*="hf.space"] {
+                position: fixed !important;
+                bottom: 100px !important;
+                right: 24px !important;
+                width: 400px !important;
+                max-width: 90vw !important;
+                height: 600px !important;
+                max-height: 80vh !important;
+                opacity: 1 !important;
+                z-index: 999999 !important;
+                border-radius: 24px !important;
+                box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.25) !important;
+                background: white !important;
+                pointer-events: auto !important;
+                display: block !important;
+            }
+
+            /* Hide the separate launcher button if it exists when chat is open */
+            body.chat-open #gradio-chat-launcher,
+            body.chat-open .gradio-chat-launcher {
+                display: none !important;
+                pointer-events: none !important;
+            }
+
+            /* 
+               TARGET: FAQ Mode
+               When FAQ is open, hide the widget completely to prevent interference.
+            */
+            body.faq-open iframe[src*="hf.space"],
+            body.faq-open #gradio-chat-launcher {
+                display: none !important;
+                pointer-events: none !important;
+            }
+        `;
+        document.head.appendChild(style);
+
         return () => {
-            clearInterval(interval);
-            document.head.removeChild(style);
             window.removeEventListener('message', handleMessage);
+            document.head.removeChild(style);
+            document.body.classList.remove('chat-open', 'faq-open');
         };
     }, []);
 
-    const closeBubble = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        setShowBubble(false);
+    // Sync body classes
+    useEffect(() => {
+        document.body.classList.toggle('chat-open', isChatOpen);
+        document.body.classList.toggle('faq-open', isFAQOpen);
+    }, [isChatOpen, isFAQOpen]);
+
+    const handleOpenChat = () => {
+        setIsChatOpen(true);
+        
+        // Try multiple selectors for the native launcher
+        const selectors = [
+            '#gradio-chat-launcher',
+            '.gradio-chat-launcher',
+            'button[aria-label="Open Chat"]',
+            'button[aria-label="Open chat"]',
+            '#hf-chat-launcher'
+        ];
+
+        for (const selector of selectors) {
+            const element = document.querySelector(selector);
+            if (element instanceof HTMLElement) {
+                element.click();
+                return; // Found and clicked
+            }
+        }
+        
+        // If not found in main DOM, checking if we can postMessage to iframe
+        const iframe = document.querySelector('iframe[src*="hf.space"]') as HTMLIFrameElement;
+        if (iframe?.contentWindow) {
+            iframe.contentWindow.postMessage({ type: 'open-chat' }, '*');
+        }
+    };
+
+    const handleOpenFAQ = () => {
+        setIsFAQOpen(true);
+        setIsChatOpen(false);
+    };
+
+    const handleCloseAll = () => {
+        setIsChatOpen(false);
+        setIsFAQOpen(false);
+        const iframe = document.querySelector('iframe[src*="hf.space"]') as HTMLIFrameElement;
+        if (iframe?.contentWindow) {
+            iframe.contentWindow.postMessage({ type: 'close-chat' }, '*');
+        }
     };
 
     return (
-        <AnimatePresence mode='wait'>
-            {isWidgetLoaded && !isOpen && showBubble && (
-                <motion.div
-                    key={location.pathname}
-                    initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, transition: { duration: 0 } }}
-                    transition={{ duration: 0.5, delay: 1.5 }}
-                    className="fixed bottom-[130px] right-[40px] z-[999998] max-w-[280px]"
-                >
-                    <div className="bg-white dark:bg-[#1E293B] p-4 rounded-t-2xl rounded-bl-2xl rounded-br-sm shadow-xl border border-gray-100 dark:border-white/10 relative group cursor-pointer" onClick={() => {
-                        // Attempt to open chat by clicking bubble? 
-                        // We can't easily click into the iframe, but we can catch the user's attention.
-                        // Ideally we would send a postMessage to open it, but the widget.js might not listen for it.
-                    }}>
-                        {/* Close button */}
-                        <button
-                            onClick={closeBubble}
-                            className="absolute -top-2 -left-2 bg-gray-100 dark:bg-white/10 p-1 rounded-full text-gray-400 hover:text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/20 transition-all opacity-0 group-hover:opacity-100"
-                        >
-                            <X size={12} />
-                        </button>
-
-                        <div className="flex gap-4 items-start">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-paymint-green/20">
-                                <Bot className="text-white" size={20} />
-                            </div>
-                            <div>
-                                <h4 className="text-sm font-black text-gray-900 dark:text-white mb-1">
-                                    Hi! I'm here to help...
-                                </h4>
-                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 leading-relaxed">
-                                    Do you have any questions?
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Speech Bubble Pointer */}
-                        <div className="absolute -bottom-2 right-6 w-4 h-4 bg-white dark:bg-[#1E293B] transform rotate-45 border-b border-r border-gray-100 dark:border-white/10" />
-                    </div>
-                </motion.div>
-            )}
-        </AnimatePresence>
+        <>
+            <DualLauncher
+                onOpenChat={handleOpenChat}
+                onOpenFAQ={handleOpenFAQ}
+                isChatOpen={isChatOpen}
+                isFAQOpen={isFAQOpen}
+                onCloseAll={handleCloseAll}
+            />
+            <FAQModal
+                isOpen={isFAQOpen}
+                onClose={() => setIsFAQOpen(false)}
+            />
+        </>
     );
 };

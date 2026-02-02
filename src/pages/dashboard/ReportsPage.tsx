@@ -476,7 +476,7 @@ export function ReportsPage() {
       {/* Dynamic Filter Strip */}
       <div className="space-y-2">
         {/* Report Type Selector */}
-        <div className="flex w-full gap-2">
+        <div className="flex w-full gap-2 overflow-x-auto scrollbar-none pb-1">
           {[
             { id: 'sales', label: 'Sales Summary', icon: TrendingUp },
             { id: 'items-categories', label: 'Sales by Items', icon: ShoppingBag },
@@ -507,7 +507,7 @@ export function ReportsPage() {
                     navigate(`/dashboard/reports/${type.id}`);
                   }
                 }}
-                className={`relative flex-1 flex flex-col xl:flex-row items-center justify-center gap-1.5 xl:gap-2 px-1 py-2.5 xl:py-3 rounded-xl transition-all duration-300 isolate min-w-0 ${isSelected
+                className={`relative flex-none lg:flex-1 flex flex-col xl:flex-row items-center justify-center gap-1.5 xl:gap-2 px-3 py-2.5 xl:py-3 rounded-xl transition-all duration-300 isolate min-w-[130px] lg:min-w-0 ${isSelected
                   ? 'text-black shadow-lg shadow-paymint-green/20'
                   : 'bg-white dark:bg-[#0B1120] text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 border border-gray-100 dark:border-white/[0.05]'
                   }`}
@@ -526,7 +526,8 @@ export function ReportsPage() {
               </button>
             );
           })}
-        </div>        {/* Unified Filter Dashboard */}
+        </div>
+        {/* Unified Filter Dashboard */}
 
         {/* Unified Filter Control Deck */}
         <div className="bg-white dark:bg-[#0B1120] rounded-[20px] shadow-xl shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-2">
