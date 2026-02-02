@@ -27,6 +27,8 @@ import {
 import api from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
 import { SingleSelect } from '../../components/SingleSelect';
+import { CustomDatePicker } from '../../components/CustomDatePicker';
+import { CustomTimePicker } from '../../components/CustomTimePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput, getDatePeriodLabel } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
 
@@ -206,25 +208,29 @@ export function OwnerOverviewPage() {
                                 return (
                                     <div className="flex-1 flex flex-col md:flex-row gap-4 items-center">
                                         {/* Date Input Group */}
-                                        <div className={`flex-1 flex flex-col justify-center px-3 py-1 rounded-xl border transition-all group ${isDateFiltered ? 'bg-paymint-green/5 border-paymint-green ring-1 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-transparent border-transparent'}`}>
-                                            <div className="flex items-center gap-2 mb-0.5">
-                                                <Calendar size={10} className={isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
-                                                <span className={`text-[10px] uppercase font-black tracking-widest transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Date Range</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <input
-                                                    type="date"
-                                                    value={startDate}
-                                                    onChange={(e) => { setStartDate(e.target.value); setSelectedDateRange('custom'); }}
-                                                    className={`bg-transparent p-0 text-xs font-bold border-none focus:ring-0 w-full h-auto dark:[color-scheme:dark] cursor-pointer transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400 dark:text-white/40"}`}
-                                                />
-                                                <span className={`font-light transition-colors ${isDateFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/10"}`}>/</span>
-                                                <input
-                                                    type="date"
-                                                    value={endDate}
-                                                    onChange={(e) => { setEndDate(e.target.value); setSelectedDateRange('custom'); }}
-                                                    className={`bg-transparent p-0 text-xs font-bold border-none focus:ring-0 w-full h-auto dark:[color-scheme:dark] text-right cursor-pointer transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400 dark:text-white/40"}`}
-                                                />
+                                        <div className={`flex-none w-auto min-w-[145px] sm:min-w-[170px] relative z-[60]`}>
+                                            <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isDateFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
+                                                <div className="flex items-center gap-1.5 mb-0.5">
+                                                    <Calendar size={11} className={isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
+                                                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>DATE RANGE</span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <CustomDatePicker
+                                                        value={startDate}
+                                                        onChange={(val) => { setStartDate(val); setSelectedDateRange('custom'); }}
+                                                        className="w-[95px] sm:w-[105px]"
+                                                        maxDate={endDate}
+                                                        showIcon={true}
+                                                    />
+                                                    <span className={`text-xs font-light transition-colors flex-shrink-0 ${isDateFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/20"}`}>→</span>
+                                                    <CustomDatePicker
+                                                        value={endDate}
+                                                        onChange={(val) => { setEndDate(val); setSelectedDateRange('custom'); }}
+                                                        className="w-[95px] sm:w-[105px]"
+                                                        minDate={startDate}
+                                                        showIcon={true}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
 
@@ -232,25 +238,28 @@ export function OwnerOverviewPage() {
                                         <div className="hidden md:block w-px h-6 bg-gray-100 dark:bg-white/10" />
 
                                         {/* Time Input Group */}
-                                        <div className={`flex-1 flex flex-col justify-center px-3 py-1 rounded-xl border transition-all group ${isTimeFiltered ? 'bg-paymint-green/5 border-paymint-green ring-1 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-transparent border-transparent'}`}>
-                                            <div className="flex items-center gap-2 mb-0.5">
-                                                <Clock size={10} className={isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
-                                                <span className={`text-[10px] uppercase font-black tracking-widest transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Active Hours</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <input
-                                                    type="time"
-                                                    value={startTime}
-                                                    onChange={(e) => { setStartTime(e.target.value); setSelectedDateRange('custom'); }}
-                                                    className={`bg-transparent p-0 text-xs font-bold border-none focus:ring-0 w-[60px] h-auto dark:[color-scheme:dark] cursor-pointer transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400 dark:text-white/40"}`}
-                                                />
-                                                <span className={`font-light transition-colors ${isTimeFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
-                                                <input
-                                                    type="time"
-                                                    value={endTime}
-                                                    onChange={(e) => { setEndTime(e.target.value); setSelectedDateRange('custom'); }}
-                                                    className={`bg-transparent p-0 text-xs font-bold border-none focus:ring-0 w-[60px] h-auto dark:[color-scheme:dark] text-right cursor-pointer transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400 dark:text-white/40"}`}
-                                                />
+                                        <div className={`flex-none w-auto min-w-[155px] sm:min-w-[180px] relative z-[55]`}>
+                                            <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isTimeFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
+                                                <div className="flex items-center gap-1.5 mb-0.5">
+                                                    <Clock size={11} className={isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
+                                                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>ACTIVE HOURS</span>
+                                                </div>
+                                                <div className="flex items-center gap-2 justify-between relative">
+                                                    <CustomTimePicker
+                                                        value={startTime}
+                                                        onChange={(val) => { setStartTime(val); setSelectedDateRange('custom'); }}
+                                                        className="w-[85px] sm:w-[95px]"
+                                                        showIcon={true}
+                                                    />
+                                                    <span className={`text-xs font-bold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/10"}`}>-</span>
+                                                    <CustomTimePicker
+                                                        value={endTime}
+                                                        onChange={(val) => { setEndTime(val); setSelectedDateRange('custom'); }}
+                                                        className="w-[85px] sm:w-[95px]"
+                                                        showIcon={true}
+                                                        align="right"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

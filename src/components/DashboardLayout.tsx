@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { ThemeToggle } from './ThemeToggle';
 import { DeletionRestorationBanner } from './DeletionRestorationBanner';
+import { BottomNavigation } from './mobile/BottomNavigation';
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -790,6 +791,9 @@ export function DashboardLayout() {
           </motion.aside>
         )}
       </AnimatePresence>
+
+      {/* Bottom Navigation - Mobile Only */}
+      <BottomNavigation onMenuClick={() => setMobileMenuOpen(true)} />
 
       <ConfirmModal
         isOpen={isLogoutModalOpen}

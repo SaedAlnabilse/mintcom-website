@@ -7,6 +7,11 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      screens: {
+        'xs': '375px',           // Small phones (iPhone SE)
+        'touch': { 'raw': '(hover: none) and (pointer: coarse)' },  // Touch devices
+        'no-touch': { 'raw': '(hover: hover) and (pointer: fine)' }, // Mouse/trackpad devices
+      },
       colors: {
         mint: {
           DEFAULT: '#7CC39F',
@@ -140,6 +145,19 @@ export default {
         'xxl': '24px',
         'xxxl': '28px',
         'huge': '32px',
+        // Safe areas for mobile
+        'safe-top': 'env(safe-area-inset-top)',
+        'safe-bottom': 'env(safe-area-inset-bottom)',
+        'safe-left': 'env(safe-area-inset-left)',
+        'safe-right': 'env(safe-area-inset-right)',
+      },
+      minHeight: {
+        'touch': '44px',  // Minimum touch target size (Apple HIG)
+        'touch-lg': '48px', // Larger touch target
+      },
+      minWidth: {
+        'touch': '44px',  // Minimum touch target size
+        'touch-lg': '48px',
       },
     },
   },

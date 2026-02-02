@@ -120,7 +120,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
     return createPortal(
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 font-sans">
+                <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -129,15 +129,21 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                         onClick={onClose}
                     />
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="bg-white dark:bg-[#1E293B] rounded-[2rem] border border-gray-200 dark:border-white/10 shadow-2xl w-full max-w-md overflow-hidden relative z-10"
+                        initial={{ opacity: 0, y: 100 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 100 }}
+                        transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+                        className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-[2rem] border border-gray-200 dark:border-white/10 shadow-2xl w-full sm:max-w-md overflow-hidden relative z-10 max-h-[92vh] sm:max-h-[90vh]"
                     >
+                        {/* Mobile drag handle */}
+                        <div className="sm:hidden flex justify-center pt-3 pb-1">
+                            <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+                        </div>
+
                         {/* Decorative Background */}
                         <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/10 rounded-full blur-[80px] pointer-events-none -translate-y-1/2 translate-x-1/2" />
 
-                        <div className="p-8 max-h-[90vh] overflow-y-auto custom-scrollbar">
+                        <div className="p-4 sm:p-8 overflow-y-auto custom-scrollbar pb-safe">
                             <div className="flex items-center justify-between mb-8">
                                 <div>
                                     <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">New Card</h2>

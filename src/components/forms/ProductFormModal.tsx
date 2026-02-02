@@ -440,15 +440,21 @@ export function ProductFormModal({
   return createPortal(
     <>
       <AnimatePresence>
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/20 dark:bg-black/60 backdrop-blur-sm font-sans">
+        <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans">
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-white dark:bg-[#1E293B] w-[95vw] sm:w-[90vw] max-w-xl rounded-2xl overflow-hidden max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 shadow-2xl relative"
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 100 }}
+            transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+            className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-xl rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col transition-colors duration-300 border border-gray-200 dark:border-white/5 shadow-2xl relative"
           >
+            {/* Mobile drag handle */}
+            <div className="sm:hidden flex justify-center pt-3 pb-1">
+              <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+            </div>
+
             {/* Header */}
-            <div className="flex items-center justify-between p-8 pb-4 relative isolate">
+            <div className="flex items-center justify-between p-6 sm:p-8 pb-4 relative isolate">
               <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
               <div>
                 <div className="flex items-center gap-2 mb-1">
@@ -469,7 +475,7 @@ export function ProductFormModal({
               </button>
             </div>
 
-            <div className="overflow-y-auto p-8 pt-2 custom-scrollbar flex-1" ref={scrollRef}>
+            <div className="overflow-y-auto p-4 sm:p-8 pt-2 custom-scrollbar flex-1 pb-safe" ref={scrollRef}>
               <form id="product-form" onSubmit={handleSubmit} className="space-y-8">
                 {/* Error Banner */}
                 {Object.keys(errors).length > 0 && (
@@ -1012,7 +1018,7 @@ export function ProductFormModal({
             </div >
 
             {/* Footer */}
-            < div className="p-8 border-t border-gray-100 dark:border-white/5 flex items-center gap-4 bg-gray-50 dark:bg-black/20 transition-colors" >
+            <div className="p-4 sm:p-8 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 sm:gap-4 bg-gray-50 dark:bg-black/20 transition-colors sticky bottom-0 pb-safe">
               {initialData?.id && onDelete && (
                 <button
                   type="button"
@@ -1028,7 +1034,7 @@ export function ProductFormModal({
                 type="button"
                 onClick={onClose}
                 disabled={isSubmitting || isGeneratingImage}
-                className="flex-1 h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black tracking-[0.2em] text-xs rounded-2xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
+                className="flex-1 h-12 sm:h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black tracking-[0.15em] sm:tracking-[0.2em] text-xs rounded-xl sm:rounded-2xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -1037,7 +1043,7 @@ export function ProductFormModal({
                 type="submit"
                 form="product-form"
                 disabled={isSubmitting || isGeneratingImage || Object.keys(errors).length > 0}
-                className="flex-1 h-14 bg-paymint-green text-black font-black tracking-[0.2em] text-xs rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+                className="flex-1 h-12 sm:h-14 bg-paymint-green text-black font-black tracking-[0.15em] sm:tracking-[0.2em] text-xs rounded-xl sm:rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
               >
                 {isSubmitting ? (
                   <RefreshCw size={18} className="animate-spin" />

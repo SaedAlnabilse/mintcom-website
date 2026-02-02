@@ -91,14 +91,20 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
 
   return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm font-sans">
+      <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm font-sans">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-[95vw] sm:w-[90vw] max-w-lg shadow-2xl relative overflow-hidden flex flex-col max-h-[85vh]"
+          initial={{ opacity: 0, y: 100 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 100 }}
+          transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+          className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:w-[90vw] sm:max-w-lg shadow-2xl relative overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh]"
         >
-          <div className="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-white dark:bg-[#1E293B]">
+          {/* Mobile drag handle */}
+          <div className="sm:hidden flex justify-center pt-3 pb-1">
+            <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+          </div>
+
+          <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-white dark:bg-[#1E293B]">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm">
                 <Award size={22} strokeWidth={2.5} />
@@ -115,7 +121,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
             </button>
           </div>
 
-          <form id="reward-form" onSubmit={handleSubmit} className="p-6 space-y-5 flex-1 overflow-y-auto custom-scrollbar">
+          <form id="reward-form" onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-5 flex-1 overflow-y-auto custom-scrollbar pb-safe">
             {/* Error Banner */}
             {Object.keys(errors).length > 0 && (
               <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
@@ -224,18 +230,18 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
           </form>
 
           {/* Footer */}
-          <div className="p-6 border-t border-gray-100 dark:border-white/5 flex items-center gap-4 bg-gray-50 dark:bg-black/20 transition-colors">
+          <div className="p-4 sm:p-6 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 sm:gap-4 bg-gray-50 dark:bg-black/20 transition-colors sticky bottom-0 pb-safe">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-black tracking-[0.2em] text-xs hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
+              className="flex-1 h-12 sm:h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-black tracking-[0.15em] sm:tracking-[0.2em] text-xs hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
             >
               Cancel
             </button>
             <button
               type="submit"
               form="reward-form"
-              className="flex-[2] h-14 rounded-xl bg-paymint-green text-black font-black tracking-[0.2em] text-xs hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+              className="flex-[2] h-12 sm:h-14 rounded-xl bg-paymint-green text-black font-black tracking-[0.15em] sm:tracking-[0.2em] text-xs hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
             >
               <Check size={18} strokeWidth={3} />
               {initialData ? 'Save' : 'Add'}

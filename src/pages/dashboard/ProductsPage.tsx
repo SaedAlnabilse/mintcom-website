@@ -356,38 +356,39 @@ export function ProductsPage() {
     return (
         <div className="max-w-7xl mx-auto space-y-8 pb-10 font-inter">
             {/* Header */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+            <div className="flex flex-col gap-4 sm:gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
                             Menu
                         </span>
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Products</h1>
-                    <p className="text-gray-500 dark:text-gray-400 mt-2">Manage items and stock.</p>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Products</h1>
+                    <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm sm:text-base">Manage items and stock.</p>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
                     <button
                         onClick={handleExport}
-                        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm group"
+                        className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm group"
                         title="Export to CSV"
                     >
                         <Download size={18} className="group-hover:text-paymint-green transition-colors" />
-                        <span className="font-bold text-sm">Export to CSV</span>
+                        <span className="font-bold text-xs sm:text-sm hidden sm:inline">Export to CSV</span>
                     </button>
                     <button
                         onClick={handleCreateNew}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg hover:shadow-paymint-green/20 active:scale-95"
+                        className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-xs sm:text-sm hover:bg-emerald-400 transition-all shadow-lg hover:shadow-paymint-green/20 active:scale-95"
                     >
                         <Plus size={18} strokeWidth={2.5} />
-                        <span>Add Product</span>
+                        <span className="hidden xs:inline">Add Product</span>
+                        <span className="xs:hidden">Add</span>
                     </button>
                 </div>
             </div>
 
             {/* Filters */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex flex-col gap-3 sm:gap-4">
                 {/* Search */}
                 <div className="relative flex-1">
                     <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -400,9 +401,9 @@ export function ProductsPage() {
                     />
                 </div>
 
-                {/* Category Filter (Dropdown) */}
-                <div className="flex items-center gap-3">
-                    <div className="relative min-w-[200px]" ref={categoryDropdownRef}>
+                {/* Category Filter and View Toggle */}
+                <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="relative flex-1 sm:flex-initial sm:min-w-[200px]" ref={categoryDropdownRef}>
                         <button
                             onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
                             className="w-full bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-sm font-bold rounded-xl px-4 py-3 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm"
@@ -499,26 +500,26 @@ export function ProductsPage() {
                 </div>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {/* Stats Cards - Horizontal scroll on mobile */}
+            <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 md:grid-cols-4 scrollbar-none snap-x snap-mandatory">
                 {/* Total Products */}
                 <button
                     onClick={() => setStockFilter('all')}
-                    className={`text-left bg-white dark:bg-[#1E293B] p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'all'
+                    className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'all'
                             ? 'border-blue-500/50 ring-2 ring-blue-500/10 bg-blue-50/10'
                             : 'border-gray-100 dark:border-white/5 hover:border-blue-300'
                         }`}
                 >
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-500">
-                            <Package size={20} />
+                    <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                        <div className="p-2 sm:p-2.5 rounded-xl bg-blue-500/10 text-blue-500">
+                            <Package size={18} className="sm:w-5 sm:h-5" />
                         </div>
-                        <div className="flex items-center gap-1.5">
-                            <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Total</span>
+                        <div className="flex items-center gap-1">
+                            <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">Total</span>
                             <QuickInfo text="Total count of unique products. Click to show all." />
                         </div>
                     </div>
-                    <p className={`text-3xl font-black ${stockFilter === 'all' ? 'text-blue-500' : 'text-gray-900 dark:text-white'}`}>
+                    <p className={`text-2xl sm:text-3xl font-black ${stockFilter === 'all' ? 'text-blue-500' : 'text-gray-900 dark:text-white'}`}>
                         {stats.total}
                     </p>
                 </button>
@@ -526,21 +527,21 @@ export function ProductsPage() {
                 {/* Low Stock (Yellow) */}
                 <button
                     onClick={() => setStockFilter(stockFilter === 'yellow' ? 'all' : 'yellow')}
-                    className={`text-left bg-white dark:bg-[#1E293B] p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'yellow'
+                    className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'yellow'
                             ? 'border-[#ffc107]/50 ring-2 ring-[#ffc107]/10 bg-[#ffc107]/5'
                             : 'border-gray-100 dark:border-white/5 hover:border-[#ffc107]/30'
                         }`}
                 >
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="p-2.5 rounded-xl bg-[#ffc107]/10 text-[#ffc107]">
-                            <AlertCircle size={20} />
+                    <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                        <div className="p-2 sm:p-2.5 rounded-xl bg-[#ffc107]/10 text-[#ffc107]">
+                            <AlertCircle size={18} className="sm:w-5 sm:h-5" />
                         </div>
-                        <div className="flex items-center gap-1.5">
-                            <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Low Stock</span>
+                        <div className="flex items-center gap-1">
+                            <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">Low</span>
                             <QuickInfo text="Products with stock at yellow warning level. Click to filter." />
                         </div>
                     </div>
-                    <p className="text-3xl font-black text-[#ffc107]">
+                    <p className="text-2xl sm:text-3xl font-black text-[#ffc107]">
                         {stats.yellowThreshold}
                     </p>
                 </button>
@@ -548,21 +549,21 @@ export function ProductsPage() {
                 {/* Critical (Red) */}
                 <button
                     onClick={() => setStockFilter(stockFilter === 'red' ? 'all' : 'red')}
-                    className={`text-left bg-white dark:bg-[#1E293B] p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'red'
+                    className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'red'
                             ? 'border-[#D55263]/50 ring-2 ring-[#D55263]/10 bg-[#D55263]/5'
                             : 'border-gray-100 dark:border-white/5 hover:border-[#D55263]/30'
                         }`}
                 >
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="p-2.5 rounded-xl bg-[#D55263]/10 text-[#D55263]">
-                            <AlertCircle size={20} />
+                    <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                        <div className="p-2 sm:p-2.5 rounded-xl bg-[#D55263]/10 text-[#D55263]">
+                            <AlertCircle size={18} className="sm:w-5 sm:h-5" />
                         </div>
-                        <div className="flex items-center gap-1.5">
-                            <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Critical</span>
+                        <div className="flex items-center gap-1">
+                            <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">Critical</span>
                             <QuickInfo text="Products with stock at critical red level. Click to filter." />
                         </div>
                     </div>
-                    <p className="text-3xl font-black text-[#D55263]">
+                    <p className="text-2xl sm:text-3xl font-black text-[#D55263]">
                         {stats.redThreshold}
                     </p>
                 </button>
@@ -570,21 +571,21 @@ export function ProductsPage() {
                 {/* Out of Stock (Gray) */}
                 <button
                     onClick={() => setStockFilter(stockFilter === 'out' ? 'all' : 'out')}
-                    className={`text-left bg-white dark:bg-[#1E293B] p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'out'
+                    className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'out'
                             ? 'border-slate-500/50 ring-2 ring-slate-500/10 bg-slate-50/10'
                             : 'border-gray-100 dark:border-white/5 hover:border-slate-400'
                         }`}
                 >
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="p-2.5 rounded-xl bg-slate-500/10 text-slate-500">
-                            <Package size={20} />
+                    <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                        <div className="p-2 sm:p-2.5 rounded-xl bg-slate-500/10 text-slate-500">
+                            <Package size={18} className="sm:w-5 sm:h-5" />
                         </div>
-                        <div className="flex items-center gap-1.5">
-                            <span className="text-sm font-bold text-gray-500 dark:text-gray-400">Out of Stock</span>
+                        <div className="flex items-center gap-1">
+                            <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">Out</span>
                             <QuickInfo text="Products with zero or negative stock. Click to filter." />
                         </div>
                     </div>
-                    <p className="text-3xl font-black text-slate-500">
+                    <p className="text-2xl sm:text-3xl font-black text-slate-500">
                         {stats.outOfStock}
                     </p>
                 </button>

@@ -81,7 +81,7 @@ export function ConfirmModal({
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 font-sans">
+        <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -91,41 +91,46 @@ export function ConfirmModal({
             className="fixed inset-0 bg-black/30 dark:bg-black/80 backdrop-blur-sm transition-colors duration-300"
           />
 
-          {/* Modal */}
+          {/* Modal - slides up on mobile, scales on desktop */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: "spring", duration: 0.4, bounce: 0.3 }}
-            className={`relative w-full max-w-md overflow-hidden rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 ${theme.glow} transition-colors duration-300`}
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 100 }}
+            transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+            className={`relative w-full sm:max-w-md overflow-hidden rounded-t-3xl sm:rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 ${theme.glow} transition-colors duration-300`}
           >
 
             {/* Top Accent Bar */}
             <div className={`absolute top-0 inset-x-0 h-1.5 ${theme.color.replace('text-', 'bg-')}`} />
 
+            {/* Mobile drag handle */}
+            <div className="sm:hidden flex justify-center pt-3">
+              <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+            </div>
+
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-6 right-6 p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all z-10 active:scale-90"
+              className="absolute top-4 sm:top-6 right-4 sm:right-6 p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all z-10 active:scale-90 touch-target"
             >
               <X size={20} />
             </button>
 
-            <div className="relative p-6 sm:p-8">
+            <div className="relative p-6 sm:p-8 pb-safe">
               <div className="flex flex-col items-center text-center">
                 {/* Icon Container */}
                 <motion.div
                   initial={{ scale: 0.5, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.1, type: "spring" }}
-                  className={`mb-6 p-5 rounded-2xl ${theme.bgColor} ${theme.color} ring-1 ring-inset ${theme.iconRing} flex items-center justify-center`}
+                  className={`mb-5 sm:mb-6 p-4 sm:p-5 rounded-2xl ${theme.bgColor} ${theme.color} ring-1 ring-inset ${theme.iconRing} flex items-center justify-center`}
                 >
-                  <Icon size={40} strokeWidth={2.5} />
+                  <Icon size={32} className="sm:w-10 sm:h-10" strokeWidth={2.5} />
                 </motion.div>
 
                 {/* Content */}
-                <div className="space-y-3">
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                <div className="space-y-2 sm:space-y-3">
+                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                     {title}
                   </h3>
                   <p className="text-gray-500 dark:text-gray-400 font-medium leading-relaxed max-w-sm mx-auto text-sm">
@@ -135,12 +140,12 @@ export function ConfirmModal({
               </div>
 
               {/* Actions */}
-              <div className={`mt-10 ${showCancel ? 'grid grid-cols-2 gap-4' : 'flex justify-center'}`}>
+              <div className={`mt-8 sm:mt-10 ${showCancel ? 'grid grid-cols-2 gap-3 sm:gap-4' : 'flex justify-center'}`}>
                 {showCancel && (
                   <button
                     type="button"
                     onClick={onClose}
-                    className="px-6 py-4 rounded-xl text-xs font-bold tracking-widest text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 border border-gray-200 dark:border-white/5 transition-all duration-200 active:scale-95"
+                    className="px-4 sm:px-6 py-3.5 sm:py-4 rounded-xl text-xs font-bold tracking-widest text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 border border-gray-200 dark:border-white/5 transition-all duration-200 active:scale-95 touch-target"
                   >
                     {cancelText}
                   </button>
@@ -151,7 +156,7 @@ export function ConfirmModal({
                     onConfirm();
                     onClose();
                   }}
-                  className={`px-6 py-4 rounded-xl text-xs font-bold tracking-widest ${theme.buttonBg} transition-all duration-300 active:scale-95 hover:scale-[1.02] ${!showCancel ? 'w-full' : ''}`}
+                  className={`px-4 sm:px-6 py-3.5 sm:py-4 rounded-xl text-xs font-bold tracking-widest ${theme.buttonBg} transition-all duration-300 active:scale-95 hover:scale-[1.02] touch-target ${!showCancel ? 'w-full' : ''}`}
                 >
                   {confirmText}
                 </button>

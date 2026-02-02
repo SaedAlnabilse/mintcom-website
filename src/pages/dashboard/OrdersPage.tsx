@@ -460,32 +460,32 @@ export function OrdersPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-10">
+    <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-24 sm:pb-10">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+      <div className="flex flex-col gap-4 sm:gap-6">
         <div>
-          <div className="flex items-center gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+          <div className="flex items-center gap-2 sm:gap-3 mb-2">
+            <span className="px-2.5 sm:px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
               Sales
             </span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">View Customer Orders</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">View Customer Orders</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1 sm:mt-2 text-sm">
             Manage orders
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <button
             onClick={handleExport}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
+            className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all touch-target"
           >
             <Download size={18} />
-            <span>Export to CSV</span>
+            <span className="hidden xs:inline">Export to CSV</span>
           </button>
           <button
             onClick={fetchOrders}
-            className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm"
+            className="p-2.5 sm:p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm touch-target"
             title="Refresh"
           >
             <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
@@ -494,10 +494,11 @@ export function OrdersPage() {
       </div>
 
       {/* Unified Filter Control Deck */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-[24px] border border-gray-100 dark:border-white/5 p-2 shadow-sm">
-        <div className="flex flex-wrap items-stretch gap-2">
-          {/* Search Bar */}
-          <div className="flex-1 lg:flex-none lg:w-64 relative group">
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl sm:rounded-[24px] border border-gray-100 dark:border-white/5 p-2 shadow-sm">
+        {/* Mobile: Stack vertically, Desktop: Flex wrap */}
+        <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch gap-2">
+          {/* Search Bar - full width on mobile */}
+          <div className="w-full sm:flex-1 sm:min-w-[200px] lg:w-64 lg:flex-none relative group">
             <div className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none z-10">
               <Search size={16} />
             </div>
@@ -507,12 +508,12 @@ export function OrdersPage() {
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && searchOrder()}
               placeholder="Search orders..."
-              className="w-full h-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border-transparent rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green focus:bg-white dark:focus:bg-white/10 transition-all shadow-inner"
+              className="w-full h-12 sm:h-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border-transparent rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green focus:bg-white dark:focus:bg-white/10 transition-all shadow-inner"
             />
           </div>
 
-          {/* Quick Date Select */}
-          <div className="flex-none w-40 sm:w-44 relative z-[70]">
+          {/* Quick Date Select - half width on mobile */}
+          <div className="flex-1 sm:flex-none sm:w-44 relative z-[70]">
             <SingleSelect
               value={selectedDateRange === 'custom' ? null : selectedDateRange}
               onChange={(val) => setQuickDate(val || 'today')}
@@ -520,18 +521,18 @@ export function OrdersPage() {
               showAllOption={false}
               placeholder="Period"
               className="w-full h-full"
-              buttonClassName={`!rounded-xl !px-4 !py-3 !h-full !text-sm !font-bold border transition-all ${selectedDateRange !== 'custom'
+              buttonClassName={`!rounded-xl !px-4 !py-3 !h-12 sm:!h-full !text-sm !font-bold border transition-all ${selectedDateRange !== 'custom'
                 ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
                 : '!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10'
                 }`}
             />
           </div>
 
-          {/* Date Range Group */}
-          {(() => {
-            const isDateFiltered = selectedDateRange === 'custom';
-            return (
-              <div className={`flex-none w-auto min-w-[170px] relative z-[60]`}>
+          {/* Date Range Group - hidden on mobile, show on desktop */}
+          <div className="hidden sm:block flex-none w-auto min-w-[170px] relative z-[60]">
+            {(() => {
+              const isDateFiltered = selectedDateRange === 'custom';
+              return (
                 <div className={`flex flex-col justify-center px-4 py-1.5 rounded-xl border h-full transition-all ${isDateFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
                   <div className="flex items-center gap-1.5 mb-1">
                     <Calendar size={11} className={isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"} />
@@ -555,66 +556,69 @@ export function OrdersPage() {
                     />
                   </div>
                 </div>
-              </div>
-            );
-          })()}
-
-          {/* Vertical Divider */}
-          <div className="hidden 2xl:block w-px self-stretch bg-gray-100 dark:bg-white/10 my-1" />
-
-          {/* Status Select */}
-          <div className="flex-1 min-w-[140px] relative z-[50]">
-            <SingleSelect
-              value={statusFilter === 'all' ? null : statusFilter}
-              onChange={(val) => {
-                setStatusFilter(val || 'all');
-                setPage(1);
-                if (val === 'HELD') {
-                  setPaymentFilter('all');
-                }
-              }}
-              options={[
-                { label: 'Completed', value: 'COMPLETED' },
-                { label: 'On Hold', value: 'HELD' },
-                { label: 'Refunded', value: 'REFUNDED' },
-              ]}
-              showAllOption={true}
-              allOptionLabel="All Status"
-              placeholder="All Status"
-              className="w-full h-full"
-              buttonClassName={`!rounded-xl !px-4 !py-3 !h-full !text-sm !font-bold border transition-all ${statusFilter !== 'all'
-                ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
-                : '!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10'
-                }`}
-            />
+              );
+            })()}
           </div>
 
-          {/* Payment Method Select */}
-          <div className="flex-1 min-w-[160px] relative z-[40]">
-            <SingleSelect
-              value={paymentFilter === 'all' ? null : paymentFilter}
-              onChange={(val) => { setPaymentFilter(val || 'all'); setPage(1); }}
-              disabled={statusFilter === 'HELD'}
-              placeholder="All Payments"
-              options={[
-                { label: 'Cash', value: 'CASH' },
-                { label: 'Card', value: 'CARD' },
-                { label: 'Visa', value: 'VISA' },
-                { label: 'Mastercard', value: 'MASTERCARD' },
-                { label: 'Amex', value: 'AMEX' },
-                { label: 'Talabat', value: 'TALABAT' },
-                { label: 'Careem', value: 'CAREEM' },
-                { label: 'Jahez', value: 'JAHEZ' },
-                { label: 'Other', value: 'OTHER' },
-              ]}
-              showAllOption={true}
-              allOptionLabel="All Payments"
-              className="w-full h-full"
-              buttonClassName={`!rounded-xl !px-4 !py-3 !h-full !text-sm !font-bold border transition-all ${paymentFilter !== 'all'
-                ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
-                : '!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10'
-                }`}
-            />
+          {/* Vertical Divider - desktop only */}
+          <div className="hidden 2xl:block w-px self-stretch bg-gray-100 dark:bg-white/10 my-1" />
+
+          {/* Status & Payment filters - side by side on mobile */}
+          <div className="flex gap-2 w-full sm:w-auto sm:flex-1 sm:min-w-[300px]">
+            {/* Status Select */}
+            <div className="flex-1 relative z-[50]">
+              <SingleSelect
+                value={statusFilter === 'all' ? null : statusFilter}
+                onChange={(val) => {
+                  setStatusFilter(val || 'all');
+                  setPage(1);
+                  if (val === 'HELD') {
+                    setPaymentFilter('all');
+                  }
+                }}
+                options={[
+                  { label: 'Completed', value: 'COMPLETED' },
+                  { label: 'On Hold', value: 'HELD' },
+                  { label: 'Refunded', value: 'REFUNDED' },
+                ]}
+                showAllOption={true}
+                allOptionLabel="All Status"
+                placeholder="Status"
+                className="w-full h-full"
+                buttonClassName={`!rounded-xl !px-3 sm:!px-4 !py-3 !h-12 sm:!h-full !text-sm !font-bold border transition-all ${statusFilter !== 'all'
+                  ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
+                  : '!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10'
+                  }`}
+              />
+            </div>
+
+            {/* Payment Method Select */}
+            <div className="flex-1 relative z-[40]">
+              <SingleSelect
+                value={paymentFilter === 'all' ? null : paymentFilter}
+                onChange={(val) => { setPaymentFilter(val || 'all'); setPage(1); }}
+                disabled={statusFilter === 'HELD'}
+                placeholder="Payment"
+                options={[
+                  { label: 'Cash', value: 'CASH' },
+                  { label: 'Card', value: 'CARD' },
+                  { label: 'Visa', value: 'VISA' },
+                  { label: 'Mastercard', value: 'MASTERCARD' },
+                  { label: 'Amex', value: 'AMEX' },
+                  { label: 'Talabat', value: 'TALABAT' },
+                  { label: 'Careem', value: 'CAREEM' },
+                  { label: 'Jahez', value: 'JAHEZ' },
+                  { label: 'Other', value: 'OTHER' },
+                ]}
+                showAllOption={true}
+                allOptionLabel="All Payments"
+                className="w-full h-full"
+                buttonClassName={`!rounded-xl !px-3 sm:!px-4 !py-3 !h-12 sm:!h-full !text-sm !font-bold border transition-all ${paymentFilter !== 'all'
+                  ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
+                  : '!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10'
+                  }`}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -640,8 +644,8 @@ export function OrdersPage() {
         </div>
       )}
 
-      {/* Kpi Strip */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Kpi Strip - horizontal scroll on mobile */}
+      <div className="flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible pb-2 sm:pb-0">
         {[
           {
             label: 'Total Sales',
@@ -676,16 +680,16 @@ export function OrdersPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
             onClick={stat.onClick}
-            className={`group relative p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden ${stat.onClick ? 'cursor-pointer' : ''} ${stat.active ? 'ring-2 ring-paymint-green' : ''}`}
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink ${stat.onClick ? 'cursor-pointer' : ''} ${stat.active ? 'ring-2 ring-paymint-green' : ''}`}
           >
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
-            <div className="relative z-10 flex items-center gap-4">
-              <div className={`p-3 rounded-xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform duration-300`}>
-                <stat.icon size={20} />
+            <div className="relative z-10 flex items-center gap-3 sm:gap-4">
+              <div className={`p-2.5 sm:p-3 rounded-xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform duration-300`}>
+                <stat.icon size={18} className="sm:w-5 sm:h-5" />
               </div>
               <div>
                 <p className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
-                <p className="text-xl font-black text-gray-900 dark:text-white">{stat.value}</p>
+                <p className="text-lg sm:text-xl font-black text-gray-900 dark:text-white">{stat.value}</p>
               </div>
             </div>
           </motion.div>

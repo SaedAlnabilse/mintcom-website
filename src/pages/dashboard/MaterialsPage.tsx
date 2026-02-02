@@ -201,17 +201,17 @@ export function MaterialsPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-10">
+    <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-10">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+      <div className="flex flex-col gap-4 sm:gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
               Inventory
             </span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Ingredients</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Ingredients</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm sm:text-base">
             Manage stock and costs
           </p>
         </div>
@@ -227,16 +227,17 @@ export function MaterialsPage() {
                 navigate('/dashboard/recipes');
               }
             }}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
+            className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-xs sm:text-sm hover:bg-emerald-400 transition-all shadow-sm"
           >
             <Plus size={18} />
-            <span>{activeTab === 'materials' ? 'Add Ingredient' : 'Add Prep'}</span>
+            <span className="hidden xs:inline">{activeTab === 'materials' ? 'Add Ingredient' : 'Add Prep'}</span>
+            <span className="xs:hidden">Add</span>
           </button>
         </div>
       </div>
 
       {/* Control Panel */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm flex flex-col md:flex-row gap-4 items-center">
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-3 sm:p-4 shadow-sm flex flex-col gap-3 sm:gap-4">
         <div className="flex-1 relative group w-full">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
@@ -248,16 +249,16 @@ export function MaterialsPage() {
           />
         </div>
 
-        <div className="flex p-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl">
+        <div className="flex p-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl self-start sm:self-auto">
           <button
             onClick={() => { setActiveTab('materials'); setPage(1); }}
-            className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'materials' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+            className={`px-3 sm:px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'materials' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
           >
             Ingredients
           </button>
           <button
             onClick={() => { setActiveTab('prepared'); setPage(1); }}
-            className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'prepared' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
+            className={`px-3 sm:px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'prepared' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
           >
             Prepped
           </button>
@@ -283,7 +284,54 @@ export function MaterialsPage() {
           <div className="space-y-8">
             {activeTab === 'materials' ? (
               <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
-                <div className="overflow-x-auto">
+                {/* Mobile Cards View */}
+                <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+                  {paginatedItems.map((m: any) => {
+                    const isLow = m.lowStockThreshold && m.quantity <= m.lowStockThreshold;
+                    return (
+                      <div key={m.id} className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02]">
+                        <div className="flex items-start justify-between gap-3 mb-3">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm border flex-shrink-0 ${isLow ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'}`}>
+                              {m.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-bold text-gray-900 dark:text-white text-sm truncate">{m.name}</p>
+                              <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold mt-1 ${isLow ? 'bg-red-500/10 text-red-500' : 'bg-paymint-green/10 text-paymint-green'}`}>
+                                {isLow ? <AlertTriangle size={10} /> : <TrendingUp size={10} />}
+                                {isLow ? 'Low Stock' : 'Optimal'}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex gap-1 flex-shrink-0">
+                            <button onClick={() => { setRestockMaterial(m); setRestockAmount(0); setShowRestockModal(true); }} className="p-2 bg-paymint-green/10 text-paymint-green rounded-lg hover:bg-paymint-green hover:text-black transition-all">
+                              <RefreshCw size={14} />
+                            </button>
+                            <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors">
+                              <Edit2 size={14} />
+                            </button>
+                            <button onClick={() => handleDeleteMaterial(m.id, m.name)} className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-red-500 transition-colors">
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3 text-sm">
+                          <div className="bg-gray-50 dark:bg-white/5 rounded-lg p-2">
+                            <p className="text-xs font-bold text-gray-400 mb-0.5">Quantity</p>
+                            <p className="font-bold text-gray-900 dark:text-white">{m.quantity.toFixed(2)} <span className="text-xs text-gray-500">{m.unit}</span></p>
+                          </div>
+                          <div className="bg-gray-50 dark:bg-white/5 rounded-lg p-2">
+                            <p className="text-xs font-bold text-gray-400 mb-0.5">Cost/Unit</p>
+                            <p className="font-bold text-gray-900 dark:text-white">{formatCurrency(m.costPerUnit)}</p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
                   <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-white/[0.02]">
                       <tr className="border-b border-gray-200 dark:border-white/5">
@@ -403,9 +451,14 @@ export function MaterialsPage() {
       {/* Material Modal */}
       <AnimatePresence>
         {showMaterialModal && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md overflow-hidden shadow-2xl">
-              <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+          <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm">
+            <motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} transition={{ type: "spring", duration: 0.4, bounce: 0.2 }} className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md overflow-hidden shadow-2xl max-h-[92vh] sm:max-h-[85vh] flex flex-col">
+              {/* Mobile drag handle */}
+              <div className="sm:hidden flex justify-center pt-3 pb-1">
+                <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+              </div>
+
+              <div className="p-4 sm:p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                 <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">{editingMaterial ? 'Edit Ingredient' : 'Add Ingredient'}</h2>
                 <button onClick={() => setShowMaterialModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
                   <X size={20} />

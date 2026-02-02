@@ -205,15 +205,21 @@ export function CustomRoleFormModal({
 
   return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm font-sans">
+      <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          className="bg-white dark:bg-[#1E293B] w-[95vw] sm:w-full max-w-xl rounded-2xl overflow-hidden max-h-[85vh] flex flex-col border border-gray-200 dark:border-white/10 shadow-2xl"
+          initial={{ opacity: 0, y: 100 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 100 }}
+          transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+          className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-xl rounded-t-3xl sm:rounded-2xl overflow-hidden h-[92vh] sm:h-auto sm:max-h-[85vh] flex flex-col border border-gray-200 dark:border-white/10 shadow-2xl"
         >
+          {/* Mobile drag handle */}
+          <div className="sm:hidden flex justify-center pt-3 pb-1">
+            <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+          </div>
+
           {/* Header */}
-          <div className="flex items-center justify-between p-8 pb-4 border-b border-gray-100 dark:border-white/5">
+          <div className="flex items-center justify-between p-4 sm:p-8 pb-4 border-b border-gray-100 dark:border-white/5">
             <div>
               <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
                 {initialData ? 'Edit Role' : 'New Custom Role'}
@@ -228,7 +234,7 @@ export function CustomRoleFormModal({
             </button>
           </div>
 
-          <div className="overflow-y-auto p-8 pt-4 custom-scrollbar flex-1">
+          <div className="overflow-y-auto p-4 sm:p-8 pt-4 custom-scrollbar flex-1 pb-safe">
             <form id="role-form" onSubmit={handleSubmit} className="space-y-8">
               {errors.general && (
                 <div className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2">
@@ -428,11 +434,11 @@ export function CustomRoleFormModal({
           </div>
 
           {/* Footer */}
-          <div className="p-8 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center gap-4 bg-white dark:bg-[#1E293B]">
+          <div className="p-4 sm:p-8 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 sm:gap-4 bg-white dark:bg-[#1E293B] sticky bottom-0 pb-safe">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-14 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-black text-xs tracking-widest hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+              className="flex-1 h-12 sm:h-14 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-black text-xs tracking-widest hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
             >
               Cancel
             </button>
@@ -440,7 +446,7 @@ export function CustomRoleFormModal({
               type="submit"
               form="role-form"
               disabled={isSubmitting}
-              className="flex-1 h-14 rounded-xl bg-paymint-green text-black font-black text-xs tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center"
+              className="flex-1 h-12 sm:h-14 rounded-xl bg-paymint-green text-black font-black text-xs tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center"
             >
               {isSubmitting ? (
                 <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />

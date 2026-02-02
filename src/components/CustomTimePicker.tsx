@@ -7,9 +7,10 @@ interface CustomTimePickerProps {
     onChange: (time: string) => void;
     className?: string;
     showIcon?: boolean;
+    align?: 'left' | 'right';
 }
 
-export function CustomTimePicker({ value, onChange, className = '', showIcon = false }: CustomTimePickerProps) {
+export function CustomTimePicker({ value, onChange, className = '', showIcon = false, align = 'left' }: CustomTimePickerProps) {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -68,7 +69,7 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.1 }}
-                        className="absolute top-full left-0 mt-2 z-50 bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/10 rounded-2xl shadow-xl w-[200px] p-2 flex gap-1 h-[200px] overflow-hidden"
+                        className={`absolute top-full ${align === 'right' ? 'right-0' : 'left-0'} mt-2 z-50 !bg-white dark:!bg-[#1E293B] border border-gray-100 dark:border-white/10 rounded-2xl shadow-2xl w-[200px] p-2 flex gap-1 h-[200px] overflow-hidden`}
                     >
                         {/* Hours */}
                         <div className="flex-1 overflow-y-auto scrollbar-none hover:scrollbar-thin">

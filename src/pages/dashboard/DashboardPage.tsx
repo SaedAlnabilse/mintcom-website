@@ -363,13 +363,14 @@ export const DashboardPage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-10 font-inter">
+    <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-24 sm:pb-10 font-inter">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+      <div className="flex flex-col gap-4 sm:gap-6">
+        {/* Top row: Status and greeting */}
         <div>
-          <div className="flex items-center gap-3 mb-2 flex-wrap">
+          <div className="flex items-center gap-2 sm:gap-3 mb-2 flex-wrap">
             {/* Real Shift Status Badge */}
-            <span className={`px-3 py-1.5 rounded-lg text-xs font-bold tracking-wide border ${shiftStatus?.shiftStatus === 'ACTIVE'
+            <span className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-bold tracking-wide border ${shiftStatus?.shiftStatus === 'ACTIVE'
               ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
               : 'bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/20'
               }`}>
@@ -389,21 +390,22 @@ export const DashboardPage = () => {
               </div>
             )}
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{getGreeting()}</h1>
-          <div className="flex items-center gap-3 mt-2 text-gray-500 dark:text-gray-400 font-medium text-sm">
-            <Calendar size={16} />
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{getGreeting()}</h1>
+          <div className="flex items-center gap-2 sm:gap-3 mt-2 text-gray-500 dark:text-gray-400 font-medium text-xs sm:text-sm flex-wrap">
+            <Calendar size={14} className="sm:w-4 sm:h-4" />
             <span>{formatDate()}</span>
-            <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
+            <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20 hidden sm:block" />
             <span className="text-paymint-green font-bold">{currentEstablishment?.name}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        {/* Action buttons - stack on mobile */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
           {/* View Mode Selector */}
-          <div id="tour-view-mode" className="relative" ref={viewModeRef}>
+          <div id="tour-view-mode" className="relative flex-1 sm:flex-none" ref={viewModeRef}>
             <button
               onClick={() => setIsViewModeOpen(!isViewModeOpen)}
-              className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all min-w-[180px]"
+              className="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2 px-4 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all min-w-[180px]"
             >
               {currentViewModeInfo?.icon}
               <span className="flex-1 text-left">{currentViewModeInfo?.label}</span>
@@ -442,41 +444,44 @@ export const DashboardPage = () => {
             </AnimatePresence>
           </div>
 
-          <button
-            onClick={() => setIsTourOpen(true)}
-            className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-green border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
-            title="Start Tour"
-          >
-            <HelpCircle size={18} />
-          </button>
-          <button
-            onClick={() => navigate('/dashboard/reports')}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
-          >
-            <FileBarChart size={18} className="text-paymint-green" />
-            <span>Reports</span>
-          </button>
-          <button
-            onClick={() => {
-              fetchShiftStatus();
-              fetchDashboardData();
-            }}
-            className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm"
-            title={`Refresh Data (Last updated: ${format(lastRefresh, 'h:mm a')})`}
-          >
-            <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
-          </button>
+          {/* Action buttons row */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              onClick={() => setIsTourOpen(true)}
+              className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-green border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all touch-target"
+              title="Start Tour"
+            >
+              <HelpCircle size={18} />
+            </button>
+            <button
+              onClick={() => navigate('/dashboard/reports')}
+              className="flex items-center gap-2 px-4 sm:px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all touch-target"
+            >
+              <FileBarChart size={18} className="text-paymint-green" />
+              <span className="hidden xs:inline">Reports</span>
+            </button>
+            <button
+              onClick={() => {
+                fetchShiftStatus();
+                fetchDashboardData();
+              }}
+              className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm touch-target"
+              title={`Refresh Data (Last updated: ${format(lastRefresh, 'h:mm a')})`}
+            >
+              <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
+            </button>
+          </div>
         </div>
       </div>
 
       {/* View Mode Info Bar */}
-      <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
         <div className="flex items-center gap-3">
           {currentViewModeInfo?.icon && (
             <span className="text-paymint-green">{currentViewModeInfo.icon}</span>
           )}
           <div>
-            <span className="text-sm font-bold text-gray-900 dark:text-white">
+            <span className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white">
               {viewMode === 'current_shift' && shiftStatus?.activeShift && (
                 <>Showing data since {format(new Date(shiftStatus.activeShift.startTime), 'MMM d, h:mm a')}</>
               )}
@@ -486,7 +491,7 @@ export const DashboardPage = () => {
           </div>
         </div>
         <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">
-          Updated {format(lastRefresh, 'h:mm a')} • Auto-refresh hourly
+          Updated {format(lastRefresh, 'h:mm a')}
         </span>
       </div>
 
@@ -497,7 +502,8 @@ export const DashboardPage = () => {
             Overview
           </span>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {/* Mobile: horizontal scroll, Desktop: grid */}
+        <div className="flex overflow-x-auto scrollbar-none gap-3 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-4 sm:overflow-visible">
           {[
             {
               label: 'Total Sales',
@@ -585,7 +591,7 @@ export const DashboardPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
               onClick={stat.onClick}
-              className={`group relative p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden ${stat.onClick ? 'cursor-pointer' : ''}`}
+              className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden min-w-[160px] sm:min-w-0 flex-shrink-0 sm:flex-shrink ${stat.onClick ? 'cursor-pointer' : ''}`}
             >
               <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
               <div className="relative z-10">
@@ -621,9 +627,9 @@ export const DashboardPage = () => {
       </div>
 
       {/* Revenue Chart & Payment Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Revenue Momentum Chart */}
-        <div id="tour-revenue-chart" className="lg:col-span-2 p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-md transition-all duration-300 group relative overflow-hidden">
+        <div id="tour-revenue-chart" className="lg:col-span-2 p-4 sm:p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-md transition-all duration-300 group relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-6">
@@ -640,7 +646,7 @@ export const DashboardPage = () => {
               </div>
             </div>
 
-            <div className="h-[300px]">
+            <div className="h-[200px] sm:h-[300px]">
               {stats?.dailyBreakdown && stats.dailyBreakdown.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart
@@ -709,7 +715,7 @@ export const DashboardPage = () => {
         </div>
 
         {/* Payment Methods Breakdown */}
-        <div id="tour-capital-sources" className="group relative p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden">
+        <div id="tour-capital-sources" className="group relative p-4 sm:p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col hover:shadow-lg transition-all duration-300 overflow-hidden">
           <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-6">
@@ -789,12 +795,12 @@ export const DashboardPage = () => {
 
 
       {/* Top Products & Peak Hours */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Top Products */}
         <div id="tour-top-products" className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
           <div className="absolute top-0 right-0 w-40 h-40 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
           <div className="relative z-10">
-            <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+            <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green group-hover:scale-110 transition-transform duration-300">
                   <Package size={20} />
@@ -813,7 +819,7 @@ export const DashboardPage = () => {
                 View All
               </button>
             </div>
-            <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               {/* Top Items Column */}
               <div className="space-y-3">
                 <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 text-center">Top 3 Items</h4>
@@ -885,7 +891,7 @@ export const DashboardPage = () => {
         <div className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
           <div className="absolute top-0 right-0 w-40 h-40 bg-orange-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
           <div className="relative z-10">
-            <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+            <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 group-hover:scale-110 transition-transform duration-300">
                   <Clock size={20} />
@@ -936,29 +942,31 @@ export const DashboardPage = () => {
       </div>
 
       {/* Quick Actions */}
-      <div id="tour-quick-actions" className="group relative p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
+      <div id="tour-quick-actions" className="group relative p-4 sm:p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-paymint-green/5 via-blue-500/5 to-purple-500/5 opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
-        <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6">
+        <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 sm:gap-6">
           <div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Quick Links</h3>
+            <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">Quick Links</h3>
             <p className="text-xs font-medium text-gray-500 mt-1">Frequently used</p>
           </div>
-          <div className="flex flex-wrap gap-3">
-            {[
-              { label: 'Products', path: '/dashboard/products', icon: Package },
-              { label: 'Orders', path: '/dashboard/orders', icon: ShoppingBag },
-              { label: 'Staff', path: '/dashboard/staff', icon: Users },
-              { label: 'Reports', path: '/dashboard/reports', icon: FileBarChart },
-            ].map((action) => (
-              <button
-                key={action.label}
-                onClick={() => navigate(action.path)}
-                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-white/10 border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white font-bold text-xs hover:bg-paymint-green hover:text-black hover:border-paymint-green hover:scale-105 transition-all shadow-sm"
-              >
-                <action.icon size={16} />
-                {action.label}
-              </button>
-            ))}
+          <div className="w-full lg:w-auto overflow-x-auto scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
+            <div className="flex gap-2 sm:gap-3 sm:flex-wrap">
+              {[
+                { label: 'Products', path: '/dashboard/products', icon: Package },
+                { label: 'Orders', path: '/dashboard/orders', icon: ShoppingBag },
+                { label: 'Staff', path: '/dashboard/staff', icon: Users },
+                { label: 'Reports', path: '/dashboard/reports', icon: FileBarChart },
+              ].map((action) => (
+                <button
+                  key={action.label}
+                  onClick={() => navigate(action.path)}
+                  className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/10 border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white font-bold text-xs whitespace-nowrap hover:bg-paymint-green hover:text-black hover:border-paymint-green hover:scale-105 transition-all shadow-sm touch-target"
+                >
+                  <action.icon size={16} />
+                  {action.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

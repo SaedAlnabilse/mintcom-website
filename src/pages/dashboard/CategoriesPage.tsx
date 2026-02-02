@@ -172,17 +172,17 @@ export function CategoriesPage() {
   const ViewingIcon = viewingCategory ? (ICON_MAP[viewingCategory.icon || 'tag'] || Tag) : Tag;
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-10 font-inter">
+    <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-10 font-inter">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+      <div className="flex flex-col gap-4 sm:gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
               Menu
             </span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Categories</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Categories</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm sm:text-base">
             Organize your menu items
           </p>
         </div>
@@ -190,16 +190,17 @@ export function CategoriesPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={openCreateModal}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
+            className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-xs sm:text-sm hover:bg-emerald-400 transition-all shadow-sm"
           >
             <Plus size={18} />
-            <span>New Category</span>
+            <span className="hidden xs:inline">New Category</span>
+            <span className="xs:hidden">Add</span>
           </button>
         </div>
       </div>
 
-      {/* Stats Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Stats Section - Horizontal scroll on mobile */}
+      <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 scrollbar-none snap-x snap-mandatory">
         {[
           { label: 'Total Categories', value: stats.total, icon: Layers, color: 'text-blue-500', bg: 'bg-blue-500/10' },
           { label: 'Total Items', value: stats.products, icon: Package, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
@@ -211,7 +212,7 @@ export function CategoriesPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="group relative p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
+            className="flex-shrink-0 w-[160px] sm:w-auto snap-start group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
           >
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
             <div className="relative z-10 flex items-center gap-4">
@@ -244,7 +245,7 @@ export function CategoriesPage() {
           <p className="text-gray-500 max-w-xs text-sm">Create a category to organize your items.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
           {categories.map((category, idx) => {
             const IconComponent = ICON_MAP[category.icon || 'tag'] || Tag;
             return (
@@ -254,7 +255,7 @@ export function CategoriesPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: idx * 0.05 }}
                 onClick={() => setViewingCategory(category)}
-                className="group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl transition-all cursor-pointer overflow-hidden duration-300"
+                className="group relative bg-white dark:bg-[#1E293B] p-4 sm:p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl transition-all cursor-pointer overflow-hidden duration-300"
               >
                 <div
                   className="absolute top-0 left-0 w-1 h-full bg-paymint-green opacity-0 group-hover:opacity-100 transition-all duration-300"
@@ -308,17 +309,23 @@ export function CategoriesPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className={`fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-all duration-300 ${sidebarOpen ? 'lg:pl-[300px]' : 'lg:pl-[100px]'}`}
+              className={`fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm transition-all duration-300 ${sidebarOpen ? 'lg:pl-[300px]' : 'lg:pl-[100px]'}`}
               onClick={() => setViewingCategory(null)}
             >
               <motion.div
-                initial={{ scale: 0.95, y: 20 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.95, y: 20 }}
-                className="bg-white dark:bg-[#1E293B] w-full max-w-4xl rounded-2xl overflow-hidden flex flex-col max-h-[85vh] border border-gray-200 dark:border-white/10 shadow-2xl"
+                initial={{ opacity: 0, y: 100 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 100 }}
+                transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+                className="bg-white dark:bg-[#1E293B] w-full sm:max-w-4xl rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh] border border-gray-200 dark:border-white/10 shadow-2xl"
                 onClick={e => e.stopPropagation()}
               >
-                <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+                {/* Mobile drag handle */}
+                <div className="sm:hidden flex justify-center pt-3 pb-1">
+                  <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+                </div>
+
+                <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div
                       className="w-12 h-12 rounded-xl flex items-center justify-center bg-paymint-green/10 text-paymint-green"
