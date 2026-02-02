@@ -699,7 +699,7 @@ export function SettingsPage() {
 
   const tabs = [
     { id: 'profile', label: 'Profile', icon: Store },
-    { id: 'sales', label: 'Sales', icon: CreditCard },
+    { id: 'sales', label: 'Tax & Currency', icon: CreditCard },
     { id: 'receipt', label: 'Receipts', icon: Receipt },
 
     { id: 'danger', label: 'Delete', icon: Trash2, isDanger: true },

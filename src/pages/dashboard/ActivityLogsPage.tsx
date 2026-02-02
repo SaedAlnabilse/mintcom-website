@@ -207,7 +207,7 @@ export function ActivityLogsPage() {
           </button>
           <button
             onClick={() => { setPage(1); fetchLogs(); }}
-            className="p-3 rounded-xl bg-paymint-green text-black hover:bg-emerald-400 transition-all shadow-sm"
+            className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm"
             title="Refresh"
           >
             <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
