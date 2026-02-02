@@ -1,4 +1,4 @@
-import { useState, useEffect, ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Filter, X, ChevronDown, Check } from 'lucide-react';
 
@@ -54,11 +54,10 @@ export function MobileFilterBar({ filters, children, className = '' }: MobileFil
         {/* Collapsed State - Filter Toggle Button */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${
-            activeCount > 0
+          className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${activeCount > 0
               ? 'bg-paymint-green/5 border-paymint-green text-paymint-green'
               : 'bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300'
-          }`}
+            }`}
         >
           <div className="flex items-center gap-2">
             <Filter size={18} />
@@ -92,11 +91,10 @@ export function MobileFilterBar({ filters, children, className = '' }: MobileFil
                     <button
                       key={filter.id}
                       onClick={() => setActiveFilterSheet(filter.id)}
-                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold transition-all touch-target ${
-                        filter.value !== null
+                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold transition-all touch-target ${filter.value !== null
                           ? 'bg-paymint-green/10 text-paymint-green border border-paymint-green/30'
                           : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-transparent'
-                      }`}
+                        }`}
                     >
                       <span>{filter.label}</span>
                       {filter.value !== null ? (
@@ -184,11 +182,10 @@ export function MobileFilterBar({ filters, children, className = '' }: MobileFil
                           filter.onChange(option.value || null);
                           setActiveFilterSheet(null);
                         }}
-                        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-left transition-all touch-target ${
-                          isSelected
+                        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-left transition-all touch-target ${isSelected
                             ? 'bg-paymint-green/10'
                             : 'hover:bg-gray-50 dark:hover:bg-white/5'
-                        }`}
+                          }`}
                       >
                         <span className={`text-sm font-bold ${isSelected ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>
                           {option.label}
@@ -224,11 +221,10 @@ export function FilterChip({ label, value, isActive, onClick, onClear }: FilterC
   return (
     <button
       onClick={onClick}
-      className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold transition-all touch-target ${
-        active
+      className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold transition-all touch-target ${active
           ? 'bg-paymint-green/10 text-paymint-green border border-paymint-green/30'
           : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-transparent'
-      }`}
+        }`}
     >
       <span>{label}</span>
       {value && <span className="text-xs opacity-75">: {value}</span>}

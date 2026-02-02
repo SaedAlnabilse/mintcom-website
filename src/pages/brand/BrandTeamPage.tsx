@@ -293,17 +293,17 @@ export function BrandTeamPage() {
     }
 
     return (
-        <div className="max-w-7xl mx-auto space-y-8 pb-10">
+        <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-10">
             {/* Header */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+            <div className="flex flex-col gap-4 sm:gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-purple-500/10 text-purple-500 text-xs font-black tracking-widest border border-purple-500/20">
                             Team
                         </span>
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Team</h1>
-                    <p className="text-gray-500 dark:text-gray-400 mt-2">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Team</h1>
+                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
                         Manage staff for {brandName}
                     </p>
                 </div>

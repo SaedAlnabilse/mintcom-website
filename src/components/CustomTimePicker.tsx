@@ -73,7 +73,7 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                     >
                         {/* Hours */}
                         <div className="flex-1 overflow-y-auto scrollbar-none hover:scrollbar-thin">
-                            <div className="text-[10px] bg-gray-50 dark:bg-white/5 text-center py-1 font-bold sticky top-0 backdrop-blur-sm z-10 text-gray-500">HR</div>
+                            <div className="text-[10px] !bg-gray-50 dark:!bg-[#1E293B] text-center py-1 font-bold sticky top-0 z-10 text-gray-500 border-b border-gray-100 dark:border-white/5">HR</div>
                             {hours.map(h => (
                                 <div
                                     key={h}
@@ -90,7 +90,7 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
 
                         {/* Minutes */}
                         <div className="flex-1 overflow-y-auto scrollbar-none hover:scrollbar-thin border-l border-r border-gray-100 dark:border-white/5">
-                            <div className="text-[10px] bg-gray-50 dark:bg-white/5 text-center py-1 font-bold sticky top-0 backdrop-blur-sm z-10 text-gray-500">MIN</div>
+                            <div className="text-[10px] !bg-gray-50 dark:!bg-[#1E293B] text-center py-1 font-bold sticky top-0 z-10 text-gray-500 border-b border-gray-100 dark:border-white/5">MIN</div>
                             {minutes.map(m => (
                                 <div
                                     key={m}

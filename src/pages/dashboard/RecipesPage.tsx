@@ -321,14 +321,14 @@ export function RecipesPage() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-10 font-inter">
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+      <div className="flex flex-col gap-4 sm:gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
               Kitchen
             </span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Recipes</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Recipes</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-2">
             Manage recipes and prep
           </p>

@@ -282,14 +282,14 @@ export function BrandDashboardPage() {
     }
 
     return (
-        <div className="max-w-7xl mx-auto space-y-8 pb-10 relative">
+        <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-10 relative">
             {/* Premium Glow effect for top brand */}
             {isTopBrand && (
                 <div className="absolute -top-24 -left-24 w-96 h-96 bg-paymint-green/10 rounded-full blur-[120px] pointer-events-none" />
             )}
 
             {/* Header */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-10">
+            <div className="flex flex-col gap-4 sm:gap-6 relative z-10">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
@@ -298,7 +298,7 @@ export function BrandDashboardPage() {
                         </span>
                     </div>
                     <div className="flex items-center gap-4">
-                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{brandName}</h1>
+                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{brandName}</h1>
                     </div>
                     <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400 text-sm mt-2">
                         <div className="flex items-center gap-1.5">

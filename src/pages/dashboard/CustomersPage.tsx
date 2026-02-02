@@ -483,83 +483,84 @@ export function CustomersPage() {
                       <td className="px-6 py-4">
                         <div className="flex flex-col gap-1">
                           <p className="text-sm font-black text-paymint-green">{customer.points}</p>
-                        <p className="text-xs font-black text-gray-400 tracking-widest">Points</p>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
-                          <Phone size={12} className="text-gray-400" />
-                          <span className="font-medium">{customer.phone}</span>
+                          <p className="text-xs font-black text-gray-400 tracking-widest">Points</p>
                         </div>
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
-                          <Mail size={12} className="text-gray-400" />
-                          <span className="font-medium">{customer.email || 'No Email'}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 text-xs text-gray-500">
+                            <Phone size={12} className="text-gray-400" />
+                            <span className="font-medium">{customer.phone}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-gray-500">
+                            <Mail size={12} className="text-gray-400" />
+                            <span className="font-medium">{customer.email || 'No Email'}</span>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <p className="font-black text-gray-900 dark:text-white text-sm">{formatCurrency(customer.totalSpent)}</p>
-                      <p className="text-xs text-paymint-green font-black tracking-widest">Active</p>
-                    </td>
-                    <td className="px-6 py-4 text-center" onClick={(e) => e.stopPropagation()}>
-                      <div className="flex items-center justify-center gap-2">
-                        <button
-                          onClick={() => { setSelectedCustomer(customer); setPointsAmount(0); setShowPointsModal(true); }}
-                          className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-paymint-green hover:border-paymint-green/30 transition-all"
-                          title="Adjust Points"
-                        >
-                          <Award size={16} />
-                        </button>
-                        <button onClick={() => openEditModal(customer)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-all">
-                          <Edit2 size={16} />
-                        </button>
-                        <div className="relative" data-action-menu>
+                      </td>
+                      <td className="px-6 py-4">
+                        <p className="font-black text-gray-900 dark:text-white text-sm">{formatCurrency(customer.totalSpent)}</p>
+                        <p className="text-xs text-paymint-green font-black tracking-widest">Active</p>
+                      </td>
+                      <td className="px-6 py-4 text-center" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center justify-center gap-2">
                           <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setActiveMenu(activeMenu === customer.id ? null : customer.id);
-                            }}
-                            className={`p-2 rounded-lg border transition-all ${activeMenu === customer.id ? 'bg-paymint-green text-black border-paymint-green' : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'}`}
+                            onClick={() => { setSelectedCustomer(customer); setPointsAmount(0); setShowPointsModal(true); }}
+                            className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-paymint-green hover:border-paymint-green/30 transition-all"
+                            title="Adjust Points"
                           >
-                            <MoreVertical size={16} />
+                            <Award size={16} />
                           </button>
+                          <button onClick={() => openEditModal(customer)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-all">
+                            <Edit2 size={16} />
+                          </button>
+                          <div className="relative" data-action-menu>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveMenu(activeMenu === customer.id ? null : customer.id);
+                              }}
+                              className={`p-2 rounded-lg border transition-all ${activeMenu === customer.id ? 'bg-paymint-green text-black border-paymint-green' : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'}`}
+                            >
+                              <MoreVertical size={16} />
+                            </button>
 
-                          {activeMenu === customer.id && (
-                            <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1a1a1a] rounded-xl shadow-xl border border-gray-200 dark:border-white/10 z-50 overflow-hidden">
-                              <button
-                                onClick={() => {
-                                  setSelectedCustomer(customer);
-                                  setShowDetailModal(true);
-                                  setActiveMenu(null);
-                                }}
-                                className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
-                              >
-                                <Eye size={14} className="text-paymint-green" />
-                                View Profile
-                              </button>
-                              <button
-                                onClick={() => {
-                                  handleDeleteCustomer(customer);
-                                  setActiveMenu(null);
-                                }}
-                                className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-paymint-red hover:bg-paymint-red/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
-                              >
-                                <Trash2 size={14} />
-                                Delete Customer
-                              </button>
-                            </div>
-                          )}
+                            {activeMenu === customer.id && (
+                              <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1a1a1a] rounded-xl shadow-xl border border-gray-200 dark:border-white/10 z-50 overflow-hidden">
+                                <button
+                                  onClick={() => {
+                                    setSelectedCustomer(customer);
+                                    setShowDetailModal(true);
+                                    setActiveMenu(null);
+                                  }}
+                                  className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
+                                >
+                                  <Eye size={14} className="text-paymint-green" />
+                                  View Profile
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    handleDeleteCustomer(customer);
+                                    setActiveMenu(null);
+                                  }}
+                                  className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-paymint-red hover:bg-paymint-red/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
+                                >
+                                  <Trash2 size={14} />
+                                  Delete Customer
+                                </button>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                      </td>
+                    </motion.tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
-      </div >
+      </div>
 
       {/* Pagination Controls */}
       {totalPages > 1 && (
