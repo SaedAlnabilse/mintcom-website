@@ -205,7 +205,7 @@ export function PasswordResetOtpModal({
                             <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center">
                                 <Shield className="w-5 h-5 text-paymint-green" />
                             </div>
-                            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+                            <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
                                 {getTitle()}
                             </h2>
                         </div>
@@ -226,10 +226,10 @@ export function PasswordResetOtpModal({
                                     <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto mb-4">
                                         <Mail className="w-8 h-8 text-blue-500" />
                                     </div>
-                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                                         Verify Your Identity
                                     </h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    <p className="text-sm font-bold text-gray-500">
                                         We'll send a 6-digit code to your registered email address.
                                     </p>
                                 </div>
@@ -268,10 +268,10 @@ export function PasswordResetOtpModal({
                                     <div className="w-16 h-16 rounded-full bg-paymint-green/10 flex items-center justify-center mx-auto mb-4">
                                         <Shield className="w-8 h-8 text-paymint-green" />
                                     </div>
-                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                                         Enter Verification Code
                                     </h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    <p className="text-sm font-bold text-gray-500">
                                         We sent a code to <span className="font-semibold text-gray-900 dark:text-white">{maskedEmail}</span>
                                     </p>
                                 </div>
@@ -333,17 +333,17 @@ export function PasswordResetOtpModal({
                                     <div className="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center mx-auto mb-4">
                                         <Key className="w-8 h-8 text-purple-500" />
                                     </div>
-                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                                         Create New Password
                                     </h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    <p className="text-sm font-bold text-gray-500">
                                         Enter a strong password with at least 8 characters
                                     </p>
                                 </div>
 
                                 <div className="space-y-4">
                                     <div className="relative">
-                                        <label className="text-xs font-bold text-gray-400 tracking-widest mb-2 block">
+                                        <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
                                             New Password
                                         </label>
                                         <input
@@ -363,7 +363,7 @@ export function PasswordResetOtpModal({
                                     </div>
 
                                     <div className="relative">
-                                        <label className="text-xs font-bold text-gray-400 tracking-widest mb-2 block">
+                                        <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
                                             Confirm Password
                                         </label>
                                         <input
@@ -414,10 +414,10 @@ export function PasswordResetOtpModal({
                                     <CheckCircle2 className="w-10 h-10 text-emerald-500" />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                                         Password Reset Successfully!
                                     </h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    <p className="text-sm font-bold text-gray-500">
                                         Your password has been updated. You can now use your new password.
                                     </p>
                                 </div>

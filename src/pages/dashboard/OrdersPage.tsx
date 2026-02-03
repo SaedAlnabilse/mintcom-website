@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import { startOfDay, endOfDay, format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Search,
   RefreshCw,
   ShoppingCart,
   Clock,
@@ -11,7 +10,6 @@ import {
   TrendingUp,
   Download,
   MoreVertical,
-  ChevronLeft,
   PlayCircle,
   History,
   Eye,
@@ -22,10 +20,10 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { OrderDetailModal } from '../../components/OrderDetailModal';
 import { exportToCSV } from '../../utils/export';
 import { toast } from 'react-hot-toast';
-import { SingleSelect } from '../../components/SingleSelect';
 import { CustomDatePicker } from '../../components/CustomDatePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
+import { SearchInput, SelectInput, Pagination } from '../../components/ui';
 
 interface Order {
   id: string;
@@ -145,6 +143,71 @@ export function OrdersPage() {
       }
     };
     fetchShiftData();
+  }, []);
+
+  // Use dynamic payment options to match real data
+  const [paymentOptions, setPaymentOptions] = useState<{ label: string; value: string }[]>([]);
+
+  useEffect(() => {
+    const fetchPaymentOptions = async () => {
+      try {
+        const [methodsRes, cardsRes] = await Promise.all([
+          api.get('/app-settings/payment-methods').catch(() => ({ data: [] })),
+          api.get('/card-types').catch(() => ({ data: [] }))
+        ]);
+
+        const methods = Array.isArray(methodsRes.data) ? methodsRes.data : [];
+        const cards = Array.isArray(cardsRes.data) ? cardsRes.data : [];
+
+        // Use a Set to avoid duplicates and normalize
+        const uniqueOptions = new Set<string>();
+
+        // Add standard defaults
+        uniqueOptions.add('Cash');
+        uniqueOptions.add('Card');
+
+        // Add dynamic methods (active ones preferred, but we show all for history)
+        methods.forEach((m: any) => {
+          if (m.name) uniqueOptions.add(m.name);
+        });
+
+        cards.forEach((c: any) => {
+          if (c.name) uniqueOptions.add(c.name);
+        });
+
+        // Common external providers if not in DB
+        ['Talabat', 'Careem', 'Jahez', 'Other'].forEach(opt => uniqueOptions.add(opt));
+
+        const formattedOptions = Array.from(uniqueOptions).map(name => {
+          // Standard system payment methods use uppercase match in backend
+          const upperName = name.toUpperCase();
+          const standardTypes = ['CASH', 'CARD', 'VISA', 'MASTERCARD', 'AMEX', 'TALABAT', 'CAREEM', 'JAHEZ', 'OTHER'];
+
+          return {
+            label: name,
+            value: standardTypes.includes(upperName) ? upperName : name
+          };
+        }).sort((a, b) => a.label.localeCompare(b.label));
+
+        setPaymentOptions(formattedOptions);
+      } catch (err) {
+        console.error('Failed to fetch payment options', err);
+        // Fallback options
+        setPaymentOptions([
+          { label: 'Cash', value: 'CASH' },
+          { label: 'Card', value: 'CARD' },
+          { label: 'Visa', value: 'VISA' },
+          { label: 'Mastercard', value: 'MASTERCARD' },
+          { label: 'Amex', value: 'AMEX' },
+          { label: 'Talabat', value: 'TALABAT' },
+          { label: 'Careem', value: 'CAREEM' },
+          { label: 'Jahez', value: 'JAHEZ' },
+          { label: 'Other', value: 'OTHER' },
+        ]);
+      }
+    };
+
+    fetchPaymentOptions();
   }, []);
 
   useEffect(() => {
@@ -276,10 +339,21 @@ export function OrdersPage() {
 
       if (paymentFilter !== 'all') {
         params.paymentMethod = paymentFilter;
+        params.payment_method = paymentFilter; // Try snake_case
+        params.payment = paymentFilter; // Try simple name
       }
 
       const response = await api.get('/reports/orders-history', { params });
       let fetchedOrders = response.data.orders || response.data || [];
+
+      // Client-side filtering fallback: 
+      // If backend returns non-matching items (e.g. ignores filter), we filter them out here to ensure correctness.
+      if (paymentFilter !== 'all') {
+        fetchedOrders = fetchedOrders.filter((order: any) => {
+          const method = order.paymentMethod || '';
+          return method.toUpperCase() === paymentFilter.toUpperCase();
+        });
+      }
 
       // Include held orders if viewing 'all' status and strictly on page 1
       if (statusFilter === 'all' && page === 1 && paymentFilter === 'all') {
@@ -469,7 +543,7 @@ export function OrdersPage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">View Customer Orders</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1 sm:mt-2 text-sm">
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
             Manage orders
           </p>
         </div>
@@ -496,34 +570,28 @@ export function OrdersPage() {
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl sm:rounded-[24px] border border-gray-100 dark:border-white/5 p-2 shadow-sm">
         {/* Mobile: Stack vertically, Desktop: Flex wrap */}
         <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch gap-2">
+
           {/* Search Bar - full width on mobile */}
-          <div className="w-full sm:flex-1 sm:min-w-[200px] lg:w-64 lg:flex-none relative group">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none z-10">
-              <Search size={16} />
-            </div>
-            <input
-              type="text"
+          <div className="w-full sm:flex-1 sm:min-w-[200px] lg:w-64 lg:flex-none">
+            <SearchInput
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onClear={() => { setSearchQuery(''); fetchOrders(); }}
               onKeyPress={(e) => e.key === 'Enter' && searchOrder()}
               placeholder="Search orders..."
-              className="w-full h-12 sm:h-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border-transparent rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green focus:bg-white dark:focus:bg-white/10 transition-all shadow-inner"
+              className="w-full h-full"
             />
           </div>
 
           {/* Quick Date Select - half width on mobile */}
           <div className="flex-1 sm:flex-none sm:w-44 relative z-[70]">
-            <SingleSelect
+            <SelectInput
               value={selectedDateRange === 'custom' ? null : selectedDateRange}
               onChange={(val) => setQuickDate(val || 'today')}
               options={getDateRangeOptions()}
               showAllOption={false}
               placeholder="Period"
               className="w-full h-full"
-              buttonClassName={`!rounded-xl !px-4 !py-3 !h-12 sm:!h-full !text-sm !font-bold border transition-all ${selectedDateRange !== 'custom'
-                ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
-                : '!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10'
-                }`}
             />
           </div>
 
@@ -534,7 +602,7 @@ export function OrdersPage() {
               return (
                 <div className={`flex flex-col justify-center px-4 py-1.5 rounded-xl border h-full transition-all ${isDateFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
                   <div className="flex items-center gap-1.5 mb-1">
-                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>DATE RANGE</span>
+                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Date Range</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <CustomDatePicker
@@ -565,7 +633,7 @@ export function OrdersPage() {
           <div className="flex gap-2 w-full sm:w-auto sm:flex-1 sm:min-w-[300px]">
             {/* Status Select */}
             <div className="flex-1 relative z-[50]">
-              <SingleSelect
+              <SelectInput
                 value={statusFilter === 'all' ? null : statusFilter}
                 onChange={(val) => {
                   setStatusFilter(val || 'all');
@@ -583,41 +651,24 @@ export function OrdersPage() {
                 allOptionLabel="All Status"
                 placeholder="Status"
                 className="w-full h-full"
-                buttonClassName={`!rounded-xl !px-3 sm:!px-4 !py-3 !h-12 sm:!h-full !text-sm !font-bold border transition-all ${statusFilter !== 'all'
-                  ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
-                  : '!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10'
-                  }`}
               />
             </div>
 
             {/* Payment Method Select */}
             <div className="flex-1 relative z-[40]">
-              <SingleSelect
+              <SelectInput
                 value={paymentFilter === 'all' ? null : paymentFilter}
                 onChange={(val) => { setPaymentFilter(val || 'all'); setPage(1); }}
                 disabled={statusFilter === 'HELD'}
                 placeholder="Payment"
-                options={[
-                  { label: 'Cash', value: 'CASH' },
-                  { label: 'Card', value: 'CARD' },
-                  { label: 'Visa', value: 'VISA' },
-                  { label: 'Mastercard', value: 'MASTERCARD' },
-                  { label: 'Amex', value: 'AMEX' },
-                  { label: 'Talabat', value: 'TALABAT' },
-                  { label: 'Careem', value: 'CAREEM' },
-                  { label: 'Jahez', value: 'JAHEZ' },
-                  { label: 'Other', value: 'OTHER' },
-                ]}
+                options={paymentOptions}
                 showAllOption={true}
                 allOptionLabel="All Payments"
                 className="w-full h-full"
-                buttonClassName={`!rounded-xl !px-3 sm:!px-4 !py-3 !h-12 sm:!h-full !text-sm !font-bold border transition-all ${paymentFilter !== 'all'
-                  ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
-                  : '!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10'
-                  }`}
               />
             </div>
           </div>
+
         </div>
       </div>
 
@@ -714,7 +765,7 @@ export function OrdersPage() {
               <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4">
                 <ShoppingCart className="w-8 h-8 text-gray-300" />
               </div>
-              <p className="text-sm font-bold text-gray-500">No orders found</p>
+              <p className="text-xl font-bold text-gray-900 dark:text-white">No orders found</p>
             </div>
           </div>
         )}
@@ -916,16 +967,7 @@ export function OrdersPage() {
         )}
       </div>
 
-      {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <div className="flex justify-center">
-          <div className="flex items-center gap-2 p-1 rounded-xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm">
-            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500 disabled:opacity-30"><ChevronLeft size={18} /></button>
-            <span className="px-4 text-xs font-bold text-gray-600 dark:text-gray-400">Page {page} of {totalPages}</span>
-            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500 disabled:opacity-30"><ChevronRight size={18} /></button>
-          </div>
-        </div>
-      )}
+      <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} className="mt-6" />
 
       <AnimatePresence>
         {selectedOrder && (

@@ -1,7 +1,7 @@
+import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Search,
   Plus,
   Users,
   Mail,
@@ -13,8 +13,6 @@ import {
   MoreVertical,
   Download,
   Key,
-  ChevronLeft,
-  ChevronRight,
   RefreshCw,
   UserCheck,
   Star
@@ -25,8 +23,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
 import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { exportToCSV } from '../../utils/export';
-import { SingleSelect } from '../../components/SingleSelect';
-
+import { SearchInput, SelectInput, Pagination } from '../../components/ui';
 interface Staff {
   id: string;
   name: string;
@@ -164,7 +161,7 @@ export function StaffPage() {
       role: s.role,
       email: s.email || 'N/a',
       phone: s.phone || 'N/a',
-      status: s.isActive ? 'Active' : 'Inactive',
+      status: s.isActive ? AppStrings.STATUS.ACTIVE : AppStrings.STATUS.INACTIVE,
       joined: new Date(s.createdAt).toLocaleDateString()
     }));
 
@@ -235,7 +232,7 @@ export function StaffPage() {
             </div>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Staff</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1 sm:mt-2 text-sm font-medium">Manage your team</p>
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">Manage your team</p>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
@@ -295,10 +292,12 @@ export function StaffPage() {
         ))}
       </div>
 
+// ... (imports)
+
       {/* Filters & Search */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div className="w-full sm:w-48">
-          <SingleSelect
+          <SelectInput
             value={filterRole === 'ALL' ? null : filterRole}
             onChange={(val) => {
               setFilterRole((val as 'ALL' | 'ADMIN' | 'USER') || 'ALL');
@@ -314,22 +313,13 @@ export function StaffPage() {
         </div>
 
         <div className="relative flex-1 sm:max-w-md">
-          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search staff..."
+          <SearchInput
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
-            className="w-full h-12 sm:h-auto pl-11 pr-4 py-2.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+            onClear={() => setSearchQuery('')}
+            placeholder="Search staff..."
+            className="w-full"
           />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 dark:hover:bg-white/10 rounded-md transition-colors"
-            >
-              <XCircle size={14} className="text-gray-400" />
-            </button>
-          )}
         </div>
       </div>
 
@@ -345,8 +335,8 @@ export function StaffPage() {
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
               <Users size={32} className="sm:w-10 sm:h-10 text-gray-300" />
             </div>
-            <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">No Staff Found</h3>
-            <p className="text-gray-500 max-w-xs text-sm font-medium mx-auto">Add a team member to get started.</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No staff found</h3>
+            <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto">Add a team member to get started.</p>
           </div>
         ) : (
           <>
@@ -488,11 +478,11 @@ export function StaffPage() {
                           <div className="space-y-1">
                             <div className="flex items-center gap-2 text-xs text-gray-500">
                               <Mail size={12} className="text-gray-400" />
-                              <span className="font-medium">{member.email || 'No Email'}</span>
+                              <span className="font-medium">{member.email || 'No email'}</span>
                             </div>
                             <div className="flex items-center gap-2 text-xs text-gray-500">
                               <Phone size={12} className="text-gray-400" />
-                              <span className="font-medium">{member.phone || 'No Phone'}</span>
+                              <span className="font-medium">{member.phone || 'No phone'}</span>
                             </div>
                           </div>
                         </td>
@@ -582,62 +572,11 @@ export function StaffPage() {
       </div >
 
       {/* Pagination Controls */}
-      {filteredStaff.length > itemsPerPage && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-2 sm:px-4">
-          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-medium text-center sm:text-left">
-            Showing <span className="font-bold text-gray-900 dark:text-white">{indexOfFirstItem + 1}</span> to <span className="font-bold text-gray-900 dark:text-white">{Math.min(indexOfLastItem, filteredStaff.length)}</span> of <span className="font-bold text-gray-900 dark:text-white">{filteredStaff.length}</span> members
-          </p>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="p-2 rounded-lg border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors touch-target"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <div className="flex items-center gap-1">
-              {/* Show limited page numbers on mobile */}
-              {[...Array(totalPages)].map((_, i) => {
-                // On mobile, only show first, last, current, and adjacent pages
-                const pageNum = i + 1;
-                const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-                const showPage = !isMobile ||
-                  pageNum === 1 ||
-                  pageNum === totalPages ||
-                  Math.abs(pageNum - currentPage) <= 1;
-
-                if (!showPage && pageNum === 2 && currentPage > 3) {
-                  return <span key={i} className="px-1 text-gray-400">...</span>;
-                }
-                if (!showPage && pageNum === totalPages - 1 && currentPage < totalPages - 2) {
-                  return <span key={i} className="px-1 text-gray-400">...</span>;
-                }
-                if (!showPage) return null;
-
-                return (
-                  <button
-                    key={i}
-                    onClick={() => paginate(pageNum)}
-                    className={`w-8 h-8 rounded-lg text-sm font-bold transition-all touch-target ${currentPage === pageNum
-                      ? 'bg-paymint-green text-black'
-                      : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5'
-                      }`}
-                  >
-                    {pageNum}
-                  </button>
-                );
-              })}
-            </div>
-            <button
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="p-2 rounded-lg border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors touch-target"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
-        </div>
-      )}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={paginate}
+      />
 
       <EmployeeFormModal
         isOpen={showModal}

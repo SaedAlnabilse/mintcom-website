@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, CreditCard, DollarSign, Trash2, Star, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, CreditCard, DollarSign, Trash2, Star, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye } from 'lucide-react';
 import api from '../../config/api';
 import { AddPaymentMethodModal } from '../../components/AddPaymentMethodModal';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
+import { Pagination } from '../../components/ui';
 
 interface SavedCard {
     id: string;
@@ -246,14 +247,14 @@ export function OwnerBillingPage() {
                         </span>
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Billing</h1>
-                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
+                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
                         Manage payments and subscriptions
                     </p>
                 </div>
 
                 <div className="flex items-center gap-6">
                     <div className="text-right hidden sm:block">
-                        <p className="text-xs font-bold text-gray-400 tracking-widest mb-1">Monthly Cost</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widestst mb-1">Monthly Cost</p>
                         <div className="flex items-baseline justify-end gap-1">
                             <span className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">${totalMonthlyCost.toFixed(2)}</span>
                             <span className="text-xs font-bold text-gray-400">/mo</span>
@@ -279,7 +280,7 @@ export function OwnerBillingPage() {
                         label: 'Next Bill',
                         value: billingData?.nextInvoiceDate
                             ? new Date(billingData.nextInvoiceDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                            : 'No Bill',
+                            : 'No bill',
                         icon: Calendar,
                         color: 'text-purple-500',
                         bg: 'bg-purple-500/10'
@@ -298,7 +299,7 @@ export function OwnerBillingPage() {
                                 <stat.icon size={20} />
                             </div>
                             <div>
-                                <p className="text-xs font-bold text-gray-400 tracking-wide mb-0.5">{stat.label}</p>
+                                <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
                                 <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                             </div>
                         </div>
@@ -309,7 +310,7 @@ export function OwnerBillingPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Saved Cards Section */}
                 <div className="lg:col-span-1 space-y-6">
-                    <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <CreditCard size={18} className="text-paymint-green" />
                         Cards
                     </h2>
@@ -350,7 +351,7 @@ export function OwnerBillingPage() {
 
                                     <div className="relative z-10 flex justify-between items-start">
                                         <div className="space-y-1.5">
-                                            <p className="text-xs font-black tracking-[0.2em] text-gray-400">Card</p>
+                                            <p className="text-xs font-black text-gray-400 tracking-widest">Card</p>
                                             <p className="text-xl font-bold tracking-[0.15em] text-gray-900 dark:text-white">
                                                 <span className="opacity-30">••••</span> {card.last4}
                                             </p>
@@ -373,11 +374,11 @@ export function OwnerBillingPage() {
 
                                     <div className="relative z-10 flex justify-between items-end">
                                         <div className="space-y-1">
-                                            <p className="text-xs font-black tracking-[0.2em] text-gray-400">Name</p>
+                                            <p className="text-xs font-black text-gray-400 tracking-widest">Name</p>
                                             <p className="font-bold tracking-wider text-xs text-gray-800 dark:text-gray-200">{card.cardholderName || 'User'}</p>
                                         </div>
                                         <div className="text-right space-y-1">
-                                            <p className="text-xs font-black tracking-[0.2em] text-gray-400">Expires</p>
+                                            <p className="text-xs font-black text-gray-400 tracking-widest">Expires</p>
                                             <p className="font-bold text-xs text-gray-800 dark:text-gray-200">{card.expMonth}/{card.expYear.toString().slice(-2)}</p>
                                         </div>
                                     </div>
@@ -415,14 +416,14 @@ export function OwnerBillingPage() {
 
                 {/* Subscriptions Section */}
                 <div className="lg:col-span-2 space-y-6">
-                    <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <DollarSign size={18} className="text-paymint-green" />
                         Subscriptions
                     </h2>
 
                     <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-visible shadow-sm">
                         {/* Table Header */}
-                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
+                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest uppercase">
                             <div className="col-span-4">Service</div>
                             <div className="col-span-3">Status</div>
                             <div className="col-span-2">Cost</div>
@@ -437,16 +438,13 @@ export function OwnerBillingPage() {
                             </div>
                         ) : billingData?.establishments.length === 0 ? (
                             <div className="text-center py-20">
-                                <p className="text-gray-400 font-medium">No active subscriptions</p>
+                                <p className="text-sm font-bold text-gray-500">No active subscriptions</p>
                             </div>
                         ) : (
                             <div className="divide-y divide-gray-100 dark:divide-white/5">
-                                {paginatedEstablishments.map((est, index) => (
-                                    <motion.div
+                                {paginatedEstablishments.map((est) => (
+                                    <div
                                         key={est.id}
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: index * 0.05 }}
                                         className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors items-center group relative"
                                     >
                                         {/* Service */}
@@ -455,8 +453,8 @@ export function OwnerBillingPage() {
                                                 {est.name.charAt(0)}
                                             </div>
                                             <div>
-                                                <h3 className="font-bold text-gray-900 dark:text-white text-sm">{est.name}</h3>
-                                                <p className="text-xs text-gray-500">Standard Plan</p>
+                                                <h3 className="text-sm font-bold text-gray-900 dark:text-white">{est.name}</h3>
+                                                <p className="text-xs font-bold text-gray-500">Standard Plan</p>
                                             </div>
                                         </div>
 
@@ -474,7 +472,7 @@ export function OwnerBillingPage() {
                                         {/* Payment & Actions */}
                                         <div className="col-span-3 flex items-center justify-center relative">
                                             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
-                                                {est.paymentCard ? `•••• ${est.paymentCard.last4}` : 'No Card'}
+                                                {est.paymentCard ? `•••• ${est.paymentCard.last4}` : 'No card'}
                                             </span>
 
                                             <div className="absolute right-0">
@@ -533,38 +531,12 @@ export function OwnerBillingPage() {
                                                 </AnimatePresence>
                                             </div>
                                         </div>
-                                    </motion.div>
+                                    </div>
                                 ))}
                             </div>
                         )}
 
-                        {/* Pagination Controls */}
-                        {!isLoading && (billingData?.establishments.length || 0) > itemsPerPage && (
-                            <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
-                                <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                                    Showing {Math.min((currentPage - 1) * itemsPerPage + 1, billingData?.establishments.length || 0)} to {Math.min(currentPage * itemsPerPage, billingData?.establishments.length || 0)} of {billingData?.establishments.length}
-                                </span>
-                                <div className="flex items-center gap-2">
-                                    <button
-                                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                                        disabled={currentPage === 1}
-                                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                    >
-                                        <ChevronLeft size={16} />
-                                    </button>
-                                    <span className="text-xs font-bold text-gray-900 dark:text-white px-2">
-                                        Page {currentPage} of {totalPages}
-                                    </span>
-                                    <button
-                                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                                        disabled={currentPage === totalPages}
-                                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                    >
-                                        <ChevronRight size={16} />
-                                    </button>
-                                </div>
-                            </div>
-                        )}
+                        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} className="mt-6" />
                     </div>
 
                     {/* Alert Banner for Cancellations */}
@@ -572,8 +544,8 @@ export function OwnerBillingPage() {
                         <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-3">
                             <AlertCircle size={18} className="text-amber-500 shrink-0 mt-0.5" />
                             <div>
-                                <h4 className="text-sm font-bold text-amber-500 tracking-wide mb-1">Ending Soon</h4>
-                                <p className="text-xs font-medium text-amber-600/80 dark:text-amber-500/80 leading-relaxed">
+                                <h4 className="text-xs font-black text-amber-500 tracking-widest mb-1">Ending Soon</h4>
+                                <p className="text-xs font-bold text-amber-500 leading-relaxed">
                                     Some subscriptions will end after this billing cycle.
                                 </p>
                             </div>

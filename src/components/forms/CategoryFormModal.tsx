@@ -1,3 +1,4 @@
+import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -121,11 +122,11 @@ export function CategoryFormModal({
             <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-black text-gray-400 tracking-[0.2em]">Category</span>
+                <span className="text-xs font-black text-gray-400 tracking-widest">Category</span>
                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
                 <span className="text-xs font-black text-paymint-green tracking-widest">Active</span>
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+              <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
                 {initialData ? 'Edit Category' : 'New Category'}
               </h2>
             </div>
@@ -159,8 +160,8 @@ export function CategoryFormModal({
 
               {/* Name */}
               <div className="space-y-3">
-                <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
-                  Name <span className="text-paymint-red mx-1">*</span>
+                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+                  Name <span className="text-paymint-red">*</span>
                   <QuickInfo text="Category name." />
                 </label>
                 <input
@@ -168,14 +169,14 @@ export function CategoryFormModal({
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
                   placeholder="E.g. Hot Infusions"
-                  className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-bold shadow-sm`}
+                  className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                 />
-                {errors.name && <p className="mt-1.5 px-1 text-xs font-black text-paymint-red tracking-wider">{errors.name}</p>}
+                {errors.name && <p className="mt-1.5 px-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
               </div>
 
               {/* Icon Grid */}
               <div className="space-y-4">
-                <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
+                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
                   Icon
                   <QuickInfo text="Icon for the menu." />
                 </label>
@@ -221,7 +222,7 @@ export function CategoryFormModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-12 sm:h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-black tracking-[0.15em] sm:tracking-[0.2em] text-xs hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
+              className="flex-1 h-12 sm:h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-black text-xs tracking-widest hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
             >
               Cancel
             </button>
@@ -229,12 +230,12 @@ export function CategoryFormModal({
               type="submit"
               form="category-form"
               disabled={isSubmitting}
-              className="flex-[2] h-12 sm:h-14 rounded-xl bg-paymint-green text-black font-black tracking-[0.15em] sm:tracking-[0.2em] text-xs hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+              className="flex-[2] h-12 sm:h-14 rounded-xl bg-paymint-green text-black font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
             >
               {isSubmitting ? (
                 <RefreshCw size={18} className="animate-spin" />
               ) : (
-                initialData ? 'Save' : 'Add'
+                initialData ? AppStrings.COMMON.SAVE : AppStrings.COMMON.ADD
               )}
             </button>
           </div>

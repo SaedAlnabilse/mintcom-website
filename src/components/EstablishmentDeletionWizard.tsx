@@ -696,7 +696,7 @@ export function PendingDeletionBanner({
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="text-center">
-                        <div className="text-3xl font-bold">{deletionStatus.daysRemaining}</div>
+                        <div className="text-2xl sm:text-3xl font-bold">{deletionStatus.daysRemaining}</div>
                         <div className="text-xs text-white/80">Days Left</div>
                     </div>
                     <button

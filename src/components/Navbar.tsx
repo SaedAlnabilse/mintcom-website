@@ -32,7 +32,7 @@ export const Navbar = () => {
       <div className="container mx-auto px-8 md:px-16 lg:px-24 flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="flex items-center group">
-          <Logo size="lg" className="transition-transform duration-500 group-hover:scale-105" />
+          <Logo size="lg" className="transition-transform duration-500" />
         </Link>
 
         {/* Desktop Navigation */}
@@ -42,7 +42,7 @@ export const Navbar = () => {
               <a
                 key={link.name}
                 href={link.href}
-                className="text-sm font-bold text-gray-600 dark:text-gray-400 hover:text-paymint-green dark:hover:text-paymint-green transition-colors tracking-widest"
+                className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green dark:hover:text-paymint-green transition-colors"
               >
                 {link.name}
               </a>
@@ -56,7 +56,7 @@ export const Navbar = () => {
               to="/login"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-black text-gray-900 dark:text-white hover:text-paymint-green dark:hover:text-paymint-green transition-colors tracking-widest"
+              className="text-sm font-bold text-gray-900 dark:text-white hover:text-paymint-green dark:hover:text-paymint-green transition-colors"
             >
               Log In
             </Link>
@@ -64,7 +64,7 @@ export const Navbar = () => {
               to="/signup"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-gray-900 dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-xl font-black text-xs tracking-[0.15em] hover:scale-105 transition-all active:scale-95 shadow-lg shadow-gray-900/20 dark:shadow-white/10"
+              className="bg-gray-900 dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all active:scale-95 shadow-lg shadow-gray-900/20 dark:shadow-white/10"
             >
               Get Started
             </Link>
@@ -100,7 +100,7 @@ export const Navbar = () => {
                     key={link.name}
                     href={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-3xl font-black text-gray-900 dark:text-white hover:text-paymint-green transition-colors tracking-tight"
+                    className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white hover:text-paymint-green transition-colors tracking-tight"
                   >
                     {link.name}
                   </a>
@@ -115,7 +115,7 @@ export const Navbar = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full py-5 border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white rounded-[2rem] font-black text-xl text-center"
+                  className="w-full py-5 border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white rounded-[2rem] text-xl font-black tracking-tight text-center"
                 >
                   Log In
                 </Link>
@@ -124,7 +124,7 @@ export const Navbar = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full py-5 bg-paymint-green text-black rounded-[2rem] font-black text-xl text-center shadow-xl shadow-paymint-green/20"
+                  className="w-full py-5 bg-paymint-green text-black rounded-[2rem] text-xl font-black tracking-tight text-center shadow-xl shadow-paymint-green/20"
                 >
                   Create Account
                 </Link>

@@ -164,7 +164,7 @@ export function OwnerOverviewPage() {
                         </span>
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Dashboard</h1>
-                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
+                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
                         Managing {establishments.length} locations and {stats.totalBrands} brands.
                     </p>
                 </div>
@@ -209,7 +209,7 @@ export function OwnerOverviewPage() {
                                         <div className={`flex-none w-auto min-w-[145px] sm:min-w-[170px] relative z-[60]`}>
                                             <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isDateFiltered ? '!bg-emerald-50 dark:!bg-[#064E3B] border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : '!bg-gray-50 dark:!bg-[#1E293B] border-transparent'}`}>
                                                 <div className="flex items-center gap-1.5 mb-0.5">
-                                                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>DATE RANGE</span>
+                                                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Date Range</span>
                                                 </div>
                                                 <div className="flex items-center gap-2">
                                                     <CustomDatePicker
@@ -238,7 +238,7 @@ export function OwnerOverviewPage() {
                                         <div className={`flex-none w-auto min-w-[155px] sm:min-w-[180px] relative z-[55]`}>
                                             <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isTimeFiltered ? '!bg-emerald-50 dark:!bg-[#064E3B] border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : '!bg-gray-50 dark:!bg-[#1E293B] border-transparent'}`}>
                                                 <div className="flex items-center gap-1.5 mb-0.5">
-                                                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>ACTIVE HOURS</span>
+                                                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Active Hours</span>
                                                 </div>
                                                 <div className="flex items-center gap-2 justify-between relative">
                                                     <CustomTimePicker
@@ -314,7 +314,7 @@ export function OwnerOverviewPage() {
                 ].map((stat, i) => (
                     <motion.div
                         key={i}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
                         className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
@@ -335,7 +335,7 @@ export function OwnerOverviewPage() {
                                     </div>
                                 )}
                             </div>
-                            <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">{stat.label}</p>
+                            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{stat.label}</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                             {stat.sub && (
                                 <p className="text-xs font-medium text-gray-500 mt-1">{stat.sub}</p>
@@ -348,19 +348,19 @@ export function OwnerOverviewPage() {
             {/* Main Chart Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                     className="lg:col-span-2 p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm"
                 >
                     <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Sales Trends</h3>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sales Trends</h3>
                             <p className="text-xs text-gray-500 mt-1">Period: {selectedFilterLabel}</p>
                         </div>
                         <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-white/5">
                             <div className="w-2 h-2 rounded-full bg-paymint-green" />
-                            <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Total Revenue</span>
+                            <span className="text-xs font-black tracking-wider text-gray-600 dark:text-gray-400">Total Revenue</span>
                         </div>
                     </div>
 
@@ -415,10 +415,10 @@ export function OwnerOverviewPage() {
                                 <div className="w-20 h-20 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-4">
                                     <Activity size={32} className="text-gray-400 dark:text-gray-500" />
                                 </div>
-                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                                    No Revenue Data
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                                    No revenue data
                                 </h3>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
+                                <p className="text-sm font-bold text-gray-500 text-center">
                                     There are no sales recorded for the selected period.
                                 </p>
                             </div>
@@ -428,7 +428,7 @@ export function OwnerOverviewPage() {
 
                 {/* Quick Actions */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
                     className="space-y-4"
@@ -440,11 +440,11 @@ export function OwnerOverviewPage() {
                                 <Zap size={24} />
                             </div>
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Grow Business</h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">Add new locations or create brands.</p>
+                            <p className="text-sm font-bold text-gray-500 mb-6">Add new locations or create brands.</p>
                             <div className="space-y-3">
                                 <button
                                     onClick={() => navigate('/onboarding')}
-                                    className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl text-sm hover:scale-[1.02] active:scale-95 transition-all shadow-sm"
+                                    className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl text-sm active:scale-95 transition-all shadow-sm"
                                 >
                                     Add Location
                                 </button>
@@ -461,7 +461,7 @@ export function OwnerOverviewPage() {
                     <div className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 group relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-gray-100 dark:bg-white/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                         <div className="relative z-10">
-                            <h4 className="text-sm font-bold text-gray-900 dark:text-white tracking-wide mb-4">Quick Management</h4>
+                            <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Quick Management</h4>
                             <div className="space-y-3">
                                 <button
                                     onClick={() => navigate('/owner/employees')}
@@ -471,7 +471,7 @@ export function OwnerOverviewPage() {
                                         <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
                                             <UserPlus size={16} />
                                         </div>
-                                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Staff Management</span>
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">Staff Management</span>
                                     </div>
                                     <Activity size={14} className="text-gray-400 group-hover/btn:text-blue-500 transition-colors" />
                                 </button>
@@ -483,7 +483,7 @@ export function OwnerOverviewPage() {
                                         <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
                                             <Store size={16} />
                                         </div>
-                                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Manage Locations</span>
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">Manage Locations</span>
                                     </div>
                                     <Activity size={14} className="text-gray-400 group-hover/btn:text-emerald-500 transition-colors" />
                                 </button>

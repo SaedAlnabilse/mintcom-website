@@ -1,3 +1,4 @@
+import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -436,10 +437,10 @@ export function OwnerAccountManagementPage() {
                         <KeyRound className="w-7 h-7 text-black" />
                     </div>
                     <div>
-                        <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                             Account
                         </h1>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 font-medium mt-0.5">
+                        <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-0.5">
                             Security and settings
                         </p>
                     </div>
@@ -463,7 +464,7 @@ export function OwnerAccountManagementPage() {
                             <Store className="w-6 h-6 text-blue-500" />
                         </div>
                         <div>
-                            <p className="text-xs font-bold text-gray-400 tracking-widest mb-1">
+                            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">
                                 Locations
                             </p>
                             <p className="text-3xl font-black text-gray-900 dark:text-white">
@@ -482,7 +483,7 @@ export function OwnerAccountManagementPage() {
                             <Building2 className="w-6 h-6 text-purple-500" />
                         </div>
                         <div>
-                            <p className="text-xs font-bold text-gray-400 tracking-widest mb-1">
+                            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">
                                 Brands
                             </p>
                             <p className="text-3xl font-black text-gray-900 dark:text-white">
@@ -501,7 +502,7 @@ export function OwnerAccountManagementPage() {
                             <Users className="w-6 h-6 text-amber-500" />
                         </div>
                         <div>
-                            <p className="text-xs font-bold text-gray-400 tracking-widest mb-1">
+                            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">
                                 Admins
                             </p>
                             <p className="text-3xl font-black text-gray-900 dark:text-white">
@@ -529,7 +530,7 @@ export function OwnerAccountManagementPage() {
                                     <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center">
                                         <User className="w-5 h-5 text-paymint-green" />
                                     </div>
-                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Account</h2>
+                                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Account</h2>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {isEditing ? (
@@ -572,7 +573,7 @@ export function OwnerAccountManagementPage() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-gray-400 tracking-widest flex items-center gap-2">
+                                    <label className="text-xs font-black text-gray-400 tracking-widest flex items-center gap-2">
                                         <User size={12} />
                                         Full Name
                                     </label>
@@ -594,14 +595,14 @@ export function OwnerAccountManagementPage() {
                                             />
                                         </div>
                                     ) : (
-                                        <p className="text-gray-900 dark:text-white font-semibold">
+                                        <p className="text-sm font-bold text-gray-900 dark:text-white">
                                             {accountDetails?.firstName} {accountDetails?.lastName}
                                         </p>
                                     )}
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-gray-400 tracking-widest flex items-center gap-2">
+                                    <label className="text-xs font-black text-gray-400 tracking-widest flex items-center gap-2">
                                         <Mail size={12} />
                                         Email
                                     </label>
@@ -615,7 +616,7 @@ export function OwnerAccountManagementPage() {
                                         />
                                     ) : (
                                         <div className="flex items-center gap-2">
-                                            <p className="text-gray-900 dark:text-white font-semibold">
+                                            <p className="text-sm font-bold text-gray-900 dark:text-white">
                                                 {accountDetails?.email}
                                             </p>
                                             {accountDetails?.emailVerified && (
@@ -629,7 +630,7 @@ export function OwnerAccountManagementPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-gray-400 tracking-widest flex items-center gap-2">
+                                    <label className="text-xs font-black text-gray-400 tracking-widest flex items-center gap-2">
                                         <Phone size={12} />
                                         Phone
                                     </label>
@@ -642,18 +643,18 @@ export function OwnerAccountManagementPage() {
                                             className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
                                         />
                                     ) : (
-                                        <p className="text-gray-900 dark:text-white font-semibold">
+                                        <p className="text-sm font-bold text-gray-900 dark:text-white">
                                             {accountDetails?.phone || <span className="text-gray-400 italic">Not set</span>}
                                         </p>
                                     )}
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-gray-400 tracking-widest flex items-center gap-2">
+                                    <label className="text-xs font-black text-gray-400 tracking-widest flex items-center gap-2">
                                         <Calendar size={12} />
                                         Joined
                                     </label>
-                                    <p className="text-gray-900 dark:text-white font-semibold">
+                                    <p className="text-sm font-bold text-gray-900 dark:text-white">
                                         {formatDate(accountDetails?.createdAt || '')}
                                     </p>
                                 </div>
@@ -663,7 +664,7 @@ export function OwnerAccountManagementPage() {
                             {profileCompletion < 100 && (
                                 <div className="mt-6 pt-6 border-t border-gray-100 dark:border-white/[0.05]">
                                     <div className="flex items-center justify-between mb-2">
-                                        <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Profile Completion</span>
+                                        <span className="text-xs font-black text-gray-400 tracking-widest">Profile Completion</span>
                                         <span className="text-sm font-bold text-paymint-green">{profileCompletion}%</span>
                                     </div>
                                     <div className="h-2 bg-gray-100 dark:bg-white/[0.05] rounded-full overflow-hidden">
@@ -672,7 +673,7 @@ export function OwnerAccountManagementPage() {
                                             style={{ width: `${profileCompletion}%` }}
                                         />
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-2">
+                                    <p className="text-sm font-bold text-gray-500 mt-2">
                                         Complete your profile to unlock all features
                                     </p>
                                 </div>
@@ -693,10 +694,10 @@ export function OwnerAccountManagementPage() {
                                     <Store className="w-5 h-5 text-blue-500" />
                                 </div>
                                 <div>
-                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+                                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                                         Location Logins ({establishments.length})
                                     </h2>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">Logins for each location</p>
+                                    <p className="text-xs font-bold text-gray-500 dark:text-gray-400">Logins for each location</p>
                                 </div>
                             </div>
 
@@ -794,10 +795,10 @@ export function OwnerAccountManagementPage() {
                                     <Building2 className="w-5 h-5 text-purple-500" />
                                 </div>
                                 <div>
-                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+                                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                                         Brand Logins ({brands.length})
                                     </h2>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">Logins for each brand</p>
+                                    <p className="text-xs font-bold text-gray-500 dark:text-gray-400">Logins for each brand</p>
                                 </div>
                             </div>
 
@@ -830,14 +831,14 @@ export function OwnerAccountManagementPage() {
                                                             <Building2 className="w-6 h-6 text-purple-500" />
                                                         </div>
                                                         <div>
-                                                            <h3 className="text-base font-bold text-gray-900 dark:text-white">{brand.name}</h3>
+                                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">{brand.name}</h3>
                                                             <div className="flex items-center gap-2 mt-1.5 text-xs text-gray-500 dark:text-gray-400">
                                                                 <span className="font-medium bg-gray-100 dark:bg-white/[0.05] px-2 py-0.5 rounded-md border border-gray-200 dark:border-white/[0.05]">
                                                                     {count} location{count !== 1 ? 's' : ''}
                                                                 </span>
                                                                 <span>•</span>
                                                                 <span className={`font-bold ${brand.isActive ? 'text-emerald-500' : 'text-gray-400'}`}>
-                                                                    {brand.isActive ? 'Active' : 'Inactive'}
+                                                                    {brand.isActive ? AppStrings.STATUS.ACTIVE : AppStrings.STATUS.INACTIVE}
                                                                 </span>
                                                             </div>
                                                             <p className="text-xs text-gray-400 mt-1">
@@ -856,7 +857,7 @@ export function OwnerAccountManagementPage() {
                                                 </div>
 
                                                 <div className="mt-5 p-4 bg-white dark:bg-[#020617] rounded-xl border border-gray-200 dark:border-white/[0.05] group-hover:border-purple-500/20 transition-colors">
-                                                    <label className="text-xs font-bold text-gray-400 tracking-widest mb-2 flex items-center gap-1.5">
+                                                    <label className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center gap-1.5">
                                                         <Key size={10} />
                                                         Brand Login ID
                                                     </label>
@@ -898,7 +899,7 @@ export function OwnerAccountManagementPage() {
                                     <BookOpen className="w-5 h-5 text-blue-500" />
                                 </div>
                                 <div>
-                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Resources</h2>
+                                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Resources</h2>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">Help guides</p>
                                 </div>
                             </div>
@@ -914,8 +915,8 @@ export function OwnerAccountManagementPage() {
                                         <BookOpen size={20} className="text-blue-500 group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white">User Manual</h4>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">Complete software guide</p>
+                                        <h4 className="text-lg font-bold text-gray-900 dark:text-white">User Manual</h4>
+                                        <p className="text-sm font-bold text-gray-500">Complete software guide</p>
                                     </div>
                                     <Download size={16} className="text-gray-400 group-hover/item:text-blue-500 transition-colors" />
                                 </a>
@@ -1040,7 +1041,7 @@ export function OwnerAccountManagementPage() {
                                 <div className="w-10 h-10 rounded-xl bg-paymint-green/20 flex items-center justify-center">
                                     <Info className="w-5 h-5 text-paymint-green" />
                                 </div>
-                                <h2 className="text-lg font-bold text-gray-900 dark:text-white">Security Tips</h2>
+                                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Security Tips</h2>
                             </div>
 
                             <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-300">
@@ -1077,7 +1078,7 @@ export function OwnerAccountManagementPage() {
                                         <AlertCircle className="w-5 h-5 text-red-500" />
                                     )}
                                 </div>
-                                <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+                                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                                     {accountDetails?.deletionRequestedAt ? 'Restore Account' : 'Danger Zone'}
                                 </h2>
                             </div>
@@ -1165,7 +1166,7 @@ export function OwnerAccountManagementPage() {
                                 <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center">
                                     <AlertTriangle className="w-5 h-5 text-red-500" />
                                 </div>
-                                <h3 className="text-xl font-black text-gray-900 dark:text-white">
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                                     Delete Account
                                 </h3>
                             </div>
@@ -1246,7 +1247,7 @@ export function OwnerAccountManagementPage() {
                                     </button>
                                     <button
                                         onClick={() => setDeleteStep(3)}
-                                        disabled={deleteConfirmationText !== 'Delete'}
+                                        disabled={deleteConfirmationText !== AppStrings.COMMON.DELETE}
                                         className="flex-1 py-4 bg-red-500 text-white rounded-2xl text-sm font-black disabled:opacity-50 transition-all"
                                     >
                                         Next
@@ -1313,7 +1314,7 @@ export function OwnerAccountManagementPage() {
                                     <AlertCircle className="w-6 h-6 text-amber-500" />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-black text-gray-900 dark:text-white leading-tight">
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white leading-tight">
                                         Account Has Active Locations
                                     </h3>
                                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -1329,7 +1330,7 @@ export function OwnerAccountManagementPage() {
 
                                 <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/[0.05] overflow-hidden">
                                     <div className="px-4 py-3 border-b border-gray-100 dark:border-white/[0.05] bg-gray-100/50 dark:bg-white/[0.02]">
-                                        <p className="text-xs font-bold text-gray-400 tracking-widest">Active Locations</p>
+                                        <p className="text-xs font-black text-gray-400 tracking-widest">Active Locations</p>
                                     </div>
                                     <div className="max-h-40 overflow-y-auto p-2 space-y-1">
                                         {activeBlockingEsts.map((est) => {

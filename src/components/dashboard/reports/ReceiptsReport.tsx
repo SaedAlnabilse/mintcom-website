@@ -3,12 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Search,
     Receipt,
-    ChevronLeft,
-    ChevronRight,
     Wallet,
     Undo2,
     Download
 } from 'lucide-react';
+import { Pagination } from '../../ui';
 import { OrderDetailModal } from '../../OrderDetailModal';
 import { CustomSelect } from '../../CustomSelect';
 import api from '../../../config/api';
@@ -301,7 +300,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-black border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
-                                                        {(order.paymentStatus || order.status || 'PENDING').toUpperCase()}
+                                                        {(order.paymentStatus || order.status || 'Pending').charAt(0).toUpperCase() + (order.paymentStatus || order.status || 'Pending').slice(1).toLowerCase()}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
@@ -325,7 +324,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                                             <span className="text-xs text-gray-500">{formatDate(order.createdAt)}</span>
                                         </div>
                                         <span className={`px-1.5 py-0.5 rounded text-xs font-bold ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
-                                            {(order.paymentStatus || order.status || 'PENDING').toUpperCase()}
+                                            {(order.paymentStatus || order.status || 'Pending').charAt(0).toUpperCase() + (order.paymentStatus || order.status || 'Pending').slice(1).toLowerCase()}
                                         </span>
                                     </div>
                                     <div className="flex justify-between items-center mt-2">
@@ -339,16 +338,11 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                 )}
             </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-                <div className="flex justify-center">
-                    <div className="flex items-center gap-2 p-1 rounded-xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm">
-                        <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500 disabled:opacity-30"><ChevronLeft size={16} /></button>
-                        <span className="px-4 text-xs font-bold text-gray-600 dark:text-gray-400">Page {page} of {totalPages}</span>
-                        <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500 disabled:opacity-30"><ChevronRight size={16} /></button>
-                    </div>
-                </div>
-            )}
+            <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={(p) => setPage(p)}
+            />
 
             {selectedOrder && (
                 <OrderDetailModal

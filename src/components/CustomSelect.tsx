@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronDown, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -41,7 +41,11 @@ export function CustomSelect({
     const listRef = useRef<HTMLDivElement>(null);
 
     const [smartDirection, setSmartDirection] = useState<'up' | 'down'>(direction);
-    const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
+    const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({
+        opacity: 0,
+        pointerEvents: 'none',
+        position: 'fixed'
+    });
 
     // Calculate dropdown position
     const updateDropdownPosition = () => {
@@ -62,8 +66,16 @@ export function CustomSelect({
             top: shouldGoUp ? 'auto' : rect.bottom + 8,
             bottom: shouldGoUp ? window.innerHeight - rect.top + 8 : 'auto',
             zIndex: 9999,
+            opacity: 1,
+            pointerEvents: 'auto'
         });
     };
+
+    useLayoutEffect(() => {
+        if (isOpen) {
+            updateDropdownPosition();
+        }
+    }, [isOpen]);
 
     // Close when clicking outside
     useEffect(() => {
@@ -79,7 +91,6 @@ export function CustomSelect({
         };
 
         if (isOpen) {
-            updateDropdownPosition();
             document.addEventListener('mousedown', handleClickOutside);
             window.addEventListener('scroll', updateDropdownPosition, true);
             window.addEventListener('resize', updateDropdownPosition);
@@ -121,15 +132,15 @@ export function CustomSelect({
             {isOpen && (
                 <motion.div
                     ref={listRef}
-                    initial={{ opacity: 0, y: smartDirection === 'up' ? 5 : -5, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: smartDirection === 'up' ? 5 : -5, scale: 0.98 }}
+                    initial={{ opacity: 0, y: smartDirection === 'up' ? 5 : -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: smartDirection === 'up' ? 5 : -5 }}
                     transition={{ duration: 0.15, ease: "easeOut" }}
                     style={dropdownStyle}
                     className={`bg-white/95 dark:bg-[#0B1120]/95 backdrop-blur-xl border border-gray-100 dark:border-white/[0.08] rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden max-h-80 overflow-y-auto custom-scrollbar ring-1 ring-black/5`}
                 >
                     {formattedOptions.length === 0 ? (
-                        <div className="px-5 py-4 text-sm text-gray-400 font-bold italic text-center">No options available</div>
+                        <div className="px-5 py-4 text-sm font-bold text-gray-500 italic text-center">No options available</div>
                     ) : (
                         formattedOptions.map((opt) => (
                             <button
@@ -163,7 +174,7 @@ export function CustomSelect({
     return (
         <div className={`relative ${className}`} ref={containerRef}>
             {label && (
-                <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1">
+                <label className="block text-xs font-black text-gray-400 tracking-widest mb-3 px-1">
                     {label} {required && <span className="text-paymint-red">*</span>}
                 </label>
             )}
@@ -173,11 +184,11 @@ export function CustomSelect({
                 type="button"
                 onClick={() => !disabled && setIsOpen(!isOpen)}
                 disabled={disabled}
-                className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-left flex items-center justify-between transition-all outline-none shadow-sm
+                className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-left flex items-center justify-between transition-[color,background-color,border-color,box-shadow,ring] outline-none shadow-sm
                     ${disabled
                         ? 'opacity-50 cursor-not-allowed bg-gray-100 dark:bg-white/[0.01]'
-                        : 'hover:border-paymint-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06] hover:shadow-lg hover:shadow-black/10'}
-                    ${error ? 'ring-2 ring-paymint-red border-paymint-red' : isOpen ? 'ring-2 ring-paymint-green/20 border-paymint-green bg-gray-50 dark:bg-white/[0.08] shadow-inner shadow-black/20' : ''
+                        : 'hover:border-paymint-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]'}
+                    ${error ? 'ring-2 ring-paymint-red border-paymint-red' : isOpen ? 'ring-[3px] ring-paymint-green/10 border-paymint-green bg-gray-50 dark:bg-white/[0.08]' : ''
                     }`}
             >
                 <span className={`text-sm font-bold truncate pr-2 ${selectedOption ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>

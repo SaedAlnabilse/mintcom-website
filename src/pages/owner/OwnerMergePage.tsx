@@ -122,7 +122,7 @@ export function OwnerMergePage() {
                     >
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                             <div className="lg:col-span-2 space-y-6">
-                                <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight px-2 flex items-center gap-3">
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight px-2 flex items-center gap-3">
                                     <Store className="text-paymint-green" size={20} /> Available Locations
                                 </h3>
 
@@ -153,7 +153,7 @@ export function OwnerMergePage() {
                                                         <h4 className={`text-sm font-black tracking-tight ${isSelected ? 'text-gray-900 dark:text-white' : 'text-gray-500'}`}>
                                                             {est.name}
                                                         </h4>
-                                                        <p className="text-xs font-bold text-gray-400 tracking-widest">{est.type}</p>
+                                                        <p className="text-xs font-black text-gray-400 tracking-widestst">{est.type}</p>
                                                     </div>
                                                     <div className={`
                                                         w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all
@@ -173,7 +173,7 @@ export function OwnerMergePage() {
 
                             <div className="lg:col-span-1 space-y-6">
                                 <div className="p-8 rounded-[3rem] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 sticky top-8">
-                                    <h3 className="text-lg font-black text-gray-900 dark:text-white tracking-tight mb-6">Why Merge?</h3>
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Why Merge?</h3>
 
                                     <div className="space-y-6">
                                         <div className="flex items-start gap-4">
@@ -202,7 +202,7 @@ export function OwnerMergePage() {
                                         <button
                                             onClick={handleContinue}
                                             disabled={selectedEstablishments.length < 2}
-                                            className="w-full py-5 bg-paymint-green text-black rounded-2xl font-black text-xs tracking-[0.2em] shadow-xl shadow-paymint-green/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:hover:scale-100"
+                                            className="w-full py-5 bg-paymint-green text-black rounded-2xl font-black text-xs tracking-[0.2em] shadow-xl shadow-paymint-green/20 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:hover:scale-100"
                                         >
                                             Next Step ({selectedEstablishments.length} Locations)
                                         </button>
@@ -222,8 +222,8 @@ export function OwnerMergePage() {
                         {/* Config Form */}
                         <div className="p-10 rounded-[3rem] bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 shadow-2xl space-y-8">
                             <div>
-                                <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Brand Details</h3>
-                                <p className="text-xs font-bold text-gray-500 tracking-widest">Name your brand.</p>
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">Brand Details</h3>
+                                <p className="text-xs font-black text-gray-400 tracking-widest uppercasest">Name your brand.</p>
                             </div>
 
                             <div className="space-y-2">
@@ -247,9 +247,9 @@ export function OwnerMergePage() {
                                     <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-500">
                                         <ShieldCheck size={18} />
                                     </div>
-                                    <h4 className="text-sm font-black text-indigo-900 dark:text-indigo-200 tracking-tight">Security</h4>
+                                    <h4 className="text-xl font-bold text-indigo-900 dark:text-indigo-200">Security</h4>
                                 </div>
-                                <p className="text-xs font-bold text-indigo-800 dark:text-indigo-300/60 leading-relaxed px-1">
+                                <p className="text-xs font-bold text-indigo-500 leading-relaxed px-1">
                                     All locations will use the security settings from the main location <span className="text-indigo-900 dark:text-white">({firstSelectedEst?.name})</span>. Login info will be synced.
                                 </p>
                             </div>
@@ -264,7 +264,7 @@ export function OwnerMergePage() {
                                 <button
                                     onClick={handleMerge}
                                     disabled={isSubmitting || !brandName.trim()}
-                                    className="flex-[2] py-5 bg-black dark:bg-white text-white dark:text-black rounded-2xl font-black text-xs tracking-[0.2em] shadow-2xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
+                                    className="flex-[2] py-5 bg-black dark:bg-white text-white dark:text-black rounded-2xl font-black text-xs tracking-[0.2em] shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3"
                                 >
                                     {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
                                     Create Brand

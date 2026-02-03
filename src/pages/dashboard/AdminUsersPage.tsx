@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Plus,
@@ -18,6 +18,7 @@ import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import { ConfirmModal } from '../../components/ConfirmModal';
+import { SearchInput, Pagination } from '../../components/ui';
 
 interface AdminUser {
     id: string;
@@ -37,6 +38,9 @@ export function AdminUsersPage() {
     const [editingAdmin, setEditingAdmin] = useState<AdminUser | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
 
     const [formData, setFormData] = useState({
         email: '',
@@ -77,6 +81,26 @@ export function AdminUsersPage() {
             setIsLoading(false);
         }
     };
+
+    const filteredAdmins = useMemo(() => {
+        return adminUsers.filter(admin =>
+            admin.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            admin.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            admin.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (admin.phone && admin.phone.toLowerCase().includes(searchQuery.toLowerCase()))
+        );
+    }, [adminUsers, searchQuery]);
+
+    const totalPages = Math.ceil(filteredAdmins.length / ITEMS_PER_PAGE);
+
+    const paginatedAdmins = useMemo(() => {
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filteredAdmins.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    }, [filteredAdmins, currentPage]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -171,7 +195,7 @@ export function AdminUsersPage() {
                         </div>
                         <div>
                             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Admins</h1>
-                            <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Manage admin access</p>
+                            <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">Manage admin access</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -196,11 +220,23 @@ export function AdminUsersPage() {
                         <Shield size={20} className="text-blue-500" />
                     </div>
                     <div>
-                        <h3 className="font-bold text-blue-900 dark:text-blue-100 mb-1">About Admins</h3>
-                        <p className="text-blue-800 dark:text-blue-200 text-sm">
+                        <h3 className="text-lg font-bold text-blue-900 dark:text-blue-100 mb-1">About Admins</h3>
+                        <p className="text-sm font-bold text-blue-800 dark:text-blue-200">
                             Admins have full access to the dashboard and app.
                         </p>
                     </div>
+                </div>
+            </div>
+
+            {/* Search Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="relative flex-1 sm:max-w-md">
+                    <SearchInput
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onClear={() => setSearchQuery('')}
+                        placeholder="Search admins..."
+                    />
                 </div>
             </div>
 
@@ -211,86 +247,160 @@ export function AdminUsersPage() {
                         <div className="w-16 h-16 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
                         <p className="text-xs font-black tracking-widest text-gray-400">Loading admins...</p>
                     </div>
-                ) : adminUsers.length === 0 ? (
+                ) : filteredAdmins.length === 0 ? (
                     <div className="py-32 text-center flex flex-col items-center">
                         <div className="w-24 h-24 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-200 dark:border-white/5">
                             <UserPlus className="w-12 h-12 text-gray-400" />
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No Admins</h3>
-                        <p className="text-gray-500 max-w-xs font-medium mx-auto text-sm">
-                            Add an admin to help manage your business.
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                            {searchQuery ? 'No results found' : 'No admins'}
+                        </h3>
+                        <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto">
+                            {searchQuery ? `We couldn't find any admins matching "${searchQuery}"` : 'Add an admin to help manage your business.'}
                         </p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-                        {adminUsers.map((admin) => (
-                            <motion.div
-                                layout
-                                key={admin.id}
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                className="group relative p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/5 hover:shadow-xl transition-all duration-300 overflow-hidden"
-                            >
-                                <div className="absolute inset-0 bg-gradient-to-br from-paymint-green/0 via-transparent to-paymint-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-                                <div className="relative z-10 flex items-start justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-14 h-14 rounded-2xl bg-purple-500/10 text-purple-500 border border-purple-500/20 flex items-center justify-center font-black text-xl shadow-sm group-hover:scale-110 transition-transform duration-300">
-                                            {admin.firstName.charAt(0)}{admin.lastName.charAt(0)}
+                    <>
+                        {/* Mobile Card View */}
+                        <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+                            <AnimatePresence mode="popLayout">
+                                {paginatedAdmins.map((admin) => (
+                                    <motion.div
+                                        key={admin.id}
+                                        layout
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.95 }}
+                                        className="p-4 bg-white dark:bg-[#1E293B]"
+                                    >
+                                        <div className="flex items-start justify-between mb-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 border border-purple-500/20 flex items-center justify-center font-black text-sm shadow-sm">
+                                                    {admin.firstName.charAt(0)}{admin.lastName.charAt(0)}
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-bold text-gray-900 dark:text-white text-sm">{admin.firstName} {admin.lastName}</h3>
+                                                    <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
+                                                        <Mail size={10} /> {admin.email}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => openEditModal(admin)}
+                                                    className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400"
+                                                >
+                                                    <Edit2 size={16} />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(admin)}
+                                                    className="p-2 rounded-lg bg-red-500/10 text-red-500"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p className="font-bold text-gray-900 dark:text-white text-lg tracking-tight group-hover:text-paymint-green transition-colors">
-                                                {admin.firstName} {admin.lastName}
-                                            </p>
-                                            <div className="flex flex-col gap-1 mt-1">
-                                                <span className="flex items-center gap-1.5 text-xs text-gray-500 font-medium">
-                                                    <Mail size={12} className="text-gray-400" />
-                                                    {admin.email}
-                                                </span>
-                                                {admin.phone && (
-                                                    <span className="flex items-center gap-1.5 text-xs text-gray-500 font-medium">
-                                                        <Phone size={12} className="text-gray-400" />
-                                                        {admin.phone}
-                                                    </span>
+
+                                        <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5">
+                                            <p className="text-xs font-black text-gray-400 tracking-widest mb-2 uppercase">Access Locations</p>
+                                            <div className="flex flex-wrap gap-2">
+                                                {admin.establishments.length > 0 ? (
+                                                    admin.establishments.map((est) => (
+                                                        <span
+                                                            key={est.id}
+                                                            className="px-2 py-1 bg-white dark:bg-white/10 text-gray-700 dark:text-gray-300 text-[10px] font-bold tracking-wide rounded-md border border-gray-200 dark:border-white/10"
+                                                        >
+                                                            {est.name}
+                                                        </span>
+                                                    ))
+                                                ) : (
+                                                    <span className="text-xs text-gray-400 italic">No locations assigned</span>
                                                 )}
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                                        <button
-                                            onClick={() => openEditModal(admin)}
-                                            className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-all border border-gray-200 dark:border-white/10 shadow-sm"
-                                        >
-                                            <Edit2 size={16} />
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(admin)}
-                                            className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 transition-all border border-gray-200 dark:border-white/10 shadow-sm"
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
-                                </div>
+                                    </motion.div>
+                                ))}
+                            </AnimatePresence>
+                        </div>
 
-                                <div className="relative z-10 mt-6 pt-4 border-t border-gray-100 dark:border-white/5">
-                                    <p className="text-xs font-black text-gray-400 tracking-widest mb-2">Locations</p>
-                                    <div className="flex flex-wrap gap-2">
-                                        {admin.establishments.map((est) => (
-                                            <span
-                                                key={est.id}
-                                                className="px-2.5 py-1 bg-paymint-green/5 text-paymint-green text-xs font-black tracking-widest rounded-lg border border-paymint-green/10"
+                        {/* Desktop Grid View */}
+                        <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+                            {paginatedAdmins.map((admin) => (
+                                <motion.div
+                                    layout
+                                    key={admin.id}
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="group relative p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/5 hover:shadow-xl transition-all duration-300 overflow-hidden"
+                                >
+                                    <div className="absolute inset-0 bg-gradient-to-br from-paymint-green/0 via-transparent to-paymint-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                                    <div className="relative z-10 flex items-start justify-between">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-14 h-14 rounded-2xl bg-purple-500/10 text-purple-500 border border-purple-500/20 flex items-center justify-center font-black text-xl shadow-sm group-hover:scale-110 transition-transform duration-300">
+                                                {admin.firstName.charAt(0)}{admin.lastName.charAt(0)}
+                                            </div>
+                                            <div>
+                                                <p className="font-bold text-gray-900 dark:text-white text-lg tracking-tight group-hover:text-paymint-green transition-colors">
+                                                    {admin.firstName} {admin.lastName}
+                                                </p>
+                                                <div className="flex flex-col gap-1 mt-1">
+                                                    <span className="flex items-center gap-1.5 text-xs text-gray-500 font-medium">
+                                                        <Mail size={12} className="text-gray-400" />
+                                                        {admin.email}
+                                                    </span>
+                                                    {admin.phone && (
+                                                        <span className="flex items-center gap-1.5 text-xs text-gray-500 font-medium">
+                                                            <Phone size={12} className="text-gray-400" />
+                                                            {admin.phone}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                                            <button
+                                                onClick={() => openEditModal(admin)}
+                                                className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-all border border-gray-200 dark:border-white/10 shadow-sm"
                                             >
-                                                {est.name}
-                                            </span>
-                                        ))}
-                                        {admin.establishments.length === 0 && (
-                                            <span className="text-xs text-gray-400 italic">No locations</span>
-                                        )}
+                                                <Edit2 size={16} />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(admin)}
+                                                className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 transition-all border border-gray-200 dark:border-white/10 shadow-sm"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
+
+                                    <div className="relative z-10 mt-6 pt-4 border-t border-gray-100 dark:border-white/5">
+                                        <p className="text-xs font-black text-gray-400 tracking-widest mb-2">Locations</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {admin.establishments.map((est) => (
+                                                <span
+                                                    key={est.id}
+                                                    className="px-2.5 py-1 bg-paymint-green/5 text-paymint-green text-xs font-black tracking-widest rounded-lg border border-paymint-green/10"
+                                                >
+                                                    {est.name}
+                                                </span>
+                                            ))}
+                                            {admin.establishments.length === 0 && (
+                                                <span className="text-xs text-gray-400 italic">No locations</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={(page) => setCurrentPage(page)}
+                            className="p-4"
+                        />
+                    </>
                 )}
             </div>
 
@@ -313,7 +423,7 @@ export function AdminUsersPage() {
                         >
                             <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between relative isolate">
                                 <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
-                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                                     {editingAdmin ? 'Edit Admin' : 'Add Admin'}
                                 </h2>
                                 <button

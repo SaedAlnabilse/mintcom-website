@@ -77,37 +77,41 @@ export default {
         inter: ['Inter', 'sans-serif'],
       },
       fontSize: {
-        // POS Typography System - Headings
-        'heading-1': ['32px', { lineHeight: '1.2', fontWeight: '700' }],
-        'heading-2': ['28px', { lineHeight: '1.2', fontWeight: '700' }],
-        'heading-3': ['24px', { lineHeight: '1.2', fontWeight: '600' }],
-        'heading-4': ['20px', { lineHeight: '1.3', fontWeight: '600' }],
-        'subheading': ['18px', { lineHeight: '1.4', fontWeight: '500' }],
+        // POS Typography System - Display (New)
+        'display-1': ['48px', { lineHeight: '1.1', fontWeight: '900', letterSpacing: '-0.02em' }],
+        'display-2': ['36px', { lineHeight: '1.2', fontWeight: '900', letterSpacing: '-0.02em' }],
+        
+        // POS Typography System - Headings (Updated to match usage)
+        'heading-1': ['32px', { lineHeight: '1.2', fontWeight: '900', letterSpacing: '-0.02em' }],
+        'heading-2': ['28px', { lineHeight: '1.2', fontWeight: '900', letterSpacing: '-0.02em' }],
+        'heading-3': ['24px', { lineHeight: '1.2', fontWeight: '800', letterSpacing: '-0.01em' }],
+        'heading-4': ['20px', { lineHeight: '1.3', fontWeight: '800', letterSpacing: '-0.01em' }],
+        'subheading': ['18px', { lineHeight: '1.4', fontWeight: '700' }],
 
         // POS Typography System - Body
         'body-lg': ['16px', { lineHeight: '1.5', fontWeight: '400' }],
         'body': ['14px', { lineHeight: '1.5', fontWeight: '400' }],
         'body-sm': ['13px', { lineHeight: '1.5', fontWeight: '400' }],
 
-        // POS Typography System - Captions & Labels
+        // POS Typography System - Captions & Labels (Updated to match usage)
         'caption': ['14px', { lineHeight: '1.4', fontWeight: '400' }],
-        'label': ['12px', { lineHeight: '1.4', fontWeight: '500' }],
-        'label-sm': ['11px', { lineHeight: '1.4', fontWeight: '500' }],
-        'label-xs': ['10px', { lineHeight: '1.4', fontWeight: '700', letterSpacing: '0.05em' }],
+        'label': ['12px', { lineHeight: '1.4', fontWeight: '700', letterSpacing: '0.05em' }],
+        'label-sm': ['11px', { lineHeight: '1.4', fontWeight: '700', letterSpacing: '0.05em' }],
+        'label-xs': ['10px', { lineHeight: '1.4', fontWeight: '900', letterSpacing: '0.1em' }],
 
         // POS Typography System - Values (for cards, stats)
-        'value-xl': ['40px', { lineHeight: '1.1', fontWeight: '700' }],
-        'value-lg': ['32px', { lineHeight: '1.2', fontWeight: '700' }],
-        'value-md': ['26px', { lineHeight: '1.2', fontWeight: '700' }],
-        'value': ['18px', { lineHeight: '1.3', fontWeight: '700' }],
+        'value-xl': ['40px', { lineHeight: '1.1', fontWeight: '900', letterSpacing: '-0.02em' }],
+        'value-lg': ['32px', { lineHeight: '1.2', fontWeight: '900', letterSpacing: '-0.02em' }],
+        'value-md': ['26px', { lineHeight: '1.2', fontWeight: '900', letterSpacing: '-0.01em' }],
+        'value': ['18px', { lineHeight: '1.3', fontWeight: '800' }],
 
         // POS Typography System - Buttons
-        'button': ['16px', { lineHeight: '1.5', fontWeight: '600' }],
-        'button-sm': ['14px', { lineHeight: '1.5', fontWeight: '600' }],
+        'button': ['16px', { lineHeight: '1.5', fontWeight: '700' }],
+        'button-sm': ['14px', { lineHeight: '1.5', fontWeight: '700' }],
 
         // POS Typography System - Charts
-        'chart-title': ['16px', { lineHeight: '1.4', fontWeight: '600' }],
-        'legend': ['13px', { lineHeight: '1.4', fontWeight: '400' }],
+        'chart-title': ['16px', { lineHeight: '1.4', fontWeight: '700' }],
+        'legend': ['13px', { lineHeight: '1.4', fontWeight: '500' }],
       },
       fontWeight: {
         regular: '400',

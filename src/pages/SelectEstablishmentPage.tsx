@@ -1,3 +1,4 @@
+import { AppStrings } from '../constants/AppStrings';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -29,7 +30,8 @@ export function SelectEstablishmentPage() {
     setTimeout(() => {
       setCurrentEstablishment(est);
       toast.success(`Active Location: ${est.name}`);
-      navigate('/dashboard');
+      // Use establishmentLoginId if available for pretty URL
+      navigate(`/dashboard/${est.establishmentLoginId || est.id}`);
     }, 800);
   };
 
@@ -54,11 +56,11 @@ export function SelectEstablishmentPage() {
             onClick={() => navigate('/owner')}
             className="group flex items-center gap-3 px-4 py-3 rounded-2xl bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/20 hover:border-amber-500/40 hover:from-amber-500/20 hover:to-yellow-500/20 transition-all duration-300"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:scale-110 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center shadow-lg shadow-amber-500/20 transition-transform">
               <Crown size={18} className="text-white" />
             </div>
             <div className="hidden sm:block text-left">
-              <p className="text-xs font-black text-amber-600 dark:text-amber-400 tracking-[0.15em]">Owner Portal</p>
+              <p className="text-xs font-black text-gray-400 tracking-widest">Owner Portal</p>
               <p className="text-sm font-bold text-gray-900 dark:text-white truncate max-w-[120px]">{account?.firstName} {account?.lastName}</p>
             </div>
             <ArrowLeft size={16} className="text-amber-500 group-hover:-translate-x-1 transition-transform hidden sm:block" />
@@ -93,10 +95,10 @@ export function SelectEstablishmentPage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <h1 className="text-5xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
               Select <span className="text-paymint-green underline decoration-paymint-green/30">Location</span>
             </h1>
-            <p className="text-gray-500 dark:text-gray-400 text-lg font-bold tracking-widest text-sm">Choose a location to manage</p>
+            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">Choose a location to manage</p>
           </motion.div>
         </div>
 
@@ -116,19 +118,19 @@ export function SelectEstablishmentPage() {
                 <Store size={32} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
               </div>
 
-              <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2 px-2 leading-tight text-center">{est.name}</h3>
+              <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2 px-2 leading-tight text-center">{est.name}</h3>
 
               <div className="flex items-center gap-2.5 mb-8">
-                <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] font-black tracking-[0.15em] text-gray-500">
+                <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] font-black tracking-widest text-gray-500">
                   {est.currency.charAt(0).toUpperCase() + est.currency.slice(1).toLowerCase()}
                 </span>
-                <span className="px-2.5 py-1 rounded-lg bg-paymint-green/10 text-[10px] font-black tracking-[0.15em] text-paymint-green border border-paymint-green/20">
+                <span className="px-2.5 py-1 rounded-lg bg-paymint-green/10 text-[10px] font-black tracking-widest text-paymint-green border border-paymint-green/20">
                   {est.subscriptionStatus.charAt(0).toUpperCase() + est.subscriptionStatus.slice(1).toLowerCase()}
                 </span>
               </div>
 
-              <div className={`flex items-center gap-2 text-xs font-black tracking-[0.2em] transition-all ${hoveredId === est.id ? 'text-paymint-green' : 'text-gray-400'}`}>
-                Open Dashboard
+              <div className={`flex items-center gap-2 text-xs font-black tracking-widest transition-all ${hoveredId === est.id ? 'text-paymint-green' : 'text-gray-400'}`}>
+                OPEN DASHBOARD
                 <ChevronRight size={14} />
               </div>
             </motion.div>
@@ -145,15 +147,15 @@ export function SelectEstablishmentPage() {
             <div className="w-16 h-16 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all">
               <Plus size={28} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
             </div>
-            <h3 className="text-lg font-black text-gray-900 dark:text-white mb-2">Add Location</h3>
-            <p className="text-gray-500 text-[10px] font-black tracking-widest">New Business</p>
+            <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2">Add Location</h3>
+            <p className="text-xs font-black text-gray-500 tracking-widest">New Business</p>
           </motion.div>
         </div>
       </div>
 
       {/* Footer Info */}
       <div className="p-12 text-center relative z-10">
-        <div className="inline-flex items-center gap-3 px-6 py-3 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-100 dark:border-white/5 text-gray-400 text-xs font-black tracking-[0.2em] shadow-sm">
+        <div className="inline-flex items-center gap-3 px-6 py-3 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-100 dark:border-white/5 text-gray-400 text-xs font-black tracking-widest shadow-sm">
           <CheckCircle2 size={14} className="text-paymint-green" />
           Paymint v2.0
         </div>
@@ -177,8 +179,8 @@ export function SelectEstablishmentPage() {
                 <Loader2 size={40} className="text-paymint-green animate-spin" />
                 <div className="absolute inset-0 bg-paymint-green/20 rounded-[2.5rem] animate-ping" />
               </div>
-              <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Loading...</h2>
-              <p className="text-paymint-green font-black tracking-[0.3em] text-sm mt-2">{selectedName}</p>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Loading...</h2>
+              <p className="text-xs font-black text-paymint-green tracking-widest mt-2">{selectedName}</p>
 
               <div className="mt-12 w-48 h-1 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
                 <motion.div
@@ -200,7 +202,7 @@ export function SelectEstablishmentPage() {
         title="Sign Out"
         message="Are you sure you want to sign out?"
         confirmText="Sign Out"
-        cancelText="Cancel"
+        cancelText={AppStrings.COMMON.CANCEL}
         type="danger"
       />
     </div>

@@ -134,7 +134,7 @@ export function BillingPage() {
             {!isLoading && getStatusBadge()}
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Billing</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
             Manage payments for {currentEstablishment?.name}
           </p>
         </div>
@@ -152,7 +152,7 @@ export function BillingPage() {
                   <DollarSign className="w-8 h-8 text-paymint-green" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-black text-white tracking-tight">Plan</h3>
+                  <h3 className="text-xl font-bold text-white">Plan</h3>
                   <p className="text-gray-400 text-sm font-bold tracking-widest mt-1">Enterprise</p>
                 </div>
               </div>
@@ -198,9 +198,38 @@ export function BillingPage() {
           {/* Billing History */}
           <div className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl overflow-hidden shadow-sm">
             <div className="p-6 border-b border-gray-100 dark:border-white/5">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">Invoices</h3>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">Invoices</h3>
             </div>
-            <div className="overflow-x-auto">
+
+            {/* Mobile Card View */}
+            <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+              {invoices.map((invoice) => (
+                <div key={invoice.id} className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <p className="text-sm font-black text-gray-900 dark:text-white">{invoice.amount}</p>
+                      <p className="text-xs font-bold text-gray-500">{invoice.date}</p>
+                    </div>
+                    <span className={`inline-flex items-center gap-1.5 px-2 py-1 text-[10px] font-black tracking-wider rounded-lg border ${invoice.status === 'Paid'
+                      ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
+                      : 'bg-red-500/10 text-red-500 border-red-500/20'
+                      }`}>
+                      {invoice.status === 'Paid' ? <CheckCircle2 size={10} /> : <AlertCircle size={10} />}
+                      {invoice.status}
+                    </span>
+                  </div>
+                  <div className="flex justify-end">
+                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 text-xs font-bold hover:text-paymint-green transition-colors">
+                      <Download size={14} />
+                      Download
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-white/[0.02]">
                   <tr className="border-b border-gray-200 dark:border-white/5">
@@ -240,7 +269,7 @@ export function BillingPage() {
         {/* Payment Method */}
         <div className="space-y-8">
           <div className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 shadow-sm">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Payment</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Payment</h3>
 
             <div className="space-y-4">
               <div className="p-4 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-200 dark:border-white/5 flex items-center justify-between group hover:border-paymint-green/30 transition-colors">
@@ -267,8 +296,8 @@ export function BillingPage() {
 
           {/* Support Card */}
           <div className="bg-paymint-green/5 border border-paymint-green/20 rounded-2xl p-6">
-            <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-2">Need Help?</h4>
-            <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+            <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Need Help?</h4>
+            <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-4">
               Questions about billing?
             </p>
             <button className="w-full py-3 bg-white dark:bg-white/5 border border-paymint-green/20 text-paymint-green font-bold rounded-xl text-xs tracking-widest hover:bg-paymint-green hover:text-black transition-all shadow-sm">

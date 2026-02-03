@@ -1,3 +1,4 @@
+import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -99,7 +100,7 @@ export function DiscountFormModal({
 
           {/* Header */}
           <div className="flex items-center justify-between p-4 sm:p-6 pb-2">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
               {initialData ? 'Edit Discount' : 'New Discount'}
             </h2>
             <button
@@ -122,8 +123,8 @@ export function DiscountFormModal({
 
               {/* Name */}
               <div>
-                <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1 mb-2 flex items-center">
-                  Name <span className="text-paymint-red mx-1">*</span>
+                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+                  Name <span className="text-paymint-red">*</span>
                   <QuickInfo text="Name on receipt." />
                 </label>
                 <input
@@ -131,15 +132,15 @@ export function DiscountFormModal({
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
                   placeholder="E.g. Employee Discount"
-                  className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-bold shadow-sm`}
+                  className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                 />
-                {errors.name && <p className="mt-1.5 px-1 text-paymint-red text-xs font-black tracking-widest">{errors.name}</p>}
+                {errors.name && <p className="mt-1.5 px-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
               </div>
 
               {/* Percentage */}
               <div>
-                <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1 mb-2 flex items-center">
-                  Percentage (%) <span className="text-paymint-red mx-1">*</span>
+                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+                  Percentage (%) <span className="text-paymint-red">*</span>
                   <QuickInfo text="Value to deduct." />
                 </label>
                 <div className="relative group">
@@ -156,19 +157,19 @@ export function DiscountFormModal({
                     step="0.01"
                     min="0"
                     max="100"
-                    className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.percentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-bold shadow-sm`}
+                    className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.percentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg shadow-sm">
                     <span className="text-paymint-green text-xs font-black">%</span>
                   </div>
                 </div>
-                {errors.percentage && <p className="mt-1.5 px-1 text-paymint-red text-xs font-black tracking-widest">{errors.percentage}</p>}
+                {errors.percentage && <p className="mt-1.5 px-1 text-xs font-bold text-paymint-red">{errors.percentage}</p>}
               </div>
 
               {/* Manager Only Toggle */}
               <div className="bg-gray-50 dark:bg-black/20 p-5 rounded-2xl flex items-center justify-between border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
                 <div className="flex items-center">
-                  <span className="text-gray-900 dark:text-white font-bold text-sm tracking-tight">Manager Only</span>
+                  <span className="text-sm font-bold text-gray-900 dark:text-white">Manager Only</span>
                   <QuickInfo text="Manager approval required." />
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
@@ -191,7 +192,7 @@ export function DiscountFormModal({
               <button
                 type="button"
                 onClick={() => onDelete(initialData.id)}
-                className="flex-1 h-14 border border-paymint-red/20 text-paymint-red font-black text-xs rounded-2xl hover:bg-paymint-red/5 transition-all tracking-widest flex items-center justify-center gap-2"
+                className="flex-1 h-14 border border-paymint-red/20 text-paymint-red font-black text-xs tracking-widest rounded-2xl hover:bg-paymint-red/5 transition-all flex items-center justify-center gap-2"
               >
                 <Trash2 size={16} />
                 <span>Delete</span>
@@ -201,7 +202,7 @@ export function DiscountFormModal({
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="flex-1 h-12 sm:h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black tracking-[0.15em] sm:tracking-[0.2em] text-xs rounded-xl sm:rounded-2xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
+              className="flex-1 h-12 sm:h-14 bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black text-xs tracking-widest rounded-xl sm:rounded-2xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm disabled:opacity-50"
             >
               Cancel
             </button>
@@ -209,12 +210,12 @@ export function DiscountFormModal({
               type="submit"
               form="discount-form"
               disabled={isSubmitting}
-              className="flex-1 h-12 sm:h-14 bg-paymint-green text-black font-black tracking-[0.15em] sm:tracking-[0.2em] text-xs rounded-xl sm:rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+              className="flex-1 h-12 sm:h-14 bg-paymint-green text-black font-black text-xs tracking-widest rounded-xl sm:rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
             >
               {isSubmitting ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                initialData ? 'Save' : 'Add'
+                initialData ? AppStrings.COMMON.SAVE : AppStrings.COMMON.ADD
               )}
             </button>
           </div>

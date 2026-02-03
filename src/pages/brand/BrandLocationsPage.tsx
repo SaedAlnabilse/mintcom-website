@@ -23,6 +23,7 @@ import toast from 'react-hot-toast';
 import { CustomSelect } from '../../components/CustomSelect';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
+import { Pagination } from '../../components/ui';
 
 interface LocationStats {
     id: string;
@@ -61,6 +62,9 @@ export function BrandLocationsPage() {
         targetName: ''
     });
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
+
     useEffect(() => {
         if (brandId) {
             fetchLocations();
@@ -87,11 +91,16 @@ export function BrandLocationsPage() {
         try {
             setIsLoading(true);
 
-            // Fetch both brand details and dashboard stats in parallel
-            const [brandResponse, statsResponse] = await Promise.all([
-                api.get(`/api/brands/${brandId}`),
-                api.get(`/api/brands/${brandId}/dashboard-stats`)
-            ]);
+            // Fetch brand details
+            const brandResponse = await api.get(`/api/brands/${brandId}`);
+
+            // Try to fetch stats, but don't block if it fails
+            let statsResponse = { data: { stats: null, locationPerformance: [] } };
+            try {
+                statsResponse = await api.get(`/api/brands/${brandId}/dashboard-stats`);
+            } catch (statsErr) {
+                console.warn('Failed to fetch dashboard stats:', statsErr);
+            }
 
             setBrandName(brandResponse.data?.name || 'Brand');
             setStatsData(statsResponse.data?.stats);
@@ -120,9 +129,9 @@ export function BrandLocationsPage() {
                 });
                 setLocations(mappedLocations);
             }
-        } catch (err) {
+        } catch (err: any) {
             console.error('Failed to fetch locations:', err);
-            toast.error('Failed to load locations');
+            toast.error(`Failed to load locations: ${err.message || 'Unknown error'}`);
         } finally {
             setIsLoading(false);
         }
@@ -179,6 +188,12 @@ export function BrandLocationsPage() {
 
         return result;
     }, [locations, searchQuery, statusFilter, typeFilter, sortBy, sortOrder]);
+
+    const totalPages = Math.ceil(filteredLocations.length / ITEMS_PER_PAGE);
+    const paginatedLocations = useMemo(() => {
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filteredLocations.slice(start, start + ITEMS_PER_PAGE);
+    }, [filteredLocations, currentPage]);
 
     // Stats calculations
     const stats = useMemo(() => {
@@ -446,17 +461,11 @@ export function BrandLocationsPage() {
             ) : viewMode === 'grid' ? (
                 /* Grid View */
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    <AnimatePresence mode="popLayout">
-                        {filteredLocations.map((loc, index) => {
-                            const Icon = getBusinessTypeIcon(loc.type);
-                            return (
-                                <motion.div
-                                    key={loc.id}
-                                layout
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                transition={{ delay: index * 0.03 }}
+                    {paginatedLocations.map((loc) => {
+                        const Icon = getBusinessTypeIcon(loc.type);
+                        return (
+                            <div
+                                key={loc.id}
                                 className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 p-6 cursor-pointer transition-all shadow-sm hover:shadow-lg overflow-hidden"
                             >
                                 {/* Hover gradient */}
@@ -566,10 +575,9 @@ export function BrandLocationsPage() {
                                     <span>Open Dashboard</span>
                                     <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
                                 </button>
-                            </motion.div>
+                            </div>
                         );
                     })}
-                    </AnimatePresence>
                 </div>
             ) : (
                 /* List View */
@@ -586,17 +594,11 @@ export function BrandLocationsPage() {
 
                     {/* Table Body */}
                     <div className="divide-y divide-gray-100 dark:divide-white/5">
-                        <AnimatePresence mode="popLayout">
-                            {filteredLocations.map((loc, index) => {
-                                const Icon = getBusinessTypeIcon(loc.type);
-                                return (
-                                    <motion.div
-                                        key={loc.id}
-                                    layout
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, x: -10 }}
-                                    transition={{ delay: index * 0.02 }}
+                        {paginatedLocations.map((loc) => {
+                            const Icon = getBusinessTypeIcon(loc.type);
+                            return (
+                                <div
+                                    key={loc.id}
                                     className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group"
                                     onClick={() => handleLocationClick(loc)}
                                 >
@@ -688,13 +690,27 @@ export function BrandLocationsPage() {
                                             )}
                                         </AnimatePresence>
                                     </div>
-                                </motion.div>
+                                </div>
                             );
                         })}
-                        </AnimatePresence>
                     </div>
                 </div>
             )}
+
+            <div className="flex flex-col items-center gap-6 mt-10">
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={(page) => setCurrentPage(page)}
+                />
+
+                <div className="text-center">
+                    <p className="text-sm text-gray-500">
+                        Showing <span className="font-bold text-gray-900 dark:text-white">{filteredLocations.length === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1} to {Math.min(currentPage * ITEMS_PER_PAGE, filteredLocations.length)}</span> of{' '}
+                        <span className="font-bold text-gray-900 dark:text-white">{filteredLocations.length}</span> locations
+                    </p>
+                </div>
+            </div>
 
             {/* Results Summary */}
             <div className="text-center">
@@ -712,6 +728,6 @@ export function BrandLocationsPage() {
                 targetName={securityModal.targetName}
                 mode="dissolve-establishment"
             />
-        </div>
+        </div >
     );
 }

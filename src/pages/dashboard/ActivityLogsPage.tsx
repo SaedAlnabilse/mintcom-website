@@ -5,8 +5,6 @@ import {
   History,
   X,
   Shield,
-  ChevronLeft,
-  ChevronRight,
   FileText,
   Download
 } from 'lucide-react';
@@ -18,6 +16,7 @@ import { SingleSelect } from '../../components/SingleSelect';
 import { CustomDatePicker } from '../../components/CustomDatePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
+import { Pagination } from '../../components/ui';
 
 interface ActivityLog {
   id: string;
@@ -80,7 +79,7 @@ export function ActivityLogsPage() {
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalLogs, setTotalLogs] = useState(0);
+  const [, setTotalLogs] = useState(0);
   const [selectedLog, setSelectedLog] = useState<ActivityLog | null>(null);
 
   useEffect(() => {
@@ -193,7 +192,7 @@ export function ActivityLogsPage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Activity</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
             See recent changes
           </p>
         </div>
@@ -226,7 +225,7 @@ export function ActivityLogsPage() {
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
               placeholder="Search logs..."
-              className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+              className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
             />
           </div>
 
@@ -284,7 +283,7 @@ export function ActivityLogsPage() {
               <div className={`flex-none w-auto min-w-[145px] sm:min-w-[170px] relative z-[60]`}>
                 <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${activePreset === 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
                   <div className="flex items-center gap-1.5 mb-0.5">
-                    <span className={`text-[9px] font-black tracking-wider transition-colors ${activePreset === 'custom' ? "text-[#7CC39F]" : "text-gray-400"}`}>DATE RANGE</span>
+                    <span className={`text-[9px] font-black tracking-wider transition-colors ${activePreset === 'custom' ? "text-[#7CC39F]" : "text-gray-400"}`}>Date Range</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <CustomDatePicker
@@ -313,7 +312,74 @@ export function ActivityLogsPage() {
 
       {/* Main Logs Area */}
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col min-h-[300px] lg:min-h-[250px] lg:min-h-[350px]">
-        <div className="overflow-x-auto flex-1">
+        {/* Mobile Card View */}
+        <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+          <AnimatePresence mode="popLayout">
+            {isLoading ? (
+              <div className="py-32 text-center">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="w-10 h-10 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin" />
+                  <p className="text-xs font-black text-gray-400 tracking-widest">Loading logs...</p>
+                </div>
+              </div>
+            ) : logs.length === 0 ? (
+              <div className="py-32 text-center">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center">
+                    <History size={24} className="text-gray-300" />
+                  </div>
+                  <p className="text-gray-500 font-bold text-xs tracking-widest">No logs found.</p>
+                </div>
+              </div>
+            ) : (
+              Array.isArray(logs) && logs.map((log) => (
+                <motion.div
+                  key={log.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black">
+                        {log.performedBy?.username?.charAt(0).toUpperCase() || 'A'}
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-gray-900 dark:text-white tracking-tight truncate max-w-[150px]">{log.performedBy?.username || 'Owner'}</p>
+                        <p className="text-xs text-gray-400 font-black">{log.ipAddress || 'Internal'}</p>
+                      </div>
+                    </div>
+                    <span className={`inline-flex px-2 py-0.5 rounded-lg text-[10px] font-black tracking-widest border ${getActionColor(log.action)}`}>
+                      {log.action?.replace(/_/g, ' ').charAt(0).toUpperCase() + log.action?.replace(/_/g, ' ').slice(1).toLowerCase()}
+                    </span>
+                  </div>
+
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-3">
+                    {log.description}
+                  </p>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <span className="text-xs font-bold text-gray-900 dark:text-white">{formatDate(log.timestamp).split(',')[1]}</span>
+                      <span className="text-[10px] font-bold text-gray-400">{formatDate(log.timestamp).split(',')[0]}</span>
+                    </div>
+                    {log.metadata && (
+                      <button
+                        onClick={() => setSelectedLog(log)}
+                        className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green transition-all"
+                      >
+                        <FileText size={16} />
+                      </button>
+                    )}
+                  </div>
+                </motion.div>
+              ))
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto flex-1">
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-white/[0.02]">
               <tr className="border-b border-gray-200 dark:border-white/5">
@@ -401,36 +467,7 @@ export function ActivityLogsPage() {
           </table>
         </div>
 
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="shrink-0 px-8 py-4 border-t border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-[#1E293B] flex items-center justify-between">
-            <p className="text-xs font-black text-gray-400 tracking-widest">
-              Showing <span className="text-gray-900 dark:text-white">{(page - 1) * 10 + 1} - {Math.min(page * 10, totalLogs)}</span> of {totalLogs}
-            </p>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={page === 1 || isLoading}
-                className="p-2 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-white/10 transition-colors"
-              >
-                <ChevronLeft size={16} />
-              </button>
-
-              <span className="text-xs font-black text-gray-900 dark:text-white px-2">
-                Page {page} of {totalPages}
-              </span>
-
-              <button
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages || isLoading}
-                className="p-2 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-white/10 transition-colors"
-              >
-                <ChevronRight size={16} />
-              </button>
-            </div>
-          </div>
-        )}
+        <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} className="mt-6 mx-8 mb-6" />
       </div>
 
       {/* Detail Modal */}
@@ -449,7 +486,7 @@ export function ActivityLogsPage() {
                     <Shield size={24} />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Log Details</h2>
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Log Details</h2>
                     <p className="text-xs font-black text-paymint-green tracking-widest">{selectedLog.action ? selectedLog.action.replace(/_/g, ' ').charAt(0).toUpperCase() + selectedLog.action.replace(/_/g, ' ').slice(1).toLowerCase() : ''}</p>
                   </div>
                 </div>

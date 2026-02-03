@@ -5,7 +5,6 @@ import { z } from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus,
-  Search,
   User,
   Phone,
   Mail,
@@ -19,14 +18,14 @@ import {
   Calendar,
   MoreVertical,
   Download,
-  Eye,
-  ChevronLeft,
-  ChevronRight
+  Eye
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { exportToCSV } from '../../utils/export';
+import { SearchInput, Pagination } from '../../components/ui';
+
 
 const customerSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -271,7 +270,7 @@ export function CustomersPage() {
             </div>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Customers</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1 sm:mt-2 text-sm font-medium">Manage customer data</p>
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">Manage customer data</p>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
@@ -352,19 +351,21 @@ export function CustomersPage() {
         </motion.div>
       </div>
 
+// ... (imports)
+
       {/* Control Bar */}
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-3 sm:p-4 shadow-sm">
         <div className="relative flex-1 w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
+          <SearchInput
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onClear={() => setSearchQuery('')}
             placeholder="Search customers..."
-            className="w-full h-12 sm:h-auto pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+            className="w-full"
           />
         </div>
       </div>
+
 
       {/* Main List */}
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-h-[250px] lg:min-h-[350px] flex flex-col">
@@ -378,8 +379,8 @@ export function CustomersPage() {
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
               <User size={32} className="sm:w-10 sm:h-10 text-gray-300" />
             </div>
-            <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2">No Customers</h3>
-            <p className="text-gray-500 max-w-xs text-sm font-medium mx-auto">Add a customer to get started.</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No customers</h3>
+            <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto">Add a customer to get started.</p>
           </div>
         ) : (
           <>
@@ -494,7 +495,7 @@ export function CustomersPage() {
                           </div>
                           <div className="flex items-center gap-2 text-xs text-gray-500">
                             <Mail size={12} className="text-gray-400" />
-                            <span className="font-medium">{customer.email || 'No Email'}</span>
+                            <span className="font-medium">{customer.email || 'No email'}</span>
                           </div>
                         </div>
                       </td>
@@ -562,56 +563,7 @@ export function CustomersPage() {
         )}
       </div>
 
-      {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-2 sm:px-4">
-          <p className="text-xs font-black tracking-widest text-gray-500 dark:text-gray-400">
-            Page <span className="text-gray-900 dark:text-white">{page}</span> of <span className="text-gray-900 dark:text-white">{totalPages}</span>
-          </p>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setPage(p => Math.max(1, p - 1))}
-              disabled={page === 1}
-              className="p-2 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm active:scale-90 touch-target"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <div className="flex items-center gap-1.5">
-              {[...Array(totalPages)].map((_, i) => {
-                const pageNum = i + 1;
-                // Show limited pages on mobile
-                if (totalPages > 5) {
-                  if (pageNum !== 1 && pageNum !== totalPages && Math.abs(pageNum - page) > 1) {
-                    if (pageNum === 2 || pageNum === totalPages - 1) {
-                      return <span key={i} className="text-gray-400">...</span>;
-                    }
-                    return null;
-                  }
-                }
-                return (
-                  <button
-                    key={i}
-                    onClick={() => setPage(pageNum)}
-                    className={`w-9 h-9 rounded-xl text-xs font-black transition-all touch-target ${page === pageNum
-                      ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
-                      : 'bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10'
-                      }`}
-                  >
-                    {pageNum}
-                  </button>
-                );
-              })}
-            </div>
-            <button
-              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-              disabled={page === totalPages}
-              className="p-2 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm active:scale-90 touch-target"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
-        </div>
-      )}
+      <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} className="mt-6" />
 
       {/* Customer Form Modal */}
       <AnimatePresence>
@@ -624,7 +576,7 @@ export function CustomersPage() {
               className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md overflow-hidden shadow-2xl relative"
             >
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                   {editingCustomer ? 'Edit Customer' : 'New Customer'}
                 </h2>
                 <button
@@ -733,7 +685,7 @@ export function CustomersPage() {
                 <div className="w-20 h-20 bg-paymint-green/10 text-paymint-green rounded-[2rem] flex items-center justify-center mx-auto mb-6">
                   <Award size={40} />
                 </div>
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Adjust Loyalty</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Adjust Loyalty</h2>
                 <p className="text-gray-500 font-bold mt-1 text-xs tracking-widest">Partner: {selectedCustomer.name}</p>
               </div>
               <div className="p-8 space-y-8">
@@ -811,7 +763,7 @@ export function CustomersPage() {
                       {selectedCustomer.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{selectedCustomer.name}</h2>
+                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{selectedCustomer.name}</h2>
                       <div className="mt-2 flex items-center gap-2 text-paymint-green">
                         <Award size={14} className="animate-pulse" />
                         <p className="text-lg font-black tracking-tight">{selectedCustomer.points} Points</p>

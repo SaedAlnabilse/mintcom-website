@@ -35,7 +35,7 @@ export const AboutUsPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white overflow-x-hidden font-inter">
+        <div className="min-h-screen bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white overflow-x-hidden font-sans">
             <Navbar />
             
             {/* Hero Section */}
@@ -49,16 +49,16 @@ export const AboutUsPage = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                     >
-                        <span className="inline-block px-4 py-1.5 rounded-full bg-paymint-green/10 text-paymint-green text-sm font-bold tracking-widest uppercase mb-6">
+                        <span className="inline-block px-4 py-1.5 rounded-full bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest uppercase mb-6">
                             About Paymint
                         </span>
-                        <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-8">
+                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-8">
                             Building the Future of <br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-emerald-600">
                                 Digital Payments
                             </span>
                         </h1>
-                        <p className="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+                        <p className="text-sm font-bold text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
                             We're on a mission to empower businesses of all sizes with the tools they need to thrive in the digital economy. Simple, secure, and limitless.
                         </p>
                     </motion.div>
@@ -78,10 +78,10 @@ export const AboutUsPage = () => {
                                 transition={{ delay: index * 0.1 }}
                                 className="text-center"
                             >
-                                <div className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-2">
+                                <div className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-2">
                                     {stat.value}
                                 </div>
-                                <div className="text-sm font-bold text-gray-500 uppercase tracking-wider">
+                                <div className="text-xs font-black text-gray-400 tracking-widest uppercase">
                                     {stat.label}
                                 </div>
                             </motion.div>
@@ -110,8 +110,8 @@ export const AboutUsPage = () => {
                             </div>
                             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white dark:bg-[#1E293B] rounded-2xl shadow-xl p-6 flex flex-col justify-center border border-gray-100 dark:border-white/5">
                                 <Award className="w-10 h-10 text-amber-500 mb-3" />
-                                <div className="text-2xl font-black text-gray-900 dark:text-white">#1</div>
-                                <div className="text-xs text-gray-500 font-bold">Rated Payment Solution</div>
+                                <div className="text-2xl font-bold text-gray-900 dark:text-white">#1</div>
+                                <div className="text-xs font-black text-gray-400 tracking-widest">Rated Payment Solution</div>
                             </div>
                         </motion.div>
 
@@ -121,14 +121,14 @@ export const AboutUsPage = () => {
                             viewport={{ once: true }}
                             transition={{ duration: 0.6 }}
                         >
-                            <h2 className="text-3xl md:text-4xl font-black mb-6 leading-tight">
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
                                 Driven by Innovation, <br />
                                 Grounded in Trust.
                             </h2>
-                            <p className="text-gray-600 dark:text-gray-300 text-lg mb-6 leading-relaxed">
+                            <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
                                 Founded in 2024, Paymint started with a simple idea: payments shouldn't be complicated. We saw businesses struggling with clunky interfaces, hidden fees, and slow settlements. We knew there had to be a better way.
                             </p>
-                            <p className="text-gray-600 dark:text-gray-300 text-lg mb-8 leading-relaxed">
+                            <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
                                 Today, we help thousands of merchants across the globe manage their finances with ease. Our platform combines cutting-edge technology with intuitive design, making financial management accessible to everyone.
                             </p>
                             
@@ -138,7 +138,7 @@ export const AboutUsPage = () => {
                                         <div className="w-6 h-6 rounded-full bg-paymint-green/20 flex items-center justify-center">
                                             <CheckCircle2 size={14} className="text-paymint-green" />
                                         </div>
-                                        <span className="font-bold text-gray-800 dark:text-gray-200">{item}</span>
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{item}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -151,8 +151,8 @@ export const AboutUsPage = () => {
             <div className="py-24 bg-gray-50 dark:bg-[#1E293B]/50 px-6">
                 <div className="max-w-6xl mx-auto">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-4xl font-black mb-4">Our Core Values</h2>
-                        <p className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Our Core Values</h2>
+                        <p className="text-sm font-bold text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
                             These principles guide every decision we make and every product we build.
                         </p>
                     </div>
@@ -170,8 +170,8 @@ export const AboutUsPage = () => {
                                 <div className="w-14 h-14 rounded-2xl bg-gray-50 dark:bg-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 group-hover:bg-paymint-green/10">
                                     <value.icon className="w-7 h-7 text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors" />
                                 </div>
-                                <h3 className="text-xl font-bold mb-3">{value.title}</h3>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                <h3 className="text-base font-bold text-gray-900 dark:text-white mb-3">{value.title}</h3>
+                                <p className="text-xs font-bold text-gray-500 leading-relaxed">
                                     {value.description}
                                 </p>
                             </motion.div>

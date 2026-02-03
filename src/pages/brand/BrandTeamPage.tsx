@@ -1,5 +1,6 @@
+import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useOutletContext } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Users,
@@ -26,6 +27,7 @@ import toast from 'react-hot-toast';
 import { CustomSelect } from '../../components/CustomSelect';
 import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { useAuth } from '../../context/AuthContext';
+import { Pagination } from '../../components/ui';
 
 interface Employee {
     id: string;
@@ -48,7 +50,9 @@ type RoleFilter = 'all' | 'ADMIN' | 'CASHIER';
 type SortOption = 'name' | 'role' | 'locations';
 
 export function BrandTeamPage() {
-    const { brandId } = useParams<{ brandId: string }>();
+    const { brandId: paramBrandId } = useParams<{ brandId: string }>();
+    const context = useOutletContext<{ brand: any }>() || {};
+    const brandId = context.brand?.id || paramBrandId;
     const { establishments, account } = useAuth();
 
     const [employees, setEmployees] = useState<Employee[]>([]);
@@ -60,6 +64,8 @@ export function BrandTeamPage() {
     const [locationFilter, setLocationFilter] = useState<string>('all');
     const [sortBy, setSortBy] = useState<SortOption>('name');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
@@ -248,6 +254,17 @@ export function BrandTeamPage() {
         return result;
     }, [employees, searchQuery, roleFilter, locationFilter, sortBy, sortOrder]);
 
+    const totalPages = Math.ceil(filteredEmployees.length / ITEMS_PER_PAGE);
+
+    const paginatedEmployees = useMemo(() => {
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filteredEmployees.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    }, [filteredEmployees, currentPage]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, roleFilter, locationFilter, sortBy, sortOrder]);
+
     // Stats calculations
     const stats = useMemo(() => {
         return {
@@ -263,7 +280,7 @@ export function BrandTeamPage() {
     };
 
     const getRoleBadgeStyle = (role: string) => {
-        const base = "px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide border";
+        const base = "px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border";
         if (role.toUpperCase() === 'ADMIN') {
             return `${base} bg-paymint-green/10 text-paymint-green border-paymint-green/20`;
         }
@@ -303,7 +320,7 @@ export function BrandTeamPage() {
                         </span>
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Team</h1>
-                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
+                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
                         Manage staff for {brandName}
                     </p>
                 </div>
@@ -347,7 +364,7 @@ export function BrandTeamPage() {
                                     <stat.icon size={20} />
                                 </div>
                             </div>
-                            <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">{stat.label}</p>
+                            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{stat.label}</p>
                             <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                         </div>
                     </motion.div>
@@ -431,7 +448,7 @@ export function BrandTeamPage() {
                         {hasActiveFilters && (
                             <button
                                 onClick={clearFilters}
-                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-paymint-red/10 text-paymint-red text-xs font-bold tracking-wide hover:bg-paymint-red/20 transition-all"
+                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-paymint-red/10 text-paymint-red text-xs font-black tracking-widest hover:bg-paymint-red/20 transition-all"
                             >
                                 <X size={14} />
                                 Clear
@@ -443,7 +460,7 @@ export function BrandTeamPage() {
                 {/* Active Filters Display */}
                 {hasActiveFilters && (
                     <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
-                        <span className="text-xs font-bold text-gray-400 tracking-wide">Active filters:</span>
+                        <span className="text-xs font-black text-gray-400 tracking-widest">Active filters:</span>
                         <div className="flex items-center gap-2 flex-wrap">
                             {searchQuery && (
                                 <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
@@ -474,8 +491,8 @@ export function BrandTeamPage() {
             {filteredEmployees.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="text-lg font-medium text-gray-900 dark:text-white">No staff found</p>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-xl font-bold text-gray-900 dark:text-white">No staff found</p>
+                    <p className="text-sm font-bold text-gray-500 mt-1">
                         {hasActiveFilters ? 'Try adjusting your filters' : 'Add staff to see them here'}
                     </p>
                     {hasActiveFilters && (
@@ -490,152 +507,201 @@ export function BrandTeamPage() {
             ) : viewMode === 'grid' ? (
                 /* Grid View */
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    <AnimatePresence mode="popLayout">
-                        {filteredEmployees.map((emp, index) => (
-                            <motion.div
-                                key={emp.id}
-                                layout
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                transition={{ delay: index * 0.03 }}
-                                className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 p-6 transition-all shadow-sm hover:shadow-lg overflow-hidden"
-                            >
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                    {paginatedEmployees.map((emp) => (
+                        <div
+                            key={emp.id}
+                            className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 p-6 transition-all shadow-sm hover:shadow-lg overflow-hidden"
+                        >
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                                {/* Header */}
-                                {/* Header */}
-                                <div className="flex items-start justify-between mb-6">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-14 h-14 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center relative flex-shrink-0">
-                                            <span className="text-gray-900 dark:text-white font-bold text-xl">
-                                                {emp.firstName.charAt(0).toUpperCase()}
-                                            </span>
-                                            {emp.isActive && (
-                                                <div className="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white dark:border-[#0A0A0A]" />
-                                            )}
-                                        </div>
-                                        <div>
-                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
-                                                {emp.firstName} {emp.lastName}
-                                            </h3>
-                                            <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
-                                                <AtSign size={12} />
-                                                {emp.username}
-                                            </p>
-                                        </div>
+                            {/* Header */}
+                            {/* Header */}
+                            <div className="flex items-start justify-between mb-6">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-14 h-14 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center relative flex-shrink-0">
+                                        <span className="text-gray-900 dark:text-white font-bold text-xl">
+                                            {emp.firstName.charAt(0).toUpperCase()}
+                                        </span>
+                                        {emp.isActive && (
+                                            <div className="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white dark:border-[#0A0A0A]" />
+                                        )}
                                     </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
+                                            {emp.firstName} {emp.lastName}
+                                        </h3>
+                                        <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                                            <AtSign size={12} />
+                                            {emp.username}
+                                        </p>
+                                    </div>
+                                </div>
 
-                                    <div className="relative">
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setActiveMenu(activeMenu === emp.id ? null : emp.id);
-                                            }}
-                                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
-                                        >
-                                            <MoreVertical size={18} />
-                                        </button>
+                                <div className="relative">
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setActiveMenu(activeMenu === emp.id ? null : emp.id);
+                                        }}
+                                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                    >
+                                        <MoreVertical size={18} />
+                                    </button>
 
-                                        <AnimatePresence>
-                                            {activeMenu === emp.id && (
-                                                <motion.div
-                                                    initial={{ opacity: 0, scale: 0.95, y: -5 }}
-                                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                    exit={{ opacity: 0, scale: 0.95, y: -5 }}
-                                                    className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                    <AnimatePresence>
+                                        {activeMenu === emp.id && (
+                                            <motion.div
+                                                initial={{ opacity: 0, scale: 0.95, y: -5 }}
+                                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                exit={{ opacity: 0, scale: 0.95, y: -5 }}
+                                                className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                            >
+                                                <button
+                                                    onClick={() => handleEditEmployee(emp)}
+                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                                                 >
-                                                    <button
-                                                        onClick={() => handleEditEmployee(emp)}
-                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                                    >
-                                                        <Edit2 size={16} />
-                                                        Edit
-                                                    </button>
-                                                    <button
-                                                        onClick={() => openDeleteModal(emp)}
-                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
-                                                    >
-                                                        <Trash2 size={16} />
-                                                        Remove
-                                                    </button>
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
+                                                    <Edit2 size={16} />
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => openDeleteModal(emp)}
+                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
+                                                >
+                                                    <Trash2 size={16} />
+                                                    Remove
+                                                </button>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+                            </div>
+
+                            {/* Status Badge */}
+                            <div className="mb-4">
+                                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-black tracking-wider border ${emp.isActive
+                                    ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
+                                    : 'bg-gray-100 text-gray-500 border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10'
+                                    }`}>
+                                    <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                                    {emp.isActive ? AppStrings.STATUS.ACTIVE : AppStrings.STATUS.INACTIVE}
+                                </span>
+                            </div>
+
+                            {/* Contact Info */}
+                            <div className="space-y-3 mb-6">
+                                {emp.email && (
+                                    <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl">
+                                        <Mail size={16} className="text-gray-400" />
+                                        <span className="text-xs font-bold text-gray-600 dark:text-gray-300 truncate">{emp.email}</span>
                                     </div>
-                                </div>
+                                )}
+                            </div>
 
-                                {/* Status Badge */}
-                                <div className="mb-4">
-                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${emp.isActive
-                                        ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
-                                        : 'bg-gray-100 text-gray-500 border-gray-200 dark:bg-white/5 dark:text-gray-400 dark:border-white/10'
-                                        }`}>
-                                        <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-emerald-500' : 'bg-gray-400'}`} />
-                                        {emp.isActive ? 'Active' : 'Inactive'}
-                                    </span>
+                            {/* Access Rights */}
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <p className="text-xs font-black text-gray-400 tracking-widest uppercase">Access Rights</p>
+                                    <span className="text-sm font-bold text-gray-900 dark:text-white">{emp.establishments.length} Location{emp.establishments.length !== 1 ? 's' : ''}</span>
                                 </div>
-
-                                {/* Contact Info */}
-                                <div className="space-y-3 mb-6">
-                                    {emp.email && (
-                                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl">
-                                            <Mail size={16} className="text-gray-400" />
-                                            <span className="text-xs font-medium text-gray-600 dark:text-gray-300 truncate">{emp.email}</span>
+                                <div className="space-y-2">
+                                    {emp.establishments.slice(0, 2).map((est, eIdx) => (
+                                        <div
+                                            key={eIdx}
+                                            className="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5"
+                                        >
+                                            <div className="flex items-center gap-2 overflow-hidden">
+                                                <MapPin size={14} className="text-gray-400 flex-shrink-0" />
+                                                <span className="text-xs font-bold text-gray-900 dark:text-white truncate">
+                                                    {est.name}
+                                                </span>
+                                            </div>
+                                            <span className={getRoleBadgeStyle(est.role)}>
+                                                {getRoleDisplay(est.role)}
+                                            </span>
+                                        </div>
+                                    ))}
+                                    {emp.establishments.length > 2 && (
+                                        <div className="text-center py-1">
+                                            <span className="text-xs font-bold text-gray-500">+ {emp.establishments.length - 2} more locations</span>
                                         </div>
                                     )}
                                 </div>
+                            </div>
 
-                                {/* Access Rights */}
-                                <div className="space-y-3">
-                                    <div className="flex items-center justify-between">
-                                        <p className="text-xs font-bold text-gray-500 tracking-wide">Access Rights</p>
-                                        <span className="text-xs font-bold text-gray-900 dark:text-white">{emp.establishments.length} Location{emp.establishments.length !== 1 ? 's' : ''}</span>
-                                    </div>
-                                    <div className="space-y-2">
-                                        {emp.establishments.slice(0, 2).map((est, eIdx) => (
-                                            <div
-                                                key={eIdx}
-                                                className="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5"
-                                            >
-                                                <div className="flex items-center gap-2 overflow-hidden">
-                                                    <MapPin size={14} className="text-gray-400 flex-shrink-0" />
-                                                    <span className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate">
-                                                        {est.name}
-                                                    </span>
-                                                </div>
-                                                <span className={getRoleBadgeStyle(est.role)}>
-                                                    {getRoleDisplay(est.role)}
-                                                </span>
-                                            </div>
-                                        ))}
-                                        {emp.establishments.length > 2 && (
-                                            <div className="text-center py-1">
-                                                <span className="text-xs font-medium text-gray-400">+ {emp.establishments.length - 2} more locations</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Action Buttons */}
-                                <div className="flex items-center gap-3 pt-6 mt-6 border-t border-gray-100 dark:border-white/5">
-                                    <button className="flex-1 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-2 border border-gray-200 dark:border-white/5">
-                                        <Edit2 size={14} />
-                                        Edit
-                                    </button>
-                                    <button className="p-2.5 rounded-xl text-red-500 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors border border-red-100 dark:border-red-500/20">
-                                        <Trash2 size={16} />
-                                    </button>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </AnimatePresence>
+                            {/* Action Buttons */}
+                            <div className="flex items-center gap-3 pt-6 mt-6 border-t border-gray-100 dark:border-white/5">
+                                <button className="flex-1 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-black tracking-widest hover:bg-gray-100 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-2 border border-gray-200 dark:border-white/5">
+                                    <Edit2 size={14} />
+                                    Edit
+                                </button>
+                                <button className="p-2.5 rounded-xl text-red-500 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors border border-red-100 dark:border-red-500/20">
+                                    <Trash2 size={16} />
+                                </button>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             ) : (
                 /* List View */
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
-                    {/* Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
+                    {/* Mobile Card View */}
+                    <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+                        {paginatedEmployees.map((emp) => (
+                            <div
+                                key={emp.id}
+                                className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                            >
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center relative">
+                                        <span className="text-gray-900 dark:text-white font-bold text-sm">
+                                            {emp.firstName.charAt(0).toUpperCase()}
+                                        </span>
+                                        {emp.isActive && (
+                                            <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-[#0A0A0A]" />
+                                        )}
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                                            {emp.firstName} {emp.lastName}
+                                        </h3>
+                                        <p className="text-xs font-bold text-gray-500 mt-0.5">@{emp.username}</p>
+                                    </div>
+                                    <div className="ml-auto flex gap-2">
+                                        <button
+                                            onClick={() => handleEditEmployee(emp)}
+                                            className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
+                                        >
+                                            <Edit2 size={16} />
+                                        </button>
+                                        <button
+                                            onClick={() => openDeleteModal(emp)}
+                                            className="p-2 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-500 transition-colors"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-3 text-xs">
+                                    <div className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                                        <p className="text-gray-500 mb-1">Role</p>
+                                        <span className={getRoleBadgeStyle(emp.establishments[0]?.role || 'USER')}>
+                                            {getRoleDisplay(emp.establishments[0]?.role || 'USER')}
+                                        </span>
+                                    </div>
+                                    <div className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                                        <p className="text-gray-500 mb-1">Locations</p>
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">
+                                            {emp.establishments.length} Location{emp.establishments.length !== 1 ? 's' : ''}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Desktop Table Header */}
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest uppercase">
                         <div className="col-span-4">Name</div>
                         <div className="col-span-2">Status</div>
                         <div className="col-span-2">Primary Role</div>
@@ -645,96 +711,94 @@ export function BrandTeamPage() {
 
                     {/* Table Body */}
                     <div className="divide-y divide-gray-100 dark:divide-white/5">
-                        <AnimatePresence mode="popLayout">
-                            {filteredEmployees.map((emp, index) => (
-                                <motion.div
-                                    key={emp.id}
-                                    layout
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, x: -10 }}
-                                    transition={{ delay: index * 0.02 }}
-                                    className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
-                                >
+                        {paginatedEmployees.map((emp) => (
+                            <div
+                                key={emp.id}
+                                className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                            >
 
-                                    {/* Member Info */}
-                                    {/* Member Info */}
-                                    <div className="col-span-4 flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center relative">
-                                            <span className="text-gray-900 dark:text-white font-bold text-sm">
-                                                {emp.firstName.charAt(0).toUpperCase()}
-                                            </span>
-                                            {emp.isActive && (
-                                                <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-[#0A0A0A]" />
-                                            )}
-                                        </div>
-                                        <div>
-                                            <h3 className="font-bold text-gray-900 dark:text-white">
-                                                {emp.firstName} {emp.lastName}
-                                            </h3>
-                                            <p className="text-xs text-gray-500 mt-0.5">@{emp.username}</p>
-                                        </div>
-                                    </div>
-
-                                    {/* Status */}
-                                    <div className="col-span-2 flex items-center">
-                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${emp.isActive
-                                            ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
-                                            : 'bg-gray-100 text-gray-500 border-gray-200'
-                                            }`}>
-                                            <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-emerald-500' : 'bg-gray-400'}`} />
-                                            {emp.isActive ? 'Active' : 'Inactive'}
+                                {/* Member Info */}
+                                {/* Member Info */}
+                                <div className="col-span-4 flex items-center gap-4">
+                                    <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center relative">
+                                        <span className="text-gray-900 dark:text-white font-bold text-sm">
+                                            {emp.firstName.charAt(0).toUpperCase()}
                                         </span>
-                                    </div>
-
-                                    {/* Primary Role */}
-                                    <div className="col-span-2 flex items-center">
-                                        {emp.establishments[0] && (
-                                            <span className={getRoleBadgeStyle(emp.establishments[0].role)}>
-                                                {getRoleDisplay(emp.establishments[0].role)}
-                                            </span>
+                                        {emp.isActive && (
+                                            <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-[#0A0A0A]" />
                                         )}
                                     </div>
+                                    <div>
+                                        <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                                            {emp.firstName} {emp.lastName}
+                                        </h3>
+                                        <p className="text-xs font-bold text-gray-500 mt-0.5">@{emp.username}</p>
+                                    </div>
+                                </div>
 
-                                    {/* Locations Count */}
-                                    <div className="col-span-2 flex items-center">
-                                        <span className="font-bold text-gray-900 dark:text-white">
-                                            {emp.establishments.length} location{emp.establishments.length !== 1 ? 's' : ''}
+                                {/* Status */}
+                                <div className="col-span-2 flex items-center">
+                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-black tracking-wider border ${emp.isActive
+                                        ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
+                                        : 'bg-gray-100 text-gray-500 border-gray-200'
+                                        }`}>
+                                        <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                                        {emp.isActive ? AppStrings.STATUS.ACTIVE : AppStrings.STATUS.INACTIVE}
+                                    </span>
+                                </div>
+
+                                {/* Primary Role */}
+                                <div className="col-span-2 flex items-center">
+                                    {emp.establishments[0] && (
+                                        <span className={getRoleBadgeStyle(emp.establishments[0].role)}>
+                                            {getRoleDisplay(emp.establishments[0].role)}
                                         </span>
-                                    </div>
+                                    )}
+                                </div>
 
-                                    {/* Actions */}
-                                    <div className="col-span-2 flex items-center justify-center gap-2">
-                                        <button
-                                            onClick={() => handleEditEmployee(emp)}
-                                            className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all flex items-center gap-2 border border-gray-200 dark:border-white/5"
-                                        >
-                                            <Edit2 size={14} />
-                                            Edit
-                                        </button>
-                                        <button
-                                            onClick={() => openDeleteModal(emp)}
-                                            className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-red-500 transition-colors"
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </AnimatePresence>
+                                {/* Locations Count */}
+                                <div className="col-span-2 flex items-center">
+                                    <span className="font-bold text-gray-900 dark:text-white">
+                                        {emp.establishments.length} location{emp.establishments.length !== 1 ? 's' : ''}
+                                    </span>
+                                </div>
+
+                                {/* Actions */}
+                                <div className="col-span-2 flex items-center justify-center gap-2">
+                                    <button
+                                        onClick={() => handleEditEmployee(emp)}
+                                        className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all flex items-center gap-2 border border-gray-200 dark:border-white/5"
+                                    >
+                                        <Edit2 size={14} />
+                                        Edit
+                                    </button>
+                                    <button
+                                        onClick={() => openDeleteModal(emp)}
+                                        className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-red-500 transition-colors"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             )}
 
-            {/* Results Summary */}
-            {filteredEmployees.length > 0 && (
+            <div className="flex flex-col items-center gap-6 mt-10">
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={(page) => setCurrentPage(page)}
+                />
+
                 <div className="text-center">
                     <p className="text-sm text-gray-500">
-                        Showing <span className="font-bold text-gray-900 dark:text-white">{filteredEmployees.length}</span> of{' '}
-                        <span className="font-bold text-gray-900 dark:text-white">{employees.length}</span> staff
+                        Showing <span className="text-sm font-bold text-gray-900 dark:text-white">{filteredEmployees.length === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1} to {Math.min(currentPage * ITEMS_PER_PAGE, filteredEmployees.length)}</span> of{' '}
+                        <span className="text-sm font-bold text-gray-900 dark:text-white">{filteredEmployees.length}</span> team members
                     </p>
                 </div>
-            )}
+            </div>
 
             {/* Employee Form Modal */}
             <EmployeeFormModal
@@ -826,6 +890,6 @@ export function BrandTeamPage() {
                     </div>
                 )}
             </AnimatePresence>
-        </div>
+        </div >
     );
 }

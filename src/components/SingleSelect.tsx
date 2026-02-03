@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
+import { AppStrings } from '../constants/AppStrings';
+import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronDown, Check, X, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -42,7 +43,11 @@ export function SingleSelect({
     const dropdownRef = useRef<HTMLDivElement>(null);
     const searchInputRef = useRef<HTMLInputElement>(null);
 
-    const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
+    const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({
+        opacity: 0,
+        pointerEvents: 'none',
+        position: 'fixed'
+    });
 
     // Calculate dropdown position
     const updateDropdownPosition = () => {
@@ -61,8 +66,16 @@ export function SingleSelect({
             top: shouldGoUp ? 'auto' : rect.bottom + 8,
             bottom: shouldGoUp ? window.innerHeight - rect.top + 8 : 'auto',
             zIndex: 9999,
+            opacity: 1,
+            pointerEvents: 'auto'
         });
     };
+
+    useLayoutEffect(() => {
+        if (isOpen) {
+            updateDropdownPosition();
+        }
+    }, [isOpen]);
 
     // Close when clicking outside
     useEffect(() => {
@@ -78,7 +91,6 @@ export function SingleSelect({
         };
 
         if (isOpen) {
-            updateDropdownPosition();
             document.addEventListener('mousedown', handleClickOutside);
             window.addEventListener('scroll', updateDropdownPosition, true);
             window.addEventListener('resize', updateDropdownPosition);
@@ -135,9 +147,9 @@ export function SingleSelect({
             {isOpen && (
                 <motion.div
                     ref={dropdownRef}
-                    initial={{ opacity: 0, y: 5, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 5, scale: 0.98 }}
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 5 }}
                     transition={{ duration: 0.15, ease: "easeOut" }}
                     style={dropdownStyle}
                     className={`bg-white/95 dark:bg-[#0B1120]/95 backdrop-blur-xl border border-gray-100 dark:border-white/[0.08] rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden max-h-80 overflow-y-auto custom-scrollbar ring-1 ring-black/5 flex flex-col`}
@@ -182,8 +194,8 @@ export function SingleSelect({
                         )}
 
                         {filteredOptions.length === 0 ? (
-                            <div className="px-5 py-8 text-sm text-gray-400 font-bold italic text-center">
-                                {searchQuery ? 'No results found' : 'No options available'}
+                            <div className="px-5 py-8 text-sm font-bold text-gray-500 italic text-center">
+                                {searchQuery ? AppStrings.COMMON.NO_RESULTS : 'No options available'}
                             </div>
                         ) : (
                             filteredOptions.map((opt) => {
@@ -211,7 +223,7 @@ export function SingleSelect({
     return (
         <div className={`relative ${className}`} ref={containerRef}>
             {label && (
-                <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-2 px-1">
+                <label className="block text-xs font-black text-gray-400 tracking-widest mb-2 px-1">
                     {label}
                 </label>
             )}
@@ -220,9 +232,9 @@ export function SingleSelect({
                 ref={buttonRef}
                 type="button"
                 onClick={() => !disabled && setIsOpen(!isOpen)}
-                className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-left flex items-center justify-between transition-all outline-none shadow-sm
-                    ${disabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:border-paymint-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06] hover:shadow-lg hover:shadow-black/10'}
-                    ${isOpen ? 'ring-2 ring-paymint-green/20 border-paymint-green bg-gray-50 dark:bg-white/[0.08] shadow-inner shadow-black/20' : ''
+                className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-left flex items-center justify-between transition-[color,background-color,border-color,box-shadow,ring] outline-none shadow-sm
+                    ${disabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:border-paymint-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]'}
+                    ${isOpen ? 'ring-[3px] ring-paymint-green/10 border-paymint-green bg-gray-50 dark:bg-white/[0.08]' : ''
                     } ${buttonClassName}`}
             >
                 <div className="flex items-center gap-2 overflow-hidden">

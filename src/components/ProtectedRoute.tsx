@@ -1,4 +1,4 @@
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export function ProtectedRoute() {
@@ -36,6 +36,7 @@ export function ProtectedRoute() {
 export function EstablishmentRequiredRoute() {
   const { isAuthenticated, isLoading, needsOnboarding, currentEstablishment } = useAuth();
   const location = useLocation();
+  const { locationSlug } = useParams();
 
   if (isLoading) {
     return (
@@ -59,15 +60,20 @@ export function EstablishmentRequiredRoute() {
     return <Navigate to="/onboarding" replace />;
   }
 
+  // If no location slug, redirect to select-establishment
+  if (!locationSlug) {
+    return <Navigate to="/select-establishment" replace />;
+  }
+
   if (!currentEstablishment) {
-    return <Navigate to="/dashboard/establishments" replace />;
+    return <Navigate to={`/dashboard/${locationSlug}/establishments`} replace />;
   }
 
   // Lock access if subscription is canceled
   // Except for the billing page so they can reactivate
   const isBillingPage = location.pathname.includes('/billing');
   if (currentEstablishment.subscriptionStatus === 'CANCELED' && !isBillingPage) {
-    return <Navigate to="/dashboard/billing" replace />;
+    return <Navigate to={`/dashboard/${locationSlug}/billing`} replace />;
   }
 
   return <Outlet />;

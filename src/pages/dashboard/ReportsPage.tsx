@@ -7,7 +7,7 @@ import { endOfDay, startOfDay, format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   TrendingUp, Clock, Activity, ShoppingBag, ArrowUpRight, RefreshCw,
-  Download, ChevronRight, ChevronLeft, Wallet, CreditCard, ExternalLink, Percent, DollarSign, PieChart as PieChartIcon, Tag, Scale, ArrowUpDown, Search, Users
+  Download, ChevronRight, Wallet, CreditCard, ExternalLink, Percent, DollarSign, PieChart as PieChartIcon, Tag, Scale, ArrowUpDown, Search, Users
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -21,6 +21,7 @@ import { CustomDatePicker } from '../../components/CustomDatePicker';
 import { CustomTimePicker } from '../../components/CustomTimePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
+import { Pagination } from '../../components/ui';
 
 type ReportType = 'sales' | 'top-items' | 'top-categories' | 'top-modifiers' | 'peak-hours' | 'shifts' | 'staff-sales' | 'payments' | 'discounts' | 'taxes' | 'receipts';
 
@@ -30,7 +31,7 @@ export function ReportsPage() {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
   const { currentEstablishment } = useAuth();
-  const { type } = useParams<{ type: string }>();
+  const { type, locationSlug } = useParams<{ type: string; locationSlug: string }>();
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -139,6 +140,7 @@ export function ReportsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [discountPage, setDiscountPage] = useState(1);
+  const [staffPage, setStaffPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
 
   const sortedItems = useMemo(() => {
@@ -452,7 +454,7 @@ export function ReportsPage() {
             </div>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Sales and Reporting</h1>
-          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Tracking All Business Performance</p>
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">Tracking All Business Performance</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -499,12 +501,12 @@ export function ReportsPage() {
                   // Navigate to the appropriate route so sidebar stays in sync
                   if (type.id === 'items-categories') {
                     setItemReportTab('items');
-                    navigate('/dashboard/reports/items');
+                    navigate(`/dashboard/${locationSlug}/reports/items`);
                   } else if (type.id === 'addons') {
                     setItemReportTab('modifiers');
-                    navigate('/dashboard/reports/modifiers');
+                    navigate(`/dashboard/${locationSlug}/reports/modifiers`);
                   } else {
-                    navigate(`/dashboard/reports/${type.id}`);
+                    navigate(`/dashboard/${locationSlug}/reports/${type.id}`);
                   }
                 }}
                 className={`relative flex-none lg:flex-1 flex flex-col xl:flex-row items-center justify-center gap-1.5 xl:gap-2 px-3 py-2.5 xl:py-3 rounded-xl transition-all duration-300 isolate min-w-[130px] lg:min-w-0 ${isSelected
@@ -557,7 +559,7 @@ export function ReportsPage() {
                 <div className={`flex-none w-auto min-w-[145px] sm:min-w-[170px] relative z-[60]`}>
                   <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isDateFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
                     <div className="flex items-center gap-1.5 mb-0.5">
-                      <span className={`text-[9px] font-black tracking-wider transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>DATE RANGE</span>
+                      <span className={`text-[9px] font-black tracking-wider transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Date Range</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <CustomDatePicker
@@ -588,7 +590,7 @@ export function ReportsPage() {
                 <div className={`flex-none w-auto min-w-[155px] sm:min-w-[180px] relative z-[55]`}>
                   <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isTimeFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
                     <div className="flex items-center gap-1.5 mb-0.5">
-                      <span className={`text-[9px] font-black tracking-wider transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>ACTIVE HOURS</span>
+                      <span className={`text-[9px] font-black tracking-wider transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Active Hours</span>
                     </div>
                     <div className="flex items-center gap-2 justify-between relative">
                       <CustomTimePicker
@@ -649,7 +651,7 @@ export function ReportsPage() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-32">
             <div className="w-16 h-16 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-xs font-black tracking-widest text-gray-400">Processing Analytics...</p>
+            <p className="text-xs font-black text-gray-400 tracking-widest">Processing Analytics...</p>
           </div>
         ) : (
           <motion.div key={reportType} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
@@ -720,7 +722,7 @@ export function ReportsPage() {
                         sub: 'Staff Hours',
                         onClick: () => {
                           window.scrollTo({ top: 0, behavior: 'smooth' });
-                          setTimeout(() => navigate('/dashboard/reports/shifts'), 700);
+                          setTimeout(() => navigate(`/dashboard/${locationSlug}/reports/shifts`), 700);
                         }
                       },
                       {
@@ -804,7 +806,7 @@ export function ReportsPage() {
                   <div className="lg:col-span-2 p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
                     <div className="flex items-center justify-between mb-6">
                       <div>
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                           <TrendingUp className="text-paymint-green" size={20} />
                           Revenue Stats
                         </h3>
@@ -893,7 +895,7 @@ export function ReportsPage() {
                                   <Activity size={36} className="text-gray-400 dark:text-gray-600" />
                                 </div>
                                 <div className="text-center">
-                                  <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">No Revenue Data</p>
+                                  <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">No revenue data</p>
                                   <p className="text-xs text-gray-500 mt-1">There are no sales recorded for the selected period.</p>
                                 </div>
                               </div>
@@ -1080,7 +1082,7 @@ export function ReportsPage() {
                         </div>
                       </div>
                       <button
-                        onClick={() => navigate('/dashboard/reports/payments')}
+                        onClick={() => navigate(`/dashboard/${locationSlug}/reports/payments`)}
                         className="text-xs font-bold text-blue-500 hover:underline tracking-wide"
                       >
                         View All
@@ -1285,30 +1287,11 @@ export function ReportsPage() {
                     </table>
                   </div>
 
-                  {/* Pagination */}
-                  {itemReportData.breakdown && itemReportData.breakdown.length > itemsPerPage && (
-                    <div className="flex items-center justify-between px-8 py-4 border-t border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.01]">
-                      <p className="text-xs font-black text-gray-400 tracking-widest">
-                        Page {currentPage} of {Math.ceil(itemReportData.breakdown.length / itemsPerPage)}
-                      </p>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                          disabled={currentPage === 1}
-                          className="p-2 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50 transition-all"
-                        >
-                          <ChevronLeft size={16} />
-                        </button>
-                        <button
-                          onClick={() => setCurrentPage(p => Math.min(Math.ceil(itemReportData.breakdown.length / itemsPerPage), p + 1))}
-                          disabled={currentPage === Math.ceil(itemReportData.breakdown.length / itemsPerPage)}
-                          className="p-2 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 disabled:opacity-50 transition-all"
-                        >
-                          <ChevronRight size={16} />
-                        </button>
-                      </div>
-                    </div>
-                  )}
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={Math.ceil((itemReportData.breakdown?.length || 0) / itemsPerPage)}
+                    onPageChange={(p) => setCurrentPage(p)}
+                  />
                 </div>
               </div>
             )
@@ -1325,7 +1308,7 @@ export function ReportsPage() {
                     <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 transform rotate-3">
                       <Users size={32} className="text-gray-400" />
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No Staff Activity Found</h3>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No staff activity found</h3>
                     <p className="text-xs font-medium text-gray-500 max-w-sm leading-relaxed">
                       There are no sales records, shifts, or employee activity for the selected time period.
                     </p>
@@ -1585,45 +1568,55 @@ export function ReportsPage() {
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100 dark:divide-white/[0.03]">
-                              {sortedEmployees.map((emp: any, idx: number) => {
-                                const share = totalStoreSales > 0 ? ((emp.totalSales / totalStoreSales) * 100).toFixed(1) : '0';
-                                const avgTicket = emp.totalSales / (emp.transactionCount || 1);
-                                const efficiency = emp.totalSales / (emp.totalHours || 1);
+                              {sortedEmployees
+                                .slice((staffPage - 1) * itemsPerPage, staffPage * itemsPerPage)
+                                .map((emp: any, idx: number) => {
+                                  const share = totalStoreSales > 0 ? ((emp.totalSales / totalStoreSales) * 100).toFixed(1) : '0';
+                                  const avgTicket = emp.totalSales / (emp.transactionCount || 1);
+                                  const efficiency = emp.totalSales / (emp.totalHours || 1);
 
-                                return (
-                                  <tr key={emp.username} className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
-                                    <td className="px-6 py-4 text-left">
-                                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs ${idx === 0 ? 'bg-[#7CC39F]/20 text-[#7CC39F]' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
-                                        {idx + 1}
-                                      </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                      <span className="font-bold text-gray-900 dark:text-white text-sm">{emp.username}</span>
-                                    </td>
-                                    <td className="px-6 py-4 text-right font-black text-gray-900 dark:text-white">
-                                      {formatCurrency(emp.totalSales)}
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                      <div className="flex items-center justify-end gap-2">
-                                        <div className="w-16 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
-                                          <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${share}%` }} />
+                                  return (
+                                    <tr key={emp.username} className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                                      <td className="px-6 py-4 text-left">
+                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs ${idx === 0 ? 'bg-[#7CC39F]/20 text-[#7CC39F]' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                                          {idx + 1}
                                         </div>
-                                        <span className="text-xs font-bold text-gray-500">{share}%</span>
-                                      </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-right font-bold text-gray-900 dark:text-white">
-                                      {formatCurrency(avgTicket).replace('JOD', '').trim()}
-                                    </td>
-                                    <td className="px-6 py-4 text-right">
-                                      <span className="text-xs font-bold text-gray-500">
-                                        {formatCurrency(efficiency).replace('JOD', '').trim()} / hr
-                                      </span>
-                                    </td>
-                                  </tr>
-                                );
-                              })}
+                                      </td>
+                                      <td className="px-6 py-4">
+                                        <span className="font-bold text-gray-900 dark:text-white text-sm">{emp.username}</span>
+                                      </td>
+                                      <td className="px-6 py-4 text-right font-black text-gray-900 dark:text-white">
+                                        {formatCurrency(emp.totalSales)}
+                                      </td>
+                                      <td className="px-6 py-4 text-right">
+                                        <div className="flex items-center justify-end gap-2">
+                                          <div className="w-16 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                                            <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${share}%` }} />
+                                          </div>
+                                          <span className="text-xs font-bold text-gray-500">{share}%</span>
+                                        </div>
+                                      </td>
+                                      <td className="px-6 py-4 text-right font-bold text-gray-900 dark:text-white">
+                                        {formatCurrency(avgTicket).replace('JOD', '').trim()}
+                                      </td>
+                                      <td className="px-6 py-4 text-right">
+                                        <span className="text-xs font-bold text-gray-500">
+                                          {formatCurrency(efficiency).replace('JOD', '').trim()} / hr
+                                        </span>
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
                             </tbody>
                           </table>
+                        </div>
+
+                        <div className="p-4 border-t border-gray-100 dark:border-white/[0.05]">
+                          <Pagination
+                            currentPage={staffPage}
+                            totalPages={Math.ceil(sortedEmployees.length / itemsPerPage)}
+                            onPageChange={(p) => setStaffPage(p)}
+                          />
                         </div>
                       </div>
                     </div>
@@ -1849,7 +1842,7 @@ export function ReportsPage() {
                           <Clock size={36} className="text-gray-400 dark:text-gray-600" />
                         </div>
                         <div className="text-center">
-                          <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">No Traffic Data</p>
+                          <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">No traffic data</p>
                           <p className="text-xs text-gray-500 mt-1">There is no transaction activity recorded for the selected period.</p>
                         </div>
                       </div>
@@ -1942,7 +1935,7 @@ export function ReportsPage() {
                         ) : (
                           <div className="flex h-full items-center justify-center text-gray-400 flex-col gap-2">
                             <CreditCard size={32} className="opacity-20" />
-                            <span className="text-xs font-bold tracking-widest">No Data Available</span>
+                            <span className="text-xs font-bold tracking-widest">No data available</span>
                           </div>
                         )}
                         {/* Center Stats */}
@@ -1968,7 +1961,7 @@ export function ReportsPage() {
                           <p className="text-xs text-gray-500 mt-1">Click on CARD or other methods to see breakdown</p>
                         </div>
                         <button
-                          onClick={() => navigate('/dashboard/orders', {
+                          onClick={() => navigate(`/dashboard/${locationSlug}/orders`, {
                             state: {
                               startDate: effectiveDateRange.start,
                               endDate: effectiveDateRange.end,
@@ -2045,7 +2038,7 @@ export function ReportsPage() {
                                           className="bg-gray-50/50 dark:bg-white/[0.01] border-t border-gray-100 dark:border-white/5"
                                         >
                                           <div className="p-4 pl-16 space-y-2">
-                                            <p className="text-xs font-black text-gray-400 tracking-widest mb-3">CARD TYPE BREAKDOWN</p>
+                                            <p className="text-xs font-black text-gray-400 tracking-widest mb-3">Card Type Breakdown</p>
                                             {salesData.cardTypeBreakdown.map((card: any, j: number) => {
                                               const cardPercentage = ((card.value / item.value) * 100).toFixed(1);
                                               return (
@@ -2080,7 +2073,7 @@ export function ReportsPage() {
                                           className="bg-gray-50/50 dark:bg-white/[0.01] border-t border-gray-100 dark:border-white/5"
                                         >
                                           <div className="p-4 pl-16 space-y-2">
-                                            <p className="text-xs font-black text-gray-400 tracking-widest mb-3">OTHER PAYMENT BREAKDOWN</p>
+                                            <p className="text-xs font-black text-gray-400 tracking-widest mb-3">Other Payment Breakdown</p>
                                             {salesData.otherPaymentBreakdown.map((other: any, j: number) => {
                                               const otherPercentage = ((other.value / item.value) * 100).toFixed(1);
                                               return (
@@ -2199,7 +2192,7 @@ export function ReportsPage() {
                         ) : (
                           <div className="flex h-full items-center justify-center text-gray-400 flex-col gap-2">
                             <Percent size={32} className="opacity-20" />
-                            <span className="text-xs font-bold tracking-widest">No Discounts Applied</span>
+                            <span className="text-xs font-bold tracking-widest">No discounts applied</span>
                           </div>
                         )}
                         {/* Center Stats */}
@@ -2283,29 +2276,11 @@ export function ReportsPage() {
                             No discount data available
                           </div>
                         )}
-                        {sortedDiscounts.length > 4 && (
-                          <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100 dark:border-white/5">
-                            <p className="text-xs font-bold text-gray-500 dark:text-gray-400">
-                              Page {discountPage} of {Math.ceil(sortedDiscounts.length / 4)}
-                            </p>
-                            <div className="flex items-center gap-2">
-                              <button
-                                onClick={() => setDiscountPage((p) => Math.max(1, p - 1))}
-                                disabled={discountPage === 1}
-                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                              >
-                                <ChevronLeft size={16} />
-                              </button>
-                              <button
-                                onClick={() => setDiscountPage((p) => Math.min(Math.ceil(sortedDiscounts.length / 4), p + 1))}
-                                disabled={discountPage === Math.ceil(sortedDiscounts.length / 4)}
-                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-                              >
-                                <ChevronRight size={16} />
-                              </button>
-                            </div>
-                          </div>
-                        )}
+                        <Pagination
+                          currentPage={discountPage}
+                          totalPages={Math.ceil(sortedDiscounts.length / 4)}
+                          onPageChange={(p) => setDiscountPage(p)}
+                        />
                       </div>
                     </div>
                   </div>

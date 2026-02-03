@@ -404,7 +404,7 @@ export function OnboardingPage() {
                   />
                 ))}
               </div>
-              <span className="text-xs font-bold text-gray-400 tracking-widest">Step {step} of {totalSteps}</span>
+              <span className="text-xs font-black text-gray-400 tracking-widest">STEP {step} OF {totalSteps}</span>
             </div>
           )}
         </div>
@@ -424,14 +424,14 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
-                  <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Location Setup</h2>
-                  <p className="text-gray-600 dark:text-gray-400 font-medium">Add your first location.</p>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">Location Setup</h2>
+                  <p className="text-sm font-bold text-gray-600 dark:text-gray-300">Add your first location.</p>
                 </div>
 
                 <form onSubmit={form1.handleSubmit(onStep1Submit)} className="space-y-8">
                   <div className="space-y-6">
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
+                      <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
                         Location Name <span className="text-paymint-red mx-1">*</span>
                         <QuickInfo text="The name of your business." />
                       </label>
@@ -440,15 +440,15 @@ export function OnboardingPage() {
                         <input
                           type="text"
                           {...form1.register('name')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                           placeholder="e.g. The Coffee House"
                         />
                       </div>
-                      {form1.formState.errors.name && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form1.formState.errors.name.message as string}</p>}
+                      {form1.formState.errors.name && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form1.formState.errors.name.message as string}</p>}
                     </div>
 
                     <div className="space-y-3">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
+                      <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
                         Business Type
                         <QuickInfo text="Select your business type." />
                       </label>
@@ -470,7 +470,7 @@ export function OnboardingPage() {
 
                     {/* Phone Number Row */}
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
+                      <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
                         Phone <span className="text-paymint-red mx-1">*</span>
                         <QuickInfo text="To confirm account." />
                       </label>
@@ -486,7 +486,7 @@ export function OnboardingPage() {
                             className={`flex items-center gap-2 bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 px-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all min-w-[130px]`}
                           >
                             <span className="text-xl">{selectedCountry.flag}</span>
-                            <span className="text-base">{selectedCountry.dialCode}</span>
+                            <span className="text-sm font-bold">{selectedCountry.dialCode}</span>
                             <ChevronDown size={16} className="text-gray-400" />
                           </button>
                           <AnimatePresence>
@@ -528,8 +528,8 @@ export function OnboardingPage() {
                                         className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-paymint-green/10 transition-colors ${selectedCountry.code === country.code ? 'bg-paymint-green/5 text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}
                                       >
                                         <span className="text-xl">{country.flag}</span>
-                                        <span className="font-bold text-sm">{country.name}</span>
-                                        <span className="text-gray-400 text-sm ml-auto">{country.dialCode}</span>
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{country.name}</span>
+                                        <span className="text-xs font-bold text-gray-400 ml-auto">{country.dialCode}</span>
                                       </button>
                                     ))}
                                   {countries.filter((country) =>
@@ -537,7 +537,7 @@ export function OnboardingPage() {
                                     country.code.toLowerCase().includes(countrySearch.toLowerCase()) ||
                                     country.dialCode.includes(countrySearch)
                                   ).length === 0 && (
-                                      <p className="text-center text-gray-400 text-sm py-4">No countries found</p>
+                                      <p className="text-center text-xs font-bold text-gray-500 py-4">No countries found</p>
                                     )}
                                 </div>
                               </motion.div>
@@ -554,25 +554,25 @@ export function OnboardingPage() {
                               const value = e.target.value.replace(/[^0-9]/g, '');
                               form1.setValue('phone', value);
                             }}
-                            className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 px-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                            className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 px-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                             placeholder="Enter phone number"
                           />
                         </div>
                       </div>
-                      {form1.formState.errors.phone && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form1.formState.errors.phone.message as string}</p>}
+                      {form1.formState.errors.phone && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form1.formState.errors.phone.message as string}</p>}
                     </div>
 
                     {/* Base Currency Row */}
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
-                        Currency <span className="text-paymint-red mx-1">*</span>
+                      <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
+                        CURRENCY <span className="text-paymint-red mx-1">*</span>
                         <QuickInfo text="Primary currency for sales." />
                       </label>
                       <div className="relative">
                         <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                         <select
                           {...form1.register('currency')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.currency ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all appearance-none`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.currency ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all appearance-none`}
                         >
                           <option value="JOD">JOD - Jordanian Dinar</option>
                           <option value="USD">USD - US Dollar</option>
@@ -588,12 +588,12 @@ export function OnboardingPage() {
                           <option value="TRY">TRY - Turkish Lira</option>
                         </select>
                       </div>
-                      {form1.formState.errors.currency && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form1.formState.errors.currency.message as string}</p>}
+                      {form1.formState.errors.currency && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form1.formState.errors.currency.message as string}</p>}
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
-                        Address <span className="text-paymint-red mx-1">*</span>
+                      <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
+                        ADDRESS <span className="text-paymint-red mx-1">*</span>
                         <QuickInfo text="Location address." />
                       </label>
                       <div className="relative">
@@ -601,11 +601,11 @@ export function OnboardingPage() {
                         <input
                           type="text"
                           {...form1.register('address')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.address ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.address ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                           placeholder="City, Area, Building"
                         />
                       </div>
-                      {form1.formState.errors.address && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form1.formState.errors.address.message as string}</p>}
+                      {form1.formState.errors.address && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form1.formState.errors.address.message as string}</p>}
                     </div>
 
                     {/* Import Settings Section - Only show if user has existing establishments */}
@@ -613,12 +613,12 @@ export function OnboardingPage() {
                       <div className="pt-4 border-t border-gray-100 dark:border-white/5">
                         <div className="flex items-center gap-2 mb-4">
                           <Copy className="text-paymint-green" size={20} />
-                          <h3 className="text-lg font-black text-gray-900 dark:text-white tracking-tight">Quick Setup</h3>
+                          <h3 className="text-base font-bold text-gray-900 dark:text-white">Quick Setup</h3>
                         </div>
 
                         <div className="bg-gray-50 dark:bg-black/20 rounded-2xl p-5 border border-gray-100 dark:border-white/5">
-                          <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] mb-2 flex items-center">
-                            Copy Settings
+                          <label className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center">
+                            COPY SETTINGS
                             <QuickInfo text="Copy menu from another location." />
                           </label>
                           <div className="relative mb-4">
@@ -646,7 +646,7 @@ export function OnboardingPage() {
                                 exit={{ opacity: 0, height: 0 }}
                                 className="space-y-3 overflow-hidden"
                               >
-                                <p className="text-xs font-bold text-gray-400 mb-2">Select Data To Duplicate:</p>
+                                <p className="text-xs font-black text-gray-400 tracking-widest mb-2">Select Data To Duplicate:</p>
 
                                 {/* Inventory Checkbox */}
                                 <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicateInventory ? 'border-paymint-green bg-paymint-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
@@ -663,7 +663,7 @@ export function OnboardingPage() {
                                     <Box size={16} className={duplicateInventory ? 'text-paymint-green' : 'text-gray-400'} />
                                     <div>
                                       <p className="text-sm font-bold text-gray-900 dark:text-white">Menu</p>
-                                      <p className="text-xs text-gray-500 font-medium">Items & categories</p>
+                                      <p className="text-xs font-bold text-gray-500">Items & categories</p>
                                     </div>
                                   </div>
                                 </label>
@@ -683,7 +683,7 @@ export function OnboardingPage() {
                                     <Tags size={16} className={duplicateDiscounts ? 'text-paymint-green' : 'text-gray-400'} />
                                     <div>
                                       <p className="text-sm font-bold text-gray-900 dark:text-white">Discounts</p>
-                                      <p className="text-xs text-gray-500 font-medium">Promo codes and discount rules</p>
+                                      <p className="text-xs font-bold text-gray-500">Promo codes and discount rules</p>
                                     </div>
                                   </div>
                                 </label>
@@ -703,7 +703,7 @@ export function OnboardingPage() {
                                     <CreditCard size={16} className={duplicatePaymentMethods ? 'text-paymint-green' : 'text-gray-400'} />
                                     <div>
                                       <p className="text-sm font-bold text-gray-900 dark:text-white">Payment Methods</p>
-                                      <p className="text-xs text-gray-500 font-medium">Card types and custom payment options</p>
+                                      <p className="text-xs font-bold text-gray-500">Card types and custom payment options</p>
                                     </div>
                                   </div>
                                 </label>
@@ -719,9 +719,9 @@ export function OnboardingPage() {
                   <div className="pt-4">
                     <button
                       type="submit"
-                      className="w-full py-5 bg-paymint-green text-black font-black text-xl rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
+                      className="w-full py-5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
-                      Next Step
+                      NEXT STEP
                       <ArrowRight size={24} />
                     </button>
                   </div>
@@ -741,7 +741,7 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-8">
-                  <button onClick={() => setStep(1)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 font-bold text-xs tracking-widest">
+                  <button onClick={() => setStep(1)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-black tracking-widest">
                     <ArrowLeft size={14} /> Back
                   </button>
                   <div className="flex items-center gap-3 mb-4">
@@ -749,17 +749,17 @@ export function OnboardingPage() {
                       <ShieldCheck className={isTrialFlow ? 'text-yellow-500' : 'text-paymint-green'} size={24} />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+                      <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                         {isTrialFlow ? 'Start Free Trial' : 'Activate Subscription'}
                       </h2>
                       {isTrialFlow ? (
-                        <span className="bg-yellow-400 text-black text-xs font-bold px-2 py-0.5 rounded tracking-wider">7 Days Free</span>
+                        <span className="bg-yellow-400 text-black text-xs font-black tracking-widest px-2 py-0.5 rounded">7 DAYS FREE</span>
                       ) : (
-                        <span className="bg-paymint-green text-black text-xs font-bold px-2 py-0.5 rounded tracking-wider">$20/month</span>
+                        <span className="bg-paymint-green text-black text-xs font-black tracking-widest px-2 py-0.5 rounded">$20/MONTH</span>
                       )}
                     </div>
                   </div>
-                  <p className="text-gray-600 dark:text-gray-400 font-medium text-sm">
+                  <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
                     {isTrialFlow
                       ? "You won't be charged today. Cancel anytime before your trial ends."
                       : "Your card will be charged $20.00 for this new location."
@@ -770,10 +770,10 @@ export function OnboardingPage() {
                 <form onSubmit={form2.handleSubmit(onStep2Submit)} className="space-y-6">
                   <div className="p-4 bg-gray-50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-300 dark:border-white/10">
                     <div className="flex justify-between items-center mb-4">
-                      <span className="text-sm font-bold text-gray-500 tracking-wider">Total Due Today</span>
-                      <span className="text-xl font-black text-gray-900 dark:text-white">{isTrialFlow ? '$0.00' : '$20.00'}</span>
+                      <span className="text-xs font-black text-gray-400 tracking-widest">Total Due Today</span>
+                      <span className="text-xl font-bold text-gray-900 dark:text-white">{isTrialFlow ? '$0.00' : '$20.00'}</span>
                     </div>
-                    <div className="flex justify-between items-center text-xs text-gray-400">
+                    <div className="flex justify-between items-center text-xs font-bold text-gray-500">
                       <span>{isTrialFlow ? 'After 7 days' : 'Monthly'}</span>
                       <span>$20.00/mo</span>
                     </div>
@@ -794,8 +794,8 @@ export function OnboardingPage() {
                             <CreditCard size={24} className={useSavedCard ? 'text-black' : 'text-gray-400'} />
                           </div>
                           <div className="flex-1">
-                            <p className="text-sm font-black text-gray-900 dark:text-white">Use Saved Card</p>
-                            <p className="text-xs text-gray-500">•••• •••• •••• {savedCardLast4}</p>
+                            <p className="text-sm font-bold text-gray-900 dark:text-white">Use Saved Card</p>
+                            <p className="text-xs font-bold text-gray-500">•••• •••• •••• {savedCardLast4}</p>
                           </div>
                           <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${useSavedCard ? 'border-paymint-green bg-paymint-green' : 'border-gray-300'
                             }`}>
@@ -816,8 +816,8 @@ export function OnboardingPage() {
                             <Plus size={24} className={!useSavedCard ? 'text-black' : 'text-gray-400'} />
                           </div>
                           <div className="flex-1">
-                            <p className="text-sm font-black text-gray-900 dark:text-white">Add New Card</p>
-                            <p className="text-xs text-gray-500">Use a different payment method</p>
+                            <p className="text-sm font-bold text-gray-900 dark:text-white">Add New Card</p>
+                            <p className="text-xs font-bold text-gray-500">Use a different payment method</p>
                           </div>
                           <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${!useSavedCard ? 'border-paymint-green bg-paymint-green' : 'border-gray-300'
                             }`}>
@@ -832,7 +832,7 @@ export function OnboardingPage() {
                   {(!hasSavedCard || !useSavedCard) && (
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">Card Number</label>
+                        <label className="text-xs font-black text-gray-400 tracking-widest ml-1">Card Number</label>
                         <div className="relative group">
                           <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                           <input
@@ -844,15 +844,15 @@ export function OnboardingPage() {
                             }}
                             maxLength={19}
                             placeholder="0000 0000 0000 0000"
-                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cardNumber ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 pl-12 pr-4 text-gray-700 dark:text-white placeholder-gray-400 tracking-widest focus:outline-none focus:ring-2 focus:ring-paymint-green/50`}
+                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cardNumber ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50`}
                           />
                         </div>
-                        {form2.formState.errors.cardNumber && <p className="text-paymint-red text-xs mt-1 ml-1">{form2.formState.errors.cardNumber.message as string}</p>}
+                        {form2.formState.errors.cardNumber && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form2.formState.errors.cardNumber.message as string}</p>}
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">Expiry</label>
+                          <label className="text-xs font-black text-gray-400 tracking-widest ml-1">Expiry</label>
                           <input
                             type="text"
                             {...form2.register('expiryDate')}
@@ -862,11 +862,11 @@ export function OnboardingPage() {
                             }}
                             maxLength={5}
                             placeholder="Mm/Yy"
-                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.expiryDate ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-gray-700 dark:text-white placeholder-gray-400 tracking-wider focus:outline-none focus:ring-2 focus:ring-paymint-green/50 text-center`}
+                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.expiryDate ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 text-center`}
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">Cvc</label>
+                          <label className="text-xs font-black text-gray-400 tracking-widest ml-1">CVC</label>
                           <input
                             type="text"
                             {...form2.register('cvc')}
@@ -876,18 +876,18 @@ export function OnboardingPage() {
                             }}
                             maxLength={4}
                             placeholder="123"
-                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cvc ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-gray-700 dark:text-white placeholder-gray-400 tracking-wider focus:outline-none focus:ring-2 focus:ring-paymint-green/50 text-center`}
+                            className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cvc ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 text-center`}
                           />
                         </div>
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">Cardholder Name</label>
+                        <label className="text-xs font-black text-gray-400 tracking-widest ml-1">Cardholder Name</label>
                         <input
                           type="text"
                           {...form2.register('cardName')}
                           placeholder="John Doe"
-                          className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cardName ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-gray-700 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50`}
+                          className={`w-full bg-gray-100 dark:bg-black/20 border ${form2.formState.errors.cardName ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 px-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50`}
                         />
                       </div>
                     </div>
@@ -897,7 +897,7 @@ export function OnboardingPage() {
                     <button
                       type={hasSavedCard && useSavedCard ? 'button' : 'submit'}
                       onClick={hasSavedCard && useSavedCard ? () => onStep2Submit({}) : undefined}
-                      className="w-full py-5 bg-paymint-green text-black font-black text-xl rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
+                      className="w-full py-5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
                       {isTrialFlow ? 'Start Free Trial' : 'Activate & Pay $20'}
                       <ArrowRight size={24} />
@@ -919,20 +919,20 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
-                  <button onClick={() => setStep(2)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 font-bold text-xs tracking-widest">
+                  <button onClick={() => setStep(2)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-black tracking-widest">
                     <ArrowLeft size={14} /> Back
                   </button>
-                  <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Create Location Login</h2>
-                  <p className="text-gray-600 dark:text-gray-400 font-medium">This ID is for the POS app.</p>
-                  <div className="mt-4 p-3 bg-paymint-green/10 text-paymint-green text-sm rounded-xl font-medium border border-paymint-green/20">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">Create Location Login</h2>
+                  <p className="text-sm font-bold text-gray-600 dark:text-gray-300">This ID is for the POS app.</p>
+                  <div className="mt-4 p-3 bg-paymint-green/10 text-paymint-green text-sm rounded-xl font-bold border border-paymint-green/20">
                     <p>✨ <strong>Unique access:</strong> Each location needs its own Id and password.</p>
                   </div>
                 </div>
 
                 <form onSubmit={form3.handleSubmit(onStep3Submit)} className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
-                      Location ID <span className="text-paymint-red mx-1">*</span>
+                    <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
+                      LOCATION ID <span className="text-paymint-red mx-1">*</span>
                       <QuickInfo text="Unique ID for POS login." />
                     </label>
                     <div className="relative group">
@@ -940,15 +940,15 @@ export function OnboardingPage() {
                       <input
                         type="text"
                         {...form3.register('establishmentLoginId')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.establishmentLoginId ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.establishmentLoginId ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                         placeholder="e.g. mycompany-downtown"
                       />
                     </div>
-                    {form3.formState.errors.establishmentLoginId && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form3.formState.errors.establishmentLoginId.message as string}</p>}
-                    <p className="text-xs text-gray-400 ml-1">Unique ID for this location.</p>
+                    {form3.formState.errors.establishmentLoginId && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form3.formState.errors.establishmentLoginId.message as string}</p>}
+                    <p className="text-xs font-bold text-gray-500 ml-1">Unique ID for this location.</p>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
+                    <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
                       Location Password <span className="text-paymint-red mx-1">*</span>
                       <QuickInfo text="Password for this location." />
                     </label>
@@ -957,7 +957,7 @@ export function OnboardingPage() {
                       <input
                         type={showEstablishmentPassword ? "text" : "password"}
                         {...form3.register('establishmentPassword')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.establishmentPassword ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.establishmentPassword ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                         placeholder="••••••••"
                       />
                       <button
@@ -968,15 +968,15 @@ export function OnboardingPage() {
                         {showEstablishmentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
                     </div>
-                    {form3.formState.errors.establishmentPassword && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form3.formState.errors.establishmentPassword.message as string}</p>}
+                    {form3.formState.errors.establishmentPassword && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form3.formState.errors.establishmentPassword.message as string}</p>}
                   </div>
 
                   <div className="pt-4">
                     <button
                       type="submit"
-                      className="w-full py-5 bg-paymint-green text-black font-black text-xl rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
+                      className="w-full py-5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
-                      Next Step
+                      NEXT STEP
                       <ArrowRight size={24} />
                     </button>
                   </div>
@@ -996,12 +996,12 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
-                  <button onClick={() => setStep(3)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 font-bold text-xs tracking-widest">
+                  <button onClick={() => setStep(3)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-black tracking-widest">
                     <ArrowLeft size={14} /> Back
                   </button>
-                  <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Create Your Login</h2>
-                  <p className="text-gray-600 dark:text-gray-400 font-medium">Create your personal account.</p>
-                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 text-xs rounded-xl font-medium border border-blue-100 dark:border-blue-900/30">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">Create Your Login</h2>
+                  <p className="text-sm font-bold text-gray-600 dark:text-gray-300">Create your personal account.</p>
+                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 text-xs rounded-xl font-bold border border-blue-100 dark:border-blue-900/30">
                     <p>This is Step 2 of the POS Login.</p>
                   </div>
                 </div>
@@ -1009,39 +1009,39 @@ export function OnboardingPage() {
                 <form onSubmit={form4.handleSubmit(onStep4Submit)} className="space-y-6">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">
-                        First Name <span className="text-paymint-red">*</span>
+                      <label className="text-xs font-black text-gray-400 tracking-widest ml-1">
+                        FIRST NAME <span className="text-paymint-red">*</span>
                       </label>
                       <div className="relative group">
                         <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                         <input
                           type="text"
                           {...form4.register('firstName')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.firstName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.firstName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                           placeholder="John"
                         />
                       </div>
-                      {form4.formState.errors.firstName && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form4.formState.errors.firstName.message as string}</p>}
+                      {form4.formState.errors.firstName && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.firstName.message as string}</p>}
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">
-                        Last Name <span className="text-paymint-red">*</span>
+                      <label className="text-xs font-black text-gray-400 tracking-widest ml-1">
+                        LAST NAME <span className="text-paymint-red">*</span>
                       </label>
                       <div className="relative group">
                         <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                         <input
                           type="text"
                           {...form4.register('lastName')}
-                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.lastName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                          className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.lastName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                           placeholder="Doe"
                         />
                       </div>
-                      {form4.formState.errors.lastName && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form4.formState.errors.lastName.message as string}</p>}
+                      {form4.formState.errors.lastName && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.lastName.message as string}</p>}
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
+                    <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
                       Admin Username <span className="text-paymint-red mx-1">*</span>
                       <QuickInfo text="Your username." />
                     </label>
@@ -1050,15 +1050,15 @@ export function OnboardingPage() {
                       <input
                         type="text"
                         {...form4.register('username')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.username ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.username ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                         placeholder="admin"
                       />
                     </div>
-                    {form4.formState.errors.username && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form4.formState.errors.username.message as string}</p>}
+                    {form4.formState.errors.username && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.username.message as string}</p>}
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1 flex items-center">
+                    <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
                       Personal Password <span className="text-paymint-red mx-1">*</span>
                       <QuickInfo text="Your unique password." />
                     </label>
@@ -1067,7 +1067,7 @@ export function OnboardingPage() {
                       <input
                         type={showAdminPassword ? "text" : "password"}
                         {...form4.register('password')}
-                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.password ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                        className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.password ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                         placeholder="••••••••"
                       />
                       <button
@@ -1078,17 +1078,17 @@ export function OnboardingPage() {
                         {showAdminPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                       </button>
                     </div>
-                    {form4.formState.errors.password && <p className="text-paymint-red text-xs font-bold mt-1 ml-1">{form4.formState.errors.password.message as string}</p>}
+                    {form4.formState.errors.password && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.password.message as string}</p>}
                   </div>
 
                   <div className="pt-4">
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full py-5 bg-paymint-green text-black font-black text-xl rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3"
+                      className="w-full py-5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3"
                     >
                       {isLoading ? <Loader2 className="animate-spin" size={24} /> : null}
-                      Complete & Launch
+                      COMPLETE & LAUNCH
                     </button>
                   </div>
                 </form>
@@ -1110,8 +1110,8 @@ export function OnboardingPage() {
                   <div className="w-20 h-20 bg-paymint-green rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-paymint-green/20">
                     <Sparkles size={40} className="text-black" />
                   </div>
-                  <h2 className="text-3xl lg:text-4xl font-black text-gray-900 dark:text-white mb-3 tracking-tight">Welcome!</h2>
-                  <p className="text-gray-600 dark:text-gray-400 text-lg font-medium max-w-xl mx-auto">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">Welcome!</h2>
+                  <p className="text-sm font-bold text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
                     <span className="text-gray-900 dark:text-white font-bold">{formData.name}</span> is ready.
                   </p>
                 </div>
@@ -1122,7 +1122,7 @@ export function OnboardingPage() {
                     <div className="w-8 h-8 bg-paymint-green/10 rounded-lg flex items-center justify-center">
                       <Monitor size={18} className="text-paymint-green" />
                     </div>
-                    <h3 className="text-sm font-black text-gray-500 dark:text-gray-400 tracking-widest">Access Your Portal</h3>
+                    <h3 className="text-xs font-black text-gray-400 tracking-widest">Access Your Portal</h3>
                   </div>
 
                   <div className="relative">
@@ -1188,10 +1188,10 @@ export function OnboardingPage() {
                         <Building2 size={28} className="text-black" />
                       </div>
                       <div className="relative z-10 flex-1">
-                        <h3 className="text-xl font-black mb-1 tracking-tight">Open Owner Portal</h3>
-                        <p className="text-sm font-bold text-black/70">Manage your business from any browser.</p>
+                        <h3 className="text-base font-bold mb-1">Open Owner Portal</h3>
+                        <p className="text-xs font-black text-black/70 tracking-widest">Manage Your Business From Any Browser</p>
                       </div>
-                      <div className="relative z-10 flex items-center gap-2 font-black text-sm tracking-widest opacity-80">
+                      <div className="relative z-10 flex items-center gap-2 text-xs font-black tracking-widest opacity-80">
                         <ExternalLink size={18} />
                       </div>
                     </motion.button>
@@ -1204,7 +1204,7 @@ export function OnboardingPage() {
                     <div className="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
                       <Download size={18} className="text-blue-500" />
                     </div>
-                    <h3 className="text-sm font-black text-gray-500 dark:text-gray-400 tracking-widest">Download Apps</h3>
+                    <h3 className="text-xs font-black text-gray-400 tracking-widest">Download Apps</h3>
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -1215,8 +1215,8 @@ export function OnboardingPage() {
                           <Tablet size={24} className="text-orange-500" />
                         </div>
                         <div>
-                          <h4 className="text-lg font-black text-gray-900 dark:text-white mb-1">POS App</h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">For tablets and phones. Your staff uses this to take orders and process payments.</p>
+                          <h4 className="text-base font-bold text-gray-900 dark:text-white mb-1">POS App</h4>
+                          <p className="text-xs font-bold text-gray-500">For tablets and phones. Your staff uses this to take orders and process payments.</p>
                         </div>
                       </div>
                       <div className="flex flex-col sm:flex-row gap-2">
@@ -1224,7 +1224,7 @@ export function OnboardingPage() {
                           href="https://play.google.com/store/apps/details?id=com.paymint.pos"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity"
+                          className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl text-xs font-black tracking-widest hover:opacity-90 transition-opacity"
                         >
                           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 010 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z" />
@@ -1235,7 +1235,7 @@ export function OnboardingPage() {
                           href="https://apps.apple.com/app/paymint-pos/id0000000000"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity"
+                          className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl text-xs font-black tracking-widest hover:opacity-90 transition-opacity"
                         >
                           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
@@ -1252,8 +1252,8 @@ export function OnboardingPage() {
                           <Smartphone size={24} className="text-purple-500" />
                         </div>
                         <div>
-                          <h4 className="text-lg font-black text-gray-900 dark:text-white mb-1">Owner Portal App</h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">Same portal, on your phone. Monitor sales and manage on the go. Uses your main account login.</p>
+                          <h4 className="text-base font-bold text-gray-900 dark:text-white mb-1">Owner Portal App</h4>
+                          <p className="text-xs font-bold text-gray-500">Same portal, on your phone. Monitor sales and manage on the go. Uses your main account login.</p>
                         </div>
                       </div>
                       <div className="flex flex-col sm:flex-row gap-2">
@@ -1261,7 +1261,7 @@ export function OnboardingPage() {
                           href="https://play.google.com/store/apps/details?id=com.paymint.owner"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity"
+                          className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl text-xs font-black tracking-widest hover:opacity-90 transition-opacity"
                         >
                           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 010 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z" />
@@ -1272,7 +1272,7 @@ export function OnboardingPage() {
                           href="https://apps.apple.com/app/paymint-owner/id0000000001"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl font-bold text-sm hover:opacity-90 transition-opacity"
+                          className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl text-xs font-black tracking-widest hover:opacity-90 transition-opacity"
                         >
                           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
@@ -1290,7 +1290,7 @@ export function OnboardingPage() {
                     <div className="w-8 h-8 bg-emerald-500/10 rounded-lg flex items-center justify-center">
                       <BookOpen size={18} className="text-emerald-500" />
                     </div>
-                    <h3 className="text-sm font-black text-gray-500 dark:text-gray-400 tracking-widest">Resources & Help</h3>
+                    <h3 className="text-xs font-black text-gray-400 tracking-widest">Resources & Help</h3>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -1305,7 +1305,7 @@ export function OnboardingPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">User Manual</h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Complete software guide</p>
+                        <p className="text-xs font-bold text-gray-500 truncate">Complete software guide</p>
                       </div>
                       <Download size={16} className="text-gray-400 flex-shrink-0" />
                     </a>
@@ -1322,7 +1322,7 @@ export function OnboardingPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">Setup Manual</h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Hardware & printer setup</p>
+                        <p className="text-xs font-bold text-gray-500 truncate">Hardware & printer setup</p>
                       </div>
                       <Download size={16} className="text-gray-400 flex-shrink-0" />
                     </a>
@@ -1339,7 +1339,7 @@ export function OnboardingPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">Video Tutorial</h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">7-min quick start guide</p>
+                        <p className="text-xs font-bold text-gray-500 truncate">7-min quick start guide</p>
                       </div>
                       <ExternalLink size={16} className="text-gray-400 flex-shrink-0" />
                     </a>
@@ -1356,7 +1356,7 @@ export function OnboardingPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">Q&A Center</h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Common questions</p>
+                        <p className="text-xs font-bold text-gray-500 truncate">Common questions</p>
                       </div>
                       <ExternalLink size={16} className="text-gray-400 flex-shrink-0" />
                     </a>
@@ -1373,7 +1373,7 @@ export function OnboardingPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">Privacy Policy</h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Data protection</p>
+                        <p className="text-xs font-bold text-gray-500 truncate">Data protection</p>
                       </div>
                       <ExternalLink size={16} className="text-gray-400 flex-shrink-0" />
                     </a>
@@ -1390,7 +1390,7 @@ export function OnboardingPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">Terms of Use</h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">User agreement</p>
+                        <p className="text-xs font-bold text-gray-500 truncate">User agreement</p>
                       </div>
                       <ExternalLink size={16} className="text-gray-400 flex-shrink-0" />
                     </a>
@@ -1407,7 +1407,7 @@ export function OnboardingPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">About Us</h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">Our story</p>
+                        <p className="text-xs font-bold text-gray-500 truncate">Our story</p>
                       </div>
                       <ExternalLink size={16} className="text-gray-400 flex-shrink-0" />
                     </a>
@@ -1416,8 +1416,8 @@ export function OnboardingPage() {
 
                 {/* Footer Note */}
                 <div className="text-center pt-6 border-t border-gray-100 dark:border-white/5">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Need help? Contact us at <a href="mailto:support@paymint.com" className="text-paymint-green font-bold hover:underline">support@paymint.com</a>
+                  <p className="text-xs font-bold text-gray-500">
+                    Need help? Contact us at <a href="mailto:support@paymint.com" className="text-sm font-bold text-paymint-green hover:underline">support@paymint.com</a>
                   </p>
                 </div>
               </div>

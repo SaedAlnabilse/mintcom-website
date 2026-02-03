@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet, Navigate } from 'react-router-dom';
+import { EstablishmentUrlResolver } from './components/EstablishmentUrlResolver';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -12,7 +13,7 @@ import { FeedbackWidget } from './components/FeedbackWidget';
 // ============================================================================
 // These are loaded immediately as they're needed for the auth flow
 import { ErrorPage } from './components/ErrorPage';
-import { ProtectedRoute, EstablishmentRequiredRoute } from './components/ProtectedRoute';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import { ChatWidgetEnhancer } from './components/ChatWidgetEnhancer';
 import { ScrollToTop } from './components/ScrollToTop';
 
@@ -352,17 +353,23 @@ const router = createBrowserRouter([
           },
         ],
       },
-
       // ========== Establishment-Required Routes ==========
+      // Use simpler wrapper or direct routes since Resolver handles logic
       {
-        element: <EstablishmentRequiredRoute />,
         children: [
+          // Redirect root /dashboard to selection
           {
             path: "/dashboard",
+            element: <Navigate to="/select-establishment" replace />
+          },
+          {
+            path: "/dashboard/:locationSlug",
             element: (
-              <LayoutSuspense>
-                <DashboardLayout />
-              </LayoutSuspense>
+              <EstablishmentUrlResolver>
+                <LayoutSuspense>
+                  <DashboardLayout />
+                </LayoutSuspense>
+              </EstablishmentUrlResolver>
             ),
             children: [
               {

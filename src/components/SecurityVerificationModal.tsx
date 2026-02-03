@@ -206,9 +206,9 @@ export function SecurityVerificationModal({
                                 <div>
                                     <div className="flex items-center gap-2 mb-1">
                                         <ShieldCheck size={12} className="text-paymint-green" />
-                                        <span className="text-xs font-black text-paymint-green tracking-[0.2em]">High Impact Action</span>
+                                        <span className="text-xs font-black text-paymint-green tracking-widest">High Impact Action</span>
                                     </div>
-                                    <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight leading-none">
+                                    <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
                                         {config.title}
                                     </h3>
                                 </div>
@@ -216,7 +216,7 @@ export function SecurityVerificationModal({
 
                             <div className="flex gap-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-500">
                                 <AlertTriangle size={20} className="shrink-0" />
-                                <p className="text-xs font-bold leading-relaxed tracking-wider">
+                                <p className="text-sm font-bold text-gray-500">
                                     {config.warning}
                                 </p>
                             </div>
@@ -234,7 +234,7 @@ export function SecurityVerificationModal({
 
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-gray-400 tracking-[0.3em] block ml-1">Identity Confirmation (Email)</label>
+                                    <label className="text-xs font-black text-gray-400 tracking-widest block ml-1">Identity Confirmation (Email)</label>
                                     <div className="relative group">
                                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-paymint-green opacity-50 group-focus-within:opacity-100 transition-opacity" size={16} />
                                         <input
@@ -253,7 +253,7 @@ export function SecurityVerificationModal({
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-gray-400 tracking-[0.3em] block ml-1">Master Access Key (Password)</label>
+                                    <label className="text-xs font-black text-gray-400 tracking-widest block ml-1">Master Access Key (Password)</label>
                                     <div className="relative group">
                                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-paymint-green opacity-50 group-focus-within:opacity-100 transition-opacity" size={16} />
                                         <input
@@ -309,7 +309,7 @@ export function SecurityVerificationModal({
 
                             <p className="text-xs font-black text-gray-400 tracking-widest text-center mt-4 flex items-center justify-center gap-2">
                                 <ShieldCheck size={12} className="text-paymint-green" />
-                                <span className="text-xs font-black text-paymint-green tracking-[0.2em]">End-to-End Encrypted Security Session</span>
+                                <span className="text-xs font-black text-paymint-green tracking-widest">End-to-End Encrypted Security Session</span>
                             </p>
                         </form>
                     </motion.div>

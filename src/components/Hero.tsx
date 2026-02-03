@@ -61,17 +61,15 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <motion.button
-                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => window.open('/signup', '_blank')}
-                className="bg-paymint-green text-black px-8 py-4 rounded-xl font-bold text-lg hover:shadow-lg hover:shadow-paymint-green/25 transition-all flex items-center justify-center gap-2 group"
+                className="bg-paymint-green text-black px-8 py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 group"
               >
                 Get Started Free
                 <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
               </motion.button>
 
               <motion.button
-                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsVideoOpen(true)}
                 className="bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-3"

@@ -1,3 +1,4 @@
+import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBlocker } from 'react-router-dom';
@@ -416,7 +417,7 @@ export function SettingsPage() {
             <label className={`text-xs font-black tracking-widest transition-colors ${colorClass === 'paymint-green' ? 'text-paymint-green/60' : 'text-orange-500/60'}`}>
               {label}
             </label>
-            <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-tight">
+            <label className="text-xs font-black text-gray-400 tracking-widest block">
               {subLabel}
             </label>
           </div>
@@ -702,7 +703,7 @@ export function SettingsPage() {
     { id: 'sales', label: 'Tax & Currency', icon: CreditCard },
     { id: 'receipt', label: 'Receipts', icon: Receipt },
 
-    { id: 'danger', label: 'Delete', icon: Trash2, isDanger: true },
+    { id: 'danger', label: AppStrings.COMMON.DELETE, icon: Trash2, isDanger: true },
   ];
 
   if (isLoading) {
@@ -712,13 +713,13 @@ export function SettingsPage() {
           <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
           <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
         </div>
-        <p className="text-sm font-bold text-gray-400 tracking-widest">Loading settings...</p>
+        <p className="text-xs font-black text-gray-400 tracking-widest">Loading settings...</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-10 font-inter">
+    <div className="max-w-7xl mx-auto space-y-8 pb-10 font-sans">
       <div className="flex flex-col gap-4 sm:gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
@@ -734,7 +735,7 @@ export function SettingsPage() {
             </div>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Settings</h1>
-          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
             Manage your store settings
           </p>
         </div>
@@ -813,7 +814,7 @@ export function SettingsPage() {
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">Profile</h3>
             <div>
-              <label className="block text-xs font-black text-gray-500 dark:text-gray-400 mb-4 tracking-wider">Logo</label>
+              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Logo</label>
               <div className="flex items-center gap-8">
                 <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-2xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
                   {previewImage ? <img src={previewImage} alt="Logo" className="w-full h-full object-cover" /> : <Store className="w-12 h-12 text-gray-300 dark:text-gray-600" />}
@@ -825,28 +826,28 @@ export function SettingsPage() {
               </div>
             </div>
             <div>
-              <label className="block text-xs font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Name</label>
+              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Name</label>
               <input type="text" {...register('restaurantName')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
             </div>
             <div>
-              <label className="block text-xs font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">About</label>
+              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">About</label>
               <textarea {...register('restaurantDescription')} rows={3} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium resize-none" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Address</label>
+                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Address</label>
                 <input type="text" {...register('restaurantAddress')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
               <div>
-                <label className="block text-xs font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Phone</label>
+                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Phone</label>
                 <input type="text" {...register('phone')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
               <div>
-                <label className="block text-xs font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Email</label>
+                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Email</label>
                 <input type="email" {...register('email')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
               <div>
-                <label className="block text-xs font-black text-gray-500 dark:text-gray-400 mb-2 tracking-wider">Tax Id / Trn</label>
+                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Tax ID / TRN</label>
                 <input type="text" {...register('taxIdNumber')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
             </div>
@@ -901,7 +902,7 @@ export function SettingsPage() {
                               <p className="text-sm font-bold text-gray-900 dark:text-white truncate max-w-[200px] md:max-w-md">{selectedDays.length === 7 ? 'Every Day' : selectedDays.map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ')}</p>
                             </div>
                             <div className="flex items-center gap-4 bg-white dark:bg-white/[0.03] px-5 py-3 rounded-2xl border border-gray-200 dark:border-white/[0.08] shadow-sm">
-                              <span className={`text-xs font-black tracking-widest ${refConfig.isOpen ? 'text-paymint-green' : 'text-gray-400'}`}>{refConfig.isOpen ? 'Active' : 'Offline'}</span>
+                              <span className={`text-xs font-black tracking-widest ${refConfig.isOpen ? 'text-paymint-green' : 'text-gray-400'}`}>{refConfig.isOpen ? AppStrings.STATUS.ACTIVE : AppStrings.STATUS.OFFLINE}</span>
                               <label className="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" checked={refConfig.isOpen} onChange={(e) => updateSelectedDays('isOpen', e.target.checked)} className="sr-only peer" />
                                 <div className="w-11 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-sm"></div>
@@ -957,7 +958,7 @@ export function SettingsPage() {
                   <div className="flex items-center justify-between mb-6">
                     <div>
                       <p className="text-xs font-black text-paymint-green tracking-[0.2em] mb-1">Tax</p>
-                      <h4 className="text-sm font-bold text-gray-900 dark:text-white">Tax Rate (%)</h4>
+                      <h4 className="text-lg font-bold text-gray-900 dark:text-white">Tax Rate (%)</h4>
                     </div>
                     <button type="button" onClick={updateTaxRate} className="px-4 py-2 bg-paymint-green text-black text-xs font-black tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md shadow-paymint-green/10">Update</button>
                   </div>

@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, type ReactNode } from 'react';
+import { useRef, useEffect, useLayoutEffect, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -20,7 +20,11 @@ export function PortalDropdown({
     maxHeight = 'max-h-60'
 }: PortalDropdownProps) {
     const dropdownRef = useRef<HTMLDivElement>(null);
-    const [style, setStyle] = useState<React.CSSProperties>({});
+    const [style, setStyle] = useState<React.CSSProperties>({
+        opacity: 0,
+        pointerEvents: 'none',
+        position: 'fixed'
+    });
 
     const updatePosition = () => {
         if (!triggerRef.current) return;
@@ -38,8 +42,16 @@ export function PortalDropdown({
             top: shouldGoUp ? 'auto' : rect.bottom + 8,
             bottom: shouldGoUp ? window.innerHeight - rect.top + 8 : 'auto',
             zIndex: 9999,
+            opacity: 1,
+            pointerEvents: 'auto'
         });
     };
+
+    useLayoutEffect(() => {
+        if (isOpen) {
+            updatePosition();
+        }
+    }, [isOpen]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -54,7 +66,6 @@ export function PortalDropdown({
         };
 
         if (isOpen) {
-            updatePosition();
             document.addEventListener('mousedown', handleClickOutside);
             window.addEventListener('scroll', updatePosition, true);
             window.addEventListener('resize', updatePosition);
@@ -72,9 +83,9 @@ export function PortalDropdown({
             {isOpen && (
                 <motion.div
                     ref={dropdownRef}
-                    initial={{ opacity: 0, y: -5, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -5, scale: 0.98 }}
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.15, ease: "easeOut" }}
                     style={style}
                     className={`bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-xl shadow-2xl overflow-hidden ${maxHeight} ${className}`}

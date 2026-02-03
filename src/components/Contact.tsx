@@ -38,7 +38,7 @@ export const Contact = () => {
                     { icon: MapPin, label: 'Office', value: 'Amman, Jordan', color: 'text-purple-400' },
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-4 group">
-                      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center transition-transform duration-500">
                         <item.icon size={20} className={item.color} />
                       </div>
                       <div>
@@ -190,7 +190,7 @@ export const Contact = () => {
               <div className="p-8 border-t border-gray-100 dark:border-white/10 flex justify-end">
                 <button
                   onClick={() => setActiveModal(null)}
-                  className="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl hover:scale-105 transition-all"
+                  className="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl transition-all"
                 >
                   I Understand
                 </button>

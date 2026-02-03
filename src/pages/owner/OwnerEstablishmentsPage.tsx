@@ -1,3 +1,4 @@
+import { AppStrings } from '../../constants/AppStrings';
 import { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,19 +10,20 @@ import {
     Zap,
     Building2,
     Grid3X3,
-    List,
     MoreVertical,
     ExternalLink,
     Settings,
-    Eye
+    Eye,
+    List
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { CustomSelect } from '../../components/CustomSelect';
+import { Pagination } from '../../components/ui';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 
 const STATUS_OPTIONS = [
     { label: 'All Statuses', value: 'all' },
-    { label: 'Active', value: 'ACTIVE' },
+    { label: AppStrings.STATUS.ACTIVE, value: 'ACTIVE' },
     { label: 'Trial', value: 'TRIAL' },
     { label: 'Canceled', value: 'CANCELED' },
     { label: 'Expired', value: 'EXPIRED' }
@@ -35,6 +37,7 @@ const TYPE_OPTIONS = [
 ];
 
 type ViewMode = 'grid' | 'list';
+const ITEMS_PER_PAGE = 10;
 
 export function OwnerEstablishmentsPage() {
     const navigate = useNavigate();
@@ -47,6 +50,7 @@ export function OwnerEstablishmentsPage() {
     const [typeFilter, setTypeFilter] = useState('all');
     const [viewMode, setViewMode] = useState<ViewMode>('list');
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
 
     // Close menu when clicking outside or scrolling
     useEffect(() => {
@@ -74,10 +78,22 @@ export function OwnerEstablishmentsPage() {
         });
     }, [establishments, searchQuery, statusFilter, typeFilter]);
 
+    // Reset to first page when filtering
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, statusFilter, typeFilter]);
+
+    const paginatedEstablishments = useMemo(() => {
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filteredEstablishments.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    }, [filteredEstablishments, currentPage]);
+
+    const totalPages = Math.ceil(filteredEstablishments.length / ITEMS_PER_PAGE);
+
     const handleEstablishmentClick = (establishment: any) => {
         setCurrentEstablishment(establishment);
         localStorage.setItem('selectedEstablishmentId', establishment.id);
-        window.open('/dashboard', '_blank');
+        window.open(`/dashboard/${establishment.establishmentLoginId || establishment.id}`, '_blank');
     };
 
     const handleAddEstablishment = () => {
@@ -120,7 +136,7 @@ export function OwnerEstablishmentsPage() {
                         </span>
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Locations</h1>
-                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
+                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
                         Manage your locations.
                     </p>
                 </div>
@@ -146,7 +162,7 @@ export function OwnerEstablishmentsPage() {
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
                 >
@@ -156,14 +172,14 @@ export function OwnerEstablishmentsPage() {
                             <Store size={24} />
                         </div>
                         <div>
-                            <p className="text-xs font-bold text-gray-400 tracking-wide">Total</p>
+                            <p className="text-xs font-black text-gray-400 tracking-widest">Total</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">{establishments.length}</p>
                         </div>
                     </div>
                 </motion.div>
 
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
                     className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
@@ -174,7 +190,7 @@ export function OwnerEstablishmentsPage() {
                             <Zap size={24} />
                         </div>
                         <div>
-                            <p className="text-xs font-bold text-gray-400 tracking-wide">Active</p>
+                            <p className="text-xs font-black text-gray-400 tracking-widest">Active</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">
                                 {establishments.filter(e => e.subscriptionStatus === 'ACTIVE').length}
                             </p>
@@ -183,7 +199,7 @@ export function OwnerEstablishmentsPage() {
                 </motion.div>
 
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                     className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
@@ -194,7 +210,7 @@ export function OwnerEstablishmentsPage() {
                             <Settings size={24} />
                         </div>
                         <div>
-                            <p className="text-xs font-bold text-gray-400 tracking-wide">Trial</p>
+                            <p className="text-xs font-black text-gray-400 tracking-widest">Trial</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">
                                 {establishments.filter(e => e.subscriptionStatus === 'TRIAL').length}
                             </p>
@@ -217,7 +233,7 @@ export function OwnerEstablishmentsPage() {
                             placeholder="Search locations..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm hover:shadow-md focus:shadow-lg"
+                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm focus:shadow-lg"
                         />
                     </div>
 
@@ -263,26 +279,20 @@ export function OwnerEstablishmentsPage() {
             {filteredEstablishments.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Store size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="text-lg font-medium text-gray-900 dark:text-white">No locations found</p>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-xl font-bold text-gray-900 dark:text-white">No locations found</p>
+                    <p className="text-sm font-bold text-gray-500 mt-1">
                         Add your first location to get started.
                     </p>
                 </div>
             ) : viewMode === 'grid' ? (
                 /* Grid View */
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    <AnimatePresence mode="popLayout">
-                        {filteredEstablishments.map((est, index) => {
-                            const Icon = getBusinessTypeIcon(est.type);
-                            return (
-                                <motion.div
-                                    key={est.id}
+                    {paginatedEstablishments.map((est) => {
+                        const Icon = getBusinessTypeIcon(est.type);
+                        return (
+                            <div
+                                key={est.id}
                                 id={`establishment-${est.id}`}
-                                layout
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                transition={{ delay: index * 0.03 }}
                                 className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl border p-6 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer ${est.id === highlightId
                                     ? 'border-paymint-green ring-2 ring-paymint-green/50 shadow-xl shadow-paymint-green/20'
                                     : 'border-gray-200 dark:border-white/5 hover:border-blue-500/30'
@@ -302,17 +312,17 @@ export function OwnerEstablishmentsPage() {
                                 <div className="relative z-10">
                                     {/* Header */}
                                     <div className="flex items-start justify-between mb-6">
-                                                                                    <div className="flex items-center gap-4">
-                                                                                        <div className="w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform duration-300">
-                                                                                            <Icon size={28} />
-                                                                                        </div>
-                                                                                        <div>                                                <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors truncate max-w-[180px]">
-                                                    {est.name}
-                                                </h3>
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform duration-300">
+                                                <Icon size={28} />
+                                            </div>
+                                            <div>                                                <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors truncate max-w-[180px]">
+                                                {est.name}
+                                            </h3>
                                                 <div className="flex items-center gap-2 mt-1">
-                                                    <span className="text-xs font-medium text-gray-500">{est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : 'Standard'}</span>
+                                                    <span className="text-xs font-bold text-gray-500">{est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : 'Standard'}</span>
                                                     <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                                                    <span className="text-xs font-medium text-gray-500">{est.currency || 'JOD'}</span>
+                                                    <span className="text-xs font-bold text-gray-500">{est.currency || 'JOD'}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -361,7 +371,7 @@ export function OwnerEstablishmentsPage() {
 
                                     {/* Status Badge */}
                                     <div className="mb-6">
-                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${getStatusColor(est.subscriptionStatus)}`}>
+                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(est.subscriptionStatus)}`}>
                                             <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' :
                                                 est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
                                                     'bg-red-500'
@@ -394,22 +404,90 @@ export function OwnerEstablishmentsPage() {
                                             e.stopPropagation();
                                             handleEstablishmentClick(est);
                                         }}
-                                        className="w-full py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-blue-500 shadow-sm hover:shadow-blue-500/20"
+                                        className="w-full py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-blue-500 shadow-sm"
                                     >
                                         <span>Open</span>
                                         <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
                                     </button>
-                                    </div>
-                                </motion.div>
-                            );
-                        })}
-                    </AnimatePresence>
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
             ) : (
                 /* List View */
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
-                    {/* Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
+                    {/* Mobile Card View */}
+                    <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+                        {paginatedEstablishments.map((est) => {
+                            const Icon = getBusinessTypeIcon(est.type);
+                            return (
+                                <div
+                                    key={est.id}
+                                    className={`p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer ${est.id === highlightId ? 'bg-paymint-green/5' : ''}`}
+                                    onClick={() => handleEstablishmentClick(est)}
+                                >
+                                    <div className="flex items-start justify-between mb-3">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400">
+                                                <Icon size={20} />
+                                            </div>
+                                            <div>
+                                                <h3 className="font-bold text-gray-900 dark:text-white text-sm">{est.name}</h3>
+                                                <div className="flex items-center gap-2 mt-1">
+                                                    <span className="text-xs text-gray-500">{est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : 'Standard'}</span>
+                                                    {est.id === highlightId && (
+                                                        <span className="text-xs text-paymint-green font-bold tracking-wider">New</span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="relative">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setActiveMenu(activeMenu === est.id ? null : est.id);
+                                                }}
+                                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                            >
+                                                <MoreVertical size={16} />
+                                            </button>
+                                            <AnimatePresence>
+                                                {activeMenu === est.id && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, scale: 0.95, y: -5 }}
+                                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                        exit={{ opacity: 0, scale: 0.95, y: -5 }}
+                                                        className="absolute right-0 top-full mt-2 w-40 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                                    >
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleEstablishmentClick(est);
+                                                            }}
+                                                            className="w-full px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-2"
+                                                        >
+                                                            <Eye size={14} /> View
+                                                        </button>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(est.subscriptionStatus)}`}>
+                                            <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' : est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
+                                            {est.subscriptionStatus ? est.subscriptionStatus.charAt(0).toUpperCase() + est.subscriptionStatus.slice(1).toLowerCase() : ''}
+                                        </span>
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'JOD'}</span>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* Desktop Table Header */}
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest uppercase">
                         <div className="col-span-4">Location</div>
                         <div className="col-span-2">Type</div>
                         <div className="col-span-2">Status</div>
@@ -417,21 +495,15 @@ export function OwnerEstablishmentsPage() {
                         <div className="col-span-2 text-center">Actions</div>
                     </div>
 
-                    {/* Table Body */}
-                    <div className="divide-y divide-gray-100 dark:divide-white/5">
-                        <AnimatePresence mode="popLayout">
-                            {filteredEstablishments.map((est, index) => {
-                                const Icon = getBusinessTypeIcon(est.type);
-                                return (
-                                    <motion.div
-                                        key={est.id}
+                    {/* Desktop Table Body */}
+                    <div className="hidden md:block divide-y divide-gray-100 dark:divide-white/5">
+                        {paginatedEstablishments.map((est) => {
+                            const Icon = getBusinessTypeIcon(est.type);
+                            return (
+                                <div
+                                    key={est.id}
                                     id={`establishment-${est.id}`}
-                                    layout
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, x: -10 }}
-                                    transition={{ delay: index * 0.02 }}
-                                    className={`grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group ${est.id === highlightId
+                                    className={`grid grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group ${est.id === highlightId
                                         ? 'bg-paymint-green/5 ring-1 ring-paymint-green inset-0 z-10'
                                         : ''
                                         }`}
@@ -446,23 +518,22 @@ export function OwnerEstablishmentsPage() {
                                             <h3 className="font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
                                                 {est.name}
                                             </h3>
-                                            <p className="text-xs text-gray-500 mt-0.5 md:hidden">{est.type}</p>
                                             {est.id === highlightId && (
-                                                <span className="text-xs text-paymint-green font-bold tracking-wider ml-2">New</span>
+                                                <span className="text-xs text-paymint-green font-bold tracking-wider">New</span>
                                             )}
                                         </div>
                                     </div>
 
                                     {/* Type */}
                                     <div className="col-span-2 flex items-center">
-                                        <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">
                                             {est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : 'Standard'}
                                         </span>
                                     </div>
 
                                     {/* Status */}
                                     <div className="col-span-2 flex items-center">
-                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold tracking-wide border ${getStatusColor(est.subscriptionStatus)}`}>
+                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(est.subscriptionStatus)}`}>
                                             <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' :
                                                 est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
                                                     'bg-red-500'
@@ -490,13 +561,20 @@ export function OwnerEstablishmentsPage() {
                                             Enter
                                         </button>
                                     </div>
-                                </motion.div>
+                                </div>
                             );
                         })}
-                        </AnimatePresence>
                     </div>
                 </div>
             )}
+
+            {/* Pagination Controls */}
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+                className="mt-8"
+            />
         </div>
     );
 }

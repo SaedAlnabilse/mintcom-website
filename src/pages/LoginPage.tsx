@@ -113,13 +113,13 @@ export function LoginPage() {
                 className="h-10 w-auto object-contain hidden dark:block"
               />
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Welcome</h2>
-            <p className="text-gray-600 dark:text-gray-400">Sign in to your account</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Welcome</h2>
+            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">Sign in to your account</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">
                 Email Address
               </label>
               <div className="relative">
@@ -128,17 +128,17 @@ export function LoginPage() {
                   {...register('email')}
                   type="email"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 pl-10 pr-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    } rounded-lg py-3 pl-10 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                   placeholder="you@example.com"
                 />
               </div>
               {errors.email?.message && (
-                <p className="text-accent dark:text-accent text-sm mt-1">{errors.email.message}</p>
+                <p className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.email.message}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">
                 Password
               </label>
               <div className="relative">
@@ -147,7 +147,7 @@ export function LoginPage() {
                   {...register('password')}
                   type={showPassword ? 'text' : 'password'}
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 pl-10 pr-12 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    } rounded-lg py-3 pl-10 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                   placeholder="Enter your password"
                 />
                 <button
@@ -159,7 +159,7 @@ export function LoginPage() {
                 </button>
               </div>
               {errors.password && (
-                <p className="text-accent dark:text-accent text-sm mt-1">{errors.password.message}</p>
+                <p className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.password.message}</p>
               )}
             </div>
 
@@ -169,9 +169,9 @@ export function LoginPage() {
                   type="checkbox"
                   className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green bg-gray-50 dark:bg-gray-700"
                 />
-                <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Keep me logged in</span>
+                <span className="ml-2 text-sm font-bold text-gray-600 dark:text-gray-300">Keep me logged in</span>
               </label>
-              <Link to="/forgot-password" className="text-sm text-paymint-green hover:underline">
+              <Link to="/forgot-password" className="text-sm font-bold text-paymint-green hover:underline">
                 Forgot password?
               </Link>
             </div>
@@ -179,16 +179,16 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-paymint-green text-black font-bold hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-paymint-wait py-3 px-4 rounded-lg transition-colors shadow-lg shadow-paymint-green/20"
+              className="w-full bg-paymint-green text-black text-xs font-black tracking-widest hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-paymint-wait py-3 px-4 rounded-lg transition-colors shadow-lg shadow-paymint-green/20"
             >
-              {isSubmitting ? 'Signing in...' : 'Log In'}
+              {isSubmitting ? 'Signing In...' : 'Log In'}
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
               No account?{' '}
-              <Link to="/signup" className="text-paymint-green hover:underline font-medium">
+              <Link to="/signup" className="text-sm font-bold text-paymint-green hover:underline">
                 Sign up
               </Link>
             </p>
@@ -220,10 +220,10 @@ export function LoginPage() {
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                   Verify Your Email
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
                   Please confirm your email to log in. Check your inbox.
                 </p>
-                <p className="text-sm font-medium text-gray-900 dark:text-gray-200 mt-2">
+                <p className="text-sm font-bold text-gray-900 dark:text-white mt-2">
                   {unverifiedEmail}
                 </p>
               </div>
@@ -232,10 +232,10 @@ export function LoginPage() {
                 <button
                   onClick={handleResendVerification}
                   disabled={isResending}
-                  className="w-full flex items-center justify-center bg-paymint-green text-black font-bold py-3 px-4 rounded-lg hover:bg-paymint-green/90 transition-colors disabled:opacity-50"
+                  className="w-full flex items-center justify-center bg-paymint-green text-black text-xs font-black tracking-widest py-3 px-4 rounded-lg hover:bg-paymint-green/90 transition-colors disabled:opacity-50"
                 >
                   {isResending ? (
-                    'Sending...'
+                    'SENDING...'
                   ) : (
                     <>
                       <Send className="w-4 h-4 mr-2" />
@@ -245,9 +245,9 @@ export function LoginPage() {
                 </button>
                 <button
                   onClick={() => setShowVerifyModal(false)}
-                  className="w-full py-3 px-4 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
+                  className="w-full py-3 px-4 rounded-lg border border-gray-200 dark:border-gray-700 text-xs font-black tracking-widest text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
-                  Close
+                  CLOSE
                 </button>
               </div>
             </motion.div>

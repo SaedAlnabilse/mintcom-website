@@ -1,16 +1,13 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , useParams } from 'react-router-dom';
 import {
   Plus,
   Package,
   Pizza,
   RefreshCw,
-  Search,
   Edit2,
   Trash2,
   X,
-  ChevronLeft,
-  ChevronRight,
   ChevronDown
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,6 +16,8 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { CustomSelect } from '../../components/CustomSelect';
 import { QuickInfo } from '../../components/QuickInfo';
+import { SearchInput, Pagination } from '../../components/ui';
+
 
 const UNIT_CONVERSIONS: Record<string, { type: 'mass' | 'volume' | 'count'; factor: number }> = {
   Kg: { type: 'mass', factor: 1000 }, // Base: g
@@ -101,6 +100,7 @@ interface MenuItem {
 }
 
 export function RecipesPage() {
+  const { locationSlug } = useParams();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'final' | 'sub'>('final');
   const [subRecipes, setSubRecipes] = useState<SubRecipe[]>([]);
@@ -320,7 +320,7 @@ export function RecipesPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-10 font-inter">
+    <div className="max-w-7xl mx-auto space-y-8 pb-10 font-sans">
       <div className="flex flex-col gap-4 sm:gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
@@ -329,7 +329,7 @@ export function RecipesPage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Recipes</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
             Manage recipes and prep
           </p>
         </div>
@@ -341,11 +341,11 @@ export function RecipesPage() {
                 if (menuItems.length === 0 && !isLoading) {
                   setConfirmConfig({
                     isOpen: true,
-                    title: 'No Products Found',
+                    title: 'No products found',
                     message: 'You need to create menu items before you can define their recipes. Would you like to add a product now?',
                     type: 'warning',
                     onConfirm: () => {
-                      navigate('/dashboard/products', { state: { openCreateModal: true } });
+                      navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true } });
                     }
                   });
                   return;
@@ -367,16 +367,25 @@ export function RecipesPage() {
         </div>
       </div>
 
+
+
+
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm flex flex-col md:flex-row gap-4 items-center">
-        <div className="flex-1 relative group w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input type="text" value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }} placeholder="Search recipes..." className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all" />
+        <div className="flex-1 w-full">
+          <SearchInput
+            value={searchQuery}
+            onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+            onClear={() => { setSearchQuery(''); setPage(1); }}
+            placeholder="Search recipes..."
+            className="w-full"
+          />
         </div>
         <div className="flex p-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl">
           <button onClick={() => { setActiveTab('final'); setPage(1); }} className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'final' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>Products</button>
           <button onClick={() => { setActiveTab('sub'); setPage(1); }} className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'sub' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>Prep</button>
         </div>
       </div>
+
 
       <AnimatePresence mode="wait">
         {isLoading ? (
@@ -390,7 +399,7 @@ export function RecipesPage() {
               <Pizza size={32} className="text-gray-300" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No recipes found</h3>
-            <p className="text-gray-500 max-w-xs text-sm">Create a recipe to get started.</p>
+            <p className="text-sm font-bold text-gray-500 max-w-xs">Create a recipe to get started.</p>
           </div>
         ) : (
           <div className="space-y-8">
@@ -417,7 +426,7 @@ export function RecipesPage() {
                           <p className="text-xs font-black text-gray-400 tracking-widest">{recipe.ingredients.length} Ingredients</p>
                         </div>
                       </div>
-                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                      <div className="flex gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all translate-x-0 sm:translate-x-4 group-hover:translate-x-0">
                         <button onClick={() => activeTab === 'final' ? openEditFinalRecipe(recipe) : openEditSubRecipe(recipe)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-colors"><Edit2 size={16} /></button>
                         <button onClick={() => handleDeleteRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 transition-colors"><Trash2 size={16} /></button>
                       </div>
@@ -457,17 +466,11 @@ export function RecipesPage() {
                 </motion.div>
               ))}
             </div>
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 pt-4">
-                <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2.5 rounded-xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-500 hover:text-paymint-green hover:border-paymint-green/30 disabled:opacity-30 transition-all"><ChevronLeft size={18} /></button>
-                <div className="flex items-center gap-1">
-                  {[...Array(totalPages)].map((_, i) => (
-                    <button key={i} onClick={() => setPage(i + 1)} className={`w-9 h-9 rounded-xl text-xs font-bold transition-all ${page === i + 1 ? 'bg-paymint-green text-black' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>{i + 1}</button>
-                  ))}
-                </div>
-                <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2.5 rounded-xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-500 hover:text-paymint-green hover:border-paymint-green/30 disabled:opacity-30 transition-all"><ChevronRight size={18} /></button>
-              </div>
-            )}
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
           </div>
         )}
       </AnimatePresence>
@@ -477,7 +480,7 @@ export function RecipesPage() {
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{editingRecipe ? 'Edit Recipe' : 'New Recipe'}</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingRecipe ? 'Edit Recipe' : 'New Recipe'}</h2>
                 <button onClick={() => setShowSubRecipeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={24} /></button>
               </div>
               <div className="p-8 space-y-6 overflow-y-auto custom-scrollbar flex-1">
@@ -612,7 +615,7 @@ export function RecipesPage() {
                     {subRecipeForm.ingredients.length === 0 && (
                       <div className="py-8 text-center border-2 border-dashed border-gray-200 dark:border-white/5 rounded-2xl">
                         <Package size={24} className="mx-auto text-gray-300 mb-2 opacity-50" />
-                        <p className="text-xs font-black text-gray-400 tracking-widest">No Ingredients Yet</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest">No ingredients yet</p>
                       </div>
                     )}
                   </div>
@@ -623,11 +626,11 @@ export function RecipesPage() {
                         if (rawMaterials.length === 0 && !isLoading) {
                           setConfirmConfig({
                             isOpen: true,
-                            title: 'No Materials Found',
+                            title: 'No materials found',
                             message: 'You need to create raw materials (ingredients) before you can add them to a formula. Would you like to create one now?',
                             type: 'warning',
                             onConfirm: () => {
-                              navigate('/dashboard/materials', { state: { openCreateModal: true } });
+                              navigate(`/dashboard/${locationSlug}/materials`, { state: { openCreateModal: true } });
                             }
                           });
                           return;
@@ -658,7 +661,7 @@ export function RecipesPage() {
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-lg max-h-[85vh] flex flex-col overflow-visible shadow-2xl">
               <div className="p-8 border-b border-gray-200 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{editingRecipe ? 'Edit Product Recipe' : 'Map Product'}</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingRecipe ? 'Edit Product Recipe' : 'Map Product'}</h2>
                 <button onClick={() => setShowFinalRecipeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={24} /></button>
               </div>
               <div className="p-8 space-y-6 overflow-y-auto custom-scrollbar flex-1">
@@ -843,11 +846,11 @@ export function RecipesPage() {
                         if (rawMaterials.length === 0) {
                           setConfirmConfig({
                             isOpen: true,
-                            title: 'No Materials Found',
+                            title: 'No materials found',
                             message: 'You need to create raw materials before adding them to a recipe. Create one now?',
                             type: 'warning',
                             onConfirm: () => {
-                              navigate('/dashboard/materials', { state: { openCreateModal: true } });
+                              navigate(`/dashboard/${locationSlug}/materials`, { state: { openCreateModal: true } });
                             }
                           });
                           return;
@@ -864,7 +867,7 @@ export function RecipesPage() {
                         if (subRecipes.length === 0) {
                           setConfirmConfig({
                             isOpen: true,
-                            title: 'No Sub-Formulas Found',
+                            title: 'No sub-formulas found',
                             message: 'You need to create sub-formulas (blueprints) before adding them to a recipe. Create one now?',
                             type: 'warning',
                             onConfirm: () => {
@@ -905,7 +908,7 @@ export function RecipesPage() {
                 <div className="w-20 h-20 bg-paymint-green/10 text-paymint-green rounded-[2rem] flex items-center justify-center mx-auto mb-6">
                   <RefreshCw size={40} />
                 </div>
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Run Batch</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Run Batch</h2>
                 <p className="text-gray-500 font-bold mt-1 text-xs tracking-widest">{manufactureRecipe.name}</p>
               </div>
               <div className="p-8 space-y-8">

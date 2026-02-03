@@ -67,15 +67,15 @@ export function ResetPasswordPage() {
           <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-8">
             <XCircle className="w-10 h-10 text-accent" />
           </div>
-          <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">Invalid Link</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">Invalid Link</h2>
+          <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
             This link is invalid or expired.
           </p>
           <Link
             to="/forgot-password"
-            className="inline-flex items-center justify-center w-full bg-paymint-green text-black font-black py-4 px-6 rounded-2xl hover:bg-paymint-green/90 transition-all active:scale-95 shadow-lg shadow-paymint-green/20"
+            className="inline-flex items-center justify-center w-full bg-paymint-green text-black text-xs font-black tracking-widest py-4 px-6 rounded-2xl hover:bg-paymint-green/90 transition-all active:scale-95 shadow-lg shadow-paymint-green/20"
           >
-            Get New Link
+            GET NEW LINK
           </Link>
         </motion.div>
       </div>
@@ -93,15 +93,15 @@ export function ResetPasswordPage() {
           <div className="w-20 h-20 bg-paymint-green/10 rounded-full flex items-center justify-center mx-auto mb-8">
             <CheckCircle className="w-10 h-10 text-paymint-green" />
           </div>
-          <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">Success</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">Success</h2>
+          <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
             Password updated.
           </p>
           <Link 
             to="/login"
-            className="inline-flex items-center justify-center w-full bg-gray-900 dark:bg-white text-white dark:text-black font-black py-4 px-6 rounded-2xl hover:scale-105 transition-all active:scale-95 shadow-lg shadow-gray-900/20"
+            className="inline-flex items-center justify-center w-full bg-gray-900 dark:bg-white text-white dark:text-black text-xs font-black tracking-widest py-4 px-6 rounded-2xl hover:scale-105 transition-all active:scale-95 shadow-lg shadow-gray-900/20"
           >
-            Go to Login
+            GO TO LOGIN
           </Link>
         </motion.div>
       </div>
@@ -116,21 +116,21 @@ export function ResetPasswordPage() {
         className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 max-w-md w-full shadow-2xl shadow-gray-200/50 dark:shadow-none"
       >
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-black text-gray-900 dark:text-white mb-3 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">
             Reset <span className="text-paymint-green">Password</span>
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">Enter your new password.</p>
+          <p className="text-sm font-bold text-gray-600 dark:text-gray-300">Enter your new password.</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">Password</label>
+            <label className="text-xs font-black text-gray-400 tracking-widest ml-1">Password</label>
             <div className="relative group">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
               <input
                 type={showPassword ? 'text' : 'password'}
                 {...register('password')}
-                className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 pl-12 pr-12 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
+                className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 pl-12 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
                 placeholder="••••••••"
               />
               <button
@@ -141,17 +141,17 @@ export function ResetPasswordPage() {
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
-            {errors.password && <p className="text-accent text-xs font-bold mt-1 ml-1">{errors.password.message}</p>}
+            {errors.password && <p className="text-accent text-xs font-bold text-gray-500 mt-1 ml-1">{errors.password.message}</p>}
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-[0.2em] ml-1">Confirm</label>
+            <label className="text-xs font-black text-gray-400 tracking-widest ml-1">Confirm Password</label>
             <div className="relative group">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
                 {...register('confirmPassword')}
-                className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 pl-12 pr-12 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
+                className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 pl-12 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
                 placeholder="••••••••"
               />
               <button
@@ -162,17 +162,17 @@ export function ResetPasswordPage() {
                 {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
-            {errors.confirmPassword && <p className="text-accent text-xs font-bold mt-1 ml-1">{errors.confirmPassword.message}</p>}
+            {errors.confirmPassword && <p className="text-accent text-xs font-bold text-gray-500 mt-1 ml-1">{errors.confirmPassword.message}</p>}
           </div>
 
           <div className="pt-4">
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-paymint-green text-black font-black py-4 px-6 rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95"
+              className="w-full bg-paymint-green text-black text-xs font-black tracking-widest py-4 px-6 rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95"
             >
               {isLoading ? <Loader2 className="animate-spin" size={20} /> : null}
-              Reset
+              RESET
             </button>
           </div>
         </form>

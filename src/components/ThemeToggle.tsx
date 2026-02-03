@@ -4,12 +4,13 @@ import { useTheme } from '../context/ThemeContext';
 import { useState, useRef, useEffect } from 'react';
 
 interface ThemeToggleProps {
-  dropdownDirection?: 'up' | 'down';
+  dropdownDirection?: 'up' | 'down' | 'right';
   className?: string;
   iconSize?: number;
+  showLabel?: boolean;
 }
 
-export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSize = 20 }: ThemeToggleProps) => {
+export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSize = 20, showLabel = false }: ThemeToggleProps) => {
   const { theme, setTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -28,15 +29,35 @@ export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSi
     { id: 'system', label: 'System', icon: Monitor },
   ] as const;
 
-  const dropdownPositionClass = dropdownDirection === 'up'
-    ? 'left-0 bottom-full mb-3'
-    : 'right-0 top-full mt-3';
+  const getDropdownClasses = () => {
+    switch (dropdownDirection) {
+      case 'up':
+        return 'left-0 bottom-full mb-3';
+      case 'right':
+        return 'left-full bottom-0 ml-2';
+      case 'down':
+      default:
+        return 'right-0 top-full mt-3';
+    }
+  };
+
+  const getAnimationProps = () => {
+    switch (dropdownDirection) {
+      case 'up':
+        return { initial: { opacity: 0, y: 10, scale: 0.95 }, animate: { opacity: 1, y: 0, scale: 1 }, exit: { opacity: 0, y: 10, scale: 0.95 } };
+      case 'right':
+        return { initial: { opacity: 0, x: -10, scale: 0.95 }, animate: { opacity: 1, x: 0, scale: 1 }, exit: { opacity: 0, x: -10, scale: 0.95 } };
+      case 'down':
+      default:
+        return { initial: { opacity: 0, y: -10, scale: 0.95 }, animate: { opacity: 1, y: 0, scale: 1 }, exit: { opacity: 0, y: -10, scale: 0.95 } };
+    }
+  };
 
   return (
-    <div className="relative" ref={containerRef}>
+    <div className={`relative ${showLabel ? 'w-full' : ''}`} ref={containerRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center justify-center transition-all active:scale-90 ${className || 'w-9 h-9 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green dark:hover:text-paymint-green'}`}
+        className={`flex items-center transition-all active:scale-90 ${className || 'justify-center w-9 h-9 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green dark:hover:text-paymint-green'}`}
         title="Toggle theme"
       >
         <AnimatePresence mode="wait">
@@ -56,6 +77,7 @@ export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSi
             </motion.div>
           )}
         </AnimatePresence>
+        {showLabel && <span>Switch Theme</span>}
       </button>
 
       <AnimatePresence>
@@ -63,20 +85,19 @@ export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSi
           <>
             <div className="fixed inset-0" style={{ zIndex: 9998 }} onClick={() => setIsOpen(false)} />
             <motion.div
-              initial={{ opacity: 0, y: dropdownDirection === 'up' ? 10 : -10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: dropdownDirection === 'up' ? 10 : -10, scale: 0.95 }}
+              {...getAnimationProps()}
               style={{ position: 'absolute', zIndex: 9999 }}
-              className={`${dropdownPositionClass} w-40 bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden p-1.5`}
+              className={`${getDropdownClasses()} w-40 bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden p-1.5 shadow-xl`}
             >
               {options.map((option) => (
                 <button
                   key={option.id}
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     setTheme(option.id);
                     setIsOpen(false);
                   }}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${theme === option.id
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all ${theme === option.id
                     ? 'bg-paymint-green/10 text-paymint-green'
                     : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'
                     }`}

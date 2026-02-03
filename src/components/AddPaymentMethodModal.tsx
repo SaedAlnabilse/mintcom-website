@@ -147,7 +147,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                             <div className="flex items-center justify-between mb-8">
                                 <div>
                                     <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">New Card</h2>
-                                    <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">Secure Payment Vault</p>
+                                    <p className="text-sm font-bold text-gray-500 mt-1">Secure Payment Vault</p>
                                 </div>
                                 <button
                                     onClick={onClose}

@@ -61,9 +61,9 @@ export function MobileFilterBar({ filters, children, className = '' }: MobileFil
         >
           <div className="flex items-center gap-2">
             <Filter size={18} />
-            <span className="font-bold text-sm">Filters</span>
+            <span className="text-sm font-bold">Filters</span>
             {activeCount > 0 && (
-              <span className="px-2 py-0.5 rounded-full bg-paymint-green text-black text-xs font-bold">
+              <span className="px-2 py-0.5 rounded-full bg-paymint-green text-black text-xs font-black tracking-widest">
                 {activeCount}
               </span>
             )}
@@ -91,7 +91,7 @@ export function MobileFilterBar({ filters, children, className = '' }: MobileFil
                     <button
                       key={filter.id}
                       onClick={() => setActiveFilterSheet(filter.id)}
-                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold transition-all touch-target ${filter.value !== null
+                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all touch-target ${filter.value !== null
                           ? 'bg-paymint-green/10 text-paymint-green border border-paymint-green/30'
                           : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-transparent'
                         }`}
@@ -152,7 +152,7 @@ export function MobileFilterBar({ filters, children, className = '' }: MobileFil
 
               {/* Header */}
               <div className="flex items-center justify-between px-5 pb-3 border-b border-gray-100 dark:border-white/5">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                   {filters.find(f => f.id === activeFilterSheet)?.label}
                 </h3>
                 <button
@@ -221,7 +221,7 @@ export function FilterChip({ label, value, isActive, onClick, onClear }: FilterC
   return (
     <button
       onClick={onClick}
-      className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-bold transition-all touch-target ${active
+      className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all touch-target ${active
           ? 'bg-paymint-green/10 text-paymint-green border border-paymint-green/30'
           : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border border-transparent'
         }`}

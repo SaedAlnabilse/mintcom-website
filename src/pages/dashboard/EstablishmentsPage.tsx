@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useMemo, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Store,
@@ -13,6 +13,7 @@ import {
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import { ConfirmModal } from '../../components/ConfirmModal';
+import { SearchInput, Pagination } from '../../components/ui';
 
 interface Establishment {
   id: string;
@@ -27,9 +28,13 @@ interface Establishment {
 }
 
 export function EstablishmentsPage() {
+  const { locationSlug } = useParams();
   const navigate = useNavigate();
   const { establishments, currentEstablishment, setCurrentEstablishment } = useAuth();
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
   const [isSwitching, setIsSwitching] = useState(false);
   const [selectedName, setSelectedName] = useState('');
 
@@ -77,6 +82,24 @@ export function EstablishmentsPage() {
     }, 800);
   };
 
+  const filteredEstablishments = useMemo(() => {
+    return (establishments as any[]).filter(est =>
+      est.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      est.type?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [establishments, searchQuery]);
+
+  const totalPages = Math.ceil(filteredEstablishments.length / ITEMS_PER_PAGE);
+
+  const paginatedEstablishments = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredEstablishments.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredEstablishments, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
   return (
     <div className="max-w-7xl mx-auto space-y-10 pb-16">
       {/* Header */}
@@ -96,7 +119,7 @@ export function EstablishmentsPage() {
                 </span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Locations</h1>
-              <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Manage your locations</p>
+              <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">Manage your locations</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -111,9 +134,21 @@ export function EstablishmentsPage() {
         </div>
       </div>
 
+      {/* Search Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="relative flex-1 sm:max-w-md">
+          <SearchInput
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onClear={() => setSearchQuery('')}
+            placeholder="Search locations..."
+          />
+        </div>
+      </div>
+
       {/* Locations Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {establishments.map((est) => (
+        {paginatedEstablishments.map((est) => (
           <motion.div
             layout
             key={est.id}
@@ -159,8 +194,8 @@ export function EstablishmentsPage() {
                       <button onClick={() => { handleSelectEstablishment(est); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green hover:text-black transition-all flex items-center gap-3 tracking-widest">
                         <CheckCircle size={14} /> Switch
                       </button>
-                      <button onClick={() => { navigate('/dashboard/settings'); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green/10 transition-all tracking-widest">Settings</button>
-                      <button onClick={() => { navigate('/dashboard/staff'); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green/10 transition-all tracking-widest">Staff</button>
+                      <button onClick={() => { navigate(`/dashboard/${locationSlug}/settings`); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green/10 transition-all tracking-widest">Settings</button>
+                      <button onClick={() => { navigate(`/dashboard/${locationSlug}/staff`); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green/10 transition-all tracking-widest">Staff</button>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -211,11 +246,17 @@ export function EstablishmentsPage() {
             <Plus size={40} className="text-gray-300 group-hover:text-paymint-green transition-colors" />
           </div>
           <div className="text-center">
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Add Location</h3>
-            <p className="text-gray-500 dark:text-gray-400 text-xs font-black tracking-[0.2em] max-w-[200px] leading-loose">Create a new location</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Add Location</h3>
+            <p className="text-xs font-black text-gray-400 tracking-widest max-w-[200px]">Create a new location</p>
           </div>
         </motion.button>
       </div>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
 
       {/* Switcher Overlay - Truly Global (Portal equivalent) */}
       <AnimatePresence>
@@ -230,7 +271,7 @@ export function EstablishmentsPage() {
               <Loader2 size={40} className="text-paymint-green animate-spin" />
               <div className="absolute inset-0 bg-paymint-green/20 rounded-2xl animate-ping" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Opening...</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Opening...</h2>
             <p className="text-paymint-green font-black tracking-[0.3em] text-sm mt-4">{selectedName}</p>
 
             <div className="mt-12 w-48 h-1 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">

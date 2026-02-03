@@ -23,7 +23,7 @@ export const TermsPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white font-inter">
+        <div className="min-h-screen bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white font-sans">
             <Navbar />
             
             {/* Header */}
@@ -36,9 +36,9 @@ export const TermsPage = () => {
                         <div className="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center mx-auto mb-6">
                             <Scale className="w-8 h-8 text-blue-500" />
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">Terms of Use</h1>
-                        <p className="text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest text-xs">
-                            Last Updated: February 2, 2026
+                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">Terms of Use</h1>
+                        <p className="text-xs font-black text-gray-400 tracking-widest">
+                            LAST UPDATED: FEBRUARY 2, 2026
                         </p>
                     </motion.div>
                 </div>
@@ -60,8 +60,8 @@ export const TermsPage = () => {
                                 <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/5 flex items-center justify-center mx-auto mb-4 shadow-sm">
                                     <item.icon className="w-5 h-5 text-blue-500" />
                                 </div>
-                                <h3 className="text-base font-bold mb-2">{item.title}</h3>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                                <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-2">{item.title}</h3>
+                                <p className="text-xs font-bold text-gray-500 leading-relaxed">
                                     {item.content}
                                 </p>
                             </motion.div>
@@ -70,17 +70,17 @@ export const TermsPage = () => {
 
                     <div className="space-y-10 text-gray-600 dark:text-gray-300">
                         <section>
-                            <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
                                 <Info className="text-blue-500" />
                                 1. License to Use
                             </h2>
-                            <p>
+                            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
                                 Subject to your compliance with these Terms, Paymint grants you a limited, non-exclusive, non-transferable license to use our services for your business purposes. You may not use the services for any illegal or unauthorized purpose.
                             </p>
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
                                 <AlertCircle className="text-amber-500" />
                                 2. Prohibited Conduct
                             </h2>
@@ -91,7 +91,7 @@ export const TermsPage = () => {
                                     'Interfering with the security or performance of the service.',
                                     'Using the service for fraudulent activities.'
                                 ].map((text, i) => (
-                                    <li key={i} className="flex items-start gap-3 text-sm">
+                                    <li key={i} className="flex items-start gap-3 text-sm font-bold text-gray-600 dark:text-gray-300">
                                         <div className="w-5 h-5 rounded-full bg-red-500/10 flex items-center justify-center shrink-0 mt-0.5">
                                             <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
                                         </div>
@@ -102,11 +102,11 @@ export const TermsPage = () => {
                         </section>
 
                         <section className="p-8 rounded-3xl bg-blue-500/5 border border-blue-500/20">
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-3">
+                            <h3 className="text-base font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-3">
                                 <CheckCircle2 className="text-blue-500" />
                                 3. Termination
                             </h3>
-                            <p className="text-sm">
+                            <p className="text-xs font-bold text-gray-500">
                                 We may terminate or suspend your account and access to the service immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.
                             </p>
                         </section>

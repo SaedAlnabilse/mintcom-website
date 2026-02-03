@@ -58,16 +58,16 @@ export function ErrorPage() {
                     <AlertTriangle className="w-10 h-10 text-paymint-red" />
                 </motion.div>
 
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-paymint-text mb-3">
+                <h1 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-3">
                     {title}
                 </h1>
 
                 <div className="space-y-2 mb-8">
-                    <p className="text-gray-600 dark:text-paymint-textSecondary">
+                    <p className="text-sm font-bold text-gray-500">
                         {message}
                     </p>
                     {helpfulHint && (
-                        <p className="text-sm text-gray-500 dark:text-gray-500">
+                        <p className="text-sm font-bold text-gray-500">
                             {helpfulHint}
                         </p>
                     )}
@@ -76,7 +76,7 @@ export function ErrorPage() {
                 <div className="flex flex-col space-y-3">
                     <button
                         onClick={() => window.location.reload()}
-                        className="w-full flex items-center justify-center space-x-2 bg-paymint-green hover:bg-paymint-green/90 text-white font-medium py-3 px-4 rounded-xl transition-all shadow-sm hover:shadow-md active:scale-[0.98]"
+                        className="w-full flex items-center justify-center space-x-2 bg-paymint-green hover:bg-paymint-green/90 text-black text-xs font-black tracking-widest py-3 px-4 rounded-xl transition-all shadow-sm active:scale-[0.98]"
                     >
                         <RefreshCw className="w-5 h-5" />
                         <span>Reload Page</span>
@@ -85,7 +85,7 @@ export function ErrorPage() {
                     <div className="grid grid-cols-2 gap-3">
                         <button
                             onClick={() => navigate(-1)}
-                            className="flex items-center justify-center space-x-2 bg-gray-100 dark:bg-paymint-tertiary hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-paymint-textSecondary font-medium py-3 px-4 rounded-xl transition-colors"
+                            className="flex items-center justify-center space-x-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400 text-xs font-black tracking-widest py-3 px-4 rounded-xl transition-colors"
                         >
                             <ArrowLeft className="w-4 h-4" />
                             <span>Go Back</span>
@@ -93,7 +93,7 @@ export function ErrorPage() {
 
                         <Link
                             to="/"
-                            className="flex items-center justify-center space-x-2 bg-gray-100 dark:bg-paymint-tertiary hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-paymint-textSecondary font-medium py-3 px-4 rounded-xl transition-colors"
+                            className="flex items-center justify-center space-x-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400 text-xs font-black tracking-widest py-3 px-4 rounded-xl transition-colors"
                         >
                             <Home className="w-4 h-4" />
                             <span>Home</span>

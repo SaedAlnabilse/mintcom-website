@@ -1,3 +1,4 @@
+import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Award, Plus, Edit2, Trash2, Percent, Gift } from 'lucide-react';
@@ -5,6 +6,7 @@ import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { RewardFormModal } from '../../components/forms/RewardFormModal';
+import { Pagination } from '../../components/ui';
 
 interface LoyaltyConfig {
     id?: string;
@@ -31,6 +33,8 @@ export function LoyaltyPage() {
     const [rewards, setRewards] = useState<LoyaltyReward[]>([]);
     const [showRewardModal, setShowRewardModal] = useState(false);
     const [editingReward, setEditingReward] = useState<LoyaltyReward | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
 
     const [confirmConfig, setConfirmConfig] = useState<{
         isOpen: boolean;
@@ -265,6 +269,9 @@ export function LoyaltyPage() {
         }
     };
 
+    const totalPages = Math.ceil(rewards.length / ITEMS_PER_PAGE);
+    const paginatedRewards = rewards.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
     const hasChanges = JSON.stringify(loyaltyConfig) !== JSON.stringify(initialLoyaltyConfig);
 
     const saveConfig = async () => {
@@ -308,7 +315,7 @@ export function LoyaltyPage() {
                         </span>
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Loyalty & Rewards</h1>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">
+                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
                         Configure how customers earn points and redeem rewards
                     </p>
                 </div>
@@ -331,7 +338,7 @@ export function LoyaltyPage() {
                             </div>
                             <div>
                                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">Configuration</h3>
-                                <p className="text-xs text-gray-400 font-black tracking-widest px-1">Manage earning rules</p>
+                                <p className="text-xs font-black text-gray-400 tracking-widest">Manage earning rules</p>
                             </div>
                         </div>
                         {/* Toggle removed */}
@@ -390,7 +397,7 @@ export function LoyaltyPage() {
                                 <div className="mt-8 pt-8 border-t border-gray-200 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
                                     <div className="flex items-center gap-4 bg-white dark:bg-[#0B1120] px-6 py-4 rounded-2xl border border-gray-100 dark:border-white/[0.03] shadow-sm">
                                         <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
-                                        <p className="text-sm font-bold text-gray-700 dark:text-gray-300">
+                                        <p className="text-sm font-bold text-gray-900 dark:text-white">
                                             Active Rule: <span className="text-gray-900 dark:text-white">Customers earn {pointsPerCurrencyDisplay} points for every {currencyPerPointDisplay} {currency} spent</span>
                                         </p>
                                     </div>
@@ -414,48 +421,57 @@ export function LoyaltyPage() {
                                     <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-paymint-green shadow-sm">
                                         <Award size={24} />
                                     </div>
-                                    <p className="text-xs font-black text-gray-400 tracking-widest">Catalog Empty</p>
+                                    <p className="text-xs font-black text-gray-400 tracking-widest">Catalog empty</p>
                                     <p className="text-xs font-black text-gray-400 mt-1 tracking-widest">Create reward tiers to activate redemption</p>
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {rewards.map((reward) => (
-                                        <motion.div
-                                            layout
-                                            initial={{ opacity: 0, scale: 0.95 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            key={reward.id}
-                                            className="group relative flex items-center justify-between p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/5 transition-all duration-300 hover:shadow-lg overflow-hidden"
-                                        >
-                                            <div className="absolute inset-0 bg-gradient-to-br from-paymint-green/0 via-transparent to-paymint-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                                <div className="space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {paginatedRewards.map((reward) => (
+                                            <motion.div
+                                                layout
+                                                initial={{ opacity: 0, scale: 0.95 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                key={reward.id}
+                                                className="group relative flex items-center justify-between p-5 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/5 transition-all duration-300 hover:shadow-lg overflow-hidden"
+                                            >
+                                                <div className="absolute inset-0 bg-gradient-to-br from-paymint-green/0 via-transparent to-paymint-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                                            <div className="relative z-10 flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm group-hover:scale-110 transition-transform duration-300">
-                                                    {reward.type === 'DISCOUNT' ? <Percent size={22} /> : <Gift size={22} />}
-                                                </div>
-                                                <div>
-                                                    <p className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-paymint-green transition-colors">{reward.name}</p>
-                                                    <div className="flex items-center gap-1.5 mt-0.5">
-                                                        <span className="text-xs text-gray-400 font-black tracking-widest">{reward.pointsRequired} Points</span>
-                                                        <span className="text-xs text-gray-300 dark:text-gray-600">•</span>
-                                                        <span className="text-xs text-paymint-green font-black tracking-widest">
-                                                            {reward.type === 'DISCOUNT'
-                                                                ? `${reward.discountPercentage}% Off`
-                                                                : reward.freeCategoryName ? `Free from ${reward.freeCategoryName}` : 'Free Product'}
-                                                        </span>
+                                                <div className="relative z-10 flex items-center gap-4">
+                                                    <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm group-hover:scale-110 transition-transform duration-300">
+                                                        {reward.type === 'DISCOUNT' ? <Percent size={22} /> : <Gift size={22} />}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-paymint-green transition-colors">{reward.name}</p>
+                                                        <div className="flex items-center gap-1.5 mt-0.5">
+                                                            <span className="text-xs text-gray-400 font-black tracking-widest">{reward.pointsRequired} Points</span>
+                                                            <span className="text-xs text-gray-300 dark:text-gray-600">•</span>
+                                                            <span className="text-xs text-paymint-green font-black tracking-widest">
+                                                                {reward.type === 'DISCOUNT'
+                                                                    ? `${reward.discountPercentage}% Off`
+                                                                    : reward.freeCategoryName ? `Free from ${reward.freeCategoryName}` : 'Free Product'}
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div className="relative z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                                                <button type="button" onClick={() => handleEditReward(reward)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
-                                                    <Edit2 size={16} />
-                                                </button>
-                                                <button type="button" onClick={() => handleDeleteReward(reward.id)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-red-500 border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
-                                                    <Trash2 size={16} />
-                                                </button>
-                                            </div>
-                                        </motion.div>
-                                    ))}
+                                                <div className="relative z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                                                    <button type="button" onClick={() => handleEditReward(reward)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
+                                                        <Edit2 size={16} />
+                                                    </button>
+                                                    <button type="button" onClick={() => handleDeleteReward(reward.id)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-red-500 border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </div>
+                                            </motion.div>
+                                        ))}
+                                    </div>
+                                    <div className="pt-6">
+                                        <Pagination
+                                            currentPage={currentPage}
+                                            totalPages={totalPages}
+                                            onPageChange={(page) => setCurrentPage(page)}
+                                        />
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -479,7 +495,7 @@ export function LoyaltyPage() {
                 onClose={confirmConfig.onClose || (() => setConfirmConfig(prev => ({ ...prev, isOpen: false })))}
                 type={confirmConfig.type || 'info'}
                 confirmText={confirmConfig.confirmText}
-                cancelText={confirmConfig.showCancel === false ? undefined : 'Cancel'}
+                cancelText={confirmConfig.showCancel === false ? undefined : AppStrings.COMMON.CANCEL}
             />
         </div>
     );

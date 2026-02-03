@@ -5,7 +5,6 @@ import {
     Check,
     ChevronDown,
     Plus,
-    Search,
     Grid,
     List,
     Download,
@@ -16,8 +15,7 @@ import {
 
     ArrowUpDown,
     AlertCircle,
-    ChevronLeft,
-    ChevronRight,
+    Search
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -25,6 +23,8 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { ProductFormModal } from '../../components/forms/ProductFormModal';
 import { LoadingFallback } from '../../components/LoadingFallback';
 import { QuickInfo } from '../../components/QuickInfo';
+import { SearchInput, Pagination } from '../../components/ui';
+
 
 interface Category {
     id: string;
@@ -354,7 +354,7 @@ export function ProductsPage() {
     if (isLoading) return <LoadingFallback message="Loading Inventory..." />;
 
     return (
-        <div className="max-w-7xl mx-auto space-y-8 pb-10 font-inter">
+        <div className="max-w-7xl mx-auto space-y-8 pb-10 font-sans">
             {/* Header */}
             <div className="flex flex-col gap-4 sm:gap-6">
                 <div>
@@ -364,7 +364,7 @@ export function ProductsPage() {
                         </span>
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Products</h1>
-                    <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm sm:text-base">Manage items and stock.</p>
+                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">Manage items and stock.</p>
                 </div>
 
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -378,7 +378,7 @@ export function ProductsPage() {
                     </button>
                     <button
                         onClick={handleCreateNew}
-                        className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-xs sm:text-sm hover:bg-emerald-400 transition-all shadow-lg hover:shadow-paymint-green/20 active:scale-95"
+                        className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-xs sm:text-sm hover:bg-emerald-400 transition-all shadow-lg active:scale-95"
                     >
                         <Plus size={18} strokeWidth={2.5} />
                         <span className="hidden xs:inline">Add Product</span>
@@ -387,17 +387,19 @@ export function ProductsPage() {
                 </div>
             </div>
 
+
+
+
             {/* Filters */}
             <div className="flex flex-col gap-3 sm:gap-4">
                 {/* Search */}
                 <div className="relative flex-1">
-                    <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input
-                        type="text"
+                    <SearchInput
                         placeholder="Search Products..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm"
+                        onClear={() => setSearchQuery('')}
+                        className="w-full"
                     />
                 </div>
 
@@ -506,8 +508,8 @@ export function ProductsPage() {
                 <button
                     onClick={() => setStockFilter('all')}
                     className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'all'
-                            ? 'border-blue-500/50 ring-2 ring-blue-500/10 bg-blue-50/10'
-                            : 'border-gray-100 dark:border-white/5 hover:border-blue-300'
+                        ? 'border-blue-500/50 ring-2 ring-blue-500/10 bg-blue-50/10'
+                        : 'border-gray-100 dark:border-white/5 hover:border-blue-300'
                         }`}
                 >
                     <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
@@ -528,8 +530,8 @@ export function ProductsPage() {
                 <button
                     onClick={() => setStockFilter(stockFilter === 'yellow' ? 'all' : 'yellow')}
                     className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'yellow'
-                            ? 'border-[#ffc107]/50 ring-2 ring-[#ffc107]/10 bg-[#ffc107]/5'
-                            : 'border-gray-100 dark:border-white/5 hover:border-[#ffc107]/30'
+                        ? 'border-[#ffc107]/50 ring-2 ring-[#ffc107]/10 bg-[#ffc107]/5'
+                        : 'border-gray-100 dark:border-white/5 hover:border-[#ffc107]/30'
                         }`}
                 >
                     <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
@@ -550,8 +552,8 @@ export function ProductsPage() {
                 <button
                     onClick={() => setStockFilter(stockFilter === 'red' ? 'all' : 'red')}
                     className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'red'
-                            ? 'border-[#D55263]/50 ring-2 ring-[#D55263]/10 bg-[#D55263]/5'
-                            : 'border-gray-100 dark:border-white/5 hover:border-[#D55263]/30'
+                        ? 'border-[#D55263]/50 ring-2 ring-[#D55263]/10 bg-[#D55263]/5'
+                        : 'border-gray-100 dark:border-white/5 hover:border-[#D55263]/30'
                         }`}
                 >
                     <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
@@ -572,8 +574,8 @@ export function ProductsPage() {
                 <button
                     onClick={() => setStockFilter(stockFilter === 'out' ? 'all' : 'out')}
                     className={`flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border shadow-sm transition-all hover:shadow-md ${stockFilter === 'out'
-                            ? 'border-slate-500/50 ring-2 ring-slate-500/10 bg-slate-50/10'
-                            : 'border-gray-100 dark:border-white/5 hover:border-slate-400'
+                        ? 'border-slate-500/50 ring-2 ring-slate-500/10 bg-slate-50/10'
+                        : 'border-gray-100 dark:border-white/5 hover:border-slate-400'
                         }`}
                 >
                     <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
@@ -598,8 +600,8 @@ export function ProductsPage() {
                     <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
                         <Package className="w-10 h-10 text-gray-300" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Products Found</h3>
-                    <p className="text-gray-500 max-w-xs text-sm mb-6">Adjust search or add a product.</p>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No products found</h3>
+                    <p className="text-sm font-bold text-gray-500 max-w-xs mb-6">Adjust search or add a product.</p>
                     <button
                         onClick={handleCreateNew}
                         className="flex items-center gap-2 px-6 py-3 bg-paymint-green text-black font-bold text-xs rounded-xl hover:bg-emerald-400 transition-all tracking-widest"
@@ -772,29 +774,11 @@ export function ProductsPage() {
             )}
 
             {/* Pagination Controls */}
-            {totalPages > 1 && (
-                <div className="flex justify-center mt-8">
-                    <div className="flex items-center gap-2 p-1 rounded-xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm">
-                        <button
-                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                            disabled={currentPage === 1}
-                            className="p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500 disabled:opacity-30 transition-colors"
-                        >
-                            <ChevronLeft size={18} />
-                        </button>
-                        <span className="px-4 text-xs font-bold text-gray-600 dark:text-gray-400">
-                            Page {currentPage} of {totalPages}
-                        </span>
-                        <button
-                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                            disabled={currentPage === totalPages}
-                            className="p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 text-gray-500 disabled:opacity-30 transition-colors"
-                        >
-                            <ChevronRight size={18} />
-                        </button>
-                    </div>
-                </div>
-            )}
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+            />
 
             {/* Modals */}
             <ProductFormModal

@@ -9,8 +9,6 @@ import {
   Trash2,
   ChevronDown,
   X,
-  ChevronLeft,
-  ChevronRight,
   RefreshCw,
   Layers,
   DollarSign,
@@ -21,6 +19,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import api from '../../config/api';
 import { ConfirmModal } from '../../components/ConfirmModal';
+import { Pagination } from '../../components/ui';
 
 
 interface SubAttribute {
@@ -337,7 +336,7 @@ export function AddonsPage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Add-ons</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
             Manage extra options and pricing
           </p>
         </div>
@@ -395,7 +394,7 @@ export function AddonsPage() {
                 <stat.icon size={20} />
               </div>
               <div>
-                <p className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
+                <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
                 <p className="text-xl font-black text-gray-900 dark:text-white">{stat.value}</p>
                 {stat.sub && <p className="text-xs font-bold text-paymint-green tracking-wide mt-1">{stat.sub}</p>}
               </div>
@@ -504,8 +503,8 @@ export function AddonsPage() {
           <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
             <Package size={32} className="text-gray-300" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Add-ons</h3>
-          <p className="text-gray-500 max-w-xs text-sm">Create add-ons to allow staff to customize items.</p>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No add-ons</h3>
+          <p className="text-sm font-bold text-gray-500 max-w-xs">Create add-ons to allow staff to customize items.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -602,24 +601,7 @@ export function AddonsPage() {
             </motion.div>
           ))}
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 pt-8">
-              <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2.5 rounded-xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-500 hover:text-paymint-green hover:border-paymint-green/30 disabled:opacity-30 transition-all">
-                <ChevronLeft size={18} />
-              </button>
-              <div className="flex items-center gap-1">
-                {[...Array(totalPages)].map((_, i) => (
-                  <button key={i} onClick={() => setPage(i + 1)} className={`w-9 h-9 rounded-xl text-xs font-black transition-all ${page === i + 1 ? 'bg-paymint-green text-black' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}>
-                    {i + 1}
-                  </button>
-                ))}
-              </div>
-              <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2.5 rounded-xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-500 hover:text-paymint-green hover:border-paymint-green/30 disabled:opacity-30 transition-all">
-                <ChevronRight size={18} />
-              </button>
-            </div>
-          )}
+          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} className="mt-8" />
         </div>
       )}
 
@@ -629,7 +611,7 @@ export function AddonsPage() {
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md overflow-hidden shadow-2xl">
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Add-on Group</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Add-on Group</h2>
                 <button onClick={() => setShowAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
                   <X size={24} />
                 </button>
@@ -725,7 +707,7 @@ export function AddonsPage() {
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl">
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Add-on Option</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Add-on Option</h2>
                 <button onClick={() => setShowSubAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
                   <X size={24} />
                 </button>

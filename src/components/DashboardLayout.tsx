@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { AppStrings } from '../constants/AppStrings';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -16,6 +17,7 @@ import {
   Percent,
   CreditCard,
   Settings,
+  Sliders,
   Shield,
   History,
   LogOut,
@@ -54,99 +56,103 @@ const isMenuGroup = (item: MenuItemOrGroup): item is MenuGroup => {
   return 'items' in item;
 };
 
+// ... imports
+
+// ... (keep generic interface definitions)
+
+// Relative paths (no leading slash, except for sub-routes which are just 'path/to')
 const menuStructure: MenuItemOrGroup[] = [
-  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '.', label: 'Dashboard', icon: LayoutDashboard }, // . for index
   {
     label: 'Sales and Reporting',
     icon: FileBarChart,
     items: [
-      { path: '/dashboard/reports/sales', label: 'Sales Summary', icon: FileBarChart },
-      { path: '/dashboard/reports/items', label: 'Sales by Items', icon: Package },
-      { path: '/dashboard/reports/modifiers', label: 'Sales by Add-Ons', icon: Package },
-      { path: '/dashboard/reports/staff-sales', label: 'Sales by Staff', icon: Users },
-      { path: '/dashboard/reports/shifts', label: 'Shifts Reports', icon: FileBarChart },
-      { path: '/dashboard/reports/payments', label: 'Payments Reports', icon: CreditCard },
-      { path: '/dashboard/reports/discounts', label: 'Discount Reports', icon: Percent },
+      { path: 'reports/sales', label: 'Sales Summary', icon: FileBarChart },
+      { path: 'reports/items', label: 'Sales by Items', icon: Package },
+      { path: 'reports/modifiers', label: 'Sales by Add-Ons', icon: Package },
+      { path: 'reports/staff-sales', label: 'Sales by Staff', icon: Users },
+      { path: 'reports/shifts', label: 'Shifts Reports', icon: FileBarChart },
+      { path: 'reports/payments', label: 'Payments Reports', icon: CreditCard },
+      { path: 'reports/discounts', label: 'Discount Reports', icon: Percent },
     ],
   },
-  { path: '/dashboard/orders', label: 'View Customer Orders', icon: ShoppingCart },
+  { path: 'orders', label: 'View Customer Orders', icon: ShoppingCart },
   {
     label: "Item's Menu",
     icon: Package,
     items: [
-      { path: '/dashboard/categories', label: 'Categories', icon: LayoutDashboard },
-      { path: '/dashboard/products', label: 'Products', icon: Package },
-      { path: '/dashboard/addons', label: 'Add-Ons', icon: Package },
-      { path: '/dashboard/materials', label: 'Ingredients', icon: Package },
-      { path: '/dashboard/recipes', label: 'Recipes', icon: FileBarChart },
+      { path: 'categories', label: 'Categories', icon: LayoutDashboard },
+      { path: 'products', label: 'Products', icon: Package },
+      { path: 'addons', label: 'Add-Ons', icon: Package },
+      { path: 'materials', label: 'Ingredients', icon: Package },
+      { path: 'recipes', label: 'Recipes', icon: FileBarChart },
     ],
   },
-  { path: '/dashboard/payment-methods', label: 'Payment Methods', icon: CreditCard },
+  { path: 'payment-methods', label: 'Payment Methods', icon: CreditCard },
   {
     label: 'Team Management',
     icon: Users,
     items: [
-      { path: '/dashboard/staff', label: 'Team', icon: Users },
-      { path: '/dashboard/roles', label: 'Roles', icon: Shield },
+      { path: 'staff', label: 'Team', icon: Users },
+      { path: 'roles', label: 'Roles', icon: Shield },
     ],
   },
   {
     label: 'Discounts and Loyalty',
     icon: Heart,
     items: [
-      { path: '/dashboard/discounts', label: 'Discounts', icon: Percent },
-      { path: '/dashboard/loyalty', label: 'Loyalty', icon: Award },
-      { path: '/dashboard/customers', label: 'Customers', icon: Users },
+      { path: 'discounts', label: 'Discounts', icon: Percent },
+      { path: 'loyalty', label: 'Loyalty', icon: Award },
+      { path: 'customers', label: 'Customers', icon: Users },
     ],
   },
   {
-    label: 'Settings',
-    icon: Settings,
+    label: 'System',
+    icon: Sliders,
     items: [
-      { path: '/dashboard/settings', label: 'Settings', icon: Settings },
-      { path: '/dashboard/activity-logs', label: 'System Logs', icon: History },
+      { path: 'settings', label: 'Settings', icon: Sliders },
+      { path: 'activity-logs', label: 'System Logs', icon: History },
     ],
   },
 ];
 
-// Define permission requirements for each path
 const REQUIRED_PERMISSIONS: Record<string, string[]> = {
   // Reports
-  '/dashboard/reports/sales': ['view_reports', 'reports'],
-  '/dashboard/reports/items': ['view_reports', 'reports'],
-  '/dashboard/reports/categories': ['view_reports', 'reports'],
-  '/dashboard/reports/staff-sales': ['view_reports', 'reports'],
-  '/dashboard/reports/payments': ['view_reports', 'reports'],
-  '/dashboard/reports/modifiers': ['view_reports', 'reports'],
-  '/dashboard/reports/discounts': ['view_reports', 'reports'],
-  '/dashboard/reports/taxes': ['view_reports', 'reports'],
-  '/dashboard/reports/shifts': ['view_reports', 'reports'],
+  'reports/sales': ['view_reports', 'reports'],
+  'reports/items': ['view_reports', 'reports'],
+  'reports/categories': ['view_reports', 'reports'],
+  'reports/staff-sales': ['view_reports', 'reports'],
+  'reports/payments': ['view_reports', 'reports'],
+  'reports/modifiers': ['view_reports', 'reports'],
+  'reports/discounts': ['view_reports', 'reports'],
+  'reports/taxes': ['view_reports', 'reports'],
+  'reports/shifts': ['view_reports', 'reports'],
 
   // Orders
-  '/dashboard/orders': ['view_orders'], // Strictly requires view_orders
+  'orders': ['view_orders'],
 
   // Inventory
-  '/dashboard/categories': ['manage_inventory', 'items'],
-  '/dashboard/products': ['manage_inventory', 'items'],
-  '/dashboard/addons': ['manage_inventory', 'items'],
-  '/dashboard/materials': ['manage_inventory', 'items'],
-  '/dashboard/recipes': ['manage_inventory', 'items'],
+  'categories': ['manage_inventory', 'items'],
+  'products': ['manage_inventory', 'items'],
+  'addons': ['manage_inventory', 'items'],
+  'materials': ['manage_inventory', 'items'],
+  'recipes': ['manage_inventory', 'items'],
 
   // Sales
-  '/dashboard/payment-methods': ['manage_payment_methods', 'manage_settings', 'settings'],
+  'payment-methods': ['manage_payment_methods', 'manage_settings', 'settings'],
 
   // People
-  '/dashboard/staff': ['manage_employees', 'employees'],
-  '/dashboard/roles': ['manage_employees', 'employees'],
+  'staff': ['manage_employees', 'employees'],
+  'roles': ['manage_employees', 'employees'],
 
-  // Discounts and Loyalty
-  '/dashboard/discounts': ['manage_discounts', 'manage_settings', 'settings'],
-  '/dashboard/loyalty': ['manage_settings', 'settings'],
-  '/dashboard/customers': ['manage_customers', 'manage_employees', 'employees'],
+  // Discounts
+  'discounts': ['manage_discounts', 'manage_settings', 'settings'],
+  'loyalty': ['manage_settings', 'settings'],
+  'customers': ['manage_customers', 'manage_employees', 'employees'],
 
   // Settings
-  '/dashboard/settings': ['manage_settings', 'settings'],
-  '/dashboard/activity-logs': ['view_activity_logs', 'view_reports', 'reports'], // Specific or fallback to reports
+  'settings': ['manage_settings', 'settings'],
+  'activity-logs': ['view_activity_logs', 'view_reports', 'reports'],
 };
 
 const SIDEBAR_STATE_KEY = 'dashboard_sidebar_expanded';
@@ -157,29 +163,32 @@ export function DashboardLayout() {
   const location = useLocation();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
+  const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
+
+  const getRelativePathFromUrl = (pathname: string): string => {
+    // /dashboard/:slug/rest -> rest
+    const parts = pathname.split('/');
+    // parts[0] = '', [1] = 'dashboard', [2] = slug, [3...] = rest
+    if (parts.length <= 3) return '.'; // pointing to root
+    return parts.slice(3).join('/');
+  };
 
   // Filter menu based on permissions
   const filteredMenu = useMemo(() => {
     if (!account) return [];
-    // If user is owner or not marked as secondary admin, show everything
     if (!account.isSecondaryAdmin) return menuStructure;
 
     const userPerms = new Set(account.permissions || []);
 
     const hasAccess = (path: string) => {
-      // Root dashboard always accessible if logged in
-      if (path === '/dashboard') return true;
+      if (path === '.') return true; // root
 
       const required = REQUIRED_PERMISSIONS[path];
-      // If no specific permission required, default to accessible (or restricted, depending on policy)
-      // For safety, if not listed, assume it's public/common unless we want strict whitelist
       if (!required) return true;
 
-      // Check if user has ANY of the required permissions (OR logic)
       return required.some(p => userPerms.has(p));
     };
 
@@ -194,6 +203,20 @@ export function DashboardLayout() {
       return hasAccess(item.path) ? item : null;
     }).filter((item): item is MenuItemOrGroup => item !== null);
   }, [account]);
+
+
+  // ... (keep useEffects, but updated dependencies if needed)
+
+  const isGroupActive = (items: MenuItem[]) => {
+    // Check if any item's path corresponds to current location
+    // Using endWith or careful construction
+    const currentRelative = getRelativePathFromUrl(location.pathname);
+    return items.some((item) => {
+      if (item.path === '.') return currentRelative === '.';
+      return currentRelative.startsWith(item.path);
+    });
+  };
+
 
   useEffect(() => {
     localStorage.setItem(SIDEBAR_STATE_KEY, String(sidebarOpen));
@@ -270,10 +293,6 @@ export function DashboardLayout() {
     setExpandedGroup(prev => prev === label ? null : label);
   };
 
-  const isGroupActive = (items: MenuItem[]) => {
-    return items.some((item) => location.pathname === item.path);
-  };
-
   const CurrentEstIcon = getBusinessTypeIcon(currentEstablishment?.type || '');
 
   return (
@@ -304,7 +323,7 @@ export function DashboardLayout() {
         `}
       >
         {/* Logo Section */}
-        <div className="h-20 flex items-center justify-between px-2 mb-2 relative shrink-0">
+        <div className="h-20 flex items-center justify-between px-6 mb-2 relative shrink-0">
           <AnimatePresence mode="wait">
             {sidebarOpen ? (
               <motion.div
@@ -312,11 +331,19 @@ export function DashboardLayout() {
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
-                className="flex items-center gap-4 cursor-pointer"
-                onClick={() => navigate('/dashboard')}
+                className="flex items-center cursor-pointer group"
+                onClick={() => navigate('.')}
               >
-                <img src={PaymintLogoGreen} className="h-10 w-auto dark:hidden" alt="PayMint" />
-                <img src={PaymintLogoWhite} className="h-10 w-auto hidden dark:block" alt="PayMint" />
+                <img
+                  src={PaymintLogoGreen}
+                  alt="PayMint"
+                  className="h-10 w-auto object-contain dark:hidden transition-transform"
+                />
+                <img
+                  src={PaymintLogoWhite}
+                  alt="PayMint"
+                  className="h-10 w-auto object-contain hidden dark:block transition-transform"
+                />
               </motion.div>
             ) : (
               <motion.div
@@ -346,9 +373,9 @@ export function DashboardLayout() {
           {sidebarOpen && (
             <button
               onClick={() => setSidebarOpen(false)}
-              className="p-2 rounded-lg text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+              className="p-2 rounded-xl text-gray-400 hover:text-paymint-green hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
             >
-              <PanelLeftClose size={18} />
+              <PanelLeftClose size={20} />
             </button>
           )}
         </div>
@@ -360,25 +387,25 @@ export function DashboardLayout() {
               className="p-3.5 bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm relative overflow-hidden group cursor-pointer transition-all duration-300 hover:border-paymint-green/30"
               onClick={() => navigate('/select-establishment')}
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 dark:bg-paymint-green/10 rounded-full blur-3xl pointer-events-none group-hover:scale-150 transition-transform duration-1000" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 dark:bg-paymint-green/10 rounded-full blur-3xl pointer-events-none transition-transform duration-1000" />
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-2.5">
                   <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center flex-shrink-0">
                     <CurrentEstIcon size={18} className="text-paymint-green" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold text-paymint-green tracking-wide mb-0.5">Active Location</p>
+                    <p className="text-xs font-black text-paymint-green tracking-widest mb-0.5">{AppStrings.STATUS.ACTIVE} Location</p>
                     <h2 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight leading-[1.2] font-sans truncate">
-                      {currentEstablishment?.name || 'Loading...'}
+                      {currentEstablishment?.name || AppStrings.COMMON.LOADING}
                     </h2>
                   </div>
                 </div>
                 <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-gray-100 dark:border-white/10">
                   <div className="flex items-center gap-1.5">
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] dark:shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                    <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Online</span>
+                    <span className="text-xs font-black text-gray-400 tracking-widest">{AppStrings.STATUS.ONLINE}</span>
                   </div>
-                  <div className="flex items-center gap-1 text-xs font-bold text-gray-500 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                  <div className="flex items-center gap-1 text-xs font-black text-gray-400 tracking-widest group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                     Switch Location <ChevronRight size={10} className="mt-0.5" />
                   </div>
                 </div>
@@ -386,11 +413,11 @@ export function DashboardLayout() {
             </div>
           </div>
         ) : (
-          <div className="px-2 py-4 flex flex-col items-center gap-4">
+          <div className="px-2 flex flex-col items-center gap-4 mb-1.5">
 
             <button
               onClick={() => navigate('/select-establishment')}
-              className="w-12 h-12 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all bg-gray-50 dark:bg-white/[0.03] group relative"
+              className="w-12 h-12 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all group relative"
             >
               <MapPin size={24} />
               <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
@@ -406,7 +433,7 @@ export function DashboardLayout() {
           className={`flex-1 px-3 space-y-1.5 scrollbar-none pb-4 ${sidebarOpen ? 'overflow-y-auto' : 'overflow-visible'}`}
         >
           {sidebarOpen && (
-            <p className="px-3 py-2 text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wide">Main Menu</p>
+            <p className="px-3 py-2 text-xs font-black text-gray-400 tracking-widest">Main Menu</p>
           )}
 
           {filteredMenu.map((item, index) => {
@@ -414,7 +441,7 @@ export function DashboardLayout() {
               const isExpanded = expandedGroup === item.label;
               const isActive = isGroupActive(item.items);
               const Icon = item.icon;
-              const isBottomItem = ['Team Management', 'Discounts and Loyalty', 'Settings'].includes(item.label);
+              const isBottomItem = ['Team Management', 'Discounts and Loyalty', 'System'].includes(item.label);
 
               return (
                 <div key={index} className="mb-1">
@@ -443,7 +470,7 @@ export function DashboardLayout() {
                       <div className={`absolute left-[calc(100%+8px)] ${isBottomItem ? 'bottom-0' : 'top-0'} opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] pointer-events-none group-hover:pointer-events-auto translate-x-1 group-hover:translate-x-0`}>
                         <div className="bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden min-w-[200px] py-2">
                           <div className="px-4 py-2 border-b border-gray-100 dark:border-white/5 mb-1 bg-gray-50/50 dark:bg-white/[0.02]">
-                            <p className="text-xs font-bold text-paymint-green tracking-wide">{item.label}</p>
+                            <p className="text-xs font-black text-paymint-green tracking-widest">{item.label}</p>
                           </div>
                           <div className="px-2 space-y-1">
                             {item.items.map((subItem) => (
@@ -630,8 +657,8 @@ export function DashboardLayout() {
 
 
         {/* Footer User Profile */}
-        {sidebarOpen && (
-          <div className="p-3 border-t border-gray-100 dark:border-white/5">
+        <div className="p-3 border-t border-gray-100 dark:border-white/5 relative">
+          {sidebarOpen ? (
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-paymint-green/20 outline outline-2 outline-white dark:outline-black">
                 <span className="text-black font-bold text-xs">
@@ -658,8 +685,160 @@ export function DashboardLayout() {
                 </button>
               </div>
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="flex justify-center">
+              {/* Settings Circle */}
+              <button
+                onClick={() => setSettingsMenuOpen(!settingsMenuOpen)}
+                className={`w-12 h-12 flex items-center justify-center rounded-xl transition-all relative group ${settingsMenuOpen
+                  ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                  : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'
+                  }`}
+              >
+                <Settings size={24} />
+                {/* Tooltip */}
+                <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
+                  Settings
+                </div>
+              </button>
+
+              {/* Popover Menu */}
+              <AnimatePresence>
+                {settingsMenuOpen && (
+                  <>
+                    {/* Backdrop to close */}
+                    <div
+                      className="fixed inset-0 z-[60]"
+                      onClick={() => setSettingsMenuOpen(false)}
+                    />
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95, x: 20 }}
+                      animate={{ opacity: 1, scale: 1, x: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, x: 20 }}
+                      className="absolute left-full bottom-0 ml-4 w-64 bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl z-[70] p-2"
+                    >
+                      {/* Header */}
+                      <div className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-white/5 rounded-xl">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm text-black font-bold text-xs">
+                          {account?.firstName?.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
+                            {account?.firstName} {account?.lastName}
+                          </p>
+                          <p className="text-xs text-gray-500 truncate">{account?.email}</p>
+                        </div>
+                      </div>
+
+                      {/* Menu Items */}
+                      <div className="space-y-1">
+                        <div className="relative group">
+                          <button
+                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left"
+                          >
+                            <Smartphone size={18} />
+                            <span>Get Mobile App</span>
+                          </button>
+                          {/* QR Code Popup */}
+                          <div className="absolute left-full bottom-0 ml-2 bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[80] translate-x-2 group-hover:translate-x-0 w-[200px]">
+                            {/* QR Code Container */}
+                            <div className="bg-white rounded-xl p-3 mb-4 shadow-inner">
+                              {/* Fake QR Code Pattern */}
+                              <div className="w-full aspect-square bg-white relative overflow-hidden rounded-lg">
+                                <svg viewBox="0 0 100 100" className="w-full h-full">
+                                  <rect width="100" height="100" fill="white" />
+                                  <rect x="5" y="5" width="25" height="25" fill="black" />
+                                  <rect x="8" y="8" width="19" height="19" fill="white" />
+                                  <rect x="11" y="11" width="13" height="13" fill="black" />
+                                  <rect x="70" y="5" width="25" height="25" fill="black" />
+                                  <rect x="73" y="8" width="19" height="19" fill="white" />
+                                  <rect x="76" y="11" width="13" height="13" fill="black" />
+                                  <rect x="5" y="70" width="25" height="25" fill="black" />
+                                  <rect x="8" y="73" width="19" height="19" fill="white" />
+                                  <rect x="11" y="76" width="13" height="13" fill="black" />
+                                  <rect x="35" y="5" width="5" height="5" fill="black" />
+                                  <rect x="45" y="5" width="5" height="5" fill="black" />
+                                  <rect x="55" y="5" width="5" height="5" fill="black" />
+                                  <rect x="35" y="15" width="5" height="5" fill="black" />
+                                  <rect x="50" y="15" width="5" height="5" fill="black" />
+                                  <rect x="60" y="15" width="5" height="5" fill="black" />
+                                  <rect x="40" y="25" width="5" height="5" fill="black" />
+                                  <rect x="55" y="25" width="5" height="5" fill="black" />
+                                  <rect x="5" y="35" width="5" height="5" fill="black" />
+                                  <rect x="15" y="35" width="5" height="5" fill="black" />
+                                  <rect x="25" y="35" width="5" height="5" fill="black" />
+                                  <rect x="5" y="45" width="5" height="5" fill="black" />
+                                  <rect x="20" y="45" width="5" height="5" fill="black" />
+                                  <rect x="5" y="55" width="5" height="5" fill="black" />
+                                  <rect x="15" y="55" width="5" height="5" fill="black" />
+                                  <rect x="25" y="55" width="5" height="5" fill="black" />
+                                  <rect x="35" y="35" width="30" height="30" fill="black" />
+                                  <rect x="40" y="40" width="20" height="20" fill="white" />
+                                  <rect x="45" y="45" width="10" height="10" fill="black" />
+                                  <rect x="70" y="35" width="5" height="5" fill="black" />
+                                  <rect x="80" y="35" width="5" height="5" fill="black" />
+                                  <rect x="90" y="35" width="5" height="5" fill="black" />
+                                  <rect x="75" y="45" width="5" height="5" fill="black" />
+                                  <rect x="85" y="45" width="5" height="5" fill="black" />
+                                  <rect x="70" y="55" width="5" height="5" fill="black" />
+                                  <rect x="80" y="55" width="5" height="5" fill="black" />
+                                  <rect x="35" y="70" width="5" height="5" fill="black" />
+                                  <rect x="45" y="70" width="5" height="5" fill="black" />
+                                  <rect x="55" y="70" width="5" height="5" fill="black" />
+                                  <rect x="70" y="70" width="5" height="5" fill="black" />
+                                  <rect x="80" y="70" width="5" height="5" fill="black" />
+                                  <rect x="90" y="70" width="5" height="5" fill="black" />
+                                  <rect x="40" y="80" width="5" height="5" fill="black" />
+                                  <rect x="50" y="80" width="5" height="5" fill="black" />
+                                  <rect x="75" y="80" width="5" height="5" fill="black" />
+                                  <rect x="85" y="80" width="5" height="5" fill="black" />
+                                  <rect x="35" y="90" width="5" height="5" fill="black" />
+                                  <rect x="55" y="90" width="5" height="5" fill="black" />
+                                  <rect x="70" y="90" width="5" height="5" fill="black" />
+                                  <rect x="90" y="90" width="5" height="5" fill="black" />
+                                </svg>
+                                {/* Center logo placeholder */}
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                                    {/* Note: I need to ensure PaymintLeafIcon is available or imported. It is used elsewhere I presume. */}
+                                    <img src={PaymintLeafIcon} alt="P" className="w-5 h-5 object-contain" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {/* Text */}
+                            <p className="text-center text-sm font-bold text-gray-900 dark:text-white leading-tight">
+                              Scan to download<br />
+                              <span className="text-paymint-green">Paymint App</span>
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Theme Item - We wrap accessibility of ThemeToggle or recreate it visually */}
+                        <div className="relative">
+                          <ThemeToggle
+                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left"
+                            showLabel={true}
+                            dropdownDirection="right"
+                            iconSize={18}
+                          />
+                        </div>
+
+                        <button
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all text-left"
+                        >
+                          <LogOut size={18} />
+                          <span>Sign Out</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+        </div>
       </motion.aside>
 
       {/* Main Content */}
@@ -726,7 +905,7 @@ export function DashboardLayout() {
                   // Simplified mobile menu for groups: just list items
                   return (
                     <div key={index} className="mb-2">
-                      <p className="px-3 py-2 text-xs font-bold text-gray-400 tracking-widest">{item.label}</p>
+                      <p className="px-3 py-2 text-xs font-black text-gray-400 tracking-widest">{item.label}</p>
                       <div className="pl-2 space-y-1">
                         {item.items.map((subItem) => (
                           <NavLink
@@ -798,10 +977,10 @@ export function DashboardLayout() {
         isOpen={isLogoutModalOpen}
         onClose={() => setIsLogoutModalOpen(false)}
         onConfirm={confirmLogout}
-        title="Sign Out"
-        message="Are you sure you want to sign out?"
-        confirmText="Sign Out"
-        cancelText="Cancel"
+        title={AppStrings.AUTH.LOGOUT.TITLE}
+        message={AppStrings.AUTH.LOGOUT.MESSAGE}
+        confirmText={AppStrings.NAVIGATION.LOGOUT}
+        cancelText={AppStrings.COMMON.CANCEL}
         type="danger"
       />
     </div>

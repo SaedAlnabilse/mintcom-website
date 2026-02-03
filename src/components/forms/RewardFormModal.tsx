@@ -1,3 +1,4 @@
+import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -109,7 +110,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
               <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm">
                 <Award size={22} strokeWidth={2.5} />
               </div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+              <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">
                 {initialData ? 'Edit Reward' : 'New Reward'}
               </h2>
             </div>
@@ -132,7 +133,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
 
             {/* Reward Type */}
             <div>
-              <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1">Type</label>
+              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Type</label>
               <div className="flex p-1 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/5 relative isolate">
                 <button
                   type="button"
@@ -161,7 +162,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
 
             {/* Points Required */}
             <div>
-              <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1">Points Cost</label>
+              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Points Cost</label>
               <div className="relative group">
                 <input
                   type="number"
@@ -170,21 +171,21 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                     setPointsRequired(e.target.value);
                     if (errors.pointsRequired) setErrors({ ...errors, pointsRequired: '' });
                   }}
-                  className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.pointsRequired ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold text-xl focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all pr-12 group-hover:border-paymint-green/50 shadow-sm`}
+                  className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.pointsRequired ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all pr-12 group-hover:border-paymint-green/50 shadow-sm`}
                   placeholder="0"
                 />
                 <div className="absolute right-5 top-1/2 -translate-y-1/2 text-paymint-green">
                   <Award size={20} strokeWidth={2.5} />
                 </div>
               </div>
-              {errors.pointsRequired && <p className="mt-1 px-1 text-xs font-black text-paymint-red tracking-wide">{errors.pointsRequired}</p>}
+              {errors.pointsRequired && <p className="mt-1 px-1 text-xs font-bold text-paymint-red">{errors.pointsRequired}</p>}
             </div>
 
             {/* Dynamic Fields - Height Stabilized */}
             <div className="min-h-[90px]">
               {type === 'DISCOUNT' ? (
                 <motion.div key="discount" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-2.5 px-1">Discount %</label>
+                  <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Discount %</label>
                   <div className="relative group">
                     <input
                       type="number"
@@ -193,16 +194,16 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                         setDiscountPercentage(e.target.value);
                         if (errors.discountPercentage) setErrors({ ...errors, discountPercentage: '' });
                       }}
-                      className={`w-full px-5 py-3.5 bg-gray-50 dark:bg-black/20 border ${errors.discountPercentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold text-2xl focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all pr-12 group-hover:border-paymint-green/50 shadow-sm`}
+                      className={`w-full px-5 py-3.5 bg-gray-50 dark:bg-black/20 border ${errors.discountPercentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all pr-12 group-hover:border-paymint-green/50 shadow-sm`}
                       placeholder="0"
                     />
                     <div className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg group-focus-within:text-paymint-green transition-colors">%</div>
                   </div>
-                  {errors.discountPercentage && <p className="mt-1 px-1 text-xs font-black text-paymint-red tracking-wide">{errors.discountPercentage}</p>}
+                  {errors.discountPercentage && <p className="mt-1 px-1 text-xs font-bold text-paymint-red">{errors.discountPercentage}</p>}
                 </motion.div>
               ) : (
                 <motion.div key="category" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-2.5 px-1 flex items-center justify-between">
+                  <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center justify-between gap-1">
                     <span>Category</span>
                     {errors.freeCategoryId && <span className="text-paymint-red normal-case tracking-normal font-bold text-[10px]">{errors.freeCategoryId}</span>}
                   </label>
@@ -234,17 +235,17 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-12 sm:h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-black tracking-[0.15em] sm:tracking-[0.2em] text-xs hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
+              className="flex-1 h-12 sm:h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-black text-xs tracking-widest hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
             >
               Cancel
             </button>
             <button
               type="submit"
               form="reward-form"
-              className="flex-[2] h-12 sm:h-14 rounded-xl bg-paymint-green text-black font-black tracking-[0.15em] sm:tracking-[0.2em] text-xs hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
+              className="flex-[2] h-12 sm:h-14 rounded-xl bg-paymint-green text-black font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
             >
               <Check size={18} strokeWidth={3} />
-              {initialData ? 'Save' : 'Add'}
+              {initialData ? AppStrings.COMMON.SAVE : AppStrings.COMMON.ADD}
             </button>
           </div>
         </motion.div>

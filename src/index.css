@@ -20,23 +20,28 @@
   }
 
   body {
-    @apply font-inter text-text-primary bg-cream-50 dark:text-paymint-text dark:bg-paymint-dark antialiased transition-colors duration-300;
+    @apply font-sans text-text-primary bg-cream-50 dark:text-paymint-text dark:bg-paymint-dark antialiased transition-colors duration-300;
     font-feature-settings: 'kern' 1, 'liga' 1;
     accent-color: #7CC39F;
   }
 
   ::selection {
-    background-color: rgba(124, 195, 159, 0.3);
-    color: inherit;
+    background-color: #7CC39F;
+    color: #000000;
+  }
+
+  ::-moz-selection {
+    background-color: #7CC39F;
+    color: #000000;
   }
 
   /* Headings - POS Style */
   h1 {
-    @apply text-heading-1 text-text-primary dark:text-paymint-text tracking-tight;
+    @apply text-heading-1 text-text-primary dark:text-paymint-text;
   }
 
   h2 {
-    @apply text-heading-2 text-text-primary dark:text-paymint-text tracking-tight;
+    @apply text-heading-2 text-text-primary dark:text-paymint-text;
   }
 
   h3 {
@@ -52,7 +57,7 @@
   }
 
   h6 {
-    @apply text-body-lg font-semibold text-text-primary dark:text-paymint-text;
+    @apply text-body-lg font-bold text-text-primary dark:text-paymint-text;
   }
 
   /* Body text defaults */
@@ -62,7 +67,7 @@
 
   /* Labels and small text */
   label {
-    @apply text-label text-text-secondary dark:text-paymint-textSecondary font-medium;
+    @apply text-label text-text-secondary dark:text-paymint-textSecondary;
   }
 
   small {
@@ -90,7 +95,7 @@
   input,
   textarea,
   select {
-    @apply font-inter text-body text-text-primary dark:text-paymint-text;
+    @apply font-sans text-body text-text-primary dark:text-paymint-text;
   }
 
   input::placeholder,
@@ -104,6 +109,25 @@
    ============================================ */
 
 @layer components {
+
+  /* Standardized Display Text */
+  .text-display-1 {
+    @apply text-display-1 font-black text-gray-900 dark:text-white tracking-tighter;
+  }
+
+  .text-display-2 {
+    @apply text-display-2 font-black text-gray-900 dark:text-white tracking-tighter;
+  }
+
+  /* Standardized Label Strong - Replaces "text-xs font-black tracking-widest" */
+  .label-strong {
+    @apply text-label text-gray-400 font-black tracking-widest uppercase;
+  }
+  
+  /* Standardized Subtitle */
+  .text-subtitle {
+    @apply text-sm text-gray-500 dark:text-gray-400 font-medium;
+  }
 
   /* Card Labels - Used for stat card labels */
   .card-label {

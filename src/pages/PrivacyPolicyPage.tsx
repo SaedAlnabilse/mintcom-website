@@ -28,7 +28,7 @@ export const PrivacyPolicyPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white font-inter">
+        <div className="min-h-screen bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white font-sans">
             <Navbar />
             
             {/* Header */}
@@ -41,9 +41,9 @@ export const PrivacyPolicyPage = () => {
                         <div className="w-16 h-16 rounded-2xl bg-paymint-green/10 flex items-center justify-center mx-auto mb-6">
                             <Shield className="w-8 h-8 text-paymint-green" />
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">Privacy Policy</h1>
-                        <p className="text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest text-xs">
-                            Last Updated: February 2, 2026
+                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">Privacy Policy</h1>
+                        <p className="text-xs font-black text-gray-400 tracking-widest">
+                            LAST UPDATED: FEBRUARY 2, 2026
                         </p>
                     </motion.div>
                 </div>
@@ -52,7 +52,7 @@ export const PrivacyPolicyPage = () => {
             {/* Content */}
             <div className="max-w-4xl mx-auto px-6 py-20">
                 <div className="prose prose-lg dark:prose-invert max-w-none">
-                    <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-12">
+                    <p className="text-sm font-bold text-gray-600 dark:text-gray-300 leading-relaxed mb-12">
                         At Paymint, we respect your privacy and are committed to protecting your personal data. This Privacy Policy explains how we collect, use, and share information about you when you use our website and services.
                     </p>
 
@@ -69,8 +69,8 @@ export const PrivacyPolicyPage = () => {
                                 <div className="w-12 h-12 rounded-xl bg-white dark:bg-white/5 flex items-center justify-center mb-6 shadow-sm">
                                     <section.icon className="w-6 h-6 text-paymint-green" />
                                 </div>
-                                <h3 className="text-xl font-bold mb-4">{section.title}</h3>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                <h3 className="text-base font-bold text-gray-900 dark:text-white mb-4">{section.title}</h3>
+                                <p className="text-xs font-bold text-gray-500 leading-relaxed">
                                     {section.content}
                                 </p>
                             </motion.div>
@@ -79,24 +79,24 @@ export const PrivacyPolicyPage = () => {
 
                     <div className="space-y-12 text-gray-600 dark:text-gray-300">
                         <section>
-                            <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
                                 <FileText className="text-paymint-green" />
                                 Detailed Information
                             </h2>
-                            <p className="mb-4">
+                            <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mb-4">
                                 We collect various types of information to provide and improve our service to you. This includes usage data, cookies, and tracking technologies. We may share your information with third-party vendors who perform services on our behalf.
                             </p>
-                            <p>
+                            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
                                 You have the right to access, correct, or delete your personal data. If you have any questions about this Privacy Policy, please contact us at privacy@paymint.com.
                             </p>
                         </section>
 
                         <section className="p-8 rounded-3xl bg-paymint-green/5 border border-paymint-green/20">
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-3">
+                            <h3 className="text-base font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-3">
                                 <Bell className="text-paymint-green" />
                                 Policy Updates
                             </h3>
-                            <p className="text-sm">
+                            <p className="text-xs font-bold text-gray-500">
                                 We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date.
                             </p>
                         </section>

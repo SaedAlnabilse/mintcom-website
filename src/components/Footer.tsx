@@ -109,13 +109,13 @@ export const Footer = () => {
 
             {/* Product */}
             <div>
-              <h4 className="text-xs font-black text-gray-900 dark:text-white tracking-[0.2em] mb-8">Product</h4>
+              <h4 className="text-xs font-black text-gray-400 tracking-widest mb-8">Product</h4>
               <ul className="space-y-4">
                 {productLinks.map((link) => (
                   <li key={link.name}>
                     <button
                       onClick={link.action}
-                      className="text-gray-600 dark:text-gray-400 font-bold hover:text-paymint-green transition-colors"
+                      className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
                     >
                       {link.name}
                     </button>
@@ -126,13 +126,13 @@ export const Footer = () => {
 
             {/* Company */}
             <div>
-              <h4 className="text-xs font-black text-gray-900 dark:text-white tracking-[0.2em] mb-8">Company</h4>
+              <h4 className="text-xs font-black text-gray-400 tracking-widest mb-8">Company</h4>
               <ul className="space-y-4">
                 {companyLinks.map((link) => (
                   <li key={link.name}>
                     <button
                       onClick={link.action}
-                      className="text-gray-600 dark:text-gray-400 font-bold hover:text-paymint-green transition-colors"
+                      className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
                     >
                       {link.name}
                     </button>
@@ -143,7 +143,7 @@ export const Footer = () => {
 
             {/* Contact */}
             <div>
-              <h4 className="text-xs font-black text-gray-900 dark:text-white tracking-[0.2em] mb-8">Get in Touch</h4>
+              <h4 className="text-xs font-black text-gray-400 tracking-widest mb-8">Get in Touch</h4>
               <ul className="space-y-6">
                 <li className="flex items-center gap-3 text-gray-600 dark:text-gray-400 font-medium">
                   <div className="w-8 h-8 rounded-lg bg-gray-200/50 dark:bg-white/5 flex items-center justify-center">
@@ -200,8 +200,8 @@ export const Footer = () => {
               {/* Header */}
               <div className="bg-gray-50 dark:bg-black/20 border-b border-gray-100 dark:border-white/5 p-6 flex items-center justify-between">
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Hardware Solutions</h3>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Professional equipment for your business</p>
+                  <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Hardware Solutions</h3>
+                  <p className="text-sm font-bold text-gray-500 mt-1">Professional equipment for your business</p>
                 </div>
                 <button
                   onClick={() => setShowHardwareModal(false)}
@@ -225,7 +225,7 @@ export const Footer = () => {
                           }`}
                       >
                         <item.icon size={20} />
-                        <span className="font-bold text-sm">{item.name}</span>
+                        <span className="text-sm font-bold">{item.name}</span>
                       </button>
                     ))}
                   </div>
@@ -246,8 +246,8 @@ export const Footer = () => {
                           <selectedHardware.icon size={28} className="text-paymint-green" />
                         </div>
                         <div>
-                          <h4 className="text-xl font-bold text-gray-900 dark:text-white">{selectedHardware.name}</h4>
-                          <p className="text-gray-500 dark:text-gray-400">{selectedHardware.description}</p>
+                          <h4 className="text-lg font-bold text-gray-900 dark:text-white">{selectedHardware.name}</h4>
+                          <p className="text-sm font-bold text-gray-500">{selectedHardware.description}</p>
                         </div>
                       </div>
 
@@ -266,8 +266,8 @@ export const Footer = () => {
                                 <CheckCircle2 size={18} className="text-paymint-green group-hover:text-white transition-colors" />
                               </div>
                               <div>
-                                <p className="font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">{product.name}</p>
-                                <p className="text-sm text-gray-500 dark:text-gray-400">{product.specs}</p>
+                                <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">{product.name}</p>
+                                <p className="text-xs font-bold text-gray-500">{product.specs}</p>
                               </div>
                             </div>
                             <div className="text-right">

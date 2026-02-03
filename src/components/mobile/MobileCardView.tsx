@@ -87,11 +87,11 @@ export function StandardMobileCard({
             </div>
           )}
           <div className="min-w-0 flex-1">
-            <p className="font-bold text-gray-900 dark:text-white text-sm truncate">
+            <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
               {title}
             </p>
             {subtitle && (
-              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+              <p className="text-xs font-black text-gray-400 tracking-widest truncate">
                 {subtitle}
               </p>
             )}
@@ -118,7 +118,7 @@ export function StandardMobileCard({
         <div className="grid grid-cols-2 gap-3 pt-2 border-t border-gray-100 dark:border-white/5">
           {details.map((detail, i) => (
             <div key={i}>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">
+              <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">
                 {detail.label}
               </p>
               <p className="text-sm font-bold text-gray-900 dark:text-white">

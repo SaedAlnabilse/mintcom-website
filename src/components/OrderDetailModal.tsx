@@ -98,11 +98,11 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                         <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
                         <div>
                             <div className="flex items-center gap-2 mb-1">
-                                <span className="text-xs font-black text-gray-400 tracking-[0.2em]">Order Details</span>
+                                <span className="text-xs font-black text-gray-400 tracking-widest">Order Details</span>
                                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
                                 <span className="text-xs font-black text-paymint-green tracking-widest">Processed</span>
                             </div>
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Order #{order.orderNumber}</h2>
+                            <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Order #{order.orderNumber}</h2>
                         </div>
                         <button
                             onClick={onClose}

@@ -10,11 +10,9 @@ import {
     Lock,
     ChevronRight,
     ChevronLeft,
-    Users,
     Shield,
     UserCheck,
     Plus,
-    MapPin,
     RefreshCw,
     Grid3X3,
     List,
@@ -33,6 +31,7 @@ import { SecurityVerificationModal } from '../../components/SecurityVerification
 import { useAuth } from '../../context/AuthContext';
 import { CustomSelect } from '../../components/CustomSelect';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
+import { Pagination } from '../../components/ui';
 
 interface Brand {
     id: string;
@@ -92,6 +91,8 @@ export function OwnerBrandsPage() {
     const [sortBy, setSortBy] = useState<SortOption>('name');
     const [sortOrder] = useState<'asc' | 'desc'>('asc');
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
 
     // Wizard state
     const [wizardStep, setWizardStep] = useState(1);
@@ -167,6 +168,17 @@ export function OwnerBrandsPage() {
 
         return result;
     }, [brands, searchQuery, sortBy, sortOrder]);
+
+    const totalPages = Math.ceil(filteredBrands.length / ITEMS_PER_PAGE);
+
+    const paginatedBrands = useMemo(() => {
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filteredBrands.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    }, [filteredBrands, currentPage]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, sortBy]);
 
     // Stats
     const stats = useMemo(() => {
@@ -402,11 +414,8 @@ export function OwnerBrandsPage() {
                     { label: 'Linked Locations', value: stats.totalMerged, icon: Link2, color: 'text-purple-500', bg: 'bg-purple-500/10' },
                     { label: 'Available Locations', value: stats.availableNodes, icon: Store, color: 'text-orange-500', bg: 'bg-orange-500/10' },
                 ].map((stat, i) => (
-                    <motion.div
+                    <div
                         key={i}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.1 }}
                         className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
                     >
                         <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
@@ -415,11 +424,11 @@ export function OwnerBrandsPage() {
                                 <stat.icon size={24} />
                             </div>
                             <div>
-                                <p className="text-xs font-bold text-gray-400 tracking-wide">{stat.label}</p>
+                                <p className="text-xs font-black text-gray-400 tracking-widest uppercase">{stat.label}</p>
                                 <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
                 ))}
             </div>
 
@@ -437,7 +446,7 @@ export function OwnerBrandsPage() {
                             placeholder="Search brands by name or Login ID..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm hover:shadow-md focus:shadow-lg"
+                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm focus:shadow-lg"
                         />
                     </div>
 
@@ -476,7 +485,7 @@ export function OwnerBrandsPage() {
 
                 {hasActiveFilters && (
                     <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
-                        <span className="text-xs font-bold text-gray-400 tracking-wide">Active filters:</span>
+                        <span className="text-xs font-black text-gray-400 tracking-widest uppercase">Active filters:</span>
                         <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
                             Search: "{searchQuery}"
                         </span>
@@ -492,7 +501,7 @@ export function OwnerBrandsPage() {
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Building2 size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
                     <p className="text-lg font-medium text-gray-900 dark:text-white">
-                        {hasActiveFilters ? 'No brands found' : 'No Brands'}
+                        {hasActiveFilters ? 'No brands found' : 'No brands'}
                     </p>
                     <p className="text-sm text-gray-500 mt-1">
                         {hasActiveFilters ? 'Try adjusting your search' : 'Create a brand to group locations'}
@@ -510,164 +519,229 @@ export function OwnerBrandsPage() {
             ) : viewMode === 'grid' ? (
                 /* Grid View */
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                    <AnimatePresence mode="popLayout">
-                        {filteredBrands.map((brand, index) => (
-                            <motion.div
-                                key={brand.id}
-                                layout
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.05 }}
-                                className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl border p-6 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden ${brand.id === 'cmkek5eme0001vjjqvfm3wjwa'
-                                    ? 'border-paymint-green bg-paymint-green/[0.02]'
-                                    : 'border-gray-200 dark:border-white/5 hover:border-purple-500/30'
-                                    }`}
-                            >
-                                {/* Hover gradient */}
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                    {paginatedBrands.map((brand) => (
+                        <div
+                            key={brand.id}
+                            className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl border p-6 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden ${brand.id === 'cmkek5eme0001vjjqvfm3wjwa'
+                                ? 'border-paymint-green bg-paymint-green/[0.02]'
+                                : 'border-gray-200 dark:border-white/5 hover:border-purple-500/30'
+                                }`}
+                        >
+                            {/* Hover gradient */}
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                                <div className="relative z-10">
-                                    {/* Header */}
-                                    <div className="flex items-start justify-between mb-6">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-14 h-14 rounded-xl bg-purple-500/10 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
-                                                <Building2 size={28} className="text-purple-500" />
-                                            </div>
-                                            <div>
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-purple-500 transition-colors">
-                                                        {brand.name}
-                                                    </h3>
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-xs font-black tracking-wide">
-                                                        Active
-                                                    </span>
-                                                    <span className="text-xs text-gray-500">
-                                                        {brand.establishmentCount} Locations
-                                                    </span>
-                                                </div>
-                                            </div>
+                            <div className="relative z-10">
+                                {/* Header */}
+                                <div className="flex items-start justify-between mb-6">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-14 h-14 rounded-xl bg-purple-500/10 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
+                                            <Building2 size={28} className="text-purple-500" />
                                         </div>
-
-                                        <div className="relative">
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setActiveMenu(activeMenu === brand.id ? null : brand.id);
-                                                }}
-                                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
-                                            >
-                                                <MoreVertical size={18} />
-                                            </button>
-
-                                            <AnimatePresence>
-                                                {activeMenu === brand.id && (
-                                                    <motion.div
-                                                        initial={{ opacity: 0, scale: 0.95, y: -5 }}
-                                                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                        exit={{ opacity: 0, scale: 0.95, y: -5 }}
-                                                        className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
-                                                    >
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                window.open(`/brand/${brand.id}`, '_blank');
-                                                            }}
-                                                            className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                                        >
-                                                            <Eye size={16} />
-                                                            View Dashboard
-                                                        </button>
-
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setActiveMenu(null);
-                                                                setSecurityModal({
-                                                                    isOpen: true,
-                                                                    targetId: brand.id,
-                                                                    targetName: brand.name,
-                                                                    mode: 'dissolve-brand'
-                                                                });
-                                                            }}
-                                                            className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
-                                                        >
-                                                            <Trash2 size={16} />
-                                                            Delete Brand
-                                                        </button>
-                                                    </motion.div>
-                                                )}
-                                            </AnimatePresence>
+                                        <div>
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-purple-500 transition-colors">
+                                                    {brand.name}
+                                                </h3>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest">
+                                                    Active
+                                                </span>
+                                                <span className="text-xs font-black text-gray-400 tracking-widest uppercase">
+                                                    {brand.establishmentCount} Locations
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {/* Details */}
-                                    <div className="grid grid-cols-2 gap-4 mb-6 relative z-10">
-                                        <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <Hash size={14} className="text-purple-500" />
-                                                <span className="text-xs font-black text-gray-400 tracking-widest">Login ID</span>
-                                            </div>
-                                            <p className="text-sm font-mono font-bold text-gray-900 dark:text-white truncate">
-                                                {brand.establishmentLoginId}
-                                            </p>
-                                        </div>
-                                        <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <Calendar size={14} className="text-blue-500" />
-                                                <span className="text-xs font-black text-gray-400 tracking-widest">Created</span>
-                                            </div>
-                                            <p className="text-sm font-bold text-gray-900 dark:text-white">
-                                                {formatDate(brand.createdAt)}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* Locations */}
-                                    <div className="space-y-3 relative z-10">
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-xs font-black text-gray-400 tracking-widest">Locations</span>
-                                        </div>
-                                        <div className="flex flex-wrap gap-2">
-                                            {brand.establishments.slice(0, 4).map((est) => {
-                                                const Icon = getBusinessTypeIcon(est.type);
-                                                return (
-                                                <div key={est.id} className="px-3 py-2 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-lg flex items-center gap-2 hover:border-purple-500/30 transition-all">
-                                                    <Icon size={12} className="text-gray-400" />
-                                                    <span className="text-[11px] font-bold text-gray-600 dark:text-gray-400 truncate max-w-[100px]">{est.name}</span>
-                                                </div>
-                                            )})}
-                                            {brand.establishments.length > 4 && (
-                                                <div className="px-3 py-2 bg-gray-100 dark:bg-white/5 rounded-lg">
-                                                    <span className="text-[11px] font-bold text-gray-500">
-                                                        +{brand.establishments.length - 4} more
-                                                    </span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Action */}
-                                    <div className="mt-6 pt-6 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
+                                    <div className="relative">
                                         <button
-                                            onClick={() => window.open(`/brand/${brand.id}`, '_blank')}
-                                            className="flex-1 py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-purple-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-purple-500 shadow-sm hover:shadow-purple-500/20"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActiveMenu(activeMenu === brand.id ? null : brand.id);
+                                            }}
+                                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
                                         >
-                                            <span>Open Dashboard</span>
-                                            <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
+                                            <MoreVertical size={18} />
                                         </button>
+
+                                        {activeMenu === brand.id && (
+                                            <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        window.open(`/brand/${brand.establishmentLoginId}`, '_blank');
+                                                    }}
+                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                >
+                                                    <Eye size={16} />
+                                                    View Dashboard
+                                                </button>
+
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setActiveMenu(null);
+                                                        setSecurityModal({
+                                                            isOpen: true,
+                                                            targetId: brand.id,
+                                                            targetName: brand.name,
+                                                            mode: 'dissolve-brand'
+                                                        });
+                                                    }}
+                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
+                                                >
+                                                    <Trash2 size={16} />
+                                                    Delete Brand
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
-                            </motion.div>
-                        ))}
-                    </AnimatePresence>
+
+                                {/* Details */}
+                                <div className="grid grid-cols-2 gap-4 mb-6 relative z-10">
+                                    <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Hash size={14} className="text-purple-500" />
+                                            <span className="text-xs font-black text-gray-400 tracking-widest">Login ID</span>
+                                        </div>
+                                        <p className="text-sm font-mono font-bold text-gray-900 dark:text-white truncate">
+                                            {brand.establishmentLoginId}
+                                        </p>
+                                    </div>
+                                    <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Calendar size={14} className="text-blue-500" />
+                                            <span className="text-xs font-black text-gray-400 tracking-widest">Created</span>
+                                        </div>
+                                        <p className="text-sm font-bold text-gray-900 dark:text-white">
+                                            {formatDate(brand.createdAt)}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Locations */}
+                                <div className="space-y-3 relative z-10">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xs font-black text-gray-400 tracking-widest">Locations</span>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {brand.establishments.slice(0, 4).map((est) => {
+                                            const Icon = getBusinessTypeIcon(est.type);
+                                            return (
+                                                <div key={est.id} className="px-3 py-2 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-lg flex items-center gap-2 hover:border-purple-500/30 transition-all">
+                                                    <Icon size={12} className="text-gray-400" />
+                                                    <span className="text-xs font-bold text-gray-600 dark:text-gray-400 truncate max-w-[100px]">{est.name}</span>
+                                                </div>
+                                            )
+                                        })}
+                                        {brand.establishments.length > 4 && (
+                                            <div className="px-3 py-2 bg-gray-100 dark:bg-white/5 rounded-lg">
+                                                <span className="text-xs font-bold text-gray-500">
+                                                    +{brand.establishments.length - 4} more
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Action */}
+                                <div className="mt-6 pt-6 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
+                                    <button
+                                        onClick={() => window.open(`/brand/${brand.establishmentLoginId}`, '_blank')}
+                                        className="flex-1 py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-black tracking-widest uppercase hover:bg-purple-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-purple-500 shadow-sm"
+                                    >
+                                        <span>Open Dashboard</span>
+                                        <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             ) : (
                 /* List View */
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+                    {/* Mobile Card View */}
+                    <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+                        {paginatedBrands.map((brand) => (
+                            <div
+                                key={brand.id}
+                                className={`p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer ${brand.id === 'cmkek5eme0001vjjqvfm3wjwa' ? 'bg-paymint-green/[0.03]' : ''}`}
+                                onClick={() => window.open(`/brand/${brand.id}`, '_blank')}
+                            >
+                                <div className="flex items-start justify-between mb-3">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center text-black shadow-lg shadow-paymint-green/10">
+                                            <Building2 size={24} />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-paymint-green transition-colors">
+                                                {brand.name}
+                                            </h3>
+                                            <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest mt-1 inline-block">
+                                                Active
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="relative">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setActiveMenu(activeMenu === brand.id ? null : brand.id);
+                                            }}
+                                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                        >
+                                            <MoreVertical size={16} />
+                                        </button>
+                                        {activeMenu === brand.id && (
+                                            <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        window.open(`/brand/${brand.id}`, '_blank');
+                                                    }}
+                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                >
+                                                    <Eye size={14} />
+                                                    View
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSecurityModal({
+                                                            isOpen: true,
+                                                            targetId: brand.id,
+                                                            targetName: brand.name,
+                                                            mode: 'dissolve-brand'
+                                                        });
+                                                    }}
+                                                    className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors border-t border-gray-100 dark:border-white/5"
+                                                >
+                                                    <Trash2 size={14} />
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4 text-xs">
+                                    <div>
+                                        <span className="text-gray-500 block mb-0.5">Login ID</span>
+                                        <span className="font-mono font-bold text-gray-900 dark:text-white">{brand.establishmentLoginId}</span>
+                                    </div>
+                                    <div>
+                                        <span className="text-gray-500 block mb-0.5">Locations</span>
+                                        <span className="font-bold text-gray-900 dark:text-white">{brand.establishmentCount} locations</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
                     {/* Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest uppercase">
                         <div className="col-span-4">Brand</div>
                         <div className="col-span-2">Login ID</div>
                         <div className="col-span-2">Locations</div>
@@ -677,103 +751,107 @@ export function OwnerBrandsPage() {
 
                     {/* Table Body */}
                     <div className="divide-y divide-gray-100 dark:divide-white/5">
-                        <AnimatePresence mode="popLayout">
-                            {filteredBrands.map((brand, index) => (
-                                <motion.div
-                                    key={brand.id}
-                                    layout
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, x: -10 }}
-                                    transition={{ delay: index * 0.02 }}
-                                    className={`grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 transition-colors cursor-pointer group ${brand.id === 'cmkek5eme0001vjjqvfm3wjwa'
-                                        ? 'bg-paymint-green/[0.03] hover:bg-paymint-green/[0.05]'
-                                        : 'hover:bg-gray-50 dark:hover:bg-white/[0.02]'
-                                        }`}
-                                    onClick={() => window.open(`/brand/${brand.id}`, '_blank')}
-                                >
-                                    {/* Brand Info */}
-                                    <div className="col-span-4 flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center text-black shadow-lg shadow-paymint-green/10">
-                                            <Building2 size={24} />
+                        {paginatedBrands.map((brand) => (
+                            <div
+                                key={brand.id}
+                                className={`grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 transition-colors cursor-pointer group ${brand.id === 'cmkek5eme0001vjjqvfm3wjwa'
+                                    ? 'bg-paymint-green/[0.03] hover:bg-paymint-green/[0.05]'
+                                    : 'hover:bg-gray-50 dark:hover:bg-white/[0.02]'
+                                    }`}
+                                onClick={() => window.open(`/brand/${brand.establishmentLoginId}`, '_blank')}
+                            >
+                                {/* Brand Info */}
+                                <div className="col-span-4 flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center text-black shadow-lg shadow-paymint-green/10">
+                                        <Building2 size={24} />
+                                    </div>
+                                    <div>
+                                        <div className="flex items-center gap-2 mb-0.5">
+                                            <h3 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
+                                                {brand.name}
+                                            </h3>
+
                                         </div>
-                                        <div>
-                                            <div className="flex items-center gap-2 mb-0.5">
-                                                <h3 className="font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
-                                                    {brand.name}
-                                                </h3>
-
-                                            </div>
-                                            <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-xs font-black">
-                                                Active
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Pos Id */}
-                                    <div className="col-span-2 flex items-center">
-                                        <span className="font-mono text-sm font-bold text-gray-900 dark:text-white">
-                                            {brand.establishmentLoginId}
+                                        <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest">
+                                            Active
                                         </span>
                                     </div>
+                                </div>
 
-                                    {/* Locations */}
-                                    <div className="col-span-2 flex items-center">
-                                        <span className="font-bold text-gray-900 dark:text-white">
-                                            {brand.establishmentCount} locations
-                                        </span>
-                                    </div>
+                                {/* Pos Id */}
+                                <div className="col-span-2 flex items-center">
+                                    <span className="font-mono text-sm font-bold text-gray-900 dark:text-white">
+                                        {brand.establishmentLoginId}
+                                    </span>
+                                </div>
 
-                                    {/* Created */}
-                                    <div className="col-span-2 flex items-center">
-                                        <span className="text-sm text-gray-500">
-                                            {formatDate(brand.createdAt)}
-                                        </span>
-                                    </div>
+                                {/* Locations */}
+                                <div className="col-span-2 flex items-center">
+                                    <span className="font-bold text-gray-900 dark:text-white">
+                                        {brand.establishmentCount} locations
+                                    </span>
+                                </div>
 
-                                    {/* Actions */}
-                                    <div className="col-span-2 flex items-center justify-end gap-2">
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                window.open(`/brand/${brand.id}`, '_blank');
-                                            }}
-                                            className="px-4 py-2 rounded-lg bg-paymint-green text-black text-xs font-bold tracking-wide hover:bg-emerald-400 transition-all flex items-center gap-2"
-                                        >
-                                            <Eye size={14} />
-                                            View
-                                        </button>
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setSecurityModal({
-                                                    isOpen: true,
-                                                    targetId: brand.id,
-                                                    targetName: brand.name,
-                                                    mode: 'dissolve-brand'
-                                                });
-                                            }}
-                                            className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-red-500 transition-colors"
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </AnimatePresence>
+                                {/* Created */}
+                                <div className="col-span-2 flex items-center">
+                                    <span className="text-sm text-gray-500">
+                                        {formatDate(brand.createdAt)}
+                                    </span>
+                                </div>
+
+                                {/* Actions */}
+                                <div className="col-span-2 flex items-center justify-end gap-2">
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            window.open(`/brand/${brand.establishmentLoginId}`, '_blank');
+                                        }}
+                                        className="px-4 py-2 rounded-lg bg-paymint-green text-black text-xs font-black tracking-widest uppercase hover:bg-emerald-400 transition-all flex items-center gap-2"
+                                    >
+                                        <Eye size={14} />
+                                        View
+                                    </button>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setSecurityModal({
+                                                isOpen: true,
+                                                targetId: brand.id,
+                                                targetName: brand.name,
+                                                mode: 'dissolve-brand'
+                                            });
+                                        }}
+                                        className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-red-500 transition-colors"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             )}
 
-            {/* Results Summary */}
-            {filteredBrands.length > 0 && (
-                <div className="text-center">
-                    <p className="text-sm text-gray-500">
-                        Showing <span className="font-bold text-gray-900 dark:text-white">{filteredBrands.length}</span> of{' '}
-                        <span className="font-bold text-gray-900 dark:text-white">{brands.length}</span> brands
-                    </p>
-                </div>
-            )}
+            {/* Results Summary and Pagination */}
+            <div className="space-y-6">
+                {filteredBrands.length > 0 && (
+                    <div className="text-center">
+                        <p className="text-sm text-gray-500">
+                            Showing <span className="font-bold text-gray-900 dark:text-white">
+                                {Math.min((currentPage * ITEMS_PER_PAGE), filteredBrands.length)}
+                            </span> of{' '}
+                            <span className="font-bold text-gray-900 dark:text-white">{filteredBrands.length}</span> brands
+                        </p>
+                    </div>
+                )}
+
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={(page) => setCurrentPage(page)}
+                    className="max-w-md mx-auto"
+                />
+            </div>
 
             {/* Create Brand Modal */}
             <AnimatePresence>
@@ -784,239 +862,240 @@ export function OwnerBrandsPage() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={handleCloseModal}
-                            className="absolute inset-0 bg-black/80 backdrop-blur-xl"
+                            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
                         />
                         <motion.div
-                            initial={{ scale: 0.9, opacity: 0, y: 30 }}
-                            animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.9, opacity: 0, y: 30 }}
-                            className="relative w-full max-w-4xl bg-white dark:bg-[#1E293B] rounded-3xl border border-gray-200 dark:border-white/10 shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[85vh]"
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="relative w-full max-w-4xl bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-white/10"
                         >
-                            {/* Modal Sidebar */}
-                            <div className="w-full md:w-72 bg-gray-50 dark:bg-white/[0.02] p-8 border-b md:border-b-0 md:border-r border-gray-200 dark:border-white/5 flex flex-col justify-between shrink-0">
-                                <div>
-                                    <div className="w-14 h-14 rounded-xl bg-paymint-green flex items-center justify-center mb-6 shadow-lg shadow-paymint-green/20">
-                                        <Link2 size={28} className="text-black" />
-                                    </div>
-                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none mb-3">Create Brand</h3>
-                                    <p className="text-sm text-gray-500 leading-relaxed">Group multiple locations under one brand.</p>
-                                </div>
-
-                                <div className="space-y-4 mt-8 hidden md:block">
-                                    {[1, 2, 3].map((step) => (
-                                        <div key={step} className="flex items-center gap-3">
-                                            <div className={`w-8 h-8 rounded-lg border-2 flex items-center justify-center transition-all ${wizardStep >= step ? 'bg-paymint-green border-paymint-green text-black' : 'border-gray-200 dark:border-white/10 text-gray-400'}`}>
-                                                {wizardStep > step ? <UserCheck size={16} /> : <span className="text-xs font-bold">{step}</span>}
-                                            </div>
-                                            <div>
-                                                <p className={`text-xs font-bold ${wizardStep === step ? 'text-paymint-green' : 'text-gray-400'}`}>
-                                                    {step === 1 ? 'Brand Details' : step === 2 ? 'Select Locations' : 'Link Staff'}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
                             {/* Modal Content */}
-                            <div className="flex-1 overflow-y-auto p-8 custom-scrollbar flex flex-col">
-                                <form onSubmit={handleSubmit(onCreateBrand)} className="flex-1">
-                                    <AnimatePresence mode="wait">
-                                        {wizardStep === 1 && (
-                                            <motion.div
-                                                key="step1"
-                                                initial={{ opacity: 0, x: 20 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                exit={{ opacity: 0, x: -20 }}
-                                                className="space-y-6"
-                                            >
-                                                <div className="space-y-4">
-                                                    <div className="space-y-2">
-                                                        <label className="text-xs font-bold text-gray-500 tracking-wide block">Brand Name</label>
+                            <div className="flex flex-col h-[85vh] sm:h-auto max-h-[90vh]">
+                                {/* Header */}
+                                <div className="px-6 py-4 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
+                                            <Building2 size={20} />
+                                        </div>
+                                        <div>
+                                            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Create Brand</h2>
+                                            <p className="text-xs text-gray-500">Group multiple locations into one brand</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-2">
+                                            {[1, 2, 3].map((step) => (
+                                                <div
+                                                    key={step}
+                                                    className={`h-1.5 rounded-full transition-all duration-300 ${wizardStep === step ? 'w-8 bg-paymint-green' : 'w-2 bg-gray-200 dark:bg-white/10'}`}
+                                                />
+                                            ))}
+                                        </div>
+                                        <button
+                                            onClick={handleCloseModal}
+                                            className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg text-gray-400 transition-colors"
+                                        >
+                                            <ChevronLeft size={20} />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Wizard Body */}
+                                <div className="flex-1 overflow-y-auto p-6">
+                                    {wizardStep === 1 && (
+                                        <div className="space-y-6 max-w-lg mx-auto py-4">
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <label className="block text-xs font-black text-gray-400 tracking-widest uppercase mb-2">Brand Name</label>
+                                                    <div className="relative">
+                                                        <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                                                         <input
                                                             {...register('name')}
-                                                            placeholder="e.g. Alpha Group"
-                                                            className="w-full bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-xl py-4 px-5 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all placeholder-gray-300 dark:placeholder-gray-600"
+                                                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
+                                                            placeholder="e.g. Burger House Global"
                                                         />
-                                                        {errors.name && <p className="text-paymint-red text-xs font-bold">{errors.name.message as string}</p>}
                                                     </div>
-
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                        <div className="space-y-2">
-                                                            <label className="text-xs font-bold text-gray-500 tracking-wide block">Login ID</label>
-                                                            <div className="relative">
-                                                                <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                                                <input
-                                                                    {...register('establishmentLoginId')}
-                                                                    placeholder="brand-id"
-                                                                    className="w-full bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-xl py-4 pl-12 pr-5 font-mono font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all lowercase"
-                                                                />
-                                                            </div>
-                                                            {errors.establishmentLoginId && <p className="text-paymint-red text-xs font-bold">{errors.establishmentLoginId.message as string}</p>}
-                                                        </div>
-                                                        <div className="space-y-2">
-                                                            <label className="text-xs font-bold text-gray-500 tracking-wide block">Password</label>
-                                                            <div className="relative">
-                                                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                                                <input
-                                                                    type="password"
-                                                                    {...register('establishmentPassword')}
-                                                                    placeholder="••••••••"
-                                                                    className="w-full bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/10 rounded-xl py-4 pl-12 pr-5 font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
-                                                                />
-                                                            </div>
-                                                            {errors.establishmentPassword && <p className="text-paymint-red text-xs font-bold">{errors.establishmentPassword.message as string}</p>}
-                                                        </div>
-                                                    </div>
+                                                    {errors.name && <p className="text-red-500 text-xs mt-1 font-bold">{errors.name.message}</p>}
                                                 </div>
 
-                                                <div className="p-5 bg-blue-50 dark:bg-blue-500/10 rounded-xl border border-blue-100 dark:border-blue-500/20 flex gap-4">
-                                                    <Shield size={20} className="text-blue-500 shrink-0 mt-0.5" />
-                                                    <div>
-                                                        <h4 className="font-bold text-gray-900 dark:text-white text-sm mb-1">Master Login</h4>
-                                                        <p className="text-xs text-gray-600 dark:text-gray-400">Use this to log in to all locations.</p>
-                                                    </div>
-                                                </div>
-                                            </motion.div>
-                                        )}
-
-                                        {wizardStep === 2 && (
-                                            <motion.div
-                                                key="step2"
-                                                initial={{ opacity: 0, x: 20 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                exit={{ opacity: 0, x: -20 }}
-                                                className="space-y-6"
-                                            >
                                                 <div>
-                                                    <h4 className="text-xs font-bold text-gray-500 tracking-wide mb-4">Select Locations</h4>
-                                                    <p className="text-sm text-gray-500 mb-4">Choose locations to group under this brand.</p>
-                                                    <div className="grid grid-cols-1 gap-3 max-h-[280px] lg:max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
-                                                        {availableEstablishments.map((est: any) => {
-                                                            const Icon = getBusinessTypeIcon(est.type);
-                                                            return (
-                                                            <div
-                                                                key={est.id}
-                                                                onClick={() => toggleEstablishment(est.id)}
-                                                                className={`group p-5 rounded-xl border-2 transition-all cursor-pointer flex items-center justify-between ${selectedEstablishments.includes(est.id) ? 'bg-paymint-green/5 border-paymint-green/40' : 'bg-gray-50 dark:bg-white/[0.02] border-gray-100 dark:border-white/5 hover:border-gray-300'}`}
-                                                            >
-                                                                <div className="flex items-center gap-4">
-                                                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${selectedEstablishments.includes(est.id) ? 'bg-paymint-green text-black' : 'bg-white dark:bg-white/5 text-gray-400 border border-gray-200 dark:border-white/5'}`}>
-                                                                        <Icon size={20} />
-                                                                    </div>
-                                                                    <div>
-                                                                        <p className="font-bold text-gray-900 dark:text-white">{est.name}</p>
-                                                                        <p className="text-xs text-gray-500">{est.type || 'Standard'}</p>
-                                                                    </div>
-                                                                </div>
-                                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${selectedEstablishments.includes(est.id) ? 'bg-paymint-green border-paymint-green text-black' : 'border-gray-200 dark:border-white/10'}`}>
-                                                                    {selectedEstablishments.includes(est.id) && <UserCheck size={14} />}
-                                                                </div>
-                                                            </div>
-                                                        )})}
+                                                    <label className="block text-xs font-black text-gray-400 tracking-widest uppercase mb-2">Admin Login ID</label>
+                                                    <div className="relative">
+                                                        <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                                        <input
+                                                            {...register('establishmentLoginId')}
+                                                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
+                                                            placeholder="e.g. burger_house_admin"
+                                                        />
                                                     </div>
+                                                    <p className="text-xs font-bold text-gray-500 mt-1">This ID will be used to log into the brand dashboard</p>
+                                                    {errors.establishmentLoginId && <p className="text-red-500 text-xs mt-1 font-bold">{errors.establishmentLoginId.message}</p>}
                                                 </div>
-                                                {error && <p className="p-4 bg-paymint-red/10 border border-paymint-red/20 rounded-xl text-paymint-red text-xs font-bold text-center">{error}</p>}
-                                            </motion.div>
-                                        )}
 
-                                        {wizardStep === 3 && (
-                                            <motion.div
-                                                key="step3"
-                                                initial={{ opacity: 0, x: 20 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                exit={{ opacity: 0, x: -20 }}
-                                                className="space-y-6"
-                                            >
                                                 <div>
-                                                    <div className="flex items-center justify-between mb-4">
-                                                        <h4 className="text-xs font-bold text-gray-500 tracking-wide">Link Staff (Optional)</h4>
-                                                        <span className="px-3 py-1 bg-paymint-green/10 rounded-lg text-xs font-bold text-paymint-green">
-                                                            {selectedEmployees.length} selected
-                                                        </span>
+                                                    <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">Admin Password</label>
+                                                    <div className="relative">
+                                                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                                        <input
+                                                            {...register('establishmentPassword')}
+                                                            type="password"
+                                                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
+                                                            placeholder="••••••••"
+                                                        />
                                                     </div>
-                                                    <p className="text-sm text-gray-500 mb-4">Choose staff who can access all locations.</p>
-
-                                                    {loadingEmployees ? (
-                                                        <div className="py-16 flex flex-col items-center justify-center space-y-4">
-                                                            <RefreshCw className="w-10 h-10 text-paymint-green animate-spin" />
-                                                            <p className="text-sm text-gray-400">Loading staff data...</p>
-                                                        </div>
-                                                    ) : (
-                                                        <div className="space-y-4 max-h-[280px] lg:max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
-                                                            {employeesForMerging.map((group) => (
-                                                                <div key={group.establishmentId} className="bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/5 rounded-xl overflow-hidden">
-                                                                    <div className="px-5 py-4 border-b border-gray-200 dark:border-white/5 flex items-center justify-between bg-white dark:bg-white/5">
-                                                                        <div className="flex items-center gap-2">
-                                                                            <MapPin size={14} className="text-paymint-green" />
-                                                                            <span className="font-bold text-gray-900 dark:text-white text-sm">{group.establishmentName}</span>
-                                                                        </div>
-                                                                        <button
-                                                                            type="button"
-                                                                            onClick={() => {
-                                                                                const allIn = group.employees.every(e => selectedEmployees.includes(e.employeeId));
-                                                                                selectAllFromEstablishment(group, !allIn);
-                                                                            }}
-                                                                            className="text-xs font-bold text-paymint-green hover:underline"
-                                                                        >
-                                                                            Toggle All
-                                                                        </button>
-                                                                    </div>
-                                                                    <div className="p-3 grid grid-cols-1 md:grid-cols-2 gap-2">
-                                                                        {group.employees.map((emp) => (
-                                                                            <div
-                                                                                key={emp.id}
-                                                                                onClick={() => toggleEmployee(emp.employeeId)}
-                                                                                className={`p-3 rounded-xl border transition-all cursor-pointer flex items-center gap-3 ${selectedEmployees.includes(emp.employeeId) ? 'bg-paymint-green/5 border-paymint-green/30' : 'bg-white dark:bg-white/5 border-gray-100 dark:border-white/5 hover:border-gray-200'}`}
-                                                                            >
-                                                                                <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all ${selectedEmployees.includes(emp.employeeId) ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/10 text-gray-400'}`}>
-                                                                                    {selectedEmployees.includes(emp.employeeId) ? <UserCheck size={12} /> : <Users size={12} />}
-                                                                                </div>
-                                                                                <div className="flex-1 min-w-0">
-                                                                                    <p className="text-xs font-bold text-gray-900 dark:text-white truncate">{emp.firstName} {emp.lastName}</p>
-                                                                                    <span className={`px-1.5 py-0.5 rounded text-[8px] font-bold border ${getRoleBadgeColor(emp.role)}`}>{emp.role}</span>
-                                                                                </div>
-                                                                            </div>
-                                                                        ))}
-                                                                    </div>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    )}
+                                                    {errors.establishmentPassword && <p className="text-red-500 text-xs mt-1 font-bold">{errors.establishmentPassword.message}</p>}
                                                 </div>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-                                </form>
-
-                                {/* Modal Actions */}
-                                <div className="mt-8 pt-6 border-t border-gray-200 dark:border-white/10 flex items-center gap-3">
-                                    {wizardStep > 1 && (
-                                        <button
-                                            onClick={handlePrevStep}
-                                            className="px-6 py-3 rounded-xl bg-gray-50 dark:bg-white/[0.05] text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-100 dark:hover:bg-white/[0.1] transition-all flex items-center gap-2 border border-gray-200 dark:border-white/5"
-                                        >
-                                            <ChevronLeft size={16} />
-                                            Back
-                                        </button>
+                                            </div>
+                                        </div>
                                     )}
-                                    <button
-                                        onClick={wizardStep < 3 ? handleNextStep : handleSubmit(onCreateBrand)}
-                                        disabled={isCreating}
-                                        className="flex-1 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                                    >
-                                        {isCreating ? (
-                                            <>
-                                                <Loader2 size={16} className="animate-spin" />
-                                                Creating...
-                                            </>
-                                        ) : (
-                                            <>
-                                                {wizardStep === 3 ? 'Create Brand' : 'Continue'}
-                                                <ChevronRight size={16} />
-                                            </>
-                                        )}
-                                    </button>
+
+                                    {wizardStep === 2 && (
+                                        <div className="space-y-6">
+                                            <div className="flex items-center justify-between">
+                                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Select Locations to Link</h3>
+                                                <span className="text-xs font-bold text-paymint-green bg-paymint-green/10 px-3 py-1 rounded-full">
+                                                    {selectedEstablishments.length} selected
+                                                </span>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                {availableEstablishments.map((est: any) => {
+                                                    const Icon = getBusinessTypeIcon(est.type);
+                                                    const isSelected = selectedEstablishments.includes(est.id);
+                                                    return (
+                                                        <button
+                                                            key={est.id}
+                                                            type="button"
+                                                            onClick={() => toggleEstablishment(est.id)}
+                                                            className={`flex items-center gap-4 p-4 rounded-2xl border transition-all text-left ${isSelected
+                                                                ? 'border-paymint-green bg-paymint-green/5 ring-4 ring-paymint-green/10'
+                                                                : 'border-gray-200 dark:border-white/10 hover:border-paymint-green/30'
+                                                                }`}
+                                                        >
+                                                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isSelected ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                                                                <Icon size={24} />
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{est.name || est.establishmentName}</p>
+                                                                <p className="text-xs font-bold text-gray-500 truncate">{est.type || 'Location'}</p>
+                                                            </div>
+                                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-paymint-green border-paymint-green' : 'border-gray-300 dark:border-white/10'}`}>
+                                                                {isSelected && <UserCheck size={14} className="text-black" />}
+                                                            </div>
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {wizardStep === 3 && (
+                                        <div className="space-y-6">
+                                            <div className="bg-paymint-green/5 border border-paymint-green/20 rounded-2xl p-4 flex gap-3">
+                                                <Shield className="text-paymint-green shrink-0" size={20} />
+                                                <p className="text-xs font-bold text-gray-500">
+                                                    Final Step: Select which employees should have <span className="text-paymint-green font-bold text-xs">Global Access</span> to all linked locations via the brand dashboard.
+                                                </p>
+                                            </div>
+
+                                            {loadingEmployees ? (
+                                                <div className="flex flex-col items-center justify-center py-12">
+                                                    <Loader2 className="animate-spin text-paymint-green mb-4" size={32} />
+                                                    <p className="text-sm font-bold text-gray-500">Scanning local employees...</p>
+                                                </div>
+                                            ) : (
+                                                <div className="space-y-8">
+                                                    {employeesForMerging.map((group) => (
+                                                        <div key={group.establishmentId} className="space-y-4">
+                                                            <div className="flex items-center justify-between sticky top-0 bg-white dark:bg-[#0F172A] z-10 py-2">
+                                                                <h4 className="text-xs font-black text-gray-400 tracking-widest uppercase flex items-center gap-2">
+                                                                    <Store size={14} />
+                                                                    {group.establishmentName}
+                                                                </h4>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        const allSelected = group.employees.every(e => selectedEmployees.includes(e.employeeId));
+                                                                        selectAllFromEstablishment(group, !allSelected);
+                                                                    }}
+                                                                    className="text-xs font-bold text-paymint-green hover:underline"
+                                                                >
+                                                                    {group.employees.every(e => selectedEmployees.includes(e.employeeId)) ? 'Deselect All' : 'Select All'}
+                                                                </button>
+                                                            </div>
+
+                                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                                                {group.employees.map((emp) => {
+                                                                    const isSelected = selectedEmployees.includes(emp.employeeId);
+                                                                    return (
+                                                                        <button
+                                                                            key={`${group.establishmentId}-${emp.employeeId}`}
+                                                                            type="button"
+                                                                            onClick={() => toggleEmployee(emp.employeeId)}
+                                                                            className={`flex items-center gap-3 p-3 rounded-xl border transition-all text-left group ${isSelected
+                                                                                ? 'border-paymint-green bg-paymint-green/5'
+                                                                                : 'border-gray-100 dark:border-white/5 hover:border-paymint-green/30'
+                                                                                }`}
+                                                                        >
+                                                                            <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold transition-all ${isSelected ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-500'}`}>
+                                                                                {emp.firstName[0]}{emp.lastName[0]}
+                                                                            </div>
+                                                                            <div className="flex-1 min-w-0">
+                                                                                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{emp.firstName} {emp.lastName}</p>
+                                                                                <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold ${getRoleBadgeColor(emp.role)}`}>
+                                                                                    {emp.role}
+                                                                                </span>
+                                                                            </div>
+                                                                            <div className={`w-5 h-5 rounded-md border transition-all flex items-center justify-center ${isSelected ? 'bg-paymint-green border-paymint-green' : 'border-gray-200 dark:border-white/10'}`}>
+                                                                                {isSelected && <UserCheck size={12} className="text-black" />}
+                                                                            </div>
+                                                                        </button>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Footer */}
+                                <div className="p-6 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.01]">
+                                    {error && (
+                                        <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold text-center">
+                                            {error}
+                                        </div>
+                                    )}
+                                    <div className="flex items-center justify-between gap-4">
+                                        <button
+                                            type="button"
+                                            onClick={wizardStep === 1 ? handleCloseModal : handlePrevStep}
+                                            className="px-6 py-3 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                                        >
+                                            {wizardStep === 1 ? 'Cancel' : 'Back'}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={wizardStep === 3 ? handleSubmit(onCreateBrand) : handleNextStep}
+                                            disabled={isCreating}
+                                            className="flex-1 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                        >
+                                            {isCreating ? (
+                                                <>
+                                                    <Loader2 size={16} className="animate-spin" />
+                                                    Creating...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    {wizardStep === 3 ? 'Create Brand' : 'Continue'}
+                                                    <ChevronRight size={16} />
+                                                </>
+                                            )}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </motion.div>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
     Users,
@@ -71,7 +71,9 @@ type DateRangePreset = DatePeriod;
 const CHART_COLORS = ['#7CC39F', '#8B5CF6', '#F59E0B', '#EF4444', '#3B82F6', '#EC4899'];
 
 export function BrandDashboardPage() {
-    const { brandId } = useParams<{ brandId: string }>();
+    const { brandId: paramBrandId } = useParams<{ brandId: string }>();
+    const { brand } = useOutletContext<{ brand: any }>() || {};
+    const brandId = brand?.id || paramBrandId;
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -353,7 +355,7 @@ export function BrandDashboardPage() {
                                         <div className={`flex-none w-auto min-w-[145px] sm:min-w-[170px] relative z-[60]`}>
                                             <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isDateFiltered ? '!bg-emerald-50 dark:!bg-[#064E3B] border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : '!bg-gray-50 dark:!bg-[#1E293B] border-transparent'}`}>
                                                 <div className="flex items-center gap-1.5 mb-0.5">
-                                                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>DATE RANGE</span>
+                                                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Date Range</span>
                                                 </div>
                                                 <div className="flex items-center gap-2">
                                                     <CustomDatePicker
@@ -382,7 +384,7 @@ export function BrandDashboardPage() {
                                         <div className={`flex-none w-auto min-w-[155px] sm:min-w-[180px] relative z-[55]`}>
                                             <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isTimeFiltered ? '!bg-emerald-50 dark:!bg-[#064E3B] border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : '!bg-gray-50 dark:!bg-[#1E293B] border-transparent'}`}>
                                                 <div className="flex items-center gap-1.5 mb-0.5">
-                                                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>ACTIVE HOURS</span>
+                                                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Active Hours</span>
                                                 </div>
                                                 <div className="flex items-center gap-2 justify-between relative">
                                                     <CustomTimePicker
@@ -473,7 +475,7 @@ export function BrandDashboardPage() {
                                     </div>
                                 )}
                             </div>
-                            <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">{stat.label}</p>
+                            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{stat.label}</p>
                             <p className={`text-2xl font-bold text-gray-900 dark:text-white ${isTopBrand ? 'tracking-tight' : ''}`}>{stat.value}</p>
                         </div>
                     </motion.div>
@@ -504,8 +506,8 @@ export function BrandDashboardPage() {
                 {locations.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-16 text-center">
                         <Store size={48} className="text-gray-300 dark:text-gray-700 mb-4" />
-                        <p className="text-lg font-medium text-gray-900 dark:text-white">No locations found</p>
-                        <p className="text-sm text-gray-500 mt-1">Add locations to your brand to see performance data</p>
+                        <p className="text-xl font-bold text-gray-900 dark:text-white">No locations found</p>
+                        <p className="text-sm font-bold text-gray-500 mt-1">Add locations to your brand to see performance data</p>
                     </div>
                 ) : (
                     <div className="divide-y divide-gray-100 dark:divide-white/5">
@@ -530,13 +532,7 @@ export function BrandDashboardPage() {
                                         <h4 className="font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors truncate">
                                             {loc.name}
                                         </h4>
-                                        <div className={`flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold ${loc.growth >= 0
-                                            ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
-                                            : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
-                                            }`}>
-                                            {loc.growth >= 0 ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
-                                            {loc.growth >= 0 ? '+' : ''}{loc.growth}%
-                                        </div>
+
                                     </div>
                                     <div className="flex items-center gap-4 mt-1 text-xs text-gray-500">
                                         <span className="flex items-center gap-1">
@@ -590,17 +586,17 @@ export function BrandDashboardPage() {
                 >
                     <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Revenue Trend</h3>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Revenue Trend</h3>
                             <p className="text-xs text-gray-500 mt-1">Consolidated performance across all locations</p>
                         </div>
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-2">
                                 <div className="w-3 h-3 rounded-full bg-paymint-green" />
-                                <span className="text-xs font-medium text-gray-500">Revenue</span>
+                                <span className="text-xs font-black tracking-wider text-gray-500">Revenue</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <div className="w-3 h-3 rounded-full bg-blue-500" />
-                                <span className="text-xs font-medium text-gray-500">Orders</span>
+                                <span className="text-xs font-black tracking-wider text-gray-500">Orders</span>
                             </div>
                         </div>
                     </div>
@@ -672,7 +668,7 @@ export function BrandDashboardPage() {
                                     <BarChart3 size={32} className="text-gray-400 dark:text-gray-600" />
                                 </div>
                                 <div className="text-center">
-                                    <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">No Performance Data</p>
+                                    <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">No performance data</p>
                                     <p className="text-xs text-gray-500 mt-1">There are no sales or order records for this period.</p>
                                 </div>
                             </div>
@@ -689,7 +685,7 @@ export function BrandDashboardPage() {
                 >
                     <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Sales by Category</h3>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sales by Category</h3>
                             <p className="text-xs text-gray-500 mt-1">Revenue distribution</p>
                         </div>
                     </div>
@@ -728,7 +724,7 @@ export function BrandDashboardPage() {
                             <div key={i} className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: cat.color }} />
-                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{cat.name}</span>
+                                    <span className="text-sm font-bold text-gray-900 dark:text-white">{cat.name}</span>
                                 </div>
                                 <span className="text-sm font-bold text-gray-900 dark:text-white">{cat.value}%</span>
                             </div>
@@ -763,15 +759,15 @@ export function BrandDashboardPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 + i * 0.1 }}
                         onClick={action.action}
-                        className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 shadow-sm hover:shadow-md transition-all text-left group"
+                        className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 shadow-sm transition-all text-left group"
                     >
                         <div className={`w-12 h-12 rounded-xl ${action.bg} ${action.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                             <action.icon size={24} />
                         </div>
-                        <h4 className="font-bold text-gray-900 dark:text-white mb-1 group-hover:text-paymint-green transition-colors">
+                        <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-paymint-green transition-colors">
                             {action.title}
                         </h4>
-                        <p className="text-xs text-gray-500">{action.description}</p>
+                        <p className="text-sm font-bold text-gray-500">{action.description}</p>
                         <div className="flex items-center gap-1 mt-4 text-xs font-bold text-paymint-green opacity-0 group-hover:opacity-100 transition-opacity">
                             <span>Go to {action.title.split(' ')[0]}</span>
                             <ArrowRight size={14} />

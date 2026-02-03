@@ -83,7 +83,7 @@ export const QAPage = () => {
     });
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-[#0F172A] text-gray-900 dark:text-white font-inter">
+        <div className="min-h-screen bg-gray-50 dark:bg-[#0F172A] text-gray-900 dark:text-white font-sans">
             <Navbar />
 
             {/* Header Section */}
@@ -92,7 +92,7 @@ export const QAPage = () => {
                     <motion.h1 
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-4xl md:text-5xl font-black mb-6 tracking-tight"
+                        className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight"
                     >
                         How can we help you?
                     </motion.h1>
@@ -109,7 +109,7 @@ export const QAPage = () => {
                             placeholder="Search for questions..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-4 bg-gray-100 dark:bg-black/20 border border-transparent focus:bg-white dark:focus:bg-[#0F172A] border-gray-200 dark:border-white/10 rounded-2xl text-lg focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all shadow-sm"
+                            className="w-full pl-12 pr-4 py-4 bg-gray-100 dark:bg-black/20 border border-transparent focus:bg-white dark:focus:bg-[#0F172A] border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all shadow-sm"
                         />
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                     </motion.div>
@@ -121,7 +121,7 @@ export const QAPage = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     {/* Sidebar Categories */}
                     <div className="lg:col-span-1 space-y-2">
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 px-2">Categories</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest mb-4 px-2">Categories</p>
                         {categories.map((cat) => (
                             <button
                                 key={cat.id}
@@ -166,7 +166,7 @@ export const QAPage = () => {
                                                             {item.category}
                                                         </span>
                                                     </div>
-                                                    <h3 className={`text-lg font-bold transition-colors ${expandedId === item.id ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>
+                                                    <h3 className={`text-base font-bold transition-colors ${expandedId === item.id ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>
                                                         {item.question}
                                                     </h3>
                                                 </div>
@@ -189,7 +189,7 @@ export const QAPage = () => {
                                                     >
                                                         <div className="px-6 pb-6 pt-0">
                                                             <div className="h-px w-full bg-gray-100 dark:bg-white/5 mb-4" />
-                                                            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                                                            <p className="text-sm font-bold text-gray-600 dark:text-gray-300 leading-relaxed">
                                                                 {item.answer}
                                                             </p>
                                                         </div>
@@ -209,8 +209,8 @@ export const QAPage = () => {
                                     <div className="w-16 h-16 bg-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
                                         <Search className="w-8 h-8 text-gray-400" />
                                     </div>
-                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No results found</h3>
-                                    <p className="text-gray-500 dark:text-gray-400">
+                                    <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2">No results found</h3>
+                                    <p className="text-xs font-bold text-gray-500">
                                         Try adjusting your search or category filter.
                                     </p>
                                 </motion.div>

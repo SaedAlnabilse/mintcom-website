@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { useNavigate, useLocation, useOutletContext } from 'react-router-dom';
+import { useNavigate, useLocation, useOutletContext, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import {
@@ -20,6 +20,7 @@ import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { CategoryFormModal, ICON_MAP } from '../../components/forms/CategoryFormModal';
+import { SearchInput, Pagination } from '../../components/ui';
 
 interface Category {
   id: string;
@@ -42,6 +43,7 @@ interface Product {
 }
 
 export function CategoriesPage() {
+  const { locationSlug } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const { sidebarOpen } = useOutletContext<{ sidebarOpen: boolean }>();
@@ -53,6 +55,9 @@ export function CategoriesPage() {
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deleteBlockedCategory, setDeleteBlockedCategory] = useState<Category | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 12;
 
   const [confirmConfig, setConfirmConfig] = useState<{
     isOpen: boolean;
@@ -100,6 +105,24 @@ export function CategoriesPage() {
     setEditingCategory(null);
     setShowModal(true);
   };
+
+  const filteredCategories = useMemo(() => {
+    return categories.filter(cat =>
+      cat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      cat.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [categories, searchQuery]);
+
+  const totalPages = Math.ceil(filteredCategories.length / ITEMS_PER_PAGE);
+
+  const paginatedCategories = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredCategories.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredCategories, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   const openEditModal = (e: React.MouseEvent, category: Category) => {
     e.stopPropagation();
@@ -172,7 +195,7 @@ export function CategoriesPage() {
   const ViewingIcon = viewingCategory ? (ICON_MAP[viewingCategory.icon || 'tag'] || Tag) : Tag;
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-10 font-inter">
+    <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-10 font-sans">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:gap-6">
         <div>
@@ -182,7 +205,7 @@ export function CategoriesPage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Categories</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm sm:text-base">
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
             Organize your menu items
           </p>
         </div>
@@ -209,7 +232,7 @@ export function CategoriesPage() {
 
           <motion.div
             key={i}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
             className="flex-shrink-0 w-[160px] sm:w-auto snap-start group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
@@ -231,73 +254,96 @@ export function CategoriesPage() {
         ))}
       </div>
 
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="relative flex-1 sm:max-w-md">
+          <SearchInput
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onClear={() => setSearchQuery('')}
+            placeholder="Search categories..."
+          />
+        </div>
+      </div>
+
       {isLoading ? (
         <div className="py-24 flex flex-col items-center">
           <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
           <p className="text-xs font-black text-gray-400">Loading Categories...</p>
         </div>
-      ) : categories.length === 0 ? (
+      ) : filteredCategories.length === 0 ? (
         <div className="py-24 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
           <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
             <Layers className="w-10 h-10 text-gray-300" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Categories</h3>
-          <p className="text-gray-500 max-w-xs text-sm">Create a category to organize your items.</p>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            {searchQuery ? 'No results found' : 'No categories'}
+          </h3>
+          <p className="text-sm font-bold text-gray-500 max-w-xs">
+            {searchQuery ? `We couldn't find any categories matching "${searchQuery}"` : 'Create a category to organize your items.'}
+          </p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
-          {categories.map((category, idx) => {
-            const IconComponent = ICON_MAP[category.icon || 'tag'] || Tag;
-            return (
-              <motion.div
-                key={category.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: idx * 0.05 }}
-                onClick={() => setViewingCategory(category)}
-                className="group relative bg-white dark:bg-[#1E293B] p-4 sm:p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl transition-all cursor-pointer overflow-hidden duration-300"
-              >
-                <div
-                  className="absolute top-0 left-0 w-1 h-full bg-paymint-green opacity-0 group-hover:opacity-100 transition-all duration-300"
-                />
-                <div className="absolute -right-6 -top-6 w-24 h-24 bg-paymint-green/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
-                <div className="flex justify-between items-start mb-6 relative z-10">
+        <div className="space-y-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
+            {paginatedCategories.map((category, idx) => {
+              const IconComponent = ICON_MAP[category.icon || 'tag'] || Tag;
+              return (
+                <motion.div
+                  key={category.id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: idx * 0.05 }}
+                  onClick={() => setViewingCategory(category)}
+                  className="group relative bg-white dark:bg-[#1E293B] p-4 sm:p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl transition-all cursor-pointer overflow-hidden duration-300"
+                >
                   <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-50 dark:bg-white/5 text-gray-500 group-hover:bg-paymint-green group-hover:text-black transition-all duration-300 shadow-sm group-hover:shadow-paymint-green/20"
-                  >
-                    <IconComponent size={24} />
-                  </div>
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
-                    <button
-                      onClick={(e) => openEditModal(e, category)}
-                      className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-green transition-colors"
-                    >
-                      <Edit2 size={16} />
-                    </button>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
-                      className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-red transition-colors"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </div>
+                    className="absolute top-0 left-0 w-1 h-full bg-paymint-green opacity-0 group-hover:opacity-100 transition-all duration-300"
+                  />
+                  <div className="absolute -right-6 -top-6 w-24 h-24 bg-paymint-green/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors leading-tight truncate relative z-10">
-                  {category.name}
-                </h3>
-
-                <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between relative z-10">
-                  <div className="flex items-center gap-2">
-                    <Package size={14} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
-                    <span className="text-xs font-bold text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">{category._count?.items || 0} Items</span>
+                  <div className="flex justify-between items-start mb-6 relative z-10">
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-50 dark:bg-white/5 text-gray-500 group-hover:bg-paymint-green group-hover:text-black transition-all duration-300 shadow-sm"
+                    >
+                      <IconComponent size={24} />
+                    </div>
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+                      <button
+                        onClick={(e) => openEditModal(e, category)}
+                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-green transition-colors"
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
+                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-red transition-colors"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
-                  <ChevronRight size={16} className="text-gray-300 group-hover:text-paymint-green group-hover:translate-x-1 transition-all" />
-                </div>
-              </motion.div>
-            );
-          })}
+
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors leading-tight truncate relative z-10">
+                    {category.name}
+                  </h3>
+
+                  <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between relative z-10">
+                    <div className="flex items-center gap-2">
+                      <Package size={14} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
+                      <span className="text-xs font-bold text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">{category._count?.items || 0} Items</span>
+                    </div>
+                    <ChevronRight size={16} className="text-gray-300 group-hover:text-paymint-green group-hover:translate-x-1 transition-all" />
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
         </div>
       )}
 
@@ -333,13 +379,13 @@ export function CategoriesPage() {
                       <ViewingIcon size={24} />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{viewingCategory.name}</h2>
+                      <h2 className="text-xl font-bold text-gray-900 dark:text-white">{viewingCategory.name}</h2>
                       <p className="text-xs font-black text-paymint-green tracking-widest">{categoryProducts.length} Items</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => navigate('/dashboard/products', { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
+                      onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
                       className="p-2 rounded-xl hover:bg-paymint-green/10 text-paymint-green hover:scale-105 transition-all"
                       title="Add Product"
                     >
@@ -360,10 +406,10 @@ export function CategoriesPage() {
                       <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 shadow-sm">
                         <Package size={40} strokeWidth={1.5} className="text-gray-300" />
                       </div>
-                      <p className="font-bold text-gray-900 dark:text-white tracking-tight text-lg mb-2">No items in this category</p>
-                      <p className="text-sm text-gray-500 font-medium max-w-xs mx-auto mb-8">Start building your menu by adding products to this category.</p>
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No items in this category</h3>
+                      <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto mb-8">Start building your menu by adding products to this category.</p>
                       <button
-                        onClick={() => navigate('/dashboard/products', { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
+                        onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
                         className="flex items-center gap-2 px-6 py-3.5 bg-paymint-green text-black font-black text-xs rounded-xl hover:scale-[1.02] transition-all shadow-lg active:scale-95 tracking-widest"
                       >
                         <Plus size={18} strokeWidth={3} />
@@ -375,7 +421,7 @@ export function CategoriesPage() {
                       {categoryProducts.map((p) => (
                         <div
                           key={p.id}
-                          onClick={() => navigate('/dashboard/products', { state: { productId: p.id, categoryId: viewingCategory.id } })}
+                          onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { productId: p.id, categoryId: viewingCategory.id } })}
                           className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group hover:border-paymint-green/30 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4"
                         >
                           <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 overflow-hidden shrink-0">
@@ -398,7 +444,7 @@ export function CategoriesPage() {
 
                       {/* Add New Product Card */}
                       <button
-                        onClick={() => navigate('/dashboard/products', { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
+                        onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
                         className="p-4 bg-gray-50 dark:bg-white/[0.02] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-xl group hover:border-paymint-green hover:bg-paymint-green/5 transition-all cursor-pointer active:scale-[0.98] flex items-center justify-center gap-3 h-full min-h-[80px]"
                       >
                         <div className="w-10 h-10 rounded-full bg-white dark:bg-white/5 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
@@ -489,7 +535,7 @@ export function CategoriesPage() {
                     {categoryProducts.map((p) => (
                       <div
                         key={p.id}
-                        onClick={() => navigate('/dashboard/products', { state: { productId: p.id, categoryId: deleteBlockedCategory.id } })}
+                        onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { productId: p.id, categoryId: deleteBlockedCategory.id } })}
                         className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group hover:border-paymint-green/30 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4"
                       >
                         <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 overflow-hidden shrink-0">

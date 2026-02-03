@@ -1,24 +1,23 @@
 import { useState, useEffect, useMemo } from 'react';
 import {
   Plus,
-  Search,
   Package,
   Edit2,
   Trash2,
   X,
-  ChevronLeft,
-  ChevronRight,
   TrendingUp,
   AlertTriangle,
   RefreshCw
 } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation , useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import api from '../../config/api';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { CustomSelect } from '../../components/CustomSelect';
 import { QuickInfo } from '../../components/QuickInfo';
+import { SearchInput, Pagination } from '../../components/ui';
+
 
 interface RawMaterial {
   id: string;
@@ -39,6 +38,7 @@ interface SubRecipe {
 }
 
 export function MaterialsPage() {
+  const { locationSlug } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState<'materials' | 'prepared'>('materials');
@@ -211,7 +211,7 @@ export function MaterialsPage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Ingredients</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm sm:text-base">
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
             Manage stock and costs
           </p>
         </div>
@@ -224,7 +224,7 @@ export function MaterialsPage() {
                 setMaterialForm({ name: '', unit: 'Kg', quantity: 0, costPerUnit: 0, lowStockThreshold: 0 });
                 setShowMaterialModal(true);
               } else {
-                navigate('/dashboard/recipes');
+                navigate(`/dashboard/${locationSlug}/recipes`);
               }
             }}
             className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-xs sm:text-sm hover:bg-emerald-400 transition-all shadow-sm"
@@ -237,19 +237,20 @@ export function MaterialsPage() {
       </div>
 
       {/* Control Panel */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-3 sm:p-4 shadow-sm flex flex-col gap-3 sm:gap-4">
-        <div className="flex-1 relative group w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
+
+
+
+      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm flex flex-col md:flex-row gap-4 items-center">
+        <div className="flex-1 w-full">
+          <SearchInput
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+            onClear={() => { setSearchQuery(''); setPage(1); }}
             placeholder="Search items..."
-            className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+            className="w-full"
           />
         </div>
-
-        <div className="flex p-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl self-start sm:self-auto">
+        <div className="flex p-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl">
           <button
             onClick={() => { setActiveTab('materials'); setPage(1); }}
             className={`px-3 sm:px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'materials' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
@@ -277,8 +278,8 @@ export function MaterialsPage() {
             <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
               <Package size={32} className="text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Ingredients</h3>
-            <p className="text-gray-500 max-w-xs text-sm">Add ingredients to track stock.</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No ingredients</h3>
+            <p className="text-sm font-bold text-gray-500 max-w-xs">Add ingredients to track stock.</p>
           </div>
         ) : (
           <div className="space-y-8">
@@ -289,7 +290,7 @@ export function MaterialsPage() {
                   {paginatedItems.map((m: any) => {
                     const isLow = m.lowStockThreshold && m.quantity <= m.lowStockThreshold;
                     return (
-                      <div key={m.id} className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02]">
+                      <div key={m.id} className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
                         <div className="flex items-start justify-between gap-3 mb-3">
                           <div className="flex items-center gap-3 min-w-0">
                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm border flex-shrink-0 ${isLow ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'}`}>
@@ -402,7 +403,7 @@ export function MaterialsPage() {
                         <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm">
                           <Package size={20} />
                         </div>
-                        <button onClick={() => navigate('/dashboard/recipes')} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green opacity-0 group-hover:opacity-100 transition-all">
+                        <button onClick={() => navigate(`/dashboard/${locationSlug}/recipes`)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green opacity-0 group-hover:opacity-100 transition-all">
                           <Edit2 size={16} />
                         </button>
                       </div>
@@ -426,24 +427,7 @@ export function MaterialsPage() {
               </div>
             )}
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 pt-4">
-                <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="p-2.5 rounded-xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-500 hover:text-paymint-green disabled:opacity-30 transition-all">
-                  <ChevronLeft size={18} />
-                </button>
-                <div className="flex items-center gap-1">
-                  {[...Array(totalPages)].map((_, i) => (
-                    <button key={i} onClick={() => setPage(i + 1)} className={`w-9 h-9 rounded-xl text-xs font-bold transition-all ${page === i + 1 ? 'bg-paymint-green text-black' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>
-                      {i + 1}
-                    </button>
-                  ))}
-                </div>
-                <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="p-2.5 rounded-xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-500 hover:text-paymint-green disabled:opacity-30 transition-all">
-                  <ChevronRight size={18} />
-                </button>
-              </div>
-            )}
+            <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} className="mt-6" />
           </div>
         )}
       </AnimatePresence>
@@ -459,7 +443,7 @@ export function MaterialsPage() {
               </div>
 
               <div className="p-4 sm:p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">{editingMaterial ? 'Edit Ingredient' : 'Add Ingredient'}</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingMaterial ? 'Edit Ingredient' : 'Add Ingredient'}</h2>
                 <button onClick={() => setShowMaterialModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
                   <X size={20} />
                 </button>
@@ -564,7 +548,7 @@ export function MaterialsPage() {
                 <div className="w-16 h-16 bg-paymint-green/10 text-paymint-green rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <Package size={32} />
                 </div>
-                <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">{restockMaterial.name}</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{restockMaterial.name}</h2>
                 <p className="text-gray-500 font-bold mt-1 text-xs tracking-widest">Available: {restockMaterial.quantity.toFixed(2)} {restockMaterial.unit}</p>
               </div>
               <div className="p-8 space-y-6">

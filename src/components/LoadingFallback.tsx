@@ -1,3 +1,4 @@
+import { AppStrings } from '../constants/AppStrings';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { startGlobalLoading, stopGlobalLoading } from '../config/api';
@@ -14,7 +15,7 @@ interface LoadingFallbackProps {
  * Provides a smooth, branded loading experience during code-splitting chunk loads.
  */
 export function LoadingFallback({
-  message = 'Loading...',
+  message = AppStrings.COMMON.LOADING,
   fullScreen = true
 }: LoadingFallbackProps) {
   useEffect(() => {
@@ -39,7 +40,7 @@ export function LoadingFallback({
       </div>
 
       {/* Loading text */}
-      <p className="text-xs font-bold text-gray-400 dark:text-gray-500 tracking-widest">
+      <p className="text-sm font-bold text-gray-500 tracking-widest">
         {message}
       </p>
     </motion.div>
@@ -63,6 +64,6 @@ export function LoadingFallback({
 /**
  * Minimal loading fallback for smaller sections (modals, panels, etc.)
  */
-export function InlineLoader({ message = 'Loading...' }: { message?: string }) {
+export function InlineLoader({ message = AppStrings.COMMON.LOADING }: { message?: string }) {
   return <LoadingFallback message={message} fullScreen={false} />;
 }

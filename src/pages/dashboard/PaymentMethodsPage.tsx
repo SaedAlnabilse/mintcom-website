@@ -1,3 +1,4 @@
+import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -294,7 +295,7 @@ export function PaymentMethodsPage() {
             </div>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Payment Methods</h1>
-          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Manage how you accept payments</p>
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">Manage how you accept payments</p>
         </div>
       </div>
 
@@ -305,8 +306,8 @@ export function PaymentMethodsPage() {
             <CreditCard size={24} />
           </div>
           <div className="flex flex-col gap-1">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Card Brands</h2>
-            <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">Manage accepted card logos.</p>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Card Brands</h2>
+            <p className="text-sm font-bold text-gray-500 dark:text-gray-400">Manage accepted card logos.</p>
           </div>
         </div>
 
@@ -371,7 +372,7 @@ export function PaymentMethodsPage() {
             <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
               <Wallet size={20} />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
               Payment Types
             </h2>
           </div>
@@ -449,7 +450,7 @@ export function PaymentMethodsPage() {
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md overflow-hidden shadow-2xl">
               <div className="p-8 border-b border-gray-50 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                   {editingMethod ? 'Edit Payment' : 'Add Payment'}
                 </h2>
                 <button
@@ -504,7 +505,7 @@ export function PaymentMethodsPage() {
 
                 <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2">
                   {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
-                  {editingMethod ? 'Save' : 'Add'}
+                  {editingMethod ? AppStrings.COMMON.SAVE : AppStrings.COMMON.ADD}
                 </button>
               </form>
             </motion.div>
@@ -577,7 +578,7 @@ export function PaymentMethodsPage() {
                   className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl hover:scale-[1.02] transition-all tracking-widest text-xs flex items-center justify-center gap-2"
                 >
                   {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
-                  {editingCard ? 'Save' : 'Add'}
+                  {editingCard ? AppStrings.COMMON.SAVE : AppStrings.COMMON.ADD}
                 </button>
               </div>
             </motion.div>

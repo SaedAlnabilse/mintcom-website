@@ -47,8 +47,8 @@ export function VerifyEmailPage() {
             <div className="w-20 h-20 bg-paymint-green/10 rounded-full flex items-center justify-center mx-auto animate-pulse">
               <Loader2 className="w-10 h-10 text-paymint-green animate-spin" />
             </div>
-            <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Verifying Email</h2>
-            <p className="text-gray-600 dark:text-gray-400 font-medium">Verifying your account...</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Verifying Email</h2>
+            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">Verifying your account...</p>
           </div>
         )}
 
@@ -57,13 +57,13 @@ export function VerifyEmailPage() {
             <div className="w-20 h-20 bg-paymint-green/10 rounded-full flex items-center justify-center mx-auto">
               <CheckCircle className="w-10 h-10 text-paymint-green" />
             </div>
-            <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Email Verified!</h2>
-            <p className="text-gray-600 dark:text-gray-400 font-medium">{message}</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Email Verified!</h2>
+            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{message}</p>
             <Link 
               to="/login"
-              className="inline-flex items-center justify-center w-full bg-paymint-green text-black font-black py-4 px-6 rounded-2xl hover:bg-paymint-green/90 transition-all active:scale-95 shadow-lg shadow-paymint-green/20"
+              className="inline-flex items-center justify-center w-full bg-paymint-green text-black text-xs font-black tracking-widest py-4 px-6 rounded-2xl hover:bg-paymint-green/90 transition-all active:scale-95 shadow-lg shadow-paymint-green/20"
             >
-              Continue to Login
+              CONTINUE TO LOGIN
             </Link>
           </div>
         )}
@@ -73,20 +73,20 @@ export function VerifyEmailPage() {
             <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto">
               <XCircle className="w-10 h-10 text-accent" />
             </div>
-            <h2 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Link Expired</h2>
-            <p className="text-gray-600 dark:text-gray-400 font-medium">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Link Expired</h2>
+            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
               Link invalid or expired.
             </p>
             <div className="flex flex-col gap-3">
               <Link
                 to="/login"
-                className="inline-flex items-center justify-center w-full bg-gray-900 dark:bg-white text-white dark:text-black font-black py-4 px-6 rounded-2xl hover:scale-105 transition-all active:scale-95 shadow-lg"
+                className="inline-flex items-center justify-center w-full bg-gray-900 dark:bg-white text-white dark:text-black text-xs font-black tracking-widest py-4 px-6 rounded-2xl hover:scale-105 transition-all active:scale-95 shadow-lg"
               >
-                Go to Login
+                GO TO LOGIN
               </Link>
               <Link
                 to="/"
-                className="text-gray-500 hover:text-gray-900 dark:hover:text-white font-bold text-sm tracking-widest transition-colors"
+                className="text-sm font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
               >
                 Back to Home
               </Link>

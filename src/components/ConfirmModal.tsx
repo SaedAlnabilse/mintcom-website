@@ -1,3 +1,4 @@
+import { AppStrings } from '../constants/AppStrings';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, CheckCircle2, AlertCircle, X, Info } from 'lucide-react';
@@ -21,8 +22,8 @@ export function ConfirmModal({
   onConfirm,
   title,
   message,
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
+  confirmText = AppStrings.COMMON.CONFIRM,
+  cancelText = AppStrings.COMMON.CANCEL,
   type = 'success',
   showCancel = true
 }: ConfirmModalProps) {
@@ -130,10 +131,10 @@ export function ConfirmModal({
 
                 {/* Content */}
                 <div className="space-y-2 sm:space-y-3">
-                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                  <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
                     {title}
                   </h3>
-                  <p className="text-gray-500 dark:text-gray-400 font-medium leading-relaxed max-w-sm mx-auto text-sm">
+                  <p className="text-sm font-bold text-gray-500 dark:text-gray-400 leading-relaxed max-w-sm mx-auto">
                     {message}
                   </p>
                 </div>

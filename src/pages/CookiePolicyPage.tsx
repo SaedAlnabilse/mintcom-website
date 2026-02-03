@@ -11,7 +11,7 @@ export function CookiePolicyPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0B1120] font-inter text-gray-900 dark:text-white pb-20">
+    <div className="min-h-screen bg-white dark:bg-[#0B1120] font-sans text-gray-900 dark:text-white pb-20">
       {/* Header / Hero */}
       <div className="bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-6">
@@ -22,15 +22,15 @@ export function CookiePolicyPage() {
           >
             <div className="flex items-center gap-3 text-paymint-green mb-4">
               <Shield size={24} />
-              <span className="text-sm font-bold tracking-widest uppercase">Legal Center</span>
+              <span className="text-xs font-black tracking-widest uppercase">Legal Center</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
               Cookie Statement
             </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl leading-relaxed">
+            <p className="text-sm font-bold text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed">
               We believe in being transparent about how we use your data. This policy explains how we use cookies and similar technologies to recognize you when you visit our website.
             </p>
-            <div className="flex items-center gap-4 text-sm font-medium text-gray-500 pt-4">
+            <div className="flex items-center gap-4 text-xs font-bold text-gray-500 pt-4">
               <span className="flex items-center gap-2">
                 <Clock size={16} />
                 Last Updated: February 2, 2026
@@ -56,7 +56,7 @@ export function CookiePolicyPage() {
               <a
                 key={link.id}
                 href={`#${link.id}`}
-                className="block py-2 px-4 rounded-lg text-sm font-medium text-gray-500 hover:text-paymint-green hover:bg-paymint-green/5 transition-all"
+                className="block py-2 px-4 rounded-lg text-xs font-bold text-gray-500 hover:text-paymint-green hover:bg-paymint-green/5 transition-all"
               >
                 {link.label}
               </a>
@@ -64,7 +64,7 @@ export function CookiePolicyPage() {
             <div className="pt-8">
               <button
                 onClick={() => navigate('/')}
-                className="w-full py-3 px-4 bg-gray-900 dark:bg-white text-white dark:text-black rounded-xl text-sm font-bold shadow-lg hover:opacity-90 transition-all"
+                className="w-full py-3 px-4 bg-gray-900 dark:bg-white text-white dark:text-black rounded-xl text-xs font-black tracking-widest shadow-lg hover:opacity-90 transition-all"
               >
                 Back to Home
               </button>
@@ -101,9 +101,9 @@ export function CookiePolicyPage() {
                   <div className="p-2 bg-green-100 dark:bg-green-900/20 text-green-600 rounded-lg">
                     <Lock size={20} />
                   </div>
-                  <h3 className="text-lg font-bold m-0">Essential Cookies</h3>
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white m-0">Essential Cookies</h3>
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="text-xs font-bold text-gray-500 leading-relaxed">
                   These cookies are strictly necessary to provide you with services available through our Websites and to use some of its features, such as access to secure areas.
                 </p>
               </div>
@@ -113,9 +113,9 @@ export function CookiePolicyPage() {
                   <div className="p-2 bg-blue-100 dark:bg-blue-900/20 text-blue-600 rounded-lg">
                     <BarChart3 size={20} />
                   </div>
-                  <h3 className="text-lg font-bold m-0">Analytics & Customization</h3>
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white m-0">Analytics & Customization</h3>
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="text-xs font-bold text-gray-500 leading-relaxed">
                   These cookies collect information that is used either in aggregate form to help us understand how our Websites are being used or how effective our marketing campaigns are, or to help us customize our Websites for you.
                 </p>
               </div>
@@ -125,9 +125,9 @@ export function CookiePolicyPage() {
                   <div className="p-2 bg-purple-100 dark:bg-purple-900/20 text-purple-600 rounded-lg">
                     <Globe size={20} />
                   </div>
-                  <h3 className="text-lg font-bold m-0">Advertising (Targeting)</h3>
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white m-0">Advertising (Targeting)</h3>
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="text-xs font-bold text-gray-500 leading-relaxed">
                   These cookies are used to make advertising messages more relevant to you. They perform functions like preventing the same ad from continuously reappearing, ensuring that ads are properly displayed for advertisers, and in some cases selecting advertisements that are based on your interests.
                 </p>
               </div>
@@ -151,17 +151,17 @@ export function CookiePolicyPage() {
               You have the right to decide whether to accept or reject cookies. You can exercise your cookie rights by setting your preferences in the Cookie Consent Manager. The Cookie Consent Manager allows you to select which categories of cookies you accept or reject. Essential cookies cannot be rejected as they are strictly necessary to provide you with services.
             </p>
             <div className="bg-paymint-green/10 border border-paymint-green/20 rounded-xl p-6 my-6">
-              <h4 className="text-paymint-green font-bold text-lg mb-2 not-prose">Preference Center</h4>
-              <p className="text-gray-700 dark:text-gray-300 text-sm mb-4">
+              <h4 className="text-paymint-green font-bold text-base mb-2 not-prose">Preference Center</h4>
+              <p className="text-gray-700 dark:text-gray-300 text-xs font-bold mb-4">
                 You can change your settings at any time by clicking the button below.
               </p>
               <button 
                 onClick={() => {
                    window.dispatchEvent(new Event('open-cookie-preferences'));
                 }}
-                className="px-6 py-2.5 bg-paymint-green text-black font-bold rounded-lg text-sm hover:bg-emerald-400 transition-colors shadow-sm"
+                className="px-6 py-2.5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-lg hover:bg-emerald-400 transition-colors shadow-sm"
               >
-                Open Cookie Settings
+                OPEN COOKIE SETTINGS
               </button>
             </div>
             <p>

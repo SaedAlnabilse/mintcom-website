@@ -1,3 +1,4 @@
+import { AppStrings } from '../constants/AppStrings';
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronDown, Check, X, Search } from 'lucide-react';
@@ -149,8 +150,8 @@ export function MultiSelect({
 
                     <div className="flex-1 overflow-y-auto custom-scrollbar">
                         {filteredOptions.length === 0 ? (
-                            <div className="px-5 py-8 text-xs text-gray-400 font-bold italic text-center">
-                                {searchQuery ? 'No results found' : 'No options available'}
+                            <div className="px-5 py-8 text-sm font-bold text-gray-500 italic text-center">
+                                {searchQuery ? AppStrings.COMMON.NO_RESULTS : 'No options available'}
                             </div>
                         ) : (
                             filteredOptions.map((opt) => {
@@ -178,7 +179,7 @@ export function MultiSelect({
     return (
         <div className={`relative ${className}`} ref={containerRef}>
             {label && (
-                <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-2 px-1">
+                <label className="block text-xs font-black text-gray-400 tracking-widest mb-2 px-1">
                     {label}
                 </label>
             )}

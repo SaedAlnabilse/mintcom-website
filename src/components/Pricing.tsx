@@ -174,7 +174,7 @@ export const Pricing = () => {
 
               <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
                 <div className="text-center mb-8">
-                  <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{selectedPlan.name}</h2>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">{selectedPlan.name}</h2>
                   <div className="flex items-baseline justify-center gap-1 mb-4">
                     <span className="text-4xl font-bold text-paymint-green dark:text-paymint-green">{selectedPlan.price}</span>
                     <span className="text-gray-500 dark:text-gray-400">{selectedPlan.period}</span>
@@ -196,7 +196,7 @@ export const Pricing = () => {
 
                 <button
                   onClick={() => handlePlanAction(selectedPlan)}
-                  className="w-full bg-paymint-green text-black py-4 rounded-xl font-bold hover:shadow-lg hover:shadow-paymint-green/20 transition-all"
+                  className="w-full bg-paymint-green text-black py-4 rounded-xl font-bold transition-all"
                 >
                   {selectedPlan.cta}
                 </button>
