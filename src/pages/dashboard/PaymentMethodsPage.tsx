@@ -14,8 +14,7 @@ import {
   Globe,
   DollarSign,
   Wallet,
-  Star,
-  RefreshCw
+  Star
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api, { API_BASE_URL } from '../../config/api';
@@ -35,6 +34,7 @@ interface PaymentMethod {
   id: string;
   name: string;
   imageUrl?: string;
+  imageKey?: string;
   isActive: boolean;
   isDefault?: boolean;
 }
@@ -98,7 +98,7 @@ export function PaymentMethodsPage() {
       setIsLoading(true);
       const response = await api.get('/app-settings/payment-methods');
       setPaymentMethods(Array.isArray(response.data) ? response.data : []);
-    } catch (err: any) {
+    } catch {
       toast.error('Failed to load payment methods');
       setPaymentMethods([]);
     } finally {
@@ -110,7 +110,7 @@ export function PaymentMethodsPage() {
     try {
       const response = await api.get('/card-types');
       setCardTypes(Array.isArray(response.data) ? response.data : []);
-    } catch (err) {
+    } catch {
       console.error('Failed to load card types');
     }
   };
@@ -159,7 +159,7 @@ export function PaymentMethodsPage() {
       setIsSubmitting(true);
 
       let imageUrl = imagePreview ? (editingMethod?.imageUrl || null) : null;
-      let imageKey = imagePreview ? ((editingMethod as any)?.imageKey || null) : null;
+      let imageKey = imagePreview ? (editingMethod?.imageKey || null) : null;
 
       if (selectedImage) {
         const uploadRes = await uploadImage(selectedImage, '/payment-methods/upload-image');
@@ -186,7 +186,7 @@ export function PaymentMethodsPage() {
 
       setShowModal(false);
       fetchPaymentMethods();
-    } catch (err: any) {
+    } catch {
       toast.error('Failed to save payment method');
     } finally {
       setIsSubmitting(false);
@@ -204,7 +204,7 @@ export function PaymentMethodsPage() {
           await api.delete(`/app-settings/payment-methods/${methodId}`);
           toast.success('Payment method removed');
           fetchPaymentMethods();
-        } catch (err: any) {
+        } catch {
           toast.error('Failed to remove method');
         }
       }
@@ -243,7 +243,7 @@ export function PaymentMethodsPage() {
 
       setShowCardModal(false);
       fetchCardTypes();
-    } catch (err: any) {
+    } catch {
       toast.error('Failed to save brand');
     } finally {
       setIsSubmitting(false);
@@ -261,7 +261,7 @@ export function PaymentMethodsPage() {
           await api.delete(`/card-types/${cardId}`);
           toast.success('Card type removed');
           fetchCardTypes();
-        } catch (err: any) {
+        } catch {
           toast.error('Failed to delete');
         }
       }
@@ -280,7 +280,7 @@ export function PaymentMethodsPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-10 pb-16">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -504,7 +504,6 @@ export function PaymentMethodsPage() {
 
 
                 <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2">
-                  {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
                   {editingMethod ? AppStrings.COMMON.SAVE : AppStrings.COMMON.ADD}
                 </button>
               </form>
@@ -577,7 +576,6 @@ export function PaymentMethodsPage() {
                   disabled={isSubmitting || !newCardName.trim()}
                   className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl hover:scale-[1.02] transition-all tracking-widest text-xs flex items-center justify-center gap-2"
                 >
-                  {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
                   {editingCard ? AppStrings.COMMON.SAVE : AppStrings.COMMON.ADD}
                 </button>
               </div>

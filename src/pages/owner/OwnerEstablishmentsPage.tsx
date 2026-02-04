@@ -1,7 +1,7 @@
 import { AppStrings } from '../../constants/AppStrings';
 import { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+
 import {
     Plus,
     Store,
@@ -80,7 +80,7 @@ export function OwnerEstablishmentsPage() {
 
     // Reset to first page when filtering
     useEffect(() => {
-        setCurrentPage(1);
+        setTimeout(() => setCurrentPage(1), 0);
     }, [searchQuery, statusFilter, typeFilter]);
 
     const paginatedEstablishments = useMemo(() => {
@@ -93,7 +93,10 @@ export function OwnerEstablishmentsPage() {
     const handleEstablishmentClick = (establishment: any) => {
         setCurrentEstablishment(establishment);
         localStorage.setItem('selectedEstablishmentId', establishment.id);
-        window.open(`/dashboard/${establishment.establishmentLoginId || establishment.id}`, '_blank');
+        const slug = establishment.establishmentLoginId && establishment.establishmentLoginId.trim().length > 0 
+            ? establishment.establishmentLoginId 
+            : establishment.id;
+        window.open(`/dashboard/${slug}`, '_blank');
     };
 
     const handleAddEstablishment = () => {
@@ -128,7 +131,7 @@ export function OwnerEstablishmentsPage() {
     return (
         <div className="space-y-8 pb-20">
             {/* Header */}
-            <div className="flex flex-col gap-4 sm:gap-6">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -161,9 +164,7 @@ export function OwnerEstablishmentsPage() {
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
+                <div
                     className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
                 >
                     <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -176,12 +177,9 @@ export function OwnerEstablishmentsPage() {
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">{establishments.length}</p>
                         </div>
                     </div>
-                </motion.div>
+                </div>
 
-                <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
+                <div
                     className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
                 >
                     <div className="absolute top-0 right-0 w-24 h-24 bg-paymint-green/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -196,12 +194,9 @@ export function OwnerEstablishmentsPage() {
                             </p>
                         </div>
                     </div>
-                </motion.div>
+                </div>
 
-                <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
+                <div
                     className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
                 >
                     <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -216,7 +211,7 @@ export function OwnerEstablishmentsPage() {
                             </p>
                         </div>
                     </div>
-                </motion.div>
+                </div>
             </div>
 
             {/* Filters Bar */}
@@ -242,14 +237,14 @@ export function OwnerEstablishmentsPage() {
                         <div className="w-44">
                             <CustomSelect
                                 value={statusFilter}
-                                onChange={(val) => setStatusFilter(val)}
+                                onChange={(val) => setStatusFilter(String(val))}
                                 options={STATUS_OPTIONS}
                             />
                         </div>
                         <div className="w-44">
                             <CustomSelect
                                 value={typeFilter}
-                                onChange={(val) => setTypeFilter(val)}
+                                onChange={(val) => setTypeFilter(String(val))}
                                 options={TYPE_OPTIONS}
                             />
                         </div>
@@ -338,14 +333,10 @@ export function OwnerEstablishmentsPage() {
                                                 <MoreVertical size={18} />
                                             </button>
 
-                                            <AnimatePresence>
-                                                {activeMenu === est.id && (
-                                                    <motion.div
-                                                        initial={{ opacity: 0, scale: 0.95, y: -5 }}
-                                                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                        exit={{ opacity: 0, scale: 0.95, y: -5 }}
-                                                        className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
-                                                    >
+                                            {activeMenu === est.id && (
+                                                <div
+                                                    className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                                >
                                                         <button
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
@@ -363,9 +354,8 @@ export function OwnerEstablishmentsPage() {
                                                             <Settings size={16} />
                                                             Settings
                                                         </button>
-                                                    </motion.div>
-                                                )}
-                                            </AnimatePresence>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 
@@ -452,14 +442,10 @@ export function OwnerEstablishmentsPage() {
                                             >
                                                 <MoreVertical size={16} />
                                             </button>
-                                            <AnimatePresence>
-                                                {activeMenu === est.id && (
-                                                    <motion.div
-                                                        initial={{ opacity: 0, scale: 0.95, y: -5 }}
-                                                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                        exit={{ opacity: 0, scale: 0.95, y: -5 }}
-                                                        className="absolute right-0 top-full mt-2 w-40 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
-                                                    >
+                                            {activeMenu === est.id && (
+                                                <div
+                                                    className="absolute right-0 top-full mt-2 w-40 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                                >
                                                         <button
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
@@ -469,9 +455,8 @@ export function OwnerEstablishmentsPage() {
                                                         >
                                                             <Eye size={14} /> View
                                                         </button>
-                                                    </motion.div>
-                                                )}
-                                            </AnimatePresence>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between">

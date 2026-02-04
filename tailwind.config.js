@@ -163,6 +163,16 @@ export default {
         'touch': '44px',  // Minimum touch target size
         'touch-lg': '48px',
       },
+      animation: {
+        'marquee': 'marquee 20s linear infinite',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+      keyframes: {
+        marquee: {
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(-100%)' },
+        },
+      },
     },
   },
   plugins: [],

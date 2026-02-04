@@ -1,6 +1,6 @@
 import { AppStrings } from '../../constants/AppStrings';
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useMemo } from 'react';
+
 import {
   Plus,
   Users,
@@ -13,9 +13,9 @@ import {
   MoreVertical,
   Download,
   Key,
-  RefreshCw,
   UserCheck,
-  Star
+  Star,
+  ArrowUpDown
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -24,6 +24,7 @@ import { SecurityVerificationModal } from '../../components/SecurityVerification
 import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { exportToCSV } from '../../utils/export';
 import { SearchInput, SelectInput, Pagination } from '../../components/ui';
+
 interface Staff {
   id: string;
   name: string;
@@ -83,6 +84,7 @@ export function StaffPage() {
   const [itemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [sortConfig, setSortConfig] = useState<{ key: keyof Staff | 'status'; direction: 'asc' | 'desc' } | null>(null);
 
   // Close dropdown when clicking outside or scrolling
   useEffect(() => {
@@ -117,20 +119,68 @@ export function StaffPage() {
       setIsLoading(true);
       const response = await api.get('/api/users');
       setStaff(response.data || []);
-    } catch (err: any) {
+    } catch {
       toast.error('Failed to load team members');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const filteredStaff = staff.filter(s => {
-    const matchesRole = filterRole === 'ALL' || (filterRole === 'USER' ? s.role !== 'ADMIN' : s.role === filterRole);
-    const matchesSearch = s.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (s.name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
-      (s.email?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
-    return matchesRole && matchesSearch;
-  });
+  const handleSort = (key: keyof Staff | 'status') => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const filteredStaff = useMemo(() => {
+    const result = staff.filter(s => {
+      const matchesRole = filterRole === 'ALL' || (filterRole === 'USER' ? s.role !== 'ADMIN' : s.role === filterRole);
+      const matchesSearch = s.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (s.name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
+        (s.email?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
+      return matchesRole && matchesSearch;
+    });
+
+    // Sorting
+    if (sortConfig) {
+      result.sort((a, b) => {
+        let aValue: string | number = '';
+        let bValue: string | number = '';
+
+        if (sortConfig.key === 'status') {
+          aValue = `${a.isActive ? '1' : '0'}${a.isClockedIn ? '1' : '0'}`;
+          bValue = `${b.isActive ? '1' : '0'}${b.isClockedIn ? '1' : '0'}`;
+        } else {
+          const valA = a[sortConfig.key as keyof Staff];
+          const valB = b[sortConfig.key as keyof Staff];
+          aValue = (typeof valA === 'string' || typeof valA === 'number') ? valA : String(valA || '');
+          bValue = (typeof valB === 'string' || typeof valB === 'number') ? valB : String(valB || '');
+        }
+
+        // Handle string comparison
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return sortConfig.direction === 'asc'
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        }
+
+        // Handle number comparison
+        const numA = Number(aValue);
+        const numB = Number(bValue);
+        if (numA < numB) {
+          return sortConfig.direction === 'asc' ? -1 : 1;
+        }
+        if (numA > numB) {
+          return sortConfig.direction === 'asc' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+
+    return result;
+  }, [staff, filterRole, searchQuery, sortConfig]);
 
   // Pagination Logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -144,7 +194,7 @@ export function StaffPage() {
     try {
       const response = await api.get('/app-settings/discounts');
       setDiscounts(response.data || []);
-    } catch (err) {
+    } catch {
       console.error('Failed to load discounts');
     }
   };
@@ -176,7 +226,7 @@ export function StaffPage() {
     });
   };
 
-  const onEmployeeSubmit = async (payload: any) => {
+  const onEmployeeSubmit = async (payload: Record<string, any>) => {
     try {
       setIsSubmitting(true);
       if (editingStaff) {
@@ -188,7 +238,7 @@ export function StaffPage() {
       }
       setShowModal(false);
       fetchStaff();
-    } catch (err: any) {
+    } catch {
       toast.error('Error saving team member');
     } finally {
       setIsSubmitting(false);
@@ -217,7 +267,7 @@ export function StaffPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-24 sm:pb-10">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
             <span className="px-2.5 sm:px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -236,13 +286,6 @@ export function StaffPage() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <button
-            onClick={fetchStaff}
-            className="p-2.5 sm:p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm touch-target"
-            title="Refresh Team Data"
-          >
-            <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
-          </button>
           <button
             onClick={handleExport}
             className="hidden sm:flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm"
@@ -268,11 +311,8 @@ export function StaffPage() {
           { label: 'Admins', info: 'Users with full system access.', value: staff.filter(s => s.role === 'ADMIN').length, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
           { label: 'Users', info: 'Standard users with restricted access.', value: staff.filter(s => s.role !== 'ADMIN').length, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
         ].map((stat, i) => (
-          <motion.div
+          <div
             key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
             className="group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
           >
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
@@ -288,11 +328,9 @@ export function StaffPage() {
                 <p className="hidden sm:block text-xs font-medium text-gray-500 dark:text-gray-400">{stat.info}</p>
               </div>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
-
-// ... (imports)
 
       {/* Filters & Search */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
@@ -342,17 +380,12 @@ export function StaffPage() {
           <>
             {/* Mobile Card View */}
             <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
-              <AnimatePresence mode="popLayout">
-                {currentItems.map((member, idx) => (
-                  <motion.div
-                    key={member.id}
-                    data-member-id={member.id}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ delay: idx * 0.03 }}
-                    className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
-                  >
+              {currentItems.map((member) => (
+                <div
+                  key={member.id}
+                  data-member-id={member.id}
+                  className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                >
                     {/* Card Header */}
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
@@ -427,9 +460,8 @@ export function StaffPage() {
                         Delete
                       </button>
                     </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+                </div>
+              ))}
             </div>
 
             {/* Desktop Table View */}
@@ -437,26 +469,44 @@ export function StaffPage() {
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-white/[0.02]">
                   <tr className="border-b border-gray-200 dark:border-white/5">
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Name</th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Role</th>
+                    <th 
+                      className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                      onClick={() => handleSort('username')}
+                    >
+                      <div className="flex items-center gap-1">
+                        Name
+                        {sortConfig?.key === 'username' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                      </div>
+                    </th>
+                    <th 
+                      className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                      onClick={() => handleSort('role')}
+                    >
+                      <div className="flex items-center gap-1">
+                        Role
+                        {sortConfig?.key === 'role' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                      </div>
+                    </th>
                     <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Contact</th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Status</th>
+                    <th 
+                      className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                      onClick={() => handleSort('status')}
+                    >
+                      <div className="flex items-center gap-1">
+                        Status
+                        {sortConfig?.key === 'status' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                      </div>
+                    </th>
                     <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                  <AnimatePresence mode="popLayout">
-                    {currentItems.map((member, idx) => (
-                      <motion.tr
-                        key={member.id}
-                        data-member-id={member.id}
-                        layout
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 10, scale: 0.95 }}
-                        transition={{ delay: idx * 0.03 }}
-                        className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
-                      >
+                  {currentItems.map((member) => (
+                    <tr
+                      key={member.id}
+                      data-member-id={member.id}
+                      className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                    >
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-4">
                             <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-sm group-hover:scale-110 transition-transform duration-300">
@@ -533,14 +583,8 @@ export function StaffPage() {
                                 <MoreVertical size={16} />
                               </button>
 
-                              <AnimatePresence>
                                 {activeDropdown === member.id && (
-                                  <motion.div
-                                    initial={{ opacity: 0, scale: 0.95, y: 5 }}
-                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.95, y: 5 }}
-                                    className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl shadow-2xl border border-gray-100 dark:border-white/10 z-50 overflow-hidden py-1.5"
-                                  >
+                                  <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl shadow-2xl border border-gray-100 dark:border-white/10 z-50 overflow-hidden py-1.5">
                                     <button
                                       onClick={() => { setActiveDropdown(null); toast.success('Reset email sent'); }}
                                       className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black tracking-widest text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
@@ -555,15 +599,13 @@ export function StaffPage() {
                                       <Trash2 size={14} />
                                       <span>Delete</span>
                                     </button>
-                                  </motion.div>
+                                  </div>
                                 )}
-                              </AnimatePresence>
                             </div>
                           </div>
                         </td>
-                      </motion.tr>
-                    ))}
-                  </AnimatePresence>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

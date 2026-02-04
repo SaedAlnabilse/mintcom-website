@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useMemo } from 'react';
+
 import {
   Search,
   Plus,
@@ -7,9 +7,9 @@ import {
   Edit2,
   Trash2,
   XCircle,
-  RefreshCw,
   UserCheck,
   Globe,
+  ArrowUpDown,
   Grid3X3,
   List
 } from 'lucide-react';
@@ -33,6 +33,7 @@ interface CustomRole {
 }
 
 type ViewMode = 'grid' | 'list';
+type SortKey = 'name' | 'baseRole' | 'createdAt';
 
 export function OwnerRolesPage() {
   const [roles, setRoles] = useState<CustomRole[]>([]);
@@ -44,6 +45,7 @@ export function OwnerRolesPage() {
   const [itemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'asc' | 'desc' } | null>(null);
   const [confirmConfig, setConfirmConfig] = useState<{
     isOpen: boolean;
     roleId: string;
@@ -63,17 +65,53 @@ export function OwnerRolesPage() {
       setIsLoading(true);
       const response = await api.get('/api/custom-roles/owner/global');
       setRoles(response.data || []);
-    } catch (err: any) {
+    } catch {
       toast.error('Failed to load global roles');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const filteredRoles = roles.filter(role =>
-    role.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    role.baseRole.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleSort = (key: SortKey) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const filteredRoles = useMemo(() => {
+    const result = roles.filter(role =>
+      role.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      role.baseRole.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    // Sorting
+    if (sortConfig) {
+      result.sort((a, b) => {
+        const aValue: any = a[sortConfig.key];
+        const bValue: any = b[sortConfig.key];
+
+        // Handle string comparison
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return sortConfig.direction === 'asc'
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        }
+
+        // Handle number comparison
+        if (aValue < bValue) {
+          return sortConfig.direction === 'asc' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === 'asc' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+
+    return result;
+  }, [roles, searchQuery, sortConfig]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -103,7 +141,7 @@ export function OwnerRolesPage() {
       await api.delete(`/api/custom-roles/${confirmConfig.roleId}`);
       toast.success('Role deleted');
       fetchRoles();
-    } catch (err) {
+    } catch {
       toast.error('Failed to delete role');
     } finally {
       setConfirmConfig({ ...confirmConfig, isOpen: false });
@@ -123,7 +161,7 @@ export function OwnerRolesPage() {
       }
       setShowModal(false);
       fetchRoles();
-    } catch (err) {
+    } catch {
       toast.error('Failed to save role');
     } finally {
       setIsSubmitting(false);
@@ -158,13 +196,6 @@ export function OwnerRolesPage() {
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            onClick={fetchRoles}
-            className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm"
-            title="Refresh"
-          >
-            <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
-          </button>
           <button
             onClick={handleCreateNew}
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20"
@@ -233,17 +264,11 @@ export function OwnerRolesPage() {
         ) : viewMode === 'grid' ? (
           /* Grid View */
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
-            <AnimatePresence mode="popLayout">
-              {currentItems.map((role, idx) => (
-                <motion.div
-                  key={role.id}
-                  layout
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ delay: idx * 0.03 }}
-                  className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 p-6 transition-all shadow-sm hover:shadow-lg overflow-hidden"
-                >
+            {currentItems.map((role) => (
+              <div
+                key={role.id}
+                className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 p-6 transition-all shadow-sm hover:shadow-lg overflow-hidden"
+              >
                   <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                   
                   {/* Header */}
@@ -308,26 +333,19 @@ export function OwnerRolesPage() {
                       Created {new Date(role.createdAt).toLocaleDateString()}
                     </span>
                   </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
+              </div>
+            ))}
           </div>
         ) : (
           /* List View */
           <>
             {/* Mobile Card View */}
             <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
-              <AnimatePresence mode="popLayout">
-                {currentItems.map((role, idx) => (
-                  <motion.div
-                    key={role.id}
-                    layout
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ delay: idx * 0.03 }}
-                    className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
-                  >
+              {currentItems.map((role) => (
+                <div
+                  key={role.id}
+                  className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center">
@@ -372,9 +390,8 @@ export function OwnerRolesPage() {
                         </span>
                       </div>
                     </div>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
+                </div>
+              ))}
             </div>
 
             {/* Desktop Table View */}
@@ -382,25 +399,43 @@ export function OwnerRolesPage() {
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-white/[0.02]">
                   <tr className="border-b border-gray-200 dark:border-white/5">
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Name</th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Type</th>
+                    <th 
+                      className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                      onClick={() => handleSort('name')}
+                    >
+                      <div className="flex items-center gap-1">
+                        Name
+                        {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                      </div>
+                    </th>
+                    <th 
+                      className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                      onClick={() => handleSort('baseRole')}
+                    >
+                      <div className="flex items-center gap-1">
+                        Type
+                        {sortConfig?.key === 'baseRole' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                      </div>
+                    </th>
                     <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Access</th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Date</th>
+                    <th 
+                      className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                      onClick={() => handleSort('createdAt')}
+                    >
+                      <div className="flex items-center gap-1">
+                        Date
+                        {sortConfig?.key === 'createdAt' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                      </div>
+                    </th>
                     <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                  <AnimatePresence mode="popLayout">
-                    {currentItems.map((role, idx) => (
-                      <motion.tr
-                        key={role.id}
-                        layout
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 10, scale: 0.95 }}
-                        transition={{ delay: idx * 0.03 }}
-                        className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
-                      >
+                  {currentItems.map((role) => (
+                    <tr
+                      key={role.id}
+                      className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                    >
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-4">
                             <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
@@ -452,9 +487,8 @@ export function OwnerRolesPage() {
                             </button>
                           </div>
                         </td>
-                      </motion.tr>
-                    ))}
-                  </AnimatePresence>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

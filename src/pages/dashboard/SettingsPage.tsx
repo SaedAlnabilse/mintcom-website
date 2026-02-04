@@ -3,14 +3,21 @@ import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBlocker } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, Clock, RefreshCw, Plus, DollarSign } from 'lucide-react';
+import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, Clock, Plus, DollarSign } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { EstablishmentDeletionWizard, PendingDeletionBanner } from '../../components/EstablishmentDeletionWizard';
 import { CustomSelect } from '../../components/CustomSelect';
+import { useCurrency } from '../../context/CurrencyContext';
 
-
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
 
 interface AppSettings {
   id?: string;
@@ -67,6 +74,7 @@ interface EstablishmentInfo {
 }
 
 export function SettingsPage() {
+  const { refreshCurrency } = useCurrency();
   const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
   const [selectedDays, setSelectedDays] = useState<string[]>(['monday']);
   const [, setSettings] = useState<AppSettings | null>(null);
@@ -193,7 +201,7 @@ export function SettingsPage() {
 
       // Initialize schedule if missing from backend
       if (!data.operatingSchedule || Object.keys(data.operatingSchedule).length === 0) {
-        const defaultSchedule: any = {};
+        const defaultSchedule: Record<string, { isOpen: boolean; open: string; close: string }> = {};
         ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].forEach(day => {
           defaultSchedule[day] = {
             isOpen: true,
@@ -204,42 +212,31 @@ export function SettingsPage() {
         data.operatingSchedule = defaultSchedule;
       }
 
-      const displayData = {
-        ...data,
-        restaurantName: data.restaurantName || '',
-        restaurantDescription: data.restaurantDescription || '',
-        restaurantAddress: data.restaurantAddress || '',
-        phone: data.phone || '',
-        email: data.email || '',
-        taxIdNumber: data.taxIdNumber || '',
-        receiptHeader: data.receiptHeader || '',
-        farewellMessage: data.farewellMessage || '',
-        openingTime: data.openingTime || '09:00',
-        closingTime: data.closingTime || '22:00',
-        taxRate: data.taxRate !== undefined ? parseFloat((data.taxRate * 100).toFixed(5)) : 0,
-        showLogoOnReceipt: data.showLogoOnReceipt ?? false,
-        showRestaurantName: data.showRestaurantName ?? false,
-        showDescription: data.showDescription ?? false,
-        showAddress: data.showAddress ?? false,
-        showTaxId: data.showTaxId ?? false,
-        showFarewellMessage: data.showFarewellMessage ?? false,
-      };
-
-      setSettings(data);
-      setInitialSettings(displayData);
-      reset(displayData);
+      // Set logo previews
       if (data.logo) {
         setPreviewImage(data.logo);
       } else {
         setPreviewImage(null);
       }
+
       if (data.receiptLogo) {
         setReceiptLogoPreview(data.receiptLogo);
       } else {
         setReceiptLogoPreview(null);
       }
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to load settings');
+
+      // Convert taxRate from decimal (0.16) to percentage (16) for display
+      const formData = {
+        ...data,
+        taxRate: data.taxRate ? Math.round(data.taxRate * 100 * 100) / 100 : 0
+      };
+
+      // Populate form with fetched data
+      reset(formData);
+      setInitialSettings(formData);
+      setSettings(data);
+    } catch (err) {
+      toast.error((err as ApiError).response?.data?.message || 'Failed to load settings');
     } finally {
       if (showLoading) setIsLoading(false);
     }
@@ -344,11 +341,13 @@ export function SettingsPage() {
       setSelectedReceiptLogo(null);
 
       // Refresh data without showing loading spinner to keep form mounted for proper reset
+      // Also refresh currency context to sync with POS
       await Promise.all([
-        fetchSettings(false)
+        fetchSettings(false),
+        refreshCurrency()
       ]);
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to save settings');
+    } catch (err) {
+      toast.error((err as ApiError).response?.data?.message || 'Failed to save settings');
     } finally {
       setIsSaving(false);
     }
@@ -368,7 +367,7 @@ export function SettingsPage() {
   };
 
   const to24Hour = (hour: string, minute: string, period: string) => {
-    let hr = parseInt(hour, 10);
+    const hr = parseInt(hour, 10);
     const hNum = isNaN(hr) ? 9 : hr;
     let finalHr = hNum;
     if (period === 'Pm' && hNum < 12) finalHr += 12;
@@ -376,7 +375,14 @@ export function SettingsPage() {
     return `${finalHr.toString().padStart(2, '0')}:${minute}`;
   };
 
-  const TimeSelector = ({ label, subLabel, value, onChange, colorClass = 'paymint-green', compact = false }: any) => {
+  const TimeSelector = ({ label, subLabel, value, onChange, colorClass = 'paymint-green', compact = false }: {
+    label: string;
+    subLabel: string;
+    value: string;
+    onChange: (val: string) => void;
+    colorClass?: string;
+    compact?: boolean;
+  }) => {
     const { hour, minute, period } = to12Hour(value);
     const [isOpen, setIsOpen] = useState(false);
     const [pendingTime, setPendingTime] = useState<{ h: string; m: string; p: string }>({ h: hour, m: minute, p: period });
@@ -600,8 +606,8 @@ export function SettingsPage() {
               onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
             });
             fetchSettings(false);
-          } catch (err: any) {
-            toast.error(err.response?.data?.message || 'Failed to update tax rate');
+          } catch (err) {
+            toast.error((err as ApiError).response?.data?.message || 'Failed to update tax rate');
           }
         }
       );
@@ -720,7 +726,7 @@ export function SettingsPage() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-10 font-sans">
-      <div className="flex flex-col gap-4 sm:gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -761,7 +767,7 @@ export function SettingsPage() {
           disabled={isSaving || !hasUnsavedChanges}
           className="flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 disabled:scale-100 disabled:shadow-none"
         >
-          {isSaving ? <RefreshCw size={18} className="animate-spin" /> : <Save size={18} />}
+          {isSaving ? <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" /> : <Save size={18} />}
           <span>Save Changes</span>
         </button>
       </div>
@@ -1029,7 +1035,7 @@ export function SettingsPage() {
                     <input type="hidden" {...register('currency')} />
                     <CustomSelect
                       value={watch('currency')}
-                      onChange={(val) => { setValue('currency', val, { shouldDirty: true }); }}
+                      onChange={(val) => { setValue('currency', String(val), { shouldDirty: true }); }}
                       options={[
                         { label: 'JOD - Jordanian Dinar', value: 'JOD' },
                         { label: 'USD - US Dollar', value: 'USD' },

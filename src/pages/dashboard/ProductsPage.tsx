@@ -11,7 +11,7 @@ import {
     Trash2,
     Edit2,
     Package,
-    Infinity,
+    Infinity as InfinityIcon,
 
     ArrowUpDown,
     AlertCircle,
@@ -24,6 +24,7 @@ import { ProductFormModal } from '../../components/forms/ProductFormModal';
 import { LoadingFallback } from '../../components/LoadingFallback';
 import { QuickInfo } from '../../components/QuickInfo';
 import { SearchInput, Pagination } from '../../components/ui';
+import { useCurrency } from '../../context/CurrencyContext';
 
 
 interface Category {
@@ -51,6 +52,7 @@ interface Product {
 }
 
 export function ProductsPage() {
+    const { formatAmount } = useCurrency();
     const location = useLocation();
     const navigate = useNavigate();
     const [products, setProducts] = useState<Product[]>([]);
@@ -100,28 +102,6 @@ export function ProductsPage() {
         onConfirm: () => { },
     });
 
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    // Reset pagination when filters change
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [searchQuery, selectedCategoryId, sortConfig, stockFilter]);
-
-    // Handle navigation state opening modal automatically
-    useEffect(() => {
-        const state = location.state as { openCreateModal?: boolean; categoryId?: string; productId?: string };
-        if (state?.openCreateModal) {
-            setEditingProduct(null);
-            if (state.categoryId) setSelectedCategoryId(state.categoryId);
-            setShowModal(true);
-            // Clear state to prevent reopening on refresh or re-render
-            navigate(location.pathname, { replace: true, state: {} });
-        }
-    }, [location]);
-
-
     const fetchData = async () => {
         try {
             setIsLoading(true);
@@ -149,6 +129,10 @@ export function ProductsPage() {
             setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        fetchData();
+    }, [location.state, navigate, location.pathname]);
 
     const handleCreateNew = () => {
         setEditingProduct(null);
@@ -281,13 +265,18 @@ export function ProductsPage() {
         // Sorting
         if (sortConfig) {
             result.sort((a, b) => {
-                let aValue: any = a[sortConfig.key as keyof Product];
-                let bValue: any = b[sortConfig.key as keyof Product];
+                let aValue: string | number = '';
+                let bValue: string | number = '';
 
                 // Handle special case for category sorting
                 if (sortConfig.key === 'category') {
                     aValue = categories.find(c => c.id === a.categoryId)?.name || '';
                     bValue = categories.find(c => c.id === b.categoryId)?.name || '';
+                } else {
+                    const valA = a[sortConfig.key as keyof Product];
+                    const valB = b[sortConfig.key as keyof Product];
+                    aValue = (typeof valA === 'string' || typeof valA === 'number') ? valA : String(valA || '');
+                    bValue = (typeof valB === 'string' || typeof valB === 'number') ? valB : String(valB || '');
                 }
 
                 // Handle string comparison
@@ -298,10 +287,12 @@ export function ProductsPage() {
                 }
 
                 // Handle number comparison
-                if (aValue < bValue) {
+                const numA = Number(aValue);
+                const numB = Number(bValue);
+                if (numA < numB) {
                     return sortConfig.direction === 'asc' ? -1 : 1;
                 }
-                if (aValue > bValue) {
+                if (numA > numB) {
                     return sortConfig.direction === 'asc' ? 1 : -1;
                 }
                 return 0;
@@ -356,7 +347,7 @@ export function ProductsPage() {
     return (
         <div className="max-w-7xl mx-auto space-y-8 pb-10 font-sans">
             {/* Header */}
-            <div className="flex flex-col gap-4 sm:gap-6">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -614,18 +605,12 @@ export function ProductsPage() {
                 <>
                     {viewMode === 'grid' ? (
                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                            <AnimatePresence mode="popLayout">
-                                {paginatedProducts.map((p, idx) => (
-                                    <motion.div
-                                        key={p.id || `prod-${idx}`}
-                                        layout
-                                        initial={{ opacity: 0, scale: 0.95 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.95 }}
-                                        transition={{ delay: idx * 0.05 }}
-                                        className="group bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl transition-all overflow-hidden flex flex-col cursor-pointer"
-                                        onClick={() => handleEdit(p)}
-                                    >
+                            {paginatedProducts.map((p) => (
+                                <div
+                                    key={p.id || `prod-${p.name}`}
+                                    className="group bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl transition-all overflow-hidden flex flex-col cursor-pointer"
+                                    onClick={() => handleEdit(p)}
+                                >
                                         <div className="aspect-[4/3] bg-gray-50 dark:bg-black/20 relative overflow-hidden">
                                             {p.image ? (
                                                 <img src={p.image.startsWith('http') ? p.image : `${REMOTE_IMAGE_BASE_URL}${p.image.startsWith('/') ? '' : '/'}${p.image}`} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
@@ -651,7 +636,7 @@ export function ProductsPage() {
                                                 <div>
                                                     <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">Price</p>
                                                     <p className="text-sm font-black text-paymint-green">
-                                                        {new Intl.NumberFormat('en-JO', { style: 'currency', currency: 'JOD', minimumFractionDigits: 3 }).format(p.price)}
+                                                        {formatAmount(p.price)}
                                                     </p>
                                                 </div>
                                                 <div className="text-right">
@@ -663,16 +648,15 @@ export function ProductsPage() {
                                                         </div>
                                                     ) : (
                                                         <div className="text-xs font-bold text-gray-400 dark:text-gray-500 flex items-center justify-end gap-1">
-                                                            <Infinity size={12} strokeWidth={3} />
+                                                            <InfinityIcon size={12} strokeWidth={3} />
                                                             <span>Unlimited</span>
                                                         </div>
                                                     )}
                                                 </div>
                                             </div>
                                         </div>
-                                    </motion.div>
-                                ))}
-                            </AnimatePresence>
+                                </div>
+                            ))}
                         </div>
                     ) : (
                         <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
@@ -747,14 +731,14 @@ export function ProductsPage() {
                                                         </span>
                                                     ) : (
                                                         <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200/50 dark:border-white/5">
-                                                            <Infinity size={14} className="text-gray-400" strokeWidth={2.5} />
+                                                            <InfinityIcon size={14} className="text-gray-400" strokeWidth={2.5} />
                                                             <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Unlimited</span>
                                                         </div>
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
                                                     <span className="font-bold text-gray-900 dark:text-white">
-                                                        {new Intl.NumberFormat('en-JO', { style: 'currency', currency: 'JOD', minimumFractionDigits: 3 }).format(p.price)}
+                                                        {formatAmount(p.price)}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-center">

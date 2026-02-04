@@ -4,6 +4,7 @@ import { EstablishmentUrlResolver } from './components/EstablishmentUrlResolver'
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { CurrencyProvider } from './context/CurrencyContext';
 import { LoadingFallback } from './components/LoadingFallback';
 import { CookieConsent } from './components/CookieConsent';
 import { FeedbackWidget } from './components/FeedbackWidget';
@@ -539,9 +540,10 @@ function App() {
   return (
     <ThemeProvider defaultTheme="system" storageKey="paymint-ui-theme">
       <AuthProvider>
-        <div id="global-blocking-overlay" />
-        <RouterProvider router={router} />
-        <Toaster
+        <CurrencyProvider>
+          <div id="global-blocking-overlay" />
+          <RouterProvider router={router} />
+          <Toaster
           position="top-right"
           toastOptions={{
             style: {
@@ -563,6 +565,7 @@ function App() {
             },
           }}
         />
+        </CurrencyProvider>
       </AuthProvider>
     </ThemeProvider>
   );

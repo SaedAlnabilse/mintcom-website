@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
+import { useCurrency } from '../../context/CurrencyContext';
 import { useNavigate, useLocation, useOutletContext, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -43,6 +44,7 @@ interface Product {
 }
 
 export function CategoriesPage() {
+  const { formatAmount } = useCurrency();
   const { locationSlug } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -94,7 +96,7 @@ export function CategoriesPage() {
       ]);
       setCategories(catsRes.data || []);
       setProducts(prodsRes.data || []);
-    } catch (err: any) {
+    } catch {
       toast.error('Failed to load data');
     } finally {
       setIsLoading(false);
@@ -143,7 +145,7 @@ export function CategoriesPage() {
       }
       setShowModal(false);
       fetchData();
-    } catch (err: any) {
+    } catch {
       toast.error('Failed to save category');
     } finally {
       setIsSubmitting(false);
@@ -169,7 +171,7 @@ export function CategoriesPage() {
           await api.delete(`/api/categories/${categoryId}`);
           toast.success('Category deleted');
           fetchData();
-        } catch (err: any) {
+        } catch {
           toast.error('Failed to delete category');
         }
       }
@@ -197,7 +199,7 @@ export function CategoriesPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-10 font-sans">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -436,7 +438,7 @@ export function CategoriesPage() {
                           <div className="min-w-0">
                             <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
                             <p className="text-xs font-black text-paymint-green mt-0.5">
-                              {new Intl.NumberFormat('en-JO', { style: 'currency', currency: 'JOD', minimumFractionDigits: 3 }).format(p.price)}
+                              {formatAmount(p.price)}
                             </p>
                           </div>
                         </div>
@@ -550,7 +552,7 @@ export function CategoriesPage() {
                         <div className="min-w-0">
                           <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
                           <p className="text-xs font-black text-paymint-green mt-0.5">
-                            {new Intl.NumberFormat('en-JO', { style: 'currency', currency: 'JOD', minimumFractionDigits: 3 }).format(p.price)}
+                            {formatAmount(p.price)}
                           </p>
                         </div>
                       </div>

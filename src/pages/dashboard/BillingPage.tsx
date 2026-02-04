@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useCurrency } from '../../context/CurrencyContext';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -32,6 +33,7 @@ interface EstablishmentBilling {
 
 export function BillingPage() {
   const { currentEstablishment, refreshEstablishments } = useAuth();
+  const { currencySymbol } = useCurrency();
   const [billingInfo, setBillingInfo] = useState<EstablishmentBilling | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
@@ -76,8 +78,8 @@ export function BillingPage() {
 
   // Mock invoices for demo
   const invoices: Invoice[] = [
-    { id: '1', date: 'Oct 12, 2025', amount: 'JOD 20.000', status: 'Paid' },
-    { id: '2', date: 'Sep 12, 2025', amount: 'JOD 20.000', status: 'Paid' },
+    { id: '1', date: 'Oct 12, 2025', amount: `${currencySymbol} 20.000`, status: 'Paid' },
+    { id: '2', date: 'Sep 12, 2025', amount: `${currencySymbol} 20.000`, status: 'Paid' },
   ];
 
   const getStatusBadge = () => {
@@ -125,7 +127,7 @@ export function BillingPage() {
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-20">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -167,7 +169,7 @@ export function BillingPage() {
               <div className="p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-colors">
                 <p className="text-xs font-black text-gray-400 tracking-widest mb-2">Cost</p>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-sm font-bold text-paymint-green">JOD</span>
+                  <span className="text-sm font-bold text-paymint-green">{currencySymbol}</span>
                   <span className="text-4xl font-black text-white">{totalMonthly.toFixed(3)}</span>
                 </div>
               </div>

@@ -42,7 +42,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
 
   // Update position on step change, resize, or scroll
   useLayoutEffect(() => {
-    updateTargetPosition();
+    requestAnimationFrame(() => updateTargetPosition());
     window.addEventListener('resize', updateTargetPosition);
     window.addEventListener('scroll', updateTargetPosition, true); // true for capture phase to catch all scrolls
 

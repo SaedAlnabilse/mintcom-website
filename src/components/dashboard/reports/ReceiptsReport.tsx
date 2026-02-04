@@ -8,7 +8,7 @@ import {
     Download
 } from 'lucide-react';
 import { Pagination } from '../../ui';
-import { OrderDetailModal } from '../../OrderDetailModal';
+import { OrderDetailModal, type Order } from '../../OrderDetailModal';
 import { CustomSelect } from '../../CustomSelect';
 import api from '../../../config/api';
 import { exportToCSV } from '../../../utils/export';
@@ -20,27 +20,7 @@ interface ReceiptsReportProps {
     employeeId: string | null;
 }
 
-interface Order {
-    id: string;
-    orderNumber: string;
-    total: number;
-    subtotal: number;
-    tax: number;
-    discount: number;
-    paymentMethod: string;
-    paymentStatus: string;
-    createdAt: string;
-    items: any[];
-    customer?: {
-        name: string;
-        phone: string;
-    };
-    user?: {
-        username: string;
-    };
-    note?: string;
-    status?: string;
-}
+
 
 export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsReportProps) {
     const [orders, setOrders] = useState<Order[]>([]);
@@ -70,7 +50,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                 const response = await api.get('/api/held-orders');
                 // Map held orders... (simplified for brevity, assume similar structure or handle held orders differently if needed)
                 // For now, let's focus on the main history endpoint which is what reports usually show
-                const heldOrders = response.data.map((h: any) => ({
+                const heldOrders = response.data.map((h: Record<string, any>) => ({
                     id: h.id,
                     orderNumber: h.nickname,
                     total: h.orderData?.total || 0,
@@ -87,7 +67,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                 return;
             }
 
-            const params: any = {
+            const params: Record<string, any> = {
                 page,
                 limit: 20,
                 startDate,
@@ -162,9 +142,9 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
             orderNumber: o.orderNumber,
             date: formatDate(o.createdAt),
             customer: o.customer?.name || 'Walk-in',
-            total: o.total,
+            total: o.total || 0,
             status: o.paymentStatus || o.status,
-            paymentMethod: o.paymentMethod
+            paymentMethod: o.paymentMethod || 'Unknown'
         }));
 
         exportToCSV(exportData, 'receipts_history', {
@@ -295,7 +275,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                                                     <p className="text-xs text-gray-400">{order.user?.username ? `Staff: ${order.user.username}` : 'POS'}</p>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <p className="font-bold text-gray-900 dark:text-white text-xs">{formatCurrency(order.total)}</p>
+                                                    <p className="font-bold text-gray-900 dark:text-white text-xs">{formatCurrency(order.total || 0)}</p>
                                                     <p className="text-xs text-gray-400 uppercase">{order.paymentMethod}</p>
                                                 </td>
                                                 <td className="px-6 py-4">
@@ -329,7 +309,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                                     </div>
                                     <div className="flex justify-between items-center mt-2">
                                         <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{order.customer?.name || 'Walk-in'}</span>
-                                        <span className="font-bold text-sm text-gray-900 dark:text-white">{formatCurrency(order.total)}</span>
+                                        <span className="font-bold text-sm text-gray-900 dark:text-white">{formatCurrency(order.total || 0)}</span>
                                     </div>
                                 </div>
                             ))}

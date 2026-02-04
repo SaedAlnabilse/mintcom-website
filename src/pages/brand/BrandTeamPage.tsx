@@ -1,12 +1,11 @@
 import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+
 import {
     Users,
     Shield,
     Search,
-    RefreshCw,
     MapPin,
     UserPlus,
     Mail,
@@ -236,17 +235,20 @@ export function BrandTeamPage() {
         result.sort((a, b) => {
             let comparison = 0;
             switch (sortBy) {
-                case 'name':
+                case 'name': {
                     comparison = `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`);
                     break;
-                case 'role':
+                }
+                case 'role': {
                     const roleA = a.establishments[0]?.role || '';
                     const roleB = b.establishments[0]?.role || '';
                     comparison = roleA.localeCompare(roleB);
                     break;
-                case 'locations':
+                }
+                case 'locations': {
                     comparison = a.establishments.length - b.establishments.length;
                     break;
+                }
             }
             return sortOrder === 'asc' ? comparison : -comparison;
         });
@@ -312,7 +314,7 @@ export function BrandTeamPage() {
     return (
         <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-10">
             {/* Header */}
-            <div className="flex flex-col gap-4 sm:gap-6">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-purple-500/10 text-purple-500 text-xs font-black tracking-widest border border-purple-500/20">
@@ -326,13 +328,6 @@ export function BrandTeamPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button
-                        onClick={fetchEmployees}
-                        className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
-                        title="Refresh"
-                    >
-                        <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
-                    </button>
                     <button
                         onClick={handleAddEmployee}
                         className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
@@ -350,11 +345,8 @@ export function BrandTeamPage() {
                     { label: 'Users', value: stats.users, icon: UserCheck, color: 'text-blue-500', bg: 'bg-blue-500/10' },
                     { label: 'Admins', value: stats.admins, icon: Shield, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
                 ].map((stat, i) => (
-                    <motion.div
+                    <div
                         key={i}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.1 }}
                         className="group relative p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
                     >
                         <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
@@ -367,7 +359,7 @@ export function BrandTeamPage() {
                             <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{stat.label}</p>
                             <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                         </div>
-                    </motion.div>
+                    </div>
                 ))}
             </div>
 
@@ -382,7 +374,7 @@ export function BrandTeamPage() {
                             placeholder="Search staff..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm focus:shadow-lg"
                         />
                     </div>
 
@@ -429,16 +421,16 @@ export function BrandTeamPage() {
                         </div>
 
                         {/* View Mode Toggle */}
-                        <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1">
+                        <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[52px]">
                             <button
                                 onClick={() => setViewMode('grid')}
-                                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                             >
                                 <Grid3X3 size={18} />
                             </button>
                             <button
                                 onClick={() => setViewMode('list')}
-                                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                             >
                                 <List size={18} />
                             </button>
@@ -548,14 +540,9 @@ export function BrandTeamPage() {
                                         <MoreVertical size={18} />
                                     </button>
 
-                                    <AnimatePresence>
-                                        {activeMenu === emp.id && (
-                                            <motion.div
-                                                initial={{ opacity: 0, scale: 0.95, y: -5 }}
-                                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                exit={{ opacity: 0, scale: 0.95, y: -5 }}
-                                                className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
-                                            >
+                                    {activeMenu === emp.id && (
+                                        <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                        >
                                                 <button
                                                     onClick={() => handleEditEmployee(emp)}
                                                     className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
@@ -570,9 +557,8 @@ export function BrandTeamPage() {
                                                     <Trash2 size={16} />
                                                     Remove
                                                 </button>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
@@ -785,22 +771,13 @@ export function BrandTeamPage() {
                 </div>
             )}
 
-            <div className="flex flex-col items-center gap-6 mt-10">
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={(page) => setCurrentPage(page)}
-                />
-
-                <div className="text-center">
-                    <p className="text-sm text-gray-500">
-                        Showing <span className="text-sm font-bold text-gray-900 dark:text-white">{filteredEmployees.length === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1} to {Math.min(currentPage * ITEMS_PER_PAGE, filteredEmployees.length)}</span> of{' '}
-                        <span className="text-sm font-bold text-gray-900 dark:text-white">{filteredEmployees.length}</span> team members
-                    </p>
-                </div>
-            </div>
-
             {/* Employee Form Modal */}
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+            />
+
             <EmployeeFormModal
                 isOpen={isFormModalOpen}
                 onClose={() => { setIsFormModalOpen(false); setEditingEmployee(null); }}
@@ -820,15 +797,10 @@ export function BrandTeamPage() {
             />
 
             {/* Delete Confirmation Modal */}
-            <AnimatePresence>
-                {deleteModalOpen && employeeToDelete && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            className="bg-white dark:bg-[#1E293B] w-full max-w-md rounded-[2rem] overflow-hidden border border-gray-200 dark:border-white/10 shadow-2xl"
-                        >
+            {deleteModalOpen && employeeToDelete && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="bg-white dark:bg-[#1E293B] w-full max-w-md rounded-[2rem] overflow-hidden border border-gray-200 dark:border-white/10 shadow-2xl"
+                    >
                             <div className="p-8 pb-4">
                                 <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-6">
                                     <AlertTriangle size={32} />
@@ -886,10 +858,9 @@ export function BrandTeamPage() {
                                     )}
                                 </button>
                             </div>
-                        </motion.div>
                     </div>
-                )}
-            </AnimatePresence>
+                </div>
+            )}
         </div >
     );
 }

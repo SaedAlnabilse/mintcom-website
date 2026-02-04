@@ -17,7 +17,6 @@ import {
     KeyRound,
     Users,
     AlertTriangle,
-    RefreshCw,
     Lock,
     Zap,
     Trash2,
@@ -29,7 +28,6 @@ import {
     Settings,
     PlayCircle,
     ExternalLink,
-    HelpCircle,
     Scale,
 } from 'lucide-react';
 import api from '../../config/api';
@@ -325,7 +323,7 @@ export function OwnerAccountManagementPage() {
             setCopiedId(id);
             toast.success('Copied to clipboard');
             setTimeout(() => setCopiedId(null), 2000);
-        } catch (err) {
+        } catch {
             toast.error('Failed to copy');
         }
     };
@@ -547,8 +545,17 @@ export function OwnerAccountManagementPage() {
                                                 className="flex items-center gap-2 px-4 py-2 bg-paymint-green hover:bg-emerald-500 text-black rounded-xl text-sm font-bold transition-all disabled:opacity-70"
                                                 disabled={isSaving}
                                             >
-                                                {isSaving ? <RefreshCw size={16} className="animate-spin" /> : <CheckCircle2 size={16} />}
-                                                Save
+                                                {isSaving ? (
+                                                    <>
+                                                        <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                                                        Saving...
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <CheckCircle2 size={16} />
+                                                        Save
+                                                    </>
+                                                )}
                                             </button>
                                         </>
                                     ) : (
@@ -962,7 +969,7 @@ export function OwnerAccountManagementPage() {
                                     className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 hover:bg-gray-100 dark:hover:bg-white/[0.05] border border-gray-100 dark:border-white/[0.05] transition-all group/item"
                                 >
                                     <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
-                                        <HelpCircle size={20} className="text-purple-500 group-hover/item:scale-110 transition-transform" />
+                                        <BookOpen size={20} className="text-purple-500 group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
                                         <h4 className="text-sm font-bold text-gray-900 dark:text-white">Q&A Center</h4>
@@ -1073,7 +1080,7 @@ export function OwnerAccountManagementPage() {
                             <div className="flex items-center gap-3 mb-4">
                                 <div className={`w-10 h-10 rounded-xl ${accountDetails?.deletionRequestedAt ? 'bg-paymint-green/10' : 'bg-red-500/10'} flex items-center justify-center`}>
                                     {accountDetails?.deletionRequestedAt ? (
-                                        <RefreshCw className="w-5 h-5 text-paymint-green" />
+                                        <div className="w-5 h-5 border-2 border-paymint-green/30 border-t-paymint-green rounded-full" />
                                     ) : (
                                         <AlertCircle className="w-5 h-5 text-red-500" />
                                     )}
@@ -1097,12 +1104,11 @@ export function OwnerAccountManagementPage() {
                                 >
                                     {isRestoring ? (
                                         <>
-                                            <RefreshCw size={18} className="animate-spin" />
+                                            <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
                                             Restoring...
                                         </>
                                     ) : (
                                         <>
-                                            <RefreshCw size={18} />
                                             Restore My Account
                                         </>
                                     )}
@@ -1279,7 +1285,7 @@ export function OwnerAccountManagementPage() {
                                     >
                                         {isDeletingAccount ? (
                                             <>
-                                                <RefreshCw className="w-4 h-4 animate-spin" />
+                                                <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                                                 Deleting Account...
                                             </>
                                         ) : (

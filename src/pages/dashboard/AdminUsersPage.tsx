@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+
 import {
     Plus,
     Mail,
@@ -19,6 +19,14 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { SearchInput, Pagination } from '../../components/ui';
+
+interface ApiError {
+    response?: {
+        data?: {
+            message?: string;
+        };
+    };
+}
 
 interface AdminUser {
     id: string;
@@ -75,7 +83,7 @@ export function AdminUsersPage() {
             setIsLoading(true);
             const response = await api.get('/api/accounts/admins');
             setAdminUsers(response.data || []);
-        } catch (err: any) {
+        } catch {
             toast.error('Failed to load admin users');
         } finally {
             setIsLoading(false);
@@ -122,8 +130,8 @@ export function AdminUsersPage() {
             setShowModal(false);
             resetForm();
             fetchAdminUsers();
-        } catch (err: any) {
-            toast.error(err.response?.data?.message || 'Failed to save admin');
+        } catch (err) {
+            toast.error((err as ApiError).response?.data?.message || 'Failed to save admin');
         } finally {
             setIsSubmitting(false);
         }
@@ -140,7 +148,7 @@ export function AdminUsersPage() {
                     await api.delete(`/api/accounts/admins/${admin.id}`);
                     toast.success('Admin removed');
                     fetchAdminUsers();
-                } catch (err: any) {
+                } catch {
                     toast.error('Failed to remove admin');
                 }
             },
@@ -263,16 +271,11 @@ export function AdminUsersPage() {
                     <>
                         {/* Mobile Card View */}
                         <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
-                            <AnimatePresence mode="popLayout">
-                                {paginatedAdmins.map((admin) => (
-                                    <motion.div
-                                        key={admin.id}
-                                        layout
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, scale: 0.95 }}
-                                        className="p-4 bg-white dark:bg-[#1E293B]"
-                                    >
+                            {paginatedAdmins.map((admin) => (
+                                <div
+                                    key={admin.id}
+                                    className="p-4 bg-white dark:bg-[#1E293B]"
+                                >
                                         <div className="flex items-start justify-between mb-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 border border-purple-500/20 flex items-center justify-center font-black text-sm shadow-sm">
@@ -318,19 +321,15 @@ export function AdminUsersPage() {
                                                 )}
                                             </div>
                                         </div>
-                                    </motion.div>
-                                ))}
-                            </AnimatePresence>
+                                </div>
+                            ))}
                         </div>
 
                         {/* Desktop Grid View */}
                         <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
                             {paginatedAdmins.map((admin) => (
-                                <motion.div
-                                    layout
+                                <div
                                     key={admin.id}
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
                                     className="group relative p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/5 hover:shadow-xl transition-all duration-300 overflow-hidden"
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-br from-paymint-green/0 via-transparent to-paymint-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -390,7 +389,7 @@ export function AdminUsersPage() {
                                             )}
                                         </div>
                                     </div>
-                                </motion.div>
+                                </div>
                             ))}
                         </div>
 
@@ -405,22 +404,15 @@ export function AdminUsersPage() {
             </div>
 
             {/* Modal */}
-            <AnimatePresence>
-                {showModal && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
-                        onClick={() => setShowModal(false)}
+            {showModal && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+                    onClick={() => setShowModal(false)}
+                >
+                    <div
+                        className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md max-h-[85vh] overflow-y-auto shadow-2xl relative"
+                        onClick={(e) => e.stopPropagation()}
                     >
-                        <motion.div
-                            initial={{ scale: 0.95, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.95, opacity: 0 }}
-                            className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md max-h-[85vh] overflow-y-auto shadow-2xl relative"
-                            onClick={(e) => e.stopPropagation()}
-                        >
                             <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between relative isolate">
                                 <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
                                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -564,10 +556,9 @@ export function AdminUsersPage() {
                                     </button>
                                 </div>
                             </form>
-                        </motion.div>
-                    </motion.div>
+                        </div>
+                    </div>
                 )}
-            </AnimatePresence>
 
             <ConfirmModal
                 isOpen={confirmConfig.isOpen}

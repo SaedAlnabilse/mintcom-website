@@ -1,7 +1,7 @@
 // @ts-ignore
 export default {
     // @ts-ignore
-    async fetch(request, env, ctx) {
+    async fetch(request, env, _ctx) {
         try {
             const url = new URL(request.url);
 
@@ -26,7 +26,7 @@ export default {
             }
 
             // 1. Try to fetch the asset
-            let response = await env.ASSETS.fetch(request);
+            const response = await env.ASSETS.fetch(request);
 
             // 2. Spa Fallback
             if (response.status === 404) {

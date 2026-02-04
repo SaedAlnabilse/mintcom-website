@@ -9,7 +9,6 @@ import {
     Clock,
     TrendingUp,
     TrendingDown,
-    RefreshCw,
     BarChart3,
     Activity,
     Target,
@@ -76,7 +75,6 @@ export function BrandDashboardPage() {
     const brandId = brand?.id || paramBrandId;
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
-    const [isRefreshing, setIsRefreshing] = useState(false);
     const [brandName, setBrandName] = useState('Brand Overview');
     const [stats, setStats] = useState<BrandStats | null>(null);
     const [locations, setLocations] = useState<LocationPerformance[]>([]);
@@ -109,9 +107,7 @@ export function BrandDashboardPage() {
 
     const fetchBrandData = async (refresh = false) => {
         try {
-            if (refresh) {
-                setIsRefreshing(true);
-            } else {
+            if (!refresh) {
                 setIsLoading(true);
             }
 
@@ -181,7 +177,6 @@ export function BrandDashboardPage() {
             toast.error('Failed to load brand data');
         } finally {
             setIsLoading(false);
-            setIsRefreshing(false);
         }
     };
 
@@ -191,14 +186,15 @@ export function BrandDashboardPage() {
         let labels: string[] = [];
 
         switch (range) {
-            case 'today':
+            case 'today': {
                 points = 24;
                 labels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
                 break;
+            }
             case 'this_week':
             case 'last_30':
             case 'this_month':
-            case 'custom':
+            case 'custom': {
                 const start = new Date(startStr);
                 const end = new Date(endStr);
                 const diffTime = Math.abs(end.getTime() - start.getTime());
@@ -224,6 +220,7 @@ export function BrandDashboardPage() {
                     labels = Array.from({ length: points }, (_, i) => `Week ${i + 1}`);
                 }
                 break;
+            }
         }
 
         const avgValue = totalRevenue / points;
@@ -290,7 +287,7 @@ export function BrandDashboardPage() {
             )}
 
             {/* Header */}
-            <div className="flex flex-col gap-4 sm:gap-6 relative z-10">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-10">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
@@ -315,15 +312,6 @@ export function BrandDashboardPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button
-                        onClick={() => fetchBrandData(true)}
-                        disabled={isRefreshing}
-                        className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all disabled:opacity-50"
-                        title="Refresh"
-                    >
-                        <RefreshCw size={18} className={isRefreshing ? 'animate-spin' : ''} />
-                    </button>
-
                     {/* Unified Filter Control Deck */}
                     <div className="bg-white dark:bg-[#0B1120] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5 ">
                         <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0 h-full">

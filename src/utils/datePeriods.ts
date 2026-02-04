@@ -66,19 +66,21 @@ export function calculateDateRange(period: DatePeriod | string): { start: Date; 
       // Already set to today
       break;
 
-    case 'yesterday':
+    case 'yesterday': {
       start.setDate(today.getDate() - 1);
       end = new Date(start);
       end.setHours(23, 59, 59, 999);
       break;
+    }
 
-    case 'this_week':
+    case 'this_week': {
       // Sunday to Today
       const dayOfWeek = today.getDay(); // 0 = Sunday
       start.setDate(today.getDate() - dayOfWeek);
       break;
+    }
 
-    case 'last_week':
+    case 'last_week': {
       // Last Sunday to Last Saturday
       const currentDay = today.getDay();
       // Go back to last Saturday
@@ -90,44 +92,53 @@ export function calculateDateRange(period: DatePeriod | string): { start: Date; 
       start.setDate(end.getDate() - 6);
       start.setHours(0, 0, 0, 0);
       break;
+    }
 
-    case 'last_7_days':
+    case 'last_7_days': {
       start.setDate(today.getDate() - 6); // Including today = 7 days
       break;
+    }
 
-    case 'last_28_days':
+    case 'last_28_days': {
       start.setDate(today.getDate() - 27); // Including today = 28 days
       break;
+    }
 
     case 'last_30_days':
-    case 'last_30':
+    case 'last_30': {
       start.setDate(today.getDate() - 29); // Including today = 30 days
       break;
+    }
 
-    case 'last_90_days':
+    case 'last_90_days': {
       start.setDate(today.getDate() - 89); // Including today = 90 days
       break;
+    }
 
-    case 'last_12_months':
+    case 'last_12_months': {
       start.setMonth(today.getMonth() - 12);
       start.setDate(1);
       break;
+    }
 
-    case 'last_calendar_year':
+    case 'last_calendar_year': {
       // Previous full calendar year (Jan 1 to Dec 31)
       start = new Date(today.getFullYear() - 1, 0, 1); // Jan 1 of last year
       end = new Date(today.getFullYear() - 1, 11, 31, 23, 59, 59, 999); // Dec 31 of last year
       break;
+    }
 
-    case 'this_year':
+    case 'this_year': {
       // January 1st to Today
       start = new Date(today.getFullYear(), 0, 1);
       break;
+    }
 
-    case 'this_month':
+    case 'this_month': {
       // First day of current month to Today
       start = new Date(today.getFullYear(), today.getMonth(), 1);
       break;
+    }
 
     default:
       // Custom or unknown - return today's range

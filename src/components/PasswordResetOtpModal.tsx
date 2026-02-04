@@ -6,6 +6,14 @@ import api from '../config/api';
 import toast from 'react-hot-toast';
 import { useScrollLock } from '../hooks/useScrollLock';
 
+interface ApiError {
+    response?: {
+        data?: {
+            message?: string;
+        };
+    };
+}
+
 interface PasswordResetOtpModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -78,9 +86,10 @@ export function PasswordResetOtpModal({
             setMaskedEmail(response.data.email);
             setStep('verify');
             toast.success('Verification code sent to your email');
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Failed to send code');
-            toast.error(err.response?.data?.message || 'Failed to send code');
+        } catch (err) {
+            const error = err as ApiError;
+            setError(error.response?.data?.message || 'Failed to send code');
+            toast.error(error.response?.data?.message || 'Failed to send code');
         } finally {
             setIsLoading(false);
         }
@@ -121,8 +130,9 @@ export function PasswordResetOtpModal({
             await api.post('/api/accounts/verify-password-otp', { otp: otpString });
             setStep('newPassword');
             toast.success('Code verified');
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Invalid code');
+        } catch (err) {
+            const error = err as ApiError;
+            setError(error.response?.data?.message || 'Invalid code');
         } finally {
             setIsLoading(false);
         }
@@ -167,8 +177,9 @@ export function PasswordResetOtpModal({
 
             setStep('success');
             toast.success('Password reset');
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Failed to reset password');
+        } catch (err) {
+            const error = err as ApiError;
+            setError(error.response?.data?.message || 'Failed to reset password');
         } finally {
             setIsLoading(false);
         }

@@ -87,7 +87,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
             const start = new Date(startDate).toISOString();
             const end = new Date(endDate).toISOString();
 
-            const params: any = { startDate: start, endDate: end, limit };
+            const params: Record<string, string> = { startDate: start, endDate: end, limit };
             if (employeeId) {
                 params.employeeId = employeeId;
             }

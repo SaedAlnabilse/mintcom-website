@@ -224,13 +224,13 @@ export function DashboardLayout() {
 
   // Close mobile menu on route change
   useEffect(() => {
-    setMobileMenuOpen(false);
+    setTimeout(() => setMobileMenuOpen(false), 0);
   }, [location.pathname]);
 
   // Collapse all groups when sidebar is closed
   useEffect(() => {
     if (!sidebarOpen) {
-      setExpandedGroup(null);
+      setTimeout(() => setExpandedGroup(null), 0);
     }
   }, [sidebarOpen]);
 
@@ -256,7 +256,7 @@ export function DashboardLayout() {
       ) as MenuGroup | undefined;
 
       if (currentGroup && expandedGroup !== currentGroup.label) {
-        setExpandedGroup(currentGroup.label);
+        setTimeout(() => setExpandedGroup(currentGroup.label), 0);
       }
     }
   }, [location.pathname, sidebarOpen, filteredMenu]);
@@ -292,8 +292,6 @@ export function DashboardLayout() {
   const toggleGroup = (label: string) => {
     setExpandedGroup(prev => prev === label ? null : label);
   };
-
-  const CurrentEstIcon = getBusinessTypeIcon(currentEstablishment?.type || '');
 
   return (
     <div className="h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden transition-colors duration-500">
@@ -391,7 +389,10 @@ export function DashboardLayout() {
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-2.5">
                   <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center flex-shrink-0">
-                    <CurrentEstIcon size={18} className="text-paymint-green" />
+                    {(() => {
+                      const Icon = getBusinessTypeIcon(currentEstablishment?.type || '');
+                      return <Icon size={18} className="text-paymint-green" />;
+                    })()}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-black text-paymint-green tracking-widest mb-0.5">{AppStrings.STATUS.ACTIVE} Location</p>

@@ -6,6 +6,14 @@ import api from '../config/api';
 import toast from 'react-hot-toast';
 import { useScrollLock } from '../hooks/useScrollLock';
 
+interface ApiError {
+    response?: {
+        data?: {
+            message?: string;
+        };
+    };
+}
+
 interface AddPaymentMethodModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -104,8 +112,8 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
             setCvc('');
             setName('');
             setErrors({});
-        } catch (err: any) {
-            const msg = err.response?.data?.message || 'Failed to add card';
+        } catch (err) {
+            const msg = (err as ApiError).response?.data?.message || 'Failed to add card';
             setErrors({ general: msg });
             setTimeout(() => {
                 errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });

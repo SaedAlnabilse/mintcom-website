@@ -7,7 +7,7 @@ export function LoginOverlay({ isSuccess = false }: { isSuccess?: boolean }) {
 
   useEffect(() => {
     if (isSuccess) {
-      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(true), 0);
     }
   }, [isSuccess]);
 

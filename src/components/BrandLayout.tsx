@@ -76,6 +76,28 @@ export function BrandLayout() {
     }, [sidebarOpen]);
 
     useEffect(() => {
+        const fetchBrand = async () => {
+            try {
+                const response = await api.get(`/api/brands/${brandId}`);
+                setBrand(response.data);
+            } catch (error) {
+                // Fallback: Try to resolve slug from brands list if specific fetch failed using slug
+                try {
+                    const listResponse = await api.get('/api/brands');
+                    const found = listResponse.data.find((b: Brand) => b.establishmentLoginId === brandId || b.id === brandId);
+                    if (found) {
+                        setBrand(found);
+                        return;
+                    }
+                } catch (fallbackError) {
+                    console.error('Fallback resolution failed', fallbackError);
+                }
+                console.error('Failed to fetch brand:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
         if (brandId) {
             fetchBrand();
         }
@@ -85,28 +107,6 @@ export function BrandLayout() {
     useEffect(() => {
         setMobileMenuOpen(false);
     }, [location.pathname]);
-
-    const fetchBrand = async () => {
-        try {
-            const response = await api.get(`/api/brands/${brandId}`);
-            setBrand(response.data);
-        } catch (error) {
-            // Fallback: Try to resolve slug from brands list if specific fetch failed using slug
-            try {
-                const listResponse = await api.get('/api/brands');
-                const found = listResponse.data.find((b: any) => b.establishmentLoginId === brandId || b.id === brandId);
-                if (found) {
-                    setBrand(found);
-                    return;
-                }
-            } catch (fallbackError) {
-                console.error('Fallback resolution failed', fallbackError);
-            }
-            console.error('Failed to fetch brand:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     const handleLogout = () => setIsLogoutModalOpen(true);
     const confirmLogout = () => { logout(); };

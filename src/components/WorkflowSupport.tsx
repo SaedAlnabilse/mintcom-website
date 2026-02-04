@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, X, CreditCard, Package, Users, BarChart3, Building2, Cloud, TrendingUp } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 const workflowFeatures = [
   {
@@ -103,6 +103,13 @@ const workflowFeatures = [
 
 export const WorkflowSupport = () => {
   const [selectedFeature, setSelectedFeature] = useState<typeof workflowFeatures[0] | null>(null);
+
+  // Pre-generate random heights for the charts to ensure purity during render
+  const chartHeights = useMemo(() => {
+    return Array.from({ length: 3 }, () =>
+      Array.from({ length: 7 }, () => Math.random() * 12 + 8)
+    );
+  }, []);
 
   return (
     <>
@@ -251,8 +258,8 @@ export const WorkflowSupport = () => {
                       </div>
                       <div className="text-xl font-bold text-white">8,052</div>
                       <div className="flex gap-1 mt-1">
-                        {[...Array(7)].map((_, i) => (
-                          <div key={i} className="flex-1 h-4 bg-gradient-to-t from-paymint-green/20 to-paymint-green rounded-sm" style={{ height: `${Math.random() * 12 + 8}px` }} />
+                        {chartHeights[0].map((h, i) => (
+                          <div key={i} className="flex-1 h-4 bg-gradient-to-t from-paymint-green/20 to-paymint-green rounded-sm" style={{ height: `${h}px` }} />
                         ))}
                       </div>
                     </div>
@@ -264,8 +271,8 @@ export const WorkflowSupport = () => {
                       </div>
                       <div className="text-xl font-bold text-white">1.3K</div>
                       <div className="flex gap-1 mt-1">
-                        {[...Array(7)].map((_, i) => (
-                          <div key={i} className="flex-1 bg-gradient-to-t from-blue-500/20 to-blue-500 rounded-sm" style={{ height: `${Math.random() * 12 + 8}px` }} />
+                        {chartHeights[1].map((h, i) => (
+                          <div key={i} className="flex-1 bg-gradient-to-t from-blue-500/20 to-blue-500 rounded-sm" style={{ height: `${h}px` }} />
                         ))}
                       </div>
                     </div>
@@ -277,8 +284,8 @@ export const WorkflowSupport = () => {
                       </div>
                       <div className="text-xl font-bold text-white">12M</div>
                       <div className="flex gap-1 mt-1">
-                        {[...Array(7)].map((_, i) => (
-                          <div key={i} className="flex-1 bg-gradient-to-t from-amber-500/20 to-amber-500 rounded-sm" style={{ height: `${Math.random() * 12 + 8}px` }} />
+                        {chartHeights[2].map((h, i) => (
+                          <div key={i} className="flex-1 bg-gradient-to-t from-amber-500/20 to-amber-500 rounded-sm" style={{ height: `${h}px` }} />
                         ))}
                       </div>
                     </div>

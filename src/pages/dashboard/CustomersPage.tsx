@@ -25,7 +25,15 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { exportToCSV } from '../../utils/export';
 import { SearchInput, Pagination } from '../../components/ui';
+import { useCurrency } from '../../context/CurrencyContext';
 
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
 
 const customerSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -51,6 +59,7 @@ interface Customer {
 }
 
 export function CustomersPage() {
+  const { formatAmount, currencySymbol } = useCurrency();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -84,34 +93,6 @@ export function CustomersPage() {
     resolver: zodResolver(customerSchema),
   });
 
-  useEffect(() => {
-    fetchCustomers();
-  }, [page, searchQuery]);
-
-  // Close action menu when clicking outside or scrolling
-  useEffect(() => {
-    if (!activeMenu) return;
-
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest('[data-action-menu]')) {
-        setActiveMenu(null);
-      }
-    };
-
-    const handleScroll = () => {
-      setActiveMenu(null);
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    window.addEventListener('scroll', handleScroll, true);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      window.removeEventListener('scroll', handleScroll, true);
-    };
-  }, [activeMenu]);
-
   const fetchCustomers = async () => {
     try {
       setIsLoading(true);
@@ -124,12 +105,16 @@ export function CustomersPage() {
       });
       setCustomers(response.data.customers || []);
       setTotalPages(response.data.totalPages || 1);
-    } catch (err: any) {
+    } catch {
       toast.error('Failed to load customers');
     } finally {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchCustomers();
+  }, [page, searchQuery]);
 
   const handleSaveCustomer = async (data: CustomerFormData) => {
     setIsSubmitting(true);
@@ -143,8 +128,8 @@ export function CustomersPage() {
       }
       setShowModal(false);
       fetchCustomers();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Error saving customer');
+    } catch (err) {
+      toast.error((err as ApiError).response?.data?.message || 'Error saving customer');
     } finally {
       setIsSubmitting(false);
     }
@@ -161,8 +146,8 @@ export function CustomersPage() {
           await api.delete(`/customers/${customer.id}`);
           toast.success('Customer removed');
           fetchCustomers();
-        } catch (err: any) {
-          toast.error(err.response?.data?.message || 'Failed to delete');
+        } catch (err) {
+          toast.error((err as ApiError).response?.data?.message || 'Failed to delete');
         }
       }
     });
@@ -186,8 +171,8 @@ export function CustomersPage() {
       setShowPointsModal(false);
       setPointsAmount(0);
       fetchCustomers();
-    } catch (err: any) {
-      setPointsError(err.response?.data?.message || 'Failed to adjust points');
+    } catch (err) {
+      setPointsError((err as ApiError).response?.data?.message || 'Failed to adjust points');
     } finally {
       setIsSubmitting(false);
     }
@@ -234,28 +219,24 @@ export function CustomersPage() {
         email: 'Email',
         tier: 'Tier level',
         points: 'Loyalty Points',
-        totalSpent: 'Total Spent (JOD)',
+        totalSpent: `Total Spent (${currencySymbol})`,
         visits: 'Total Visits'
       });
       toast.success('Export complete', { id: 'export' });
-    } catch (err) {
+    } catch {
       toast.error('Failed to export customers', { id: 'export' });
     }
   };
 
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-JO', {
-      style: 'currency',
-      currency: 'JOD',
-      minimumFractionDigits: 3,
-    }).format(value);
+    return formatAmount(value);
   };
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-24 sm:pb-10">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
             <span className="px-2.5 sm:px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -350,8 +331,6 @@ export function CustomersPage() {
           </div>
         </motion.div>
       </div>
-
-// ... (imports)
 
       {/* Control Bar */}
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-3 sm:p-4 shadow-sm">

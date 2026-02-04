@@ -27,7 +27,7 @@ interface Discount {
 interface CustomRoleFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: Omit<CustomRole, 'id'>) => Promise<void>;
   initialData?: CustomRole | null;
   isSubmitting?: boolean;
 }
@@ -68,6 +68,7 @@ export function CustomRoleFormModal({
   isSubmitting = false,
 }: CustomRoleFormModalProps) {
   const [name, setName] = useState('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useScrollLock(isOpen);
 
@@ -87,7 +88,16 @@ export function CustomRoleFormModal({
   // UI State
   const [showDiscountsDropdown, setShowDiscountsDropdown] = useState(false);
   const discountsContainerRef = useRef<HTMLDivElement>(null); // Ref for scrolling
-  const [errors, setErrors] = useState<Record<string, string>>({});
+
+
+  const fetchDiscounts = async () => {
+    try {
+      const response = await api.get('/app-settings/discounts');
+      setAvailableDiscounts(response.data || []);
+    } catch {
+      console.error('Failed to load discounts');
+    }
+  };
 
   useEffect(() => {
     if (showDiscountsDropdown && discountsContainerRef.current) {
@@ -97,52 +107,51 @@ export function CustomRoleFormModal({
     }
   }, [showDiscountsDropdown]);
 
+
   useEffect(() => {
     if (isOpen) {
-      fetchDiscounts();
+      // Defer fetching to avoid sync render issues
+      setTimeout(() => {
+        fetchDiscounts();
+      }, 0);
       if (initialData) {
-        setName(initialData.name || '');
-        setPosAccess(initialData.posAccess !== false); // Default true
-        setBackofficeAccess(initialData.backofficeAccess || false);
-        setPermissions(initialData.permissions || []);
+        setTimeout(() => {
+          setName(initialData.name || '');
+          setPosAccess(initialData.posAccess !== false); // Default true
+          setBackofficeAccess(initialData.backofficeAccess || false);
+          setPermissions(initialData.permissions || []);
 
-        // Handle Backoffice Permissions (with legacy mapping)
-        const initialBackofficePerms = [...(initialData.backofficePermissions || [])];
-        if (initialBackofficePerms.includes('manage_items') && !initialBackofficePerms.includes('manage_inventory')) {
-          initialBackofficePerms.push('manage_inventory');
-        }
-        if (initialBackofficePerms.includes('view_cost') && !initialBackofficePerms.includes('view_costs')) {
-          initialBackofficePerms.push('view_costs');
-        }
-        if (initialBackofficePerms.includes('manage_payment_types') && !initialBackofficePerms.includes('manage_payment_methods')) {
-          initialBackofficePerms.push('manage_payment_methods');
-        }
+          // Handle Backoffice Permissions (with legacy mapping)
+          const initialBackofficePerms = [...(initialData.backofficePermissions || [])];
+          if (initialBackofficePerms.includes('manage_items') && !initialBackofficePerms.includes('manage_inventory')) {
+            initialBackofficePerms.push('manage_inventory');
+          }
+          if (initialBackofficePerms.includes('view_cost') && !initialBackofficePerms.includes('view_costs')) {
+            initialBackofficePerms.push('view_costs');
+          }
+          if (initialBackofficePerms.includes('manage_payment_types') && !initialBackofficePerms.includes('manage_payment_methods')) {
+            initialBackofficePerms.push('manage_payment_methods');
+          }
 
-        setBackofficePermissions(initialBackofficePerms);
-        setAllowedDiscounts(initialData.allowedDiscounts || []);
-        setAllDiscountsSelected(initialData.allowedDiscounts?.length === 0);
+          setBackofficePermissions(initialBackofficePerms);
+          setAllowedDiscounts(initialData.allowedDiscounts || []);
+          setAllDiscountsSelected(initialData.allowedDiscounts?.length === 0);
+        }, 0);
       } else {
         // Defaults for new role
-        setName('');
-        setPosAccess(true);
-        setBackofficeAccess(false);
-        setPermissions(['accept_payments', 'apply_discounts']);
-        setBackofficePermissions([]);
-        setAllowedDiscounts([]);
-        setAllDiscountsSelected(true);
+        setTimeout(() => {
+          setName('');
+          setPosAccess(true);
+          setBackofficeAccess(false);
+          setPermissions(['accept_payments', 'apply_discounts']);
+          setBackofficePermissions([]);
+          setAllowedDiscounts([]);
+          setAllDiscountsSelected(true);
+        }, 0);
       }
-      setErrors({});
+      setTimeout(() => setErrors({}), 0);
     }
   }, [isOpen, initialData]);
-
-  const fetchDiscounts = async () => {
-    try {
-      const response = await api.get('/app-settings/discounts');
-      setAvailableDiscounts(response.data || []);
-    } catch (err) {
-      console.error('Failed to load discounts');
-    }
-  };
 
   const togglePermission = (permissionId: string) => {
     setPermissions(prev =>
@@ -187,7 +196,7 @@ export function CustomRoleFormModal({
       return;
     }
 
-    const payload = {
+    const payload: Omit<CustomRole, 'id'> = {
       name: name.trim(),
       baseRole: 'USER', // Default base role for custom roles
       permissions: finalPermissions,

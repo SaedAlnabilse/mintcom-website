@@ -30,7 +30,10 @@ export function CustomDatePicker({
 
     useEffect(() => {
         if (value) {
-            setCurrentMonth(parseISO(value));
+            // Defer state update
+            setTimeout(() => {
+                setCurrentMonth(parseISO(value));
+            }, 0);
         }
     }, [value]);
 

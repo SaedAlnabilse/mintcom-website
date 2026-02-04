@@ -13,13 +13,11 @@ import {
   FileBarChart,
   CreditCard,
   Percent,
-  RefreshCw,
   Receipt,
   Wallet,
   Activity,
   Zap,
   PieChart,
-  HelpCircle,
   Timer,
   History,
   PlayCircle,
@@ -31,7 +29,9 @@ import { format, subHours } from 'date-fns';
 import api from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
-import { TourGuide, type TourStep } from '../../components/TourGuide';
+import { useCurrency } from '../../context/CurrencyContext';
+import { useRealtime } from '../../hooks/useRealtime';
+import { DataChangeEventTypes } from '../../services/realtimeService';
 
 // View mode types
 type ViewMode = 'current_shift' | 'previous_shift' | 'last_24_hours';
@@ -85,6 +85,19 @@ interface TopProduct {
   revenue: number;
 }
 
+interface TopSellingItem {
+  itemName?: string;
+  name?: string;
+  quantity: number;
+  revenue: number;
+}
+
+interface PeakHour {
+  hour: number | string;
+  total: number;
+  count: number;
+}
+
 const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899'];
 
 // Auto-refresh interval: 1 hour in milliseconds
@@ -95,11 +108,12 @@ export const DashboardPage = () => {
   const navigate = useNavigate();
   const { currentEstablishment } = useAuth();
   const { resolvedTheme } = useTheme();
+  const { formatAmount } = useCurrency();
   const isDark = resolvedTheme === 'dark';
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
-  const [peakHours, setPeakHours] = useState<any[]>([]);
+  const [peakHours, setPeakHours] = useState<PeakHour[]>([]);
 
   // Shift and view mode state
   const [shiftStatus, setShiftStatus] = useState<ShiftStatus | null>(null);
@@ -107,8 +121,7 @@ export const DashboardPage = () => {
   const [isViewModeOpen, setIsViewModeOpen] = useState(false);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
 
-  // Tour State
-  const [isTourOpen, setIsTourOpen] = useState(false);
+
 
   // Ref for click outside handling
   const viewModeRef = useRef<HTMLDivElement>(null);
@@ -124,38 +137,7 @@ export const DashboardPage = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const tourSteps: TourStep[] = [
-    {
-      targetId: 'tour-view-mode',
-      title: "View Mode Selector",
-      description: "Switch between Current Shift, Previous Shift, or Last 24 Hours data view."
-    },
-    {
-      targetId: 'tour-kpi-cards',
-      title: "Sales Overview",
-      description: "Track your Total Sales, Net Sales, Taxes, and Profit in real-time."
-    },
-    {
-      targetId: 'tour-revenue-chart',
-      title: "Sales Trends",
-      description: "Monitor sales performance throughout the day to identify peak periods."
-    },
-    {
-      targetId: 'tour-capital-sources',
-      title: "Payment Methods",
-      description: "See a breakdown of how your customers are paying."
-    },
-    {
-      targetId: 'tour-top-products',
-      title: "Top Items",
-      description: "Identify your best-selling products."
-    },
-    {
-      targetId: 'tour-quick-actions',
-      title: "Quick Navigation",
-      description: "Fast access to essential management tools."
-    }
-  ];
+
 
   // Fetch shift status from backend
   const fetchShiftStatus = useCallback(async () => {
@@ -244,8 +226,8 @@ export const DashboardPage = () => {
       });
 
       // Process top products
-      const topItems = topItemsRes.data || [];
-      setTopProducts(topItems.map((item: any) => ({
+      const topItems = (topItemsRes.data || []) as TopSellingItem[];
+      setTopProducts(topItems.map((item) => ({
         name: item.itemName || item.name || 'Unknown',
         orders: item.quantity || 0,
         revenue: item.revenue || 0,
@@ -283,6 +265,27 @@ export const DashboardPage = () => {
     return () => clearInterval(interval);
   }, [fetchShiftStatus, fetchDashboardData]);
 
+  // Real-time updates
+  const { onRefresh } = useRealtime({
+    establishmentId: currentEstablishment?.id || null,
+  });
+
+  // Listen for real-time events and refresh data
+  useEffect(() => {
+    const unsubscribe = onRefresh((eventType) => {
+      // Refresh data when orders are created or updated
+      if (eventType === DataChangeEventTypes.ORDER_CREATED ||
+          eventType === DataChangeEventTypes.ORDER_REFUNDED ||
+          eventType === DataChangeEventTypes.SHIFT_STARTED ||
+          eventType === DataChangeEventTypes.SHIFT_ENDED) {
+        fetchShiftStatus();
+        fetchDashboardData();
+      }
+    });
+
+    return unsubscribe;
+  }, [onRefresh, fetchShiftStatus, fetchDashboardData]);
+
   // Get available view modes based on shift status
   const getAvailableViewModes = (): { mode: ViewMode; label: string; icon: React.ReactNode; description: string }[] => {
     const modes: { mode: ViewMode; label: string; icon: React.ReactNode; description: string }[] = [];
@@ -316,11 +319,7 @@ export const DashboardPage = () => {
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-JO', {
-      style: 'currency',
-      currency: 'JOD',
-      minimumFractionDigits: 3,
-    }).format(value);
+    return formatAmount(value);
   };
 
   const formatDate = () => {
@@ -374,7 +373,7 @@ export const DashboardPage = () => {
           className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-24 sm:pb-10 font-sans"
         >
           {/* Header */}
-          <div className="flex flex-col gap-4 sm:gap-6">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
             {/* Top row: Status and greeting */}
             <div>
               <div className="flex items-center gap-2 sm:gap-3 mb-2 flex-wrap">
@@ -455,29 +454,13 @@ export const DashboardPage = () => {
 
               {/* Action buttons row */}
               <div className="flex items-center gap-2 sm:gap-3">
-                <button
-                  onClick={() => setIsTourOpen(true)}
-                  className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-green border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all touch-target"
-                  title="Start Tour"
-                >
-                  <HelpCircle size={18} />
-                </button>
+
                 <button
                   onClick={() => navigate(`/dashboard/${locationSlug}/reports`)}
                   className="flex items-center gap-2 px-4 sm:px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all touch-target"
                 >
                   <FileBarChart size={18} className="text-paymint-green" />
                   <span className="hidden xs:inline">Reports</span>
-                </button>
-                <button
-                  onClick={() => {
-                    fetchShiftStatus();
-                    fetchDashboardData();
-                  }}
-                  className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm touch-target"
-                  title={`Refresh Data (Last updated: ${format(lastRefresh, 'h:mm a')})`}
-                >
-                  <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
                 </button>
               </div>
             </div>
@@ -659,7 +642,7 @@ export const DashboardPage = () => {
                   {stats?.dailyBreakdown && stats.dailyBreakdown.length > 0 ? (
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart
-                        data={stats.dailyBreakdown.map((d: any) => ({ ...d, revenue: Number(d.revenue) || 0 }))}
+                        data={stats.dailyBreakdown.map((d) => ({ ...d, revenue: Number(d.revenue) || 0 }))}
                         margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
                       >
                         <defs>
@@ -980,13 +963,7 @@ export const DashboardPage = () => {
             </div>
           </div>
 
-          {/* Tour Guide */}
-          <TourGuide
-            steps={tourSteps}
-            isOpen={isTourOpen}
-            onClose={() => setIsTourOpen(false)}
-            onComplete={() => setIsTourOpen(false)}
-          />
+
         </motion.div>
       )}
     </AnimatePresence>

@@ -7,7 +7,6 @@ import {
     Store,
     Users,
     Building2,
-    RefreshCw,
     Activity,
     Zap,
     DollarSign,
@@ -54,22 +53,14 @@ export function OwnerOverviewPage() {
         totalEmployees: 0,
         revenueByDay: []
     });
-    const [isLoading, setIsLoading] = useState(true);
-
-    // New Filter State
+    const [chartData, setChartData] = useState<{ name: string; value: number }[]>([]);
     const [startDate, setStartDate] = useState(() => new Date().toISOString().split('T')[0]);
     const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
     const [startTime, setStartTime] = useState('00:00');
     const [endTime, setEndTime] = useState('23:59');
     const [selectedDateRange, setSelectedDateRange] = useState<string>('today');
 
-    const [chartData, setChartData] = useState<{ name: string; value: number }[]>([]);
-
     // No longer need manual brands count fetch as it's included in overview-stats
-
-    useEffect(() => {
-        fetchOverviewStats();
-    }, [startDate, endDate, startTime, endTime, selectedDateRange]);
 
     const setQuickDate = (range: string) => {
         setSelectedDateRange(range);
@@ -82,8 +73,6 @@ export function OwnerOverviewPage() {
 
     const fetchOverviewStats = async () => {
         try {
-            setIsLoading(true);
-
             // Map UI filter IDs to API expected parameters
             // Map UI filter IDs to API expected parameters
             let query = '';
@@ -131,10 +120,12 @@ export function OwnerOverviewPage() {
         } catch (err) {
             console.error('Failed to fetch overview stats:', err);
             // Non-blocking error handling for UI
-        } finally {
-            setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        setTimeout(() => fetchOverviewStats(), 0);
+    }, [startDate, endDate, startTime, endTime, selectedDateRange]);
 
     const selectedFilterLabel = selectedDateRange === 'custom'
         ? `${startDate} - ${endDate}`
@@ -152,7 +143,7 @@ export function OwnerOverviewPage() {
     return (
         <div className="space-y-8 pb-8">
             {/* Header */}
-            <div className="flex flex-col gap-4 sm:gap-6">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -170,14 +161,6 @@ export function OwnerOverviewPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button
-                        onClick={fetchOverviewStats}
-                        className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
-                        title="Refresh Data"
-                    >
-                        <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
-                    </button>
-
                     {/* Unified Filter Control Deck */}
                     <div className="bg-white dark:bg-[#0B1120] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5">
                         <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0">

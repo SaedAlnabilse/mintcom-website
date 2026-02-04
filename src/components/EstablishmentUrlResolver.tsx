@@ -40,7 +40,21 @@ export function EstablishmentUrlResolver({ children }: { children: React.ReactNo
             currentEstablishment.id === locationSlug
         );
 
-        if (isCurrentMatch) return;
+        if (isCurrentMatch) {
+            // Force redirect to slug if we are on ID
+            if (currentEstablishment && 
+                currentEstablishment.establishmentLoginId && 
+                locationSlug === currentEstablishment.id && 
+                locationSlug !== currentEstablishment.establishmentLoginId) {
+                
+                const newPath = location.pathname.replace(
+                    `/dashboard/${locationSlug}`, 
+                    `/dashboard/${currentEstablishment.establishmentLoginId}`
+                );
+                navigate(newPath, { replace: true });
+            }
+            return;
+        }
 
         const targetEst = establishments.find(e =>
             e.establishmentLoginId === locationSlug ||
@@ -61,7 +75,8 @@ export function EstablishmentUrlResolver({ children }: { children: React.ReactNo
         establishments,
         currentEstablishment,
         navigate,
-        setCurrentEstablishment
+        setCurrentEstablishment,
+        location
     ]);
 
     if (authLoading) {

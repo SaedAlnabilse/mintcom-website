@@ -9,18 +9,17 @@ import {
   Trash2,
   ChevronDown,
   X,
-  RefreshCw,
   Layers,
   DollarSign,
   MousePointerClick,
   CheckSquare
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+
 import toast from 'react-hot-toast';
 import api from '../../config/api';
+import { useCurrency } from '../../context/CurrencyContext';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { Pagination } from '../../components/ui';
-
 
 interface SubAttribute {
   id: string;
@@ -39,6 +38,7 @@ interface Attribute {
 }
 
 export function AddonsPage() {
+  const { formatAmount, currencySymbol } = useCurrency();
   const location = useLocation();
   const [attributes, setAttributes] = useState<Attribute[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,9 +55,9 @@ export function AddonsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Creative Filter States
-  const [filterSelection, setFilterSelection] = useState<'ALL' | 'SINGLE_SELECT' | 'MULTI_SELECT'>('ALL');
-  const [filterRequirement, setFilterRequirement] = useState<'ALL' | 'MANDATORY' | 'OPTIONAL'>('ALL');
-  const [filterPricing, setFilterPricing] = useState<'ALL' | 'FREE' | 'PAID'>('ALL');
+  const [filterSelection, setFilterSelection] = useState<string>('ALL');
+  const [filterRequirement, setFilterRequirement] = useState<string>('ALL');
+  const [filterPricing, setFilterPricing] = useState<string>('ALL');
 
   const [confirmConfig, setConfirmConfig] = useState<{
     isOpen: boolean;
@@ -96,7 +96,7 @@ export function AddonsPage() {
       setIsLoading(true);
       const response = await api.get('/api/attributes');
       setAttributes(response.data || []);
-    } catch (err: any) {
+    } catch {
       toast.error('Failed to load attributes');
     } finally {
       setIsLoading(false);
@@ -201,7 +201,7 @@ export function AddonsPage() {
       }
       setShowAttributeModal(false);
       fetchAttributes();
-    } catch (err: any) {
+    } catch {
       toast.error('Error saving group');
     } finally {
       setIsSubmitting(false);
@@ -235,7 +235,7 @@ export function AddonsPage() {
           await api.delete(`/api/attributes/${id}`);
           toast.success('Group removed');
           fetchAttributes();
-        } catch (err: any) {
+        } catch {
           toast.error('Failed to delete');
         }
       }
@@ -260,7 +260,7 @@ export function AddonsPage() {
       }
       setShowSubAttributeModal(false);
       fetchAttributes();
-    } catch (err: any) {
+    } catch {
       toast.error('Failed to save option');
     } finally {
       setIsSubmitting(false);
@@ -278,7 +278,7 @@ export function AddonsPage() {
           await api.delete(`/api/attributes/sub-attributes/${subAttrId}`);
           toast.success('Option removed');
           fetchAttributes();
-        } catch (err: any) {
+        } catch {
           toast.error('Failed to delete');
         }
       }
@@ -328,7 +328,7 @@ export function AddonsPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-10">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -381,11 +381,8 @@ export function AddonsPage() {
             action: () => handleQuickFilter('PAID')
           },
         ].map((stat, i) => (
-          <motion.div
+          <div
             key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
             className="group relative p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
           >
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
@@ -399,7 +396,7 @@ export function AddonsPage() {
                 {stat.sub && <p className="text-xs font-bold text-paymint-green tracking-wide mt-1">{stat.sub}</p>}
               </div>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
 
@@ -487,7 +484,6 @@ export function AddonsPage() {
             }}
             className="text-xs font-black text-gray-400 hover:text-paymint-red tracking-widest flex items-center gap-1.5 transition-colors"
           >
-            <RefreshCw size={10} />
             Reset Filters
           </button>
         </div>
@@ -509,8 +505,7 @@ export function AddonsPage() {
       ) : (
         <div className="space-y-4">
           {paginatedAttributes.map((attr) => (
-            <motion.div
-              layout
+            <div
               key={attr.id}
               id={`group-${attr.id}`}
               className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden hover:shadow-xl transition-all duration-300"
@@ -551,12 +546,8 @@ export function AddonsPage() {
                 </div>
               </div>
 
-              <AnimatePresence>
                 {expandedId === attr.id && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
+                  <div
                     className="border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 p-8"
                   >
                     <div className="flex items-center justify-between mb-6">
@@ -581,7 +572,7 @@ export function AddonsPage() {
                             <div>
                               <p className="font-bold text-gray-900 dark:text-white text-base">{sub.name}</p>
                               <p className="text-xs font-black text-paymint-green mt-1">
-                                {Number(sub.price) > 0 ? `+${new Intl.NumberFormat('en-JO', { style: 'currency', currency: 'JOD', minimumFractionDigits: 3 }).format(Number(sub.price))}` : 'Complimentary'}
+                                {Number(sub.price) > 0 ? `+${formatAmount(Number(sub.price))}` : 'Complimentary'}
                               </p>
                             </div>
                             <div className="flex gap-1 opacity-0 group-hover/sub:opacity-100 transition-opacity">
@@ -595,10 +586,9 @@ export function AddonsPage() {
                           </div>
                         ))}
                     </div>
-                  </motion.div>
+                  </div>
                 )}
-              </AnimatePresence>
-            </motion.div>
+            </div>
           ))}
 
           <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} className="mt-8" />
@@ -606,10 +596,9 @@ export function AddonsPage() {
       )}
 
       {/* Add-on Group Modal */}
-      <AnimatePresence>
         {showAttributeModal && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md overflow-hidden shadow-2xl">
+            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md overflow-hidden shadow-2xl">
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">Add-on Group</h2>
                 <button onClick={() => setShowAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
@@ -692,20 +681,17 @@ export function AddonsPage() {
                 </div>
 
                 <button onClick={handleSaveAttribute} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs flex items-center justify-center gap-2">
-                  {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
                   Save
                 </button>
               </div>
-            </motion.div>
+            </div>
           </div>
         )}
-      </AnimatePresence>
 
       {/* Add-on Option Modal */}
-      <AnimatePresence>
         {showSubAttributeModal && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl">
+            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl">
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">Add-on Option</h2>
                 <button onClick={() => setShowSubAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
@@ -734,7 +720,7 @@ export function AddonsPage() {
                   <label className="block text-sm font-bold text-gray-400 tracking-widest mb-2 px-1">Price</label>
                   <div className="relative group">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-100 dark:bg-white/10 rounded-lg">
-                      <span className="text-gray-500 dark:text-gray-400 text-xs font-black">JOD</span>
+                      <span className="text-gray-500 dark:text-gray-400 text-xs font-black">{currencySymbol}</span>
                     </div>
                     <input
                       type="text"
@@ -761,14 +747,12 @@ export function AddonsPage() {
                 </div>
 
                 <button onClick={handleSaveSubAttribute} disabled={isSubmitting} className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2">
-                  {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
                   Save Option
                 </button>
               </div>
-            </motion.div>
+            </div>
           </div>
         )}
-      </AnimatePresence>
 
       <ConfirmModal
         isOpen={confirmConfig.isOpen}

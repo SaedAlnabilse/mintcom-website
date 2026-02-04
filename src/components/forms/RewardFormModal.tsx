@@ -4,18 +4,26 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Award, Check } from 'lucide-react';
 import { CustomSelect } from '../CustomSelect';
-import { useScrollLock } from '../../hooks/useScrollLock';
 
 interface Category {
   id: string;
   name: string;
 }
 
+interface Reward {
+  id?: string;
+  type: 'DISCOUNT' | 'FREE_ITEM';
+  pointsRequired: number;
+  discountPercentage?: number;
+  freeCategoryId?: string;
+  freeCategoryName?: string;
+}
+
 interface RewardFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: any) => void;
-  initialData?: any;
+  onSave: (data: Partial<Reward>) => void;
+  initialData?: Partial<Reward>;
   categories: Category[];
 }
 
@@ -26,20 +34,6 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
   const [freeCategoryId, setFreeCategoryId] = useState('');
   const [freeCategoryName, setFreeCategoryName] = useState('');
 
-  useScrollLock(isOpen);
-
-  useEffect(() => {
-    if (initialData) {
-      setType(initialData.type);
-      setPointsRequired(String(initialData.pointsRequired));
-      setDiscountPercentage(initialData.discountPercentage ? String(initialData.discountPercentage) : '');
-      setFreeCategoryId(initialData.freeCategoryId || '');
-      setFreeCategoryName(initialData.freeCategoryName || '');
-    } else {
-      resetForm();
-    }
-  }, [initialData, isOpen]);
-
   const resetForm = () => {
     setType('DISCOUNT');
     setPointsRequired('');
@@ -47,6 +41,22 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
     setFreeCategoryId('');
     setFreeCategoryName('');
   };
+
+  useEffect(() => {
+    if (initialData && isOpen) {
+      if (initialData.type) {
+        setTimeout(() => setType(initialData.type as 'DISCOUNT' | 'FREE_ITEM'), 0);
+      }
+      setTimeout(() => {
+        setPointsRequired(initialData.pointsRequired !== undefined ? String(initialData.pointsRequired) : '');
+        setDiscountPercentage(initialData.discountPercentage !== undefined ? String(initialData.discountPercentage) : '');
+        setFreeCategoryId(initialData.freeCategoryId || '');
+        setFreeCategoryName(initialData.freeCategoryName || '');
+      }, 0);
+    } else if (isOpen) {
+      setTimeout(() => resetForm(), 0);
+    }
+  }, [initialData, isOpen]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const errorBannerRef = useRef<HTMLDivElement>(null);
@@ -81,8 +91,8 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
     setErrors({});
     onSave({
       type,
-      pointsRequired,
-      discountPercentage,
+      pointsRequired: Number(pointsRequired),
+      discountPercentage: discountPercentage ? Number(discountPercentage) : undefined,
       freeCategoryId,
       freeCategoryName
     });
@@ -211,8 +221,9 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                     <CustomSelect
                       value={freeCategoryId}
                       onChange={(val) => {
-                        setFreeCategoryId(val);
-                        const cat = categories.find(c => c.id === val);
+                        const stringVal = String(val);
+                        setFreeCategoryId(stringVal);
+                        const cat = categories.find(c => c.id === stringVal);
                         setFreeCategoryName(cat ? cat.name : '');
                         if (errors.freeCategoryId) setErrors({ ...errors, freeCategoryId: '' });
                       }}

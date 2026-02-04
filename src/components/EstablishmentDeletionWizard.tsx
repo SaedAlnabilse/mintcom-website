@@ -24,6 +24,14 @@ import api from '../config/api';
 import toast from 'react-hot-toast';
 import { QuickInfo } from './QuickInfo';
 
+interface ApiError {
+    response?: {
+        data?: {
+            message?: string;
+        };
+    };
+}
+
 interface EstablishmentStats {
     establishment: {
         id: string;
@@ -99,21 +107,20 @@ export function EstablishmentDeletionWizard({
     });
 
     useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                setIsLoading(true);
+                const response = await api.get(`/api/establishments/${establishmentId}/stats`);
+                setStats(response.data);
+            } catch (err) {
+                toast.error((err as ApiError).response?.data?.message || 'Failed to load establishment data');
+                onClose();
+            } finally {
+                setIsLoading(false);
+            }
+        };
         fetchStats();
-    }, [establishmentId]);
-
-    const fetchStats = async () => {
-        try {
-            setIsLoading(true);
-            const response = await api.get(`/api/establishments/${establishmentId}/stats`);
-            setStats(response.data);
-        } catch (err: any) {
-            toast.error(err.response?.data?.message || 'Failed to load establishment data');
-            onClose();
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    }, [establishmentId, onClose]);
 
     const handleRequestDeletion = async () => {
         if (!establishmentLoginId) {
@@ -148,8 +155,8 @@ export function EstablishmentDeletionWizard({
             toast.success('Deletion scheduled. Check your email for data exports.');
             onDeletionRequested();
             onClose();
-        } catch (err: any) {
-            toast.error(err.response?.data?.message || 'Failed to request deletion');
+        } catch (err) {
+            toast.error((err as ApiError).response?.data?.message || 'Failed to request deletion');
         } finally {
             setIsSubmitting(false);
         }
@@ -173,7 +180,7 @@ export function EstablishmentDeletionWizard({
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
             toast.success(`${exportType} export downloaded`);
-        } catch (err: any) {
+        } catch {
             toast.error('Failed to download export');
         }
     };

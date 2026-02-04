@@ -76,14 +76,14 @@ export function EstablishmentsPage() {
     setSelectedName(est.name);
 
     setTimeout(() => {
-      setCurrentEstablishment(est as any);
+      setCurrentEstablishment(est);
       toast.success(`Active: ${est.name}`);
       setIsSwitching(false);
     }, 800);
   };
 
   const filteredEstablishments = useMemo(() => {
-    return (establishments as any[]).filter(est =>
+    return (establishments as Establishment[]).filter(est =>
       est.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       est.type?.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -97,7 +97,7 @@ export function EstablishmentsPage() {
   }, [filteredEstablishments, currentPage]);
 
   useEffect(() => {
-    setCurrentPage(1);
+    setTimeout(() => setCurrentPage(1), 0);
   }, [searchQuery]);
 
   return (

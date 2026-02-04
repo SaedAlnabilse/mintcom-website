@@ -18,6 +18,13 @@ import api from '../config/api';
 import toast from 'react-hot-toast';
 import { useScrollLock } from '../hooks/useScrollLock';
 
+interface ApiError {
+    response?: {
+        data?: {
+            message?: string;
+        };
+    };
+}
 
 interface SecurityVerificationModalProps {
     isOpen: boolean;
@@ -159,8 +166,8 @@ export function SecurityVerificationModal({
             onClose();
             setEmail('');
             setPassword('');
-        } catch (err: any) {
-            const msg = err.response?.data?.message || 'Verification failed';
+        } catch (err) {
+            const msg = (err as ApiError).response?.data?.message || 'Verification failed';
             setErrors({ general: msg });
             setTimeout(() => {
                 errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });

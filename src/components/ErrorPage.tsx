@@ -1,7 +1,7 @@
 
 import { useRouteError, isRouteErrorResponse, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { AlertTriangle, Home, RefreshCw, ArrowLeft } from 'lucide-react';
+import { AlertTriangle, Home, ArrowLeft } from 'lucide-react';
 
 export function ErrorPage() {
     const error = useRouteError();
@@ -78,7 +78,6 @@ export function ErrorPage() {
                         onClick={() => window.location.reload()}
                         className="w-full flex items-center justify-center space-x-2 bg-paymint-green hover:bg-paymint-green/90 text-black text-xs font-black tracking-widest py-3 px-4 rounded-xl transition-all shadow-sm active:scale-[0.98]"
                     >
-                        <RefreshCw className="w-5 h-5" />
                         <span>Reload Page</span>
                     </button>
 

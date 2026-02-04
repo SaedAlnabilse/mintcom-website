@@ -50,7 +50,9 @@ export function ThemeProvider({
 
     // Apply class
     root.classList.add(effectiveTheme);
-    setResolvedTheme(effectiveTheme as 'light' | 'dark');
+    setTimeout(() => {
+      setResolvedTheme(effectiveTheme as 'light' | 'dark');
+    }, 0);
 
     // Save to storage
     localStorage.setItem(storageKey, theme);

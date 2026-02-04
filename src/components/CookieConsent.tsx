@@ -35,11 +35,13 @@ export function CookieConsent() {
       // Load saved preferences just in case we need them later (e.g. for a footer link)
       try {
         const parsed = JSON.parse(savedConsent);
-        setPreferences(parsed);
-        // Apply the saved consent settings immediately on load
-        updateConsentState(parsed);
-      } catch (e) {
-        console.error('Failed to parse cookie preferences');
+        // Defer state update to avoid sync render warnings
+        setTimeout(() => {
+          setPreferences(parsed);
+          updateConsentState(parsed);
+        }, 0);
+      } catch {
+        // Ignore parse error
       }
     }
   }, []);

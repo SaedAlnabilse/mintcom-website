@@ -1,8 +1,16 @@
 import { useState, useEffect } from 'react';
-import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../config/api';
 import toast from 'react-hot-toast';
+
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
 
 export function DeletionRestorationBanner() {
   const { account, updateAccount } = useAuth();
@@ -31,9 +39,9 @@ export function DeletionRestorationBanner() {
         toast.success('Account restored!');
         updateAccount({ deletionRequestedAt: undefined });
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to restore account:', error);
-      toast.error(error.response?.data?.message || 'Failed to restore account. Please contact support.');
+      toast.error((error as ApiError).response?.data?.message || 'Failed to restore account. Please contact support.');
     } finally {
       setIsRestoring(false);
     }
@@ -54,7 +62,7 @@ export function DeletionRestorationBanner() {
       >
         {isRestoring ? (
           <>
-            <RefreshCw size={14} className="animate-spin" />
+            <div className="w-3.5 h-3.5 border-2 border-red-600/20 border-t-red-600 rounded-full animate-spin" />
             Restoring...
           </>
         ) : (

@@ -11,7 +11,7 @@ interface Option {
 interface CustomSelectProps {
     label?: string;
     value: string | number;
-    onChange: (value: any) => void;
+    onChange: (value: string | number) => void;
     options: (Option | string)[];
     placeholder?: string;
     className?: string;
@@ -73,7 +73,9 @@ export function CustomSelect({
 
     useLayoutEffect(() => {
         if (isOpen) {
-            updateDropdownPosition();
+            requestAnimationFrame(() => {
+                updateDropdownPosition();
+            });
         }
     }, [isOpen]);
 

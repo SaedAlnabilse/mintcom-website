@@ -8,8 +8,43 @@ import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useScrollLock } from '../hooks/useScrollLock';
 
-interface OrderDetailModalProps {
-    order: any;
+interface ApiError {
+    response?: {
+        data?: {
+            message?: string;
+        };
+    };
+}
+
+export interface OrderItem {
+    id: string;
+    name: string;
+    quantity: number;
+    price?: number;
+    basePrice?: number;
+    total?: number;
+    finalPrice?: number;
+}
+
+export interface Order {
+    id: string;
+    orderNumber: string;
+    createdAt: string;
+    status: string;
+    paymentStatus?: string;
+    paymentMethod: string;
+    user?: { username: string };
+    customer?: { name: string; phone: string };
+    items?: OrderItem[];
+    subtotal?: number;
+    discount?: number;
+    tax?: number;
+    total?: number;
+    note?: string;
+}
+
+export interface OrderDetailModalProps {
+    order: Order;
     onClose: () => void;
     onRefundSuccess?: () => void;
 }
@@ -72,8 +107,8 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                     toast.success('Order reversed');
                     if (onRefundSuccess) onRefundSuccess();
                     onClose();
-                } catch (err: any) {
-                    toast.error(err.response?.data?.message || 'Failed to process refund');
+                } catch (err) {
+                    toast.error((err as ApiError).response?.data?.message || 'Failed to process refund');
                 }
             }
         });
@@ -176,7 +211,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                             </div>
                             <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/5 overflow-hidden shadow-inner">
                                 <div className="divide-y divide-gray-100 dark:divide-white/5">
-                                    {order.items?.map((item: any) => (
+                                    {order.items?.map((item) => (
                                         <div key={item.id} className="p-4 flex items-center justify-between group hover:bg-white dark:hover:bg-white/[0.02] transition-colors">
                                             <div>
                                                 <p className="text-gray-900 dark:text-white font-bold text-sm">{item.name}</p>
@@ -206,7 +241,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                                     <span className="text-xs font-black tracking-widest flex items-center gap-1">
                                         Discount
                                     </span>
-                                    <span className="text-sm font-bold">-{formatCurrency(order.discount)}</span>
+                                    <span className="text-sm font-bold">-{formatCurrency(order.discount || 0)}</span>
                                 </div>
                             )}
                             <div className="flex justify-between text-gray-400">

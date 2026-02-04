@@ -10,6 +10,8 @@ import { useScrollLock } from '../../hooks/useScrollLock';
 interface StaffMember {
   id: string;
   name: string;
+  firstName?: string;
+  lastName?: string;
   username: string;
   role: string;
   email?: string;
@@ -52,7 +54,7 @@ interface Discount {
 interface EmployeeFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: Partial<StaffMember> & { password?: string; pinCode?: string }) => Promise<void>;
   onDelete?: (id: string) => void;
   initialData?: StaffMember | null;
   availableDiscounts?: Discount[];
@@ -160,7 +162,7 @@ export function EmployeeFormModal({
               });
             }
           }
-        } catch (err) {
+        } catch {
           // Global roles endpoint might not exist or be empty - continue
           console.log('No global roles found');
         }
@@ -216,13 +218,15 @@ export function EmployeeFormModal({
   // Refetch roles when selected establishments change
   useEffect(() => {
     if (isOpen && establishments && establishments.length > 0) {
-      fetchCustomRoles();
+      setTimeout(() => fetchCustomRoles(), 0);
       // Clear role selection when establishments change
       if (selectedCustomRoleId) {
         const stillValid = customRoles.some(r => r.id === selectedCustomRoleId);
         if (!stillValid) {
-          setSelectedCustomRoleId('');
-          setLastAppliedTemplate(null);
+          setTimeout(() => {
+            setSelectedCustomRoleId('');
+            setLastAppliedTemplate(null);
+          }, 0);
         }
       }
     }
@@ -242,66 +246,70 @@ export function EmployeeFormModal({
 
   useEffect(() => {
     if (isOpen) {
-      fetchCustomRoles();
+      setTimeout(() => fetchCustomRoles(), 0);
       if (initialData) {
-        setName(initialData.name || '');
-        setUsername(initialData.username || '');
-        setEmail(initialData.email || '');
-        setPhone(initialData.phone || '');
-        setRole(initialData.role.toUpperCase() === 'ADMIN' ? 'ADMIN' : 'USER');
-        setPassword('');
-        setConfirmPassword('');
-        setPermissions(initialData.permissions || ['accept_payments', 'apply_discounts', 'refunds']);
-        setBackofficePermissions(initialData.backofficePermissions || []);
-        setSelectedCustomRoleId(initialData.customRoleId || '');
-        // Platform access control
-        setPosAccess(initialData.posAccess !== false); // Default to true
-        setBackofficeAccess(initialData.backofficeAccess || false);
+        setTimeout(() => {
+          setName(initialData.name || '');
+          setUsername(initialData.username || '');
+          setEmail(initialData.email || '');
+          setPhone(initialData.phone || '');
+          setRole(initialData.role.toUpperCase() === 'ADMIN' ? 'ADMIN' : 'USER');
+          setPassword('');
+          setConfirmPassword('');
+          setPermissions(initialData.permissions || ['accept_payments', 'apply_discounts', 'refunds']);
+          setBackofficePermissions(initialData.backofficePermissions || []);
+          setSelectedCustomRoleId(initialData.customRoleId || '');
+          // Platform access control
+          setPosAccess(initialData.posAccess !== false); // Default to true
+          setBackofficeAccess(initialData.backofficeAccess || false);
 
-        if (initialData.allowedDiscounts && initialData.allowedDiscounts.length > 0) {
-          setAllDiscountsSelected(false);
-          setAllowedDiscounts(initialData.allowedDiscounts);
-        } else {
-          setAllDiscountsSelected(true);
-          setAllowedDiscounts([]);
-        }
+          if (initialData.allowedDiscounts && initialData.allowedDiscounts.length > 0) {
+            setAllDiscountsSelected(false);
+            setAllowedDiscounts(initialData.allowedDiscounts);
+          } else {
+            setAllDiscountsSelected(true);
+            setAllowedDiscounts([]);
+          }
 
-        // Populate establishments from initialData if available
-        if (initialData.establishmentIds && initialData.establishmentIds.length > 0) {
-          setSelectedEstablishmentIds(initialData.establishmentIds);
-        } else if (establishments && establishments.length === 1) {
-          // If there is only one establishment, pre-select it
-          setSelectedEstablishmentIds([establishments[0].id]);
-        } else {
-          setSelectedEstablishmentIds([]);
-        }
+          // Populate establishments from initialData if available
+          if (initialData.establishmentIds && initialData.establishmentIds.length > 0) {
+            setSelectedEstablishmentIds(initialData.establishmentIds);
+          } else if (establishments && establishments.length === 1) {
+            // If there is only one establishment, pre-select it
+            setSelectedEstablishmentIds([establishments[0].id]);
+          } else {
+            setSelectedEstablishmentIds([]);
+          }
+        }, 0);
 
       } else {
-        setName('');
-        setUsername('');
-        setEmail('');
-        setPhone('');
-        setRole('USER');
-        setPassword('');
-        setConfirmPassword('');
-        setPermissions(['accept_payments', 'apply_discounts', 'refunds']);
-        setBackofficePermissions([]);
-        setAllDiscountsSelected(true);
-        setAllowedDiscounts([]);
-        setSelectedCustomRoleId('');
-        setLastAppliedTemplate(null);
-        // Platform access control - defaults for new employees
-        setPosAccess(true);
-        setBackofficeAccess(false);
+        setTimeout(() => {
+          setName('');
+          setUsername('');
+          setEmail('');
+          setPhone('');
+          setRole('USER');
+          setPassword('');
+          setConfirmPassword('');
+          setPermissions(['accept_payments', 'apply_discounts', 'refunds']);
+          setBackofficePermissions([]);
+          setAllDiscountsSelected(true);
+          setAllowedDiscounts([]);
+          setSelectedCustomRoleId('');
+          setLastAppliedTemplate(null);
+          // Platform access control - defaults for new employees
+          setPosAccess(true);
+          setBackofficeAccess(false);
 
-        // If creating new and there's only one establishment, select it by default
-        if (establishments && establishments.length === 1) {
-          setSelectedEstablishmentIds([establishments[0].id]);
-        } else {
-          setSelectedEstablishmentIds([]);
-        }
+          // If creating new and there's only one establishment, select it by default
+          if (establishments && establishments.length === 1) {
+            setSelectedEstablishmentIds([establishments[0].id]);
+          } else {
+            setSelectedEstablishmentIds([]);
+          }
+        }, 0);
       }
-      setActiveDropdown(null);
+      setTimeout(() => setActiveDropdown(null), 0);
     }
   }, [isOpen, initialData]);
 
@@ -368,7 +376,7 @@ export function EmployeeFormModal({
 
   useEffect(() => {
     if (isOpen) {
-      setErrors({});
+      setTimeout(() => setErrors({}), 0);
     }
   }, [isOpen]);
 
@@ -415,7 +423,7 @@ export function EmployeeFormModal({
     const firstName = nameParts[0] || 'Staff';
     const lastName = nameParts.slice(1).join(' ');
 
-    const payload: any = {
+    const payload: Partial<StaffMember> & { password?: string; pinCode?: string } = {
       firstName,
       ...(lastName && { lastName }),
       username,

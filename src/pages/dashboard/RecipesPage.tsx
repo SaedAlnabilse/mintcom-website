@@ -4,7 +4,6 @@ import {
   Plus,
   Package,
   Pizza,
-  RefreshCw,
   Edit2,
   Trash2,
   X,
@@ -17,7 +16,6 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { CustomSelect } from '../../components/CustomSelect';
 import { QuickInfo } from '../../components/QuickInfo';
 import { SearchInput, Pagination } from '../../components/ui';
-
 
 const UNIT_CONVERSIONS: Record<string, { type: 'mass' | 'volume' | 'count'; factor: number }> = {
   Kg: { type: 'mass', factor: 1000 }, // Base: g
@@ -167,7 +165,7 @@ export function RecipesPage() {
       setFinalRecipes(finalRes.data || []);
       setRawMaterials(materialsRes.data || []);
       setMenuItems(itemsRes.data || []);
-    } catch (err: any) {
+    } catch {
       toast.error('Failed to sync data');
     } finally {
       setIsLoading(false);
@@ -184,7 +182,7 @@ export function RecipesPage() {
     return items.slice(start, start + itemsPerPage);
   }, [activeTab, filteredFinal, filteredSub, page]);
 
-  const products = menuItems.filter(p => !finalRecipes.some(r => r.itemId === p.id) || (editingRecipe as any)?.itemId === p.id);
+  const products = menuItems.filter(p => !finalRecipes.some(r => r.itemId === p.id) || (editingRecipe as Record<string, any>)?.itemId === p.id);
 
   const openEditSubRecipe = (recipe: SubRecipe) => {
     setEditingRecipe(recipe);
@@ -259,7 +257,7 @@ export function RecipesPage() {
       toast.success('Saved formula');
       setShowSubRecipeModal(false);
       fetchData();
-    } catch (err: any) {
+    } catch {
       toast.error('Error saving');
     } finally {
       setIsSubmitting(false);
@@ -279,7 +277,7 @@ export function RecipesPage() {
       toast.success('Saved recipe');
       setShowFinalRecipeModal(false);
       fetchData();
-    } catch (err: any) {
+    } catch {
       toast.error('Error saving');
     } finally {
       setIsSubmitting(false);
@@ -294,7 +292,7 @@ export function RecipesPage() {
       toast.success('Manufactured');
       setShowManufactureModal(false);
       fetchData();
-    } catch (err: any) {
+    } catch {
       toast.error('Failed');
     } finally {
       setIsSubmitting(false);
@@ -312,7 +310,7 @@ export function RecipesPage() {
           await api.delete(`/api/manufacturing/${type === 'sub' ? 'sub-recipes' : 'final-recipes'}/${id}`);
           toast.success('Removed');
           fetchData();
-        } catch (err: any) {
+        } catch {
           toast.error('Failed');
         }
       }
@@ -321,7 +319,7 @@ export function RecipesPage() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-10 font-sans">
-      <div className="flex flex-col gap-4 sm:gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -404,7 +402,7 @@ export function RecipesPage() {
         ) : (
           <div className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {paginatedItems.map((recipe: any) => (
+              {paginatedItems.map((recipe) => (
                 <motion.div
                   layout
                   key={recipe.id}
@@ -421,19 +419,19 @@ export function RecipesPage() {
                         </div>
                         <div>
                           <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[150px] group-hover:text-paymint-green transition-colors">
-                            {activeTab === 'final' ? recipe.item?.name : recipe.name}
+                            {activeTab === 'final' ? (recipe as FinalRecipe).item?.name : (recipe as SubRecipe).name}
                           </h3>
                           <p className="text-xs font-black text-gray-400 tracking-widest">{recipe.ingredients.length} Ingredients</p>
                         </div>
                       </div>
                       <div className="flex gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all translate-x-0 sm:translate-x-4 group-hover:translate-x-0">
-                        <button onClick={() => activeTab === 'final' ? openEditFinalRecipe(recipe) : openEditSubRecipe(recipe)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-colors"><Edit2 size={16} /></button>
+                        <button onClick={() => activeTab === 'final' ? openEditFinalRecipe(recipe as FinalRecipe) : openEditSubRecipe(recipe as SubRecipe)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-colors"><Edit2 size={16} /></button>
                         <button onClick={() => handleDeleteRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 transition-colors"><Trash2 size={16} /></button>
                       </div>
                     </div>
 
                     <div className="space-y-3 mb-6 bg-gray-50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-100 dark:border-white/5">
-                      {recipe.ingredients.slice(0, 3).map((ing: any, i: number) => {
+                      {recipe.ingredients.slice(0, 3).map((ing: Record<string, any>, i: number) => {
                         const baseUnit = ing.rawMaterial?.unit || ing.subRecipe?.yieldUnit || 'Units';
 
                         let currentUnit = ing.selectedUnit || baseUnit;
@@ -458,8 +456,8 @@ export function RecipesPage() {
                       {recipe.ingredients.length > 3 && <p className="text-xs font-black text-paymint-green text-center mt-2 tracking-widest">+ {recipe.ingredients.length - 3} Additional Elements</p>}
                     </div>
                     {activeTab === 'sub' && (
-                      <button onClick={() => openManufactureModal(recipe)} className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
-                        <RefreshCw size={14} /> Produce Batch
+                      <button onClick={() => openManufactureModal(recipe as SubRecipe)} className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
+                        Produce Batch
                       </button>
                     )}
                   </div>
@@ -518,13 +516,12 @@ export function RecipesPage() {
                     <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
                       Unit
                     </label>
-                    <CustomSelect
-                      value={subRecipeForm.yieldUnit}
-                      onChange={(val) => setSubRecipeForm({ ...subRecipeForm, yieldUnit: val })}
-                      options={units}
-                      className="w-full"
-                    />
-                  </div>
+                                            <CustomSelect
+                                              value={subRecipeForm.yieldUnit}
+                                              onChange={(val) => setSubRecipeForm({ ...subRecipeForm, yieldUnit: String(val) })}
+                                              options={units}
+                                              className="w-full"
+                                            />                  </div>
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between px-1">
@@ -555,9 +552,10 @@ export function RecipesPage() {
                             <CustomSelect
                               value={ing.rawMaterialId}
                               onChange={(val) => {
-                                const m = rawMaterials.find(rm => rm.id === val);
+                                const stringVal = String(val);
+                                const m = rawMaterials.find(rm => rm.id === stringVal);
                                 const updated = [...subRecipeForm.ingredients];
-                                updated[index].rawMaterialId = val;
+                                updated[index].rawMaterialId = stringVal;
                                 updated[index].selectedUnit = m?.unit; // Reset unit on material change
                                 updated[index].quantity = 0; // Reset quantity on material change
                                 setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
@@ -647,7 +645,6 @@ export function RecipesPage() {
               </div>
               <div className="p-8 border-t border-gray-200 dark:border-white/5">
                 <button onClick={handleSaveSubRecipe} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-emerald-400 tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
-                  {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
                   Save Recipe
                 </button>
               </div>
@@ -673,7 +670,7 @@ export function RecipesPage() {
                   <CustomSelect
                     value={finalRecipeForm.itemId}
                     onChange={(val) => {
-                      setFinalRecipeForm({ ...finalRecipeForm, itemId: val });
+                      setFinalRecipeForm({ ...finalRecipeForm, itemId: String(val) });
                       if (errors.itemId) setErrors({ ...errors, itemId: '' });
                     }}
                     options={products.map(p => ({ label: p.name, value: p.id }))}
@@ -694,7 +691,7 @@ export function RecipesPage() {
                     <AnimatePresence>
                       {finalRecipeForm.ingredients.map((ing, index) => {
                         let baseUnit = 'Units';
-                        let isRaw = ing.type === 'raw';
+                        const isRaw = ing.type === 'raw';
 
                         if (isRaw) {
                           const m = rawMaterials.find(rm => rm.id === ing.rawMaterialId);
@@ -728,9 +725,10 @@ export function RecipesPage() {
                               <CustomSelect
                                 value={ing.rawMaterialId || ''}
                                 onChange={(val) => {
-                                  const m = rawMaterials.find(rm => rm.id === val);
+                                  const stringVal = String(val);
+                                  const m = rawMaterials.find(rm => rm.id === stringVal);
                                   const updated = [...finalRecipeForm.ingredients];
-                                  updated[index].rawMaterialId = val;
+                                  updated[index].rawMaterialId = stringVal;
                                   updated[index].selectedUnit = m?.unit;
                                   updated[index].quantity = 0;
                                   setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
@@ -743,9 +741,10 @@ export function RecipesPage() {
                               <CustomSelect
                                 value={ing.subRecipeId || ''}
                                 onChange={(val) => {
-                                  const s = subRecipes.find(sr => sr.id === val);
+                                  const stringVal = String(val);
+                                  const s = subRecipes.find(sr => sr.id === stringVal);
                                   const updated = [...finalRecipeForm.ingredients];
-                                  updated[index].subRecipeId = val;
+                                  updated[index].subRecipeId = stringVal;
                                   updated[index].selectedUnit = s?.yieldUnit;
                                   updated[index].quantity = 0;
                                   setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
@@ -891,7 +890,6 @@ export function RecipesPage() {
               </div>
               <div className="p-8 border-t border-gray-200 dark:border-white/5">
                 <button onClick={handleSaveFinalRecipe} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-emerald-400 tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
-                  {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
                   Register Recipe
                 </button>
               </div>
@@ -905,9 +903,6 @@ export function RecipesPage() {
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl">
               <div className="p-8 text-center border-b border-gray-100 dark:border-white/5">
-                <div className="w-20 h-20 bg-paymint-green/10 text-paymint-green rounded-[2rem] flex items-center justify-center mx-auto mb-6">
-                  <RefreshCw size={40} />
-                </div>
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">Run Batch</h2>
                 <p className="text-gray-500 font-bold mt-1 text-xs tracking-widest">{manufactureRecipe.name}</p>
               </div>
@@ -929,7 +924,6 @@ export function RecipesPage() {
                   </div>
                 </div>
                 <button onClick={handleManufacture} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-emerald-400 tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
-                  {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
                   Confirm Production
                 </button>
               </div>

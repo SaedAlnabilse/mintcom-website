@@ -1,11 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useOutletContext } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { motion, AnimatePresence } from 'framer-motion';
+
 import {
     Store,
     Users,
-    RefreshCw,
     Search,
     ShoppingBag,
     DollarSign,
@@ -35,6 +34,7 @@ interface LocationStats {
     orderCount: number;
     itemCount: number;
     totalRevenue?: number;
+    establishmentLoginId?: string;
 }
 
 type ViewMode = 'grid' | 'list';
@@ -42,7 +42,9 @@ type SortOption = 'name' | 'revenue' | 'orders' | 'employees';
 type StatusFilter = 'all' | 'ACTIVE' | 'INACTIVE' | 'TRIAL';
 
 export function BrandLocationsPage() {
-    const { brandId } = useParams<{ brandId: string }>();
+    const { brandId: paramBrandId } = useParams<{ brandId: string }>();
+    const context = useOutletContext<{ brand: any }>() || {};
+    const brandId = context.brand?.id || paramBrandId;
     const { setCurrentEstablishment } = useAuth();
 
     const [locations, setLocations] = useState<LocationStats[]>([]);
@@ -218,7 +220,8 @@ export function BrandLocationsPage() {
 
         setCurrentEstablishment(establishment);
         localStorage.setItem('selectedEstablishmentId', loc.id);
-        window.open('/dashboard', '_blank');
+        const slug = loc.establishmentLoginId || loc.id;
+        window.open(`/dashboard/${slug}`, '_blank');
     };
 
     const getStatusColor = (status: string) => {
@@ -268,7 +271,7 @@ export function BrandLocationsPage() {
     return (
         <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-10">
             {/* Header */}
-            <div className="flex flex-col gap-4 sm:gap-6">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -282,13 +285,6 @@ export function BrandLocationsPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button
-                        onClick={fetchLocations}
-                        className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
-                        title="Refresh"
-                    >
-                        <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
-                    </button>
                 </div>
             </div>
 
@@ -302,11 +298,8 @@ export function BrandLocationsPage() {
                     { label: 'Employees', value: stats.totalEmployees, icon: Users, color: 'text-orange-500', bg: 'bg-orange-500/10' },
                     { label: 'Orders', value: stats.totalOrders.toLocaleString(), icon: ShoppingBag, color: 'text-pink-500', bg: 'bg-pink-500/10' },
                 ].map((stat, i) => (
-                    <motion.div
+                    <div
                         key={i}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.1 }}
                         className="group relative p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
                     >
                         <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
@@ -319,7 +312,7 @@ export function BrandLocationsPage() {
                             <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">{stat.label}</p>
                             <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                         </div>
-                    </motion.div>
+                    </div>
                 ))}
             </div>
 
@@ -334,7 +327,7 @@ export function BrandLocationsPage() {
                             placeholder="Search locations..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm focus:shadow-lg"
                         />
                     </div>
 
@@ -385,16 +378,16 @@ export function BrandLocationsPage() {
 
 
                         {/* View Mode Toggle */}
-                        <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1">
+                        <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[52px]">
                             <button
                                 onClick={() => setViewMode('grid')}
-                                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                             >
                                 <Grid3X3 size={18} />
                             </button>
                             <button
                                 onClick={() => setViewMode('list')}
-                                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                             >
                                 <List size={18} />
                             </button>
@@ -500,42 +493,36 @@ export function BrandLocationsPage() {
                                             <MoreVertical size={18} />
                                         </button>
 
-                                        <AnimatePresence>
-                                            {activeMenu === loc.id && (
-                                                <motion.div
-                                                    initial={{ opacity: 0, scale: 0.95, y: -5 }}
-                                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                    exit={{ opacity: 0, scale: 0.95, y: -5 }}
-                                                    className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                        {activeMenu === loc.id && (
+                                            <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                            >
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleLocationClick(loc);
+                                                    }}
+                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                                                 >
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleLocationClick(loc);
-                                                        }}
-                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                                    >
-                                                        <Eye size={16} />
-                                                        View Dashboard
-                                                    </button>
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setSecurityModal({
-                                                                isOpen: true,
-                                                                targetId: loc.id,
-                                                                targetName: loc.name
-                                                            });
-                                                            setActiveMenu(null);
-                                                        }}
-                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
-                                                    >
-                                                        <Trash2 size={16} />
-                                                        Dissolve Location
-                                                    </button>
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
+                                                    <Eye size={16} />
+                                                    View Dashboard
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSecurityModal({
+                                                            isOpen: true,
+                                                            targetId: loc.id,
+                                                            targetName: loc.name
+                                                        });
+                                                        setActiveMenu(null);
+                                                    }}
+                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
+                                                >
+                                                    <Trash2 size={16} />
+                                                    Dissolve Location
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 
@@ -652,43 +639,37 @@ export function BrandLocationsPage() {
                                             <MoreVertical size={18} />
                                         </button>
 
-                                        <AnimatePresence>
-                                            {activeMenu === loc.id && (
-                                                <motion.div
-                                                    initial={{ opacity: 0, scale: 0.95, x: 10 }}
-                                                    animate={{ opacity: 1, scale: 1, x: 0 }}
-                                                    exit={{ opacity: 0, scale: 0.95, x: 10 }}
-                                                    className="absolute right-8 top-1/2 -translate-y-1/2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                        {activeMenu === loc.id && (
+                                            <div className="absolute right-8 top-1/2 -translate-y-1/2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                            >
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleLocationClick(loc);
+                                                        setActiveMenu(null);
+                                                    }}
+                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                                                 >
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleLocationClick(loc);
-                                                            setActiveMenu(null);
-                                                        }}
-                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                                    >
-                                                        <Eye size={16} />
-                                                        View Dashboard
-                                                    </button>
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setSecurityModal({
-                                                                isOpen: true,
-                                                                targetId: loc.id,
-                                                                targetName: loc.name
-                                                            });
-                                                            setActiveMenu(null);
-                                                        }}
-                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
-                                                    >
-                                                        <Trash2 size={16} />
-                                                        Dissolve Location
-                                                    </button>
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
+                                                    <Eye size={16} />
+                                                    View Dashboard
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSecurityModal({
+                                                            isOpen: true,
+                                                            targetId: loc.id,
+                                                            targetName: loc.name
+                                                        });
+                                                        setActiveMenu(null);
+                                                    }}
+                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
+                                                >
+                                                    <Trash2 size={16} />
+                                                    Dissolve Location
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             );
@@ -697,28 +678,11 @@ export function BrandLocationsPage() {
                 </div>
             )}
 
-            <div className="flex flex-col items-center gap-6 mt-10">
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={(page) => setCurrentPage(page)}
-                />
-
-                <div className="text-center">
-                    <p className="text-sm text-gray-500">
-                        Showing <span className="font-bold text-gray-900 dark:text-white">{filteredLocations.length === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1} to {Math.min(currentPage * ITEMS_PER_PAGE, filteredLocations.length)}</span> of{' '}
-                        <span className="font-bold text-gray-900 dark:text-white">{filteredLocations.length}</span> locations
-                    </p>
-                </div>
-            </div>
-
-            {/* Results Summary */}
-            <div className="text-center">
-                <p className="text-sm text-gray-500">
-                    Showing <span className="font-bold text-gray-900 dark:text-white">{filteredLocations.length}</span> of{' '}
-                    <span className="font-bold text-gray-900 dark:text-white">{locations.length}</span> locations
-                </p>
-            </div>
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+            />
 
             <SecurityVerificationModal
                 isOpen={securityModal.isOpen}

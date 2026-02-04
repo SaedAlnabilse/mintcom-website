@@ -6,18 +6,17 @@ import {
   Trash2,
   X,
   TrendingUp,
-  AlertTriangle,
-  RefreshCw
+  AlertTriangle
 } from 'lucide-react';
 import { useNavigate, useLocation , useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import api from '../../config/api';
+import { useCurrency } from '../../context/CurrencyContext';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { CustomSelect } from '../../components/CustomSelect';
 import { QuickInfo } from '../../components/QuickInfo';
 import { SearchInput, Pagination } from '../../components/ui';
-
 
 interface RawMaterial {
   id: string;
@@ -41,6 +40,7 @@ export function MaterialsPage() {
   const { locationSlug } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const { formatAmount, currencySymbol } = useCurrency();
   const [activeTab, setActiveTab] = useState<'materials' | 'prepared'>('materials');
   const [rawMaterials, setRawMaterials] = useState<RawMaterial[]>([]);
   const [subRecipes, setSubRecipes] = useState<SubRecipe[]>([]);
@@ -50,10 +50,7 @@ export function MaterialsPage() {
   const itemsPerPage = 10;
 
   const [showMaterialModal, setShowMaterialModal] = useState(false);
-  const [showRestockModal, setShowRestockModal] = useState(false);
   const [editingMaterial, setEditingMaterial] = useState<RawMaterial | null>(null);
-  const [restockMaterial, setRestockMaterial] = useState<RawMaterial | null>(null);
-  const [restockAmount, setRestockAmount] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [confirmConfig, setConfirmConfig] = useState<{
@@ -107,7 +104,7 @@ export function MaterialsPage() {
       ]);
       setRawMaterials(materialsRes.data || []);
       setSubRecipes(recipesRes.data || []);
-    } catch (err: any) {
+    } catch {
       toast.error('Failed to sync inventory');
     } finally {
       setIsLoading(false);
@@ -152,27 +149,14 @@ export function MaterialsPage() {
       }
       setShowMaterialModal(false);
       fetchData();
-    } catch (err: any) {
+    } catch {
       toast.error('Error saving material');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleRestock = async () => {
-    if (!restockAmount || restockAmount <= 0 || !restockMaterial) return;
-    setIsSubmitting(true);
-    try {
-      await api.post(`/api/manufacturing/raw-materials/${restockMaterial.id}/restock`, { amount: restockAmount });
-      toast.success('Inventory adjusted');
-      setShowRestockModal(false);
-      fetchData();
-    } catch (err: any) {
-      toast.error('Restock sequence failed');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+
 
   const handleDeleteMaterial = async (id: string, name: string) => {
     setConfirmConfig({
@@ -185,7 +169,7 @@ export function MaterialsPage() {
           await api.delete(`/api/manufacturing/raw-materials/${id}`);
           toast.success('Material removed');
           fetchData();
-        } catch (err: any) {
+        } catch {
           toast.error('Deletion failed');
         }
       }
@@ -193,17 +177,13 @@ export function MaterialsPage() {
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-JO', {
-      style: 'currency',
-      currency: 'JOD',
-      minimumFractionDigits: 3,
-    }).format(value);
+    return formatAmount(value);
   };
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-10">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -287,7 +267,8 @@ export function MaterialsPage() {
               <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
                 {/* Mobile Cards View */}
                 <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
-                  {paginatedItems.map((m: any) => {
+                  {paginatedItems.map((item) => {
+                    const m = item as RawMaterial;
                     const isLow = m.lowStockThreshold && m.quantity <= m.lowStockThreshold;
                     return (
                       <div key={m.id} className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
@@ -305,9 +286,6 @@ export function MaterialsPage() {
                             </div>
                           </div>
                           <div className="flex gap-1 flex-shrink-0">
-                            <button onClick={() => { setRestockMaterial(m); setRestockAmount(0); setShowRestockModal(true); }} className="p-2 bg-paymint-green/10 text-paymint-green rounded-lg hover:bg-paymint-green hover:text-black transition-all">
-                              <RefreshCw size={14} />
-                            </button>
                             <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors">
                               <Edit2 size={14} />
                             </button>
@@ -344,7 +322,8 @@ export function MaterialsPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                      {paginatedItems.map((m: any) => {
+                      {paginatedItems.map((item) => {
+                        const m = item as RawMaterial;
                         const isLow = m.lowStockThreshold && m.quantity <= m.lowStockThreshold;
                         return (
                           <tr key={m.id} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
@@ -369,9 +348,6 @@ export function MaterialsPage() {
                             </td>
                             <td className="px-6 py-4 text-right">
                               <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onClick={() => { setRestockMaterial(m); setRestockAmount(0); setShowRestockModal(true); }} className="px-3 py-1.5 bg-paymint-green/10 text-paymint-green text-xs font-bold tracking-wide rounded-lg hover:bg-paymint-green hover:text-black transition-all">
-                                  Restock
-                                </button>
                                 <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors">
                                   <Edit2 size={14} />
                                 </button>
@@ -389,41 +365,44 @@ export function MaterialsPage() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {paginatedItems.map((r: any) => (
-                  <motion.div
-                    layout
-                    key={r.id}
-                    className="group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:shadow-xl transition-all duration-300 overflow-hidden"
-                  >
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                    <div className="absolute left-0 top-0 h-full w-1 bg-paymint-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                {paginatedItems.map((item) => {
+                  const r = item as SubRecipe;
+                  return (
+                    <motion.div
+                      layout
+                      key={r.id}
+                      className="group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:shadow-xl transition-all duration-300 overflow-hidden"
+                    >
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                      <div className="absolute left-0 top-0 h-full w-1 bg-paymint-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                    <div className="relative z-10">
-                      <div className="flex justify-between items-start mb-6">
-                        <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm">
-                          <Package size={20} />
+                      <div className="relative z-10">
+                        <div className="flex justify-between items-start mb-6">
+                          <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm">
+                            <Package size={20} />
+                          </div>
+                          <button onClick={() => navigate(`/dashboard/${locationSlug}/recipes`)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green opacity-0 group-hover:opacity-100 transition-all">
+                            <Edit2 size={16} />
+                          </button>
                         </div>
-                        <button onClick={() => navigate(`/dashboard/${locationSlug}/recipes`)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green opacity-0 group-hover:opacity-100 transition-all">
-                          <Edit2 size={16} />
-                        </button>
+
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate group-hover:text-paymint-green transition-colors">{r.name}</h3>
+                        <p className="text-xs text-gray-500 mt-1 line-clamp-1">{r.description || 'Custom preparation formula.'}</p>
+
+                        <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 grid grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Yield</p>
+                            <p className="font-bold text-gray-900 dark:text-white text-sm">{(r as any)['yield']} <span className="text-xs text-gray-500">{r.yieldUnit}</span></p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Stock</p>
+                            <p className="font-bold text-paymint-green text-sm">{r.quantity.toFixed(2)} <span className="text-xs">{r.yieldUnit}</span></p>
+                          </div>
+                        </div>
                       </div>
-
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate group-hover:text-paymint-green transition-colors">{r.name}</h3>
-                      <p className="text-xs text-gray-500 mt-1 line-clamp-1">{r.description || 'Custom preparation formula.'}</p>
-
-                      <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 grid grid-cols-2 gap-4">
-                        <div>
-                          <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Yield</p>
-                          <p className="font-bold text-gray-900 dark:text-white text-sm">{r.yield} <span className="text-xs text-gray-500">{r.yieldUnit}</span></p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Stock</p>
-                          <p className="font-bold text-paymint-green text-sm">{r.quantity.toFixed(2)} <span className="text-xs">{r.yieldUnit}</span></p>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  );
+                })}
               </div>
             )}
 
@@ -470,7 +449,7 @@ export function MaterialsPage() {
                     <CustomSelect
                       label="Unit"
                       value={materialForm.unit}
-                      onChange={(val) => setMaterialForm({ ...materialForm, unit: val })}
+                      onChange={(val) => setMaterialForm({ ...materialForm, unit: String(val) })}
                       options={units}
                     />
                   </div>
@@ -481,7 +460,7 @@ export function MaterialsPage() {
                     </label>
                     <div className="relative group">
                       <div className="absolute left-3 top-1/2 -translate-y-1/2 px-2 py-0.5 bg-gray-200 dark:bg-white/10 rounded-md">
-                        <span className="text-gray-500 dark:text-gray-400 text-xs font-black">JOD</span>
+                        <span className="text-gray-500 dark:text-gray-400 text-xs font-black">{currencySymbol}</span>
                       </div>
                       <input
                         type="text"
@@ -530,7 +509,6 @@ export function MaterialsPage() {
                   </div>
                 </div>
                 <button type="submit" disabled={isSubmitting} className="w-full py-3.5 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 transition-all shadow-sm text-sm flex items-center justify-center gap-2">
-                  {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
                   Save
                 </button>
               </form>
@@ -539,34 +517,7 @@ export function MaterialsPage() {
         )}
       </AnimatePresence>
 
-      {/* Restock Modal */}
-      <AnimatePresence>
-        {showRestockModal && restockMaterial && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl">
-              <div className="p-8 text-center border-b border-gray-100 dark:border-white/5">
-                <div className="w-16 h-16 bg-paymint-green/10 text-paymint-green rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Package size={32} />
-                </div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{restockMaterial.name}</h2>
-                <p className="text-gray-500 font-bold mt-1 text-xs tracking-widest">Available: {restockMaterial.quantity.toFixed(2)} {restockMaterial.unit}</p>
-              </div>
-              <div className="p-8 space-y-6">
-                <div>
-                  <input type="number" step="0.01" value={restockAmount} onChange={(e) => setRestockAmount(Number(e.target.value))} className="w-full bg-transparent text-center text-5xl font-black text-paymint-green focus:outline-none placeholder-gray-300" placeholder="0.00" autoFocus />
-                  <div className="flex items-center justify-center mt-2 gap-1">
-                    <p className="text-xs font-black text-gray-400 tracking-widest">Qty to Add ({restockMaterial.unit})</p>
-                  </div>
-                </div>
-                <button onClick={handleRestock} disabled={isSubmitting || restockAmount <= 0} className="w-full py-3.5 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 transition-all text-sm flex items-center justify-center gap-2">
-                  {isSubmitting && <RefreshCw size={16} className="animate-spin" />}
-                  Confirm Restock
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+
 
       <ConfirmModal
         isOpen={confirmConfig.isOpen}

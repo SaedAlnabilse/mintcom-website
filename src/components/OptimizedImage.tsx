@@ -74,7 +74,7 @@ export function OptimizedImage({
   // Check if image is already cached/loaded
   useEffect(() => {
     if (imgRef.current?.complete) {
-      setIsLoaded(true);
+      setTimeout(() => setIsLoaded(true), 0);
     }
   }, []);
 

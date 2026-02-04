@@ -6,13 +6,14 @@ import {
 import { endOfDay, startOfDay, format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  TrendingUp, Clock, Activity, ShoppingBag, ArrowUpRight, RefreshCw,
+  TrendingUp, Clock, Activity, ShoppingBag, ArrowUpRight, ArrowDownRight,
   Download, ChevronRight, Wallet, CreditCard, ExternalLink, Percent, DollarSign, PieChart as PieChartIcon, Tag, Scale, ArrowUpDown, Search, Users
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { useTheme } from '../../context/ThemeContext';
-import { useAuth } from '../../context/AuthContext';
+import { useCurrency } from '../../context/CurrencyContext';
+
 import { PayInPayOutLogModal } from '../../components/dashboard/reports/PayInPayOutLogModal';
 import { ReceiptsReport } from '../../components/dashboard/reports/ReceiptsReport';
 import { SingleSelect } from '../../components/SingleSelect';
@@ -23,119 +24,200 @@ import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../
 import type { DatePeriod } from '../../utils/datePeriods';
 import { Pagination } from '../../components/ui';
 
+
+
 type ReportType = 'sales' | 'top-items' | 'top-categories' | 'top-modifiers' | 'peak-hours' | 'shifts' | 'staff-sales' | 'payments' | 'discounts' | 'taxes' | 'receipts';
 
 const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
+interface EmployeeOption {
+  label: string;
+  value: string;
+}
+
+interface ShiftOption {
+  label: string;
+  value: string;
+  startTime: string;
+  endTime?: string | null;
+  totalSales: number;
+  orderCount: number;
+  totalDiscounts: number;
+  totalRefunds: number;
+  variance: number;
+}
+
+interface SalesSummary {
+  totalRevenue: number;
+  taxCollected: number;
+  grossProfit: number;
+  totalOrders: number;
+  totalRefunds: number;
+  totalHoursWorked: number;
+  totalPayIn: number;
+  totalPayOut: number;
+  dailyBreakdown: Array<{
+    date: string;
+    revenue: number;
+    count: number;
+  }>;
+  paymentMethodBreakdown: Array<{
+    name: string;
+    value: number;
+  }>;
+  discountBreakdown: Array<{
+    name: string;
+    count: number;
+    value: number;
+  }>;
+  cardTypeBreakdown?: Array<{
+    name: string;
+    value: number;
+  }>;
+  otherPaymentBreakdown?: Array<{
+    name: string;
+    value: number;
+  }>;
+  taxBreakdown?: Array<{
+    name: string;
+    rate: number;
+    taxableAmount: number;
+    collected: number;
+    transactions: number;
+  }>;
+  taxExemptSales?: number;
+  totalDiscountGiven?: number;
+  totalDiscounts?: number;
+  totalDiscountCount?: number;
+}
+
+interface PeakHour {
+  hour: number;
+  total: number;
+  count: number;
+}
+
+interface Shift {
+  id: string;
+  startTime: string;
+  endTime?: string | null;
+  totalSales: number;
+  orderCount: number;
+  totalDiscounts: number;
+  totalRefunds: number;
+  discrepancy: number;
+  variance?: number;
+  openingBalance: number;
+  closingBalance?: number | null;
+  status: 'OPEN' | 'CLOSED';
+  user?: {
+    username: string;
+  };
+}
+
+interface ItemReportBreakdown {
+  itemName?: string;
+  name?: string;
+  quantity: number;
+  totalSales?: number;
+  revenue?: number;
+  [key: string]: string | number | undefined; // Allow for dynamic sorting keys
+}
+
+interface ItemReportData {
+  breakdown: ItemReportBreakdown[];
+}
+
 export function ReportsPage() {
   const { resolvedTheme } = useTheme();
+  const { formatAmount, currencySymbol } = useCurrency();
   const isDark = resolvedTheme === 'dark';
-  const { currentEstablishment } = useAuth();
-  const { type, locationSlug } = useParams<{ type: string; locationSlug: string }>();
-  const navigate = useNavigate();
-
+  // const { user } = useAuth(); 
   const location = useLocation();
+  const navigate = useNavigate();
+  const params = useParams();
+  const locationSlug = params.locationSlug || params.slug;
 
-  const [reportType, setReportType] = useState<ReportType>('sales');
-  const [itemReportTab, setItemReportTab] = useState<'items' | 'categories' | 'modifiers' | 'attributes'>('items');
-
-  // Sync URL params with internal state
-  useEffect(() => {
-    if (type) {
-      window.scrollTo({ top: 0, behavior: 'auto' });
-      switch (type) {
-        case 'sales':
-          setReportType('sales');
-          break;
-        case 'taxes':
-          setReportType('taxes');
-          break;
-        case 'payments':
-          setReportType('payments');
-          break;
-        case 'discounts':
-          setReportType('discounts');
-          break;
-        case 'items':
-          setReportType('top-items');
-          setItemReportTab('items');
-          break;
-        case 'categories':
-          setReportType('top-items');
-          setItemReportTab('categories');
-          break;
-        case 'modifiers':
-          setReportType('top-items');
-          setItemReportTab('modifiers');
-          break;
-        case 'staff-sales':
-          setReportType('staff-sales');
-          break;
-        case 'shifts':
-          setReportType('shifts');
-          break;
-        case 'peak-hours':
-          setReportType('peak-hours');
-          break;
-        case 'receipts':
-          setReportType('receipts');
-          break;
-        default:
-          setReportType('sales');
-      }
-    } else {
-      setReportType('sales');
-    }
-  }, [type]);
-
-  const [isLoading, setIsLoading] = useState(true);
-  const [startDate, setStartDate] = useState(() => new Date().toISOString().split('T')[0]);
-  const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
+  // Date & Time State
+  const [startDate, setStartDate] = useState(formatDateForInput(startOfDay(new Date())));
+  const [endDate, setEndDate] = useState(formatDateForInput(endOfDay(new Date())));
   const [startTime, setStartTime] = useState('00:00');
   const [endTime, setEndTime] = useState('23:59');
   const [selectedDateRange, setSelectedDateRange] = useState<string>('today');
-  const [showPayInOutModal, setShowPayInOutModal] = useState(false);
-  const [itemSearchQuery, setItemSearchQuery] = useState('');
 
-  // New states for advanced filtering
-  const [employees, setEmployees] = useState<any[]>([]);
+  // Report State
+  const [reportType, setReportType] = useState<ReportType>('sales');
+  const [itemReportTab, setItemReportTab] = useState<'items' | 'categories' | 'modifiers' | 'attributes'>('items');
+  const [itemSearchQuery, setItemSearchQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPayInOutModal, setShowPayInOutModal] = useState(false);
+
+  // Advanced Filtering
+  const [employees, setEmployees] = useState<EmployeeOption[]>([]);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
-  const [employeeShifts, setEmployeeShifts] = useState<any[]>([]);
+  const [employeeShifts, setEmployeeShifts] = useState<ShiftOption[]>([]);
   const [selectedShiftId, setSelectedShiftId] = useState<string | null>(null);
+
+  // Current Establishment context
+  const [currentEstablishment, setCurrentEstablishment] = useState<any>(null);
+
+  useEffect(() => {
+    try {
+      const est = sessionStorage.getItem('currentEstablishment');
+      if (est) setCurrentEstablishment(JSON.parse(est));
+    } catch (e) { console.error(e); }
+  }, []);
+
+  // Sync Report Type from URL
+  useEffect(() => {
+    const path = location.pathname;
+    const parts = path.split('/');
+    const reportIndex = parts.indexOf('reports');
+
+    if (reportIndex !== -1 && parts[reportIndex + 1]) {
+      const type = parts[reportIndex + 1];
+
+      if (['items', 'categories', 'modifiers', 'attributes'].includes(type) || type === 'items-categories' || type === 'addons') {
+        setReportType('top-items');
+        if (type === 'items') setItemReportTab('items');
+        else if (type === 'categories') setItemReportTab('categories');
+        else if (type === 'modifiers') setItemReportTab('modifiers');
+        else if (type === 'attributes') setItemReportTab('attributes');
+        else if (type === 'items-categories') setItemReportTab('items');
+        else if (type === 'addons') setItemReportTab('modifiers');
+      } else {
+        const validTypes: ReportType[] = ['sales', 'top-items', 'peak-hours', 'shifts', 'staff-sales', 'payments', 'discounts', 'taxes', 'receipts'];
+        if (validTypes.includes(type as ReportType)) {
+          setReportType(type as ReportType);
+        }
+      }
+    }
+  }, [location]);
 
   const effectiveDateRange = useMemo(() => {
     if (selectedShiftId) {
       const shift = employeeShifts.find(s => s.value === selectedShiftId);
       if (shift) {
-        return {
-          start: shift.startTime,
-          end: shift.endTime || new Date().toISOString()
-        };
+        return { start: shift.startTime, end: shift.endTime || new Date().toISOString() };
       }
     }
-    return {
-      start: new Date(`${startDate}T${startTime}`).toISOString(),
-      end: new Date(`${endDate}T${endTime}`).toISOString()
-    };
+    const start = new Date(`${startDate}T${startTime}`);
+    const end = new Date(`${endDate}T${endTime}`);
+    return { start: start.toISOString(), end: end.toISOString() };
   }, [selectedShiftId, employeeShifts, startDate, endDate, startTime, endTime]);
 
+
   useEffect(() => {
-    if (location.state?.showPayInOut) {
-      setShowPayInOutModal(true);
-      if (location.state?.dateRange) {
-        setQuickDate(location.state.dateRange);
-      }
-      // Clear state to prevent reopening on generic re-renders if needed
-      window.history.replaceState({}, document.title);
-    }
+    // ...
   }, [location]);
 
-  const [salesData, setSalesData] = useState<any>(null);
+
+  const [salesData, setSalesData] = useState<SalesSummary | null>(null);
   const [expandedPaymentMethod, setExpandedPaymentMethod] = useState<string | null>(null);
 
-  const [peakHours, setPeakHours] = useState<any[]>([]);
-  const [shifts, setShifts] = useState<any[]>([]);
-  const [itemReportData, setItemReportData] = useState<any>(null);
+  const [peakHours, setPeakHours] = useState<PeakHour[]>([]);
+  const [shifts, setShifts] = useState<Shift[]>([]);
+  const [itemReportData, setItemReportData] = useState<ItemReportData | null>(null);
   // itemReportTab moved up
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -170,6 +252,11 @@ export function ReportsPage() {
           bValue = b.totalSales || b.revenue;
         }
 
+        // Handle undefined values safely
+        if (aValue === undefined && bValue === undefined) return 0;
+        if (aValue === undefined) return 1;
+        if (bValue === undefined) return -1;
+
         if (aValue < bValue) {
           return sortConfig.direction === 'asc' ? -1 : 1;
         }
@@ -184,11 +271,13 @@ export function ReportsPage() {
 
   const sortedDiscounts = useMemo(() => {
     if (!salesData?.discountBreakdown) return [];
-    let items = [...salesData.discountBreakdown];
+    const items = [...salesData.discountBreakdown];
     if (sortConfig) {
       items.sort((a, b) => {
-        const aValue = a[sortConfig.key];
-        const bValue = b[sortConfig.key];
+        // Safe access using keyof
+        const key = sortConfig.key as keyof typeof a;
+        const aValue = a[key] ?? 0;
+        const bValue = b[key] ?? 0;
 
         if (aValue < bValue) {
           return sortConfig.direction === 'asc' ? -1 : 1;
@@ -220,8 +309,8 @@ export function ReportsPage() {
     try {
       const res = await api.get('/reports/employees');
       setEmployees(res.data?.map((u: any) => ({ label: u.name, value: u.id })) || []);
-    } catch (error) {
-      console.error('Failed to load employees', error);
+    } catch {
+      console.error('Failed to load employees');
     }
   };
 
@@ -311,11 +400,12 @@ export function ReportsPage() {
       switch (reportType) {
         case 'sales':
         case 'payments':
-        case 'taxes':
+        case 'taxes': {
           const salesRes = await api.get('/reports/historical-summary', { params: commonParams });
           setSalesData(salesRes.data);
           break;
-        case 'discounts':
+        }
+        case 'discounts': {
           const discountRes = await api.get('/reports/discounts', { params: commonParams });
           const rawReports = discountRes.data?.reports;
           const discountReports = Array.isArray(rawReports) ? rawReports.filter((r: any) => r) : [];
@@ -328,9 +418,10 @@ export function ReportsPage() {
               count: r.count || 0,
               value: r.totalAmount || 0
             }))
-          });
+          } as any);
           break;
-        case 'top-items':
+        }
+        case 'top-items': {
           let endpoint = '/reports/item-report';
           if (itemReportTab === 'categories') {
             endpoint = '/reports/category-report';
@@ -350,20 +441,24 @@ export function ReportsPage() {
           });
           setItemReportData(itemRes.data);
           break;
-        case 'peak-hours':
+        }
+        case 'peak-hours': {
           const peakRes = await api.get('/reports/peak-hours', { params: commonParams });
           setPeakHours(peakRes.data || []);
           break;
-        case 'staff-sales':
+        }
+        case 'staff-sales': {
           const staffSalesRes = await api.get('/reports/shifts', { params: { ...commonParams, limit: 50 } });
           setShifts(staffSalesRes.data || []);
           break;
-        case 'shifts':
+        }
+        case 'shifts': {
           const shiftsRes = await api.get('/reports/shifts', { params: { ...commonParams, limit: 20 } });
           setShifts(shiftsRes.data || []);
           break;
+        }
       }
-    } catch (err: any) {
+    } catch {
       toast.error('Failed to load report data');
     } finally {
       setIsLoading(false);
@@ -372,11 +467,7 @@ export function ReportsPage() {
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-JO', {
-      style: 'currency',
-      currency: 'JOD',
-      minimumFractionDigits: 3,
-    }).format(value);
+    return formatAmount(value);
   };
 
   const setQuickDate = (range: string) => {
@@ -390,8 +481,8 @@ export function ReportsPage() {
   };
 
   const handleExport = () => {
-    let dataToExport = [];
-    let filename = `report_${reportType}`;
+    let dataToExport: any[] = [];
+    const filename = `report_${reportType}`;
     let headers = {};
 
     switch (reportType) {
@@ -400,7 +491,7 @@ export function ReportsPage() {
       case 'discounts':
       case 'taxes':
         dataToExport = salesData?.dailyBreakdown || [];
-        headers = { date: 'Date', revenue: 'Revenue (JOD)', count: 'Orders' };
+        headers = { date: 'Date', revenue: `Revenue (${currencySymbol})`, count: 'Orders' };
         break;
       case 'top-items':
         dataToExport = itemReportData?.breakdown || [];
@@ -439,7 +530,7 @@ export function ReportsPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-10">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-wide border border-paymint-green/20">
@@ -464,13 +555,6 @@ export function ReportsPage() {
           >
             <Download size={18} className="text-gray-900 dark:text-white" />
             <span>Export to CSV</span>
-          </button>
-          <button
-            onClick={fetchReportData}
-            className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm"
-            title="Refresh Data"
-          >
-            <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
           </button>
         </div>
       </div>
@@ -660,8 +744,6 @@ export function ReportsPage() {
               <div className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {(() => {
-                    const netPayInOut = (salesData.totalPayIn || 0) - (salesData.totalPayOut || 0);
-
                     return [
                       {
                         label: 'Total Sales',
@@ -707,7 +789,7 @@ export function ReportsPage() {
                       {
                         label: 'Refunds',
                         value: (salesData.totalRefunds || 0).toFixed(3),
-                        icon: RefreshCw,
+                        icon: ArrowDownRight,
                         color: 'text-red-500',
                         bg: 'bg-red-500/10',
                         sub: 'Returns'
@@ -731,18 +813,12 @@ export function ReportsPage() {
                           <div className="w-full mt-6 space-y-2">
                             <div className="flex items-center justify-between">
                               <span className="text-xs font-bold text-gray-400">Pay In</span>
-                              <span className="text-sm font-bold text-paymint-green tracking-tight">+{formatCurrency(salesData.totalPayIn || 0).replace('JOD', '').trim()}</span>
+                              <span className="text-sm font-bold text-paymint-green tracking-tight">+{formatAmount(salesData.totalPayIn || 0).replace(currencySymbol, '').trim()}</span>
                             </div>
                             <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
                             <div className="flex items-center justify-between">
                               <span className="text-xs font-bold text-gray-400">Pay Out</span>
-                              <span className="text-sm font-bold text-red-500 tracking-tight">-{formatCurrency(salesData.totalPayOut || 0).replace('JOD', '').trim()}</span>
-                            </div>
-                            <div className="flex items-center justify-between pt-2 border-t border-dashed border-gray-200 dark:border-white/10">
-                              <span className="text-xs font-bold text-gray-400">Net Flow</span>
-                              <span className={`text-sm font-bold ${netPayInOut >= 0 ? 'text-paymint-green' : 'text-red-500'}`}>
-                                {netPayInOut >= 0 ? '+' : ''}{formatCurrency(netPayInOut).replace('JOD', '').trim()}
-                              </span>
+                              <span className="text-sm font-bold text-red-500 tracking-tight">-{formatAmount(salesData.totalPayOut || 0).replace(currencySymbol, '').trim()}</span>
                             </div>
                           </div>
                         ),
@@ -846,14 +922,14 @@ export function ReportsPage() {
                               });
 
                               // Preserve the original date if found (for tooltips), otherwise use hourStr
-                              return existing ? { ...existing, date: hourStr } : { date: hourStr, revenue: 0 };
+                              return existing ? { ...existing, date: hourStr } : { date: hourStr, revenue: 0, count: 0 };
                             });
                             chartData = allHours;
                           }
 
                           // For week/month views, aggregate hourly data into daily data
                           if (needsDailyAggregation) {
-                            const dailyMap: { [key: string]: { date: string; revenue: number; displayDate: string } } = {};
+                            const dailyMap: { [key: string]: { date: string; revenue: number; displayDate: string; count: number } } = {};
 
                             chartData.forEach((d: any) => {
                               const dateObj = new Date(d.date);
@@ -867,17 +943,19 @@ export function ReportsPage() {
                                   dailyMap[dayKey] = {
                                     date: dayKey,
                                     revenue: 0,
-                                    displayDate: selectedDateRange === 'this_week' ? dayName : fullDate
+                                    displayDate: selectedDateRange === 'this_week' ? dayName : fullDate,
+                                    count: 0
                                   };
                                 }
                                 dailyMap[dayKey].revenue += Number(d.revenue) || 0;
+                                dailyMap[dayKey].count += Number(d.count) || 0;
                               }
                             });
 
                             // Sort by date and convert to array
                             chartData = Object.values(dailyMap).sort((a, b) =>
                               new Date(a.date).getTime() - new Date(b.date).getTime()
-                            );
+                            ) as any[]; // Cast to any[] since mapping adds displayDate which is not in original SalesSummary
                           }
 
                           const maxRevenue = chartData.length > 0
@@ -1374,17 +1452,17 @@ export function ReportsPage() {
                         </div>
                         <div className="p-4 rounded-xl bg-paymint-green/10 border border-paymint-green/20">
                           <p className="text-xs font-black text-paymint-green tracking-widest mb-1">Total Sales</p>
-                          <p className="text-xl font-bold text-paymint-green">{totalSales.toFixed(3)} JOD</p>
+                          <p className="text-xl font-bold text-paymint-green">{totalSales.toFixed(3)} {currencySymbol}</p>
                           <p className="text-xs text-paymint-green/70">By {empName}</p>
                         </div>
                         <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
                           <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Total Discounts Issued</p>
-                          <p className="text-xl font-bold text-orange-500">{totalDiscounts.toFixed(3)} JOD</p>
+                          <p className="text-xl font-bold text-orange-500">{totalDiscounts.toFixed(3)} {currencySymbol}</p>
                           <p className="text-xs text-gray-500">Issued by {empName}</p>
                         </div>
                         <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
                           <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Total Refunds</p>
-                          <p className="text-xl font-bold text-red-500">{totalRefunds.toFixed(3)} JOD</p>
+                          <p className="text-xl font-bold text-red-500">{totalRefunds.toFixed(3)} {currencySymbol}</p>
                           <p className="text-xs text-gray-500">By {empName}</p>
                         </div>
                         <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
@@ -1430,7 +1508,7 @@ export function ReportsPage() {
                   const totalStoreSales = sortedEmployees.reduce((acc: number, curr: any) => acc + curr.totalSales, 0);
 
                   // Prepare Pie Chart Data (Top 4 + Others)
-                  let pieData = sortedEmployees.slice(0, 4).map((emp: any) => ({
+                  const pieData = sortedEmployees.slice(0, 4).map((emp: any) => ({
                     name: emp.username,
                     value: emp.totalSales,
                     color: ''
@@ -1487,7 +1565,7 @@ export function ReportsPage() {
                               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                                 <div className="text-center">
                                   <p className="text-xs font-black text-gray-400">Total</p>
-                                  <p className="text-sm font-black text-gray-900 dark:text-white">{formatCurrency(totalStoreSales).replace('JOD', '').trim()}</p>
+                                  <p className="text-sm font-black text-gray-900 dark:text-white">{formatAmount(totalStoreSales).replace(currencySymbol, '').trim()}</p>
                                 </div>
                               </div>
                             </div>
@@ -1529,12 +1607,12 @@ export function ReportsPage() {
                                     <div className="flex gap-4 mt-4">
                                       <div>
                                         <p className={`text-xs font-black tracking-widest mb-1 ${idx === 0 ? 'text-black/60' : 'text-gray-400'}`}>Revenue</p>
-                                        <p className={`text-2xl font-black ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>{formatCurrency(emp.totalSales).replace('JOD', '').trim()}</p>
+                                        <p className={`text-2xl font-black ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>{formatAmount(emp.totalSales).replace(currencySymbol, '').trim()}</p>
                                       </div>
                                       <div>
                                         <p className={`text-xs font-black tracking-widest mb-1 ${idx === 0 ? 'text-black/60' : 'text-gray-400'}`}>Avg Ticket</p>
                                         <p className={`text-2xl font-black ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>
-                                          {formatCurrency(emp.totalSales / (emp.transactionCount || 1)).replace('JOD', '').trim()}
+                                          {formatAmount(emp.totalSales / (emp.transactionCount || 1)).replace(currencySymbol, '').trim()}
                                         </p>
                                       </div>
                                     </div>
@@ -1597,11 +1675,11 @@ export function ReportsPage() {
                                         </div>
                                       </td>
                                       <td className="px-6 py-4 text-right font-bold text-gray-900 dark:text-white">
-                                        {formatCurrency(avgTicket).replace('JOD', '').trim()}
+                                        {formatAmount(avgTicket).replace(currencySymbol, '').trim()}
                                       </td>
                                       <td className="px-6 py-4 text-right">
                                         <span className="text-xs font-bold text-gray-500">
-                                          {formatCurrency(efficiency).replace('JOD', '').trim()} / hr
+                                          {formatAmount(efficiency).replace(currencySymbol, '').trim()} / hr
                                         </span>
                                       </td>
                                     </tr>
@@ -1736,9 +1814,9 @@ export function ReportsPage() {
                                         : 'bg-gray-100 dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10'
                                       }`}>
                                       {shift.discrepancy > 0.001
-                                        ? `+${formatCurrency(shift.discrepancy).replace('JOD', '').trim()} Over`
+                                        ? `+${formatAmount(shift.discrepancy).replace(currencySymbol, '').trim()} Over`
                                         : shift.discrepancy < -0.001
-                                          ? `${formatCurrency(shift.discrepancy).replace('JOD', '').trim()} Short`
+                                          ? `${formatAmount(shift.discrepancy).replace(currencySymbol, '').trim()} Short`
                                           : '0'}
                                     </span>
                                   </div>
@@ -1818,7 +1896,7 @@ export function ReportsPage() {
                             fontSize={10}
                             tickLine={false}
                             axisLine={false}
-                            tickFormatter={(val) => formatCurrency(val).replace('JOD', '').trim()}
+                            tickFormatter={(val) => formatAmount(val).replace(currencySymbol, '').trim()}
                           />
                           <Tooltip
                             cursor={{ fill: 'transparent' }}
@@ -1831,7 +1909,7 @@ export function ReportsPage() {
                             }}
                             itemStyle={{ color: '#f97316', fontWeight: 'bold', fontSize: '12px', textTransform: 'capitalize' }}
                             labelStyle={{ color: isDark ? '#fff' : '#000', fontWeight: 'bold', marginBottom: '4px', fontSize: '10px' }}
-                            formatter={(val: any) => [formatCurrency(val), 'Revenue']}
+                            formatter={(val: any) => [formatAmount(val), 'Revenue']}
                           />
                           <Bar dataKey="total" name="Revenue" fill="url(#barGradient)" radius={[6, 6, 0, 0]} barSize={40} animationDuration={1500} />
                         </BarChart>
@@ -1987,8 +2065,8 @@ export function ReportsPage() {
                             {salesData.paymentMethodBreakdown?.map((item: any, i: number) => {
                               const total = salesData.totalRevenue || 1;
                               const percentage = ((item.value / total) * 100).toFixed(1);
-                              const hasDetails = (item.name === 'CARD' && salesData.cardTypeBreakdown?.length > 0) ||
-                                (item.name !== 'CARD' && item.name !== 'CASH' && salesData.otherPaymentBreakdown?.length > 0);
+                              const hasDetails = (item.name === 'CARD' && (salesData.cardTypeBreakdown?.length || 0) > 0) ||
+                                (item.name !== 'CARD' && item.name !== 'CASH' && (salesData.otherPaymentBreakdown?.length || 0) > 0);
                               const isExpanded = expandedPaymentMethod === item.name;
 
                               return (
@@ -2028,7 +2106,7 @@ export function ReportsPage() {
                                   </tr>
 
                                   {/* Expanded Card Type Details */}
-                                  {isExpanded && item.name === 'CARD' && salesData.cardTypeBreakdown?.length > 0 && (
+                                  {isExpanded && item.name === 'CARD' && (salesData.cardTypeBreakdown?.length || 0) > 0 && (
                                     <tr>
                                       <td colSpan={3} className="p-0">
                                         <motion.div
@@ -2039,8 +2117,10 @@ export function ReportsPage() {
                                         >
                                           <div className="p-4 pl-16 space-y-2">
                                             <p className="text-xs font-black text-gray-400 tracking-widest mb-3">Card Type Breakdown</p>
-                                            {salesData.cardTypeBreakdown.map((card: any, j: number) => {
-                                              const cardPercentage = ((card.value / item.value) * 100).toFixed(1);
+                                            {(salesData.cardTypeBreakdown || []).map((card: any, j: number) => {
+                                              const CardVal = card.value || 0;
+                                              const ItemVal = item.value || 1;
+                                              const cardPercentage = ((CardVal / ItemVal) * 100).toFixed(1);
                                               return (
                                                 <div key={j} className="flex items-center justify-between p-3 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/5">
                                                   <div className="flex items-center gap-3">
@@ -2063,7 +2143,7 @@ export function ReportsPage() {
                                   )}
 
                                   {/* Expanded Other Payment Method Details */}
-                                  {isExpanded && item.name !== 'CARD' && item.name !== 'CASH' && salesData.otherPaymentBreakdown?.length > 0 && (
+                                  {isExpanded && item.name !== 'CARD' && item.name !== 'CASH' && (salesData.otherPaymentBreakdown?.length || 0) > 0 && (
                                     <tr>
                                       <td colSpan={3} className="p-0">
                                         <motion.div
@@ -2074,8 +2154,10 @@ export function ReportsPage() {
                                         >
                                           <div className="p-4 pl-16 space-y-2">
                                             <p className="text-xs font-black text-gray-400 tracking-widest mb-3">Other Payment Breakdown</p>
-                                            {salesData.otherPaymentBreakdown.map((other: any, j: number) => {
-                                              const otherPercentage = ((other.value / item.value) * 100).toFixed(1);
+                                            {(salesData.otherPaymentBreakdown || []).map((other: any, j: number) => {
+                                              const OtherVal = other.value || 0;
+                                              const ItemVal = item.value || 1;
+                                              const otherPercentage = ((OtherVal / ItemVal) * 100).toFixed(1);
                                               return (
                                                 <div key={j} className="flex items-center justify-between p-3 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/5">
                                                   <div className="flex items-center gap-3">

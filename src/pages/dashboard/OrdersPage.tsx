@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
-import { startOfDay, endOfDay, format } from 'date-fns';
-import { motion, AnimatePresence } from 'framer-motion';
+import { startOfDay, endOfDay, format, formatDistanceToNow } from 'date-fns';
+import { useCurrency } from '../../context/CurrencyContext';
+import { useAuth } from '../../context/AuthContext';
+import { useRealtime } from '../../hooks/useRealtime';
+import { DataChangeEventTypes } from '../../services/realtimeService';
+
 import {
-  RefreshCw,
   ShoppingCart,
   Clock,
   ChevronRight,
@@ -13,7 +16,12 @@ import {
   PlayCircle,
   History,
   Eye,
-  Undo2
+  Undo2,
+  Radio,
+  Volume2,
+  VolumeX,
+  Zap,
+  Activity
 } from 'lucide-react';
 import api from '../../config/api';
 import { ConfirmModal } from '../../components/ConfirmModal';
@@ -24,6 +32,14 @@ import { CustomDatePicker } from '../../components/CustomDatePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
 import { SearchInput, SelectInput, Pagination } from '../../components/ui';
+
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
 
 interface Order {
   id: string;
@@ -44,7 +60,7 @@ interface Order {
     username: string;
   };
   note?: string;
-  status?: string;
+  status: string;
 }
 
 interface OrderItem {
@@ -72,6 +88,8 @@ interface ShiftStatus {
 }
 
 export function OrdersPage() {
+  const { formatAmount, currencySymbol } = useCurrency();
+  const { currentEstablishment } = useAuth();
   const location = useLocation();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -119,6 +137,89 @@ export function OrdersPage() {
   const [lastShiftSnapshot, setLastShiftSnapshot] = useState<{ startTime: string; timestamp: string } | null>(null);
   const [totalHeldCount, setTotalHeldCount] = useState(0);
 
+  // 🎬 LIVE SHIFT MODE - Creative feature!
+  const [isLiveMode, setIsLiveMode] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(false);
+  const [newOrderIds, setNewOrderIds] = useState<Set<string>>(new Set());
+  const [pulseActivity, setPulseActivity] = useState(0);
+  const [recentOrdersTicker, setRecentOrdersTicker] = useState<Order[]>([]);
+  const liveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const previousOrdersRef = useRef<Order[]>([]);
+
+  // Initialize audio for notifications
+  useEffect(() => {
+    // Create a simple beep sound using Web Audio API
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const playChaChing = () => {
+      if (!soundEnabled) return;
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      oscillator.frequency.setValueAtTime(1200, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.1);
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.1);
+    };
+    audioRef.current = { play: playChaChing } as any;
+  }, [soundEnabled]);
+
+  // Live mode auto-refresh
+  useEffect(() => {
+    if (!isLiveMode) {
+      if (liveIntervalRef.current) {
+        clearInterval(liveIntervalRef.current);
+        liveIntervalRef.current = null;
+      }
+      return;
+    }
+
+    // Auto-refresh every 5 seconds in live mode
+    liveIntervalRef.current = setInterval(() => {
+      fetchOrders();
+      // Activity pulse animation
+      setPulseActivity(prev => (prev + 1) % 3);
+    }, 5000);
+
+    return () => {
+      if (liveIntervalRef.current) {
+        clearInterval(liveIntervalRef.current);
+      }
+    };
+  }, [isLiveMode]);
+
+  // Detect new orders and highlight them
+  const detectNewOrders = useCallback((currentOrders: Order[], previousOrders: Order[]) => {
+    const previousIds = new Set(previousOrders.map(o => o.id));
+    const newOnes = currentOrders.filter(o => !previousIds.has(o.id));
+    
+    if (newOnes.length > 0) {
+      // Play sound for new orders
+      if (audioRef.current && soundEnabled) {
+        audioRef.current.play();
+      }
+      
+      // Add to highlight set
+      const newIds = new Set(newOnes.map(o => o.id));
+      setNewOrderIds(prev => new Set([...prev, ...newIds]));
+      
+      // Add to ticker
+      setRecentOrdersTicker(prev => [...newOnes.slice(0, 3), ...prev].slice(0, 10));
+      
+      // Remove highlight after 3 seconds
+      setTimeout(() => {
+        setNewOrderIds(prev => {
+          const next = new Set(prev);
+          newIds.forEach(id => next.delete(id));
+          return next;
+        });
+      }, 3000);
+    }
+  }, [soundEnabled]);
+
   // Fetch shift status on mount
   useEffect(() => {
     const fetchShiftData = async () => {
@@ -135,7 +236,7 @@ export function OrdersPage() {
           if (snapshotRes.data) {
             setLastShiftSnapshot(snapshotRes.data);
           }
-        } catch (snapshotErr) {
+        } catch {
           console.log('No previous shift snapshot available');
         }
       } catch (err) {
@@ -167,11 +268,11 @@ export function OrdersPage() {
         uniqueOptions.add('Card');
 
         // Add dynamic methods (active ones preferred, but we show all for history)
-        methods.forEach((m: any) => {
+        methods.forEach((m: Record<string, any>) => {
           if (m.name) uniqueOptions.add(m.name);
         });
 
-        cards.forEach((c: any) => {
+        cards.forEach((c: Record<string, any>) => {
           if (c.name) uniqueOptions.add(c.name);
         });
 
@@ -278,7 +379,7 @@ export function OrdersPage() {
       // Always fetch held orders count to keep the KPI accurate
       try {
         const heldCountRes = await api.get('/api/held-orders');
-        const filteredHeldCount = heldCountRes.data.filter((h: any) => {
+        const filteredHeldCount = heldCountRes.data.filter((h: Record<string, any>) => {
           const hDate = new Date(h.pinnedAt);
           return hDate >= start && hDate <= end;
         }).length;
@@ -287,7 +388,7 @@ export function OrdersPage() {
         console.error('Failed to fetch held count', e);
       }
 
-      const mapHeldOrder = (h: any) => ({
+      const mapHeldOrder = (h: Record<string, any>) => ({
         id: h.id,
         orderNumber: h.nickname,
         total: h.orderData?.total || 0,
@@ -298,7 +399,7 @@ export function OrdersPage() {
         paymentStatus: 'HELD',
         status: 'HELD',
         createdAt: h.pinnedAt,
-        items: (h.orderData?.items || []).map((item: any) => ({
+        items: (h.orderData?.items || []).map((item: Record<string, any>) => ({
           id: item.itemId,
           name: item.name,
           quantity: item.quantity,
@@ -315,7 +416,7 @@ export function OrdersPage() {
         const response = await api.get('/api/held-orders');
         const heldOrders = response.data
           .map(mapHeldOrder)
-          .filter((h: any) => {
+          .filter((h: Record<string, any>) => {
             const hDate = new Date(h.createdAt);
             return hDate >= start && hDate <= end;
           });
@@ -326,7 +427,7 @@ export function OrdersPage() {
         return;
       }
 
-      const params: any = {
+      const params: Record<string, any> = {
         page,
         limit: 10,
         startDate: start.toISOString(),
@@ -349,7 +450,7 @@ export function OrdersPage() {
       // Client-side filtering fallback: 
       // If backend returns non-matching items (e.g. ignores filter), we filter them out here to ensure correctness.
       if (paymentFilter !== 'all') {
-        fetchedOrders = fetchedOrders.filter((order: any) => {
+        fetchedOrders = fetchedOrders.filter((order: Order) => {
           const method = order.paymentMethod || '';
           return method.toUpperCase() === paymentFilter.toUpperCase();
         });
@@ -377,6 +478,12 @@ export function OrdersPage() {
         fetchedOrders = fetchedOrders.slice(0, 10);
       }
 
+      // 🔴 Live mode: detect new orders for highlighting
+      if (isLiveMode && previousOrdersRef.current.length > 0) {
+        detectNewOrders(fetchedOrders, previousOrdersRef.current);
+      }
+      previousOrdersRef.current = fetchedOrders;
+
       setOrders(fetchedOrders);
       // Ensure totalPages reflects the data reality. If we found order history pages, use that.
       // If we have no history pages but we have held orders that were sliced, we realistically have "more" data, 
@@ -384,13 +491,40 @@ export function OrdersPage() {
       // For now, trust backend pagination for history.
       setTotalPages(response.data.totalPages || 1);
       setError('');
-    } catch (err: any) {
+    } catch (err) {
       console.error('Orders fetch error:', err);
-      setError(err.response?.data?.message || 'Failed to load orders');
+      setError((err as ApiError).response?.data?.message || 'Failed to load orders');
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Real-time updates
+  const { onRefresh } = useRealtime({
+    establishmentId: currentEstablishment?.id || null,
+  });
+
+  // Listen for real-time order events
+  useEffect(() => {
+    const unsubscribe = onRefresh((eventType) => {
+      if (eventType === DataChangeEventTypes.ORDER_CREATED ||
+          eventType === DataChangeEventTypes.ORDER_REFUNDED ||
+          eventType === DataChangeEventTypes.ORDER_UPDATED) {
+        // Trigger immediate refresh
+        fetchOrders();
+        
+        // If live mode is on and sound is enabled, the detectNewOrders
+        // will handle the sound and highlighting
+        if (!isLiveMode && audioRef.current && soundEnabled) {
+          audioRef.current.play().catch(() => {
+            // Ignore audio play errors
+          });
+        }
+      }
+    });
+
+    return unsubscribe;
+  }, [onRefresh, fetchOrders, isLiveMode, soundEnabled]);
 
   const searchOrder = async () => {
     if (!searchQuery.trim()) {
@@ -407,7 +541,7 @@ export function OrdersPage() {
         setOrders([]);
       }
       setError('');
-    } catch (err: any) {
+    } catch {
       setError('Order not found');
       setOrders([]);
     } finally {
@@ -415,13 +549,7 @@ export function OrdersPage() {
     }
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-JO', {
-      style: 'currency',
-      currency: 'JOD',
-      minimumFractionDigits: 3,
-    }).format(value);
-  };
+
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString([], {
@@ -486,8 +614,8 @@ export function OrdersPage() {
           toast.success('Order refunded');
           fetchOrders(); // Refresh the list
           setConfirmConfig(prev => ({ ...prev, isOpen: false }));
-        } catch (err: any) {
-          toast.error(err.response?.data?.message || 'Failed to process refund');
+        } catch (err) {
+          toast.error((err as ApiError).response?.data?.message || 'Failed to process refund');
         }
       }
     });
@@ -526,7 +654,7 @@ export function OrdersPage() {
       orderNumber: 'Order #',
       date: 'Date',
       customer: 'Customer',
-      total: 'Total (JOD)',
+      total: `Total (${currencySymbol})`,
       status: 'Status',
       paymentMethod: 'Payment Method'
     });
@@ -535,7 +663,7 @@ export function OrdersPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-24 sm:pb-10">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
             <span className="px-2.5 sm:px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -549,6 +677,41 @@ export function OrdersPage() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* 🎬 LIVE MODE Toggle - Only visible when viewing active shift */}
+          {selectedDateRange === 'current_shift' && shiftStatus?.shiftStatus === 'ACTIVE' && (
+            <div className="flex items-center gap-2 bg-gradient-to-r from-red-500/10 via-orange-500/10 to-red-500/10 rounded-xl p-1 pr-3 border border-red-500/20 animate-pulse">
+              <button
+                onClick={() => setIsLiveMode(!isLiveMode)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-sm transition-all ${
+                  isLiveMode 
+                    ? 'bg-red-500 text-white shadow-lg shadow-red-500/30' 
+                    : 'bg-white dark:bg-white/10 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20'
+                }`}
+              >
+                <Radio size={16} className={isLiveMode ? 'animate-pulse' : ''} />
+                <span className="hidden sm:inline">{isLiveMode ? 'LIVE' : 'Go Live'}</span>
+              </button>
+              
+              {isLiveMode && (
+                <>
+                  <button
+                    onClick={() => setSoundEnabled(!soundEnabled)}
+                    className={`p-2 rounded-lg transition-all ${soundEnabled ? 'text-red-500' : 'text-gray-400'}`}
+                    title={soundEnabled ? 'Sound On' : 'Sound Off'}
+                  >
+                    {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
+                  </button>
+                  
+                  {/* Activity Pulse Indicator */}
+                  <div className="flex items-center gap-1">
+                    <Activity size={14} className={`text-red-500 transition-all ${pulseActivity === 0 ? 'scale-125' : 'scale-100'}`} />
+                    <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+          
           <button
             onClick={handleExport}
             className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all touch-target"
@@ -556,15 +719,30 @@ export function OrdersPage() {
             <Download size={18} />
             <span className="hidden xs:inline">Export to CSV</span>
           </button>
-          <button
-            onClick={fetchOrders}
-            className="p-2.5 sm:p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm touch-target"
-            title="Refresh"
-          >
-            <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
-          </button>
         </div>
       </div>
+
+      {/* 🎬 Live Mode Activity Ticker */}
+      {isLiveMode && recentOrdersTicker.length > 0 && (
+        <div className="bg-gradient-to-r from-red-500/5 via-orange-500/5 to-red-500/5 rounded-xl border border-red-500/10 p-3 overflow-hidden">
+          <div className="flex items-center gap-3">
+            <Zap size={16} className="text-red-500 flex-shrink-0" />
+            <div className="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-wider flex-shrink-0">
+              Just In:
+            </div>
+            <div className="flex gap-4 animate-marquee">
+              {recentOrdersTicker.map((order, i) => (
+                <span key={`${order.id}-${i}`} className="text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                  <span className="font-bold text-gray-900 dark:text-white">#{order.orderNumber}</span>
+                  {' '}- {formatAmount(order.total)}
+                  {' '}• {order.items?.length || 0} items
+                  <span className="text-xs text-gray-400 ml-2">({formatDistanceToNow(new Date(order.createdAt), { addSuffix: true })})</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Unified Filter Control Deck */}
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl sm:rounded-[24px] border border-gray-100 dark:border-white/5 p-2 shadow-sm">
@@ -693,12 +871,74 @@ export function OrdersPage() {
         </div>
       )}
 
+      {/* 🎬 LIVE MODE: Shift Pulse Dashboard */}
+      {isLiveMode && selectedDateRange === 'current_shift' && shiftStatus?.activeShift && (
+        <div className="bg-gradient-to-r from-red-500/10 via-orange-500/10 to-red-500/10 rounded-2xl border border-red-500/20 p-4 sm:p-6 animate-pulse-slow">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="relative">
+              <div className="w-3 h-3 bg-red-500 rounded-full animate-ping absolute" />
+              <div className="w-3 h-3 bg-red-500 rounded-full relative" />
+            </div>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              Live Shift Dashboard
+              <span className="text-xs font-black text-red-500 uppercase tracking-wider animate-pulse">● LIVE</span>
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {/* Shift Duration */}
+            <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3">
+              <p className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Shift Duration</p>
+              <p className="text-xl font-black text-gray-900 dark:text-white">
+                {(() => {
+                  const start = new Date(shiftStatus.activeShift!.startTime);
+                  const now = new Date();
+                  const diff = Math.floor((now.getTime() - start.getTime()) / 1000 / 60);
+                  const hours = Math.floor(diff / 60);
+                  const mins = diff % 60;
+                  return `${hours}h ${mins}m`;
+                })()}
+              </p>
+            </div>
+            
+            {/* Orders This Shift */}
+            <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3">
+              <p className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Orders</p>
+              <p className="text-xl font-black text-gray-900 dark:text-white">{orders.length}</p>
+            </div>
+            
+            {/* Avg Order Value */}
+            <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3">
+              <p className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Avg Order</p>
+              <p className="text-xl font-black text-gray-900 dark:text-white">
+                {orders.length > 0 
+                  ? formatAmount(orders.reduce((acc, o) => acc + (o.total || 0), 0) / orders.length)
+                  : formatAmount(0)}
+              </p>
+            </div>
+            
+            {/* Orders Per Hour */}
+            <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3">
+              <p className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Orders/Hour</p>
+              <p className="text-xl font-black text-gray-900 dark:text-white">
+                {(() => {
+                  const start = new Date(shiftStatus.activeShift!.startTime);
+                  const now = new Date();
+                  const hours = (now.getTime() - start.getTime()) / 1000 / 60 / 60;
+                  return hours > 0 ? (orders.length / hours).toFixed(1) : '0';
+                })()}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Kpi Strip - horizontal scroll on mobile */}
       <div className="flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible pb-2 sm:pb-0">
         {[
           {
             label: 'Total Sales',
-            value: formatCurrency(orders.reduce((acc, o) => acc + (o.total || 0), 0)),
+            value: formatAmount(orders.reduce((acc, o) => acc + (o.total || 0), 0)),
             icon: TrendingUp,
             color: 'text-paymint-green',
             bg: 'bg-paymint-green/10',
@@ -723,11 +963,8 @@ export function OrdersPage() {
             active: statusFilter === 'HELD'
           },
         ].map((stat, i) => (
-          <motion.div
+          <div
             key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
             onClick={stat.onClick}
             className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink ${stat.onClick ? 'cursor-pointer' : ''} ${stat.active ? 'ring-2 ring-paymint-green' : ''}`}
           >
@@ -741,7 +978,7 @@ export function OrdersPage() {
                 <p className="text-lg sm:text-xl font-black text-gray-900 dark:text-white">{stat.value}</p>
               </div>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
 
@@ -773,15 +1010,16 @@ export function OrdersPage() {
         {/* Mobile Card View (visible on small screens) */}
         {orders.length > 0 && (
           <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
-            <AnimatePresence mode='popLayout'>
               {orders.map((order) => (
-                <motion.div
+                <div
                   key={order.id}
                   data-order-id={order.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
                   onClick={() => setSelectedOrder(order)}
-                  className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer active:bg-gray-100 dark:active:bg-white/[0.04]"
+                  className={`p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all cursor-pointer active:bg-gray-100 dark:active:bg-white/[0.04] ${
+                    newOrderIds.has(order.id) 
+                      ? 'bg-gradient-to-r from-red-500/10 via-orange-500/10 to-red-500/10 animate-pulse border-l-4 border-red-500' 
+                      : ''
+                  }`}
                 >
                   {/* Card Header: Order # and Status */}
                   <div className="flex items-start justify-between mb-3">
@@ -812,7 +1050,7 @@ export function OrdersPage() {
                       </p>
                     </div>
                     <div className="text-right ml-4 flex-shrink-0">
-                      <p className="font-bold text-gray-900 dark:text-white text-lg">{formatCurrency(order.total)}</p>
+                      <p className="font-bold text-gray-900 dark:text-white text-lg">{formatAmount(order.total)}</p>
                     </div>
                   </div>
 
@@ -844,9 +1082,8 @@ export function OrdersPage() {
 
                     <ChevronRight size={16} className="text-gray-400" />
                   </div>
-                </motion.div>
+                </div>
               ))}
-            </AnimatePresence>
           </div>
         )}
 
@@ -864,15 +1101,16 @@ export function OrdersPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                <AnimatePresence mode='popLayout'>
                   {orders.map((order) => (
-                    <motion.tr
+                    <tr
                       key={order.id}
                       data-order-id={order.id}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
                       onClick={() => setSelectedOrder(order)}
-                      className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer"
+                      className={`group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all cursor-pointer ${
+                        newOrderIds.has(order.id) 
+                          ? 'bg-gradient-to-r from-red-500/10 via-orange-500/10 to-red-500/10 animate-pulse border-l-4 border-red-500' 
+                          : ''
+                      }`}
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
@@ -890,7 +1128,7 @@ export function OrdersPage() {
                         <p className="text-xs text-gray-500">{order.user?.username ? `Staff: ${order.user.username}` : 'Pos'}</p>
                       </td>
                       <td className="px-6 py-4">
-                        <p className="font-bold text-gray-900 dark:text-white">{formatCurrency(order.total)}</p>
+                        <p className="font-bold text-gray-900 dark:text-white">{formatAmount(order.total)}</p>
                         <p className="text-xs text-gray-500 font-bold tracking-wider">{order.paymentMethod}</p>
                       </td>
                       <td className="px-6 py-4">
@@ -914,12 +1152,8 @@ export function OrdersPage() {
                               <MoreVertical size={16} />
                             </button>
 
-                            <AnimatePresence>
                               {activeActionMenu === order.id && (
-                                <motion.div
-                                  initial={{ opacity: 0, scale: 0.95, y: 5 }}
-                                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                                  exit={{ opacity: 0, scale: 0.95, y: 5 }}
+                                <div
                                   className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
                                 >
                                   <div className="p-1">
@@ -949,18 +1183,16 @@ export function OrdersPage() {
                                       </button>
                                     )}
                                   </div>
-                                </motion.div>
+                                </div>
                               )}
-                            </AnimatePresence>
                           </div>
                           <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green group-hover:border-paymint-green/30 transition-all">
                             <ChevronRight size={14} />
                           </div>
                         </div>
                       </td>
-                    </motion.tr>
+                    </tr>
                   ))}
-                </AnimatePresence>
               </tbody>
             </table>
           </div>
@@ -969,7 +1201,6 @@ export function OrdersPage() {
 
       <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} className="mt-6" />
 
-      <AnimatePresence>
         {selectedOrder && (
           <OrderDetailModal
             order={selectedOrder}
@@ -977,7 +1208,6 @@ export function OrdersPage() {
             onRefundSuccess={fetchOrders}
           />
         )}
-      </AnimatePresence>
 
       <ConfirmModal
         isOpen={confirmConfig.isOpen}

@@ -1,5 +1,6 @@
 import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect, useRef } from 'react';
+import { useCurrency } from '../../context/CurrencyContext';
 import { motion } from 'framer-motion';
 import { Award, Plus, Edit2, Trash2, Percent, Gift } from 'lucide-react';
 import api from '../../config/api';
@@ -7,6 +8,20 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { RewardFormModal } from '../../components/forms/RewardFormModal';
 import { Pagination } from '../../components/ui';
+
+interface ApiError {
+    response?: {
+        data?: {
+            message?: string;
+        };
+        status?: number;
+    };
+}
+
+interface Category {
+    id: string;
+    name: string;
+}
 
 interface LoyaltyConfig {
     id?: string;
@@ -64,33 +79,21 @@ export function LoyaltyPage() {
     const currencyPerPointDisplay = (currencyPerPointCents / 100).toFixed(2);
     const pointsPerCurrencyDisplay = String(pointsPerCurrency);
 
-    const [categories, setCategories] = useState<any[]>([]);
-    const [currency, setCurrency] = useState('JOD');
+    const [categories, setCategories] = useState<Category[]>([]);
+    const { currency } = useCurrency();
 
     useEffect(() => {
         fetchLoyaltyConfig();
-        fetchAppSettings();
         fetchCategories();
     }, []);
-
-    const fetchAppSettings = async () => {
-        try {
-            const response = await api.get('/app-settings');
-            if (response.data?.currency) {
-                setCurrency(response.data.currency);
-            }
-        } catch (err) {
-            console.error("Failed to fetch app settings for currency", err);
-        }
-    }
 
     const fetchCategories = async () => {
         try {
             const response = await api.get('/api/categories');
             const data = Array.isArray(response.data) ? response.data : response.data?.data || [];
             setCategories(data);
-        } catch (err) {
-            console.error('Failed to load categories:', err);
+        } catch {
+            console.error('Failed to load categories');
         }
     };
 
@@ -111,7 +114,7 @@ export function LoyaltyPage() {
             } else {
                 setRewards([]);
             }
-        } catch (err) {
+        } catch {
             console.error('Failed to load loyalty config');
             toast.error('Failed to load loyalty configuration');
         } finally {
@@ -135,7 +138,7 @@ export function LoyaltyPage() {
         }
     }, [loyaltyConfig?.pointsPerCurrency]);
 
-    const safeUpdateLoyaltyConfig = async (newConfig: any) => {
+    const safeUpdateLoyaltyConfig = async (newConfig: LoyaltyConfig) => {
         const payload = {
             id: newConfig.id,
             enabled: true,
@@ -147,16 +150,17 @@ export function LoyaltyPage() {
         try {
             // First try the dedicated endpoint
             await api.put('/app-settings/loyalty-config', payload);
-        } catch (err: any) {
+        } catch (err) {
+            const error = err as ApiError;
             // If 403/404, valid fallback to main settings endpoint
-            if (err.response && (err.response.status === 403 || err.response.status === 404)) {
+            if (error.response && (error.response.status === 403 || error.response.status === 404)) {
                 try {
                     const { data: fullSettings } = await api.get('/app-settings');
                     await api.put('/app-settings', {
                         ...fullSettings,
                         loyaltyConfig: payload
                     });
-                } catch (fallbackErr) {
+                } catch {
                     throw err; // Throw original error if fallback also fails
                 }
             } else {
@@ -199,6 +203,7 @@ export function LoyaltyPage() {
             type: 'danger',
             confirmText: 'Delete Reward',
             onConfirm: async () => {
+                if (!loyaltyConfig) return;
                 const updatedRewards = rewards.filter(r => r.id !== rewardId);
                 const updatedConfig = {
                     ...loyaltyConfig,
@@ -217,15 +222,16 @@ export function LoyaltyPage() {
                         showCancel: false,
                         onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
                     });
-                } catch (err: any) {
-                    toast.error(err.response?.data?.message || 'Failed to delete reward');
+                } catch (err) {
+                    toast.error((err as ApiError).response?.data?.message || 'Failed to delete reward');
                 }
             },
             onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
         });
     };
 
-    const handleSaveReward = async (rewardData: any) => {
+    const handleSaveReward = async (rewardData: Record<string, any>) => {
+        if (!loyaltyConfig) return;
         const newReward: LoyaltyReward = {
             id: editingReward?.id || `reward_${Date.now()}`,
             type: rewardData.type,
@@ -264,8 +270,8 @@ export function LoyaltyPage() {
                 showCancel: false,
                 onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
             });
-        } catch (err: any) {
-            toast.error(err.response?.data?.message || 'Failed to save reward');
+        } catch (err) {
+            toast.error((err as ApiError).response?.data?.message || 'Failed to save reward');
         }
     };
 
@@ -285,9 +291,9 @@ export function LoyaltyPage() {
 
             setInitialLoyaltyConfig(JSON.parse(JSON.stringify(loyaltyConfig)));
             toast.success("Loyalty configuration saved");
-        } catch (err: any) {
+        } catch (err) {
             console.error("Save config error:", err);
-            const errorMessage = err.response?.data?.message || err.message || "Failed to save configuration";
+            const errorMessage = (err as ApiError).response?.data?.message || (err as Error).message || "Failed to save configuration";
             toast.error(errorMessage);
         }
     }
@@ -307,7 +313,7 @@ export function LoyaltyPage() {
     return (
         <div className="max-w-7xl mx-auto space-y-8 pb-10">
 
-            <div className="flex flex-col gap-4 sm:gap-6">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -483,7 +489,7 @@ export function LoyaltyPage() {
                 isOpen={showRewardModal}
                 onClose={() => { setShowRewardModal(false); setEditingReward(null); }}
                 onSave={handleSaveReward}
-                initialData={editingReward}
+                initialData={editingReward || undefined}
                 categories={categories}
             />
 

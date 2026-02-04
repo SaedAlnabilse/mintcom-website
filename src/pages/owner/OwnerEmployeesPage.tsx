@@ -1,6 +1,6 @@
 import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+
 import {
     Search,
     Users,
@@ -8,7 +8,6 @@ import {
     Edit2,
     Trash2,
     UserPlus,
-    RefreshCw,
     MapPin,
     Star,
     Eye,
@@ -18,14 +17,14 @@ import {
     List,
     MoreVertical,
     UserCheck,
-    HelpCircle
+    ArrowUpDown
 } from 'lucide-react';
 import api from '../../config/api';
 import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { Pagination } from '../../components/ui';
-import { TourGuide, type TourStep } from '../../components/TourGuide';
+
 import { CustomSelect } from '../../components/CustomSelect';
 
 interface EmployeeAssignment {
@@ -53,6 +52,7 @@ interface Employee {
 }
 
 type ViewMode = 'grid' | 'list';
+type SortKey = 'name' | 'role' | 'status' | 'access';
 
 export function OwnerEmployeesPage() {
     const { establishments, account } = useAuth();
@@ -67,6 +67,7 @@ export function OwnerEmployeesPage() {
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
+    const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'asc' | 'desc' } | null>(null);
 
     // Delete confirmation modal state
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -76,36 +77,7 @@ export function OwnerEmployeesPage() {
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState('');
 
-    // Tour state
-    const [isTourOpen, setIsTourOpen] = useState(false);
 
-    const tourSteps: TourStep[] = [
-        {
-            targetId: 'tour-stats-grid',
-            title: 'Team Overview',
-            description: 'Get a quick snapshot of your total employees, active staff, and role distribution across all locations.'
-        },
-        {
-            targetId: 'tour-search-input',
-            title: 'Smart Search',
-            description: 'Quickly find any employee by name, email, or username. The list updates instantly as you type.'
-        },
-        {
-            targetId: 'tour-filters',
-            title: 'Filter by Role',
-            description: 'Focus on specific groups like Admins or Staff to manage permissions more effectively.'
-        },
-        {
-            targetId: 'tour-view-toggle',
-            title: 'Flexible Views',
-            description: 'Switch between a detailed list view for management or a grid card view for a visual overview.'
-        },
-        {
-            targetId: 'tour-add-employee-btn',
-            title: 'Add Staff',
-            description: 'Ready to grow? Click here to add new team members and assign them to specific locations.'
-        }
-    ];
 
     useEffect(() => {
         fetchEmployees();
@@ -206,8 +178,16 @@ export function OwnerEmployeesPage() {
         }
     };
 
+    const handleSort = (key: SortKey) => {
+        let direction: 'asc' | 'desc' = 'asc';
+        if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
     const filteredEmployees = useMemo(() => {
-        return employees.filter(emp => {
+        let result = employees.filter(emp => {
             const matchesSearch =
                 `${emp.firstName} ${emp.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 (emp.email?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
@@ -217,12 +197,53 @@ export function OwnerEmployeesPage() {
                 (statusFilter === 'active' ? emp.hasActiveShift : !emp.hasActiveShift);
             return matchesSearch && matchesRole && matchesStatus;
         });
-    }, [employees, searchQuery, roleFilter, statusFilter]);
 
-    // Reset to page 1 when filters change
+        // Sorting
+        if (sortConfig) {
+            result.sort((a, b) => {
+                let aValue: any;
+                let bValue: any;
+
+                switch (sortConfig.key) {
+                    case 'name':
+                        aValue = `${a.firstName} ${a.lastName}`.toLowerCase();
+                        bValue = `${b.firstName} ${b.lastName}`.toLowerCase();
+                        break;
+                    case 'role':
+                        aValue = a.role?.toLowerCase() || '';
+                        bValue = b.role?.toLowerCase() || '';
+                        break;
+                    case 'status':
+                        aValue = a.hasActiveShift ? 1 : 0;
+                        bValue = b.hasActiveShift ? 1 : 0;
+                        break;
+                    case 'access':
+                        aValue = a.assignments?.length || 0;
+                        bValue = b.assignments?.length || 0;
+                        break;
+                    default:
+                        return 0;
+                }
+
+                if (typeof aValue === 'string' && typeof bValue === 'string') {
+                    return sortConfig.direction === 'asc'
+                        ? aValue.localeCompare(bValue)
+                        : bValue.localeCompare(aValue);
+                }
+
+                if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+                if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+
+        return result;
+    }, [employees, searchQuery, roleFilter, statusFilter, sortConfig]);
+
+    // Reset to page 1 when filters or sort change
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchQuery, roleFilter, statusFilter]);
+    }, [searchQuery, roleFilter, statusFilter, sortConfig]);
 
     const paginatedEmployees = useMemo(() => {
         const startIndex = (currentPage - 1) * itemsPerPage;
@@ -273,7 +294,7 @@ export function OwnerEmployeesPage() {
     return (
         <div className="space-y-8 pb-20">
             {/* Header */}
-            <div className="flex flex-col gap-4 sm:gap-6">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -287,21 +308,7 @@ export function OwnerEmployeesPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button
-                        onClick={() => setIsTourOpen(true)}
-                        className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-green border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
-                        title="Start Tour"
-                    >
-                        <HelpCircle size={18} />
-                    </button>
-                    <button
-                        id="tour-refresh-btn"
-                        onClick={fetchEmployees}
-                        className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
-                        title="Refresh"
-                    >
-                        <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
-                    </button>
+
                     <button
                         id="tour-add-employee-btn"
                         onClick={() => { setEditingEmployee(null); setIsFormModalOpen(true); }}
@@ -321,11 +328,8 @@ export function OwnerEmployeesPage() {
                     { label: 'Admins', info: 'Users with full access to settings.', value: stats.admins, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
                     { label: 'Users', info: 'Standard users with restricted access based on assigned roles.', value: stats.staff, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
                 ].map((stat, i) => (
-                    <motion.div
+                    <div
                         key={i}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.1 }}
                         className="group relative p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
                     >
                         <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
@@ -341,7 +345,7 @@ export function OwnerEmployeesPage() {
                                 <p className="text-xs font-bold text-gray-500">{stat.info}</p>
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
                 ))
                 }
             </div>
@@ -461,14 +465,10 @@ export function OwnerEmployeesPage() {
                                             <MoreVertical size={18} />
                                         </button>
 
-                                        <AnimatePresence>
-                                            {activeMenu === emp.id && (
-                                                <motion.div
-                                                    initial={{ opacity: 0, scale: 0.95, y: -5 }}
-                                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                                    exit={{ opacity: 0, scale: 0.95, y: -5 }}
-                                                    className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
-                                                >
+                                        {activeMenu === emp.id && (
+                                            <div
+                                                className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                            >
                                                     <button
                                                         onClick={() => {
                                                             setEditingEmployee(emp);
@@ -490,9 +490,8 @@ export function OwnerEmployeesPage() {
                                                         <Trash2 size={16} />
                                                         Remove
                                                     </button>
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 
@@ -528,11 +527,35 @@ export function OwnerEmployeesPage() {
                 </div>
             ) : (
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest uppercase">
-                        <div className="col-span-4">Name</div>
-                        <div className="col-span-2 text-center">Role</div>
-                        <div className="col-span-2 text-center">Status</div>
-                        <div className="col-span-2 text-center">Access</div>
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest">
+                        <div 
+                            className="col-span-4 cursor-pointer hover:text-paymint-green transition-colors flex items-center gap-1"
+                            onClick={() => handleSort('name')}
+                        >
+                            Name
+                            {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                        </div>
+                        <div 
+                            className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
+                            onClick={() => handleSort('role')}
+                        >
+                            Role
+                            {sortConfig?.key === 'role' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                        </div>
+                        <div 
+                            className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
+                            onClick={() => handleSort('status')}
+                        >
+                            Status
+                            {sortConfig?.key === 'status' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                        </div>
+                        <div 
+                            className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
+                            onClick={() => handleSort('access')}
+                        >
+                            Access
+                            {sortConfig?.key === 'access' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                        </div>
                         <div className="col-span-2 text-center">Actions</div>
                     </div>
                     <div className="divide-y divide-gray-100 dark:divide-white/5">
@@ -610,15 +633,11 @@ export function OwnerEmployeesPage() {
             />
 
             {/* Delete Confirmation Modal */}
-            <AnimatePresence>
-                {deleteModalOpen && employeeToDelete && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            className="bg-white dark:bg-[#1E293B] w-full max-w-md rounded-[2rem] overflow-hidden border border-gray-200 dark:border-white/10 shadow-2xl"
-                        >
+            {deleteModalOpen && employeeToDelete && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div
+                        className="bg-white dark:bg-[#1E293B] w-full max-w-md rounded-[2rem] overflow-hidden border border-gray-200 dark:border-white/10 shadow-2xl"
+                    >
                             <div className="p-8 pb-4">
                                 <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-6">
                                     <AlertTriangle size={32} />
@@ -676,21 +695,11 @@ export function OwnerEmployeesPage() {
                                     )}
                                 </button>
                             </div>
-                        </motion.div>
                     </div>
-                )}
-            </AnimatePresence>
+                </div>
+            )}
 
-            {/* Tour Guide */}
-            <TourGuide
-                steps={tourSteps}
-                isOpen={isTourOpen}
-                onClose={() => setIsTourOpen(false)}
-                onComplete={() => {
-                    setIsTourOpen(false);
-                    toast.success("You're all set! Enjoy managing your workforce.");
-                }}
-            />
+
         </div>
     );
 }

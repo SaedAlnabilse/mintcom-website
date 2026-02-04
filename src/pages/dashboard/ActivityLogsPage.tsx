@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 import {
   Search,
-  RefreshCw,
   History,
   X,
   Shield,
   FileText,
   Download
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { exportToCSV } from '../../utils/export';
@@ -27,7 +26,7 @@ interface ActivityLog {
   };
   action: string;
   description: string;
-  metadata?: any;
+  metadata?: Record<string, any>;
   ipAddress?: string;
   timestamp: string;
 }
@@ -113,7 +112,7 @@ export function ActivityLogsPage() {
   const fetchLogs = async () => {
     try {
       setIsLoading(true);
-      const params: any = {
+      const params: Record<string, any> = {
         page,
         limit: 10,
         search: searchQuery,
@@ -141,7 +140,7 @@ export function ActivityLogsPage() {
       setLogs(validLogs);
       setTotalPages(response.data.totalPages || 1);
       setTotalLogs(response.data.total || validLogs.length);
-    } catch (err: any) {
+    } catch {
       toast.error('Failed to sync logs');
     } finally {
       setIsLoading(false);
@@ -184,7 +183,7 @@ export function ActivityLogsPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-10">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -204,13 +203,6 @@ export function ActivityLogsPage() {
           >
             <Download size={18} />
             <span>Export to CSV</span>
-          </button>
-          <button
-            onClick={() => { setPage(1); fetchLogs(); }}
-            className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm"
-            title="Refresh"
-          >
-            <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
           </button>
         </div>
       </div>
@@ -314,7 +306,6 @@ export function ActivityLogsPage() {
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col min-h-[300px] lg:min-h-[250px] lg:min-h-[350px]">
         {/* Mobile Card View */}
         <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
-          <AnimatePresence mode="popLayout">
             {isLoading ? (
               <div className="py-32 text-center">
                 <div className="flex flex-col items-center gap-4">
@@ -333,10 +324,8 @@ export function ActivityLogsPage() {
               </div>
             ) : (
               Array.isArray(logs) && logs.map((log) => (
-                <motion.div
+                <div
                   key={log.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
                   className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
                 >
                   <div className="flex justify-between items-start mb-2">
@@ -372,10 +361,9 @@ export function ActivityLogsPage() {
                       </button>
                     )}
                   </div>
-                </motion.div>
+                </div>
               ))
             )}
-          </AnimatePresence>
         </div>
 
         {/* Desktop Table View */}
@@ -391,7 +379,6 @@ export function ActivityLogsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-              <AnimatePresence mode='popLayout'>
                 {isLoading ? (
                   <tr>
                     <td colSpan={5} className="py-32 text-center">
@@ -414,10 +401,8 @@ export function ActivityLogsPage() {
                   </tr>
                 ) : (
                   Array.isArray(logs) && logs.map((log) => (
-                    <motion.tr
+                    <tr
                       key={log.id}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
                       className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
                     >
                       <td className="px-8 py-4">
@@ -459,10 +444,9 @@ export function ActivityLogsPage() {
                           <span className="text-xs font-black text-gray-200 dark:text-white/5 tracking-widest">—</span>
                         )}
                       </td>
-                    </motion.tr>
+                    </tr>
                   ))
                 )}
-              </AnimatePresence>
             </tbody>
           </table>
         </div>
@@ -471,13 +455,9 @@ export function ActivityLogsPage() {
       </div>
 
       {/* Detail Modal */}
-      <AnimatePresence>
         {selectedLog && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
+            <div
               className="bg-white dark:bg-[#1E293B] rounded-[2.5rem] border border-gray-200 dark:border-white/5 w-full max-w-2xl overflow-hidden flex flex-col max-h-[85vh] shadow-2xl"
             >
               <div className="p-8 border-b border-gray-200 dark:border-white/5 flex items-center justify-between">
@@ -520,10 +500,9 @@ export function ActivityLogsPage() {
                   Close
                 </button>
               </div>
-            </motion.div>
+            </div>
           </div>
         )}
-      </AnimatePresence>
     </div>
   );
 }

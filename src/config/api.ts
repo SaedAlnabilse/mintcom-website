@@ -84,8 +84,9 @@ api.interceptors.response.use(
     // We only want to redirect if the user's session expired while using the app
     const isLoginRequest = error.config?.url?.includes('/api/accounts/login');
     const isLogoutRequest = error.config?.url?.includes('/api/accounts/logout');
+    const isLoginPage = window.location.pathname.includes('/login');
 
-    if (error.response?.status === 401 && !isLoginRequest && !isLogoutRequest) {
+    if (error.response?.status === 401 && !isLoginRequest && !isLogoutRequest && !isLoginPage) {
       // Clear local auth data and redirect to login
       // The HttpOnly cookie will be cleared by calling the logout endpoint
       localStorage.removeItem('account');

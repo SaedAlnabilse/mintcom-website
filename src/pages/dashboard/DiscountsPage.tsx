@@ -1,11 +1,20 @@
 import { useState, useEffect, useMemo } from 'react';
-import { motion } from 'framer-motion';
-import { Plus, Percent, DollarSign, Trash2, Edit2, Tag, ShieldAlert, Award } from 'lucide-react';
+
+import { Plus, Percent, DollarSign, Trash2, Edit2, Tag, ShieldAlert, Award, Grid3X3, List, ArrowUpDown } from 'lucide-react';
 import api from '../../config/api';
+import { useCurrency } from '../../context/CurrencyContext';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { DiscountFormModal } from '../../components/forms/DiscountFormModal';
 import { SearchInput, Pagination } from '../../components/ui';
+
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
 
 interface Discount {
   id: string;
@@ -13,19 +22,25 @@ interface Discount {
   type: 'percentage' | 'fixed';
   value: number;
   isActive: boolean;
-  percentage: number; // for modal compatibility
-  adminOnly: boolean; // for modal compatibility
+  percentage: number;
+  adminOnly: boolean;
+  createdAt?: string;
 }
 
+type ViewMode = 'grid' | 'list';
+type SortKey = 'name' | 'value' | 'type' | 'adminOnly';
+
 export function DiscountsPage() {
+  const { formatAmount } = useCurrency();
   const [discounts, setDiscounts] = useState<Discount[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingDiscount, setEditingDiscount] = useState<Discount | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const ITEMS_PER_PAGE = 12;
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'asc' | 'desc' } | null>(null);
+  const ITEMS_PER_PAGE = 10;
   const [confirmConfig, setConfirmConfig] = useState<{
     isOpen: boolean;
     title: string;
@@ -45,11 +60,15 @@ export function DiscountsPage() {
     fetchDiscounts();
   }, []);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, sortConfig]);
+
   const fetchDiscounts = async () => {
     try {
       setIsLoading(true);
       const response = await api.get('/app-settings/discounts');
-      const mappedDiscounts = (response.data || []).map((d: any) => ({
+      const mappedDiscounts = (response.data || []).map((d: Record<string, any>) => ({
         id: d.id,
         name: d.name,
         type: 'percentage' as const,
@@ -57,14 +76,70 @@ export function DiscountsPage() {
         percentage: d.percentage,
         adminOnly: d.adminOnly,
         isActive: true,
+        createdAt: d.createdAt,
       }));
       setDiscounts(mappedDiscounts);
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to load discounts');
+    } catch {
+      toast.error('Failed to load discounts');
     } finally {
       setIsLoading(false);
     }
   };
+
+  const handleSort = (key: SortKey) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const filteredDiscounts = useMemo(() => {
+    const result = discounts.filter(discount =>
+      discount.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    // Sorting
+    if (sortConfig) {
+      result.sort((a, b) => {
+        const aValue = a[sortConfig.key];
+        const bValue = b[sortConfig.key];
+
+        // Handle string comparison
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return sortConfig.direction === 'asc'
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        }
+
+        // Handle boolean comparison
+        if (typeof aValue === 'boolean' && typeof bValue === 'boolean') {
+          if (aValue === bValue) return 0;
+          return sortConfig.direction === 'asc'
+            ? (aValue ? 1 : -1)
+            : (aValue ? -1 : 1);
+        }
+
+        // Handle number comparison
+        if (aValue < bValue) {
+          return sortConfig.direction === 'asc' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === 'asc' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+
+    return result;
+  }, [discounts, searchQuery, sortConfig]);
+
+  const totalPages = Math.ceil(filteredDiscounts.length / ITEMS_PER_PAGE);
+
+  const paginatedDiscounts = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredDiscounts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredDiscounts, currentPage]);
 
   const openCreateModal = () => {
     setEditingDiscount(null);
@@ -75,23 +150,6 @@ export function DiscountsPage() {
     setEditingDiscount(discount);
     setShowModal(true);
   };
-
-  const filteredDiscounts = useMemo(() => {
-    return discounts.filter(discount =>
-      discount.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [discounts, searchQuery]);
-
-  const totalPages = Math.ceil(filteredDiscounts.length / ITEMS_PER_PAGE);
-
-  const paginatedDiscounts = useMemo(() => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredDiscounts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-  }, [filteredDiscounts, currentPage]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery]);
 
   const onSubmit = async (name: string, percentage: number, adminOnly: boolean) => {
     try {
@@ -113,12 +171,14 @@ export function DiscountsPage() {
 
       setShowModal(false);
       fetchDiscounts();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to save discount');
+    } catch (err) {
+      toast.error((err as ApiError).response?.data?.message || 'Failed to save discount');
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleDelete = async (discountId: string, name: string) => {
     setConfirmConfig({
@@ -131,8 +191,8 @@ export function DiscountsPage() {
           await api.delete(`/app-settings/discounts/${discountId}`);
           toast.success('Discount deleted');
           fetchDiscounts();
-        } catch (err: any) {
-          toast.error(err.response?.data?.message || 'Failed to delete discount');
+        } catch {
+          toast.error('Failed to delete discount');
         }
       }
     });
@@ -142,11 +202,7 @@ export function DiscountsPage() {
     if (discount.type === 'percentage') {
       return `${discount.value}%`;
     }
-    return new Intl.NumberFormat('en-JO', {
-      style: 'currency',
-      currency: 'JOD',
-      minimumFractionDigits: 3,
-    }).format(discount.value);
+    return formatAmount(discount.value);
   };
 
   const stats = useMemo(() => {
@@ -157,23 +213,10 @@ export function DiscountsPage() {
     };
   }, [discounts]);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.05 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
-  };
-
   return (
     <div className="max-w-7xl mx-auto space-y-8 pb-10">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:gap-6">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -189,7 +232,7 @@ export function DiscountsPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={openCreateModal}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 transition-all shadow-sm"
+            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20"
           >
             <Plus size={18} />
             <span>Add Discount</span>
@@ -197,7 +240,7 @@ export function DiscountsPage() {
         </div>
       </div>
 
-      {/* Search Bar */}
+      {/* Search and View Toggle */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="relative flex-1 sm:max-w-md">
           <SearchInput
@@ -207,16 +250,30 @@ export function DiscountsPage() {
             placeholder="Search discounts..."
           />
         </div>
+
+        {/* View Mode Toggle */}
+        <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[44px]">
+          <button
+            onClick={() => setViewMode('grid')}
+            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+            title="Grid View"
+          >
+            <Grid3X3 size={18} />
+          </button>
+          <button
+            onClick={() => setViewMode('list')}
+            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+            title="List View"
+          >
+            <List size={18} />
+          </button>
+        </div>
       </div>
 
       {/* Summary Stats */}
       {!isLoading && filteredDiscounts.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex items-center justify-between transition-all hover:shadow-lg overflow-hidden"
-          >
+          <div className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex items-center justify-between transition-all hover:shadow-lg overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
             <div className="relative z-10">
               <p className="text-xs font-black text-gray-400 tracking-widest">Total</p>
@@ -225,14 +282,9 @@ export function DiscountsPage() {
             <div className="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center relative z-10 group-hover:scale-110 transition-transform">
               <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" />
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex items-center justify-between transition-all hover:shadow-lg overflow-hidden"
-          >
+          <div className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex items-center justify-between transition-all hover:shadow-lg overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
             <div className="relative z-10">
               <p className="text-xs font-black text-gray-400 tracking-widest">Manager Only</p>
@@ -241,11 +293,11 @@ export function DiscountsPage() {
             <div className="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center relative z-10 group-hover:scale-110 transition-transform">
               <ShieldAlert className="w-6 h-6 text-amber-600 dark:text-yellow-400" />
             </div>
-          </motion.div>
+          </div>
         </div>
       )}
 
-      {/* Discounts Grid */}
+      {/* Discounts Content */}
       {isLoading ? (
         <div className="flex items-center justify-center py-24">
           <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin" />
@@ -262,61 +314,163 @@ export function DiscountsPage() {
         </div>
       ) : (
         <div className="space-y-8">
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="show"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-          >
-            {paginatedDiscounts.map((discount) => (
-              <motion.div
-                key={discount.id}
-                variants={itemVariants}
-                whileHover={{ y: -5 }}
-                className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-paymint-green/0 via-transparent to-paymint-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          {viewMode === 'grid' ? (
+            /* Grid View */
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {paginatedDiscounts.map((discount) => (
+                <div
+                  key={discount.id}
+                  className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-paymint-green/0 via-transparent to-paymint-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                <div className="flex justify-between items-start mb-6 relative z-10">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 ${discount.type === 'percentage' ? 'bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400' : 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'}`}>
-                    {discount.type === 'percentage' ? <Percent size={20} /> : <DollarSign size={20} />}
+                  <div className="flex justify-between items-start mb-6 relative z-10">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 ${discount.type === 'percentage' ? 'bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400' : 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'}`}>
+                      {discount.type === 'percentage' ? <Percent size={20} /> : <DollarSign size={20} />}
+                    </div>
+
+                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-[-10px] group-hover:translate-y-0">
+                      <button
+                        onClick={() => openEditModal(discount)}
+                        className="p-2 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-600 dark:text-white transition-colors"
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(discount.id, discount.name)}
+                        className="p-2 bg-gray-50 dark:bg-white/5 hover:bg-paymint-red/10 hover:text-paymint-red rounded-lg transition-colors text-gray-600 dark:text-white"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-[-10px] group-hover:translate-y-0">
-                    <button
-                      onClick={() => openEditModal(discount)}
-                      className="p-2 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-600 dark:text-white transition-colors"
-                    >
-                      <Edit2 size={16} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(discount.id, discount.name)}
-                      className="p-2 bg-gray-50 dark:bg-white/5 hover:bg-paymint-red/10 hover:text-paymint-red rounded-lg transition-colors text-gray-600 dark:text-white"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </div>
+                  <div className="relative z-10">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 truncate group-hover:text-paymint-green transition-colors" title={discount.name}>{discount.name}</h3>
+                    <p className="text-3xl font-black text-paymint-green mb-4 tracking-tight">{formatValue(discount)} <span className="text-xs font-bold text-gray-500 tracking-widest ml-1">Off</span></p>
 
-                <div className="relative z-10">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 truncate group-hover:text-paymint-green transition-colors" title={discount.name}>{discount.name}</h3>
-                  <p className="text-3xl font-black text-paymint-green mb-4 tracking-tight">{formatValue(discount)} <span className="text-xs font-bold text-gray-500 tracking-widest ml-1">Off</span></p>
-
-                  <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100 dark:border-white/5">
-                    <span className="px-2.5 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-xs text-gray-600 dark:text-gray-400 font-bold tracking-wider">
-                      {discount.type === 'percentage' ? 'Percentage' : 'Fixed'}
-                    </span>
-                    {discount.adminOnly && (
-                      <span className="px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-yellow-500/10 border border-amber-200 dark:border-yellow-500/20 text-xs text-amber-700 dark:text-yellow-500 font-bold tracking-wider">
-                        Manager Only
+                    <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100 dark:border-white/5">
+                      <span className="px-2.5 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-xs text-gray-600 dark:text-gray-400 font-bold tracking-wider">
+                        {discount.type === 'percentage' ? 'Percentage' : 'Fixed'}
                       </span>
-                    )}
+                      {discount.adminOnly && (
+                        <span className="px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-yellow-500/10 border border-amber-200 dark:border-yellow-500/20 text-xs text-amber-700 dark:text-yellow-500 font-bold tracking-wider">
+                          Manager Only
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </motion.div>
-            ))}
-          </motion.div>
+              ))}
+            </div>
+          ) : (
+            /* List View */
+            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
+                    <tr>
+                      <th
+                        className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                        onClick={() => handleSort('name')}
+                      >
+                        <div className="flex items-center gap-1">
+                          Name
+                          {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                        </div>
+                      </th>
+                      <th
+                        className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                        onClick={() => handleSort('value')}
+                      >
+                        <div className="flex items-center gap-1">
+                          Value
+                          {sortConfig?.key === 'value' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                        </div>
+                      </th>
+                      <th
+                        className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                        onClick={() => handleSort('type')}
+                      >
+                        <div className="flex items-center gap-1">
+                          Type
+                          {sortConfig?.key === 'type' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                        </div>
+                      </th>
+                      <th
+                        className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                        onClick={() => handleSort('adminOnly')}
+                      >
+                        <div className="flex items-center gap-1">
+                          Access
+                          {sortConfig?.key === 'adminOnly' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                        </div>
+                      </th>
+                      <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                    {paginatedDiscounts.map((discount) => (
+                      <tr
+                        key={discount.id}
+                        className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                      >
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-4">
+                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 ${discount.type === 'percentage' ? 'bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400' : 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400'}`}>
+                                {discount.type === 'percentage' ? <Percent size={18} /> : <DollarSign size={18} />}
+                              </div>
+                              <div>
+                                <p className="font-bold text-gray-900 dark:text-white text-sm">{discount.name}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="text-lg font-black text-paymint-green">{formatValue(discount)}</span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="px-2.5 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-xs text-gray-600 dark:text-gray-400 font-bold tracking-wider">
+                              {discount.type === 'percentage' ? 'Percentage' : 'Fixed'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            {discount.adminOnly ? (
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-yellow-500/10 border border-amber-200 dark:border-yellow-500/20 text-xs text-amber-700 dark:text-yellow-500 font-bold tracking-wide">
+                                <ShieldAlert size={10} />
+                                Manager Only
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs text-gray-500 font-bold tracking-wide">
+                                All Users
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            <div className="flex items-center justify-center gap-2">
+                              <button
+                                onClick={() => openEditModal(discount)}
+                                className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-90"
+                                title="Edit Discount"
+                              >
+                                <Edit2 size={16} />
+                              </button>
+                              <button
+                                onClick={() => handleDelete(discount.id, discount.name)}
+                                className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-paymint-red/60 hover:text-paymint-red hover:bg-paymint-red/5 transition-all shadow-sm active:scale-90"
+                                title="Delete Discount"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
           <Pagination
             currentPage={currentPage}

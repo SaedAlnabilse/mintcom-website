@@ -2,7 +2,7 @@ import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trash2, RefreshCw, MousePointerClick, CheckSquare, AlertCircle } from 'lucide-react';
+import { X, Trash2, MousePointerClick, CheckSquare, AlertCircle } from 'lucide-react';
 import { QuickInfo } from '../QuickInfo';
 import { useScrollLock } from '../../hooks/useScrollLock';
 
@@ -38,15 +38,19 @@ export function AttributeFormModal({
 
     useEffect(() => {
         if (isOpen) {
-            setErrors({});
+            setTimeout(() => setErrors({}), 0);
             if (initialData) {
-                setName(initialData.name);
-                setInputType(initialData.inputType);
-                setIsRequired(false); // Assuming initialData doesn't have it yet based on interface, but defaulting to false
+                setTimeout(() => {
+                    setName(initialData.name);
+                    setInputType(initialData.inputType);
+                    setIsRequired(false); // Assuming initialData doesn't have it yet based on interface, but defaulting to false
+                }, 0);
             } else {
-                setName('');
-                setInputType('SINGLE_SELECT');
-                setIsRequired(false);
+                setTimeout(() => {
+                    setName('');
+                    setInputType('SINGLE_SELECT');
+                    setIsRequired(false);
+                }, 0);
             }
         }
     }, [isOpen, initialData]);
@@ -240,7 +244,7 @@ export function AttributeFormModal({
                             className="flex-[2] h-12 sm:h-14 rounded-xl bg-paymint-green text-black font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
                         >
                             {isSubmitting ? (
-                                <RefreshCw size={18} className="animate-spin" />
+                                <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" />
                             ) : (
                                 initialData ? AppStrings.COMMON.SAVE : 'Create'
                             )}

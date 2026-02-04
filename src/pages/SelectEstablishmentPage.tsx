@@ -30,8 +30,11 @@ export function SelectEstablishmentPage() {
     setTimeout(() => {
       setCurrentEstablishment(est);
       toast.success(`Active Location: ${est.name}`);
-      // Use establishmentLoginId if available for pretty URL
-      navigate(`/dashboard/${est.establishmentLoginId || est.id}`);
+      // Use establishmentLoginId if available for pretty URL, ensuring it's not null/undefined/empty
+      const slug = est.establishmentLoginId && est.establishmentLoginId.trim().length > 0 
+        ? est.establishmentLoginId 
+        : est.id;
+      navigate(`/dashboard/${slug}`);
     }, 800);
   };
 

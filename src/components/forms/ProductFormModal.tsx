@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate , useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Upload, Trash2, ChevronDown, Check, Wand2, Plus, RefreshCw, Search, AlertCircle } from 'lucide-react';
+import { X, Upload, Trash2, ChevronDown, Check, Wand2, Plus, Search, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import api from '../../config/api';
@@ -130,7 +130,7 @@ export function ProductFormModal({
       setCategoryId(newCategory.id);
       setShowCategoryModal(false);
       toast.success('Category created');
-    } catch (err: any) {
+    } catch {
       toast.error('Failed to create category');
     } finally {
       setIsCategorySubmitting(false);
@@ -178,7 +178,7 @@ export function ProductFormModal({
       setSelectedAttributeIds(prev => [...prev, newAttribute.id]);
       setShowAttributeModal(false);
       toast.success('Add-on Created');
-    } catch (err: any) {
+    } catch {
       toast.error('Failed to create add-on');
     } finally {
       setIsAttributeSubmitting(false);
@@ -283,9 +283,9 @@ export function ProductFormModal({
           try {
             const res = await api.get(`/api/items/${initialData.id}`);
             if (res.data?.itemAttributes) {
-              setSelectedAttributeIds(res.data.itemAttributes.map((ia: any) => ia.attributeId));
+              setSelectedAttributeIds(res.data.itemAttributes.map((ia: { attributeId: string }) => ia.attributeId));
             }
-          } catch (e) {
+          } catch {
             console.error('Failed to fetch item attributes');
           }
         };
@@ -527,7 +527,7 @@ export function ProductFormModal({
                     className="mt-6 flex items-center gap-2 text-xs font-black tracking-widest text-paymint-green bg-paymint-green/10 px-5 py-2.5 rounded-xl hover:bg-paymint-green/20 transition-all border border-paymint-green/20 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm active:scale-95"
                   >
                     {isGeneratingImage ? (
-                      <RefreshCw size={14} className="animate-spin" />
+                      <div className="w-3.5 h-3.5 border-2 border-paymint-green/20 border-t-paymint-green rounded-full animate-spin" />
                     ) : (
                       <Wand2 size={14} />
                     )}
@@ -1048,7 +1048,7 @@ export function ProductFormModal({
                 className="flex-1 h-12 sm:h-14 bg-paymint-green text-black font-black text-xs tracking-widest rounded-xl sm:rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
               >
                 {isSubmitting ? (
-                  <RefreshCw size={18} className="animate-spin" />
+                  <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" />
                 ) : (
                   initialData?.id ? AppStrings.COMMON.SAVE : AppStrings.COMMON.ADD
                 )}

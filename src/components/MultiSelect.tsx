@@ -85,7 +85,7 @@ export function MultiSelect({
     // Clear search and focus input when opening
     useEffect(() => {
         if (isOpen) {
-            setSearchQuery('');
+            setTimeout(() => setSearchQuery(''), 0);
             const timer = setTimeout(() => {
                 searchInputRef.current?.focus();
             }, 100);

@@ -39,15 +39,19 @@ export function DiscountFormModal({
 
   useEffect(() => {
     if (isOpen) {
-      setErrors({});
+      setTimeout(() => setErrors({}), 0);
       if (initialData) {
-        setName(initialData.name);
-        setPercentage(String(initialData.percentage * 100));
-        setAdminOnly(initialData.adminOnly);
+        setTimeout(() => {
+          setName(initialData.name);
+          setPercentage(String(initialData.percentage * 100));
+          setAdminOnly(initialData.adminOnly);
+        }, 0);
       } else {
-        setName('');
-        setPercentage('');
-        setAdminOnly(false);
+        setTimeout(() => {
+          setName('');
+          setPercentage('');
+          setAdminOnly(false);
+        }, 0);
       }
     }
   }, [isOpen, initialData]);

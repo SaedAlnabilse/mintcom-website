@@ -13,14 +13,14 @@ import {
     Shield,
     UserCheck,
     Plus,
-    RefreshCw,
     Grid3X3,
     List,
     Calendar,
     ExternalLink,
     MoreVertical,
     Eye,
-    Trash2
+    Trash2,
+    ArrowUpDown
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -89,7 +89,7 @@ export function OwnerBrandsPage() {
     const [isCreating, setIsCreating] = useState(false);
     const [viewMode, setViewMode] = useState<ViewMode>('list');
     const [sortBy, setSortBy] = useState<SortOption>('name');
-    const [sortOrder] = useState<'asc' | 'desc'>('asc');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 10;
@@ -111,6 +111,15 @@ export function OwnerBrandsPage() {
         targetName: '',
         mode: 'dissolve-brand'
     });
+
+    const handleSort = (key: SortOption) => {
+        if (sortBy === key) {
+            setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortBy(key);
+            setSortOrder('asc');
+        }
+    };
 
     const { register, handleSubmit, formState: { errors }, reset, trigger } = useForm<BrandFormData>({
         resolver: zodResolver(createBrandSchema)
@@ -374,7 +383,7 @@ export function OwnerBrandsPage() {
     return (
         <div className="space-y-8 pb-20">
             {/* Header */}
-            <div className="flex flex-col gap-4 sm:gap-6">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
@@ -388,13 +397,6 @@ export function OwnerBrandsPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button
-                        onClick={fetchBrands}
-                        className="p-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
-                        title="Refresh"
-                    >
-                        <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
-                    </button>
                     {availableEstablishments.length >= 2 && (
                         <button
                             onClick={() => setShowCreateModal(true)}
@@ -424,7 +426,7 @@ export function OwnerBrandsPage() {
                                 <stat.icon size={24} />
                             </div>
                             <div>
-                                <p className="text-xs font-black text-gray-400 tracking-widest uppercase">{stat.label}</p>
+                                <p className="text-xs font-black text-gray-400 tracking-widest">{stat.label}</p>
                                 <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
                             </div>
                         </div>
@@ -604,7 +606,7 @@ export function OwnerBrandsPage() {
                                     <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
                                         <div className="flex items-center gap-2 mb-2">
                                             <Hash size={14} className="text-purple-500" />
-                                            <span className="text-xs font-black text-gray-400 tracking-widest">Login ID</span>
+                                            <span className="text-xs font-black text-gray-400 tracking-widest uppercase">Login ID</span>
                                         </div>
                                         <p className="text-sm font-mono font-bold text-gray-900 dark:text-white truncate">
                                             {brand.establishmentLoginId}
@@ -613,7 +615,7 @@ export function OwnerBrandsPage() {
                                     <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
                                         <div className="flex items-center gap-2 mb-2">
                                             <Calendar size={14} className="text-blue-500" />
-                                            <span className="text-xs font-black text-gray-400 tracking-widest">Created</span>
+                                            <span className="text-xs font-black text-gray-400 tracking-widest uppercase">Created</span>
                                         </div>
                                         <p className="text-sm font-bold text-gray-900 dark:text-white">
                                             {formatDate(brand.createdAt)}
@@ -624,7 +626,7 @@ export function OwnerBrandsPage() {
                                 {/* Locations */}
                                 <div className="space-y-3 relative z-10">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-xs font-black text-gray-400 tracking-widest">Locations</span>
+                                        <span className="text-xs font-black text-gray-400 tracking-widest uppercase">Locations</span>
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {brand.establishments.slice(0, 4).map((est) => {
@@ -741,11 +743,29 @@ export function OwnerBrandsPage() {
                     </div>
 
                     {/* Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest uppercase">
-                        <div className="col-span-4">Brand</div>
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest">
+                        <div 
+                            className="col-span-4 cursor-pointer hover:text-paymint-green transition-colors flex items-center gap-1"
+                            onClick={() => handleSort('name')}
+                        >
+                            Brand
+                            {sortBy === 'name' && <ArrowUpDown size={12} className={sortOrder === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                        </div>
                         <div className="col-span-2">Login ID</div>
-                        <div className="col-span-2">Locations</div>
-                        <div className="col-span-2">Created</div>
+                        <div 
+                            className="col-span-2 cursor-pointer hover:text-paymint-green transition-colors flex items-center gap-1"
+                            onClick={() => handleSort('locations')}
+                        >
+                            Locations
+                            {sortBy === 'locations' && <ArrowUpDown size={12} className={sortOrder === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                        </div>
+                        <div 
+                            className="col-span-2 cursor-pointer hover:text-paymint-green transition-colors flex items-center gap-1"
+                            onClick={() => handleSort('date')}
+                        >
+                            Created
+                            {sortBy === 'date' && <ArrowUpDown size={12} className={sortOrder === 'asc' ? 'rotate-0' : 'rotate-180'} />}
+                        </div>
                         <div className="col-span-2 text-right">Actions</div>
                     </div>
 
