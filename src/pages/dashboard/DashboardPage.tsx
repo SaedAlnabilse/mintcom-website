@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   TrendingUp,
-  Users,
   ShoppingBag,
   Clock,
   ArrowUpRight,
@@ -933,35 +932,7 @@ export const DashboardPage = () => {
             </div>
           </div>
 
-          {/* Quick Actions */}
-          <div id="tour-quick-actions" className="group relative p-4 sm:p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm transition-all duration-300 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-paymint-green/5 via-blue-500/5 to-purple-500/5 opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 sm:gap-6">
-              <div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Quick Links</h3>
-                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">Frequently used</p>
-              </div>
-              <div className="w-full lg:w-auto overflow-x-auto scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
-                <div className="flex gap-2 sm:gap-3 sm:flex-wrap">
-                  {[
-                    { label: 'Products', path: '/dashboard/products', icon: Package },
-                    { label: 'Orders', path: '/dashboard/orders', icon: ShoppingBag },
-                    { label: 'Staff', path: '/dashboard/staff', icon: Users },
-                    { label: 'Reports', path: '/dashboard/reports', icon: FileBarChart },
-                  ].map((action) => (
-                    <button
-                      key={action.label}
-                      onClick={() => navigate(action.path)}
-                      className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/10 border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white font-bold text-xs whitespace-nowrap hover:bg-paymint-green hover:text-black hover:border-paymint-green hover:scale-105 transition-all shadow-sm touch-target"
-                    >
-                      <action.icon size={16} />
-                      {action.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+
 
 
         </motion.div>

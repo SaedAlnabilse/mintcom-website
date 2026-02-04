@@ -8,13 +8,20 @@ export const DataChangeEventTypes = {
   ORDER_CREATED: 'order.created',
   ORDER_UPDATED: 'order.updated',
   ORDER_REFUNDED: 'order.refunded',
+  ITEM_CREATED: 'item.created',
   ITEM_UPDATED: 'item.updated',
+  ITEM_DELETED: 'item.deleted',
   ITEM_STOCK_CHANGED: 'item.stock_changed',
+  CATEGORY_CREATED: 'category.created',
   CATEGORY_UPDATED: 'category.updated',
+  CATEGORY_DELETED: 'category.deleted',
   CUSTOMER_UPDATED: 'customer.updated',
   SETTINGS_UPDATED: 'settings.updated',
   SHIFT_STARTED: 'shift.started',
   SHIFT_ENDED: 'shift.ended',
+  HELD_ORDER_CREATED: 'held_order.created',
+  HELD_ORDER_UPDATED: 'held_order.updated',
+  HELD_ORDER_DELETED: 'held_order.deleted',
 } as const;
 
 export type DataChangeEventType = typeof DataChangeEventTypes[keyof typeof DataChangeEventTypes];
@@ -273,8 +280,21 @@ class RealtimeService {
       case DataChangeEventTypes.ITEM_UPDATED:
         this.handleItemUpdated(event.payload as ItemUpdatedPayload);
         break;
+      case DataChangeEventTypes.ITEM_STOCK_CHANGED:
+        this.handleItemStockChanged(event.payload);
+        break;
       case DataChangeEventTypes.SETTINGS_UPDATED:
         this.handleSettingsUpdated();
+        break;
+      case DataChangeEventTypes.HELD_ORDER_CREATED:
+        this.handleHeldOrderCreated(event.payload);
+        break;
+      case DataChangeEventTypes.HELD_ORDER_DELETED:
+        this.handleHeldOrderDeleted(event.payload);
+        break;
+      case DataChangeEventTypes.SHIFT_STARTED:
+      case DataChangeEventTypes.SHIFT_ENDED:
+        // Shifts are handled via refresh callbacks
         break;
     }
 
@@ -366,6 +386,50 @@ class RealtimeService {
         duration: 4000,
         position: 'top-right',
         icon: '⚙️',
+      }
+    );
+  }
+
+  /**
+   * Handle item stock changed event
+   */
+  private handleItemStockChanged(payload: any): void {
+    if (payload.newStock <= 5) {
+      toast.error(
+        `${payload.name} is running low (${payload.newStock} left)`,
+        {
+          duration: 5000,
+          position: 'top-right',
+          icon: '📦',
+        }
+      );
+    }
+  }
+
+  /**
+   * Handle held order created event
+   */
+  private handleHeldOrderCreated(payload: any): void {
+    toast(
+      `Order "${payload.nickname}" held by ${payload.employeeName || 'POS'}`,
+      {
+        duration: 4000,
+        position: 'top-right',
+        icon: '📌',
+      }
+    );
+  }
+
+  /**
+   * Handle held order deleted event
+   */
+  private handleHeldOrderDeleted(payload: any): void {
+    toast(
+      `Held order "${payload.nickname}" was removed`,
+      {
+        duration: 3000,
+        position: 'top-right',
+        icon: '🗑️',
       }
     );
   }
