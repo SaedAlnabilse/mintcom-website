@@ -26,7 +26,7 @@ import { Pagination } from '../../components/ui';
 
 
 
-type ReportType = 'sales' | 'top-items' | 'top-categories' | 'top-modifiers' | 'peak-hours' | 'shifts' | 'cash-discrepancy' | 'staff-sales' | 'payments' | 'discounts' | 'taxes' | 'receipts';
+type ReportType = 'sales' | 'top-items' | 'top-categories' | 'top-modifiers' | 'peak-hours' | 'shifts' | 'staff-sales' | 'payments' | 'discounts' | 'taxes' | 'receipts';
 
 const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
@@ -115,29 +115,6 @@ interface Shift {
   };
 }
 
-interface CashDiscrepancyData {
-  employeeSummary: Array<{
-    employeeName: string;
-    totalShifts: number;
-    shiftsWithDiscrepancy: number;
-    shiftsWithoutDiscrepancy: number;
-    totalOverage: number;
-    totalShortage: number;
-    netDiscrepancy: number;
-    accuracyRate: number;
-  }>;
-  totals: {
-    totalShifts: number;
-    totalOverage: number;
-    totalShortage: number;
-    netDiscrepancy: number;
-    shiftsWithDiscrepancy: number;
-    overallAccuracy: number;
-  };
-  shiftsWithDiscrepancies: Shift[];
-  allShifts: Shift[];
-}
-
 interface ItemReportBreakdown {
   itemName?: string;
   name?: string;
@@ -209,7 +186,7 @@ export function ReportsPage() {
         else if (type === 'items-categories') setItemReportTab('items');
         else if (type === 'addons') setItemReportTab('modifiers');
       } else {
-        const validTypes: ReportType[] = ['sales', 'top-items', 'peak-hours', 'shifts', 'cash-discrepancy', 'staff-sales', 'payments', 'discounts', 'taxes', 'receipts'];
+        const validTypes: ReportType[] = ['sales', 'top-items', 'peak-hours', 'shifts', 'staff-sales', 'payments', 'discounts', 'taxes', 'receipts'];
         if (validTypes.includes(type as ReportType)) {
           setReportType(type as ReportType);
         }
@@ -240,7 +217,6 @@ export function ReportsPage() {
 
   const [peakHours, setPeakHours] = useState<PeakHour[]>([]);
   const [shifts, setShifts] = useState<Shift[]>([]);
-  const [cashDiscrepancy, setCashDiscrepancy] = useState<CashDiscrepancyData | null>(null);
   const [itemReportData, setItemReportData] = useState<ItemReportData | null>(null);
   // itemReportTab moved up
   const [currentPage, setCurrentPage] = useState(1);
@@ -481,11 +457,6 @@ export function ReportsPage() {
           setShifts(shiftsRes.data || []);
           break;
         }
-        case 'cash-discrepancy': {
-          const discrepancyRes = await api.get('/reports/cash-discrepancy-summary', { params: commonParams });
-          setCashDiscrepancy(discrepancyRes.data || null);
-          break;
-        }
       }
     } catch {
       toast.error('Failed to load report data');
@@ -551,18 +522,6 @@ export function ReportsPage() {
         });
         headers = { username: 'Staff', period: 'Shift Period', hoursWorked: 'Hours Worked', opening: 'Opening Bal', sales: 'Net Sales', closing: 'Closing Bal', cashOverShort: 'Cash Over/Short', status: 'Status' };
         break;
-      case 'cash-discrepancy':
-        dataToExport = cashDiscrepancy?.employeeSummary?.map(e => ({
-          employeeName: e.employeeName,
-          totalShifts: e.totalShifts,
-          shiftsWithDiscrepancy: e.shiftsWithDiscrepancy,
-          totalOverage: e.totalOverage,
-          totalShortage: e.totalShortage,
-          netDiscrepancy: e.netDiscrepancy,
-          accuracyRate: `${e.accuracyRate}%`
-        })) || [];
-        headers = { employeeName: 'Employee', totalShifts: 'Total Shifts', shiftsWithDiscrepancy: 'Discrepant Shifts', totalOverage: 'Total Overage', totalShortage: 'Total Shortage', netDiscrepancy: 'Net Variance', accuracyRate: 'Accuracy Rate' };
-        break;
     }
 
     exportToCSV(dataToExport, filename, headers);
@@ -610,7 +569,6 @@ export function ReportsPage() {
             { id: 'addons', label: 'Sales by Add-Ons', icon: Tag },
             { id: 'staff-sales', label: 'Sales by Staff', icon: Activity },
             { id: 'shifts', label: 'Shifts Reports', icon: Clock },
-            { id: 'cash-discrepancy', label: 'Cash Discrepancy', icon: Scale },
             { id: 'payments', label: 'Payments Reports', icon: CreditCard },
             { id: 'discounts', label: 'Discount Reports', icon: Percent },
           ].map((type) => {
@@ -1888,227 +1846,6 @@ export function ReportsPage() {
               </div>
             )
             }
-
-            {/* Cash Discrepancy Report Section */}
-            {reportType === 'cash-discrepancy' && (
-              <div className="space-y-6">
-                {/* Summary Cards */}
-                {cashDiscrepancy && (
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
-                      <div className="flex items-center gap-3 mb-4 text-paymint-green">
-                        <ArrowUpRight size={20} />
-                        <h4 className="text-xs font-black tracking-widest text-gray-400">Total Overage</h4>
-                      </div>
-                      <p className="text-3xl font-black text-paymint-green">+{formatCurrency(cashDiscrepancy.totals.totalOverage)}</p>
-                      <p className="text-xs font-bold text-gray-500 mt-2">{cashDiscrepancy.totals.shiftsWithDiscrepancy > 0 ? `${cashDiscrepancy.employeeSummary.filter(e => e.totalOverage > 0).length} employees` : 'No overages'}</p>
-                    </div>
-                    <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
-                      <div className="flex items-center gap-3 mb-4 text-red-500">
-                        <ArrowDownRight size={20} />
-                        <h4 className="text-xs font-black tracking-widest text-gray-400">Total Shortage</h4>
-                      </div>
-                      <p className="text-3xl font-black text-red-500">-{formatCurrency(cashDiscrepancy.totals.totalShortage)}</p>
-                      <p className="text-xs font-bold text-gray-500 mt-2">{cashDiscrepancy.employeeSummary.filter(e => e.totalShortage > 0).length} employees</p>
-                    </div>
-                    <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
-                      <div className="flex items-center gap-3 mb-4 text-blue-500">
-                        <Scale size={20} />
-                        <h4 className="text-xs font-black tracking-widest text-gray-400">Net Variance</h4>
-                      </div>
-                      <p className={`text-3xl font-black ${cashDiscrepancy.totals.netDiscrepancy >= 0 ? 'text-paymint-green' : 'text-red-500'}`}>
-                        {cashDiscrepancy.totals.netDiscrepancy > 0 ? '+' : ''}{formatCurrency(cashDiscrepancy.totals.netDiscrepancy)}
-                      </p>
-                      <p className="text-xs font-bold text-gray-500 mt-2">{cashDiscrepancy.totals.totalShifts} total shifts</p>
-                    </div>
-                    <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
-                      <div className="flex items-center gap-3 mb-4 text-purple-500">
-                        <Activity size={20} />
-                        <h4 className="text-xs font-black tracking-widest text-gray-400">Accuracy Rate</h4>
-                      </div>
-                      <p className="text-3xl font-black text-purple-500">{cashDiscrepancy.totals.overallAccuracy}%</p>
-                      <p className="text-xs font-bold text-gray-500 mt-2">{cashDiscrepancy.totals.totalShifts - cashDiscrepancy.totals.shiftsWithDiscrepancy} perfect shifts</p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Employee Summary Table */}
-                <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
-                  <div className="p-5 border-b border-gray-100 dark:border-white/5">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
-                        <Users size={20} />
-                      </div>
-                      <div>
-                        <h3 className="text-base font-bold text-gray-900 dark:text-white">Cash Handling by Employee</h3>
-                        <p className="text-xs font-bold text-gray-500 tracking-wide">Overage and shortage summary per staff member</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead className="bg-gray-50 dark:bg-white/[0.02]">
-                        <tr className="border-b border-gray-200 dark:border-white/5">
-                          <th className="px-5 py-5 text-left text-xs font-black text-gray-400 tracking-widest">Employee</th>
-                          <th className="px-5 py-5 text-center text-xs font-black text-gray-400 tracking-widest">Shifts</th>
-                          <th className="px-5 py-5 text-right text-xs font-black text-gray-400 tracking-widest">Overage</th>
-                          <th className="px-5 py-5 text-right text-xs font-black text-gray-400 tracking-widest">Shortage</th>
-                          <th className="px-5 py-5 text-center text-xs font-black text-gray-400 tracking-widest">Net Variance</th>
-                          <th className="px-5 py-5 text-center text-xs font-black text-gray-400 tracking-widest">Accuracy</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                        {cashDiscrepancy?.employeeSummary && cashDiscrepancy.employeeSummary.length > 0 ? (
-                          cashDiscrepancy.employeeSummary.map((employee, idx) => (
-                            <motion.tr
-                              key={employee.employeeName}
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              transition={{ delay: idx * 0.05 }}
-                              className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
-                            >
-                              <td className="px-5 py-5">
-                                <div className="flex items-center gap-3">
-                                  <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center font-black text-xs">
-                                    {employee.employeeName?.charAt(0).toUpperCase()}
-                                  </div>
-                                  <span className="font-bold text-gray-900 dark:text-white text-sm">{employee.employeeName}</span>
-                                </div>
-                              </td>
-                              <td className="px-5 py-5 text-center">
-                                <div className="flex flex-col items-center">
-                                  <span className="font-bold text-gray-900 dark:text-white">{employee.totalShifts}</span>
-                                  <span className="text-xs text-gray-500">{employee.shiftsWithDiscrepancy} with variance</span>
-                                </div>
-                              </td>
-                              <td className="px-5 py-5 text-right">
-                                <span className={`font-bold ${employee.totalOverage > 0 ? 'text-paymint-green' : 'text-gray-400'}`}>
-                                  {employee.totalOverage > 0 ? `+${formatCurrency(employee.totalOverage)}` : '—'}
-                                </span>
-                              </td>
-                              <td className="px-5 py-5 text-right">
-                                <span className={`font-bold ${employee.totalShortage > 0 ? 'text-red-500' : 'text-gray-400'}`}>
-                                  {employee.totalShortage > 0 ? `-${formatCurrency(employee.totalShortage)}` : '—'}
-                                </span>
-                              </td>
-                              <td className="px-5 py-5 text-center">
-                                <span className={`px-2.5 py-1 rounded-lg text-xs font-black tracking-widest border ${
-                                  employee.netDiscrepancy > 0.01
-                                    ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
-                                    : employee.netDiscrepancy < -0.01
-                                      ? 'bg-red-500/10 text-red-500 border-red-500/20'
-                                      : 'bg-gray-100 dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10'
-                                }`}>
-                                  {employee.netDiscrepancy > 0.01
-                                    ? `+${formatCurrency(employee.netDiscrepancy)}`
-                                    : employee.netDiscrepancy < -0.01
-                                      ? formatCurrency(employee.netDiscrepancy)
-                                      : '$0.00'}
-                                </span>
-                              </td>
-                              <td className="px-5 py-5 text-center">
-                                <div className="flex flex-col items-center gap-1">
-                                  <span className={`font-black ${
-                                    employee.accuracyRate >= 90 ? 'text-paymint-green' :
-                                    employee.accuracyRate >= 70 ? 'text-orange-500' : 'text-red-500'
-                                  }`}>
-                                    {employee.accuracyRate}%
-                                  </span>
-                                  {employee.accuracyRate === 100 && (
-                                    <span className="text-xs text-paymint-green">✓ Perfect</span>
-                                  )}
-                                </div>
-                              </td>
-                            </motion.tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td colSpan={6} className="py-20 text-center text-gray-400 font-black text-xs tracking-[0.2em]">No cash discrepancy data found</td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Shifts with Discrepancies Table */}
-                {cashDiscrepancy?.shiftsWithDiscrepancies && cashDiscrepancy.shiftsWithDiscrepancies.length > 0 && (
-                  <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
-                    <div className="p-5 border-b border-gray-100 dark:border-white/5">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
-                          <Activity size={20} />
-                        </div>
-                        <div>
-                          <h3 className="text-base font-bold text-gray-900 dark:text-white">Shifts with Discrepancies</h3>
-                          <p className="text-xs font-bold text-gray-500 tracking-wide">{cashDiscrepancy.shiftsWithDiscrepancies.length} shifts with cash variance</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="overflow-x-auto">
-                      <table className="w-full">
-                        <thead className="bg-gray-50 dark:bg-white/[0.02]">
-                          <tr className="border-b border-gray-200 dark:border-white/5">
-                            <th className="px-5 py-5 text-left text-xs font-black text-gray-400 tracking-widest">Date</th>
-                            <th className="px-5 py-5 text-left text-xs font-black text-gray-400 tracking-widest">Staff</th>
-                            <th className="px-5 py-5 text-right text-xs font-black text-gray-400 tracking-widest">Expected</th>
-                            <th className="px-5 py-5 text-right text-xs font-black text-gray-400 tracking-widest">Actual</th>
-                            <th className="px-5 py-5 text-center text-xs font-black text-gray-400 tracking-widest">Variance</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                          {cashDiscrepancy.shiftsWithDiscrepancies.slice(0, 10).map((shift: any, idx) => {
-                            const expectedBalance = (shift.openingBalance || 0) + (shift.totalSales || 0);
-                            return (
-                              <motion.tr
-                                key={shift.id}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: idx * 0.03 }}
-                                className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
-                              >
-                                <td className="px-5 py-4">
-                                  <div className="flex flex-col">
-                                    <span className="text-xs font-bold text-gray-900 dark:text-white">
-                                      {format(new Date(shift.startTime), 'MMM d, yyyy')}
-                                    </span>
-                                    <span className="text-xs font-medium text-gray-500">
-                                      {format(new Date(shift.startTime), 'HH:mm')} - {shift.endTime ? format(new Date(shift.endTime), 'HH:mm') : 'Present'}
-                                    </span>
-                                  </div>
-                                </td>
-                                <td className="px-5 py-4">
-                                  <span className="font-bold text-gray-900 dark:text-white text-sm">{shift.userName || shift.user?.username || 'Unknown'}</span>
-                                </td>
-                                <td className="px-5 py-4 text-right font-medium text-gray-500">
-                                  {formatCurrency(expectedBalance)}
-                                </td>
-                                <td className="px-5 py-4 text-right font-bold text-blue-500">
-                                  {shift.closingBalance !== null && shift.closingBalance !== undefined
-                                    ? formatCurrency(shift.closingBalance)
-                                    : '—'}
-                                </td>
-                                <td className="px-5 py-4 text-center">
-                                  <span className={`px-2.5 py-1 rounded-lg text-xs font-black tracking-widest border ${
-                                    (shift.discrepancy || 0) > 0.01
-                                      ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
-                                      : 'bg-red-500/10 text-red-500 border-red-500/20'
-                                  }`}>
-                                    {(shift.discrepancy || 0) > 0.01
-                                      ? `+${formatAmount(shift.discrepancy).replace(currencySymbol, '').trim()} Over`
-                                      : `${formatAmount(shift.discrepancy).replace(currencySymbol, '').trim()} Short`}
-                                  </span>
-                                </td>
-                              </motion.tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
 
             {/* Receipts Report Table */}
             {reportType === 'receipts' && (
