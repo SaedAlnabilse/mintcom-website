@@ -382,7 +382,7 @@ export function ProductsPage() {
 
 
             {/* Filters */}
-            <div className="flex flex-col gap-3 sm:gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                 {/* Search */}
                 <div className="relative flex-1">
                     <SearchInput
@@ -395,7 +395,7 @@ export function ProductsPage() {
                 </div>
 
                 {/* Category Filter and View Toggle */}
-                <div className="flex items-center gap-2 sm:gap-3">
+                <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                     <div className="relative flex-1 sm:flex-initial sm:min-w-[200px]" ref={categoryDropdownRef}>
                         <button
                             onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}

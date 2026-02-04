@@ -1,6 +1,10 @@
 import { io, Socket } from 'socket.io-client';
 import toast from 'react-hot-toast';
 
+// Backend URL for WebSocket connection
+// Always connect directly to the backend for WebSocket (Vite proxy has issues with socket.io)
+const BACKEND_WS_URL = 'https://grateful-liberation-production-d036.up.railway.app';
+
 /**
  * Real-time Event Types
  */
@@ -99,6 +103,7 @@ class RealtimeService {
    * Initialize the service with optional auth token
    */
   initialize(establishmentId: string, authToken?: string): void {
+    console.log('[Realtime] 🚀 Initializing service for establishment:', establishmentId);
     this.establishmentId = establishmentId;
     this.authToken = authToken || null;
     this.connect();
@@ -120,11 +125,11 @@ class RealtimeService {
 
     this.setConnectionStatus('connecting');
 
-    // Use relative URL - the Cloudflare Worker will proxy WebSocket to backend
-    // In local dev, Vite proxy handles it; in production, the Worker handles it
-    const wsUrl = window.location.origin;
+    // Always connect directly to the backend for WebSocket
+    const wsUrl = BACKEND_WS_URL;
 
-    console.log(`[Realtime] Connecting to ${wsUrl}/realtime...`);
+    console.log(`[Realtime] 🔌 Connecting to ${wsUrl}/realtime...`);
+    console.log(`[Realtime] 🏢 Establishment ID: ${this.establishmentId}`);
 
     // Build connection options
     const connectionOptions: any = {
@@ -133,9 +138,10 @@ class RealtimeService {
         establishmentId: this.establishmentId,
         clientType: 'website',
       },
-      transports: ['websocket', 'polling'],
-      timeout: 20000,
+      transports: ['polling', 'websocket'], // Start with polling, then upgrade to websocket
+      timeout: 30000,
       reconnection: false, // We handle reconnection manually
+      forceNew: true, // Force new connection
     };
 
     // Add auth token if available
@@ -156,12 +162,14 @@ class RealtimeService {
   private setupEventHandlers(): void {
     if (!this.socket) return;
 
+    console.log('[Realtime] 🎧 Setting up event handlers...');
+
     // Connection established
     this.socket.on('connect', () => {
-      console.log('[Realtime] Connected:', this.socket?.id);
+      console.log('[Realtime] ✅ Connected successfully! Socket ID:', this.socket?.id);
       this.setConnectionStatus('connected');
       this.reconnectAttempts = 0;
-      
+
       // Show subtle connection toast
       toast.success('Real-time updates connected', {
         duration: 2000,
@@ -171,10 +179,8 @@ class RealtimeService {
 
     // Connection error
     this.socket.on('connect_error', (error) => {
-      // Only log first few errors to reduce console spam
-      if (this.reconnectAttempts <= 2) {
-        console.error('[Realtime] Connection error:', error.message);
-      }
+      console.error('[Realtime] ❌ Connection error:', error.message);
+      console.error('[Realtime] Error details:', error);
       this.setConnectionStatus('error');
       this.scheduleReconnect();
     });
@@ -267,7 +273,7 @@ class RealtimeService {
    * Handle incoming data change events
    */
   private handleDataChangeEvent(event: DataChangeEvent<any>): void {
-    console.log('[Realtime] Received event:', event.type, event.payload);
+    console.log('[Realtime] 📥 Received event:', event.type, event.payload);
 
     // Process event based on type
     switch (event.type) {
@@ -293,8 +299,10 @@ class RealtimeService {
         this.handleHeldOrderDeleted(event.payload);
         break;
       case DataChangeEventTypes.SHIFT_STARTED:
+        this.handleShiftStarted(event.payload);
+        break;
       case DataChangeEventTypes.SHIFT_ENDED:
-        // Shifts are handled via refresh callbacks
+        this.handleShiftEnded(event.payload);
         break;
     }
 
@@ -311,6 +319,7 @@ class RealtimeService {
     }
 
     // Notify refresh listeners
+    console.log('[Realtime] 📡 Notifying refresh listeners for event:', event.type, 'Listeners:', this.refreshCallbacks.size);
     this.refreshCallbacks.forEach(callback => {
       try {
         callback(event.type);
@@ -430,6 +439,40 @@ class RealtimeService {
         duration: 3000,
         position: 'top-right',
         icon: '🗑️',
+      }
+    );
+  }
+
+  /**
+   * Handle shift started event
+   */
+  private handleShiftStarted(payload: any): void {
+    console.log('[Realtime] 🟢 Shift started event received:', payload);
+    toast.success(
+      `Shift started by ${payload.employeeName || 'Employee'}`,
+      {
+        duration: 4000,
+        position: 'top-right',
+        icon: '🟢',
+      }
+    );
+  }
+
+  /**
+   * Handle shift ended event
+   */
+  private handleShiftEnded(payload: any): void {
+    console.log('[Realtime] 🔴 Shift ended event received:', payload);
+    const message = payload.autoClose
+      ? `Shift auto-closed for ${payload.employeeName || 'Employee'}`
+      : `Shift ended by ${payload.employeeName || 'Employee'}`;
+
+    toast(
+      message,
+      {
+        duration: 4000,
+        position: 'top-right',
+        icon: '🔴',
       }
     );
   }

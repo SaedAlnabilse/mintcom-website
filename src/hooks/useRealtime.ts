@@ -62,19 +62,14 @@ export const useRealtime = (options: UseRealtimeOptions) => {
 
     // Initialize if not already done
     if (!initialized.current) {
-      console.log('[useRealtime] Initializing realtime service...');
+      console.log('[useRealtime] 🚀 Initializing realtime service for establishment:', establishmentId);
       realtimeService.initialize(establishmentId, authToken || undefined);
       initialized.current = true;
       currentEstablishmentId.current = establishmentId;
     }
 
-    // Cleanup on unmount
-    return () => {
-      console.log('[useRealtime] Component unmounting, cleaning up realtime service...');
-      realtimeService.cleanup();
-      initialized.current = false;
-      currentEstablishmentId.current = null;
-    };
+    // Don't cleanup on unmount - keep the connection alive
+    // The service is a singleton and should persist across page navigations
   }, [enabled, establishmentId, authToken]);
 
   // Subscribe to connection status

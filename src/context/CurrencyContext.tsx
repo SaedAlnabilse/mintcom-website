@@ -72,14 +72,14 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
     }
   }, [refreshCurrency, isAuthenticated]);
 
-  // Format amount with currency
+  // Format amount with currency (symbol after amount for consistency)
   const formatAmount = (amount: number | string | null | undefined): string => {
     if (amount === null || amount === undefined) {
-      return `${currencySymbol} 0.00`;
+      return `0.00 ${currencySymbol}`;
     }
     const numAmount = typeof amount === 'number' ? amount : parseFloat(amount);
     if (isNaN(numAmount)) {
-      return `${currencySymbol} 0.00`;
+      return `0.00 ${currencySymbol}`;
     }
     return `${numAmount.toFixed(2)} ${currencySymbol}`;
   };

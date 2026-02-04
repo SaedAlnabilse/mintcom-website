@@ -7,6 +7,7 @@ import { QuickInfo } from './QuickInfo';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useScrollLock } from '../hooks/useScrollLock';
+import { useCurrency } from '../context/CurrencyContext';
 
 interface ApiError {
     response?: {
@@ -67,13 +68,9 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
 
     useScrollLock(!!order);
 
-    const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat('en-JO', {
-            style: 'currency',
-            currency: 'JOD',
-            minimumFractionDigits: 3,
-        }).format(value);
-    };
+    // Use global currency context instead of hardcoded JOD
+    const { formatAmount } = useCurrency();
+    const formatCurrency = (value: number) => formatAmount(value);
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleString();

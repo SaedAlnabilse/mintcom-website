@@ -21,7 +21,8 @@ import {
   Volume2,
   VolumeX,
   Zap,
-  Activity
+  Activity,
+  ArrowUpDown
 } from 'lucide-react';
 import api from '../../config/api';
 import { ConfirmModal } from '../../components/ConfirmModal';
@@ -32,6 +33,7 @@ import { CustomDatePicker } from '../../components/CustomDatePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
 import { SearchInput, SelectInput, Pagination } from '../../components/ui';
+import { SingleSelect } from '../../components/SingleSelect';
 
 interface ApiError {
   response?: {
@@ -49,6 +51,8 @@ interface Order {
   tax: number;
   discount: number;
   paymentMethod: string;
+  cardType?: string;
+  otherPaymentMethod?: string;
   paymentStatus: string;
   createdAt: string;
   items: OrderItem[];
@@ -92,12 +96,29 @@ export function OrdersPage() {
   const { currentEstablishment } = useAuth();
   const location = useLocation();
   const [orders, setOrders] = useState<Order[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [, setError] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [paymentFilter, setPaymentFilter] = useState('all');
+
+  // Helper function to format payment method display
+  const formatPaymentMethod = (order: Order): string => {
+    if (order.paymentMethod === 'CARD' && order.cardType) {
+      return `Card (${order.cardType})`;
+    }
+    if (order.paymentMethod === 'OTHER' && order.otherPaymentMethod) {
+      return order.otherPaymentMethod;
+    }
+    // Format enum values nicely
+    return order.paymentMethod
+      .split('_')
+      .map(w => w.charAt(0) + w.slice(1).toLowerCase())
+      .join(' ');
+  };
+
   const [startDate, setStartDate] = useState(() => {
     if (location.state?.startDate) {
       return new Date(location.state.startDate).toISOString().split('T')[0];
@@ -130,6 +151,46 @@ export function OrdersPage() {
     title: '',
     message: '',
     onConfirm: () => { },
+  });
+
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
+
+  const requestSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedOrders = [...orders].sort((a, b) => {
+    if (!sortConfig) return 0;
+    
+    let aValue: any = a[sortConfig.key as keyof Order];
+    let bValue: any = b[sortConfig.key as keyof Order];
+
+    // Handle nested properties
+    if (sortConfig.key === 'customer') {
+      aValue = a.customer?.name || 'Walk-in Customer';
+      bValue = b.customer?.name || 'Walk-in Customer';
+    } else if (sortConfig.key === 'staff') {
+      aValue = a.user?.username || '';
+      bValue = b.user?.username || '';
+    } else if (sortConfig.key === 'date') {
+      aValue = new Date(a.createdAt).getTime();
+      bValue = new Date(b.createdAt).getTime();
+    } else if (sortConfig.key === 'status') {
+      aValue = a.paymentStatus || a.status || '';
+      bValue = b.paymentStatus || b.status || '';
+    }
+
+    if (aValue < bValue) {
+      return sortConfig.direction === 'asc' ? -1 : 1;
+    }
+    if (aValue > bValue) {
+      return sortConfig.direction === 'asc' ? 1 : -1;
+    }
+    return 0;
   });
 
   // Shift status for shift-based filtering
@@ -220,90 +281,132 @@ export function OrdersPage() {
     }
   }, [soundEnabled]);
 
-  // Fetch shift status on mount
-  useEffect(() => {
-    const fetchShiftData = async () => {
-      try {
-        // Fetch shift status
-        const res = await api.get('/dashboard/shift-status');
-        console.log('Shift status:', res.data);
-        setShiftStatus(res.data);
+  // Check shift status function (can be called manually)
+  const checkShiftStatus = useCallback(async (showToast = false) => {
+    try {
+      // Fetch shift status
+      const res = await api.get('/dashboard/live-shift');
+      console.log('Shift status:', res.data);
+      setShiftStatus(res.data);
 
-        // Always try to fetch last shift snapshot (for previous shift option)
-        try {
-          const snapshotRes = await api.get('/dashboard/last-shift-snapshot');
-          console.log('Last shift snapshot:', snapshotRes.data);
-          if (snapshotRes.data) {
-            setLastShiftSnapshot(snapshotRes.data);
-          }
-        } catch {
-          console.log('No previous shift snapshot available');
+      if (showToast) {
+        if (res.data?.shiftStatus === 'ACTIVE') {
+          const time = res.data.activeShift?.startTime ? format(new Date(res.data.activeShift.startTime), 'h:mm a') : '';
+          toast.success(`Active Shift Found${time ? ` (${time})` : ''}`);
+        } else {
+          toast.error('No Active Shift Found');
         }
-      } catch (err) {
-        console.error('Failed to fetch shift status:', err);
       }
-    };
-    fetchShiftData();
+
+      // Always try to fetch last shift snapshot (for previous shift option)
+      try {
+        const snapshotRes = await api.get('/dashboard/last-shift-snapshot');
+        if (snapshotRes.data) {
+          setLastShiftSnapshot(snapshotRes.data);
+        }
+      } catch {
+        // Ignore
+      }
+    } catch (err: any) {
+      console.error('Failed to fetch shift status:', err);
+      if (showToast) {
+        const errorMessage = err.response?.data?.message || err.message || 'Failed to check shift status';
+        toast.error(errorMessage);
+      }
+    }
   }, []);
 
+  // Fetch shift status on mount or establishment change
+  useEffect(() => {
+    if (currentEstablishment?.id) {
+      checkShiftStatus(false);
+    }
+  }, [currentEstablishment?.id, checkShiftStatus]);
+
   // Use dynamic payment options to match real data
-  const [paymentOptions, setPaymentOptions] = useState<{ label: string; value: string }[]>([]);
+  const [paymentOptions, setPaymentOptions] = useState<{ label: string; value: string; group?: string }[]>([]);
 
   useEffect(() => {
     const fetchPaymentOptions = async () => {
       try {
-        const [methodsRes, cardsRes] = await Promise.all([
-          api.get('/app-settings/payment-methods').catch(() => ({ data: [] })),
-          api.get('/card-types').catch(() => ({ data: [] }))
-        ]);
+        // Fetch available payment methods from orders
+        const res = await api.get('/reports/available-payment-methods').catch(() => ({ data: null }));
 
-        const methods = Array.isArray(methodsRes.data) ? methodsRes.data : [];
-        const cards = Array.isArray(cardsRes.data) ? cardsRes.data : [];
+        const options: { label: string; value: string; group?: string }[] = [];
 
-        // Use a Set to avoid duplicates and normalize
-        const uniqueOptions = new Set<string>();
+        if (res.data) {
+          const { paymentMethods, cardTypes, otherMethods } = res.data;
 
-        // Add standard defaults
-        uniqueOptions.add('Cash');
-        uniqueOptions.add('Card');
+          // Add main payment methods
+          if (paymentMethods.includes('CASH')) {
+            options.push({ label: 'Cash', value: 'CASH', group: 'Main' });
+          }
 
-        // Add dynamic methods (active ones preferred, but we show all for history)
-        methods.forEach((m: Record<string, any>) => {
-          if (m.name) uniqueOptions.add(m.name);
-        });
+          // Add card options
+          if (paymentMethods.includes('CARD')) {
+            // Add "All Cards" option first
+            options.push({ label: 'All Cards', value: 'CARD', group: 'Cards' });
 
-        cards.forEach((c: Record<string, any>) => {
-          if (c.name) uniqueOptions.add(c.name);
-        });
+            // Add individual card types
+            if (cardTypes && cardTypes.length > 0) {
+              cardTypes.forEach((cardType: string) => {
+                options.push({
+                  label: cardType,
+                  value: `CARD_TYPE:${cardType}`,
+                  group: 'Cards'
+                });
+              });
+            }
+          }
 
-        // Common external providers if not in DB
-        ['Talabat', 'Careem', 'Jahez', 'Other'].forEach(opt => uniqueOptions.add(opt));
+          // Add other payment methods
+          if (paymentMethods.includes('OTHER') && otherMethods && otherMethods.length > 0) {
+            // Add "All Other" option first
+            options.push({ label: 'All Other', value: 'OTHER', group: 'Other Payments' });
 
-        const formattedOptions = Array.from(uniqueOptions).map(name => {
-          // Standard system payment methods use uppercase match in backend
-          const upperName = name.toUpperCase();
-          const standardTypes = ['CASH', 'CARD', 'VISA', 'MASTERCARD', 'AMEX', 'TALABAT', 'CAREEM', 'JAHEZ', 'OTHER'];
+            otherMethods.forEach((method: string) => {
+              options.push({
+                label: method,
+                value: `OTHER_METHOD:${method}`,
+                group: 'Other Payments'
+              });
+            });
+          }
 
-          return {
-            label: name,
-            value: standardTypes.includes(upperName) ? upperName : name
-          };
-        }).sort((a, b) => a.label.localeCompare(b.label));
+          // Add other main payment methods from enum
+          const otherEnumMethods = ['TALABAT', 'CAREEM', 'APPLE_PAY', 'ZAIN_CASH'];
+          otherEnumMethods.forEach(method => {
+            if (paymentMethods.includes(method)) {
+              const displayName = method.replace('_', ' ').split(' ')
+                .map(w => w.charAt(0) + w.slice(1).toLowerCase())
+                .join(' ');
 
-        setPaymentOptions(formattedOptions);
+              options.push({
+                label: displayName,
+                value: method,
+                group: 'Delivery Apps'
+              });
+            }
+          });
+        }
+
+        // If no options from endpoint, fallback to defaults
+        if (options.length === 0) {
+          options.push(
+            { label: 'Cash', value: 'CASH', group: 'Main' },
+            { label: 'All Cards', value: 'CARD', group: 'Cards' },
+            { label: 'All Other', value: 'OTHER', group: 'Other Payments' },
+          );
+        }
+
+        setPaymentOptions(options);
       } catch (err) {
         console.error('Failed to fetch payment options', err);
         // Fallback options
         setPaymentOptions([
-          { label: 'Cash', value: 'CASH' },
-          { label: 'Card', value: 'CARD' },
-          { label: 'Visa', value: 'VISA' },
-          { label: 'Mastercard', value: 'MASTERCARD' },
-          { label: 'Amex', value: 'AMEX' },
-          { label: 'Talabat', value: 'TALABAT' },
-          { label: 'Careem', value: 'CAREEM' },
-          { label: 'Jahez', value: 'JAHEZ' },
-          { label: 'Other', value: 'OTHER' },
+          { label: 'Cash', value: 'CASH', group: 'Main' },
+          { label: 'All Cards', value: 'CARD', group: 'Cards' },
+          { label: 'All Other', value: 'OTHER', group: 'Other Payments' },
         ]);
       }
     };
@@ -311,46 +414,28 @@ export function OrdersPage() {
     fetchPaymentOptions();
   }, []);
 
+  // Sync date range when selectedDateRange changes (for non-custom, non-shift ranges)
   useEffect(() => {
-    fetchOrders();
-  }, [page, statusFilter, paymentFilter, startDate, endDate, selectedDateRange]);
-
-  useEffect(() => {
-    if (activeActionMenu) {
-      setTimeout(() => {
-        const row = document.querySelector(`[data-order-id="${activeActionMenu}"]`);
-        if (row) {
-          row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-      }, 50);
-    }
-  }, [activeActionMenu]);
-
-  // Close action menu when clicking outside or scrolling
-  useEffect(() => {
-    if (!activeActionMenu) return;
-
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest('[data-action-menu]')) {
-        setActiveActionMenu(null);
+    // Only sync for standard date ranges (not custom or shift-based)
+    if (selectedDateRange && 
+        selectedDateRange !== 'custom' && 
+        selectedDateRange !== 'current_shift' && 
+        selectedDateRange !== 'previous_shift' &&
+        selectedDateRange !== 'all') {
+      const { start, end } = calculateDateRange(selectedDateRange as DatePeriod);
+      const newStartDate = formatDateForInput(start);
+      const newEndDate = formatDateForInput(end);
+      
+      // Only update if dates actually changed to avoid infinite loops
+      if (newStartDate !== startDate || newEndDate !== endDate) {
+        setStartDate(newStartDate);
+        setEndDate(newEndDate);
       }
-    };
+    }
+  }, [selectedDateRange]);
 
-    const handleScroll = () => {
-      setActiveActionMenu(null);
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    window.addEventListener('scroll', handleScroll, true);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      window.removeEventListener('scroll', handleScroll, true);
-    };
-  }, [activeActionMenu]);
-
-  const fetchOrders = async () => {
+  // Memoize fetchOrders to prevent stale closures
+  const fetchOrders = useCallback(async () => {
     try {
       setIsLoading(true);
 
@@ -420,16 +505,57 @@ export function OrdersPage() {
             const hDate = new Date(h.createdAt);
             return hDate >= start && hDate <= end;
           });
-        setOrders(heldOrders);
-        setTotalPages(1);
+        
+        // Client-side pagination for held orders
+        const total = heldOrders.length;
+        setTotalCount(total);
+        setTotalPages(Math.ceil(total / 10) || 1);
+        
+        const startIndex = (page - 1) * 10;
+        setOrders(heldOrders.slice(startIndex, startIndex + 10));
         setError('');
         setIsLoading(false);
         return;
       }
 
+      // Fetch held orders first (if on page 1 and showing all status)
+      let heldOrdersList: Order[] = [];
+      let heldOrdersCount = 0;
+      if (statusFilter === 'all' && page === 1 && paymentFilter === 'all') {
+        try {
+          const heldRes = await api.get('/api/held-orders');
+          heldOrdersList = heldRes.data
+            .map(mapHeldOrder)
+            .filter((h: any) => {
+              const hDate = new Date(h.createdAt);
+              return hDate >= start && hDate <= end;
+            });
+          heldOrdersCount = heldOrdersList.length;
+        } catch (error) {
+          console.error('Failed to fetch held orders:', error);
+        }
+      }
+
+      // Calculate how many regular orders we need
+      // On page 1: we need (10 - heldOrdersCount) regular orders to fill the page
+      // On page 2+: we need 10 regular orders, but skip the first ones to account for held orders displacing them
+      const limit = 10;
+      let regularPage = page;
+      let regularLimit = limit;
+
+      if (page === 1 && heldOrdersCount > 0) {
+        // On page 1, request fewer regular orders if we have held orders
+        regularLimit = Math.max(0, limit - heldOrdersCount);
+      } else if (page > 1 && heldOrdersCount > 0) {
+        // On page 2+, we need to adjust the skip to account for held orders
+        // Page 2 should show: remaining regular orders from page 1's slot + next ones
+        // Actually, for simplicity, let's just request page 2 normally
+        // The held orders are only on page 1
+      }
+
       const params: Record<string, any> = {
-        page,
-        limit: 10,
+        page: regularPage,
+        limit: regularLimit,
         startDate: start.toISOString(),
         endDate: end.toISOString()
       };
@@ -439,43 +565,39 @@ export function OrdersPage() {
       }
 
       if (paymentFilter !== 'all') {
-        params.paymentMethod = paymentFilter;
-        params.payment_method = paymentFilter; // Try snake_case
-        params.payment = paymentFilter; // Try simple name
+        // Handle special prefixed values for card types and other methods
+        if (paymentFilter.startsWith('CARD_TYPE:')) {
+          params.paymentMethod = 'CARD';
+          params.cardType = paymentFilter.replace('CARD_TYPE:', '');
+        } else if (paymentFilter.startsWith('OTHER_METHOD:')) {
+          params.paymentMethod = 'OTHER';
+          params.otherPaymentMethod = paymentFilter.replace('OTHER_METHOD:', '');
+        } else {
+          params.paymentMethod = paymentFilter;
+        }
+      }
+
+      // Add search query if present
+      if (searchQuery.trim()) {
+        params.search = searchQuery.trim();
       }
 
       const response = await api.get('/reports/orders-history', { params });
       let fetchedOrders = response.data.orders || response.data || [];
+      let totalOrders = response.data.totalOrders || response.data.total || fetchedOrders.length;
+      let serverTotalPages = response.data.totalPages || Math.ceil(totalOrders / 10) || 1;
 
-      // Client-side filtering fallback: 
-      // If backend returns non-matching items (e.g. ignores filter), we filter them out here to ensure correctness.
-      if (paymentFilter !== 'all') {
-        fetchedOrders = fetchedOrders.filter((order: Order) => {
-          const method = order.paymentMethod || '';
-          return method.toUpperCase() === paymentFilter.toUpperCase();
-        });
-      }
-
-      // Include held orders if viewing 'all' status and strictly on page 1
-      if (statusFilter === 'all' && page === 1 && paymentFilter === 'all') {
-        try {
-          const heldRes = await api.get('/api/held-orders');
-          const activeHeldOrders = heldRes.data
-            .map(mapHeldOrder)
-            .filter((h: any) => {
-              const hDate = new Date(h.createdAt);
-              return hDate >= start && hDate <= end;
-            });
-
-          fetchedOrders = [...activeHeldOrders, ...fetchedOrders];
-        } catch (error) {
-          console.error('Failed to mix in held orders:', error);
+      // Mix held orders at the beginning of page 1
+      if (page === 1 && heldOrdersCount > 0) {
+        fetchedOrders = [...heldOrdersList, ...fetchedOrders];
+        // Ensure we don't exceed 10 items on the page
+        if (fetchedOrders.length > 10) {
+          fetchedOrders = fetchedOrders.slice(0, 10);
         }
-      }
-
-      // Strictly enforce 10 items limit for the view
-      if (fetchedOrders.length > 10) {
-        fetchedOrders = fetchedOrders.slice(0, 10);
+        // Adjust total count to include held orders
+        totalOrders += heldOrdersCount;
+        // Recalculate total pages
+        serverTotalPages = Math.ceil(totalOrders / 10) || 1;
       }
 
       // 🔴 Live mode: detect new orders for highlighting
@@ -484,12 +606,23 @@ export function OrdersPage() {
       }
       previousOrdersRef.current = fetchedOrders;
 
-      setOrders(fetchedOrders);
-      // Ensure totalPages reflects the data reality. If we found order history pages, use that.
-      // If we have no history pages but we have held orders that were sliced, we realistically have "more" data, 
-      // but without complex state, we stick to the backend's history pagination + 1 if needed? 
-      // For now, trust backend pagination for history.
-      setTotalPages(response.data.totalPages || 1);
+      // Handle pagination display
+      if (Array.isArray(response.data)) {
+        // If the API returns a raw array, we must paginate client-side
+        // This handles the case where backend returns all items ignoring limit
+        const total = fetchedOrders.length;
+        setTotalCount(total);
+        setTotalPages(Math.ceil(total / 10) || 1);
+        
+        const startIndex = (page - 1) * 10;
+        setOrders(fetchedOrders.slice(startIndex, startIndex + 10));
+      } else {
+        // Server-side pagination structure detected
+        setTotalCount(totalOrders);
+        setTotalPages(serverTotalPages);
+        setOrders(fetchedOrders);
+      }
+
       setError('');
     } catch (err) {
       console.error('Orders fetch error:', err);
@@ -497,7 +630,48 @@ export function OrdersPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [page, statusFilter, paymentFilter, startDate, endDate, selectedDateRange, searchQuery, shiftStatus, lastShiftSnapshot, isLiveMode, detectNewOrders]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  useEffect(() => {
+    if (activeActionMenu) {
+      setTimeout(() => {
+        const row = document.querySelector(`[data-order-id="${activeActionMenu}"]`);
+        if (row) {
+          row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }, 50);
+    }
+  }, [activeActionMenu]);
+
+  // Close action menu when clicking outside or scrolling
+  useEffect(() => {
+    if (!activeActionMenu) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('[data-action-menu]')) {
+        setActiveActionMenu(null);
+      }
+    };
+
+    const handleScroll = () => {
+      setActiveActionMenu(null);
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('scroll', handleScroll, true);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('scroll', handleScroll, true);
+    };
+  }, [activeActionMenu]);
+
+
 
   // Real-time updates
   const { onRefresh } = useRealtime({
@@ -512,7 +686,7 @@ export function OrdersPage() {
           eventType === DataChangeEventTypes.ORDER_UPDATED) {
         // Trigger immediate refresh
         fetchOrders();
-        
+
         // If live mode is on and sound is enabled, the detectNewOrders
         // will handle the sound and highlighting
         if (!isLiveMode && audioRef.current && soundEnabled) {
@@ -521,33 +695,45 @@ export function OrdersPage() {
           });
         }
       }
+
+      // Refresh when held order events occur
+      if (eventType === DataChangeEventTypes.HELD_ORDER_CREATED ||
+          eventType === DataChangeEventTypes.HELD_ORDER_DELETED) {
+        // Always refresh if viewing held orders
+        if (statusFilter === 'HELD') {
+          fetchOrders();
+        }
+        // If viewing "all" orders, just show notification - held orders are in separate tab
+        // The toast notification from realtimeService will inform the user
+      }
+
+      // Refresh shift status when shift events occur
+      if (eventType === DataChangeEventTypes.SHIFT_STARTED ||
+          eventType === DataChangeEventTypes.SHIFT_ENDED) {
+        // Refetch shift status
+        api.get('/dashboard/live-shift').then(res => {
+          setShiftStatus(res.data);
+          // Also refresh orders if filtering by current shift
+          fetchOrders();
+        }).catch(console.error);
+      }
     });
 
     return unsubscribe;
-  }, [onRefresh, fetchOrders, isLiveMode, soundEnabled]);
+  }, [onRefresh, fetchOrders, isLiveMode, soundEnabled, statusFilter]);
 
-  const searchOrder = async () => {
+  const searchOrder = useCallback(async () => {
     if (!searchQuery.trim()) {
       fetchOrders();
       return;
     }
 
-    try {
-      setIsLoading(true);
-      const response = await api.get(`/api/orders/by-number/${searchQuery}`);
-      if (response.data) {
-        setOrders([response.data]);
-      } else {
-        setOrders([]);
-      }
-      setError('');
-    } catch {
-      setError('Order not found');
-      setOrders([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    // Reset to page 1 when searching
+    setPage(1);
+    
+    // Use the main fetchOrders which now supports search param
+    fetchOrders();
+  }, [searchQuery, fetchOrders]);
 
 
 
@@ -573,23 +759,7 @@ export function OrdersPage() {
 
   // Build dynamic date range options based on shift status
   const getDateRangeOptions = () => {
-    const options: { label: string; value: string }[] = [];
-
-    // Add Active Shift option if there's an active shift
-    if (shiftStatus?.shiftStatus === 'ACTIVE' && shiftStatus.activeShift) {
-      options.push({
-        label: `Active Shift (${format(new Date(shiftStatus.activeShift.startTime), 'h:mm a')})`,
-        value: 'current_shift'
-      });
-    }
-
-    // Add Previous Shift option if we have snapshot data
-    if (lastShiftSnapshot) {
-      options.push({
-        label: 'Previous Shift',
-        value: 'previous_shift'
-      });
-    }
+    const options: { label: string; value: string; icon?: React.ReactNode; subtitle?: string }[] = [];
 
     // Add all standard date period options
     options.push(...DATE_PERIOD_OPTIONS);
@@ -709,6 +879,35 @@ export function OrdersPage() {
                   </div>
                 </>
               )}
+            </div>
+          )}
+
+          {/* Shift Selector */}
+          {(shiftStatus?.shiftStatus === 'ACTIVE' || lastShiftSnapshot) && (
+            <div className="w-[200px]">
+              <SingleSelect
+                value={['current_shift', 'previous_shift'].includes(selectedDateRange) ? selectedDateRange : null}
+                onChange={(val) => {
+                   if (val) setQuickDate(val);
+                }}
+                options={[
+                   ...(shiftStatus?.shiftStatus === 'ACTIVE' ? [{
+                       label: 'Current Shift',
+                       value: 'current_shift',
+                       icon: <PlayCircle size={18} className="text-paymint-green" />,
+                       subtitle: shiftStatus?.activeShift?.startTime ? `Started ${format(new Date(shiftStatus.activeShift.startTime), 'h:mm a')}` : 'Active now'
+                   }] : []),
+                   ...(lastShiftSnapshot ? [{
+                       label: 'Previous Shift',
+                       value: 'previous_shift',
+                       icon: <History size={18} />,
+                       subtitle: 'Last completed shift'
+                   }] : [])
+                ]}
+                placeholder="Check Shift"
+                showAllOption={false}
+                buttonClassName="!bg-[#0B1120] !text-white !border-gray-800 dark:!bg-white/5 dark:!border-white/10 hover:!bg-[#1a2333] !h-auto !py-2.5 sm:!py-3"
+              />
             </div>
           )}
           
@@ -946,7 +1145,7 @@ export function OrdersPage() {
           },
           {
             label: 'Total Orders',
-            value: orders.length,
+            value: totalCount,
             icon: ShoppingCart,
             color: 'text-blue-500',
             bg: 'bg-blue-500/10',
@@ -1008,9 +1207,9 @@ export function OrdersPage() {
         )}
 
         {/* Mobile Card View (visible on small screens) */}
-        {orders.length > 0 && (
+        {sortedOrders.length > 0 && (
           <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
-              {orders.map((order) => (
+              {sortedOrders.map((order) => (
                 <div
                   key={order.id}
                   data-order-id={order.id}
@@ -1046,7 +1245,7 @@ export function OrdersPage() {
                         {order.customer?.name || 'Walk-in Customer'}
                       </p>
                       <p className="text-xs text-gray-500">
-                        {order.user?.username ? `Staff: ${order.user.username}` : 'Pos'} • {order.paymentMethod}
+                        {order.user?.username ? `Staff: ${order.user.username}` : 'Pos'} • {formatPaymentMethod(order)}
                       </p>
                     </div>
                     <div className="text-right ml-4 flex-shrink-0">
@@ -1093,15 +1292,47 @@ export function OrdersPage() {
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-white/[0.02]">
                 <tr className="border-b border-gray-200 dark:border-white/5">
-                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Order</th>
-                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Customer</th>
-                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Amount</th>
-                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Status</th>
+                  <th
+                    className={`px-6 py-4 text-left text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'date' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                    onClick={() => requestSort('date')}
+                  >
+                    <div className="flex items-center gap-2">
+                      Order
+                      <ArrowUpDown size={14} className={`transition-all ${sortConfig?.key === 'date' ? 'opacity-100 scale-110' : 'opacity-20 group-hover:opacity-100'}`} />
+                    </div>
+                  </th>
+                  <th
+                    className={`px-6 py-4 text-left text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'customer' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                    onClick={() => requestSort('customer')}
+                  >
+                     <div className="flex items-center gap-2">
+                      Customer
+                      <ArrowUpDown size={14} className={`transition-all ${sortConfig?.key === 'customer' ? 'opacity-100 scale-110' : 'opacity-20 group-hover:opacity-100'}`} />
+                    </div>
+                  </th>
+                  <th
+                    className={`px-6 py-4 text-left text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'total' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                    onClick={() => requestSort('total')}
+                  >
+                     <div className="flex items-center gap-2">
+                      Amount
+                      <ArrowUpDown size={14} className={`transition-all ${sortConfig?.key === 'total' ? 'opacity-100 scale-110' : 'opacity-20 group-hover:opacity-100'}`} />
+                    </div>
+                  </th>
+                  <th
+                     className={`px-6 py-4 text-left text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'status' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                     onClick={() => requestSort('status')}
+                  >
+                     <div className="flex items-center gap-2">
+                      Status
+                      <ArrowUpDown size={14} className={`transition-all ${sortConfig?.key === 'status' ? 'opacity-100 scale-110' : 'opacity-20 group-hover:opacity-100'}`} />
+                    </div>
+                  </th>
                   <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                  {orders.map((order) => (
+                  {sortedOrders.map((order) => (
                     <tr
                       key={order.id}
                       data-order-id={order.id}
@@ -1129,7 +1360,7 @@ export function OrdersPage() {
                       </td>
                       <td className="px-6 py-4">
                         <p className="font-bold text-gray-900 dark:text-white">{formatAmount(order.total)}</p>
-                        <p className="text-xs text-gray-500 font-bold tracking-wider">{order.paymentMethod}</p>
+                        <p className="text-xs text-gray-500 font-bold tracking-wider">{formatPaymentMethod(order)}</p>
                       </td>
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
@@ -1199,7 +1430,14 @@ export function OrdersPage() {
         )}
       </div>
 
-      <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} className="mt-6" />
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+        totalItems={totalCount}
+        itemsPerPage={10}
+        className="mt-6"
+      />
 
         {selectedOrder && (
           <OrderDetailModal

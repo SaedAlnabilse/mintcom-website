@@ -253,9 +253,11 @@ export function ProductFormModal({
       if (initialData) {
         setName(initialData.name || '');
         const priceVal = typeof initialData.price === 'string' ? parseFloat(initialData.price) : initialData.price;
-        setPrice(priceVal == null || priceVal === 0 || isNaN(priceVal) ? '' : priceVal.toFixed(2));
+        // Allow 0 as valid price (for free items), only show empty for null/undefined/NaN
+        setPrice(priceVal == null || isNaN(priceVal) ? '' : priceVal.toFixed(2));
         const costVal = typeof initialData.costPrice === 'string' ? parseFloat(initialData.costPrice) : initialData.costPrice;
-        setCostPrice(!costVal || costVal === 0 || isNaN(costVal) ? '' : costVal.toFixed(2));
+        // Allow 0 as valid cost (items with no cost)
+        setCostPrice(costVal == null || isNaN(costVal) ? '' : costVal.toFixed(2));
         setCategoryId(initialData.categoryId || '');
         setDescription(initialData.description || '');
         setType(initialData.type || 'ITEM');
@@ -343,15 +345,20 @@ export function ProductFormModal({
     if (!categoryId) newErrors.category = 'Please select a category';
 
     if (trackStock) {
-      if (stock === '' || isNaN(parseInt(stock)) || parseInt(stock) < 0) newErrors.stock = 'Available units cannot be negative';
+      const stockNum = parseInt(stock);
+      if (stock === '' || isNaN(stockNum)) {
+        newErrors.stock = 'Please enter valid stock quantity';
+      } else if (stockNum < 0) {
+        newErrors.stock = 'Stock cannot be negative';
+      }
 
       const yellow = parseInt(lowStockYellow || '0');
       const red = parseInt(lowStockRed || '0');
 
-      if (yellow < 0) newErrors.lowStockYellow = 'Yellow threshold cannot be negative';
-      if (red < 0) newErrors.lowStockRed = 'Red threshold cannot be negative';
-      if (yellow <= red) {
-        newErrors.lowStockYellow = 'Yellow must be > Red';
+      if (isNaN(yellow) || yellow < 0) newErrors.lowStockYellow = 'Yellow threshold cannot be negative';
+      if (isNaN(red) || red < 0) newErrors.lowStockRed = 'Red threshold cannot be negative';
+      if (!isNaN(yellow) && !isNaN(red) && yellow <= red) {
+        newErrors.lowStockYellow = 'Yellow threshold must be greater than Red';
       }
     }
 

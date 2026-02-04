@@ -86,6 +86,7 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
         ws: true, // Enable WebSocket proxying
+        rewrite: (path) => path, // Keep the path as-is
       },
       '/realtime': {
         target: 'https://grateful-liberation-production-d036.up.railway.app',

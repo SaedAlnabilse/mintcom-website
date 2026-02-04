@@ -6,6 +6,9 @@ import { SingleSelect } from '../SingleSelect';
 interface Option {
   label: string;
   value: string;
+  icon?: React.ReactNode;
+  subtitle?: string;
+  group?: string;
 }
 
 interface SelectInputProps {

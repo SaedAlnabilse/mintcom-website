@@ -20,7 +20,8 @@ import {
   Timer,
   History,
   PlayCircle,
-  ChevronDown
+  ChevronDown,
+  Scale
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, PieChart as RechartsPie, Pie, Cell, BarChart, Bar } from 'recharts';
@@ -84,6 +85,24 @@ interface TopProduct {
   revenue: number;
 }
 
+interface PreviousShiftSnapshot {
+  user: string;
+  startTime: string;
+  timestamp: string;
+  netSales: number;
+  numberOfOrders: number;
+  cashSales: number;
+  cardSales: number;
+  otherPayments: number;
+  payIn: number;
+  payOut: number;
+  drawerAmount: number;
+  openingBalance: number;
+  closingBalance: number;
+  discrepancy: number;
+  totalTimeWorked: string;
+}
+
 interface TopSellingItem {
   itemName?: string;
   name?: string;
@@ -116,6 +135,7 @@ export const DashboardPage = () => {
 
   // Shift and view mode state
   const [shiftStatus, setShiftStatus] = useState<ShiftStatus | null>(null);
+  const [previousShiftSnapshot, setPreviousShiftSnapshot] = useState<PreviousShiftSnapshot | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('last_24_hours');
   const [isViewModeOpen, setIsViewModeOpen] = useState(false);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
@@ -161,6 +181,18 @@ export const DashboardPage = () => {
     }
   }, []);
 
+  // Refresh shift status without changing view mode (for real-time updates)
+  const refreshShiftStatus = useCallback(async () => {
+    try {
+      console.log('[Dashboard] Refreshing shift status due to real-time event');
+      const response = await api.get('/dashboard/live-shift');
+      setShiftStatus(response.data);
+      // Don't auto-select view mode here - preserve user's selection
+    } catch (error) {
+      console.error('Failed to refresh shift status:', error);
+    }
+  }, []);
+
   // Fetch dashboard data based on view mode
   const fetchDashboardData = useCallback(async () => {
     try {
@@ -182,9 +214,11 @@ export const DashboardPage = () => {
         // Previous shift - fetch last shift snapshot
         const snapshotRes = await api.get('/dashboard/last-shift-snapshot').catch(() => ({ data: null }));
         if (snapshotRes.data) {
+          setPreviousShiftSnapshot(snapshotRes.data);
           start = new Date(snapshotRes.data.startTime).toISOString();
           end = new Date(snapshotRes.data.timestamp).toISOString();
         } else {
+          setPreviousShiftSnapshot(null);
           // Fallback to last 24 hours
           const now = new Date();
           start = subHours(now, 24).toISOString();
@@ -199,14 +233,31 @@ export const DashboardPage = () => {
 
       setLastRefresh(new Date());
 
-      const [summaryRes, topItemsRes, peakRes] = await Promise.all([
-        api.get('/reports/historical-summary', { params: { startDate: start, endDate: end } }).catch(() => ({ data: null })),
-        api.get('/reports/top-selling-items', { params: { startDate: start, endDate: end, limit: 5 } }).catch(() => ({ data: [] })),
-        api.get('/reports/peak-hours', { params: { startDate: start, endDate: end } }).catch(() => ({ data: [] }))
+      // Track if any API call failed
+      let hasError = false;
+      const [summaryRes, topItemsRes, peakRes, categoryRes] = await Promise.all([
+        api.get('/reports/historical-summary', { params: { startDate: start, endDate: end } }).catch((err) => { hasError = true; console.error('Summary API error:', err); return { data: null }; }),
+        api.get('/reports/top-selling-items', { params: { startDate: start, endDate: end, limit: 5 } }).catch((err) => { hasError = true; console.error('Top items API error:', err); return { data: [] }; }),
+        api.get('/reports/peak-hours', { params: { startDate: start, endDate: end } }).catch((err) => { hasError = true; console.error('Peak hours API error:', err); return { data: [] }; }),
+        api.get('/reports/category-report', { params: { startDate: start, endDate: end } }).catch((err) => { hasError = true; console.error('Category API error:', err); return { data: { breakdown: [] } }; })
       ]);
+
+      // Show warning if any API failed
+      if (hasError && summaryRes.data === null) {
+        console.warn('Some dashboard data could not be loaded');
+      }
 
       // Process stats
       const summaryData = summaryRes.data || {};
+      const categoryData = categoryRes.data?.breakdown || [];
+      
+      // Process categories specifically from the robust report endpoint
+      const processedCategories = categoryData.map((cat: any) => ({
+          name: cat.name || cat.itemName || 'Unknown',
+          value: cat.value || cat.revenue || cat.totalSales || 0,
+          count: cat.count || cat.quantity || cat.orders || 0
+      })).sort((a: any, b: any) => b.value - a.value);
+
       setStats({
         totalRevenue: summaryData.totalRevenue || 0,
         totalOrders: summaryData.totalOrders || 0,
@@ -220,16 +271,16 @@ export const DashboardPage = () => {
         totalPayIn: summaryData.totalPayIn || 0,
         totalPayOut: summaryData.totalPayOut || 0,
         paymentMethodBreakdown: summaryData.paymentMethodBreakdown || [],
-        categoryBreakdown: summaryData.categoryBreakdown || [],
+        categoryBreakdown: processedCategories.length > 0 ? processedCategories : (summaryData.categoryBreakdown || []),
         dailyBreakdown: summaryData.dailyBreakdown || []
       });
 
       // Process top products
       const topItems = (topItemsRes.data || []) as TopSellingItem[];
-      setTopProducts(topItems.map((item) => ({
+      setTopProducts(topItems.map((item: any) => ({
         name: item.itemName || item.name || 'Unknown',
-        orders: item.quantity || 0,
-        revenue: item.revenue || 0,
+        orders: item.quantity || item.orders || item.count || 0,
+        revenue: item.revenue || item.totalSales || item.value || 0,
       })));
 
       // Process peak hours
@@ -265,25 +316,43 @@ export const DashboardPage = () => {
   }, [fetchShiftStatus, fetchDashboardData]);
 
   // Real-time updates
-  const { onRefresh } = useRealtime({
+  const { onRefresh, isConnected, status } = useRealtime({
     establishmentId: currentEstablishment?.id || null,
   });
 
+  // Log connection status changes
+  useEffect(() => {
+    console.log('[Dashboard] 📡 Real-time connection status:', status, 'isConnected:', isConnected);
+  }, [status, isConnected]);
+
   // Listen for real-time events and refresh data
   useEffect(() => {
+    console.log('[Dashboard] 📡 Registering real-time event listener');
     const unsubscribe = onRefresh((eventType) => {
+      console.log('[Dashboard] 📥 Received real-time event:', eventType);
       // Refresh data when orders are created or updated
       if (eventType === DataChangeEventTypes.ORDER_CREATED ||
-          eventType === DataChangeEventTypes.ORDER_REFUNDED ||
-          eventType === DataChangeEventTypes.SHIFT_STARTED ||
-          eventType === DataChangeEventTypes.SHIFT_ENDED) {
-        fetchShiftStatus();
+          eventType === DataChangeEventTypes.ORDER_REFUNDED) {
+        refreshShiftStatus();
+        fetchDashboardData();
+      }
+      // Special handling for shift events - auto-switch to current shift view when shift starts
+      if (eventType === DataChangeEventTypes.SHIFT_STARTED) {
+        console.log('[Dashboard] 🟢 Shift started - refreshing and switching to current shift view');
+        refreshShiftStatus().then(() => {
+          setViewMode('current_shift');
+          fetchDashboardData();
+        });
+      }
+      if (eventType === DataChangeEventTypes.SHIFT_ENDED) {
+        console.log('[Dashboard] Shift ended - refreshing');
+        refreshShiftStatus();
         fetchDashboardData();
       }
     });
 
     return unsubscribe;
-  }, [onRefresh, fetchShiftStatus, fetchDashboardData]);
+  }, [onRefresh, refreshShiftStatus, fetchDashboardData]);
 
   // Get available view modes based on shift status
   const getAvailableViewModes = (): { mode: ViewMode; label: string; icon: React.ReactNode; description: string }[] => {
@@ -574,7 +643,41 @@ export const DashboardPage = () => {
                     </div>
                   ),
                   onClick: () => navigate(`/dashboard/${locationSlug}/reports`, { state: { showPayInOut: true, dateRange: 'today' } })
-                }
+                },
+                // Cash Discrepancy card - only shown when viewing previous shift
+                ...(viewMode === 'previous_shift' && previousShiftSnapshot ? [{
+                  label: 'Cash Variance',
+                  value: null,
+                  sub: null,
+                  icon: Scale,
+                  color: previousShiftSnapshot.discrepancy >= 0 ? 'text-paymint-green' : 'text-red-500',
+                  bg: previousShiftSnapshot.discrepancy >= 0 ? 'bg-paymint-green/10' : 'bg-red-500/10',
+                  customContent: (
+                    <div className="space-y-3 mt-6">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Expected</span>
+                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300 tracking-tight">{formatCurrency(previousShiftSnapshot.drawerAmount || 0)}</span>
+                      </div>
+                      <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Actual</span>
+                        <span className="text-sm font-bold text-blue-500 tracking-tight">{formatCurrency(previousShiftSnapshot.closingBalance || 0)}</span>
+                      </div>
+                      <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Variance</span>
+                        <span className={`text-sm font-bold tracking-tight ${previousShiftSnapshot.discrepancy > 0.01 ? 'text-paymint-green' : previousShiftSnapshot.discrepancy < -0.01 ? 'text-red-500' : 'text-gray-500'}`}>
+                          {previousShiftSnapshot.discrepancy > 0.01
+                            ? `+${formatCurrency(previousShiftSnapshot.discrepancy)} Over`
+                            : previousShiftSnapshot.discrepancy < -0.01
+                              ? `${formatCurrency(previousShiftSnapshot.discrepancy)} Short`
+                              : 'Perfect $0.00'}
+                        </span>
+                      </div>
+                    </div>
+                  ),
+                  onClick: () => navigate(`/dashboard/${locationSlug}/reports/cash-discrepancy`)
+                }] : [])
               ] as any[])).map((stat: any, index) => (
                 <motion.div
                   key={stat.label}
@@ -665,8 +768,13 @@ export const DashboardPage = () => {
                           dy={10}
                         />
                         <YAxis
-                          hide
-                          domain={[0, 'auto']}
+                          stroke={isDark ? "#525252" : "#e5e5e5"}
+                          fontSize={10}
+                          tickLine={false}
+                          axisLine={false}
+                          tick={{ fill: "#9ca3af" }}
+                          tickFormatter={(val) => `${val}`}
+                          width={40}
                         />
                         <Tooltip
                           cursor={{ stroke: '#7CC39F', strokeWidth: 1, strokeDasharray: '4 4' }}

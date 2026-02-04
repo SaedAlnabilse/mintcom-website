@@ -28,7 +28,8 @@ import {
   X,
   Smartphone,
   Heart,
-  Award
+  Award,
+  Scale
 } from 'lucide-react';
 
 // Paymint Logo imports
@@ -72,6 +73,7 @@ const menuStructure: MenuItemOrGroup[] = [
       { path: 'reports/modifiers', label: 'Sales by Add-Ons', icon: Package },
       { path: 'reports/staff-sales', label: 'Sales by Staff', icon: Users },
       { path: 'reports/shifts', label: 'Shifts Reports', icon: FileBarChart },
+      { path: 'reports/cash-discrepancy', label: 'Cash Discrepancy', icon: Scale },
       { path: 'reports/payments', label: 'Payments Reports', icon: CreditCard },
       { path: 'reports/discounts', label: 'Discount Reports', icon: Percent },
     ],

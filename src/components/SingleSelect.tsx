@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface Option {
     label: string;
     value: string;
+    icon?: React.ReactNode;
+    subtitle?: string;
 }
 
 interface SingleSelectProps {
@@ -18,6 +20,8 @@ interface SingleSelectProps {
     className?: string;
     allOptionLabel?: string; // Label for the "All" option
     showAllOption?: boolean;
+    buttonClassName?: string;
+    allowClear?: boolean;
     scrollIntoViewOnOpen?: boolean; // Only scroll into view when inside modals/popups
     disabled?: boolean;
 }
@@ -35,7 +39,7 @@ export function SingleSelect({
     allowClear = true,
     scrollIntoViewOnOpen = false,
     disabled = false
-}: SingleSelectProps & { buttonClassName?: string, allowClear?: boolean }) {
+}: SingleSelectProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const containerRef = useRef<HTMLDivElement>(null);
@@ -133,10 +137,7 @@ export function SingleSelect({
         setIsOpen(false);
     };
 
-    const getDisplayValue = () => {
-        if (!value) return placeholder;
-        return options.find(o => o.value === value)?.label || placeholder;
-    };
+    const selectedOption = options.find(o => o.value === value);
 
     const filteredOptions = options.filter(opt =>
         opt.label.toLowerCase().includes(searchQuery.toLowerCase())
@@ -205,11 +206,23 @@ export function SingleSelect({
                                         key={opt.value}
                                         type="button"
                                         onClick={() => handleSelect(opt.value)}
-                                        className={`w-full px-5 py-3.5 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors ${isSelected ? 'bg-paymint-green/10 text-paymint-green' : 'text-gray-900 dark:text-gray-200'
+                                        className={`w-full px-5 py-3.5 text-left flex items-start justify-between hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors ${isSelected ? 'bg-paymint-green/10 text-paymint-green' : 'text-gray-900 dark:text-gray-200'
                                             }`}
                                     >
-                                        <span className={`text-sm ${isSelected ? 'font-black' : 'font-bold'}`}>{opt.label}</span>
-                                        {isSelected && <Check size={16} className="text-paymint-green" />}
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            {opt.icon && (
+                                                <div className={`p-2 rounded-lg shrink-0 ${isSelected ? 'bg-paymint-green/20' : 'bg-gray-100 dark:bg-white/5'}`}>
+                                                    {opt.icon}
+                                                </div>
+                                            )}
+                                            <div className="flex flex-col">
+                                                <span className={`text-sm ${isSelected ? 'font-black' : 'font-bold'}`}>{opt.label}</span>
+                                                {opt.subtitle && (
+                                                    <span className={`text-xs mt-0.5 ${isSelected ? 'text-paymint-green/80' : 'text-gray-500 dark:text-gray-400'}`}>{opt.subtitle}</span>
+                                                )}
+                                            </div>
+                                        </div>
+                                        {isSelected && <Check size={16} className="text-paymint-green shrink-0 mt-1" />}
                                     </button>
                                 );
                             })
@@ -238,8 +251,13 @@ export function SingleSelect({
                     } ${buttonClassName}`}
             >
                 <div className="flex items-center gap-2 overflow-hidden">
+                     {selectedOption?.icon && (
+                         <div className="text-gray-500 dark:text-gray-400 shrink-0">
+                             {selectedOption.icon}
+                         </div>
+                    )}
                     <span className={`font-bold text-sm truncate ${value ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
-                        {getDisplayValue()}
+                        {selectedOption?.label || placeholder}
                     </span>
                     {value && allowClear && (
                         <div
@@ -247,7 +265,7 @@ export function SingleSelect({
                                 e.stopPropagation();
                                 onChange(null);
                             }}
-                            className="bg-gray-100 dark:bg-white/10 p-0.5 rounded-full hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
+                            className="bg-gray-100 dark:bg-white/10 p-0.5 rounded-full hover:bg-gray-200 dark:hover:bg-white/20 transition-colors ml-1"
                         >
                             <X size={10} className="text-gray-500 dark:text-gray-400" />
                         </div>
