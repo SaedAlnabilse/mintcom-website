@@ -83,15 +83,17 @@ class RealtimeService {
   private isManualDisconnect = false;
   private eventCallbacks: Map<string, Set<EventCallback<any>>> = new Map();
   private establishmentId: string | null = null;
+  private authToken: string | null = null;
   private connectionStatus: ConnectionStatus = 'disconnected';
   private statusChangeCallbacks: Set<(status: ConnectionStatus) => void> = new Set();
   private refreshCallbacks: Set<(type: string) => void> = new Set();
 
   /**
-   * Initialize the service
+   * Initialize the service with optional auth token
    */
-  initialize(establishmentId: string): void {
+  initialize(establishmentId: string, authToken?: string): void {
     this.establishmentId = establishmentId;
+    this.authToken = authToken || null;
     this.connect();
   }
 
@@ -114,10 +116,11 @@ class RealtimeService {
     // Use relative URL - the Cloudflare Worker will proxy WebSocket to backend
     // In local dev, Vite proxy handles it; in production, the Worker handles it
     const wsUrl = window.location.origin;
-    
+
     console.log(`[Realtime] Connecting to ${wsUrl}/realtime...`);
 
-    this.socket = io(`${wsUrl}/realtime`, {
+    // Build connection options
+    const connectionOptions: any = {
       withCredentials: true, // Send cookies for authentication
       query: {
         establishmentId: this.establishmentId,
@@ -126,7 +129,16 @@ class RealtimeService {
       transports: ['websocket', 'polling'],
       timeout: 20000,
       reconnection: false, // We handle reconnection manually
-    });
+    };
+
+    // Add auth token if available
+    if (this.authToken) {
+      connectionOptions.auth = {
+        token: this.authToken,
+      };
+    }
+
+    this.socket = io(`${wsUrl}/realtime`, connectionOptions);
 
     this.setupEventHandlers();
   }

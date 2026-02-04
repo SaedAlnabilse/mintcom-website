@@ -79,6 +79,19 @@ export default defineConfig({
         target: 'https://grateful-liberation-production-d036.up.railway.app',
         changeOrigin: true,
         secure: false,
+      },
+      // WebSocket proxy for real-time sync
+      '/socket.io': {
+        target: 'https://grateful-liberation-production-d036.up.railway.app',
+        changeOrigin: true,
+        secure: false,
+        ws: true, // Enable WebSocket proxying
+      },
+      '/realtime': {
+        target: 'https://grateful-liberation-production-d036.up.railway.app',
+        changeOrigin: true,
+        secure: false,
+        ws: true, // Enable WebSocket proxying
       }
     }
   }
