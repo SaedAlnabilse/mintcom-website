@@ -1,5 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import toast from 'react-hot-toast';
+import { API_BASE_URL } from '../config/api';
 
 /**
  * Real-time Event Types
@@ -111,8 +112,11 @@ class RealtimeService {
 
     this.setConnectionStatus('connecting');
 
-    // Use the same host as the API (Vite proxy handles this in dev)
-    const wsUrl = window.location.origin;
+    // Use API_BASE_URL if set, otherwise fall back to window.location.origin
+    // In production, API_BASE_URL should point to the backend
+    const baseUrl = API_BASE_URL || window.location.origin;
+    // Convert http/https to ws/wss
+    const wsUrl = baseUrl.replace(/^http/, 'ws');
     
     console.log(`[Realtime] Connecting to ${wsUrl}/realtime...`);
 

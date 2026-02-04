@@ -2,8 +2,9 @@ import axios from 'axios';
 
 // Api Base Url - In development, use empty string to leverage Vite proxy
 // In production, use the full Url
-export const API_BASE_URL = '';
-// export const API_BASE_URL = 'https://grateful-liberation-production-d036.up.railway.app';
+export const API_BASE_URL = import.meta.env.PROD 
+  ? 'https://grateful-liberation-production-d036.up.railway.app'
+  : '';
 
 // Create axios instance with default config
 export const api = axios.create({
