@@ -2,7 +2,11 @@ import axios from 'axios';
 
 // Api Base Url - In development, use empty string to leverage Vite proxy
 // In production, use the full Url
-export const API_BASE_URL = import.meta.env.PROD 
+// Detect if running on Cloudflare Workers (production) vs local dev
+const isCloudflareWorkers = typeof window !== 'undefined' && 
+  window.location.hostname.endsWith('.workers.dev');
+
+export const API_BASE_URL = isCloudflareWorkers 
   ? 'https://grateful-liberation-production-d036.up.railway.app'
   : '';
 

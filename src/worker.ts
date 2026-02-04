@@ -9,10 +9,26 @@ export default {
                 return new Response("Internal Error: env.ASSETS is broken/missing. Please define assets in wrangler.jsonc", { status: 500 });
             }
 
-            // 0. Api Proxy (Forward /api requests to Railway)
+            // @ts-ignore
+            const targetBase = env.API_TARGET || 'https://grateful-liberation-production-d036.up.railway.app';
+
+            // 0. WebSocket Proxy (Forward /realtime WebSocket requests to Railway)
+            if (url.pathname.startsWith('/realtime') || url.pathname.startsWith('/socket.io/')) {
+                const newUrl = new URL(url.pathname + url.search, targetBase);
+                
+                // Create a new request with the target URL
+                const proxyRequest = new Request(newUrl, {
+                    method: request.method,
+                    headers: request.headers,
+                    body: request.body,
+                });
+
+                // Fetch from the backend - this will handle WebSocket upgrade automatically
+                return await fetch(proxyRequest);
+            }
+
+            // 1. Api Proxy (Forward /api requests to Railway)
             if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/reports/') || url.pathname.startsWith('/app-settings/') || url.pathname.startsWith('/files/') || url.pathname.startsWith('/customers/') || url.pathname.startsWith('/uploads/')) {
-                // @ts-ignore
-                const targetBase = env.API_TARGET || 'https://grateful-liberation-production-d036.up.railway.app';
                 const newUrl = new URL(url.pathname + url.search, targetBase);
 
                 const proxyRequest = new Request(newUrl, {
@@ -25,10 +41,10 @@ export default {
                 return await fetch(proxyRequest);
             }
 
-            // 1. Try to fetch the asset
+            // 2. Try to fetch the asset
             const response = await env.ASSETS.fetch(request);
 
-            // 2. Spa Fallback
+            // 3. Spa Fallback
             if (response.status === 404) {
                 const path = url.pathname;
 
