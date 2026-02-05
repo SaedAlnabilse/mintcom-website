@@ -90,24 +90,27 @@ api.interceptors.response.use(
     const isLoginRequest = error.config?.url?.includes('/api/accounts/login');
     const isLogoutRequest = error.config?.url?.includes('/api/accounts/logout');
     const isLoginPage = window.location.pathname.includes('/login');
-    const isValidateRequest = error.config?.url?.includes('/api/establishments') && error.config?._validateRequest;
     
-    // TEMPORARY: Don't auto-redirect on 401 during login flow - let AuthContext handle it
-    // This helps diagnose cross-origin cookie issues
+    // Log all 401 errors for debugging
+    if (error.response?.status === 401) {
+      console.error('[API] 401 Unauthorized:', error.config?.url);
+      console.error('[API] This usually means the cookie is not being sent');
+      console.error('[API] Check: 1) CORS credentials, 2) Cookie sameSite/secure settings');
+    }
+    
+    // Only auto-redirect on 401 if NOT on login page and NOT a login/logout request
+    // AND only if we're not in the initialization phase (to avoid loops)
     const shouldRedirect = error.response?.status === 401 && 
                           !isLoginRequest && 
                           !isLogoutRequest && 
-                          !isLoginPage && 
-                          !isValidateRequest;
+                          !isLoginPage &&
+                          localStorage.getItem('account'); // Only if we think we're logged in
 
     if (shouldRedirect) {
-      console.warn('[API] 401 error detected:', error.config?.url);
-      console.warn('[API] Cookie likely not sent - check backend CORS and cookie settings');
-      
-      // For now, DON'T auto redirect - let the user see the error
-      // localStorage.removeItem('account');
-      // sessionStorage.removeItem('currentEstablishment');
-      // window.location.href = '/login';
+      console.warn('[API] Session expired, redirecting to login');
+      localStorage.removeItem('account');
+      sessionStorage.removeItem('currentEstablishment');
+      window.location.href = '/login';
     }
 
     // Handle 403 Forbidden - Permission denied

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
 import api from '../config/api';
 import { LogoutOverlay } from '../components/LogoutOverlay';
 import { LoginOverlay } from '../components/LoginOverlay';
@@ -83,21 +84,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         // Fetch fresh data - this will validate the HttpOnly cookie
-        // In production cross-origin scenarios, this may fail if cookies aren't configured correctly
-        await refreshEstablishments();
+        try {
+          await refreshEstablishments();
+        } catch (error: any) {
+          // If establishments fetch fails with 401, the cookie isn't working
+          // This is a cross-origin cookie issue
+          console.error('[Auth] Failed to fetch establishments - cookie issue?', error.response?.status);
+          
+          if (error.response?.status === 401) {
+            // Don't clear auth - let the user stay "logged in" with cached data
+            // But show a warning that some features may not work
+            console.warn('[Auth] Cookie not being sent properly - APIs will fail');
+            toast.error('Session issue detected. Some features may not work. Please log out and log back in.');
+          }
+        }
       }
     } catch (error: any) {
       console.error('Failed to initialize auth:', error);
-      
-      // If we get a 401, the cookie is invalid or missing (common in cross-origin issues)
-      // Clear local storage to force re-authentication
-      if (error.response?.status === 401) {
-        console.warn('[Auth] Session invalid or expired, clearing local state');
-        localStorage.removeItem('account');
-        sessionStorage.removeItem('currentEstablishment');
-        setAccount(null);
-        setCurrentEstablishmentState(null);
-      }
     } finally {
       setIsLoading(false);
     }
@@ -275,8 +278,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshEstablishments = async () => {
     try {
+      console.log('[Auth] Fetching establishments...');
       // The HttpOnly cookie will be sent automatically with the request
       const response = await api.get('/api/establishments');
+      console.log('[Auth] Establishments fetched:', response.data?.length || 0);
 
       const finalEstablishments = response.data || [];
       setEstablishments(finalEstablishments);
@@ -305,8 +310,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (finalEstablishments.length > 0) {
         setCurrentEstablishment(finalEstablishments[0]);
       }
-    } catch (error) {
-      console.error('Failed to refresh establishments:', error);
+    } catch (error: any) {
+      console.error('[Auth] Failed to refresh establishments:', error.response?.status, error.message);
+      // Don't clear auth state here - let the API interceptor handle 401s
+      // Just rethrow so caller can handle if needed
+      throw error;
     }
   };
 

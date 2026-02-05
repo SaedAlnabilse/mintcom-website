@@ -2,10 +2,8 @@ import { Navigate, Outlet, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export function ProtectedRoute() {
-  const { isAuthenticated, isLoading, needsOnboarding, account } = useAuth();
+  const { isAuthenticated, isLoading, needsOnboarding, account, establishments } = useAuth();
   const location = useLocation();
-
-  console.log('[ProtectedRoute] Checking auth:', { isLoading, isAuthenticated, hasAccount: !!account, path: location.pathname });
 
   if (isLoading) {
     return (
@@ -22,17 +20,16 @@ export function ProtectedRoute() {
   }
 
   // Only redirect if we're NOT loading and there's NO account data
-  // This ensures we've completed the auth initialization check
   if (!isAuthenticated && !account) {
-    console.log('[ProtectedRoute] Redirecting to login - not authenticated');
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
-  
-  console.log('[ProtectedRoute] Access granted');
 
   // If user needs onboarding (no establishments), redirect to onboarding
   // But allow access to onboarding page itself
-  if (needsOnboarding && location.pathname !== '/onboarding') {
+  // NOTE: Only redirect if we've confirmed establishments are actually empty
+  // (not just still loading)
+  if (needsOnboarding && location.pathname !== '/onboarding' && establishments.length === 0) {
+    console.log('[ProtectedRoute] No establishments, redirecting to onboarding');
     return <Navigate to="/onboarding" replace />;
   }
 
