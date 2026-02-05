@@ -83,11 +83,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         // Fetch fresh data - this will validate the HttpOnly cookie
+        // In production cross-origin scenarios, this may fail if cookies aren't configured correctly
         await refreshEstablishments();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to initialize auth:', error);
-      localStorage.removeItem('account');
+      
+      // If we get a 401, the cookie is invalid or missing (common in cross-origin issues)
+      // Clear local storage to force re-authentication
+      if (error.response?.status === 401) {
+        console.warn('[Auth] Session invalid or expired, clearing local state');
+        localStorage.removeItem('account');
+        sessionStorage.removeItem('currentEstablishment');
+        setAccount(null);
+        setCurrentEstablishmentState(null);
+      }
     } finally {
       setIsLoading(false);
     }

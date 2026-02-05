@@ -2,7 +2,7 @@ import { Navigate, Outlet, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export function ProtectedRoute() {
-  const { isAuthenticated, isLoading, needsOnboarding } = useAuth();
+  const { isAuthenticated, isLoading, needsOnboarding, account } = useAuth();
   const location = useLocation();
 
   if (isLoading) {
@@ -19,8 +19,10 @@ export function ProtectedRoute() {
     );
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+  // Only redirect if we're NOT loading and there's NO account data
+  // This ensures we've completed the auth initialization check
+  if (!isAuthenticated && !account) {
+    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
 
   // If user needs onboarding (no establishments), redirect to onboarding
@@ -34,7 +36,7 @@ export function ProtectedRoute() {
 
 // Separate component for routes that require an establishment
 export function EstablishmentRequiredRoute() {
-  const { isAuthenticated, isLoading, needsOnboarding, currentEstablishment } = useAuth();
+  const { isAuthenticated, isLoading, needsOnboarding, currentEstablishment, account } = useAuth();
   const location = useLocation();
   const { locationSlug } = useParams();
 
@@ -52,8 +54,9 @@ export function EstablishmentRequiredRoute() {
     );
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+  // Only redirect if we're NOT loading and there's NO account data
+  if (!isAuthenticated && !account) {
+    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
 
   if (needsOnboarding) {

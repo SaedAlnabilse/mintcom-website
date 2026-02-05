@@ -6,13 +6,19 @@ export const API_BASE_URL = import.meta.env.PROD
   ? 'https://grateful-liberation-production-d036.up.railway.app'
   : '';
 
+// Debug logging for production cross-origin issues
+if (import.meta.env.PROD) {
+  console.log('[API] Production mode - API Base URL:', API_BASE_URL);
+  console.log('[API] withCredentials enabled for cross-origin cookie support');
+}
+
 // Create axios instance with default config
 export const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // Required for HttpOnly cookie authentication
+  withCredentials: true, // Required for HttpOnly cookie authentication - CRITICAL for cross-origin
 });
 
 // Global loading state management
@@ -86,13 +92,22 @@ api.interceptors.response.use(
     const isLoginRequest = error.config?.url?.includes('/api/accounts/login');
     const isLogoutRequest = error.config?.url?.includes('/api/accounts/logout');
     const isLoginPage = window.location.pathname.includes('/login');
+    
+    // Skip redirect for auth initialization - let AuthContext handle it
+    // This prevents race conditions during app startup
+    const isAuthInit = error.config?.url?.includes('/api/establishments') && !localStorage.getItem('account')?.length;
 
-    if (error.response?.status === 401 && !isLoginRequest && !isLogoutRequest && !isLoginPage) {
+    if (error.response?.status === 401 && !isLoginRequest && !isLogoutRequest && !isLoginPage && !isAuthInit) {
       // Clear local auth data and redirect to login
       // The HttpOnly cookie will be cleared by calling the logout endpoint
       localStorage.removeItem('account');
       sessionStorage.removeItem('currentEstablishment');
-      window.location.href = '/login';
+      
+      // Only redirect if we're not already on the login page (prevents redirect loops)
+      if (!window.location.pathname.includes('/login')) {
+        console.warn('[API] Session expired, redirecting to login');
+        window.location.href = '/login';
+      }
     }
 
     // Handle 403 Forbidden - Permission denied
