@@ -127,9 +127,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoginSuccess(false);
 
     try {
-      // 1. Initial "signing in" state
+      console.log('[Auth] Starting login...');
+      
       // Run Api call
       const response = await api.post('/api/accounts/login', { email, password });
+      console.log('[Auth] Login API response:', response.status, response.data?.account ? 'has account' : 'no account');
 
       // The accessToken is now set as an HttpOnly cookie by the server
       // We only receive account and establishments data in the response body
@@ -144,6 +146,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // Save account data to localStorage (for UI state persistence only, not for auth)
         localStorage.setItem('account', JSON.stringify(accountData));
+        console.log('[Auth] Account saved to localStorage');
 
         setAccount(accountData);
         setEstablishments(estList || []);
@@ -156,12 +159,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           sessionStorage.setItem('currentEstablishment', JSON.stringify(defaultEst));
         }
         
+        // CRITICAL: Validate that the cookie is working before returning success
+        // This catches cross-origin cookie issues immediately
+        console.log('[Auth] Validating session with establishments fetch...');
+        try {
+          const validateResponse = await api.get('/api/establishments');
+          console.log('[Auth] Session validation successful, establishments:', validateResponse.data?.length || 0);
+          setEstablishments(validateResponse.data || []);
+        } catch (validateError: any) {
+          console.error('[Auth] Session validation FAILED:', validateError.response?.status, validateError.message);
+          // If validation fails, the cookie isn't working (cross-origin issue)
+          // Clear the local state since auth won't work
+          localStorage.removeItem('account');
+          setAccount(null);
+          setIsLoggingIn(false);
+          return {
+            success: false,
+            error: 'Login succeeded but session validation failed. This is usually a configuration issue. Please contact support.',
+          };
+        }
+        
         // Keep overlay on until navigation completes
         setTimeout(() => {
           setIsLoggingIn(false);
           setLoginSuccess(false);
         }, 500);
 
+        console.log('[Auth] Login complete, returning success');
         return { 
           success: true, 
           isSecondaryAdmin: !!accountData.isSecondaryAdmin 
@@ -171,6 +195,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoggingIn(false);
       return { success: false, error: 'Login failed' };
     } catch (error: any) {
+      console.error('[Auth] Login error:', error.response?.status, error.response?.data?.message || error.message);
       // Short delay so the user at least sees the spinner if the error is instant
       await new Promise(resolve => setTimeout(resolve, 500));
       setIsLoggingIn(false);

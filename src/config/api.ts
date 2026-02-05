@@ -87,27 +87,27 @@ api.interceptors.response.use(
   },
   (error) => {
     // Check if the error is 401 and NOT from the login or logout endpoint
-    // We don't want to redirect if the user failed to log in (wrong password)
-    // We only want to redirect if the user's session expired while using the app
     const isLoginRequest = error.config?.url?.includes('/api/accounts/login');
     const isLogoutRequest = error.config?.url?.includes('/api/accounts/logout');
     const isLoginPage = window.location.pathname.includes('/login');
+    const isValidateRequest = error.config?.url?.includes('/api/establishments') && error.config?._validateRequest;
     
-    // Skip redirect for auth initialization - let AuthContext handle it
-    // This prevents race conditions during app startup
-    const isAuthInit = error.config?.url?.includes('/api/establishments') && !localStorage.getItem('account')?.length;
+    // TEMPORARY: Don't auto-redirect on 401 during login flow - let AuthContext handle it
+    // This helps diagnose cross-origin cookie issues
+    const shouldRedirect = error.response?.status === 401 && 
+                          !isLoginRequest && 
+                          !isLogoutRequest && 
+                          !isLoginPage && 
+                          !isValidateRequest;
 
-    if (error.response?.status === 401 && !isLoginRequest && !isLogoutRequest && !isLoginPage && !isAuthInit) {
-      // Clear local auth data and redirect to login
-      // The HttpOnly cookie will be cleared by calling the logout endpoint
-      localStorage.removeItem('account');
-      sessionStorage.removeItem('currentEstablishment');
+    if (shouldRedirect) {
+      console.warn('[API] 401 error detected:', error.config?.url);
+      console.warn('[API] Cookie likely not sent - check backend CORS and cookie settings');
       
-      // Only redirect if we're not already on the login page (prevents redirect loops)
-      if (!window.location.pathname.includes('/login')) {
-        console.warn('[API] Session expired, redirecting to login');
-        window.location.href = '/login';
-      }
+      // For now, DON'T auto redirect - let the user see the error
+      // localStorage.removeItem('account');
+      // sessionStorage.removeItem('currentEstablishment');
+      // window.location.href = '/login';
     }
 
     // Handle 403 Forbidden - Permission denied

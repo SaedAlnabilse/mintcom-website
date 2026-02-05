@@ -5,6 +5,8 @@ export function ProtectedRoute() {
   const { isAuthenticated, isLoading, needsOnboarding, account } = useAuth();
   const location = useLocation();
 
+  console.log('[ProtectedRoute] Checking auth:', { isLoading, isAuthenticated, hasAccount: !!account, path: location.pathname });
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
@@ -22,8 +24,11 @@ export function ProtectedRoute() {
   // Only redirect if we're NOT loading and there's NO account data
   // This ensures we've completed the auth initialization check
   if (!isAuthenticated && !account) {
+    console.log('[ProtectedRoute] Redirecting to login - not authenticated');
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
+  
+  console.log('[ProtectedRoute] Access granted');
 
   // If user needs onboarding (no establishments), redirect to onboarding
   // But allow access to onboarding page itself
