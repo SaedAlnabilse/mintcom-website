@@ -1,4 +1,4 @@
-name = "paymint-landing"
+name = "paymint"
 compatibility_date = "2024-09-23"
 main = "src/worker.ts"
 
