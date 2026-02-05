@@ -906,7 +906,7 @@ export function OrdersPage() {
                 ]}
                 placeholder="Check Shift"
                 showAllOption={false}
-                buttonClassName="!bg-[#0B1120] !text-white !border-gray-800 dark:!bg-white/5 dark:!border-white/10 hover:!bg-[#1a2333] !h-auto !py-2.5 sm:!py-3"
+                buttonClassName="!bg-white dark:!bg-white/5 !text-gray-900 dark:!text-white !border-gray-200 dark:!border-white/10 hover:!bg-gray-50 dark:hover:!bg-white/10 !h-auto !py-2.5 sm:!py-3"
               />
             </div>
           )}

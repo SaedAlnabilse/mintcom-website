@@ -44,6 +44,7 @@ interface CardType {
   name: string;
   imageUrl?: string;
   imageKey?: string;
+  logo?: string;
 }
 
 export function PaymentMethodsPage() {
@@ -186,8 +187,10 @@ export function PaymentMethodsPage() {
 
       setShowModal(false);
       fetchPaymentMethods();
-    } catch {
-      toast.error('Failed to save payment method');
+    } catch (error: any) {
+      console.error('Failed to save payment method:', error);
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to save payment method';
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -243,8 +246,10 @@ export function PaymentMethodsPage() {
 
       setShowCardModal(false);
       fetchCardTypes();
-    } catch {
-      toast.error('Failed to save brand');
+    } catch (error: any) {
+      console.error('Failed to save brand:', error);
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to save brand';
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -325,8 +330,8 @@ export function PaymentMethodsPage() {
               >
                 <div className="flex justify-between items-start mb-6">
                   <div className="w-16 h-16 rounded-xl bg-white dark:bg-black/40 flex items-center justify-center border border-gray-100 dark:border-white/5 transition-transform group-hover:scale-110 duration-500 overflow-hidden p-3">
-                    {getImageUrl(card.imageUrl) ? (
-                      <img src={getImageUrl(card.imageUrl)!} alt={card.name} className="w-full h-full object-contain" />
+                    {getImageUrl(card.imageUrl || card.logo) ? (
+                      <img src={getImageUrl(card.imageUrl || card.logo)!} alt={card.name} className="w-full h-full object-contain" />
                     ) : (
                       <CreditCard size={24} className="text-gray-400" />
                     )}
@@ -334,7 +339,7 @@ export function PaymentMethodsPage() {
 
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
                     <button
-                      onClick={() => { setEditingCard(card); setNewCardName(card.name); setCardImagePreview(card.imageUrl || null); setSelectedCardImage(null); setShowCardModal(true); setCardErrors({}); }}
+                      onClick={() => { setEditingCard(card); setNewCardName(card.name); setCardImagePreview(card.imageUrl || card.logo || null); setSelectedCardImage(null); setShowCardModal(true); setCardErrors({}); }}
                       className="p-2 rounded-lg bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-green shadow-sm border border-gray-100 dark:border-white/5"
                     >
                       <Edit2 size={16} />

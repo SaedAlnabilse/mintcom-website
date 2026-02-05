@@ -88,6 +88,15 @@ export function ProductsPage() {
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const getStockColor = (stock: number, redLimit?: number, yellowLimit?: number, isList: boolean = false) => {
+        const r = redLimit ?? 2;
+        const y = yellowLimit ?? 5;
+        if (stock <= 0) return 'text-slate-500';
+        if (stock <= r) return 'text-paymint-red';
+        if (stock <= y) return 'text-amber-500';
+        return isList ? 'text-gray-600 dark:text-gray-300' : 'text-gray-900 dark:text-white';
+    };
+
     // Confirmation Modal
     const [confirmConfig, setConfirmConfig] = useState<{
         isOpen: boolean;
@@ -574,7 +583,7 @@ export function ProductsPage() {
                             <Package size={18} className="sm:w-5 sm:h-5" />
                         </div>
                         <div className="flex items-center gap-1">
-                            <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">Out</span>
+                            <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">Out of Stock</span>
                             <QuickInfo text="Products with zero or negative stock. Click to filter." />
                         </div>
                     </div>
@@ -642,14 +651,13 @@ export function ProductsPage() {
                                                 <div className="text-right">
                                                     <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">Stock</p>
                                                     {p.trackStock ? (
-                                                        <div className={`text-xs font-bold flex items-center justify-end gap-1 ${(p.availableStock || 0) <= (p.lowStockThresholdYellow || 0) ? 'text-amber-500' : 'text-gray-900 dark:text-white'}`}>
-                                                            {(p.availableStock || 0) <= (p.lowStockThresholdYellow || 0) && <AlertCircle size={10} />}
+                                                        <div className={`text-xs font-bold flex items-center justify-end gap-1 ${getStockColor(p.availableStock || 0, p.lowStockThresholdRed, p.lowStockThresholdYellow)}`}>
+                                                            {(p.availableStock || 0) <= (p.lowStockThresholdYellow || 5) && <AlertCircle size={10} />}
                                                             {p.availableStock}
                                                         </div>
                                                     ) : (
-                                                        <div className="text-xs font-bold text-gray-400 dark:text-gray-500 flex items-center justify-end gap-1">
-                                                            <InfinityIcon size={12} strokeWidth={3} />
-                                                            <span>Unlimited</span>
+                                                        <div className="text-xs font-bold text-gray-400 dark:text-gray-500 flex items-center justify-end">
+                                                            <InfinityIcon size={16} strokeWidth={3} />
                                                         </div>
                                                     )}
                                                 </div>
@@ -726,13 +734,12 @@ export function ProductsPage() {
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     {p.trackStock ? (
-                                                        <span className={`text-xs font-bold ${(p.availableStock || 0) <= (p.lowStockThresholdYellow || 0) ? 'text-amber-500' : 'text-gray-600 dark:text-gray-300'}`}>
+                                                        <span className={`text-xs font-bold ${getStockColor(p.availableStock || 0, p.lowStockThresholdRed, p.lowStockThresholdYellow, true)}`}>
                                                             {p.availableStock} Units
                                                         </span>
                                                     ) : (
-                                                        <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200/50 dark:border-white/5">
-                                                            <InfinityIcon size={14} className="text-gray-400" strokeWidth={2.5} />
-                                                            <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Unlimited</span>
+                                                        <div className="inline-flex items-center px-2 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200/50 dark:border-white/5">
+                                                            <InfinityIcon size={16} className="text-gray-400" strokeWidth={2.5} />
                                                         </div>
                                                     )}
                                                 </td>
