@@ -33,6 +33,7 @@ type PaymentMethodFormData = z.infer<typeof paymentMethodSchema>;
 interface PaymentMethod {
   id: string;
   name: string;
+  logo?: string; // Legacy field for backwards compatibility
   imageUrl?: string;
   imageKey?: string;
   isActive: boolean;
@@ -403,8 +404,8 @@ export function PaymentMethodsPage() {
                 <div className="flex justify-between items-start mb-6">
                   <div className={`w-14 h-14 rounded-xl flex items-center justify-center border border-gray-100 dark:border-white/5 transition-transform group-hover:scale-110 duration-500 overflow-hidden ${method.isActive ? 'bg-paymint-green/10 text-paymint-green' : 'bg-gray-50 dark:bg-white/5 text-gray-400'
                     }`}>
-                    {getImageUrl(method.imageUrl) ? (
-                      <img src={getImageUrl(method.imageUrl)!} alt={method.name} className="w-full h-full object-cover" />
+                    {getImageUrl(method.imageUrl || method.logo) ? (
+                      <img src={getImageUrl(method.imageUrl || method.logo)!} alt={method.name} className="w-full h-full object-cover" />
                     ) : (
                       getMethodIcon(method.name)
                     )}

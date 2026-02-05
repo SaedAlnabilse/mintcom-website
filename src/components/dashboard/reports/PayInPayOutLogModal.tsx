@@ -97,15 +97,18 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
             });
 
             const entries = response.data.entries || [];
-            setLogs(entries);
+            
+            // Only show PAY_IN and PAY_OUT types in the log
+            const filteredLogs = entries.filter((l: any) => l.type === 'PAY_IN' || l.type === 'PAY_OUT');
+            setLogs(filteredLogs);
 
             // Calculate totals using absolute values to avoid sign confusion
             // PAY_IN adds to cash, PAY_OUT subtracts
-            const payIn = entries
+            const payIn = filteredLogs
                 .filter((l: CashLog) => l.type === 'PAY_IN')
                 .reduce((sum: number, l: CashLog) => sum + Math.abs(Number(l.amount)), 0);
 
-            const payOut = entries
+            const payOut = filteredLogs
                 .filter((l: CashLog) => l.type === 'PAY_OUT')
                 .reduce((sum: number, l: CashLog) => sum + Math.abs(Number(l.amount)), 0);
 

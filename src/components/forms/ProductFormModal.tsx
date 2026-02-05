@@ -97,6 +97,7 @@ export function ProductFormModal({
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [isImageDeleted, setIsImageDeleted] = useState(false);
   const categoryRef = useRef<HTMLDivElement>(null);
   const addonsRef = useRef<HTMLDivElement>(null);
   const categoryTriggerRef = useRef<HTMLButtonElement>(null);
@@ -217,6 +218,7 @@ export function ProductFormModal({
 
       setSelectedImage(file);
       setImagePreview(URL.createObjectURL(blob));
+      setIsImageDeleted(false);
       toast.success('AI Image generated!');
     } catch (error) {
       console.error('Failed to generate image:', error);
@@ -269,11 +271,23 @@ export function ProductFormModal({
         setLowStockRed(initialData.lowStockThresholdRed != null ? String(initialData.lowStockThresholdRed) : '2');
 
         // Handle image preview
+        // In development, use relative paths to leverage Vite proxy (avoids CORS issues)
+        // In production (Cloudflare Workers), use the full backend URL
         if (initialData.image) {
-          const baseUrl = 'https://grateful-liberation-production-d036.up.railway.app';
+          const isCloudflareWorkers = typeof window !== 'undefined' && 
+            window.location.hostname.endsWith('.workers.dev');
+          const baseUrl = isCloudflareWorkers 
+            ? 'https://grateful-liberation-production-d036.up.railway.app'
+            : '';
+          
+          // Fix: Remove /public prefix to match POS behavior and correct serving path
+          const cleanPath = initialData.image.replace('/public', '').replace('public/', '');
+
           const imgUrl = initialData.image.startsWith('http')
             ? initialData.image
-            : `${baseUrl}${initialData.image.startsWith('/') ? '' : '/'}${initialData.image}`;
+            : `${baseUrl}${cleanPath.startsWith('/') ? '' : '/'}${cleanPath}`;
+
+          console.log('🖼️ ProductFormModal Image URL:', imgUrl);
           setImagePreview(imgUrl);
         } else {
           setImagePreview(null);
@@ -308,6 +322,7 @@ export function ProductFormModal({
         setSelectedImage(null);
         setImagePreview(null);
         setSelectedAttributeIds([]);
+        setIsImageDeleted(false);
       }
       setCategorySearchQuery('');
       setAddonsSearchQuery('');
@@ -317,12 +332,14 @@ export function ProductFormModal({
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Revoke previous object URL to avoid memory leaks
+      if (imagePreview && imagePreview.startsWith('blob:')) {
+        URL.revokeObjectURL(imagePreview);
+      }
       setSelectedImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      // Use URL.createObjectURL for reliable preview (same as AI generation)
+      setImagePreview(URL.createObjectURL(file));
+      setIsImageDeleted(false);
     }
   };
 
@@ -369,6 +386,16 @@ export function ProductFormModal({
         errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 100);
       return;
+    }
+
+    // Handle image deletion if requested
+    if (isImageDeleted && initialData?.id && !selectedImage) {
+      try {
+        await api.delete(`/api/items/${initialData.id}/image`);
+      } catch (error) {
+        console.error('Failed to delete image:', error);
+        toast.error('Failed to remove image');
+      }
     }
 
     const formData = new FormData();
@@ -501,7 +528,16 @@ export function ProductFormModal({
                       className="w-40 h-40 rounded-2xl border-2 border-dashed border-gray-300 dark:border-white/10 flex flex-col items-center justify-center overflow-hidden bg-white dark:bg-[#1E293B] cursor-pointer hover:border-paymint-green transition-all shadow-sm"
                     >
                       {imagePreview ? (
-                        <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                        <img
+                          src={imagePreview}
+                          alt="Preview"
+                          className="w-full h-full object-cover"
+                          onError={() => {
+                            console.error('Image preview failed to load:', imagePreview?.substring(0, 100));
+                            // If the image fails to load, reset to upload state
+                            setImagePreview(null);
+                          }}
+                        />
                       ) : (
                         <div className="flex flex-col items-center text-gray-400 group-hover:text-paymint-green transition-colors">
                           <Upload size={32} strokeWidth={1.5} className="mb-2" />
@@ -518,7 +554,18 @@ export function ProductFormModal({
                     {imagePreview && (
                       <button
                         type="button"
-                        onClick={() => { setSelectedImage(null); setImagePreview(null); }}
+                        onClick={() => {
+                          // Revoke object URL to prevent memory leaks
+                          if (imagePreview && imagePreview.startsWith('blob:')) {
+                            URL.revokeObjectURL(imagePreview);
+                          }
+                          setSelectedImage(null);
+                          setImagePreview(null);
+                          // Mark as deleted so we know to call the delete endpoint on submit
+                          if (initialData?.image) {
+                            setIsImageDeleted(true);
+                          }
+                        }}
                         className="absolute -top-2 -right-2 bg-white dark:bg-gray-800 rounded-full p-1.5 text-paymint-red hover:bg-red-50 border border-gray-200 dark:border-white/10 shadow-lg active:scale-90 transition-all"
                       >
                         <X size={14} />

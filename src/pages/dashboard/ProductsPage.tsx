@@ -118,13 +118,17 @@ export function ProductsPage() {
                 api.get('/api/items'),
                 api.get('/api/categories')
             ]);
-            setProducts(productsRes.data || []);
-            setCategories(categoriesRes.data || []);
+            // Backend returns { items: [...], total, limit, offset } for paginated response
+            // or an array directly for backwards compatibility
+            const productsData = productsRes.data?.items ?? productsRes.data;
+            setProducts(Array.isArray(productsData) ? productsData : []);
+            setCategories(Array.isArray(categoriesRes.data) ? categoriesRes.data : []);
 
             // Handle product ID from state if available
             const state = location.state as { productId?: string };
             if (state?.productId) {
-                const found = (productsRes.data || []).find((p: Product) => p.id === state.productId);
+                const productsList = Array.isArray(productsRes.data) ? productsRes.data : [];
+                const found = productsList.find((p: Product) => p.id === state.productId);
                 if (found) {
                     setEditingProduct(found);
                     setShowModal(true);
@@ -175,7 +179,22 @@ export function ProductsPage() {
         });
     };
 
-    const REMOTE_IMAGE_BASE_URL = 'https://grateful-liberation-production-d036.up.railway.app';
+    // Helper to construct full image URLs
+    // In development, use relative paths to leverage Vite proxy (avoids CORS issues)
+    // In production (Cloudflare Workers), use the full backend URL
+    const isCloudflareWorkers = typeof window !== 'undefined' && 
+        window.location.hostname.endsWith('.workers.dev');
+    const BACKEND_URL = isCloudflareWorkers 
+        ? 'https://grateful-liberation-production-d036.up.railway.app'
+        : '';
+    
+    const getProductImageUrl = (imagePath?: string) => {
+        if (!imagePath) return null;
+        if (imagePath.startsWith('http')) return imagePath;
+        // Fix: Remove /public prefix to match POS behavior and correct serving path
+        const cleanPath = imagePath.replace('/public', '').replace('public/', '');
+        return `${BACKEND_URL}${cleanPath.startsWith('/') ? '' : '/'}${cleanPath}`;
+    };
 
     // Used by ProductFormModal
     const onSubmit = async (formData: FormData) => {
@@ -622,7 +641,7 @@ export function ProductsPage() {
                                 >
                                         <div className="aspect-[4/3] bg-gray-50 dark:bg-black/20 relative overflow-hidden">
                                             {p.image ? (
-                                                <img src={p.image.startsWith('http') ? p.image : `${REMOTE_IMAGE_BASE_URL}${p.image.startsWith('/') ? '' : '/'}${p.image}`} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                                <img src={getProductImageUrl(p.image)!} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-gray-300">
                                                     <Package size={32} />
@@ -718,7 +737,7 @@ export function ProductsPage() {
                                                 <td className="px-6 py-4">
                                                     <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 overflow-hidden">
                                                         {p.image ? (
-                                                            <img src={p.image.startsWith('http') ? p.image : `${REMOTE_IMAGE_BASE_URL}${p.image.startsWith('/') ? '' : '/'}${p.image}`} alt="" className="w-full h-full object-cover" />
+                                                            <img src={getProductImageUrl(p.image)!} alt="" className="w-full h-full object-cover" />
                                                         ) : (
                                                             <div className="w-full h-full flex items-center justify-center text-gray-300"><Package size={16} /></div>
                                                         )}
