@@ -142,10 +142,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Wait for success animation to play
         await new Promise(resolve => setTimeout(resolve, 1500));
         
-        const { account: accountData, establishments: estList } = response.data;
+        const { account: accountData, establishments: estList, token } = response.data;
 
-        // Save account data to localStorage (for UI state persistence only, not for auth)
+        // Save account data and token to localStorage
         localStorage.setItem('account', JSON.stringify(accountData));
+        if (token) {
+          localStorage.setItem('accessToken', token);
+        }
 
         setAccount(accountData);
         setEstablishments(estList || []);
@@ -197,6 +200,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       // Clear local state regardless of API call result
       localStorage.removeItem('account');
+      localStorage.removeItem('accessToken');
       sessionStorage.removeItem('currentEstablishment');
       
       // IMPORTANT: We do NOT call setAccount(null) here.

@@ -69,6 +69,12 @@ api.interceptors.request.use(
       }
     }
 
+    // Add Authorization header from localStorage if available (fallback for cross-origin cookies)
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      config.headers.set('Authorization', `Bearer ${token}`);
+    }
+
     return config;
   },
   (error) => {
@@ -109,6 +115,7 @@ api.interceptors.response.use(
     if (shouldRedirect) {
       console.warn('[API] Session expired, redirecting to login');
       localStorage.removeItem('account');
+      localStorage.removeItem('accessToken');
       sessionStorage.removeItem('currentEstablishment');
       window.location.href = '/login';
     }
