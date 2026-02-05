@@ -110,46 +110,39 @@ export function CustomRoleFormModal({
 
   useEffect(() => {
     if (isOpen) {
-      // Defer fetching to avoid sync render issues
-      setTimeout(() => {
-        fetchDiscounts();
-      }, 0);
+      fetchDiscounts();
       if (initialData) {
-        setTimeout(() => {
-          setName(initialData.name || '');
-          setPosAccess(initialData.posAccess !== false); // Default true
-          setBackofficeAccess(initialData.backofficeAccess || false);
-          setPermissions(initialData.permissions || []);
+        setName(initialData.name || '');
+        setPosAccess(initialData.posAccess !== false); // Default true
+        setBackofficeAccess(initialData.backofficeAccess || false);
+        setPermissions(initialData.permissions || []);
 
-          // Handle Backoffice Permissions (with legacy mapping)
-          const initialBackofficePerms = [...(initialData.backofficePermissions || [])];
-          if (initialBackofficePerms.includes('manage_items') && !initialBackofficePerms.includes('manage_inventory')) {
-            initialBackofficePerms.push('manage_inventory');
-          }
-          if (initialBackofficePerms.includes('view_cost') && !initialBackofficePerms.includes('view_costs')) {
-            initialBackofficePerms.push('view_costs');
-          }
-          if (initialBackofficePerms.includes('manage_payment_types') && !initialBackofficePerms.includes('manage_payment_methods')) {
-            initialBackofficePerms.push('manage_payment_methods');
-          }
+        // Handle Backoffice Permissions (with legacy mapping)
+        const initialBackofficePerms = [...(initialData.backofficePermissions || [])];
+        if (initialBackofficePerms.includes('manage_items') && !initialBackofficePerms.includes('manage_inventory')) {
+          initialBackofficePerms.push('manage_inventory');
+        }
+        if (initialBackofficePerms.includes('view_cost') && !initialBackofficePerms.includes('view_costs')) {
+          initialBackofficePerms.push('view_costs');
+        }
+        if (initialBackofficePerms.includes('manage_payment_types') && !initialBackofficePerms.includes('manage_payment_methods')) {
+          initialBackofficePerms.push('manage_payment_methods');
+        }
 
-          setBackofficePermissions(initialBackofficePerms);
-          setAllowedDiscounts(initialData.allowedDiscounts || []);
-          setAllDiscountsSelected(initialData.allowedDiscounts?.length === 0);
-        }, 0);
+        setBackofficePermissions(initialBackofficePerms);
+        setAllowedDiscounts(initialData.allowedDiscounts || []);
+        setAllDiscountsSelected(initialData.allowedDiscounts?.length === 0);
       } else {
         // Defaults for new role
-        setTimeout(() => {
-          setName('');
-          setPosAccess(true);
-          setBackofficeAccess(false);
-          setPermissions(['accept_payments', 'apply_discounts']);
-          setBackofficePermissions([]);
-          setAllowedDiscounts([]);
-          setAllDiscountsSelected(true);
-        }, 0);
+        setName('');
+        setPosAccess(true);
+        setBackofficeAccess(false);
+        setPermissions(['accept_payments', 'apply_discounts']);
+        setBackofficePermissions([]);
+        setAllowedDiscounts([]);
+        setAllDiscountsSelected(true);
       }
-      setTimeout(() => setErrors({}), 0);
+      setErrors({});
     }
   }, [isOpen, initialData]);
 

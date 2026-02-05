@@ -33,6 +33,7 @@ export function ThemeProvider({
 
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
 
+  // Use useLayoutEffect to apply theme before paint, preventing flash
   useEffect(() => {
     const root = window.document.documentElement;
 
@@ -50,9 +51,7 @@ export function ThemeProvider({
 
     // Apply class
     root.classList.add(effectiveTheme);
-    setTimeout(() => {
-      setResolvedTheme(effectiveTheme as 'light' | 'dark');
-    }, 0);
+    setResolvedTheme(effectiveTheme as 'light' | 'dark');
 
     // Save to storage
     localStorage.setItem(storageKey, theme);
@@ -97,8 +96,9 @@ export function ThemeProvider({
           const iframe = document.querySelector('iframe[src*="hf.space"]');
           if (iframe) {
             sendThemeToChatbot();
-            // Disconnect once found to save resources, or keep if iframe can be re-mounted
-            // observer.disconnect(); 
+            // Disconnect once found to save resources - iframe typically doesn't re-mount
+            observer.disconnect();
+            break;
           }
         }
       }

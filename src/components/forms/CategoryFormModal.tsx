@@ -70,19 +70,15 @@ export function CategoryFormModal({
 
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => setErrors({}), 0);
+      setErrors({});
       if (initialData) {
-        setTimeout(() => {
-          setName(initialData.name);
-          setSelectedIcon(initialData.icon || 'tag');
-          setSortOrder(initialData.sortOrder || 0);
-        }, 0);
+        setName(initialData.name);
+        setSelectedIcon(initialData.icon || 'tag');
+        setSortOrder(initialData.sortOrder || 0);
       } else {
-        setTimeout(() => {
-          setName('');
-          setSelectedIcon('tag');
-          setSortOrder(0);
-        }, 0);
+        setName('');
+        setSelectedIcon('tag');
+        setSortOrder(0);
       }
     }
   }, [isOpen, initialData]);

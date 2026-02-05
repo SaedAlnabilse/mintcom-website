@@ -124,7 +124,7 @@ export function OwnerOverviewPage() {
     };
 
     useEffect(() => {
-        setTimeout(() => fetchOverviewStats(), 0);
+        fetchOverviewStats();
     }, [startDate, endDate, startTime, endTime, selectedDateRange]);
 
     const selectedFilterLabel = selectedDateRange === 'custom'

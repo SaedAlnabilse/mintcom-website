@@ -17,6 +17,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { CustomRoleFormModal } from '../../components/CustomRoleFormModal';
 import { Pagination } from '../../components/ui';
+import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 
 interface CustomRole {
   id: string;
@@ -35,6 +36,9 @@ type ViewMode = 'grid' | 'list';
 type SortKey = 'name' | 'baseRole' | 'createdAt';
 
 export function CustomRolesPage() {
+  // Permission guard - redirects if user lacks permission
+  usePermissionGuard();
+
   const [roles, setRoles] = useState<CustomRole[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);

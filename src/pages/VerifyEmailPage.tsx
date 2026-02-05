@@ -13,10 +13,8 @@ export function VerifyEmailPage() {
 
   useEffect(() => {
     if (!token) {
-      setTimeout(() => {
-        setStatus('error');
-        setMessage('Missing link.');
-      }, 0);
+      setStatus('error');
+      setMessage('Missing link.');
       return;
     }
 

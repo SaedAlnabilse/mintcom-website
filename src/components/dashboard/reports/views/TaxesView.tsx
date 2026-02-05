@@ -1,0 +1,187 @@
+import { Scale } from 'lucide-react';
+import { useCurrency } from '../../../../context/CurrencyContext';
+import type { SalesSummary } from '../../../../types';
+import React from 'react';
+
+interface TaxesViewProps {
+  salesData: SalesSummary;
+}
+
+export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewProps) {
+  const { formatAmount } = useCurrency();
+
+  const formatCurrency = (value: number) => formatAmount(value);
+
+  return (
+    <div className="space-y-6">
+      {/* Summary Cards for Taxes */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
+          <div className="relative z-10">
+            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Total Tax</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+              {formatCurrency(salesData.taxCollected || 0)}
+            </p>
+            <p className="text-xs text-gray-500 mt-2">Total tax amount</p>
+          </div>
+          <div className="absolute right-0 top-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl -mr-10 -mt-10" />
+        </div>
+
+        <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
+          <div className="relative z-10">
+            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Taxable Sales</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+              {formatCurrency(salesData.totalRevenue || 0)}
+            </p>
+            <p className="text-xs text-gray-500 mt-2">Sales with tax</p>
+          </div>
+          <div className="absolute right-0 top-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -mr-10 -mt-10" />
+        </div>
+
+        <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
+          <div className="relative z-10">
+            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Avg. Rate</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+              {salesData.totalRevenue > 0
+                ? ((salesData.taxCollected / salesData.totalRevenue) * 100).toFixed(1)
+                : '0.0'}%
+            </p>
+            <p className="text-xs text-gray-500 mt-2">Average tax percentage</p>
+          </div>
+          <div className="absolute right-0 top-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl -mr-10 -mt-10" />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Tax Breakdown Main Card */}
+        <div className="lg:col-span-2 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden flex flex-col">
+          <div className="p-6 border-b border-gray-100 dark:border-white/5">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <Scale size={20} className="text-orange-500" />
+              Tax Details
+            </h3>
+          </div>
+          <div className="flex-1 overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 dark:bg-white/[0.02]">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Type</th>
+                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Rate</th>
+                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Taxable</th>
+                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Tax</th>
+                  <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">Share</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                {/* NOTE: If backend doesn't provide granular tax breakdown, we reconstruct a "Sales Tax" default row */}
+                {salesData.taxBreakdown && salesData.taxBreakdown.length > 0 ? (
+                  salesData.taxBreakdown.map((tax: any, i: number) => {
+                    const contribution = salesData.taxCollected > 0 ? (tax.collected / salesData.taxCollected) * 100 : 0;
+                    return (
+                      <tr key={i} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-white/5 text-gray-500 font-bold">
+                              {tax.name.charAt(0)}
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="font-bold text-sm text-gray-900 dark:text-white">{tax.name}</span>
+                              <span className="text-xs text-gray-400 font-bold">{tax.transactions || 0} Txns</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-right font-bold text-gray-500">
+                          {(tax.rate * 100).toFixed(1)}%
+                        </td>
+                        <td className="px-6 py-4 text-right font-bold text-gray-900 dark:text-white">
+                          {formatCurrency(tax.taxableAmount)}
+                        </td>
+                        <td className="px-6 py-4 text-right font-bold text-orange-500">
+                          {formatCurrency(tax.collected)}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2 max-w-[100px] mx-auto">
+                            <div className="flex-1 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                              <div className="h-full bg-orange-500 rounded-full" style={{ width: `${contribution}%` }} />
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  // Default Fallback Row if no granular data
+                  <tr className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-white/5 text-gray-500 font-bold">
+                          S
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-bold text-sm text-gray-900 dark:text-white">Sales Tax (Standard)</span>
+                          <span className="text-xs text-gray-400 font-bold">{salesData.totalOrders || 0} Txns</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-right font-bold text-gray-500">
+                      {(salesData.totalRevenue > 0 ? (salesData.taxCollected / salesData.totalRevenue) * 100 : 16).toFixed(1)}%
+                    </td>
+                    <td className="px-6 py-4 text-right font-bold text-gray-900 dark:text-white">
+                      {formatCurrency(salesData.totalRevenue || 0)}
+                    </td>
+                    <td className="px-6 py-4 text-right font-bold text-orange-500">
+                      {formatCurrency(salesData.taxCollected || 0)}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 max-w-[100px] mx-auto">
+                        <div className="flex-1 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                          <div className="h-full bg-orange-500 rounded-full" style={{ width: `100%` }} />
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Exemptions Panel */}
+        <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm p-6 flex flex-col">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-2">
+            Exemptions
+          </h3>
+          <p className="text-xs text-gray-500 mb-6">Tax-free sales</p>
+
+          <div className="flex-1 flex flex-col items-center justify-center text-center space-y-4 py-8">
+            <div className="w-16 h-16 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-300 dark:text-white/20">
+              <Scale size={24} />
+            </div>
+            <div>
+              <p className="text-2xl font-black text-gray-900 dark:text-white">
+                {formatCurrency(salesData.taxExemptSales || 0)}
+              </p>
+              <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">Tax-Free Sales</p>
+            </div>
+            <div className="w-full h-px bg-gray-100 dark:bg-white/5 my-4" />
+            <div className="w-full space-y-3">
+              {/* Mock list of exemptions or actual data if available */}
+              <div className="flex justify-between items-center text-xs">
+                <span className="font-bold text-gray-500">Resale Certificates</span>
+                <span className="font-bold text-gray-900 dark:text-white">—</span>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="font-bold text-gray-500">Non-Profit</span>
+                <span className="font-bold text-gray-900 dark:text-white">—</span>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="font-bold text-gray-500">Gov. Entities</span>
+                <span className="font-bold text-gray-900 dark:text-white">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+});

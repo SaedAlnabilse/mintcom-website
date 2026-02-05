@@ -98,19 +98,8 @@ export function SingleSelect({
             document.addEventListener('mousedown', handleClickOutside);
             window.addEventListener('scroll', updateDropdownPosition, true);
             window.addEventListener('resize', updateDropdownPosition);
-        }
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-            window.removeEventListener('scroll', updateDropdownPosition, true);
-            window.removeEventListener('resize', updateDropdownPosition);
-        };
-    }, [isOpen]);
-
-    // Clear search and focus input when opening
-    useEffect(() => {
-        if (isOpen) {
-            setTimeout(() => setSearchQuery(''), 0);
+            
+            // Focus input
             const timer = setTimeout(() => {
                 searchInputRef.current?.focus();
             }, 100);
@@ -124,7 +113,21 @@ export function SingleSelect({
 
             return () => clearTimeout(timer);
         }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            window.removeEventListener('scroll', updateDropdownPosition, true);
+            window.removeEventListener('resize', updateDropdownPosition);
+        };
     }, [isOpen, scrollIntoViewOnOpen]);
+
+    const toggleOpen = () => {
+        if (disabled) return;
+        if (!isOpen) {
+            setSearchQuery('');
+        }
+        setIsOpen(!isOpen);
+    };
 
     const handleSelect = (optionValue: string | null) => {
         if (optionValue === null) {
@@ -244,7 +247,7 @@ export function SingleSelect({
             <button
                 ref={buttonRef}
                 type="button"
-                onClick={() => !disabled && setIsOpen(!isOpen)}
+                onClick={toggleOpen}
                 className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-left flex items-center justify-between transition-[color,background-color,border-color,box-shadow,ring] outline-none shadow-sm
                     ${disabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:border-paymint-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]'}
                     ${isOpen ? 'ring-[3px] ring-paymint-green/10 border-paymint-green bg-gray-50 dark:bg-white/[0.08]' : ''

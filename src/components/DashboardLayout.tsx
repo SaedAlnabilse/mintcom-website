@@ -73,7 +73,7 @@ const menuStructure: MenuItemOrGroup[] = [
       { path: 'reports/modifiers', label: 'Sales by Add-Ons', icon: Package },
       { path: 'reports/staff-sales', label: 'Sales by Staff', icon: Users },
       { path: 'reports/shifts', label: 'Shifts Reports', icon: FileBarChart },
-      { path: 'reports/cash-discrepancy', label: 'Cash Discrepancy', icon: Scale },
+      { path: 'reports/cash-discrepancy', label: 'Cash Gap Reports', icon: Scale },
       { path: 'reports/payments', label: 'Payments Reports', icon: CreditCard },
       { path: 'reports/discounts', label: 'Discount Reports', icon: Percent },
     ],
@@ -118,44 +118,7 @@ const menuStructure: MenuItemOrGroup[] = [
   },
 ];
 
-const REQUIRED_PERMISSIONS: Record<string, string[]> = {
-  // Reports
-  'reports/sales': ['view_reports', 'reports'],
-  'reports/items': ['view_reports', 'reports'],
-  'reports/categories': ['view_reports', 'reports'],
-  'reports/staff-sales': ['view_reports', 'reports'],
-  'reports/payments': ['view_reports', 'reports'],
-  'reports/modifiers': ['view_reports', 'reports'],
-  'reports/discounts': ['view_reports', 'reports'],
-  'reports/taxes': ['view_reports', 'reports'],
-  'reports/shifts': ['view_reports', 'reports'],
-
-  // Orders
-  'orders': ['view_orders'],
-
-  // Inventory
-  'categories': ['manage_inventory', 'items'],
-  'products': ['manage_inventory', 'items'],
-  'addons': ['manage_inventory', 'items'],
-  'materials': ['manage_inventory', 'items'],
-  'recipes': ['manage_inventory', 'items'],
-
-  // Sales
-  'payment-methods': ['manage_payment_methods', 'manage_settings', 'settings'],
-
-  // People
-  'staff': ['manage_employees', 'employees'],
-  'roles': ['manage_employees', 'employees'],
-
-  // Discounts
-  'discounts': ['manage_discounts', 'manage_settings', 'settings'],
-  'loyalty': ['manage_settings', 'settings'],
-  'customers': ['manage_customers', 'manage_employees', 'employees'],
-
-  // Settings
-  'settings': ['manage_settings', 'settings'],
-  'activity-logs': ['view_activity_logs', 'view_reports', 'reports'],
-};
+import { REQUIRED_PERMISSIONS } from '../config/permissions';
 
 const SIDEBAR_STATE_KEY = 'dashboard_sidebar_expanded';
 
@@ -482,13 +445,20 @@ export function DashboardLayout() {
                                 to={subItem.path}
                                 onClick={() => setSidebarOpen(false)}
                                 className={({ isActive }) =>
-                                  `flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${isActive
+                                  `flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition-all ${isActive
                                     ? 'bg-paymint-green text-black shadow-md shadow-paymint-green/20 active-menu-item'
                                     : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
                                   }`
                                 }
                               >
-                                <span>{subItem.label}</span>
+                                {({ isActive }) => (
+                                  <>
+                                    <span className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                                      isActive ? 'bg-black' : 'bg-gray-300 dark:bg-gray-600'
+                                    }`} />
+                                    <span>{subItem.label}</span>
+                                  </>
+                                )}
                               </NavLink>
                             ))}
                           </div>
@@ -514,13 +484,23 @@ export function DashboardLayout() {
                               to={subItem.path}
                               onClick={() => setSidebarOpen(false)}
                               className={({ isActive }) =>
-                                `flex items-center gap-3 p-3.5 rounded-xl text-sm font-bold transition-all ${isActive
-                                  ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20 active-menu-item'
-                                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
+                                `flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold transition-all ${isActive
+                                  ? 'bg-paymint-green text-black shadow-md shadow-paymint-green/20 active-menu-item'
+                                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'
                                 }`
                               }
                             >
-                              <span>{subItem.label}</span>
+                              {({ isActive }) => (
+                                <>
+                                  <span className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                                    isActive ? 'bg-black' : 'bg-gray-300 dark:bg-gray-600'
+                                  }`} />
+                                  <span>{subItem.label}</span>
+                                  {isActive && (
+                                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-black" />
+                                  )}
+                                </>
+                              )}
                             </NavLink>
                           ))}
                         </div>
@@ -916,14 +896,18 @@ export function DashboardLayout() {
                             to={subItem.path}
                             onClick={() => setMobileMenuOpen(false)}
                             className={({ isActive }) =>
-                              `flex items-center gap-3 p-3 rounded-xl text-sm font-medium transition-all ${isActive
-                                ? 'bg-paymint-green/10 text-paymint-green font-bold'
+                              `flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive
+                                ? 'bg-paymint-green text-black font-bold shadow-md shadow-paymint-green/20'
                                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'
                               }`
                             }
                           >
-                            <span className="w-1.5 h-1.5 rounded-full bg-current opacity-50" />
-                            <span>{subItem.label}</span>
+                            {({ isActive }) => (
+                              <>
+                                <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-black' : 'bg-current opacity-50'}`} />
+                                <span>{subItem.label}</span>
+                              </>
+                            )}
                           </NavLink>
                         ))}
                       </div>

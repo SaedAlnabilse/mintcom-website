@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useLayoutEffect } from 'react';
 
 interface OptimizedImageProps {
   /** Image source URL */
@@ -72,9 +72,9 @@ export function OptimizedImage({
   const imgRef = useRef<HTMLImageElement>(null);
 
   // Check if image is already cached/loaded
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (imgRef.current?.complete) {
-      setTimeout(() => setIsLoaded(true), 0);
+      setIsLoaded(true);
     }
   }, []);
 

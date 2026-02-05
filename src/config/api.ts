@@ -98,6 +98,17 @@ api.interceptors.response.use(
       sessionStorage.removeItem('currentEstablishment');
       window.location.href = '/login';
     }
+
+    // Handle 403 Forbidden - Permission denied
+    if (error.response?.status === 403) {
+      const errorMessage = error.response?.data?.message || 'You do not have permission to perform this action';
+      // Dispatch a custom event that components can listen to for showing toast
+      window.dispatchEvent(new CustomEvent('permission-denied', {
+        detail: { message: errorMessage }
+      }));
+      console.warn('[API] Permission denied:', errorMessage);
+    }
+
     activeRequests--;
     updateLoadingState();
     return Promise.reject(error);

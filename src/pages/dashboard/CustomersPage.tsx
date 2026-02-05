@@ -25,6 +25,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { exportToCSV } from '../../utils/export';
 import { SearchInput, Pagination } from '../../components/ui';
+import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { useCurrency } from '../../context/CurrencyContext';
 
 interface ApiError {
@@ -59,6 +60,9 @@ interface Customer {
 }
 
 export function CustomersPage() {
+  // Permission guard - redirects if user lacks permission
+  usePermissionGuard();
+
   const { formatAmount, currencySymbol } = useCurrency();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [isLoading, setIsLoading] = useState(true);

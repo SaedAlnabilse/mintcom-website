@@ -3,34 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import api from '../config/api';
 import { LogoutOverlay } from '../components/LogoutOverlay';
 import { LoginOverlay } from '../components/LoginOverlay';
-
-// Types for the new account-based authentication
-interface Account {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  phone?: string;
-  avatar?: string;
-  emailVerified: boolean;
-  trialUsed: boolean;
-  trialEndDate?: string;
-  establishmentLoginId?: string; // Account-level Owner Pos Id
-  defaultPaymentMethod?: string; // Last 4 digits of saved card (e.g., "4242")
-  defaultCardId?: string; // ID of the default saved card
-  deletionRequestedAt?: string; // ISO date string if deletion is pending
-  permissions?: string[]; // Admin permissions
-  isSecondaryAdmin?: boolean; // Flag for secondary admin users
-}
-
-interface Establishment {
-  id: string;
-  name: string;
-  type: string;
-  currency: string;
-  subscriptionStatus: string;
-  establishmentLoginId?: string;
-}
+import type { Account, Establishment } from '../types';
 
 interface AuthContextType {
   // Account (Main Account)

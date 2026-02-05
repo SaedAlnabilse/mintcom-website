@@ -218,15 +218,13 @@ export function EmployeeFormModal({
   // Refetch roles when selected establishments change
   useEffect(() => {
     if (isOpen && establishments && establishments.length > 0) {
-      setTimeout(() => fetchCustomRoles(), 0);
+      fetchCustomRoles();
       // Clear role selection when establishments change
       if (selectedCustomRoleId) {
         const stillValid = customRoles.some(r => r.id === selectedCustomRoleId);
         if (!stillValid) {
-          setTimeout(() => {
-            setSelectedCustomRoleId('');
-            setLastAppliedTemplate(null);
-          }, 0);
+          setSelectedCustomRoleId('');
+          setLastAppliedTemplate(null);
         }
       }
     }
@@ -246,70 +244,66 @@ export function EmployeeFormModal({
 
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => fetchCustomRoles(), 0);
+      fetchCustomRoles();
       if (initialData) {
-        setTimeout(() => {
-          setName(initialData.name || '');
-          setUsername(initialData.username || '');
-          setEmail(initialData.email || '');
-          setPhone(initialData.phone || '');
-          setRole(initialData.role.toUpperCase() === 'ADMIN' ? 'ADMIN' : 'USER');
-          setPassword('');
-          setConfirmPassword('');
-          setPermissions(initialData.permissions || ['accept_payments', 'apply_discounts', 'refunds']);
-          setBackofficePermissions(initialData.backofficePermissions || []);
-          setSelectedCustomRoleId(initialData.customRoleId || '');
-          // Platform access control
-          setPosAccess(initialData.posAccess !== false); // Default to true
-          setBackofficeAccess(initialData.backofficeAccess || false);
+        setName(initialData.name || '');
+        setUsername(initialData.username || '');
+        setEmail(initialData.email || '');
+        setPhone(initialData.phone || '');
+        setRole(initialData.role.toUpperCase() === 'ADMIN' ? 'ADMIN' : 'USER');
+        setPassword('');
+        setConfirmPassword('');
+        setPermissions(initialData.permissions || ['accept_payments', 'apply_discounts', 'refunds']);
+        setBackofficePermissions(initialData.backofficePermissions || []);
+        setSelectedCustomRoleId(initialData.customRoleId || '');
+        // Platform access control
+        setPosAccess(initialData.posAccess !== false); // Default to true
+        setBackofficeAccess(initialData.backofficeAccess || false);
 
-          if (initialData.allowedDiscounts && initialData.allowedDiscounts.length > 0) {
-            setAllDiscountsSelected(false);
-            setAllowedDiscounts(initialData.allowedDiscounts);
-          } else {
-            setAllDiscountsSelected(true);
-            setAllowedDiscounts([]);
-          }
-
-          // Populate establishments from initialData if available
-          if (initialData.establishmentIds && initialData.establishmentIds.length > 0) {
-            setSelectedEstablishmentIds(initialData.establishmentIds);
-          } else if (establishments && establishments.length === 1) {
-            // If there is only one establishment, pre-select it
-            setSelectedEstablishmentIds([establishments[0].id]);
-          } else {
-            setSelectedEstablishmentIds([]);
-          }
-        }, 0);
-
-      } else {
-        setTimeout(() => {
-          setName('');
-          setUsername('');
-          setEmail('');
-          setPhone('');
-          setRole('USER');
-          setPassword('');
-          setConfirmPassword('');
-          setPermissions(['accept_payments', 'apply_discounts', 'refunds']);
-          setBackofficePermissions([]);
+        if (initialData.allowedDiscounts && initialData.allowedDiscounts.length > 0) {
+          setAllDiscountsSelected(false);
+          setAllowedDiscounts(initialData.allowedDiscounts);
+        } else {
           setAllDiscountsSelected(true);
           setAllowedDiscounts([]);
-          setSelectedCustomRoleId('');
-          setLastAppliedTemplate(null);
-          // Platform access control - defaults for new employees
-          setPosAccess(true);
-          setBackofficeAccess(false);
+        }
 
-          // If creating new and there's only one establishment, select it by default
-          if (establishments && establishments.length === 1) {
-            setSelectedEstablishmentIds([establishments[0].id]);
-          } else {
-            setSelectedEstablishmentIds([]);
-          }
-        }, 0);
+        // Populate establishments from initialData if available
+        if (initialData.establishmentIds && initialData.establishmentIds.length > 0) {
+          setSelectedEstablishmentIds(initialData.establishmentIds);
+        } else if (establishments && establishments.length === 1) {
+          // If there is only one establishment, pre-select it
+          setSelectedEstablishmentIds([establishments[0].id]);
+        } else {
+          setSelectedEstablishmentIds([]);
+        }
+
+      } else {
+        setName('');
+        setUsername('');
+        setEmail('');
+        setPhone('');
+        setRole('USER');
+        setPassword('');
+        setConfirmPassword('');
+        setPermissions(['accept_payments', 'apply_discounts', 'refunds']);
+        setBackofficePermissions([]);
+        setAllDiscountsSelected(true);
+        setAllowedDiscounts([]);
+        setSelectedCustomRoleId('');
+        setLastAppliedTemplate(null);
+        // Platform access control - defaults for new employees
+        setPosAccess(true);
+        setBackofficeAccess(false);
+
+        // If creating new and there's only one establishment, select it by default
+        if (establishments && establishments.length === 1) {
+          setSelectedEstablishmentIds([establishments[0].id]);
+        } else {
+          setSelectedEstablishmentIds([]);
+        }
       }
-      setTimeout(() => setActiveDropdown(null), 0);
+      setActiveDropdown(null);
     }
   }, [isOpen, initialData]);
 

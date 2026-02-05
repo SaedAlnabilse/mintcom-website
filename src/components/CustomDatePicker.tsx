@@ -25,15 +25,12 @@ export function CustomDatePicker({
     align = 'left'
 }: CustomDatePickerProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const [currentMonth, setCurrentMonth] = useState(new Date());
+    const [currentMonth, setCurrentMonth] = useState(() => value ? parseISO(value) : new Date());
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (value) {
-            // Defer state update
-            setTimeout(() => {
-                setCurrentMonth(parseISO(value));
-            }, 0);
+            setCurrentMonth(parseISO(value));
         }
     }, [value]);
 

@@ -1,5 +1,5 @@
 import { AppStrings } from '../constants/AppStrings';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronDown, Check, X, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -55,6 +55,12 @@ export function MultiSelect({
         });
     };
 
+    useLayoutEffect(() => {
+        if (isOpen) {
+            updateDropdownPosition();
+        }
+    }, [isOpen]);
+
     // Close when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -69,10 +75,15 @@ export function MultiSelect({
         };
 
         if (isOpen) {
-            updateDropdownPosition();
             document.addEventListener('mousedown', handleClickOutside);
             window.addEventListener('scroll', updateDropdownPosition, true);
             window.addEventListener('resize', updateDropdownPosition);
+            
+            // Focus input when opening
+            const timer = setTimeout(() => {
+                searchInputRef.current?.focus();
+            }, 100);
+            return () => clearTimeout(timer);
         }
 
         return () => {
@@ -82,16 +93,12 @@ export function MultiSelect({
         };
     }, [isOpen]);
 
-    // Clear search and focus input when opening
-    useEffect(() => {
-        if (isOpen) {
-            setTimeout(() => setSearchQuery(''), 0);
-            const timer = setTimeout(() => {
-                searchInputRef.current?.focus();
-            }, 100);
-            return () => clearTimeout(timer);
+    const toggleOpen = () => {
+        if (!isOpen) {
+            setSearchQuery('');
         }
-    }, [isOpen]);
+        setIsOpen(!isOpen);
+    };
 
     const handleSelect = (optionValue: string) => {
         if (value.includes(optionValue)) {
@@ -187,7 +194,7 @@ export function MultiSelect({
             <button
                 ref={buttonRef}
                 type="button"
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={toggleOpen}
                 className={`w-full px-4 py-3 bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 rounded-xl text-left flex items-center justify-between transition-all outline-none ${isOpen ? 'ring-2 ring-paymint-green/20 border-paymint-green/50' : ''
                     }`}
             >

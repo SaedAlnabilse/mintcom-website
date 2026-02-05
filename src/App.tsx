@@ -1,13 +1,14 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { createBrowserRouter, RouterProvider, Outlet, Navigate } from 'react-router-dom';
 import { EstablishmentUrlResolver } from './components/EstablishmentUrlResolver';
-import { Toaster } from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { CurrencyProvider } from './context/CurrencyContext';
 import { LoadingFallback } from './components/LoadingFallback';
 import { CookieConsent } from './components/CookieConsent';
 import { FeedbackWidget } from './components/FeedbackWidget';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 // ============================================================================
 // Eager Imports (Critical path - always needed)
@@ -537,37 +538,54 @@ const router = createBrowserRouter([
 // App Component
 // ============================================================================
 function App() {
+  // Listen for permission-denied events from API interceptor
+  useEffect(() => {
+    const handlePermissionDenied = (event: CustomEvent<{ message: string }>) => {
+      toast.error(event.detail.message || 'You do not have permission to perform this action', {
+        duration: 5000,
+        id: 'permission-denied', // Prevent duplicate toasts
+      });
+    };
+
+    window.addEventListener('permission-denied', handlePermissionDenied as EventListener);
+    return () => {
+      window.removeEventListener('permission-denied', handlePermissionDenied as EventListener);
+    };
+  }, []);
+
   return (
-    <ThemeProvider defaultTheme="system" storageKey="paymint-ui-theme">
-      <AuthProvider>
-        <CurrencyProvider>
-          <div id="global-blocking-overlay" />
-          <RouterProvider router={router} />
-          <Toaster
-          position="top-right"
-          toastOptions={{
-            style: {
-              background: '#1f2937',
-              color: '#fff',
-              border: '1px solid #374151',
-            },
-            success: {
-              iconTheme: {
-                primary: '#7CC39F',
-                secondary: '#fff',
+    <ErrorBoundary>
+      <ThemeProvider defaultTheme="system" storageKey="paymint-ui-theme">
+        <AuthProvider>
+          <CurrencyProvider>
+            <div id="global-blocking-overlay" />
+            <RouterProvider router={router} />
+            <Toaster
+            position="top-right"
+            toastOptions={{
+              style: {
+                background: '#1f2937',
+                color: '#fff',
+                border: '1px solid #374151',
               },
-            },
-            error: {
-              iconTheme: {
-                primary: '#D55263',
-                secondary: '#fff',
+              success: {
+                iconTheme: {
+                  primary: '#7CC39F',
+                  secondary: '#fff',
+                },
               },
-            },
-          }}
-        />
-        </CurrencyProvider>
-      </AuthProvider>
-    </ThemeProvider>
+              error: {
+                iconTheme: {
+                  primary: '#D55263',
+                  secondary: '#fff',
+                },
+              },
+            }}
+          />
+          </CurrencyProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

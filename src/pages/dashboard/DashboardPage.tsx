@@ -1,122 +1,39 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  TrendingUp,
-  ShoppingBag,
-  Clock,
-  ArrowUpRight,
-  ArrowDownRight,
-  DollarSign,
-  Package,
-  Calendar,
   FileBarChart,
-  CreditCard,
-  Percent,
-  Receipt,
-  Wallet,
-  Activity,
-  Zap,
-  PieChart,
-  Timer,
-  History,
+  Calendar,
   PlayCircle,
-  ChevronDown,
-  Scale
+  History,
+  Timer,
+  ChevronDown
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, PieChart as RechartsPie, Pie, Cell, BarChart, Bar } from 'recharts';
 import { format, subHours } from 'date-fns';
 import api from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
-import { useCurrency } from '../../context/CurrencyContext';
 import { useRealtime } from '../../hooks/useRealtime';
 import { DataChangeEventTypes } from '../../services/realtimeService';
 
+import type { 
+  PeakHour, 
+  ShiftStatus,
+  DashboardStats,
+  TopProduct,
+  PreviousShiftSnapshot,
+  TopSellingItem
+} from '../../types';
+
+// Sub-components
+import { DashboardStatsCards } from '../../components/dashboard/overview/DashboardStatsCards';
+import { RevenueChart } from '../../components/dashboard/overview/RevenueChart';
+import { PaymentMethodsBreakdown } from '../../components/dashboard/overview/PaymentMethodsBreakdown';
+import { TopSellingProducts } from '../../components/dashboard/overview/TopSellingProducts';
+import { PeakHoursChart } from '../../components/dashboard/overview/PeakHoursChart';
+import { PayInPayOutLogModal } from '../../components/dashboard/reports/PayInPayOutLogModal';
+
 // View mode types
 type ViewMode = 'current_shift' | 'previous_shift' | 'last_24_hours';
-
-interface ShiftInfo {
-  id: string;
-  employee: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    username: string;
-  };
-  startTime: string;
-  endTime?: string;
-  autoClose?: boolean;
-}
-
-interface ShiftStatus {
-  shiftStatus: 'ACTIVE' | 'LAST_SHIFT' | 'NO_SHIFT';
-  activeShift: ShiftInfo | null;
-  netSales: number;
-  numberOfOrders: number;
-  cashSales: number;
-  cardSales: number;
-  otherPayments: number;
-  payIn: number;
-  payOut: number;
-  totalTimeWorked: string;
-}
-
-interface DashboardStats {
-  totalRevenue: number;
-  totalOrders: number;
-  averageOrderValue: number;
-  pendingOrders: number;
-  completedOrders: number;
-  activeEmployees: number;
-  taxCollected: number;
-  totalRefunds: number;
-  grossProfit: number;
-  totalPayIn: number;
-  totalPayOut: number;
-  paymentMethodBreakdown: { name: string; value: number }[];
-  categoryBreakdown: { name: string; value: number; count?: number }[];
-  dailyBreakdown: { date: string; revenue: number }[];
-}
-
-interface TopProduct {
-  name: string;
-  orders: number;
-  revenue: number;
-}
-
-interface PreviousShiftSnapshot {
-  user: string;
-  startTime: string;
-  timestamp: string;
-  netSales: number;
-  numberOfOrders: number;
-  cashSales: number;
-  cardSales: number;
-  otherPayments: number;
-  payIn: number;
-  payOut: number;
-  drawerAmount: number;
-  openingBalance: number;
-  closingBalance: number;
-  discrepancy: number;
-  totalTimeWorked: string;
-}
-
-interface TopSellingItem {
-  itemName?: string;
-  name?: string;
-  quantity: number;
-  revenue: number;
-}
-
-interface PeakHour {
-  hour: number | string;
-  total: number;
-  count: number;
-}
-
-const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899'];
 
 // Auto-refresh interval: 1 hour in milliseconds
 const AUTO_REFRESH_INTERVAL = 60 * 60 * 1000;
@@ -125,9 +42,6 @@ export const DashboardPage = () => {
   const { locationSlug } = useParams();
   const navigate = useNavigate();
   const { currentEstablishment } = useAuth();
-  const { resolvedTheme } = useTheme();
-  const { formatAmount } = useCurrency();
-  const isDark = resolvedTheme === 'dark';
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
@@ -139,8 +53,9 @@ export const DashboardPage = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('last_24_hours');
   const [isViewModeOpen, setIsViewModeOpen] = useState(false);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
-
-
+  
+  // Modals
+  const [showPayInOutModal, setShowPayInOutModal] = useState(false);
 
   // Ref for click outside handling
   const viewModeRef = useRef<HTMLDivElement>(null);
@@ -155,8 +70,6 @@ export const DashboardPage = () => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-
 
   // Fetch shift status from backend
   const fetchShiftStatus = useCallback(async () => {
@@ -341,7 +254,6 @@ export const DashboardPage = () => {
         console.log('[Dashboard] 🟢 Shift started - refreshing and switching to current shift view');
         refreshShiftStatus().then(() => {
           setViewMode('current_shift');
-          fetchDashboardData();
         });
       }
       if (eventType === DataChangeEventTypes.SHIFT_ENDED) {
@@ -384,10 +296,6 @@ export const DashboardPage = () => {
     });
 
     return modes;
-  };
-
-  const formatCurrency = (value: number) => {
-    return formatAmount(value);
   };
 
   const formatDate = () => {
@@ -555,493 +463,43 @@ export const DashboardPage = () => {
             </span>
           </div>
 
-          {/* Primary KPIs */}
-          <div id="tour-kpi-cards" className="space-y-3">
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-500 text-xs font-bold tracking-wide border border-blue-500/20">
-                Overview
-              </span>
-            </div>
-            {/* Mobile: horizontal scroll, Desktop: grid */}
-            <div className="flex overflow-x-auto scrollbar-none gap-3 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-4 sm:overflow-visible">
-              {[
-                {
-                  label: 'Total Sales',
-                  value: formatCurrency((stats?.totalRevenue || 0) + (stats?.taxCollected || 0)),
-                  sub: 'Including Tax',
-                  icon: Wallet,
-                  color: 'text-blue-500',
-                  bg: 'bg-blue-500/10'
-                },
-                {
-                  label: 'Net Sales',
-                  value: formatCurrency(stats?.totalRevenue || 0),
-                  sub: 'Excluding Tax',
-                  icon: DollarSign,
-                  color: 'text-paymint-green',
-                  bg: 'bg-paymint-green/10'
-                },
-                {
-                  label: 'Profit',
-                  value: formatCurrency(stats?.grossProfit || 0),
-                  sub: 'Net Sales - Costs',
-                  icon: TrendingUp,
-                  color: 'text-purple-500',
-                  bg: 'bg-purple-500/10'
-                },
-                {
-                  label: 'Tax',
-                  value: formatCurrency(stats?.taxCollected || 0),
-                  sub: 'Total Tax',
-                  icon: Percent,
-                  color: 'text-orange-500',
-                  bg: 'bg-orange-500/10'
-                },
-                {
-                  label: 'Orders',
-                  value: stats?.totalOrders?.toString() || '0',
-                  sub: viewMode === 'current_shift' ? 'This Shift' : viewMode === 'previous_shift' ? 'Previous Shift' : 'Last 24h',
-                  icon: Receipt,
-                  color: 'text-indigo-500',
-                  bg: 'bg-indigo-500/10'
-                },
-                {
-                  label: 'Avg Order',
-                  value: formatCurrency(stats?.averageOrderValue || 0),
-                  sub: 'Average Value',
-                  icon: ShoppingBag,
-                  color: 'text-pink-500',
-                  bg: 'bg-pink-500/10'
-                }
-              ].concat(([
-                {
-                  label: 'Refunds',
-                  value: formatCurrency(stats?.totalRefunds || 0),
-                  sub: viewMode === 'current_shift' ? 'This Shift' : viewMode === 'previous_shift' ? 'Previous Shift' : 'Last 24h',
-                  icon: ArrowDownRight,
-                  color: 'text-orange-500',
-                  bg: 'bg-orange-500/10'
-                },
-                {
-                  label: 'Non Sales',
-                  value: null, // Custom content
-                  sub: null,
-                  icon: ArrowUpRight,
-                  color: 'text-cyan-500',
-                  bg: 'bg-cyan-500/10',
-                  customContent: (
-                    <div className="space-y-3 mt-6">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Pay In</span>
-                        <span className="text-sm font-bold text-paymint-green tracking-tight">+{formatCurrency(stats?.totalPayIn || 0)}</span>
-                      </div>
-                      <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Pay Out</span>
-                        <span className="text-sm font-bold text-red-500 tracking-tight">-{formatCurrency(stats?.totalPayOut || 0)}</span>
-                      </div>
-                    </div>
-                  ),
-                  onClick: () => navigate(`/dashboard/${locationSlug}/reports`, { state: { showPayInOut: true, dateRange: 'today' } })
-                },
-                // Cash Discrepancy card - only shown when viewing previous shift
-                ...(viewMode === 'previous_shift' && previousShiftSnapshot ? [{
-                  label: 'Cash Variance',
-                  value: null,
-                  sub: null,
-                  icon: Scale,
-                  color: previousShiftSnapshot.discrepancy >= 0 ? 'text-paymint-green' : 'text-red-500',
-                  bg: previousShiftSnapshot.discrepancy >= 0 ? 'bg-paymint-green/10' : 'bg-red-500/10',
-                  customContent: (
-                    <div className="space-y-3 mt-6">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Expected</span>
-                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300 tracking-tight">{formatCurrency(previousShiftSnapshot.drawerAmount || 0)}</span>
-                      </div>
-                      <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Actual</span>
-                        <span className="text-sm font-bold text-blue-500 tracking-tight">{formatCurrency(previousShiftSnapshot.closingBalance || 0)}</span>
-                      </div>
-                      <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Variance</span>
-                        <span className={`text-sm font-bold tracking-tight ${previousShiftSnapshot.discrepancy > 0.01 ? 'text-paymint-green' : previousShiftSnapshot.discrepancy < -0.01 ? 'text-red-500' : 'text-gray-500'}`}>
-                          {previousShiftSnapshot.discrepancy > 0.01
-                            ? `+${formatCurrency(previousShiftSnapshot.discrepancy)} Over`
-                            : previousShiftSnapshot.discrepancy < -0.01
-                              ? `${formatCurrency(previousShiftSnapshot.discrepancy)} Short`
-                              : 'Perfect $0.00'}
-                        </span>
-                      </div>
-                    </div>
-                  ),
-                  onClick: () => navigate(`/dashboard/${locationSlug}/reports/cash-discrepancy`)
-                }] : [])
-              ] as any[])).map((stat: any, index) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  onClick={stat.onClick}
-                  className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden min-w-[160px] sm:min-w-0 flex-shrink-0 sm:flex-shrink ${stat.onClick ? 'cursor-pointer' : ''}`}
-                >
-                  <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
-                  <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300 group-hover:scale-110`}>
-                        <stat.icon size={20} />
-                      </div>
-                      {stat.customContent && stat.onClick && (
-                        <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green transition-colors">
-                          <ArrowUpRight size={14} />
-                        </div>
-                      )}
-                    </div>
+          {/* Components Grid */}
+          <DashboardStatsCards 
+            stats={stats} 
+            viewMode={viewMode} 
+            previousShiftSnapshot={previousShiftSnapshot}
+            setShowPayInOutModal={setShowPayInOutModal}
+          />
 
-                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide mb-1 flex items-center gap-1">
-                      {stat.label}
-                    </p>
-
-                    {stat.customContent ? (
-                      stat.customContent
-                    ) : (
-                      <>
-                        <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{stat.value}</p>
-                        <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
-                          {stat.sub}
-                        </p>
-                      </>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          {/* Revenue Chart & Payment Breakdown */}
           <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 sm:gap-6">
-            {/* Revenue Momentum Chart */}
-            <div id="tour-revenue-chart" className="lg:col-span-2 p-4 sm:p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm transition-all duration-300 group relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-              <div className="relative z-10">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                      <TrendingUp className="text-paymint-green" size={20} />
-                      {viewMode === 'current_shift' ? 'Current Shift Sales' : viewMode === 'previous_shift' ? 'Previous Shift Sales' : 'Sales (Last 24h)'}
-                    </h3>
-                    <p className="text-xs text-gray-500 mt-1">Hourly sales breakdown</p>
-                  </div>
-                  <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-                    <Activity size={12} className="text-paymint-green" />
-                    <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">Real-time</span>
-                  </div>
-                </div>
-
-                <div className="h-[200px] sm:h-[300px]">
-                  {stats?.dailyBreakdown && stats.dailyBreakdown.length > 0 ? (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart
-                        data={stats.dailyBreakdown.map((d) => ({ ...d, revenue: Number(d.revenue) || 0 }))}
-                        margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-                      >
-                        <defs>
-                          <linearGradient id="colorRevenueDash" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#7CC39F" stopOpacity={0.2} />
-                            <stop offset="95%" stopColor="#7CC39F" stopOpacity={0} />
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#ffffff10" : "#00000005"} vertical={false} />
-                        <XAxis
-                          dataKey="date"
-                          stroke={isDark ? "#525252" : "#e5e5e5"}
-                          fontSize={10}
-                          tickLine={false}
-                          axisLine={false}
-                          tick={{ fill: "#9ca3af" }}
-                          tickFormatter={(val) => {
-                            const date = new Date(val);
-                            return val.includes(':') ? format(date, 'HH:00') : format(date, 'MMM d');
-                          }}
-                          dy={10}
-                        />
-                        <YAxis
-                          stroke={isDark ? "#525252" : "#e5e5e5"}
-                          fontSize={10}
-                          tickLine={false}
-                          axisLine={false}
-                          tick={{ fill: "#9ca3af" }}
-                          tickFormatter={(val) => `${val}`}
-                          width={40}
-                        />
-                        <Tooltip
-                          cursor={{ stroke: '#7CC39F', strokeWidth: 1, strokeDasharray: '4 4' }}
-                          contentStyle={{
-                            backgroundColor: isDark ? '#0B1120' : '#fff',
-                            borderRadius: '12px',
-                            border: '1px solid rgba(124, 195, 159, 0.2)',
-                            boxShadow: '0 10px 30px -10px rgba(0,0,0,0.3)',
-                            padding: '12px'
-                          }}
-                          itemStyle={{ color: '#7CC39F', fontWeight: 'bold', fontSize: '12px' }}
-                          labelStyle={{ color: isDark ? '#fff' : '#000', marginBottom: '4px', fontSize: '10px', fontWeight: 'bold' }}
-                          formatter={(val) => [formatCurrency(val as number), 'Revenue']}
-                          labelFormatter={(val) => {
-                            const date = new Date(val);
-                            return val.includes(':') ? format(date, 'MMM d, HH:00') : format(date, 'MMM d, yyyy');
-                          }}
-                        />
-                        <Area
-                          type="monotone"
-                          dataKey="revenue"
-                          stroke="#7CC39F"
-                          strokeWidth={2}
-                          fillOpacity={1}
-                          fill="url(#colorRevenueDash)"
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                      <Zap size={32} className="mb-3 opacity-20" />
-                      <p className="text-xs font-bold tracking-wide">No revenue data</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Payment Methods Breakdown */}
-            <div id="tour-capital-sources" className="group relative p-4 sm:p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col transition-all duration-300 overflow-hidden">
-              <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-              <div className="relative z-10">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform duration-300">
-                      <Wallet size={20} />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">Payment Methods</h3>
-                      <p className="text-xs font-bold text-gray-500 tracking-wide">
-                        {viewMode === 'current_shift' ? 'This Shift' : viewMode === 'previous_shift' ? 'Previous Shift' : 'Last 24h'} Distribution
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => navigate(`/dashboard/${locationSlug}/reports/payments`)}
-                    className="text-xs font-bold text-blue-500 hover:underline tracking-wide"
-                  >
-                    View All
-                  </button>
-                </div>
-
-                <div className="flex-1 flex flex-col justify-center">
-                  {stats?.paymentMethodBreakdown && stats.paymentMethodBreakdown.length > 0 ? (
-                    <>
-                      <div className="h-[160px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <RechartsPie>
-                            <Pie
-                              data={stats.paymentMethodBreakdown}
-                              innerRadius={45}
-                              outerRadius={70}
-                              paddingAngle={4}
-                              dataKey="value"
-                              stroke="none"
-                            >
-                              {stats.paymentMethodBreakdown.map((_, index) => (
-                                <Cell key={index} fill={COLORS[index % COLORS.length]} />
-                              ))}
-                            </Pie>
-                            <Tooltip
-                              contentStyle={{
-                                backgroundColor: isDark ? '#0B1120' : '#fff',
-                                borderRadius: '12px',
-                                border: 'none',
-                                boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
-                                fontSize: '12px'
-                              }}
-                              itemStyle={{ color: isDark ? '#fff' : '#111', fontWeight: 'bold' }}
-                            />
-                          </RechartsPie>
-                        </ResponsiveContainer>
-                      </div>
-                      <div className="space-y-2 mt-4">
-                        {stats.paymentMethodBreakdown.slice(0, 3).map((item, i) => (
-                          <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-                            <div className="flex items-center gap-2">
-                              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
-                              <span className="text-xs font-bold text-gray-700 dark:text-gray-300">{item.name}</span>
-                            </div>
-                            <span className="text-xs font-bold text-gray-900 dark:text-white">{formatCurrency(item.value)}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                      <CreditCard size={32} className="mb-3 opacity-20" />
-                      <p className="text-xs font-bold tracking-wide">No payment data</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
+            <RevenueChart 
+              dailyBreakdown={stats?.dailyBreakdown || []}
+              viewMode={viewMode}
+              selectedDateRange={viewMode === 'last_24_hours' ? 'today' : 'custom'} 
+            />
+            <PaymentMethodsBreakdown 
+              paymentMethodBreakdown={stats?.paymentMethodBreakdown || []}
+              viewMode={viewMode}
+            />
           </div>
 
-
-
-          {/* Top Products & Peak Hours */}
           <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 sm:gap-6">
-            {/* Top Products */}
-            <div id="tour-top-products" className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm transition-all duration-300">
-              <div className="absolute top-0 right-0 w-40 h-40 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-              <div className="relative z-10">
-                <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green group-hover:scale-110 transition-transform duration-300">
-                      <Package size={20} />
-                    </div>
-                    <div>
-                      <h3 className="text-base font-bold text-gray-900 dark:text-white">Your Best Sellers</h3>
-                      <p className="text-xs font-bold text-gray-500 tracking-wide">
-                        {viewMode === 'current_shift' ? 'This Shift' : viewMode === 'previous_shift' ? 'Previous Shift' : 'Last 24h'}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => navigate(`/dashboard/${locationSlug}/reports`)}
-                    className="text-xs font-bold text-paymint-green hover:underline tracking-wide"
-                  >
-                    View All
-                  </button>
-                </div>
-                <div className="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                  {/* Top Items Column */}
-                  <div className="space-y-3">
-                    <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 text-center">Top 3 Items</h4>
-                    {topProducts.length > 0 ? topProducts.slice(0, 3).map((item, index) => (
-                      <motion.div
-                        key={item.name}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                        className="p-3 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex items-center justify-between group/item hover:bg-white dark:hover:bg-white/5 hover:border-paymint-green/30 transition-all"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-6 h-6 rounded-lg bg-white dark:bg-white/10 flex items-center justify-center text-xs font-black text-gray-500 group-hover/item:text-paymint-green transition-colors border border-gray-100 dark:border-white/5">
-                            {index + 1}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="font-bold text-xs text-gray-900 dark:text-white group-hover/item:text-paymint-green transition-colors truncate max-w-[120px]">{item.name}</p>
-                            <p className="text-xs text-gray-500 font-medium">{item.orders} sold</p>
-                          </div>
-                        </div>
-                        <p className="text-xs font-bold text-gray-900 dark:text-white">
-                          {formatCurrency(item.revenue)}
-                        </p>
-                      </motion.div>
-                    )) : (
-                      <div className="flex flex-col items-center justify-center py-8 text-center">
-                        <Package className="w-8 h-8 text-gray-200 dark:text-gray-700 mb-2" />
-                        <p className="text-xs text-gray-400">No products data</p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Top Categories Column */}
-                  <div className="space-y-3">
-                    <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 text-center">Top 3 Categories</h4>
-                    {stats?.categoryBreakdown && stats.categoryBreakdown.length > 0 ? stats.categoryBreakdown.slice(0, 3).map((cat, index) => (
-                      <motion.div
-                        key={cat.name}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                        className="p-3 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex items-center justify-between group/cat hover:bg-white dark:hover:bg-white/5 hover:border-purple-500/30 transition-all"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-6 h-6 rounded-lg bg-white dark:bg-white/10 flex items-center justify-center text-xs font-black text-gray-500 group-hover/cat:text-purple-500 transition-colors border border-gray-100 dark:border-white/5">
-                            {index + 1}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="font-bold text-xs text-gray-900 dark:text-white group-hover/cat:text-purple-500 transition-colors truncate max-w-[120px]">{cat.name}</p>
-                            <p className="text-xs text-gray-500 font-medium">{cat.count || 0} orders</p>
-                          </div>
-                        </div>
-                        <p className="text-xs font-bold text-gray-900 dark:text-white">
-                          {formatCurrency(cat.value)}
-                        </p>
-                      </motion.div>
-                    )) : (
-                      <div className="flex flex-col items-center justify-center py-8 text-center">
-                        <PieChart className="w-8 h-8 text-gray-200 dark:text-gray-700 mb-2" />
-                        <p className="text-xs text-gray-400">No category data</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Peak Hours */}
-            <div className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm transition-all duration-300">
-              <div className="absolute top-0 right-0 w-40 h-40 bg-orange-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-              <div className="relative z-10">
-                <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 group-hover:scale-110 transition-transform duration-300">
-                      <Clock size={20} />
-                    </div>
-                    <div>
-                      <h3 className="text-base font-bold text-gray-900 dark:text-white">Rush Hours</h3>
-                      <p className="text-xs font-bold text-gray-500 tracking-wide">Hourly traffic</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-6">
-                  {peakHours.length > 0 && peakHours.some((h: any) => Number(h.total) > 0) ? (
-                    <div className="h-[250px]">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={peakHours.map(h => ({ ...h, hour: `${h.hour}:00` }))}>
-                          <defs>
-                            <linearGradient id="barGradientDash" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="#7CC39F" stopOpacity={1} />
-                              <stop offset="100%" stopColor="#10b981" stopOpacity={0.8} />
-                            </linearGradient>
-                          </defs>
-                          <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#ffffff05" : "#00000005"} vertical={false} />
-                          <XAxis dataKey="hour" stroke="#94a3b8" fontSize={10} tickLine={false} axisLine={false} dy={10} />
-                          <Tooltip
-                            cursor={{ fill: 'transparent' }}
-                            contentStyle={{ backgroundColor: isDark ? '#111' : '#fff', borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}
-                            itemStyle={{ fontWeight: 'bold', fontSize: '10px' }}
-                            labelStyle={{ color: '#7CC39F', fontWeight: 'bold', marginBottom: '4px', fontSize: '10px' }}
-                          />
-                          <Bar dataKey="total" name="Revenue" fill="url(#barGradientDash)" radius={[4, 4, 0, 0]} barSize={20} animationDuration={1500} />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  ) : (
-                    <div className="h-[250px] flex flex-col items-center justify-center space-y-3 bg-gray-50/50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-200 dark:border-white/5">
-                      <div className="p-4 rounded-full bg-gray-100 dark:bg-black/20">
-                        <Clock size={28} className="text-gray-400 dark:text-gray-600" />
-                      </div>
-                      <div className="text-center">
-                        <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">No traffic data</p>
-                        <p className="text-xs text-gray-500 mt-1">There is no transaction activity recorded.</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
+            <TopSellingProducts 
+              topProducts={topProducts}
+              categoryBreakdown={stats?.categoryBreakdown || []}
+              viewMode={viewMode}
+            />
+            <PeakHoursChart 
+              peakHours={peakHours} 
+            />
           </div>
 
-
-
+          <PayInPayOutLogModal
+            isOpen={showPayInOutModal}
+            onClose={() => setShowPayInOutModal(false)}
+            startDate={new Date().toISOString()} // Not used strictly for adding, but required props
+            endDate={new Date().toISOString()}
+          />
 
         </motion.div>
       )}

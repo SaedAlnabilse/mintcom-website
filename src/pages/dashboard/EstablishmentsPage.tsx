@@ -97,7 +97,7 @@ export function EstablishmentsPage() {
   }, [filteredEstablishments, currentPage]);
 
   useEffect(() => {
-    setTimeout(() => setCurrentPage(1), 0);
+    setCurrentPage(1);
   }, [searchQuery]);
 
   return (

@@ -1,5 +1,5 @@
 import { AppStrings } from '../constants/AppStrings';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -56,8 +56,8 @@ export function OwnerLayout() {
     }, [location.pathname]);
 
     // Close mobile menu on route change
-    useEffect(() => {
-        setTimeout(() => setMobileMenuOpen(false), 0);
+    useLayoutEffect(() => {
+        setMobileMenuOpen(false);
     }, [location.pathname]);
 
     const handleLogout = () => {

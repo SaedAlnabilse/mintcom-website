@@ -38,19 +38,15 @@ export function AttributeFormModal({
 
     useEffect(() => {
         if (isOpen) {
-            setTimeout(() => setErrors({}), 0);
+            setErrors({});
             if (initialData) {
-                setTimeout(() => {
-                    setName(initialData.name);
-                    setInputType(initialData.inputType);
-                    setIsRequired(false); // Assuming initialData doesn't have it yet based on interface, but defaulting to false
-                }, 0);
+                setName(initialData.name);
+                setInputType(initialData.inputType);
+                setIsRequired(false); // Assuming initialData doesn't have it yet based on interface, but defaulting to false
             } else {
-                setTimeout(() => {
-                    setName('');
-                    setInputType('SINGLE_SELECT');
-                    setIsRequired(false);
-                }, 0);
+                setName('');
+                setInputType('SINGLE_SELECT');
+                setIsRequired(false);
             }
         }
     }, [isOpen, initialData]);

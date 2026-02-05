@@ -24,6 +24,7 @@ import { SecurityVerificationModal } from '../../components/SecurityVerification
 import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { exportToCSV } from '../../utils/export';
 import { SearchInput, SelectInput, Pagination } from '../../components/ui';
+import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 
 interface Staff {
   id: string;
@@ -48,6 +49,9 @@ interface Discount {
 }
 
 export function StaffPage() {
+  // Permission guard - redirects if user lacks permission
+  usePermissionGuard();
+
   const [staff, setStaff] = useState<Staff[]>([]);
   const [discounts, setDiscounts] = useState<Discount[]>([]);
   const [isLoading, setIsLoading] = useState(true);

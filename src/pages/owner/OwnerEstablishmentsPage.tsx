@@ -80,7 +80,7 @@ export function OwnerEstablishmentsPage() {
 
     // Reset to first page when filtering
     useEffect(() => {
-        setTimeout(() => setCurrentPage(1), 0);
+        setCurrentPage(1);
     }, [searchQuery, statusFilter, typeFilter]);
 
     const paginatedEstablishments = useMemo(() => {

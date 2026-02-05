@@ -15,6 +15,7 @@ import { useCurrency } from '../../context/CurrencyContext';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
+import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 
 interface Invoice {
   id: string;
@@ -32,6 +33,9 @@ interface EstablishmentBilling {
 }
 
 export function BillingPage() {
+  // Permission guard - redirects if user lacks permission
+  usePermissionGuard();
+
   const { currentEstablishment, refreshEstablishments } = useAuth();
   const { currencySymbol } = useCurrency();
   const [billingInfo, setBillingInfo] = useState<EstablishmentBilling | null>(null);

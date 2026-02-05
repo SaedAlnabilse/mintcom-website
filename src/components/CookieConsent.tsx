@@ -21,8 +21,23 @@ const defaultPreferences: CookiePreferences = {
 export function CookieConsent() {
   const [showBanner, setShowBanner] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
-  const [preferences, setPreferences] = useState<CookiePreferences>(defaultPreferences);
   const [expandedSection, setExpandedSection] = useState<keyof CookiePreferences | null>(null);
+
+  // Lazy initialization of preferences from localStorage
+  const [preferences, setPreferences] = useState<CookiePreferences>(() => {
+    const savedConsent = localStorage.getItem('paymint-cookie-consent');
+    if (savedConsent) {
+      try {
+        const parsed = JSON.parse(savedConsent);
+        // Apply side effect (analytics update) immediately during init is risky, 
+        // but since it's just a function call, we'll do it in a useEffect to be safe/pure
+        return parsed;
+      } catch {
+        return defaultPreferences;
+      }
+    }
+    return defaultPreferences;
+  });
 
   useEffect(() => {
     // Check if user has already consented
@@ -32,16 +47,12 @@ export function CookieConsent() {
       const timer = setTimeout(() => setShowBanner(true), 1000);
       return () => clearTimeout(timer);
     } else {
-      // Load saved preferences just in case we need them later (e.g. for a footer link)
+      // Ensure analytics are updated on mount if consent exists
       try {
         const parsed = JSON.parse(savedConsent);
-        // Defer state update to avoid sync render warnings
-        setTimeout(() => {
-          setPreferences(parsed);
-          updateConsentState(parsed);
-        }, 0);
+        updateConsentState(parsed);
       } catch {
-        // Ignore parse error
+        // Ignore
       }
     }
   }, []);
