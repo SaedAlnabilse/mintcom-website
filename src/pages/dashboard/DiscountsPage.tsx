@@ -273,24 +273,24 @@ export function DiscountsPage() {
       {/* Summary Stats */}
       {!isLoading && filteredDiscounts.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex items-center justify-between transition-all hover:shadow-lg overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          <div className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex items-center justify-between transition-all overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
             <div className="relative z-10">
               <p className="text-xs font-black text-gray-400 tracking-widest">Total</p>
               <p className="text-3xl font-black text-gray-900 dark:text-white mt-1">{stats.total}</p>
             </div>
-            <div className="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center relative z-10 group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center relative z-10 transition-transform">
               <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" />
             </div>
           </div>
 
-          <div className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex items-center justify-between transition-all hover:shadow-lg overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          <div className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex items-center justify-between transition-all overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
             <div className="relative z-10">
               <p className="text-xs font-black text-gray-400 tracking-widest">Manager Only</p>
               <p className="text-3xl font-black text-amber-600 dark:text-yellow-400 mt-1">{stats.adminOnly}</p>
             </div>
-            <div className="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center relative z-10 group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center relative z-10 transition-transform">
               <ShieldAlert className="w-6 h-6 text-amber-600 dark:text-yellow-400" />
             </div>
           </div>

@@ -90,13 +90,33 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
       sub: viewMode === 'current_shift' ? 'This Shift' : viewMode === 'previous_shift' ? 'Previous Shift' : 'Last 24h',
       icon: Receipt,
       color: 'text-indigo-500',
-      bg: 'bg-indigo-500/10'
+      bg: 'bg-indigo-500/10',
+      onClick: () => {
+        const state: any = { statusFilter: 'all' };
+        if (viewMode === 'current_shift') state.selectedDateRange = 'current_shift';
+        if (viewMode === 'previous_shift') state.selectedDateRange = 'previous_shift';
+        navigate(`/dashboard/${locationSlug}/orders`, { state });
+      }
+    },
+    {
+      label: 'On Hold',
+      value: stats?.pendingOrders?.toString() || '0',
+      sub: 'Pending Orders',
+      icon: ShoppingBag,
+      color: 'text-orange-500',
+      bg: 'bg-orange-500/10',
+      onClick: () => {
+        const state: any = { statusFilter: 'HELD' };
+        if (viewMode === 'current_shift') state.selectedDateRange = 'current_shift';
+        if (viewMode === 'previous_shift') state.selectedDateRange = 'previous_shift';
+        navigate(`/dashboard/${locationSlug}/orders`, { state });
+      }
     },
     {
       label: 'Avg Order',
       value: formatCurrency(stats?.averageOrderValue || 0),
       sub: 'Average Value',
-      icon: ShoppingBag,
+      icon: Scale,
       color: 'text-pink-500',
       bg: 'bg-pink-500/10'
     },
@@ -184,12 +204,12 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
             onClick={stat.onClick}
-            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden min-w-[160px] sm:min-w-0 flex-shrink-0 sm:flex-shrink ${stat.onClick ? 'cursor-pointer' : ''}`}
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] transition-all duration-300 overflow-hidden min-w-[160px] sm:min-w-0 flex-shrink-0 sm:flex-shrink ${stat.onClick ? 'cursor-pointer' : ''}`}
           >
-            <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
+            <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-2">
-                <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300 group-hover:scale-110`}>
+                <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300`}>
                   <stat.icon size={20} />
                 </div>
                 {stat.customContent && stat.onClick && (

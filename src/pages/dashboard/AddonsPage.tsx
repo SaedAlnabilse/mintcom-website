@@ -326,7 +326,7 @@ export function AddonsPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-10">
+    <div className="max-w-7xl mx-auto space-y-8 pb-10 font-sans">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
@@ -356,7 +356,7 @@ export function AddonsPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
           {
-            label: 'Attributes/Groups',
+            label: 'Attributes / groups',
             value: stats.totalGroups,
             icon: Layers,
             color: 'text-blue-500',
@@ -364,7 +364,7 @@ export function AddonsPage() {
             action: () => handleQuickFilter('ALL')
           },
           {
-            label: 'Add-ons Options',
+            label: 'Add-on options',
             value: stats.totalOptions,
             icon: Package,
             color: 'text-paymint-green',
@@ -372,7 +372,7 @@ export function AddonsPage() {
             action: () => handleQuickFilter('ALL', true)
           },
           {
-            label: 'Sales from Paid Add-ons',
+            label: 'Sales from paid add-ons',
             value: stats.paidOptions,
             sub: 'With price',
             icon: DollarSign,
@@ -383,11 +383,11 @@ export function AddonsPage() {
         ].map((stat, i) => (
           <div
             key={i}
-            className="group relative p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
+            className="group relative p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm transition-all duration-300 overflow-hidden"
           >
-            <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
+            <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
             <div className="relative z-10 flex items-center gap-4">
-              <div className={`p-3 rounded-xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform duration-300`}>
+              <div className={`p-3 rounded-xl ${stat.bg} ${stat.color} transition-transform duration-300`}>
                 <stat.icon size={20} />
               </div>
               <div>
@@ -428,7 +428,7 @@ export function AddonsPage() {
                     : 'text-gray-400 hover:text-gray-600'
                     }`}
                 >
-                  {f.replace('_SELECT', '').replace('ALL', 'All')}
+                  {f === 'SINGLE_SELECT' ? 'Single' : f === 'MULTI_SELECT' ? 'Multi' : 'All'}
                 </button>
               ))}
             </div>
@@ -447,7 +447,7 @@ export function AddonsPage() {
                     : 'text-gray-400 hover:text-gray-600'
                     }`}
                 >
-                  {f.replace('ALL', 'All')}
+                  {f === 'MANDATORY' ? 'Mandatory' : f === 'OPTIONAL' ? 'Optional' : 'All'}
                 </button>
               ))}
             </div>
@@ -466,7 +466,7 @@ export function AddonsPage() {
                     : 'text-gray-400 hover:text-gray-600'
                     }`}
                 >
-                  {f.replace('ALL', 'All')}
+                  {f === 'FREE' ? 'Free' : f === 'PAID' ? 'Paid' : 'All'}
                 </button>
               ))}
             </div>
@@ -529,7 +529,7 @@ export function AddonsPage() {
                       )}
                     </div>
                     <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">
-                      {attr.inputType === 'SINGLE_SELECT' ? 'Single Choice' : 'Multiple Choice'} • {attr.subAttributes?.length || 0} Options
+                      {attr.inputType === 'SINGLE_SELECT' ? 'Single choice' : 'Multiple choice'} • {attr.subAttributes?.length || 0} options
                     </p>
                   </div>
                 </div>
@@ -597,15 +597,19 @@ export function AddonsPage() {
 
       {/* Add-on Group Modal */}
         {showAttributeModal && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md overflow-hidden shadow-2xl">
+          <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm font-sans">
+            <div className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md overflow-hidden shadow-2xl h-[92vh] sm:h-auto flex flex-col">
+              {/* Mobile drag handle */}
+              <div className="sm:hidden flex justify-center pt-3 pb-1">
+                <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+              </div>
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Add-on Group</h2>
+                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Add-on Group</h2>
                 <button onClick={() => setShowAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
                   <X size={24} />
                 </button>
               </div>
-              <div className="p-8 space-y-8">
+              <div className="p-8 space-y-8 overflow-y-auto flex-1 custom-scrollbar">
                 <div>
                   <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1">
                     Group Name <span className="text-paymint-red">*</span>
@@ -690,15 +694,19 @@ export function AddonsPage() {
 
       {/* Add-on Option Modal */}
         {showSubAttributeModal && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl">
+          <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm font-sans">
+            <div className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl h-[92vh] sm:h-auto flex flex-col">
+              {/* Mobile drag handle */}
+              <div className="sm:hidden flex justify-center pt-3 pb-1">
+                <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+              </div>
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Add-on Option</h2>
+                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Add-on Option</h2>
                 <button onClick={() => setShowSubAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
                   <X size={24} />
                 </button>
               </div>
-              <div className="p-8 space-y-8">
+              <div className="p-8 space-y-8 overflow-y-auto flex-1 custom-scrollbar">
                 <div>
                   <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1">
                     Option Name <span className="text-paymint-red">*</span>
@@ -735,11 +743,11 @@ export function AddonsPage() {
                       className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-4 py-3 text-gray-900 dark:text-white font-bold text-lg focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
                     />
                   </div>
-                  <p className="mt-2 text-xs font-black text-paymint-green tracking-widest px-1">Digits shift right to left (Atm Style)</p>
+                  <p className="mt-2 text-xs font-black text-paymint-green tracking-widest px-1">Digits shift right to left (Atm style)</p>
                 </div>
 
                 <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
-                  <p className="text-sm font-black text-gray-900 dark:text-white tracking-tighter">Available</p>
+                  <p className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">Available</p>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" checked={subAttributeForm.isAvailable} onChange={() => setSubAttributeForm({ ...subAttributeForm, isAvailable: !subAttributeForm.isAvailable })} className="sr-only peer" />
                     <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-paymint-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>

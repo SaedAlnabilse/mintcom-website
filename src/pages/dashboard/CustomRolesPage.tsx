@@ -71,7 +71,8 @@ export function CustomRolesPage() {
 
       const { id: establishmentId } = JSON.parse(currentEstablishment);
       const response = await api.get(`/api/custom-roles/${establishmentId}`);
-      setRoles(response.data || []);
+      // Backend returns { items, total, limit, offset }
+      setRoles(response.data?.items || []);
     } catch {
       toast.error('Failed to load roles');
     } finally {
@@ -283,14 +284,14 @@ export function CustomRolesPage() {
             {currentItems.map((role) => (
               <div
                 key={role.id}
-                className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 p-6 transition-all shadow-sm hover:shadow-lg overflow-hidden"
+                className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-6 transition-all shadow-sm overflow-hidden"
               >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
                   
                   {/* Header */}
                   <div className="flex items-start justify-between mb-6 relative z-10">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center transition-transform duration-300">
                         <Shield size={24} />
                       </div>
                       <div>

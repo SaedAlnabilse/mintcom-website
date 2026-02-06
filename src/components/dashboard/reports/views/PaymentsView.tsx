@@ -123,14 +123,14 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
         </div>
 
         {/* Breakdown Table */}
-        <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden flex flex-col">
-          <div className="p-6 border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden flex flex-col h-[400px]">
+          <div className="p-6 border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 flex-shrink-0">
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                 <Activity size={20} className="text-blue-500" />
                 Details
               </h3>
-              <p className="text-xs text-gray-500 mt-1">Click on CARD or other methods to see breakdown</p>
+              <p className="text-xs text-gray-500 mt-1">Click on CARD or OTHER to see breakdown</p>
             </div>
             <button
               onClick={() => navigate(`/dashboard/${locationSlug}/orders`, {
@@ -146,21 +146,27 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
               <ChevronRight size={14} className="text-paymint-green" />
             </button>
           </div>
-          <div className="flex-1 overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-white/[0.02]">
+          <div className="flex-1 overflow-auto custom-scrollbar">
+            <table className="w-full relative">
+              <thead className="bg-gray-50 dark:bg-white/[0.02] sticky top-0 z-10">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Method</th>
-                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Revenue</th>
-                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Share</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-[#0B1120] border-b border-gray-100 dark:border-white/5">Method</th>
+                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-[#0B1120] border-b border-gray-100 dark:border-white/5">Revenue</th>
+                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-[#0B1120] border-b border-gray-100 dark:border-white/5">Share</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                 {salesData.paymentMethodBreakdown?.map((item: any, i: number) => {
                   const total = salesData.totalRevenue || 1;
                   const percentage = ((item.value / total) * 100).toFixed(1);
-                  const hasDetails = (item.name === 'CARD' && (salesData.cardTypeBreakdown?.length || 0) > 0) ||
-                    (item.name !== 'CARD' && item.name !== 'CASH' && (salesData.otherPaymentBreakdown?.length || 0) > 0);
+                  
+                  // Check if this method has breakdown details
+                  const isCard = item.name === 'CARD';
+                  const isOther = item.name === 'OTHER';
+                  
+                  const hasDetails = (isCard && (salesData.cardTypeBreakdown?.length || 0) > 0) ||
+                                   (isOther && (salesData.otherPaymentBreakdown?.length || 0) > 0);
+                                   
                   const isExpanded = expandedPaymentMethod === item.name;
 
                   return (
@@ -176,7 +182,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-white/5 text-gray-500" style={{ color: COLORS[i % COLORS.length], backgroundColor: `${COLORS[i % COLORS.length]}20` }}>
-                              {item.name === 'CARD' ? <CreditCard size={16} /> : <Wallet size={16} />}
+                              {isCard ? <CreditCard size={16} /> : <Wallet size={16} />}
                             </div>
                             <div className="flex items-center gap-2">
                               <span className="font-bold text-sm text-gray-900 dark:text-white">{item.name}</span>
@@ -198,7 +204,9 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                           </div>
                         </td>
                       </tr>
-                      {isExpanded && item.name === 'CARD' && salesData.cardTypeBreakdown?.map((card: any, ci: number) => (
+                      
+                      {/* Card Breakdown */}
+                      {isExpanded && isCard && salesData.cardTypeBreakdown?.map((card: any, ci: number) => (
                         <tr key={`card-${ci}`} className="bg-gray-50/50 dark:bg-white/[0.01]">
                           <td className="px-6 py-3 pl-16">
                             <span className="text-xs font-bold text-gray-500">{card.name}</span>
@@ -211,8 +219,9 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                           </td>
                         </tr>
                       ))}
-                      {isExpanded && item.name !== 'CARD' && item.name !== 'CASH' && salesData.otherPaymentBreakdown?.filter((op: any) => op.name === item.name).map((op: any, oi: number) => (
-                        // Logic to filter might need adjustment if otherPaymentBreakdown is flat list of types, but assuming standard breakdown
+                      
+                      {/* Other Payment Breakdown */}
+                      {isExpanded && isOther && salesData.otherPaymentBreakdown?.map((op: any, oi: number) => (
                         <tr key={`other-${oi}`} className="bg-gray-50/50 dark:bg-white/[0.01]">
                           <td className="px-6 py-3 pl-16">
                             <span className="text-xs font-bold text-gray-500">{op.name}</span>

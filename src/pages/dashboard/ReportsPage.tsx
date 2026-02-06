@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { endOfDay, startOfDay, format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -64,6 +65,19 @@ export function ReportsPage() {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
   const [employeeShifts, setEmployeeShifts] = useState<ShiftOption[]>([]);
   const [selectedShiftId, setSelectedShiftId] = useState<string | null>(null);
+
+  // Tooltip State for Pills
+  const [hoveredReportId, setHoveredReportId] = useState<string | null>(null);
+  const [tooltipCoords, setTooltipCoords] = useState({ top: 0, left: 0 });
+
+  const handlePillMouseEnter = (e: React.MouseEvent, id: string) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setTooltipCoords({
+      top: rect.top - 12,
+      left: rect.left + rect.width / 2
+    });
+    setHoveredReportId(id);
+  };
 
   // Current Establishment context
   const [currentEstablishment, setCurrentEstablishment] = useState<any>(null);
@@ -387,7 +401,7 @@ export function ReportsPage() {
             { id: 'addons', label: 'Sales by Add-Ons', icon: Tag },
             { id: 'staff-sales', label: 'Sales by Staff', icon: Activity },
             { id: 'shifts', label: 'Shifts', icon: Clock },
-            { id: 'cash-discrepancy', label: 'Cash Gap Reports', icon: Scale },
+            { id: 'cash-discrepancy', label: 'Cash Gap', icon: Scale },
             { id: 'payments', label: 'Payments', icon: CreditCard },
             { id: 'discounts', label: 'Discounts', icon: Percent },
           ].map((type) => {
@@ -400,6 +414,8 @@ export function ReportsPage() {
             return (
               <button
                 key={type.id}
+                onMouseEnter={(e) => handlePillMouseEnter(e, type.id)}
+                onMouseLeave={() => setHoveredReportId(null)}
                 onClick={() => {
                   // Navigate to the appropriate route so sidebar stays in sync
                   if (type.id === 'items-categories') {
@@ -412,7 +428,7 @@ export function ReportsPage() {
                     navigate(`/dashboard/${locationSlug}/reports/${type.id}`);
                   }
                 }}
-                className={`relative flex-none lg:flex-1 flex flex-col xl:flex-row items-center justify-center gap-1.5 xl:gap-2 px-3 py-2.5 xl:py-3 rounded-xl transition-all duration-300 isolate min-w-[120px] lg:min-w-0 ${isSelected
+                className={`relative flex-none lg:flex-1 flex flex-col xl:flex-row items-center justify-center gap-1.5 xl:gap-2 px-3 py-2.5 xl:py-3 rounded-xl transition-all duration-300 isolate min-w-[60px] lg:min-w-0 ${isSelected
                   ? 'text-black shadow-lg shadow-paymint-green/20'
                   : 'bg-white dark:bg-[#0B1120] text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 border border-gray-200 dark:border-white/[0.08] hover:border-gray-300 dark:hover:border-white/20'
                   }`}
@@ -432,6 +448,43 @@ export function ReportsPage() {
             );
           })}
         </div>
+
+        {/* Portal for Pill Tooltips */}
+        {typeof document !== 'undefined' && createPortal(
+          <AnimatePresence>
+            {hoveredReportId && (
+              <div
+                className="fixed z-[9999] pointer-events-none"
+                style={{
+                  top: tooltipCoords.top,
+                  left: tooltipCoords.left,
+                  transform: 'translate(-50%, -100%)'
+                }}
+              >
+                <motion.div
+                  initial={{ opacity: 0, y: 5, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 5, scale: 0.95 }}
+                  className="px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-black text-xs font-bold text-center rounded-lg shadow-2xl whitespace-nowrap relative"
+                >
+                  {[
+                    { id: 'sales', label: 'Sales Summary' },
+                    { id: 'items-categories', label: 'Sales by Items' },
+                    { id: 'addons', label: 'Sales by Add-Ons' },
+                    { id: 'staff-sales', label: 'Sales by Staff' },
+                    { id: 'shifts', label: 'Shifts Reports' },
+                    { id: 'cash-discrepancy', label: 'Cash Gap Reports' },
+                    { id: 'payments', label: 'Payments Reports' },
+                    { id: 'discounts', label: 'Discount Reports' },
+                  ].find(r => r.id === hoveredReportId)?.label}
+                  {/* Arrow */}
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-gray-900 dark:border-t-white"></div>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>,
+          document.body
+        )}
         {/* Unified Filter Dashboard */}
 
         {/* Unified Filter Control Deck */}
@@ -558,17 +611,17 @@ export function ReportsPage() {
           </div>
         ) : (
           <motion.div key={reportType} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-            
+
             {(reportType === 'sales' || reportType === 'taxes') && salesData && (
-              <SalesView 
-                salesData={salesData} 
+              <SalesView
+                salesData={salesData}
                 selectedDateRange={selectedDateRange}
                 setShowPayInOutModal={setShowPayInOutModal}
               />
             )}
 
             {reportType === 'top-items' && itemReportData && (
-              <ItemsView 
+              <ItemsView
                 itemReportData={itemReportData}
                 itemReportTab={itemReportTab}
                 setItemReportTab={setItemReportTab}
@@ -579,7 +632,7 @@ export function ReportsPage() {
             )}
 
             {reportType === 'staff-sales' && (
-              <StaffView 
+              <StaffView
                 shifts={shifts}
                 selectedEmployeeId={selectedEmployeeId}
                 employees={employees}
@@ -608,7 +661,7 @@ export function ReportsPage() {
             )}
 
             {reportType === 'payments' && salesData && (
-              <PaymentsView 
+              <PaymentsView
                 salesData={salesData}
                 effectiveDateRange={effectiveDateRange}
                 selectedDateRange={selectedDateRange}

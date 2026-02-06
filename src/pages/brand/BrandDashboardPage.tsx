@@ -749,10 +749,9 @@ export function BrandDashboardPage() {
                         onClick={action.action}
                         className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 shadow-sm transition-all text-left group"
                     >
-                        <div className={`w-12 h-12 rounded-xl ${action.bg} ${action.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                            <action.icon size={24} />
-                        </div>
-                        <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-paymint-green transition-colors">
+                                    <div className={`w-12 h-12 rounded-xl ${action.bg} ${action.color} flex items-center justify-center mb-4 transition-transform`}>
+                                      <action.icon size={24} />
+                                    </div>                        <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-paymint-green transition-colors">
                             {action.title}
                         </h4>
                         <p className="text-sm font-bold text-gray-500">{action.description}</p>

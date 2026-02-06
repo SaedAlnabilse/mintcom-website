@@ -103,7 +103,14 @@ class RealtimeService {
    * Initialize the service with optional auth token
    */
   initialize(establishmentId: string, authToken?: string): void {
-    console.log('[Realtime] 🚀 Initializing service for establishment:', establishmentId);
+    console.log('[Realtime] 🚀 Initializing service for establishment:', establishmentId, 'with auth token:', !!authToken);
+
+    // If already connected with different auth, disconnect first
+    if (this.socket?.connected && this.authToken !== authToken) {
+      console.log('[Realtime] Auth token changed, reconnecting...');
+      this.socket.disconnect();
+    }
+
     this.establishmentId = establishmentId;
     this.authToken = authToken || null;
     this.connect();
@@ -114,7 +121,7 @@ class RealtimeService {
    */
   private connect(): void {
     if (this.socket?.connected) {
-      console.log('[Realtime] Already connected');
+      console.log('[Realtime] Already connected, socket ID:', this.socket.id);
       return;
     }
 
@@ -146,9 +153,12 @@ class RealtimeService {
 
     // Add auth token if available
     if (this.authToken) {
+      console.log('[Realtime] 🔑 Adding auth token to connection');
       connectionOptions.auth = {
         token: this.authToken,
       };
+    } else {
+      console.log('[Realtime] ⚠️ No auth token - connecting anonymously (may have limited access)');
     }
 
     this.socket = io(`${wsUrl}/realtime`, connectionOptions);
@@ -523,9 +533,17 @@ class RealtimeService {
    * Reconnect manually
    */
   reconnect(): void {
+    console.log('[Realtime] 🔄 Manual reconnect requested. Current callbacks:', this.refreshCallbacks.size);
     this.isManualDisconnect = false;
     this.reconnectAttempts = 0;
     this.connect();
+  }
+
+  /**
+   * Get current callback count (for debugging)
+   */
+  getCallbackCount(): number {
+    return this.refreshCallbacks.size;
   }
 
   /**

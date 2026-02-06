@@ -228,9 +228,11 @@ export const DashboardPage = () => {
     return () => clearInterval(interval);
   }, [fetchShiftStatus, fetchDashboardData]);
 
-  // Real-time updates
+  // Real-time updates - pass auth token for proper WebSocket authentication
+  const accessToken = localStorage.getItem('accessToken');
   const { onRefresh, isConnected, status } = useRealtime({
     establishmentId: currentEstablishment?.id || null,
+    authToken: accessToken || undefined,
   });
 
   // Log connection status changes
@@ -238,7 +240,20 @@ export const DashboardPage = () => {
     console.log('[Dashboard] 📡 Real-time connection status:', status, 'isConnected:', isConnected);
   }, [status, isConnected]);
 
+  // Use refs to avoid re-subscribing when fetch functions change
+  const refreshShiftStatusRef = useRef(refreshShiftStatus);
+  const fetchDashboardDataRef = useRef(fetchDashboardData);
+
+  useEffect(() => {
+    refreshShiftStatusRef.current = refreshShiftStatus;
+  }, [refreshShiftStatus]);
+
+  useEffect(() => {
+    fetchDashboardDataRef.current = fetchDashboardData;
+  }, [fetchDashboardData]);
+
   // Listen for real-time events and refresh data
+  // Use stable callback that references latest functions via refs
   useEffect(() => {
     console.log('[Dashboard] 📡 Registering real-time event listener');
     const unsubscribe = onRefresh((eventType) => {
@@ -246,25 +261,25 @@ export const DashboardPage = () => {
       // Refresh data when orders are created or updated
       if (eventType === DataChangeEventTypes.ORDER_CREATED ||
           eventType === DataChangeEventTypes.ORDER_REFUNDED) {
-        refreshShiftStatus();
-        fetchDashboardData();
+        refreshShiftStatusRef.current();
+        fetchDashboardDataRef.current();
       }
       // Special handling for shift events - auto-switch to current shift view when shift starts
       if (eventType === DataChangeEventTypes.SHIFT_STARTED) {
         console.log('[Dashboard] 🟢 Shift started - refreshing and switching to current shift view');
-        refreshShiftStatus().then(() => {
+        refreshShiftStatusRef.current().then(() => {
           setViewMode('current_shift');
         });
       }
       if (eventType === DataChangeEventTypes.SHIFT_ENDED) {
-        console.log('[Dashboard] Shift ended - refreshing');
-        refreshShiftStatus();
-        fetchDashboardData();
+        console.log('[Dashboard] 🔴 Shift ended - refreshing');
+        refreshShiftStatusRef.current();
+        fetchDashboardDataRef.current();
       }
     });
 
     return unsubscribe;
-  }, [onRefresh, refreshShiftStatus, fetchDashboardData]);
+  }, [onRefresh]); // Only depend on onRefresh, not on the fetch functions
 
   // Get available view modes based on shift status
   const getAvailableViewModes = (): { mode: ViewMode; label: string; icon: React.ReactNode; description: string }[] => {

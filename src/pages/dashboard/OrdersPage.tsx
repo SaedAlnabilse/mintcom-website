@@ -97,11 +97,14 @@ export function OrdersPage() {
   const location = useLocation();
   const [orders, setOrders] = useState<Order[]>([]);
   const [totalCount, setTotalCount] = useState(0);
+  const [overallTotalCount, setOverallTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [, setError] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState(() => {
+    return location.state?.statusFilter || 'all';
+  });
   const [paymentFilter, setPaymentFilter] = useState('all');
 
   // Helper function to format payment method display
@@ -228,7 +231,7 @@ export function OrdersPage() {
     audioRef.current = { play: playChaChing } as any;
   }, [soundEnabled]);
 
-  // Live mode auto-refresh
+  // Live mode - Visual pulse only (fetching is handled by real-time events)
   useEffect(() => {
     if (!isLiveMode) {
       if (liveIntervalRef.current) {
@@ -238,10 +241,8 @@ export function OrdersPage() {
       return;
     }
 
-    // Auto-refresh every 5 seconds in live mode
+    // Visual pulse animation only - NO FETCHING
     liveIntervalRef.current = setInterval(() => {
-      fetchOrders();
-      // Activity pulse animation
       setPulseActivity(prev => (prev + 1) % 3);
     }, 5000);
 
@@ -461,18 +462,22 @@ export function OrdersPage() {
         end = endOfDay(new Date(endDate));
       }
 
-      // Always fetch held orders count to keep the KPI accurate
-      try {
-        const heldCountRes = await api.get('/api/held-orders');
-        const filteredHeldCount = heldCountRes.data.filter((h: Record<string, any>) => {
-          const hDate = new Date(h.pinnedAt);
-          return hDate >= start && hDate <= end;
-        }).length;
-        setTotalHeldCount(filteredHeldCount);
-      } catch (e) {
-        console.error('Failed to fetch held count', e);
-      }
+      // Prepare parallel requests
+      const promises: Promise<any>[] = [];
 
+      // 1. Held orders count (always needed for KPI)
+      promises.push(api.get('/api/held-orders').catch(e => { console.error('Failed held orders', e); return { data: [] }; }));
+
+      // 2. Overall Total (always needed for KPI)
+      const overallParams = {
+        startDate: start.toISOString(),
+        endDate: end.toISOString(),
+        limit: 1,
+        page: 1
+      };
+      promises.push(api.get('/reports/orders-history', { params: overallParams }).catch(e => { console.error('Failed total count', e); return { data: { totalOrders: 0 } }; }));
+
+      // 3. Main Data (Held or Regular)
       const mapHeldOrder = (h: Record<string, any>) => ({
         id: h.id,
         orderNumber: h.nickname,
@@ -498,129 +503,108 @@ export function OrdersPage() {
       });
 
       if (statusFilter === 'HELD') {
-        const response = await api.get('/api/held-orders');
-        const heldOrders = response.data
+        // If filtering by held, we don't need regular orders
+        promises.push(Promise.resolve(null)); 
+      } else {
+        // Calculate params for regular orders
+        const params: Record<string, any> = {
+          page: page,
+          limit: 10, // Default limit
+          startDate: start.toISOString(),
+          endDate: end.toISOString()
+        };
+
+        if (statusFilter !== 'all') {
+          params.status = statusFilter;
+        }
+
+        if (paymentFilter !== 'all') {
+          if (paymentFilter.startsWith('CARD_TYPE:')) {
+            params.paymentMethod = 'CARD';
+            params.cardType = paymentFilter.replace('CARD_TYPE:', '');
+          } else if (paymentFilter.startsWith('OTHER_METHOD:')) {
+            params.paymentMethod = 'OTHER';
+            params.otherPaymentMethod = paymentFilter.replace('OTHER_METHOD:', '');
+          } else {
+            params.paymentMethod = paymentFilter;
+          }
+        }
+
+        if (searchQuery.trim()) {
+          params.search = searchQuery.trim();
+        }
+        
+        promises.push(api.get('/reports/orders-history', { params }));
+      }
+
+      // Execute all requests in parallel
+      const [heldRes, overallRes, mainRes] = await Promise.all(promises);
+
+      // Process Held Orders (for KPI and potentially for list)
+      let heldOrdersList: Order[] = [];
+      let filteredHeldCount = 0;
+      
+      if (heldRes?.data) {
+        heldOrdersList = heldRes.data
           .map(mapHeldOrder)
           .filter((h: Record<string, any>) => {
             const hDate = new Date(h.createdAt);
             return hDate >= start && hDate <= end;
           });
-        
-        // Client-side pagination for held orders
-        const total = heldOrders.length;
+        filteredHeldCount = heldOrdersList.length;
+        setTotalHeldCount(filteredHeldCount);
+      }
+
+      // Process Overall Total (for KPI)
+      const regularTotalForPeriod = overallRes?.data?.totalOrders || overallRes?.data?.total || 0;
+      setOverallTotalCount(regularTotalForPeriod + filteredHeldCount);
+
+      // Process Main Display Data
+      if (statusFilter === 'HELD') {
+        // Show Held Orders
+        const total = heldOrdersList.length;
         setTotalCount(total);
         setTotalPages(Math.ceil(total / 10) || 1);
-        
         const startIndex = (page - 1) * 10;
-        setOrders(heldOrders.slice(startIndex, startIndex + 10));
-        setError('');
-        setIsLoading(false);
-        return;
-      }
-
-      // Fetch held orders first (if on page 1 and showing all status)
-      let heldOrdersList: Order[] = [];
-      let heldOrdersCount = 0;
-      if (statusFilter === 'all' && page === 1 && paymentFilter === 'all') {
-        try {
-          const heldRes = await api.get('/api/held-orders');
-          heldOrdersList = heldRes.data
-            .map(mapHeldOrder)
-            .filter((h: any) => {
-              const hDate = new Date(h.createdAt);
-              return hDate >= start && hDate <= end;
-            });
-          heldOrdersCount = heldOrdersList.length;
-        } catch (error) {
-          console.error('Failed to fetch held orders:', error);
-        }
-      }
-
-      // Calculate how many regular orders we need
-      // On page 1: we need (10 - heldOrdersCount) regular orders to fill the page
-      // On page 2+: we need 10 regular orders, but skip the first ones to account for held orders displacing them
-      const limit = 10;
-      let regularPage = page;
-      let regularLimit = limit;
-
-      if (page === 1 && heldOrdersCount > 0) {
-        // On page 1, request fewer regular orders if we have held orders
-        regularLimit = Math.max(0, limit - heldOrdersCount);
-      } else if (page > 1 && heldOrdersCount > 0) {
-        // On page 2+, we need to adjust the skip to account for held orders
-        // Page 2 should show: remaining regular orders from page 1's slot + next ones
-        // Actually, for simplicity, let's just request page 2 normally
-        // The held orders are only on page 1
-      }
-
-      const params: Record<string, any> = {
-        page: regularPage,
-        limit: regularLimit,
-        startDate: start.toISOString(),
-        endDate: end.toISOString()
-      };
-
-      if (statusFilter !== 'all') {
-        params.status = statusFilter;
-      }
-
-      if (paymentFilter !== 'all') {
-        // Handle special prefixed values for card types and other methods
-        if (paymentFilter.startsWith('CARD_TYPE:')) {
-          params.paymentMethod = 'CARD';
-          params.cardType = paymentFilter.replace('CARD_TYPE:', '');
-        } else if (paymentFilter.startsWith('OTHER_METHOD:')) {
-          params.paymentMethod = 'OTHER';
-          params.otherPaymentMethod = paymentFilter.replace('OTHER_METHOD:', '');
-        } else {
-          params.paymentMethod = paymentFilter;
-        }
-      }
-
-      // Add search query if present
-      if (searchQuery.trim()) {
-        params.search = searchQuery.trim();
-      }
-
-      const response = await api.get('/reports/orders-history', { params });
-      let fetchedOrders = response.data.orders || response.data || [];
-      let totalOrders = response.data.totalOrders || response.data.total || fetchedOrders.length;
-      let serverTotalPages = response.data.totalPages || Math.ceil(totalOrders / 10) || 1;
-
-      // Mix held orders at the beginning of page 1
-      if (page === 1 && heldOrdersCount > 0) {
-        fetchedOrders = [...heldOrdersList, ...fetchedOrders];
-        // Ensure we don't exceed 10 items on the page
-        if (fetchedOrders.length > 10) {
-          fetchedOrders = fetchedOrders.slice(0, 10);
-        }
-        // Adjust total count to include held orders
-        totalOrders += heldOrdersCount;
-        // Recalculate total pages
-        serverTotalPages = Math.ceil(totalOrders / 10) || 1;
-      }
-
-      // 🔴 Live mode: detect new orders for highlighting
-      if (isLiveMode && previousOrdersRef.current.length > 0) {
-        detectNewOrders(fetchedOrders, previousOrdersRef.current);
-      }
-      previousOrdersRef.current = fetchedOrders;
-
-      // Handle pagination display
-      if (Array.isArray(response.data)) {
-        // If the API returns a raw array, we must paginate client-side
-        // This handles the case where backend returns all items ignoring limit
-        const total = fetchedOrders.length;
-        setTotalCount(total);
-        setTotalPages(Math.ceil(total / 10) || 1);
-        
-        const startIndex = (page - 1) * 10;
-        setOrders(fetchedOrders.slice(startIndex, startIndex + 10));
+        setOrders(heldOrdersList.slice(startIndex, startIndex + 10));
       } else {
-        // Server-side pagination structure detected
-        setTotalCount(totalOrders);
-        setTotalPages(serverTotalPages);
-        setOrders(fetchedOrders);
+        // Show Regular Orders (possibly mixed with held if page 1)
+        const responseData = mainRes?.data || {};
+        let fetchedOrders = responseData.orders || responseData || [];
+        let totalOrders = responseData.totalOrders || responseData.total || fetchedOrders.length;
+        let serverTotalPages = responseData.totalPages || Math.ceil(totalOrders / 10) || 1;
+
+        // Mix held orders at the beginning of page 1 if showing 'all' status
+        if (page === 1 && filteredHeldCount > 0 && statusFilter === 'all' && paymentFilter === 'all' && !searchQuery) {
+           const combined = [...heldOrdersList, ...fetchedOrders];
+           combined.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+           fetchedOrders = combined;
+           
+           if (fetchedOrders.length > 10) {
+             fetchedOrders = fetchedOrders.slice(0, 10);
+           }
+           totalOrders += filteredHeldCount;
+           serverTotalPages = Math.ceil(totalOrders / 10) || 1;
+        }
+
+        // 🔴 Live mode: detect new orders
+        if (isLiveMode && previousOrdersRef.current.length > 0) {
+          detectNewOrders(fetchedOrders, previousOrdersRef.current);
+        }
+        previousOrdersRef.current = fetchedOrders;
+
+        if (Array.isArray(mainRes?.data)) {
+           // Fallback for array response
+           const total = fetchedOrders.length;
+           setTotalCount(total);
+           setTotalPages(Math.ceil(total / 10) || 1);
+           const startIndex = (page - 1) * 10;
+           setOrders(fetchedOrders.slice(startIndex, startIndex + 10));
+        } else {
+           setTotalCount(totalOrders);
+           setTotalPages(serverTotalPages);
+           setOrders(fetchedOrders);
+        }
       }
 
       setError('');
@@ -673,23 +657,39 @@ export function OrdersPage() {
 
 
 
-  // Real-time updates
+  // Real-time updates - pass auth token for proper WebSocket authentication
+  const accessToken = localStorage.getItem('accessToken');
   const { onRefresh } = useRealtime({
     establishmentId: currentEstablishment?.id || null,
+    authToken: accessToken || undefined,
   });
 
+  // Use refs to avoid re-subscribing when dependencies change
+  const fetchOrdersRef = useRef(fetchOrders);
+  const isLiveModeRef = useRef(isLiveMode);
+  const soundEnabledRef = useRef(soundEnabled);
+  const statusFilterRef = useRef(statusFilter);
+
+  useEffect(() => { fetchOrdersRef.current = fetchOrders; }, [fetchOrders]);
+  useEffect(() => { isLiveModeRef.current = isLiveMode; }, [isLiveMode]);
+  useEffect(() => { soundEnabledRef.current = soundEnabled; }, [soundEnabled]);
+  useEffect(() => { statusFilterRef.current = statusFilter; }, [statusFilter]);
+
   // Listen for real-time order events
+  // Use stable callback that references latest values via refs
   useEffect(() => {
+    console.log('[Orders] 📡 Registering real-time event listener');
     const unsubscribe = onRefresh((eventType) => {
+      console.log('[Orders] 📥 Received real-time event:', eventType);
       if (eventType === DataChangeEventTypes.ORDER_CREATED ||
           eventType === DataChangeEventTypes.ORDER_REFUNDED ||
           eventType === DataChangeEventTypes.ORDER_UPDATED) {
         // Trigger immediate refresh
-        fetchOrders();
+        fetchOrdersRef.current();
 
         // If live mode is on and sound is enabled, the detectNewOrders
         // will handle the sound and highlighting
-        if (!isLiveMode && audioRef.current && soundEnabled) {
+        if (!isLiveModeRef.current && audioRef.current && soundEnabledRef.current) {
           audioRef.current.play().catch(() => {
             // Ignore audio play errors
           });
@@ -700,8 +700,8 @@ export function OrdersPage() {
       if (eventType === DataChangeEventTypes.HELD_ORDER_CREATED ||
           eventType === DataChangeEventTypes.HELD_ORDER_DELETED) {
         // Always refresh if viewing held orders
-        if (statusFilter === 'HELD') {
-          fetchOrders();
+        if (statusFilterRef.current === 'HELD') {
+          fetchOrdersRef.current();
         }
         // If viewing "all" orders, just show notification - held orders are in separate tab
         // The toast notification from realtimeService will inform the user
@@ -714,13 +714,13 @@ export function OrdersPage() {
         api.get('/dashboard/live-shift').then(res => {
           setShiftStatus(res.data);
           // Also refresh orders if filtering by current shift
-          fetchOrders();
+          fetchOrdersRef.current();
         }).catch(console.error);
       }
     });
 
     return unsubscribe;
-  }, [onRefresh, fetchOrders, isLiveMode, soundEnabled, statusFilter]);
+  }, [onRefresh]); // Only depend on onRefresh
 
   const searchOrder = useCallback(async () => {
     if (!searchQuery.trim()) {
@@ -888,7 +888,11 @@ export function OrdersPage() {
               <SingleSelect
                 value={['current_shift', 'previous_shift'].includes(selectedDateRange) ? selectedDateRange : null}
                 onChange={(val) => {
-                   if (val) setQuickDate(val);
+                  if (val) {
+                    setQuickDate(val);
+                  } else {
+                    setQuickDate('today');
+                  }
                 }}
                 options={[
                    ...(shiftStatus?.shiftStatus === 'ACTIVE' ? [{
@@ -1141,11 +1145,12 @@ export function OrdersPage() {
             icon: TrendingUp,
             color: 'text-paymint-green',
             bg: 'bg-paymint-green/10',
-            onClick: undefined
+            onClick: undefined,
+            active: false
           },
           {
             label: 'Total Orders',
-            value: totalCount,
+            value: overallTotalCount,
             icon: ShoppingCart,
             color: 'text-blue-500',
             bg: 'bg-blue-500/10',
@@ -1165,11 +1170,15 @@ export function OrdersPage() {
           <div
             key={i}
             onClick={stat.onClick}
-            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink ${stat.onClick ? 'cursor-pointer' : ''} ${stat.active ? 'ring-2 ring-paymint-green' : ''}`}
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink 
+              ${stat.onClick ? 'cursor-pointer' : 'cursor-default'} 
+              ${stat.active 
+                ? 'border-paymint-green ring-1 ring-paymint-green/30 bg-paymint-green/[0.02]' 
+                : 'border-gray-200 dark:border-white/5 hover:border-paymint-green/30'}`}
           >
-            <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
+            <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg} ${stat.active ? 'opacity-20' : 'group-hover:opacity-10'}`} />
             <div className="relative z-10 flex items-center gap-3 sm:gap-4">
-              <div className={`p-2.5 sm:p-3 rounded-xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform duration-300`}>
+              <div className={`p-2.5 sm:p-3 rounded-xl ${stat.bg} ${stat.color} transition-transform duration-300 group-hover:scale-110`}>
                 <stat.icon size={18} className="sm:w-5 sm:h-5" />
               </div>
               <div>
@@ -1177,6 +1186,11 @@ export function OrdersPage() {
                 <p className="text-lg sm:text-xl font-black text-gray-900 dark:text-white">{stat.value}</p>
               </div>
             </div>
+            
+            {/* Active Indicator Dot */}
+            {stat.active && (
+              <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-paymint-green animate-pulse" />
+            )}
           </div>
         ))}
       </div>

@@ -274,13 +274,13 @@ export function PaymentMethodsPage() {
     });
   };
 
-  const getMethodIcon = (name: string) => {
+  const getMethodIcon = (name: string, size: number = 24) => {
     const lower = name.toLowerCase();
-    if (lower.includes('cash')) return <DollarSign size={24} />;
-    if (lower.includes('card') || lower.includes('visa') || lower.includes('master')) return <CreditCard size={24} />;
-    if (lower.includes('mobile') || lower.includes('phone') || lower.includes('wallet')) return <Smartphone size={24} />;
-    if (lower.includes('online')) return <Globe size={24} />;
-    return <Wallet size={24} />;
+    if (lower.includes('cash')) return <DollarSign size={size} />;
+    if (lower.includes('card') || lower.includes('visa') || lower.includes('master')) return <CreditCard size={size} />;
+    if (lower.includes('mobile') || lower.includes('phone') || lower.includes('wallet')) return <Smartphone size={size} />;
+    if (lower.includes('online')) return <Globe size={size} />;
+    return <Wallet size={size} />;
   };
 
   return (
@@ -327,31 +327,29 @@ export function PaymentMethodsPage() {
               <motion.div
                 layout
                 key={card.id}
-                className="group relative bg-gray-50 dark:bg-white/[0.02] p-6 rounded-2xl border border-gray-100 dark:border-white/5 transition-all duration-300 hover:border-paymint-green/30 hover:shadow-md"
+                className="group relative bg-gray-50 dark:bg-white/[0.02] p-6 rounded-2xl border border-gray-100 dark:border-white/5 transition-all duration-300 hover:border-paymint-green/30 flex flex-col items-center justify-center min-h-[200px]"
               >
-                <div className="flex justify-between items-start mb-6">
-                  <div className="w-16 h-16 rounded-xl bg-white dark:bg-black/40 flex items-center justify-center border border-gray-100 dark:border-white/5 transition-transform group-hover:scale-110 duration-500 overflow-hidden p-3">
-                    {getImageUrl(card.imageUrl || card.logo) ? (
-                      <img src={getImageUrl(card.imageUrl || card.logo)!} alt={card.name} className="w-full h-full object-contain" />
-                    ) : (
-                      <CreditCard size={24} className="text-gray-400" />
-                    )}
-                  </div>
-
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                    <button
-                      onClick={() => { setEditingCard(card); setNewCardName(card.name); setCardImagePreview(card.imageUrl || card.logo || null); setSelectedCardImage(null); setShowCardModal(true); setCardErrors({}); }}
-                      className="p-2 rounded-lg bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-green shadow-sm border border-gray-100 dark:border-white/5"
-                    >
-                      <Edit2 size={16} />
-                    </button>
-                    <button onClick={() => handleDeleteCardType(card.id, card.name)} className="p-2 rounded-lg bg-white dark:bg-white/5 text-gray-400 hover:text-paymint-red shadow-sm border border-gray-100 dark:border-white/5">
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
+                <div className="absolute top-3 right-3 flex gap-1 z-10">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setEditingCard(card); setNewCardName(card.name); setCardImagePreview(card.imageUrl || card.logo || null); setSelectedCardImage(null); setShowCardModal(true); setCardErrors({}); }}
+                    className="p-2 rounded-lg bg-white dark:bg-black/50 text-gray-400 hover:text-paymint-green shadow-sm border border-gray-100 dark:border-white/5 backdrop-blur-sm"
+                  >
+                    <Edit2 size={14} />
+                  </button>
+                  <button onClick={(e) => { e.stopPropagation(); handleDeleteCardType(card.id, card.name); }} className="p-2 rounded-lg bg-white dark:bg-black/50 text-gray-400 hover:text-paymint-red shadow-sm border border-gray-100 dark:border-white/5 backdrop-blur-sm">
+                    <Trash2 size={14} />
+                  </button>
                 </div>
 
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate">{card.name}</h3>
+                <div className="w-24 h-24 rounded-2xl bg-white dark:bg-black/40 flex items-center justify-center border border-gray-100 dark:border-white/5 overflow-hidden p-4 mb-4 shadow-sm">
+                  {getImageUrl(card.imageUrl || card.logo) ? (
+                    <img src={getImageUrl(card.imageUrl || card.logo)!} alt={card.name} className="w-full h-full object-contain" />
+                  ) : (
+                    <CreditCard size={32} className="text-gray-400" />
+                  )}
+                </div>
+
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate w-full text-center">{card.name}</h3>
               </motion.div>
             ))
           )}
@@ -360,10 +358,10 @@ export function PaymentMethodsPage() {
           <motion.div
             layout
             onClick={() => { setEditingCard(null); setNewCardName(''); setCardImagePreview(null); setSelectedCardImage(null); setShowCardModal(true); setCardErrors({}); }}
-            className="group relative bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-2xl p-6 cursor-pointer hover:border-paymint-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center min-h-[180px]"
+            className="group relative bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-2xl p-6 cursor-pointer hover:border-paymint-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center min-h-[200px]"
           >
-            <div className="w-12 h-12 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all shadow-sm">
-              <Plus size={20} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
+            <div className="w-16 h-16 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all shadow-sm">
+              <Plus size={24} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
             </div>
             <h3 className="text-base font-bold text-gray-900 dark:text-white">Add Brand</h3>
             <p className="text-gray-500 text-xs font-black tracking-widest mt-1">Show Logo</p>
@@ -396,40 +394,38 @@ export function PaymentMethodsPage() {
               <motion.div
                 layout
                 key={method.id}
-                className={`group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border transition-all duration-300 shadow-sm ${method.isActive
+                className={`group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center min-h-[200px] ${method.isActive
                   ? 'border-paymint-green/20 hover:border-paymint-green/50'
                   : 'border-gray-100 dark:border-white/5 opacity-60'
                   }`}
               >
-                <div className="flex justify-between items-start mb-6">
-                  <div className={`w-14 h-14 rounded-xl flex items-center justify-center border border-gray-100 dark:border-white/5 transition-transform group-hover:scale-110 duration-500 overflow-hidden ${method.isActive ? 'bg-paymint-green/10 text-paymint-green' : 'bg-gray-50 dark:bg-white/5 text-gray-400'
-                    }`}>
-                    {getImageUrl(method.imageUrl || method.logo) ? (
-                      <img src={getImageUrl(method.imageUrl || method.logo)!} alt={method.name} className="w-full h-full object-cover" />
-                    ) : (
-                      getMethodIcon(method.name)
-                    )}
-                  </div>
-
+                <div className="absolute top-3 right-3 flex gap-1 z-10">
                   {!method.isDefault && (
-                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                      <button onClick={() => { setEditingMethod(method); reset({ name: method.name, isActive: method.isActive }); setImagePreview(method.imageUrl || null); setShowModal(true); }} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green border border-gray-100 dark:border-white/5 shadow-sm">
-                        <Edit2 size={16} />
+                    <>
+                      <button onClick={(e) => { e.stopPropagation(); setEditingMethod(method); reset({ name: method.name, isActive: method.isActive }); setImagePreview(method.imageUrl || null); setShowModal(true); }} className="p-2 rounded-lg bg-gray-50 dark:bg-black/50 text-gray-400 hover:text-paymint-green border border-gray-100 dark:border-white/5 shadow-sm backdrop-blur-sm">
+                        <Edit2 size={14} />
                       </button>
-                      <button onClick={() => handleDelete(method.id, method.name)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red border border-gray-100 dark:border-white/5 shadow-sm">
-                        <Trash2 size={16} />
+                      <button onClick={(e) => { e.stopPropagation(); handleDelete(method.id, method.name); }} className="p-2 rounded-lg bg-gray-50 dark:bg-black/50 text-gray-400 hover:text-paymint-red border border-gray-100 dark:border-white/5 shadow-sm backdrop-blur-sm">
+                        <Trash2 size={14} />
                       </button>
-                    </div>
+                    </>
                   )}
                 </div>
 
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate">{method.name}</h3>
+                <div className={`w-20 h-20 rounded-2xl flex items-center justify-center border border-gray-100 dark:border-white/5 overflow-hidden mb-4 shadow-sm ${method.isActive ? 'bg-paymint-green/10 text-paymint-green' : 'bg-gray-50 dark:bg-white/5 text-gray-400'
+                  }`}>
+                  {getImageUrl(method.imageUrl || method.logo) ? (
+                    <img src={getImageUrl(method.imageUrl || method.logo)!} alt={method.name} className="w-full h-full object-cover" />
+                  ) : (
+                    getMethodIcon(method.name, 32)
+                  )}
+                </div>
+
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate w-full text-center">{method.name}</h3>
                 {method.isDefault && (
-                  <div className="mt-4 flex items-center justify-between">
-                    <span className="text-xs font-black text-blue-500 tracking-widest flex items-center gap-1">
-                      <Star size={10} fill="currentColor" /> System
-                    </span>
-                  </div>
+                  <span className="mt-3 text-[10px] font-black text-blue-500 tracking-widest flex items-center gap-1 bg-blue-500/10 px-3 py-1 rounded-full uppercase border border-blue-500/20">
+                    <Star size={10} fill="currentColor" /> System
+                  </span>
                 )}
               </motion.div>
             ))}
@@ -438,10 +434,10 @@ export function PaymentMethodsPage() {
             <motion.div
               layout
               onClick={() => { setEditingMethod(null); reset({ name: '', isActive: true }); setImagePreview(null); setShowModal(true); }}
-              className="group relative bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-2xl p-6 cursor-pointer hover:border-paymint-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center min-h-[180px]"
+              className="group relative bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-2xl p-6 cursor-pointer hover:border-paymint-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center min-h-[200px]"
             >
-              <div className="w-12 h-12 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all shadow-sm">
-                <Plus size={20} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
+              <div className="w-16 h-16 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all shadow-sm">
+                <Plus size={24} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
               </div>
               <h3 className="text-base font-bold text-gray-900 dark:text-white">Add Payment</h3>
               <p className="text-gray-500 text-xs font-black tracking-widest mt-1">New Type</p>

@@ -38,34 +38,42 @@ export const useRealtime = (options: UseRealtimeOptions) => {
   const initialized = useRef(false);
   const currentEstablishmentId = useRef<string | null>(null);
   const [status, setStatus] = useState<ConnectionStatus>('disconnected');
+  const currentAuthToken = useRef<string | null | undefined>(null);
 
   // Initialize realtime service when establishment is available
   useEffect(() => {
     // Only initialize if enabled and we have an establishment ID
     if (!enabled || !establishmentId) {
-      // Cleanup if we were previously initialized
-      if (initialized.current) {
-        console.log('[useRealtime] Cleaning up realtime service (disabled or no establishment)...');
-        realtimeService.cleanup();
-        initialized.current = false;
-        currentEstablishmentId.current = null;
-      }
+      // DON'T cleanup when establishmentId is temporarily null
+      // The connection should stay alive across page navigations
+      // Only skip initialization, but don't destroy existing subscriptions
+      console.log('[useRealtime] Skipping initialization (disabled or no establishment)');
       return;
     }
 
-    // Check if we need to reinitialize (new establishment)
-    if (initialized.current && currentEstablishmentId.current !== establishmentId) {
-      console.log('[useRealtime] Establishment changed, reinitializing...');
-      realtimeService.cleanup();
+    // Check if we need to reinitialize (establishment changed or auth token added)
+    const needsReconnect = initialized.current && (
+      (currentEstablishmentId.current && currentEstablishmentId.current !== establishmentId) ||
+      (authToken && !currentAuthToken.current) // Token was added - need to reconnect authenticated
+    );
+
+    if (needsReconnect) {
+      console.log('[useRealtime] Reconnecting...', {
+        establishmentChanged: currentEstablishmentId.current !== establishmentId,
+        tokenAdded: authToken && !currentAuthToken.current
+      });
+      // Disconnect socket, but preserve callbacks so they can re-register
+      realtimeService.disconnect();
       initialized.current = false;
     }
 
     // Initialize if not already done
     if (!initialized.current) {
-      console.log('[useRealtime] 🚀 Initializing realtime service for establishment:', establishmentId);
+      console.log('[useRealtime] 🚀 Initializing realtime service for establishment:', establishmentId, 'with auth:', !!authToken);
       realtimeService.initialize(establishmentId, authToken || undefined);
       initialized.current = true;
       currentEstablishmentId.current = establishmentId;
+      currentAuthToken.current = authToken;
     }
 
     // Don't cleanup on unmount - keep the connection alive
