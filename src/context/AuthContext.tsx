@@ -31,6 +31,7 @@ interface AuthContextType {
   // Establishment methods
   setCurrentEstablishment: (establishment: Establishment) => void;
   refreshEstablishments: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
 
   // Account update
   updateAccount: (updates: Partial<Account>) => void;
@@ -85,11 +86,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // Fetch fresh data - this will validate the HttpOnly cookie
         try {
-          await refreshEstablishments();
+          await Promise.all([
+            refreshEstablishments(),
+            refreshProfile()
+          ]);
         } catch (error: any) {
           // If establishments fetch fails with 401, the cookie isn't working
           // This is a cross-origin cookie issue
-          console.error('[Auth] Failed to fetch establishments - cookie issue?', error.response?.status);
+          console.error('[Auth] Failed to fetch data - cookie issue?', error.response?.status);
           
           if (error.response?.status === 401) {
             // Don't clear auth - let the user stay "logged in" with cached data
@@ -103,6 +107,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error('Failed to initialize auth:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const refreshProfile = async () => {
+    try {
+      console.log('[Auth] Refreshing profile...');
+      const response = await api.get('/api/accounts/profile');
+      if (response.data) {
+        const updatedAccount = {
+          ...account,
+          ...response.data,
+          // Map backend response fields to the frontend Account interface if necessary
+          defaultPaymentMethod: response.data.defaultPaymentMethod
+        };
+        setAccount(updatedAccount);
+        localStorage.setItem('account', JSON.stringify(updatedAccount));
+        console.log('[Auth] Profile refreshed');
+      }
+    } catch (error) {
+      console.error('[Auth] Failed to refresh profile:', error);
     }
   };
 
@@ -349,6 +373,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         resetPassword,
         setCurrentEstablishment,
         refreshEstablishments,
+        refreshProfile,
         updateAccount,
       }}
     >
