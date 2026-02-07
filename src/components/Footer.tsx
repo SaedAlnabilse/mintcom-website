@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Phone, MapPin, Instagram, Twitter, Linkedin, Facebook, Youtube, X, Tablet, Printer, CheckCircle2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Instagram, Youtube, X, Tablet, Printer, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './Logo';
 
@@ -93,7 +93,7 @@ export const Footer = () => {
                 Simple, secure Pos for growing businesses.
               </p>
               <div className="flex gap-4">
-                {[Instagram, Twitter, Linkedin, Facebook, Youtube].map((Icon, i) => (
+                {[Instagram, Youtube].map((Icon, i) => (
                   <a
                     key={i}
                     href="#"
