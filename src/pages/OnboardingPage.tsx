@@ -375,6 +375,43 @@ export function OnboardingPage() {
 
   const totalSteps = 4;
 
+  // Auto-select currency based on country
+  useEffect(() => {
+    const countryToCurrency: Record<string, string> = {
+      'JO': 'JOD',
+      'AE': 'AED',
+      'SA': 'SAR',
+      'KW': 'KWD',
+      'QA': 'QAR',
+      'BH': 'BHD',
+      'OM': 'OMR',
+      'EG': 'EGP',
+      'IQ': 'IQD',
+      'PS': 'JOD',
+      'LB': 'LBP',
+      'SY': 'SYP',
+      'TR': 'TRY',
+      'IN': 'INR',
+      'PK': 'PKR',
+      'US': 'USD',
+      'GB': 'GBP',
+      'DE': 'EUR',
+      'FR': 'EUR'
+    };
+    
+    const currency = countryToCurrency[selectedCountry.code] || 'USD';
+    form1.setValue('currency', currency);
+  }, [selectedCountry.code, form1]);
+
+  // Clear currentEstablishment on mount to prevent 'X-Establishment-Id' errors during onboarding
+  useEffect(() => {
+    const isNewOnboarding = step === 1;
+    if (isNewOnboarding) {
+      console.log('[Onboarding] Clearing currentEstablishment to prevent header errors');
+      sessionStorage.removeItem('currentEstablishment');
+    }
+  }, [step]);
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex flex-col transition-colors duration-300">
       {/* Navbar - Hidden on Step 5 (Launch Center) */}
@@ -483,11 +520,11 @@ export function OnboardingPage() {
                               setShowCountryDropdown(!showCountryDropdown);
                               if (showCountryDropdown) setCountrySearch('');
                             }}
-                            className={`flex items-center gap-2 bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 px-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all min-w-[130px]`}
+                            className={`flex items-center gap-1.5 bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-2xl h-[60px] px-3 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all min-w-[110px]`}
                           >
-                            <span className="text-xl">{selectedCountry.flag}</span>
-                            <span className="text-sm font-bold">{selectedCountry.dialCode}</span>
-                            <ChevronDown size={16} className="text-gray-400" />
+                            <span className="text-sm font-black">{selectedCountry.code}</span>
+                            <span className="text-xs font-bold">{selectedCountry.dialCode}</span>
+                            <ChevronDown size={14} className="text-gray-400" />
                           </button>
                           <AnimatePresence>
                             {showCountryDropdown && (
@@ -554,7 +591,7 @@ export function OnboardingPage() {
                               const value = e.target.value.replace(/[^0-9]/g, '');
                               form1.setValue('phone', value);
                             }}
-                            className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 px-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                            className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl h-[60px] px-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                             placeholder="Enter phone number"
                           />
                         </div>
