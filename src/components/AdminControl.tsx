@@ -24,8 +24,8 @@ export const AdminControl = () => {
             <div className="relative w-[300px] h-[600px] bg-black rounded-[3rem] border-[8px] border-gray-800 shadow-2xl overflow-hidden ring-1 ring-white/10">
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-gray-800 rounded-b-2xl z-20" />
               <div className="w-full h-full bg-black relative">
-                 {/* Video with object-cover equivalent for iframe via absolute positioning */}
-                 <iframe
+                {/* Video with object-cover equivalent for iframe via absolute positioning */}
+                <iframe
                   src="https://player.vimeo.com/video/1158972798?h=234e7f9175&autoplay=1&background=1&muted=1&loop=1"
                   className="absolute top-1/2 left-1/2 w-[300%] h-[100%] -translate-x-1/2 -translate-y-1/2"
                   allow="autoplay; fullscreen; picture-in-picture"
@@ -72,7 +72,9 @@ export const AdminControl = () => {
             </div>
 
             <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-8 tracking-tight leading-tight">
-              Manage <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-blue-500">Anywhere</span>
+              Full Visibility. <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-blue-500">Full Control.</span> <br />
+              From Your Pocket.
             </h2>
 
             {/* Logo Lockup */}
@@ -87,11 +89,11 @@ export const AdminControl = () => {
             </div>
 
             <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
-              Monitor sales, inventory, and staff from your phone. Anytime, anywhere.
+              With the PayMint Admin Mobile App, you can monitor and manage your business anytime, anywhere—right from your phone.
             </p>
 
             <ul className="space-y-4">
-              {['Live Sales Data', 'Staff Management', 'Stock Alerts'].map((item, i) => (
+              {['Shift Alerts', 'Stock Alerts', 'Live Sales & Performance Reports'].map((item, i) => (
                 <motion.li
                   key={i}
                   initial={{ opacity: 0, x: -20 }}

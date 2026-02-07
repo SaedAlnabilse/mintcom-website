@@ -208,21 +208,30 @@ export function ProductFormModal({
       const promptText = `professional appetizing food photography of ${name}, studio lighting, high resolution, 4k, delicious, isolated`;
 
       const response = await api.post('/api/items/generate-image',
-        { prompt: promptText },
-        { responseType: 'blob' }
+        { prompt: promptText }
       );
 
-      const blob = response.data;
-      const safeName = name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') || 'item';
-      const file = new File([blob], `${safeName}-ai.jpg`, { type: 'image/jpeg' });
+      if (response.data.success && response.data.image) {
+        const dataUrl = response.data.image;
+        
+        // Convert base64 to File object for upload on save
+        const fetchRes = await fetch(dataUrl);
+        const blob = await fetchRes.blob();
+        
+        const safeName = name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') || 'item';
+        const file = new File([blob], `${safeName}-ai.jpg`, { type: 'image/jpeg' });
 
-      setSelectedImage(file);
-      setImagePreview(URL.createObjectURL(blob));
-      setIsImageDeleted(false);
-      toast.success('AI Image generated!');
-    } catch (error) {
+        setSelectedImage(file);
+        setImagePreview(dataUrl);
+        setIsImageDeleted(false);
+        toast.success('AI Image generated!');
+      } else {
+        throw new Error('Invalid response from AI service');
+      }
+    } catch (error: any) {
       console.error('Failed to generate image:', error);
-      toast.error('Failed to generate image. Service may be unavailable.');
+      const message = error.response?.data?.message || 'AI services are currently overloaded. Please try again in a few seconds.';
+      toast.error(message);
     } finally {
       setIsGeneratingImage(false);
     }
@@ -271,14 +280,10 @@ export function ProductFormModal({
         setLowStockRed(initialData.lowStockThresholdRed != null ? String(initialData.lowStockThresholdRed) : '2');
 
         // Handle image preview
-        // In development, use relative paths to leverage Vite proxy (avoids CORS issues)
-        // In production (Cloudflare Workers), use the full backend URL
         if (initialData.image) {
-          const isCloudflareWorkers = typeof window !== 'undefined' && 
-            window.location.hostname.endsWith('.workers.dev');
-          const baseUrl = isCloudflareWorkers 
-            ? 'https://grateful-liberation-production-d036.up.railway.app'
-            : '';
+          // Use relative path by default to leverage Vite proxy
+          // Only use absolute URL if strictly necessary
+          const baseUrl = ''; 
           
           // Fix: Remove /public prefix to match POS behavior and correct serving path
           const cleanPath = initialData.image.replace('/public', '').replace('public/', '');
@@ -476,7 +481,7 @@ export function ProductFormModal({
   return createPortal(
     <>
       <AnimatePresence>
-        <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans">
+        <div key="product-form-modal-overlay" className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans">
           <motion.div
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
@@ -532,10 +537,21 @@ export function ProductFormModal({
                           src={imagePreview}
                           alt="Preview"
                           className="w-full h-full object-cover"
-                          onError={() => {
-                            console.error('Image preview failed to load:', imagePreview?.substring(0, 100));
-                            // If the image fails to load, reset to upload state
-                            setImagePreview(null);
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            console.error('Image failed to load:', target.src);
+                            
+                            // Don't retry Base64 or already failed fallbacks
+                            if (target.src.startsWith('data:') || target.dataset.failed) return;
+                            
+                            // If it's a relative path and we're on localhost, try fallback to production backend explicitly
+                            const prodUrl = 'https://grateful-liberation-production-d036.up.railway.app';
+                            if (target.src.includes('/uploads/images/') && !target.src.includes(prodUrl)) {
+                              console.log('🔄 Attempting fallback to production backend...');
+                              target.dataset.failed = 'true';
+                              const path = target.src.split('/uploads/')[1];
+                              target.src = `${prodUrl}/uploads/${path}`;
+                            }
                           }}
                         />
                       ) : (
@@ -1112,6 +1128,7 @@ export function ProductFormModal({
         </div >
 
         <ConfirmModal
+          key="addons-discard-confirmation"
           isOpen={showAddonsWarning}
           onClose={() => setShowAddonsWarning(false)}
           onConfirm={() => {

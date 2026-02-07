@@ -35,6 +35,8 @@ export interface Order {
     paymentStatus?: string;
     paymentMethod: string;
     user?: { username: string };
+    employeeName?: string;
+    refundedByName?: string;
     customer?: { name: string; phone: string };
     items?: OrderItem[];
     subtotal?: number;
@@ -179,8 +181,17 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                                     Staff
                                     <QuickInfo text="Staff who processed the order." />
                                 </p>
-                                <p className="text-sm font-bold text-gray-900 dark:text-white">{order.user?.username || 'System'}</p>
+                                <p className="text-sm font-bold text-gray-900 dark:text-white">{order.employeeName || order.user?.username || 'System'}</p>
                             </div>
+                            {order.refundedByName && (
+                                <div>
+                                    <p className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center gap-1">
+                                        Refunded By
+                                        <QuickInfo text="Who reversed this order." />
+                                    </p>
+                                    <p className="text-sm font-bold text-paymint-red">{order.refundedByName}</p>
+                                </div>
+                            )}
                             {order.customer && (
                                 <>
                                     <div className="col-span-2">

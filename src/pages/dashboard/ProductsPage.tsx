@@ -125,14 +125,32 @@ export function ProductsPage() {
             setCategories(Array.isArray(categoriesRes.data) ? categoriesRes.data : []);
 
             // Handle product ID from state if available
-            const state = location.state as { productId?: string };
+            const state = location.state as { 
+                productId?: string; 
+                filterCategoryId?: string; 
+                openCreateModal?: boolean;
+                categoryId?: string;
+            };
+
+            if (state?.filterCategoryId) {
+                setSelectedCategoryId(state.filterCategoryId);
+            }
+
             if (state?.productId) {
-                const productsList = Array.isArray(productsRes.data) ? productsRes.data : [];
+                const productsList = Array.isArray(productsRes.data?.items) ? productsRes.data.items : (Array.isArray(productsRes.data) ? productsRes.data : []);
                 const found = productsList.find((p: Product) => p.id === state.productId);
                 if (found) {
                     setEditingProduct(found);
                     setShowModal(true);
                 }
+            } else if (state?.openCreateModal) {
+                setEditingProduct(null);
+                setShowModal(true);
+            }
+
+            // Clear state to avoid re-triggering on refresh
+            if (state) {
+                window.history.replaceState({}, document.title);
             }
 
         } catch (err) {

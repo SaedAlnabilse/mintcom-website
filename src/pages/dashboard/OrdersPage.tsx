@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
-import { startOfDay, endOfDay, format, formatDistanceToNow } from 'date-fns';
+import { startOfDay, endOfDay, format } from 'date-fns';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
 import { useRealtime } from '../../hooks/useRealtime';
@@ -17,11 +17,6 @@ import {
   History,
   Eye,
   Undo2,
-  Radio,
-  Volume2,
-  VolumeX,
-  Zap,
-  Activity,
   ArrowUpDown
 } from 'lucide-react';
 import api from '../../config/api';
@@ -63,6 +58,8 @@ interface Order {
   user?: {
     username: string;
   };
+  employeeName?: string;
+  refundedByName?: string;
   note?: string;
   status: string;
 }
@@ -200,87 +197,6 @@ export function OrdersPage() {
   const [shiftStatus, setShiftStatus] = useState<ShiftStatus | null>(null);
   const [lastShiftSnapshot, setLastShiftSnapshot] = useState<{ startTime: string; timestamp: string } | null>(null);
   const [totalHeldCount, setTotalHeldCount] = useState(0);
-
-  // 🎬 LIVE SHIFT MODE - Creative feature!
-  const [isLiveMode, setIsLiveMode] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(false);
-  const [newOrderIds, setNewOrderIds] = useState<Set<string>>(new Set());
-  const [pulseActivity, setPulseActivity] = useState(0);
-  const [recentOrdersTicker, setRecentOrdersTicker] = useState<Order[]>([]);
-  const liveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const previousOrdersRef = useRef<Order[]>([]);
-
-  // Initialize audio for notifications
-  useEffect(() => {
-    // Create a simple beep sound using Web Audio API
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const playChaChing = () => {
-      if (!soundEnabled) return;
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      oscillator.frequency.setValueAtTime(1200, audioContext.currentTime);
-      oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.1);
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.1);
-    };
-    audioRef.current = { play: playChaChing } as any;
-  }, [soundEnabled]);
-
-  // Live mode - Visual pulse only (fetching is handled by real-time events)
-  useEffect(() => {
-    if (!isLiveMode) {
-      if (liveIntervalRef.current) {
-        clearInterval(liveIntervalRef.current);
-        liveIntervalRef.current = null;
-      }
-      return;
-    }
-
-    // Visual pulse animation only - NO FETCHING
-    liveIntervalRef.current = setInterval(() => {
-      setPulseActivity(prev => (prev + 1) % 3);
-    }, 5000);
-
-    return () => {
-      if (liveIntervalRef.current) {
-        clearInterval(liveIntervalRef.current);
-      }
-    };
-  }, [isLiveMode]);
-
-  // Detect new orders and highlight them
-  const detectNewOrders = useCallback((currentOrders: Order[], previousOrders: Order[]) => {
-    const previousIds = new Set(previousOrders.map(o => o.id));
-    const newOnes = currentOrders.filter(o => !previousIds.has(o.id));
-    
-    if (newOnes.length > 0) {
-      // Play sound for new orders
-      if (audioRef.current && soundEnabled) {
-        audioRef.current.play();
-      }
-      
-      // Add to highlight set
-      const newIds = new Set(newOnes.map(o => o.id));
-      setNewOrderIds(prev => new Set([...prev, ...newIds]));
-      
-      // Add to ticker
-      setRecentOrdersTicker(prev => [...newOnes.slice(0, 3), ...prev].slice(0, 10));
-      
-      // Remove highlight after 3 seconds
-      setTimeout(() => {
-        setNewOrderIds(prev => {
-          const next = new Set(prev);
-          newIds.forEach(id => next.delete(id));
-          return next;
-        });
-      }, 3000);
-    }
-  }, [soundEnabled]);
 
   // Check shift status function (can be called manually)
   const checkShiftStatus = useCallback(async (showToast = false) => {
@@ -433,7 +349,7 @@ export function OrdersPage() {
         setEndDate(newEndDate);
       }
     }
-  }, [selectedDateRange]);
+  }, [selectedDateRange, startDate, endDate]);
 
   // Memoize fetchOrders to prevent stale closures
   const fetchOrders = useCallback(async () => {
@@ -587,12 +503,6 @@ export function OrdersPage() {
            serverTotalPages = Math.ceil(totalOrders / 10) || 1;
         }
 
-        // 🔴 Live mode: detect new orders
-        if (isLiveMode && previousOrdersRef.current.length > 0) {
-          detectNewOrders(fetchedOrders, previousOrdersRef.current);
-        }
-        previousOrdersRef.current = fetchedOrders;
-
         if (Array.isArray(mainRes?.data)) {
            // Fallback for array response
            const total = fetchedOrders.length;
@@ -614,7 +524,7 @@ export function OrdersPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [page, statusFilter, paymentFilter, startDate, endDate, selectedDateRange, searchQuery, shiftStatus, lastShiftSnapshot, isLiveMode, detectNewOrders]);
+  }, [page, statusFilter, paymentFilter, startDate, endDate, selectedDateRange, searchQuery, shiftStatus, lastShiftSnapshot]);
 
   useEffect(() => {
     fetchOrders();
@@ -664,19 +574,7 @@ export function OrdersPage() {
     authToken: accessToken || undefined,
   });
 
-  // Use refs to avoid re-subscribing when dependencies change
-  const fetchOrdersRef = useRef(fetchOrders);
-  const isLiveModeRef = useRef(isLiveMode);
-  const soundEnabledRef = useRef(soundEnabled);
-  const statusFilterRef = useRef(statusFilter);
-
-  useEffect(() => { fetchOrdersRef.current = fetchOrders; }, [fetchOrders]);
-  useEffect(() => { isLiveModeRef.current = isLiveMode; }, [isLiveMode]);
-  useEffect(() => { soundEnabledRef.current = soundEnabled; }, [soundEnabled]);
-  useEffect(() => { statusFilterRef.current = statusFilter; }, [statusFilter]);
-
   // Listen for real-time order events
-  // Use stable callback that references latest values via refs
   useEffect(() => {
     console.log('[Orders] 📡 Registering real-time event listener');
     const unsubscribe = onRefresh((eventType) => {
@@ -685,26 +583,16 @@ export function OrdersPage() {
           eventType === DataChangeEventTypes.ORDER_REFUNDED ||
           eventType === DataChangeEventTypes.ORDER_UPDATED) {
         // Trigger immediate refresh
-        fetchOrdersRef.current();
-
-        // If live mode is on and sound is enabled, the detectNewOrders
-        // will handle the sound and highlighting
-        if (!isLiveModeRef.current && audioRef.current && soundEnabledRef.current) {
-          audioRef.current.play().catch(() => {
-            // Ignore audio play errors
-          });
-        }
+        fetchOrders();
       }
 
       // Refresh when held order events occur
       if (eventType === DataChangeEventTypes.HELD_ORDER_CREATED ||
           eventType === DataChangeEventTypes.HELD_ORDER_DELETED) {
         // Always refresh if viewing held orders
-        if (statusFilterRef.current === 'HELD') {
-          fetchOrdersRef.current();
+        if (statusFilter === 'HELD') {
+          fetchOrders();
         }
-        // If viewing "all" orders, just show notification - held orders are in separate tab
-        // The toast notification from realtimeService will inform the user
       }
 
       // Refresh shift status when shift events occur
@@ -714,13 +602,13 @@ export function OrdersPage() {
         api.get('/dashboard/live-shift').then(res => {
           setShiftStatus(res.data);
           // Also refresh orders if filtering by current shift
-          fetchOrdersRef.current();
+          fetchOrders();
         }).catch(console.error);
       }
     });
 
     return unsubscribe;
-  }, [onRefresh]); // Only depend on onRefresh
+  }, [onRefresh, fetchOrders, statusFilter]); // Added missing dependencies
 
   const searchOrder = useCallback(async () => {
     if (!searchQuery.trim()) {
@@ -847,41 +735,6 @@ export function OrdersPage() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* 🎬 LIVE MODE Toggle - Only visible when viewing active shift */}
-          {selectedDateRange === 'current_shift' && shiftStatus?.shiftStatus === 'ACTIVE' && (
-            <div className="flex items-center gap-2 bg-gradient-to-r from-red-500/10 via-orange-500/10 to-red-500/10 rounded-xl p-1 pr-3 border border-red-500/20 animate-pulse">
-              <button
-                onClick={() => setIsLiveMode(!isLiveMode)}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-sm transition-all ${
-                  isLiveMode 
-                    ? 'bg-red-500 text-white shadow-lg shadow-red-500/30' 
-                    : 'bg-white dark:bg-white/10 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/20'
-                }`}
-              >
-                <Radio size={16} className={isLiveMode ? 'animate-pulse' : ''} />
-                <span className="hidden sm:inline">{isLiveMode ? 'LIVE' : 'Go Live'}</span>
-              </button>
-              
-              {isLiveMode && (
-                <>
-                  <button
-                    onClick={() => setSoundEnabled(!soundEnabled)}
-                    className={`p-2 rounded-lg transition-all ${soundEnabled ? 'text-red-500' : 'text-gray-400'}`}
-                    title={soundEnabled ? 'Sound On' : 'Sound Off'}
-                  >
-                    {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
-                  </button>
-                  
-                  {/* Activity Pulse Indicator */}
-                  <div className="flex items-center gap-1">
-                    <Activity size={14} className={`text-red-500 transition-all ${pulseActivity === 0 ? 'scale-125' : 'scale-100'}`} />
-                    <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
-                  </div>
-                </>
-              )}
-            </div>
-          )}
-
           {/* Shift Selector */}
           {(shiftStatus?.shiftStatus === 'ACTIVE' || lastShiftSnapshot) && (
             <div className="w-[200px]">
@@ -924,28 +777,6 @@ export function OrdersPage() {
           </button>
         </div>
       </div>
-
-      {/* 🎬 Live Mode Activity Ticker */}
-      {isLiveMode && recentOrdersTicker.length > 0 && (
-        <div className="bg-gradient-to-r from-red-500/5 via-orange-500/5 to-red-500/5 rounded-xl border border-red-500/10 p-3 overflow-hidden">
-          <div className="flex items-center gap-3">
-            <Zap size={16} className="text-red-500 flex-shrink-0" />
-            <div className="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-wider flex-shrink-0">
-              Just In:
-            </div>
-            <div className="flex gap-4 animate-marquee">
-              {recentOrdersTicker.map((order, i) => (
-                <span key={`${order.id}-${i}`} className="text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                  <span className="font-bold text-gray-900 dark:text-white">#{order.orderNumber}</span>
-                  {' '}- {formatAmount(order.total)}
-                  {' '}• {order.items?.length || 0} items
-                  <span className="text-xs text-gray-400 ml-2">({formatDistanceToNow(new Date(order.createdAt), { addSuffix: true })})</span>
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Unified Filter Control Deck */}
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl sm:rounded-[24px] border border-gray-100 dark:border-white/5 p-2 shadow-sm">
@@ -1074,70 +905,8 @@ export function OrdersPage() {
         </div>
       )}
 
-      {/* 🎬 LIVE MODE: Shift Pulse Dashboard */}
-      {isLiveMode && selectedDateRange === 'current_shift' && shiftStatus?.activeShift && (
-        <div className="bg-gradient-to-r from-red-500/10 via-orange-500/10 to-red-500/10 rounded-2xl border border-red-500/20 p-4 sm:p-6 animate-pulse-slow">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="relative">
-              <div className="w-3 h-3 bg-red-500 rounded-full animate-ping absolute" />
-              <div className="w-3 h-3 bg-red-500 rounded-full relative" />
-            </div>
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              Live Shift Dashboard
-              <span className="text-xs font-black text-red-500 uppercase tracking-wider animate-pulse">● LIVE</span>
-            </h2>
-          </div>
-          
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {/* Shift Duration */}
-            <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3">
-              <p className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Shift Duration</p>
-              <p className="text-xl font-black text-gray-900 dark:text-white">
-                {(() => {
-                  const start = new Date(shiftStatus.activeShift!.startTime);
-                  const now = new Date();
-                  const diff = Math.floor((now.getTime() - start.getTime()) / 1000 / 60);
-                  const hours = Math.floor(diff / 60);
-                  const mins = diff % 60;
-                  return `${hours}h ${mins}m`;
-                })()}
-              </p>
-            </div>
-            
-            {/* Orders This Shift */}
-            <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3">
-              <p className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Orders</p>
-              <p className="text-xl font-black text-gray-900 dark:text-white">{orders.length}</p>
-            </div>
-            
-            {/* Avg Order Value */}
-            <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3">
-              <p className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Avg Order</p>
-              <p className="text-xl font-black text-gray-900 dark:text-white">
-                {orders.length > 0 
-                  ? formatAmount(orders.reduce((acc, o) => acc + (o.total || 0), 0) / orders.length)
-                  : formatAmount(0)}
-              </p>
-            </div>
-            
-            {/* Orders Per Hour */}
-            <div className="bg-white/50 dark:bg-white/5 rounded-xl p-3">
-              <p className="text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Orders/Hour</p>
-              <p className="text-xl font-black text-gray-900 dark:text-white">
-                {(() => {
-                  const start = new Date(shiftStatus.activeShift!.startTime);
-                  const now = new Date();
-                  const hours = (now.getTime() - start.getTime()) / 1000 / 60 / 60;
-                  return hours > 0 ? (orders.length / hours).toFixed(1) : '0';
-                })()}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Kpi Strip - horizontal scroll on mobile */}
-      <div className="flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible pb-2 sm:pb-0">
+      <div className={`flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:gap-4 sm:overflow-visible pb-2 sm:pb-0 ${selectedDateRange === 'current_shift' ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
         {[
           {
             label: 'Total Sales',
@@ -1157,7 +926,7 @@ export function OrdersPage() {
             onClick: () => { setStatusFilter('all'); setPage(1); },
             active: statusFilter === 'all'
           },
-          {
+          ...(selectedDateRange === 'current_shift' ? [{
             label: 'On Hold',
             value: totalHeldCount,
             icon: Clock,
@@ -1165,7 +934,7 @@ export function OrdersPage() {
             bg: 'bg-orange-500/10',
             onClick: () => { setStatusFilter('HELD'); setPaymentFilter('all'); setPage(1); },
             active: statusFilter === 'HELD'
-          },
+          }] : []),
         ].map((stat, i) => (
           <div
             key={i}
@@ -1228,11 +997,7 @@ export function OrdersPage() {
                   key={order.id}
                   data-order-id={order.id}
                   onClick={() => setSelectedOrder(order)}
-                  className={`p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all cursor-pointer active:bg-gray-100 dark:active:bg-white/[0.04] ${
-                    newOrderIds.has(order.id) 
-                      ? 'bg-gradient-to-r from-red-500/10 via-orange-500/10 to-red-500/10 animate-pulse border-l-4 border-red-500' 
-                      : ''
-                  }`}
+                  className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all cursor-pointer active:bg-gray-100 dark:active:bg-white/[0.04]"
                 >
                   {/* Card Header: Order # and Status */}
                   <div className="flex items-start justify-between mb-3">
@@ -1351,11 +1116,7 @@ export function OrdersPage() {
                       key={order.id}
                       data-order-id={order.id}
                       onClick={() => setSelectedOrder(order)}
-                      className={`group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all cursor-pointer ${
-                        newOrderIds.has(order.id) 
-                          ? 'bg-gradient-to-r from-red-500/10 via-orange-500/10 to-red-500/10 animate-pulse border-l-4 border-red-500' 
-                          : ''
-                      }`}
+                      className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all cursor-pointer"
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">

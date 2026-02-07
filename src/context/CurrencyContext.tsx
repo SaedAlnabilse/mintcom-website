@@ -34,7 +34,7 @@ interface CurrencyProviderProps {
 }
 
 export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, currentEstablishment } = useAuth();
   const [currency, setCurrency] = useState<string>('JOD');
   const [loading, setLoading] = useState(true);
 
@@ -43,7 +43,10 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
 
   // Refresh currency from backend
   const refreshCurrency = useCallback(async () => {
-    if (!isAuthenticated) return;
+    if (!isAuthenticated || !currentEstablishment) {
+      setLoading(false);
+      return;
+    }
     
     try {
       const response = await api.get('/app-settings');
@@ -60,7 +63,7 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
 
   // Load currency on mount and poll periodically
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && currentEstablishment) {
       refreshCurrency();
 
       // Poll for currency updates every 30 seconds (to sync with POS)
@@ -70,7 +73,7 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
 
       return () => clearInterval(intervalId);
     }
-  }, [refreshCurrency, isAuthenticated]);
+  }, [refreshCurrency, isAuthenticated, currentEstablishment]);
 
   // Format amount with currency (symbol after amount for consistency)
   const formatAmount = (amount: number | string | null | undefined): string => {

@@ -4,21 +4,24 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const plans = [
   {
-    name: "Premium Plan",
+    name: "Monthly Plan",
     price: "20$",
     period: "/m",
-    description: "Everything you need to run your business.",
-    features: ["Software License", "Cash Drawer Included", "Installment Options", "Year-round Support", "Mobile Admin Portal"],
+    description: "Your “aha” moment is just minutes away.",
+    features: [
+      "POS for tablets and mobile devices",
+      "Online dashboard & management system",
+      "Unlimited staff accounts",
+      "Access to the Admin Mobile App",
+      "Dedicated customer support",
+      "Advanced reports & analytics"
+    ],
     detailedFeatures: [
-      "Full Pos Access",
-      "Cash Drawer",
-      "Tablet Options",
-      "Flexible Payments",
-      "24/7 Support",
-      "Mobile Admin App",
-      "Advanced Reports",
-      "Inventory",
-      "Staff Tracking"
+      "Point of Sale",
+      "Inventory Management",
+      "Staff Management",
+      "Advanced Reporting",
+      "Production & Cost Tracking"
     ],
     notIncluded: null,
     cta: "Start Free Trial",
@@ -73,7 +76,7 @@ export const Pricing = () => {
           className="text-center mb-20"
         >
           <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-6 tracking-tight">
-            Simple Pricing
+            Get Started
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
             All-in-one plans. No hidden fees.

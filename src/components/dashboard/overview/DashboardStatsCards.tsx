@@ -51,7 +51,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
     return formatAmount(value);
   };
 
-  const statCards = [
+  const statCards: any[] = [
     {
       label: 'Total Sales',
       value: formatCurrency((stats?.totalRevenue || 0) + (stats?.taxCollected || 0)),
@@ -97,8 +97,11 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
         if (viewMode === 'previous_shift') state.selectedDateRange = 'previous_shift';
         navigate(`/dashboard/${locationSlug}/orders`, { state });
       }
-    },
-    {
+    }
+  ];
+
+  if (viewMode === 'current_shift') {
+    statCards.push({
       label: 'On Hold',
       value: stats?.pendingOrders?.toString() || '0',
       sub: 'Pending Orders',
@@ -107,11 +110,13 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
       bg: 'bg-orange-500/10',
       onClick: () => {
         const state: any = { statusFilter: 'HELD' };
-        if (viewMode === 'current_shift') state.selectedDateRange = 'current_shift';
-        if (viewMode === 'previous_shift') state.selectedDateRange = 'previous_shift';
+        state.selectedDateRange = 'current_shift';
         navigate(`/dashboard/${locationSlug}/orders`, { state });
       }
-    },
+    });
+  }
+
+  statCards.push(
     {
       label: 'Avg Order',
       value: formatCurrency(stats?.averageOrderValue || 0),
@@ -150,7 +155,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
       ),
       onClick: () => setShowPayInOutModal(true)
     }
-  ];
+  );
 
   if (viewMode === 'previous_shift' && previousShiftSnapshot) {
     statCards.push({

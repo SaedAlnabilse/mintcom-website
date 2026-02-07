@@ -1,20 +1,43 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Mail, Phone, MapPin, X, CheckCircle2, Loader2 } from 'lucide-react';
+import api from '../config/api';
+import toast from 'react-hot-toast';
 
 export const Contact = () => {
   const [activeModal, setActiveModal] = useState<'privacy' | 'terms' | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  // Form states
+  const [formData, setFormData] = useState({
+    fullName: '',
+    businessName: '',
+    email: '',
+    message: ''
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate Api call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-    setIsSuccess(true);
-    setTimeout(() => setIsSuccess(false), 5000);
+    
+    try {
+      await api.post('/api/contact', formData);
+      setIsSuccess(true);
+      setFormData({ fullName: '', businessName: '', email: '', message: '' });
+      toast.success('Message sent successfully!');
+      setTimeout(() => setIsSuccess(false), 5000);
+    } catch (error: any) {
+      console.error('Contact form error:', error);
+      toast.error(error.response?.data?.message || 'Failed to send message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -91,6 +114,9 @@ export const Contact = () => {
                         <input
                           required
                           type="text"
+                          name="fullName"
+                          value={formData.fullName}
+                          onChange={handleInputChange}
                           className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-2xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
                           placeholder="John Doe"
                         />
@@ -100,6 +126,9 @@ export const Contact = () => {
                         <input
                           required
                           type="text"
+                          name="businessName"
+                          value={formData.businessName}
+                          onChange={handleInputChange}
                           className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-2xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
                           placeholder="Acme Corp"
                         />
@@ -111,6 +140,9 @@ export const Contact = () => {
                       <input
                         required
                         type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
                         className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-2xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
                         placeholder="john@example.com"
                       />
@@ -120,6 +152,9 @@ export const Contact = () => {
                       <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">Your Message</label>
                       <textarea
                         required
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
                         rows={4}
                         className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-2xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none"
                         placeholder="How can we help?"

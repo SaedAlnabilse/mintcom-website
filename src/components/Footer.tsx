@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Phone, MapPin, Instagram, Twitter, Linkedin, Facebook, X, Tablet, Printer, CheckCircle2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Instagram, Twitter, Linkedin, Facebook, Youtube, X, Tablet, Printer, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './Logo';
 
@@ -64,23 +64,21 @@ export const Footer = () => {
   const [showHardwareModal, setShowHardwareModal] = useState(false);
   const [selectedHardware, setSelectedHardware] = useState(hardwareItems[0]);
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+  type FooterLink = {
+    name: string;
+    href?: string;
+    action?: () => void;
   };
 
-  const productLinks = [
-    { name: 'Features', action: () => scrollToSection('features') },
-    { name: 'Pricing', action: () => scrollToSection('pricing') },
+  const productLinks: FooterLink[] = [
+    { name: 'Features', href: '/#features' },
+    { name: 'Pricing', href: '/#pricing' },
     { name: 'Hardware', action: () => setShowHardwareModal(true) },
-    { name: 'Contact', action: () => scrollToSection('contact') },
   ];
 
-  const companyLinks = [
-    { name: 'About Us', action: () => scrollToSection('features') },
-    { name: 'Contact', action: () => scrollToSection('contact') },
+  const companyLinks: FooterLink[] = [
+    { name: 'About Us', href: '/about' },
+    { name: 'Contact', href: '/#contact' },
   ];
 
   return (
@@ -95,7 +93,7 @@ export const Footer = () => {
                 Simple, secure Pos for growing businesses.
               </p>
               <div className="flex gap-4">
-                {[Instagram, Twitter, Linkedin, Facebook].map((Icon, i) => (
+                {[Instagram, Twitter, Linkedin, Facebook, Youtube].map((Icon, i) => (
                   <a
                     key={i}
                     href="#"
@@ -113,12 +111,21 @@ export const Footer = () => {
               <ul className="space-y-4">
                 {productLinks.map((link) => (
                   <li key={link.name}>
-                    <button
-                      onClick={link.action}
-                      className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
-                    >
-                      {link.name}
-                    </button>
+                    {link.href ? (
+                      <a
+                        href={link.href}
+                        className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
+                      >
+                        {link.name}
+                      </a>
+                    ) : (
+                      <button
+                        onClick={link.action}
+                        className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
+                      >
+                        {link.name}
+                      </button>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -130,12 +137,21 @@ export const Footer = () => {
               <ul className="space-y-4">
                 {companyLinks.map((link) => (
                   <li key={link.name}>
-                    <button
-                      onClick={link.action}
-                      className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
-                    >
-                      {link.name}
-                    </button>
+                    {link.href ? (
+                      <a
+                        href={link.href}
+                        className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
+                      >
+                        {link.name}
+                      </a>
+                    ) : (
+                      <button
+                        onClick={link.action}
+                        className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
+                      >
+                        {link.name}
+                      </button>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -172,9 +188,8 @@ export const Footer = () => {
               © 2025 PayMint Llc. All rights reserved.
             </p>
             <div className="flex gap-8">
-              {['Privacy Policy', 'Terms of Service'].map((link) => (
-                <a key={link} href="#" className="text-gray-500 dark:text-gray-500 text-xs font-bold hover:text-paymint-green transition-colors tracking-widest">{link}</a>
-              ))}
+              <a href="/legal/privacy" target="_blank" className="text-gray-500 dark:text-gray-500 text-xs font-bold hover:text-paymint-green transition-colors tracking-widest">Privacy Policy</a>
+              <a href="/legal/terms" target="_blank" className="text-gray-500 dark:text-gray-500 text-xs font-bold hover:text-paymint-green transition-colors tracking-widest">Terms of Service</a>
             </div>
           </div>
         </div>
@@ -220,8 +235,8 @@ export const Footer = () => {
                         key={item.id}
                         onClick={() => setSelectedHardware(item)}
                         className={`flex items-center gap-3 p-3 rounded-xl transition-all whitespace-nowrap md:whitespace-normal w-full text-left ${selectedHardware.id === item.id
-                            ? 'bg-paymint-green text-black'
-                            : 'bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'
+                          ? 'bg-paymint-green text-black'
+                          : 'bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'
                           }`}
                       >
                         <item.icon size={20} />

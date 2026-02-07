@@ -45,18 +45,18 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-paymint-green/10 text-paymint-green font-medium text-sm mb-8 border border-paymint-green/20"
             >
               <Zap size={14} fill="currentColor" />
-              <span>Modern Restaurant Pos</span>
+              <span>All-in-One Point of Sale System</span>
             </motion.div>
 
             <h1 className="text-5xl lg:text-7xl font-bold font-sans text-gray-900 dark:text-white mb-8 leading-[1.1] tracking-tight">
-              Manage Less, <br />
+              Earn More. <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-emerald-400">
-                Earn More.
+                Manage Better. <br /> Work Smarter.
               </span>
             </h1>
 
             <p className="text-xl text-gray-600 dark:text-gray-400 mb-10 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-light">
-              The complete Pos system to run your business, help your team, and serve customers better.
+              PayMint is a complete 360° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations—all from one simple system.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -65,7 +65,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
                 onClick={() => window.open('/signup', '_blank')}
                 className="bg-paymint-green text-black px-8 py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 group"
               >
-                Get Started Free
+                Start Free Trial
                 <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
               </motion.button>
 

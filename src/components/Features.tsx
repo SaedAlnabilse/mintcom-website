@@ -4,23 +4,23 @@ import { ShieldCheck, Zap, Settings, Store } from 'lucide-react';
 const features = [
   {
     icon: <Store className="w-6 h-6 text-white" />,
-    title: "All-in-One Solution",
-    description: "Manage sales, inventory, and staff from a single dashboard."
+    title: "A Complete Solution — No Hidden Costs",
+    description: "PayMint is more than a checkout system. You get a powerful reporting engine with advanced filters, staff and role management, customer profiles and loyalty programs, discounts, raw material and stock tracking, and much more—all included in one fixed monthly plan."
   },
   {
     icon: <Zap className="w-6 h-6 text-white" />,
-    title: "Lightning Fast",
-    description: "Fast and easy for your team to use."
-  },
-  {
-    icon: <Settings className="w-6 h-6 text-white" />,
-    title: "Highly Customizable",
-    description: "Customize menus and receipts easily."
+    title: "Designed for Real Users",
+    description: "PayMint is built for business owners, cashiers, and managers—not tech experts. We worked closely with real users to design an intuitive experience that minimizes training time. From login to first sale in under 10 minutes."
   },
   {
     icon: <ShieldCheck className="w-6 h-6 text-white" />,
-    title: "Secure & Reliable",
-    description: "Top-tier security keeps your business safe."
+    title: "Enterprise-Grade Security",
+    description: "Your data is fully encrypted, securely stored, and automatically archived. We’ve invested heavily in top-tier security standards to ensure your business information is protected at all times."
+  },
+  {
+    icon: <Settings className="w-6 h-6 text-white" />,
+    title: "Multi-Branch Management",
+    description: "Run one store or many—PayMint supports multiple merged branches or separate stores under one unified dashboard. Manage staff, products, sales, and performance across all locations from a single control panel."
   }
 ];
 
@@ -70,10 +70,10 @@ export const Features = () => {
               transition={{ duration: 0.6 }}
             >
               <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-6 tracking-tight">
-                Why Choose <span className="text-paymint-green">PayMint?</span>
+                Why <span className="text-paymint-green">PayMint?</span>
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-400 mb-12 leading-relaxed">
-                We've removed the complexity. No clunky hardware, no confusing menus—just tools that work.
+                At PayMint, we believe in keeping things simple: simple onboarding, simple installation, simple setup, and simple pricing.
               </p>
             </motion.div>
 
