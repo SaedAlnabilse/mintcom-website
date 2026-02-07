@@ -93,13 +93,18 @@ export const Footer = () => {
                 Simple, secure Pos for growing businesses.
               </p>
               <div className="flex gap-4">
-                {[Instagram, Youtube].map((Icon, i) => (
+                {[
+                  { Icon: Instagram, href: 'https://www.instagram.com' },
+                  { Icon: Youtube, href: 'https://www.youtube.com' }
+                ].map((social, i) => (
                   <a
                     key={i}
-                    href="#"
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-10 h-10 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-paymint-green hover:text-black hover:border-paymint-green transition-all"
                   >
-                    <Icon size={18} />
+                    <social.Icon size={18} />
                   </a>
                 ))}
               </div>
