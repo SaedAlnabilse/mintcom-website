@@ -400,7 +400,7 @@ export function BrandLayout() {
                             </div>
 
                             <div className="flex items-center gap-1">
-                                <ThemeToggle dropdownDirection="up" className="w-12 h-12 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white" />
+                                <ThemeToggle dropdownDirection="up" className="w-12 h-12 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white" />
                                 <button
                                     onClick={handleLogout}
                                     className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all"

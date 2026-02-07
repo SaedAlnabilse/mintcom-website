@@ -103,7 +103,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                     await api.post(`/api/orders/${order.id}/refund`, {
                         reason: 'Refunded via web dashboard',
                     });
-                    toast.success('Order reversed');
+                    toast.success('Order refunded');
                     if (onRefundSuccess) onRefundSuccess();
                     onClose();
                 } catch (err) {
@@ -187,7 +187,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                                 <div>
                                     <p className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center gap-1">
                                         Refunded By
-                                        <QuickInfo text="Who reversed this order." />
+                                        <QuickInfo text="Who refunded this order." />
                                     </p>
                                     <p className="text-sm font-bold text-paymint-red">{order.refundedByName}</p>
                                 </div>

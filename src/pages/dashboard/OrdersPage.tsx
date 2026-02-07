@@ -906,7 +906,7 @@ export function OrdersPage() {
       )}
 
       {/* Kpi Strip - horizontal scroll on mobile */}
-      <div className={`flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:gap-4 sm:overflow-visible pb-2 sm:pb-0 ${selectedDateRange === 'current_shift' ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
+      <div className="flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible pb-2 sm:pb-0">
         {[
           {
             label: 'Total Sales',
@@ -926,7 +926,7 @@ export function OrdersPage() {
             onClick: () => { setStatusFilter('all'); setPage(1); },
             active: statusFilter === 'all'
           },
-          ...(selectedDateRange === 'current_shift' ? [{
+          {
             label: 'On Hold',
             value: totalHeldCount,
             icon: Clock,
@@ -934,7 +934,7 @@ export function OrdersPage() {
             bg: 'bg-orange-500/10',
             onClick: () => { setStatusFilter('HELD'); setPaymentFilter('all'); setPage(1); },
             active: statusFilter === 'HELD'
-          }] : []),
+          },
         ].map((stat, i) => (
           <div
             key={i}

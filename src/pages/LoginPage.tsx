@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, ArrowLeft, Mail, Lock, X, AlertTriangle, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import { GoogleAuthButton, AuthDivider } from '../components/GoogleAuthButton';
 
 // Paymint Logo imports
 import PaymintLogoGreen from '../assets/green-full-logo.png';
@@ -26,7 +27,30 @@ export function LoginPage() {
   const [unverifiedEmail, setUnverifiedEmail] = useState('');
   const [isResending, setIsResending] = useState(false);
   const navigate = useNavigate();
-  const { login, resendVerification } = useAuth();
+  const { login, loginWithGoogle, resendVerification } = useAuth();
+
+  const handleGoogleSuccess = async (credential: string) => {
+    try {
+      const result = await loginWithGoogle(credential);
+
+      if (result.success) {
+        toast.success(result.message || 'Welcome!');
+        if (result.isSecondaryAdmin) {
+          navigate('/dashboard');
+        } else {
+          navigate('/owner');
+        }
+      } else {
+        toast.error(result.error || 'Google login failed');
+      }
+    } catch {
+      toast.error('Something went wrong. Please try again.');
+    }
+  };
+
+  const handleGoogleError = (error: string) => {
+    toast.error(error);
+  };
 
   const {
     register,
@@ -116,6 +140,16 @@ export function LoginPage() {
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Welcome</h2>
             <p className="text-sm font-bold text-gray-600 dark:text-gray-300">Sign in to your account</p>
           </div>
+
+          {/* Google Sign-In Button */}
+          <GoogleAuthButton
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            text="signin_with"
+            disabled={isSubmitting}
+          />
+
+          <AuthDivider />
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>

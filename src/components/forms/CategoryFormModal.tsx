@@ -51,6 +51,7 @@ interface CategoryFormModalProps {
   onDelete?: (id: string) => void;
   initialData?: Category | null;
   isSubmitting?: boolean;
+  externalError?: string | null;
 }
 
 export function CategoryFormModal({
@@ -60,6 +61,7 @@ export function CategoryFormModal({
   onDelete,
   initialData,
   isSubmitting = false,
+  externalError,
 }: CategoryFormModalProps) {
   const [name, setName] = useState('');
   const [selectedIcon, setSelectedIcon] = useState('tag');
@@ -151,10 +153,10 @@ export function CategoryFormModal({
 
             <form id="category-form" onSubmit={handleSubmit} className="space-y-8">
               {/* Error Banner */}
-              {Object.keys(errors).length > 0 && (
+              {(Object.keys(errors).length > 0 || externalError) && (
                 <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
-                  Please correct the highlighted errors below
+                  {externalError || 'Please correct the highlighted errors below'}
                 </div>
               )}
 
@@ -169,7 +171,7 @@ export function CategoryFormModal({
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
                   placeholder="E.g. Hot Infusions"
-                  className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                  className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name || (externalError && externalError.toLowerCase().includes('already exists')) ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                 />
                 {errors.name && <p className="mt-1.5 px-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
               </div>

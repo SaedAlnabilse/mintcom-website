@@ -20,6 +20,7 @@ interface AuthContextType {
   // Account auth methods
   register: (data: RegisterData) => Promise<AuthResult>;
   login: (email: string, password: string) => Promise<AuthResult>;
+  loginWithGoogle: (credential: string) => Promise<AuthResult>;
   logout: () => Promise<void>;
 
   // Verification methods
@@ -210,6 +211,64 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const loginWithGoogle = async (credential: string): Promise<AuthResult> => {
+    setIsLoggingIn(true);
+    setLoginSuccess(false);
+
+    try {
+      // Send the Google ID token to our backend for verification
+      const response = await api.post('/api/accounts/google-auth', { credential });
+
+      if (response.data.account) {
+        // Success state
+        setLoginSuccess(true);
+
+        // Wait for success animation to play
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        const { account: accountData, establishments: estList, token } = response.data;
+
+        // Save account data and token to localStorage
+        localStorage.setItem('account', JSON.stringify(accountData));
+        if (token) {
+          localStorage.setItem('accessToken', token);
+        }
+
+        setAccount(accountData);
+        setEstablishments(estList || []);
+
+        // Auto-select the first establishment if available
+        if (estList && estList.length > 0) {
+          const defaultEst = estList[0];
+          setCurrentEstablishmentState(defaultEst);
+          sessionStorage.setItem('currentEstablishment', JSON.stringify(defaultEst));
+        }
+
+        // Keep overlay on until navigation completes
+        setTimeout(() => {
+          setIsLoggingIn(false);
+          setLoginSuccess(false);
+        }, 500);
+
+        return {
+          success: true,
+          isSecondaryAdmin: !!accountData.isSecondaryAdmin,
+          message: response.data.isNewUser ? 'Account created successfully!' : 'Welcome back!'
+        };
+      }
+
+      setIsLoggingIn(false);
+      return { success: false, error: 'Google login failed' };
+    } catch (error: any) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setIsLoggingIn(false);
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Google authentication failed. Please try again.',
+      };
+    }
+  };
+
   const logout = async () => {
     setIsLoggingOut(true);
     try {
@@ -366,6 +425,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         needsOnboarding,
         register,
         login,
+        loginWithGoogle,
         logout,
         verifyEmail,
         resendVerification,

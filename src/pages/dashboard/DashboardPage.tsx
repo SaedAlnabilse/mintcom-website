@@ -272,9 +272,10 @@ export const DashboardPage = () => {
         });
       }
       if (eventType === DataChangeEventTypes.SHIFT_ENDED) {
-        console.log('[Dashboard] 🔴 Shift ended - refreshing');
-        refreshShiftStatusRef.current();
-        fetchDashboardDataRef.current();
+        console.log('[Dashboard] 🔴 Shift ended - refreshing and switching to 24h view');
+        refreshShiftStatusRef.current().then(() => {
+          setViewMode('last_24_hours');
+        });
       }
     });
 

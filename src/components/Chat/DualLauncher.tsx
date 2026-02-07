@@ -14,11 +14,6 @@ export function DualLauncher({ onOpenChat, onOpenFAQ, isChatOpen, isFAQOpen, onC
   const [isExpanded, setIsExpanded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    document.body.classList.toggle('launcher-expanded', isExpanded);
-    return () => document.body.classList.remove('launcher-expanded');
-  }, [isExpanded]);
-
   // Close when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -38,19 +33,19 @@ export function DualLauncher({ onOpenChat, onOpenFAQ, isChatOpen, isFAQOpen, onC
         animate={{ scale: 1, rotate: 0 }}
         exit={{ scale: 0, rotate: 90 }}
         onClick={onCloseAll}
-        className="fixed bottom-6 right-6 z-[999999] w-12 h-12 rounded-full bg-white dark:bg-[#1E293B] text-gray-900 dark:text-white shadow-2xl flex items-center justify-center hover:bg-gray-100 dark:hover:bg-white/5 border border-gray-200 dark:border-white/10 transition-colors"
+        className="fixed bottom-6 right-6 z-[999999] w-14 h-14 rounded-2xl bg-white dark:bg-[#1E293B] text-gray-900 dark:text-white shadow-2xl flex items-center justify-center hover:bg-gray-100 dark:hover:bg-white/5 border border-gray-200 dark:border-white/10 transition-all hover:scale-105"
       >
-        <X size={20} />
+        <X size={22} />
       </motion.button>
     );
   }
 
   return (
     <div className="fixed bottom-6 right-6 z-[999999]" ref={containerRef}>
-      <motion.div 
+      <motion.div
         layout
-        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-        className="relative flex items-center p-1.5 bg-white/90 dark:bg-[#0F172A]/90 backdrop-blur-xl rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-gray-200/50 dark:border-white/10 overflow-hidden"
+        transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+        className="relative flex items-center p-1.5 bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-xl rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-gray-200/60 dark:border-white/10 overflow-hidden"
       >
         <AnimatePresence mode="wait" initial={false}>
           {!isExpanded ? (
@@ -60,11 +55,17 @@ export function DualLauncher({ onOpenChat, onOpenFAQ, isChatOpen, isFAQOpen, onC
               onClick={() => setIsExpanded(true)}
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="flex items-center justify-center w-11 h-11 rounded-full bg-[#7CC39F] text-black shadow-lg shadow-[#7CC39F]/30"
+              exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.15 } }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              className="relative flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-[#7CC39F] to-[#5BA882] text-white shadow-lg shadow-[#7CC39F]/40 hover:shadow-[#7CC39F]/60 transition-shadow"
             >
-              <Sparkles size={20} className="animate-pulse" />
+              <Sparkles size={22} className="animate-pulse" />
+              {/* Notification dot */}
+              <motion.div
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-yellow-400 rounded-full border-2 border-white dark:border-[#0F172A] flex items-center justify-center"
+              />
             </motion.button>
           ) : (
             <motion.div
@@ -72,44 +73,67 @@ export function DualLauncher({ onOpenChat, onOpenFAQ, isChatOpen, isFAQOpen, onC
               layout="position"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="flex items-center"
+              exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.15 } }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              className="flex items-center gap-1"
             >
               {/* Primary Trigger (Ask AI) */}
               <motion.button
                 layout="position"
-                onClick={onOpenChat}
-                className="relative z-10 flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#7CC39F] text-black font-bold text-sm shadow-lg shadow-[#7CC39F]/30 group transition-all hover:brightness-110 whitespace-nowrap"
+                onClick={() => {
+                  setIsExpanded(false);
+                  onOpenChat();
+                }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="relative z-10 flex items-center gap-2 px-4 py-2.5 rounded-full bg-gradient-to-r from-[#7CC39F] to-[#5BA882] text-white font-bold text-sm shadow-lg shadow-[#7CC39F]/30 transition-all hover:shadow-[#7CC39F]/50"
               >
-                <Bot size={20} />
-                <span>Ask AI</span>
+                <Bot size={18} />
+                <span>Ask Minto</span>
               </motion.button>
 
-              <motion.div layout="position" className="w-px h-6 bg-gray-200 dark:bg-white/10 mx-2 flex-shrink-0" />
+              <div className="w-px h-6 bg-gray-200 dark:bg-white/10 mx-1" />
 
               {/* Secondary Trigger (Q&A) */}
               <motion.button
                 layout="position"
-                onClick={onOpenFAQ}
-                className="flex items-center gap-2 px-3 py-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 font-bold text-sm transition-all whitespace-nowrap mr-2"
+                onClick={() => {
+                  setIsExpanded(false);
+                  onOpenFAQ();
+                }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex items-center gap-2 px-3 py-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 font-bold text-sm transition-all"
               >
                 <HelpCircle size={18} />
                 <span>Help</span>
               </motion.button>
-              
+
               <motion.button
                 layout="position"
                 onClick={(e) => { e.stopPropagation(); setIsExpanded(false); }}
-                className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors ml-1"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors ml-0.5"
               >
-                <X size={14} />
+                <X size={16} />
               </motion.button>
             </motion.div>
           )}
         </AnimatePresence>
       </motion.div>
+
+      {/* Subtle glow effect when collapsed */}
+      {!isExpanded && (
+        <motion.div
+          animate={{
+            opacity: [0.5, 0.8, 0.5],
+            scale: [1, 1.05, 1],
+          }}
+          transition={{ duration: 3, repeat: Infinity }}
+          className="absolute -inset-2 bg-[#7CC39F]/20 rounded-full blur-xl -z-10"
+        />
+      )}
     </div>
   );
 }
-

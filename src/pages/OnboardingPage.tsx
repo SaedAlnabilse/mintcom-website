@@ -520,11 +520,11 @@ export function OnboardingPage() {
                               setShowCountryDropdown(!showCountryDropdown);
                               if (showCountryDropdown) setCountrySearch('');
                             }}
-                            className={`flex items-center gap-1.5 bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-2xl h-[60px] px-3 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all min-w-[110px]`}
+                            className={`flex items-center gap-1 bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-2xl h-[60px] px-2.5 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all min-w-[90px]`}
                           >
-                            <span className="text-sm font-black">{selectedCountry.code}</span>
-                            <span className="text-xs font-bold">{selectedCountry.dialCode}</span>
-                            <ChevronDown size={14} className="text-gray-400" />
+                            <span className="text-xs font-black">{selectedCountry.code}</span>
+                            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{selectedCountry.dialCode}</span>
+                            <ChevronDown size={12} className="text-gray-400 ml-0.5" />
                           </button>
                           <AnimatePresence>
                             {showCountryDropdown && (
@@ -1164,17 +1164,31 @@ export function OnboardingPage() {
 
                   <div className="relative">
                     <motion.div
-                      animate={{ y: [0, -10, 0] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                      className="absolute -top-12 left-1/2 -translate-x-1/2 z-20"
+                      animate={{ 
+                        y: [0, -8, 0],
+                        scale: [1, 1.05, 1]
+                      }}
+                      transition={{ 
+                        duration: 3, 
+                        repeat: Infinity, 
+                        ease: "easeInOut" 
+                      }}
+                      className="absolute -top-14 left-1/2 -translate-x-1/2 z-20 pointer-events-none"
                     >
-                      <div className="bg-black dark:bg-white text-white dark:text-black font-black text-xs px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 whitespace-nowrap">
-                        <span className="relative flex h-2 w-2">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
-                        </span>
-                        Start Here
-                        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-black dark:bg-white rotate-45"></div>
+                      <div className="relative">
+                        {/* Glow Effect */}
+                        <div className="absolute inset-0 bg-paymint-green/40 blur-xl rounded-full" />
+                        
+                        <div className="relative bg-gradient-to-br from-gray-900 via-black to-gray-900 dark:from-white dark:via-gray-100 dark:to-white text-white dark:text-black font-black text-[10px] tracking-[0.2em] uppercase px-4 py-2 rounded-2xl shadow-2xl flex items-center gap-2.5 whitespace-nowrap border border-white/10 dark:border-black/5">
+                          <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
+                          </span>
+                          Start Here
+                        </div>
+                        
+                        {/* Refined Pointer */}
+                        <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-gray-900 dark:bg-white rotate-45 rounded-sm shadow-xl" />
                       </div>
                     </motion.div>
 

@@ -57,27 +57,29 @@ export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSi
     <div className={`relative ${showLabel ? 'w-full' : ''}`} ref={containerRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center transition-all active:scale-90 ${className || 'justify-center w-9 h-9 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green dark:hover:text-paymint-green'}`}
+        className={`flex items-center transition-all active:scale-90 ${!showLabel && !className.includes('justify-') ? 'justify-center' : ''} ${className || 'w-9 h-9 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green dark:hover:text-paymint-green'}`}
         title="Toggle theme"
       >
-        <AnimatePresence mode="wait">
-          {theme === 'light' && (
-            <motion.div key="light" initial={{ opacity: 0, rotate: -90 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: 90 }}>
-              <Sun size={iconSize} />
-            </motion.div>
-          )}
-          {theme === 'dark' && (
-            <motion.div key="dark" initial={{ opacity: 0, rotate: -90 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: 90 }}>
-              <Moon size={iconSize} />
-            </motion.div>
-          )}
-          {theme === 'system' && (
-            <motion.div key="system" initial={{ opacity: 0, rotate: -90 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: 90 }}>
-              <Monitor size={iconSize} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-        {showLabel && <span>Switch Theme</span>}
+        <div className="relative flex items-center justify-center" style={{ width: iconSize, height: iconSize }}>
+          <AnimatePresence mode="wait">
+            {theme === 'light' && (
+              <motion.div key="light" className="absolute inset-0 flex items-center justify-center" initial={{ opacity: 0, rotate: -90 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: 90 }}>
+                <Sun size={iconSize} />
+              </motion.div>
+            )}
+            {theme === 'dark' && (
+              <motion.div key="dark" className="absolute inset-0 flex items-center justify-center" initial={{ opacity: 0, rotate: -90 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: 90 }}>
+                <Moon size={iconSize} />
+              </motion.div>
+            )}
+            {theme === 'system' && (
+              <motion.div key="system" className="absolute inset-0 flex items-center justify-center" initial={{ opacity: 0, rotate: -90 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0, rotate: 90 }}>
+                <Monitor size={iconSize} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+        {showLabel && <span className="ml-3">Switch Theme</span>}
       </button>
 
       <AnimatePresence>

@@ -60,6 +60,7 @@ export function CategoriesPage() {
   const [viewingCategory, setViewingCategory] = useState<Category | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const [deleteBlockedCategory, setDeleteBlockedCategory] = useState<Category | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -110,6 +111,7 @@ export function CategoriesPage() {
 
   const openCreateModal = () => {
     setEditingCategory(null);
+    setFormError(null);
     setShowModal(true);
   };
 
@@ -133,6 +135,7 @@ export function CategoriesPage() {
 
   const openEditModal = (e: React.MouseEvent, category: Category) => {
     e.stopPropagation();
+    setFormError(null);
     setEditingCategory(category);
     setShowModal(true);
   };
@@ -140,6 +143,7 @@ export function CategoriesPage() {
   const onSubmit = async (name: string, icon: string, sortOrder: number) => {
     try {
       setIsSubmitting(true);
+      setFormError(null);
       const payload = { name, icon, sortOrder };
       if (editingCategory) {
         await api.patch(`/api/categories/${editingCategory.id}`, payload);
@@ -150,8 +154,16 @@ export function CategoriesPage() {
       }
       setShowModal(false);
       fetchData();
-    } catch {
-      toast.error('Failed to save category');
+    } catch (error: any) {
+      console.error('Save category error:', error.response?.data || error.message);
+      let message = error.response?.data?.message || 'Failed to save category';
+      
+      // Map database unique constraint errors to user-friendly messages
+      if (message.includes('Unique constraint failed') && message.includes('name')) {
+        message = 'A category with this name already exists in this location.';
+      }
+      
+      setFormError(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -639,6 +651,7 @@ export function CategoriesPage() {
         onDelete={editingCategory ? () => handleDelete(editingCategory.id) : undefined}
         initialData={editingCategory}
         isSubmitting={isSubmitting}
+        externalError={formError}
       />
 
       <ConfirmModal

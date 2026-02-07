@@ -1,8 +1,8 @@
 import { AppStrings } from '../../constants/AppStrings';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBlocker } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, Clock, Plus, DollarSign } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -76,7 +76,6 @@ interface EstablishmentInfo {
 export function SettingsPage() {
   const { refreshCurrency } = useCurrency();
   const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
-  const [selectedDays, setSelectedDays] = useState<string[]>(['monday']);
   const [, setSettings] = useState<AppSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -351,190 +350,6 @@ export function SettingsPage() {
     } finally {
       setIsSaving(false);
     }
-  };
-
-  const to12Hour = (time24?: string) => {
-    if (!time24) return { hour: '09', minute: '00', period: 'Am' };
-    const [h, m] = time24.split(':');
-    const hr = parseInt(h, 10);
-    const period = hr >= 12 ? 'Pm' : 'Am';
-    const displayHr = hr % 12 || 12;
-    return {
-      hour: displayHr.toString().padStart(2, '0'),
-      minute: m.padStart(2, '0'),
-      period
-    };
-  };
-
-  const to24Hour = (hour: string, minute: string, period: string) => {
-    const hr = parseInt(hour, 10);
-    const hNum = isNaN(hr) ? 9 : hr;
-    let finalHr = hNum;
-    if (period === 'Pm' && hNum < 12) finalHr += 12;
-    if (period === 'Am' && hNum === 12) finalHr = 0;
-    return `${finalHr.toString().padStart(2, '0')}:${minute}`;
-  };
-
-  const TimeSelector = ({ label, subLabel, value, onChange, colorClass = 'paymint-green', compact = false }: {
-    label: string;
-    subLabel: string;
-    value: string;
-    onChange: (val: string) => void;
-    colorClass?: string;
-    compact?: boolean;
-  }) => {
-    const { hour, minute, period } = to12Hour(value);
-    const [isOpen, setIsOpen] = useState(false);
-    const [pendingTime, setPendingTime] = useState<{ h: string; m: string; p: string }>({ h: hour, m: minute, p: period });
-
-    const hours = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'));
-    const minutes = ['00', '15', '30', '45'];
-
-    const hourScrollRef = useRef<HTMLDivElement>(null);
-    const minScrollRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-      if (isOpen) {
-        const timer = setTimeout(() => {
-          const activeH = hourScrollRef.current?.querySelector(`[id="hour-${pendingTime.h}"]`);
-          const activeM = minScrollRef.current?.querySelector(`[id="min-${pendingTime.m}"]`);
-          activeH?.scrollIntoView({ block: 'center', behavior: 'auto' });
-          activeM?.scrollIntoView({ block: 'center', behavior: 'auto' });
-        }, 100);
-        return () => clearTimeout(timer);
-      }
-    }, [isOpen]);
-
-    const handleOpen = () => {
-      const current = to12Hour(value);
-      setPendingTime({ h: current.hour, m: current.minute, p: current.period });
-      setIsOpen(true);
-    };
-
-    const handleApply = () => {
-      onChange(to24Hour(pendingTime.h, pendingTime.m, pendingTime.p));
-      setIsOpen(false);
-    };
-
-    return (
-      <div className={`relative group ${compact ? 'w-full' : ''}`}>
-        {!compact && (
-          <div className="flex flex-col gap-1 mb-4 px-6">
-            <label className={`text-xs font-black tracking-widest transition-colors ${colorClass === 'paymint-green' ? 'text-paymint-green/60' : 'text-orange-500/60'}`}>
-              {label}
-            </label>
-            <label className="text-xs font-black text-gray-400 tracking-widest block">
-              {subLabel}
-            </label>
-          </div>
-        )}
-
-        <div
-          onClick={handleOpen}
-          className={`${compact ? 'h-12 px-4 rounded-xl' : 'h-16 px-6 rounded-2xl'} bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 group-hover:border-paymint-green/50 transition-all cursor-pointer flex items-center relative overflow-hidden justify-between`}
-        >
-          <div className="flex items-baseline gap-1.5 translate-x-0">
-            <span className={`${compact ? 'text-sm' : 'text-2xl'} font-bold text-gray-900 dark:text-white tracking-tighter`}>
-              {hour}:{minute}
-            </span>
-            <span className={`${compact ? 'text-xs' : 'text-xs'} font-black text-gray-400`}>{period}</span>
-          </div>
-
-          <div className={`text-gray-400 group-hover:text-paymint-green transition-colors ${compact ? '' : 'absolute right-6 top-1/2 -translate-y-1/2'}`}>
-            <Clock size={compact ? 16 : 20} className={isOpen ? 'rotate-12 scale-110' : ''} />
-          </div>
-
-          <div className={`absolute bottom-0 left-0 h-1 transition-all duration-300 ${isOpen ? 'w-full' : 'w-0'} ${colorClass === 'paymint-green' ? 'bg-paymint-green' : 'bg-orange-500'}`} />
-        </div>
-
-        <AnimatePresence>
-          {isOpen && (
-            <>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[60] bg-black/20 backdrop-blur-sm"
-                onClick={() => setIsOpen(false)}
-              />
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                className="absolute z-[70] top-full mt-4 left-0 right-0 bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl p-6 overflow-hidden min-w-[320px]"
-              >
-                <div className="grid grid-cols-3 gap-4 mb-6">
-                  <div className="space-y-2">
-                    <p className="text-xs font-black text-gray-400 text-center mb-2">Hour</p>
-                    <div ref={hourScrollRef} className="h-40 overflow-y-auto no-scrollbar space-y-1 scroll-smooth">
-                      {hours.map(h => (
-                        <button
-                          key={h}
-                          type="button"
-                          id={`hour-${h}`}
-                          onClick={() => setPendingTime(prev => ({ ...prev, h }))}
-                          className={`w-full py-2 rounded-xl font-bold transition-all ${pendingTime.h === h ? 'bg-paymint-green text-black' : 'hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500'}`}
-                        >
-                          {h}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-xs font-black text-gray-400 text-center mb-2">Min</p>
-                    <div ref={minScrollRef} className="h-40 overflow-y-auto no-scrollbar space-y-1 scroll-smooth">
-                      {minutes.map(m => (
-                        <button
-                          key={m}
-                          type="button"
-                          id={`min-${m}`}
-                          onClick={() => setPendingTime(prev => ({ ...prev, m }))}
-                          className={`w-full py-2 rounded-xl font-bold transition-all ${pendingTime.m === m ? 'bg-paymint-green text-black' : 'hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500'}`}
-                        >
-                          {m}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-xs font-black text-gray-400 text-center mb-2">Period</p>
-                    <div className="space-y-1">
-                      {['Am', 'Pm'].map(p => (
-                        <button
-                          key={p}
-                          type="button"
-                          onClick={() => setPendingTime(prev => ({ ...prev, p }))}
-                          className={`w-full py-3 rounded-xl font-bold transition-all ${pendingTime.p === p ? 'bg-paymint-green text-black' : 'hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500'}`}
-                        >
-                          {p}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setIsOpen(false)}
-                    className="flex-1 py-3 bg-gray-100 dark:bg-white/5 text-gray-500 rounded-2xl font-black text-xs tracking-widest hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleApply}
-                    className="flex-[2] py-3 bg-paymint-green text-black rounded-2xl font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-paymint-green/20"
-                  >
-                    Apply Changes
-                  </button>
-                </div>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
-      </div>
-    );
   };
 
   const triggerTwoStepConfirm = (title: string, message: string, onConfirm: () => void) => {
@@ -857,8 +672,16 @@ export function SettingsPage() {
                 <input type="text" {...register('taxIdNumber')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
             </div>
-            <div className="pt-8 border-t border-gray-100 dark:border-white/5">
-              <div className="flex items-center gap-3 mb-6">
+            <div className="pt-8 border-t border-gray-100 dark:border-white/5 relative overflow-hidden">
+              {/* Coming Soon Overlay for Opening Hours */}
+              <div className="absolute inset-0 z-20 bg-white/60 dark:bg-[#0B1120]/80 backdrop-blur-[2px] flex items-center justify-center">
+                <div className="bg-white dark:bg-gray-900 px-6 py-3 rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 flex items-center gap-3 animate-bounce-slow">
+                  <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
+                  <span className="text-sm font-black text-gray-900 dark:text-white tracking-widest uppercase">Coming Soon</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 mb-6 opacity-40">
                 <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm">
                   <Clock size={18} />
                 </div>
@@ -867,81 +690,26 @@ export function SettingsPage() {
                   <p className="text-xs text-gray-400 font-black tracking-widest px-1">Set service times</p>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-2 mb-6">
+              <div className="flex flex-wrap gap-2 mb-6 opacity-40 grayscale-[0.5]">
                 {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => {
                   const currentSchedule = watch('operatingSchedule') || {};
                   const dayConfig = currentSchedule[day];
                   const isOpen = dayConfig ? dayConfig.isOpen : !!watch('openingTime');
-                  const isSelected = selectedDays.includes(day);
                   return (
-                    <button key={day} type="button" onClick={() => setSelectedDays(prev => prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day])} className={`relative flex-1 min-w-[3.5rem] h-14 rounded-xl flex flex-col items-center justify-center gap-1 transition-all duration-300 border ${isSelected ? 'bg-gray-900 dark:bg-white text-white dark:text-black border-transparent shadow-lg scale-105 z-10' : 'bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 shadow-sm'}`}>
+                    <button key={day} type="button" disabled className={`relative flex-1 min-w-[3.5rem] h-14 rounded-xl flex flex-col items-center justify-center gap-1 border bg-white dark:bg-white/5 text-gray-400 border-gray-200 dark:border-white/10 cursor-not-allowed`}>
                       <span className="text-xs font-black tracking-widest">{day.slice(0, 3)}</span>
-                      <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? (isOpen ? 'bg-paymint-green' : 'bg-gray-500') : (isOpen ? 'bg-paymint-green' : 'bg-gray-300 dark:bg-white/20')}`} />
+                      <div className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-paymint-green/50' : 'bg-gray-300 dark:bg-white/20'}`} />
                     </button>
                   );
                 })}
               </div>
-              <AnimatePresence mode="wait">
-                {selectedDays.length > 0 ? (
-                  <motion.div key="config-panel" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
-                    {(() => {
-                      const referenceDay = selectedDays[0];
-                      const currentSchedule = watch('operatingSchedule') || {};
-                      const refConfig = currentSchedule[referenceDay] || { isOpen: !!watch('openingTime'), open: watch('openingTime') || '09:00', close: watch('closingTime') || '22:00' };
-                      const updateSelectedDays = (key: string, val: any) => {
-                        const newSchedule = { ...currentSchedule };
-                        selectedDays.forEach(day => {
-                          const existing = newSchedule[day] || { isOpen: !!watch('openingTime'), open: watch('openingTime') || '09:00', close: watch('closingTime') || '22:00' };
-                          newSchedule[day] = { ...existing, [key]: val };
-                          if (key === 'isOpen' && val === true) {
-                            if (!newSchedule[day].open) newSchedule[day].open = '09:00';
-                            if (!newSchedule[day].close) newSchedule[day].close = '22:00';
-                          }
-                        });
-                        setValue('operatingSchedule', newSchedule, { shouldDirty: true });
-                      };
-                      return (
-                        <div className="space-y-8">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-xs font-black text-paymint-green tracking-[0.2em] mb-1">Days</p>
-                              <p className="text-sm font-bold text-gray-900 dark:text-white truncate max-w-[200px] md:max-w-md">{selectedDays.length === 7 ? 'Every Day' : selectedDays.map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ')}</p>
-                            </div>
-                            <div className="flex items-center gap-4 bg-white dark:bg-white/[0.03] px-5 py-3 rounded-2xl border border-gray-200 dark:border-white/[0.08] shadow-sm">
-                              <span className={`text-xs font-black tracking-widest ${refConfig.isOpen ? 'text-paymint-green' : 'text-gray-400'}`}>{refConfig.isOpen ? AppStrings.STATUS.ACTIVE : AppStrings.STATUS.OFFLINE}</span>
-                              <label className="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" checked={refConfig.isOpen} onChange={(e) => updateSelectedDays('isOpen', e.target.checked)} className="sr-only peer" />
-                                <div className="w-11 h-6 bg-gray-200 dark:bg-white/10 rounded-full peer peer-checked:bg-paymint-green after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5 shadow-sm"></div>
-                              </label>
-                            </div>
-                          </div>
-                          {refConfig.isOpen ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                              <TimeSelector label="Commencement" subLabel="Service Start" value={refConfig.open} onChange={(val: string) => updateSelectedDays('open', val)} compact={false} />
-                              <TimeSelector label="Termination" subLabel="Service End" value={refConfig.close} onChange={(val: string) => updateSelectedDays('close', val)} compact={false} colorClass="orange" />
-                            </div>
-                          ) : (
-                            <div className="h-32 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 dark:border-white/10 bg-white/50 dark:bg-white/[0.02]">
-                              <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center mb-3 shadow-sm border border-gray-200 dark:border-white/5">
-                                <Clock className="w-6 h-6 text-gray-400" />
-                              </div>
-                              <span className="text-xs font-black text-gray-400 tracking-widest">Status: Closed</span>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })()}
-                  </motion.div>
-                ) : (
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl bg-gray-50/50 dark:bg-black/5">
-                    <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-gray-400 shadow-sm">
-                      <Plus size={24} />
-                    </div>
-                    <p className="text-xs font-black text-gray-400 tracking-widest">Select a day</p>
-                    <p className="text-xs font-black text-gray-400 mt-1 tracking-widest">Choose days to edit hours</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <div className="text-center py-12 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl bg-gray-50/50 dark:bg-black/5 opacity-40">
+                <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-gray-400 shadow-sm">
+                  <Plus size={24} />
+                </div>
+                <p className="text-xs font-black text-gray-400 tracking-widest">Select a day</p>
+                <p className="text-xs font-black text-gray-400 mt-1 tracking-widest">Choose days to edit hours</p>
+              </div>
             </div>
           </motion.div>
         )}
@@ -1039,8 +807,16 @@ export function SettingsPage() {
                       options={[
                         { label: 'JOD - Jordanian Dinar', value: 'JOD' },
                         { label: 'USD - US Dollar', value: 'USD' },
-                        { label: 'SAR - Saudi Riyal', value: 'SAR' },
                         { label: 'AED - UAE Dirham', value: 'AED' },
+                        { label: 'SAR - Saudi Riyal', value: 'SAR' },
+                        { label: 'KWD - Kuwaiti Dinar', value: 'KWD' },
+                        { label: 'QAR - Qatari Riyal', value: 'QAR' },
+                        { label: 'BHD - Bahraini Dinar', value: 'BHD' },
+                        { label: 'OMR - Omani Rial', value: 'OMR' },
+                        { label: 'EGP - Egyptian Pound', value: 'EGP' },
+                        { label: 'GBP - British Pound', value: 'GBP' },
+                        { label: 'EUR - Euro', value: 'EUR' },
+                        { label: 'TRY - Turkish Lira', value: 'TRY' },
                       ]}
                     />
                   </div>

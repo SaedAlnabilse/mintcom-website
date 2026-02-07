@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Phone, Check, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import { GoogleAuthButton, AuthDivider } from '../components/GoogleAuthButton';
 
 // Paymint Logo imports
 import PaymintLogoGreen from '../assets/green-full-logo.png';
@@ -37,7 +38,31 @@ export function SignUpPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState('');
-  const { register: registerAccount } = useAuth();
+  const navigate = useNavigate();
+  const { register: registerAccount, loginWithGoogle } = useAuth();
+
+  const handleGoogleSuccess = async (credential: string) => {
+    try {
+      const result = await loginWithGoogle(credential);
+
+      if (result.success) {
+        toast.success(result.message || 'Account created successfully!');
+        if (result.isSecondaryAdmin) {
+          navigate('/dashboard');
+        } else {
+          navigate('/owner');
+        }
+      } else {
+        toast.error(result.error || 'Google sign up failed');
+      }
+    } catch {
+      toast.error('Something went wrong. Please try again.');
+    }
+  };
+
+  const handleGoogleError = (error: string) => {
+    toast.error(error);
+  };
 
   const {
     register,
@@ -161,6 +186,16 @@ export function SignUpPage() {
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Sign up</h2>
             <p className="text-sm font-bold text-gray-600 dark:text-gray-300">Start free trial.</p>
           </div>
+
+          {/* Google Sign-Up Button */}
+          <GoogleAuthButton
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            text="signup_with"
+            disabled={isSubmitting}
+          />
+
+          <AuthDivider />
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="grid grid-cols-2 gap-4">

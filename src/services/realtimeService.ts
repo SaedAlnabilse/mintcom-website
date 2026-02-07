@@ -3,7 +3,8 @@ import toast from 'react-hot-toast';
 
 // Backend URL for WebSocket connection
 // Always connect directly to the backend for WebSocket (Vite proxy has issues with socket.io)
-const BACKEND_WS_URL = 'https://grateful-liberation-production-d036.up.railway.app';
+// Uses VITE_API_URL from environment, falls back to production URL
+const BACKEND_WS_URL = import.meta.env.VITE_API_URL || 'https://grateful-liberation-production-d036.up.railway.app';
 
 /**
  * Real-time Event Types

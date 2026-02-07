@@ -114,6 +114,7 @@ export function ProductFormModal({
   const [localCategories, setLocalCategories] = useState<Category[]>([]);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [isCategorySubmitting, setIsCategorySubmitting] = useState(false);
+  const [categoryError, setCategoryError] = useState<string | null>(null);
   const isInitialLoad = useRef(true);
 
   useScrollLock(isOpen);
@@ -125,14 +126,23 @@ export function ProductFormModal({
   const handleCategorySubmit = async (name: string, icon: string, sortOrder: number) => {
     try {
       setIsCategorySubmitting(true);
+      setCategoryError(null);
       const res = await api.post('/api/categories', { name, icon, sortOrder });
       const newCategory = res.data;
       setLocalCategories(prev => [...prev, newCategory]);
       setCategoryId(newCategory.id);
       setShowCategoryModal(false);
       toast.success('Category created');
-    } catch {
-      toast.error('Failed to create category');
+    } catch (error: any) {
+      console.error('Failed to create category:', error);
+      let message = error.response?.data?.message || 'Failed to create category';
+      
+      // Map database unique constraint errors to user-friendly messages
+      if (message.includes('Unique constraint failed') && message.includes('name')) {
+        message = 'A category with this name already exists in this location.';
+      }
+      
+      setCategoryError(message);
     } finally {
       setIsCategorySubmitting(false);
     }
@@ -843,7 +853,11 @@ export function ProductFormModal({
                         {/* Sticky Bottom Create Button */}
                         <button
                           type="button"
-                          onClick={() => { setShowCategoryModal(true); setShowCategoryDropdown(false); }}
+                          onClick={() => { 
+                            setCategoryError(null);
+                            setShowCategoryModal(true); 
+                            setShowCategoryDropdown(false); 
+                          }}
                           className="w-full px-5 py-4 text-left bg-gray-50 dark:bg-white/[0.02] hover:bg-paymint-green/10 flex items-center gap-3 transition-colors text-paymint-green border-t border-gray-100 dark:border-white/10 shrink-0"
                         >
                           <Plus size={16} />
@@ -1148,6 +1162,7 @@ export function ProductFormModal({
         onClose={() => setShowCategoryModal(false)}
         onSubmit={handleCategorySubmit}
         isSubmitting={isCategorySubmitting}
+        externalError={categoryError}
       />
 
       <AttributeFormModal
