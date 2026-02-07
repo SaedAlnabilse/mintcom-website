@@ -12,7 +12,7 @@ import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { exportToCSV } from '../../utils/export';
 import { SingleSelect } from '../../components/SingleSelect';
-import { CustomDatePicker } from '../../components/CustomDatePicker';
+import { DateRangePicker } from '../../components/DateRangePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
 import { Pagination } from '../../components/ui';
@@ -100,12 +100,6 @@ export function ActivityLogsPage() {
       start: formatDateForInput(start),
       end: formatDateForInput(end)
     });
-    setPage(1);
-  };
-
-  const handleCustomDateChange = (type: 'start' | 'end', value: string) => {
-    setActivePreset('custom');
-    setDateRange(prev => ({ ...prev, [type]: value }));
     setPage(1);
   };
 
@@ -272,30 +266,19 @@ export function ActivityLogsPage() {
               </div>
 
               {/* Custom Date Inputs Group */}
-              <div className={`flex-none w-auto min-w-[145px] sm:min-w-[170px] relative z-[60]`}>
-                <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${activePreset === 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
-                  <div className="flex items-center gap-1.5 mb-0.5">
-                    <span className={`text-[9px] font-black tracking-wider transition-colors ${activePreset === 'custom' ? "text-[#7CC39F]" : "text-gray-400"}`}>Date Range</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CustomDatePicker
-                      value={dateRange.start}
-                      onChange={(val) => handleCustomDateChange('start', val)}
-                      className="w-[95px] sm:w-[105px]"
-                      maxDate={dateRange.end}
-                      showIcon={true}
-                    />
-                    <span className={`text-xs font-light transition-colors flex-shrink-0 ${activePreset === 'custom' ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/20"}`}>→</span>
-                    <CustomDatePicker
-                      value={dateRange.end}
-                      onChange={(val) => handleCustomDateChange('end', val)}
-                      className="w-[95px] sm:w-[105px]"
-                      minDate={dateRange.start}
-                      showIcon={true}
-                      align="right"
-                    />
-                  </div>
-                </div>
+              <div className="flex-none min-w-[200px] sm:min-w-[240px] relative z-[60]">
+                <DateRangePicker
+                  startDate={dateRange.start}
+                  endDate={dateRange.end}
+                  onRangeChange={(start, end) => {
+                    setDateRange({ start, end });
+                    setActivePreset('custom');
+                    setPage(1);
+                  }}
+                  onClear={() => handlePresetChange('today')}
+                  isActive={activePreset === 'custom'}
+                  align="left"
+                />
               </div>
             </div>
           </div>

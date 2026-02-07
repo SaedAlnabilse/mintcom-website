@@ -24,7 +24,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { OrderDetailModal } from '../../components/OrderDetailModal';
 import { exportToCSV } from '../../utils/export';
 import { toast } from 'react-hot-toast';
-import { CustomDatePicker } from '../../components/CustomDatePicker';
+import { DateRangePicker } from '../../components/DateRangePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
 import { SearchInput, SelectInput, Pagination } from '../../components/ui';
@@ -808,34 +808,20 @@ export function OrdersPage() {
           </div>
 
           {/* Date Range Group - hidden on mobile, show on desktop */}
-          <div className="hidden sm:block flex-none w-auto min-w-[170px] relative z-[60]">
-            {(() => {
-              const isDateFiltered = selectedDateRange === 'custom';
-              return (
-                <div className={`flex flex-col justify-center px-4 py-1.5 rounded-xl border h-full transition-all ${isDateFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Date Range</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CustomDatePicker
-                      value={startDate}
-                      onChange={(val) => { setStartDate(val); setSelectedDateRange('custom'); setPage(1); }}
-                      className="w-[90px]"
-                      maxDate={endDate}
-                      showIcon={true}
-                    />
-                    <span className={`text-xs font-light transition-colors flex-shrink-0 ${isDateFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/20"}`}>→</span>
-                    <CustomDatePicker
-                      value={endDate}
-                      onChange={(val) => { setEndDate(val); setSelectedDateRange('custom'); setPage(1); }}
-                      className="w-[90px]"
-                      minDate={startDate}
-                      showIcon={true}
-                    />
-                  </div>
-                </div>
-              );
-            })()}
+          <div className="hidden sm:block flex-none min-w-[180px] sm:min-w-[220px] relative z-[60]">
+            <DateRangePicker
+              startDate={startDate}
+              endDate={endDate}
+              onRangeChange={(start, end) => {
+                setStartDate(start);
+                setEndDate(end);
+                setSelectedDateRange('custom');
+                setPage(1);
+              }}
+              onClear={() => setQuickDate('today')}
+              isActive={selectedDateRange === 'custom'}
+              align="center"
+            />
           </div>
 
           {/* Vertical Divider - desktop only */}
@@ -1150,12 +1136,14 @@ export function OrdersPage() {
                                 e.stopPropagation();
                                 setActiveActionMenu(activeActionMenu === order.id ? null : order.id);
                               }}
-                              className={`p-2 rounded-lg transition-colors ${activeActionMenu === order.id
+                              aria-label="Order actions"
+                              aria-expanded={activeActionMenu === order.id}
+                              className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-colors ${activeActionMenu === order.id
                                 ? 'text-paymint-green bg-gray-100 dark:bg-white/5'
                                 : 'text-gray-400 hover:text-paymint-green hover:bg-gray-100 dark:hover:bg-white/5'
                                 }`}
                             >
-                              <MoreVertical size={16} />
+                              <MoreVertical size={18} />
                             </button>
 
                               {activeActionMenu === order.id && (

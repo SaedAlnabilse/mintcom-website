@@ -666,8 +666,8 @@ export function ProductsPage() {
                                                 </div>
                                             )}
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-3">
-                                                <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} className="p-1.5 bg-white rounded-lg text-gray-900 hover:bg-paymint-green hover:text-black transition-colors"><Edit2 size={14} /></button>
-                                                <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} className="p-1.5 bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors"><Trash2 size={14} /></button>
+                                                <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label="Edit product" className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-gray-900 hover:bg-paymint-green hover:text-black transition-colors"><Edit2 size={18} /></button>
+                                                <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label="Delete product" className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors"><Trash2 size={18} /></button>
                                             </div>
                                         </div>
                                         <div className="p-3 flex-1 flex flex-col">
@@ -786,9 +786,9 @@ export function ProductsPage() {
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
-                                                    <div className="flex items-center justify-center gap-2">
-                                                        <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} className="p-2 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"><Edit2 size={16} /></button>
-                                                        <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} className="p-2 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"><Trash2 size={16} /></button>
+                                                    <div className="flex items-center justify-center gap-1 sm:gap-2">
+                                                        <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label="Edit product" className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"><Edit2 size={18} /></button>
+                                                        <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label="Delete product" className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"><Trash2 size={18} /></button>
                                                     </div>
                                                 </td>
                                             </tr>

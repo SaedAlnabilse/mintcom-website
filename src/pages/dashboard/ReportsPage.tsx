@@ -14,7 +14,7 @@ import { useCurrency } from '../../context/CurrencyContext';
 import { ReceiptsReport } from '../../components/dashboard/reports/ReceiptsReport';
 import { SingleSelect } from '../../components/SingleSelect';
 import { exportToCSV } from '../../utils/export';
-import { CustomDatePicker } from '../../components/CustomDatePicker';
+import { DateRangePicker } from '../../components/DateRangePicker';
 import { CustomTimePicker } from '../../components/CustomTimePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
@@ -501,43 +501,29 @@ export function ReportsPage() {
                 showAllOption={false}
                 placeholder="Period"
                 className="w-full h-full"
-                buttonClassName={`!rounded-xl !px-3 !py-2 !h-full !text-xs sm:!text-sm !font-bold border transition-all ${selectedDateRange !== 'custom'
+                buttonClassName={`!h-12 !rounded-xl !px-4 !text-xs sm:!text-sm !font-bold border transition-all ${selectedDateRange !== 'custom'
                   ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
-                  : '!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10'
+                  : '!bg-white dark:!bg-[#1E293B] !border-gray-200 dark:!border-white/10 hover:!bg-gray-50 dark:hover:!bg-white/10'
                   }`}
               />
             </div>
 
-            {/* Date Range Group */}
-            {(() => {
-              const isDateFiltered = selectedDateRange === 'custom';
-              return (
-                <div className={`flex-none w-auto min-w-[145px] sm:min-w-[170px] relative z-[60]`}>
-                  <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isDateFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
-                    <div className="flex items-center gap-1.5 mb-0.5">
-                      <span className={`text-[9px] font-black tracking-wider transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Date Range</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CustomDatePicker
-                        value={startDate}
-                        onChange={(val) => { setStartDate(val); setSelectedDateRange('custom'); setSelectedShiftId(null); }}
-                        className="w-[95px] sm:w-[105px]"
-                        maxDate={endDate}
-                        showIcon={true}
-                      />
-                      <span className={`text-xs font-light transition-colors flex-shrink-0 ${isDateFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/20"}`}>→</span>
-                      <CustomDatePicker
-                        value={endDate}
-                        onChange={(val) => { setEndDate(val); setSelectedDateRange('custom'); setSelectedShiftId(null); }}
-                        className="w-[95px] sm:w-[105px]"
-                        minDate={startDate}
-                        showIcon={true}
-                      />
-                    </div>
-                  </div>
-                </div>
-              );
-            })()}
+            {/* Date Range Picker */}
+            <div className="flex-none min-w-[180px] sm:min-w-[220px] relative z-[60]">
+              <DateRangePicker
+                startDate={startDate}
+                endDate={endDate}
+                onRangeChange={(start, end) => {
+                  setStartDate(start);
+                  setEndDate(end);
+                  setSelectedDateRange('custom');
+                  setSelectedShiftId(null);
+                }}
+                onClear={() => setQuickDate('today')}
+                isActive={selectedDateRange === 'custom'}
+                align="left"
+              />
+            </div>
 
             {/* Time Range Group */}
             {(() => {

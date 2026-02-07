@@ -76,11 +76,15 @@ export function BottomSheet({
             transition={{ duration: 0.2 }}
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
             onClick={onClose}
+            aria-hidden="true"
           />
 
           {/* Sheet */}
           <motion.div
             ref={sheetRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={title ? "bottom-sheet-title" : undefined}
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
@@ -106,13 +110,14 @@ export function BottomSheet({
             {/* Header */}
             {(title || showCloseButton) && (
               <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100 dark:border-white/5">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                <h3 id="bottom-sheet-title" className="text-lg font-bold text-gray-900 dark:text-white">
                   {title || ''}
                 </h3>
                 {showCloseButton && (
                   <button
                     onClick={onClose}
-                    className="p-2 -mr-2 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors touch-target"
+                    aria-label="Close"
+                    className="p-2.5 -mr-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                   >
                     <X size={20} />
                   </button>

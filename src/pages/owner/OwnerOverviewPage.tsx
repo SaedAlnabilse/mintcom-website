@@ -24,7 +24,7 @@ import {
 import api from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
 import { SingleSelect } from '../../components/SingleSelect';
-import { CustomDatePicker } from '../../components/CustomDatePicker';
+import { DateRangePicker } from '../../components/DateRangePicker';
 import { CustomTimePicker } from '../../components/CustomTimePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput, getDatePeriodLabel } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
@@ -183,35 +183,24 @@ export function OwnerOverviewPage() {
 
                             {/* Sector 2: Time & Date Controls */}
                             {(() => {
-                                const isDateFiltered = selectedDateRange === 'custom';
                                 const isTimeFiltered = startTime !== '00:00' || endTime !== '23:59';
 
                                 return (
                                     <div className="flex-1 flex flex-col md:flex-row gap-4 items-center">
                                         {/* Date Input Group */}
-                                        <div className={`flex-none w-auto min-w-[145px] sm:min-w-[170px] relative z-[60]`}>
-                                            <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isDateFiltered ? '!bg-emerald-50 dark:!bg-[#064E3B] border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : '!bg-gray-50 dark:!bg-[#1E293B] border-transparent'}`}>
-                                                <div className="flex items-center gap-1.5 mb-0.5">
-                                                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isDateFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Date Range</span>
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <CustomDatePicker
-                                                        value={startDate}
-                                                        onChange={(val) => { setStartDate(val); setSelectedDateRange('custom'); }}
-                                                        className="w-[95px] sm:w-[105px]"
-                                                        maxDate={endDate}
-                                                        showIcon={true}
-                                                    />
-                                                    <span className={`text-xs font-light transition-colors flex-shrink-0 ${isDateFiltered ? "text-[#7CC39F]/50" : "text-gray-300 dark:text-white/20"}`}>→</span>
-                                                    <CustomDatePicker
-                                                        value={endDate}
-                                                        onChange={(val) => { setEndDate(val); setSelectedDateRange('custom'); }}
-                                                        className="w-[95px] sm:w-[105px]"
-                                                        minDate={startDate}
-                                                        showIcon={true}
-                                                    />
-                                                </div>
-                                            </div>
+                                        <div className="flex-none min-w-[200px] sm:min-w-[240px] relative z-[60]">
+                                            <DateRangePicker
+                                                startDate={startDate}
+                                                endDate={endDate}
+                                                onRangeChange={(start, end) => {
+                                                    setStartDate(start);
+                                                    setEndDate(end);
+                                                    setSelectedDateRange('custom');
+                                                }}
+                                                onClear={() => setQuickDate('today')}
+                                                isActive={selectedDateRange === 'custom'}
+                                                align="left"
+                                            />
                                         </div>
 
                                         {/* Vertical Divider (Inner) */}

@@ -65,6 +65,7 @@ export function BottomNavigation({ onMenuClick, items = defaultItems }: BottomNa
         {/* Mobile App Link */}
         <a
           href="#"
+          aria-label="Download mobile app"
           className="flex flex-col items-center justify-center flex-1 h-full touch-target text-gray-400 hover:text-paymint-green transition-colors"
         >
           <Smartphone size={22} />
@@ -75,6 +76,7 @@ export function BottomNavigation({ onMenuClick, items = defaultItems }: BottomNa
         {/* Menu button */}
         <button
           onClick={onMenuClick}
+          aria-label="Open menu"
           className="flex flex-col items-center justify-center flex-1 h-full touch-target"
         >
           <Menu size={22} className="text-gray-400" />

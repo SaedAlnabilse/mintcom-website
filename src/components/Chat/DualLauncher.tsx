@@ -45,7 +45,9 @@ export function DualLauncher({ onOpenChat, onOpenFAQ, isChatOpen, isFAQOpen, onC
       <motion.div
         layout
         transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
-        className="relative flex items-center p-1.5 bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-xl rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-gray-200/60 dark:border-white/10 overflow-hidden"
+        className={`relative flex items-center ${isExpanded 
+          ? "p-1.5 bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-xl rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-gray-200/60 dark:border-white/10 overflow-hidden" 
+          : "p-0 bg-transparent border-transparent shadow-none"}`}
       >
         <AnimatePresence mode="wait" initial={false}>
           {!isExpanded ? (
@@ -122,18 +124,6 @@ export function DualLauncher({ onOpenChat, onOpenFAQ, isChatOpen, isFAQOpen, onC
           )}
         </AnimatePresence>
       </motion.div>
-
-      {/* Subtle glow effect when collapsed */}
-      {!isExpanded && (
-        <motion.div
-          animate={{
-            opacity: [0.5, 0.8, 0.5],
-            scale: [1, 1.05, 1],
-          }}
-          transition={{ duration: 3, repeat: Infinity }}
-          className="absolute -inset-2 bg-[#7CC39F]/20 rounded-full blur-xl -z-10"
-        />
-      )}
     </div>
   );
 }

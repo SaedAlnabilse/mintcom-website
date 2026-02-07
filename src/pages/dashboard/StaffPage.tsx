@@ -569,12 +569,13 @@ export function StaffPage() {
                           </div>
                         </td>
                         <td className="px-8 py-5 text-center">
-                          <div className="flex items-center justify-center gap-2">
+                          <div className="flex items-center justify-center gap-1 sm:gap-2">
                             <button
                               onClick={() => openEditModal(member)}
-                              className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-90"
+                              aria-label="Edit staff member"
+                              className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-90"
                             >
-                              <Edit2 size={16} />
+                              <Edit2 size={18} />
                             </button>
                             <div className="relative dropdown-container">
                               <button
@@ -582,9 +583,11 @@ export function StaffPage() {
                                   e.stopPropagation();
                                   setActiveDropdown(activeDropdown === member.id ? null : member.id);
                                 }}
-                                className={`p-2.5 rounded-xl border transition-all active:scale-90 shadow-sm ${activeDropdown === member.id ? 'bg-paymint-green text-black border-paymint-green' : 'bg-white dark:bg-white/5 border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/10'}`}
+                                aria-label="More actions"
+                                aria-expanded={activeDropdown === member.id}
+                                className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border transition-all active:scale-90 shadow-sm ${activeDropdown === member.id ? 'bg-paymint-green text-black border-paymint-green' : 'bg-white dark:bg-white/5 border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/10'}`}
                               >
-                                <MoreVertical size={16} />
+                                <MoreVertical size={18} />
                               </button>
 
                                 {activeDropdown === member.id && (

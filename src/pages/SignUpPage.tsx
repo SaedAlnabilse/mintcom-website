@@ -198,9 +198,9 @@ export function SignUpPage() {
           <AuthDivider />
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">
+                <label htmlFor="firstName" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
                   FIRST NAME<span className="text-accent ml-1">*</span>
                 </label>
                 <div className="relative">
@@ -208,34 +208,42 @@ export function SignUpPage() {
                   <input
                     {...register('firstName')}
                     type="text"
+                    id="firstName"
+                    aria-label="First name"
+                    aria-describedby={errors.firstName ? 'firstName-error' : undefined}
+                    autoComplete="given-name"
                     className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.firstName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                      } rounded-lg py-3 pl-10 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                      } rounded-lg py-3 pl-10 pr-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                     placeholder="John"
                   />
                 </div>
                 {errors.firstName?.message && (
-                  <p className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.firstName.message}</p>
+                  <p id="firstName-error" role="alert" className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.firstName.message}</p>
                 )}
               </div>
               <div>
-                <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">
+                <label htmlFor="lastName" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
                   LAST NAME<span className="text-accent ml-1">*</span>
                 </label>
                 <input
                   {...register('lastName')}
                   type="text"
+                  id="lastName"
+                  aria-label="Last name"
+                  aria-describedby={errors.lastName ? 'lastName-error' : undefined}
+                  autoComplete="family-name"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.lastName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 px-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    } rounded-lg py-3 px-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                   placeholder="Doe"
                 />
                 {errors.lastName?.message && (
-                  <p className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.lastName.message}</p>
+                  <p id="lastName-error" role="alert" className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.lastName.message}</p>
                 )}
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">
+              <label htmlFor="email" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
                 Email Address<span className="text-accent ml-1">*</span>
               </label>
               <div className="relative">
@@ -243,18 +251,22 @@ export function SignUpPage() {
                 <input
                   {...register('email')}
                   type="email"
+                  id="email"
+                  aria-label="Email address"
+                  aria-describedby={errors.email ? 'email-error' : undefined}
+                  autoComplete="email"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 pl-10 pr-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    } rounded-lg py-3 pl-10 pr-4 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                   placeholder="john@example.com"
                 />
               </div>
               {errors.email?.message && (
-                <p className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.email.message}</p>
+                <p id="email-error" role="alert" className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.email.message}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">
+              <label htmlFor="phone" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
                 PHONE NUMBER<span className="text-accent ml-1">*</span>
               </label>
               <div className="relative">
@@ -262,18 +274,22 @@ export function SignUpPage() {
                 <input
                   {...register('phone')}
                   type="tel"
+                  id="phone"
+                  aria-label="Phone number"
+                  aria-describedby={errors.phone ? 'phone-error' : undefined}
+                  autoComplete="tel"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.phone ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 pl-10 pr-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    } rounded-lg py-3 pl-10 pr-4 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                   placeholder="+1 (555) 000-0000"
                 />
               </div>
               {errors.phone?.message && (
-                <p className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.phone.message}</p>
+                <p id="phone-error" role="alert" className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.phone.message}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">
+              <label htmlFor="password" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
                 Password<span className="text-accent ml-1">*</span>
               </label>
               <div className="relative">
@@ -281,25 +297,30 @@ export function SignUpPage() {
                 <input
                   {...register('password')}
                   type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  aria-label="Password"
+                  aria-describedby={errors.password ? 'password-error' : undefined}
+                  autoComplete="new-password"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 pl-10 pr-12 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    } rounded-lg py-3 pl-10 pr-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                   placeholder="Create a strong password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
               {errors.password?.message && (
-                <p className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.password.message}</p>
+                <p id="password-error" role="alert" className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.password.message}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">
+              <label htmlFor="confirmPassword" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
                 Confirm Password<span className="text-accent ml-1">*</span>
               </label>
               <div className="relative">
@@ -307,20 +328,25 @@ export function SignUpPage() {
                 <input
                   {...register('confirmPassword')}
                   type={showConfirmPassword ? 'text' : 'password'}
+                  id="confirmPassword"
+                  aria-label="Confirm password"
+                  aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
+                  autoComplete="new-password"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.confirmPassword ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 pl-10 pr-12 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    } rounded-lg py-3 pl-10 pr-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                   placeholder="Confirm your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white"
                 >
                   {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
               {errors.confirmPassword && (
-                <p className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.confirmPassword.message}</p>
+                <p id="confirmPassword-error" role="alert" className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.confirmPassword.message}</p>
               )}
             </div>
 

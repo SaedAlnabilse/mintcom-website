@@ -161,13 +161,17 @@ export function LoginPage() {
                 <input
                   {...register('email')}
                   type="email"
+                  id="login-email"
+                  aria-label="Email address"
+                  aria-describedby={errors.email ? 'email-error' : undefined}
+                  autoComplete="email"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 pl-10 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    } rounded-lg py-3 pl-10 pr-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                   placeholder="you@example.com"
                 />
               </div>
               {errors.email?.message && (
-                <p className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.email.message}</p>
+                <p id="email-error" role="alert" className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.email.message}</p>
               )}
             </div>
 
@@ -180,28 +184,34 @@ export function LoginPage() {
                 <input
                   {...register('password')}
                   type={showPassword ? 'text' : 'password'}
+                  id="login-password"
+                  aria-label="Password"
+                  aria-describedby={errors.password ? 'password-error' : undefined}
+                  autoComplete="current-password"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 pl-10 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    } rounded-lg py-3 pl-10 pr-12 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                   placeholder="Enter your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white touch-target"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
               {errors.password && (
-                <p className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.password.message}</p>
+                <p id="password-error" role="alert" className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.password.message}</p>
               )}
             </div>
 
             <div className="flex items-center justify-between">
-              <label className="flex items-center">
+              <label className="flex items-center cursor-pointer min-h-[44px]">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green bg-gray-50 dark:bg-gray-700"
+                  aria-label="Keep me logged in"
+                  className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green bg-gray-50 dark:bg-gray-700"
                 />
                 <span className="ml-2 text-sm font-bold text-gray-600 dark:text-gray-300">Keep me logged in</span>
               </label>
@@ -242,7 +252,8 @@ export function LoginPage() {
             >
               <button
                 onClick={() => setShowVerifyModal(false)}
-                className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                aria-label="Close modal"
+                className="absolute right-2 top-2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <X className="w-5 h-5" />
               </button>

@@ -112,7 +112,8 @@ export function ConfirmModal({
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-4 sm:top-6 right-4 sm:right-6 p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all z-10 active:scale-90 touch-target"
+              aria-label="Close modal"
+              className="absolute top-4 sm:top-6 right-4 sm:right-6 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all z-10 active:scale-90"
             >
               <X size={20} />
             </button>

@@ -73,11 +73,14 @@ export const Navbar = () => {
         </div>
 
         {/* Mobile Toggle */}
-        <div className="lg:hidden flex items-center gap-4">
+        <div className="lg:hidden flex items-center gap-2 sm:gap-4">
           <ThemeToggle />
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="text-gray-900 dark:text-white p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors"
+            aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-menu"
+            className="text-gray-900 dark:text-white p-2 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -91,7 +94,10 @@ export const Navbar = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-[40] bg-white dark:bg-[#050505] pt-32 px-10 lg:hidden flex flex-col items-center"
+            id="mobile-menu"
+            role="navigation"
+            aria-label="Mobile navigation"
+            className="fixed inset-0 z-[40] bg-white dark:bg-[#050505] pt-32 px-6 sm:px-10 lg:hidden flex flex-col items-center overflow-y-auto"
           >
             <div className="w-full max-w-sm space-y-10">
               <div className="flex flex-col items-center gap-8">

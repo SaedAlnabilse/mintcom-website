@@ -487,16 +487,21 @@ export function CustomersPage() {
                         <p className="text-xs text-paymint-green font-black tracking-widest">Active</p>
                       </td>
                       <td className="px-6 py-4 text-center" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-center gap-2">
+                        <div className="flex items-center justify-center gap-1 sm:gap-2">
                           <button
                             onClick={() => { setSelectedCustomer(customer); setPointsAmount(0); setShowPointsModal(true); }}
-                            className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-paymint-green hover:border-paymint-green/30 transition-all"
+                            aria-label="Adjust loyalty points"
+                            className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-paymint-green hover:border-paymint-green/30 transition-all"
                             title="Adjust Points"
                           >
-                            <Award size={16} />
+                            <Award size={18} />
                           </button>
-                          <button onClick={() => openEditModal(customer)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-all">
-                            <Edit2 size={16} />
+                          <button
+                            onClick={() => openEditModal(customer)}
+                            aria-label="Edit customer"
+                            className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-all"
+                          >
+                            <Edit2 size={18} />
                           </button>
                           <div className="relative" data-action-menu>
                             <button
@@ -504,9 +509,11 @@ export function CustomersPage() {
                                 e.stopPropagation();
                                 setActiveMenu(activeMenu === customer.id ? null : customer.id);
                               }}
-                              className={`p-2 rounded-lg border transition-all ${activeMenu === customer.id ? 'bg-paymint-green text-black border-paymint-green' : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'}`}
+                              aria-label="More actions"
+                              aria-expanded={activeMenu === customer.id}
+                              className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg border transition-all ${activeMenu === customer.id ? 'bg-paymint-green text-black border-paymint-green' : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'}`}
                             >
-                              <MoreVertical size={16} />
+                              <MoreVertical size={18} />
                             </button>
 
                             {activeMenu === customer.id && (
@@ -551,12 +558,12 @@ export function CustomersPage() {
       {/* Customer Form Modal */}
       <AnimatePresence>
         {showModal && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md overflow-hidden shadow-2xl relative"
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 100 }}
+              className="bg-white dark:bg-[#1E293B] rounded-t-2xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md max-h-[90vh] overflow-y-auto shadow-2xl relative"
             >
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -564,7 +571,8 @@ export function CustomersPage() {
                 </h2>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
+                  aria-label="Close modal"
+                  className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
                 >
                   <X size={20} />
                 </button>
@@ -737,8 +745,8 @@ export function CustomersPage() {
       {/* Customer Detail View */}
       <AnimatePresence>
         {showDetailModal && selectedCustomer && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowDetailModal(false)}>
-            <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 50 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-2xl overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+          <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowDetailModal(false)}>
+            <motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} className="bg-white dark:bg-[#1E293B] rounded-t-2xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
               <div className="p-10 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-transparent">
                 <div className="flex justify-between items-start mb-10">
                   <div className="flex items-center gap-6">
