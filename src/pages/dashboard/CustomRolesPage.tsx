@@ -89,9 +89,9 @@ export function CustomRolesPage() {
   };
 
   const filteredRoles = useMemo(() => {
-    const result = roles.filter(role =>
+    const result = (Array.isArray(roles) ? roles : []).filter(role =>
       role.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      role.baseRole.toLowerCase().includes(searchQuery.toLowerCase())
+      (role.baseRole || '').toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     // Sorting
@@ -123,8 +123,8 @@ export function CustomRolesPage() {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredRoles.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredRoles.length / itemsPerPage);
+  const currentItems = (Array.isArray(filteredRoles) ? filteredRoles : []).slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil((Array.isArray(filteredRoles) ? filteredRoles : []).length / itemsPerPage);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 

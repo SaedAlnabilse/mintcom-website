@@ -95,7 +95,7 @@ export function DiscountsPage() {
   };
 
   const filteredDiscounts = useMemo(() => {
-    const result = discounts.filter(discount =>
+    const result = (Array.isArray(discounts) ? discounts : []).filter(discount =>
       discount.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
@@ -134,11 +134,11 @@ export function DiscountsPage() {
     return result;
   }, [discounts, searchQuery, sortConfig]);
 
-  const totalPages = Math.ceil(filteredDiscounts.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil((Array.isArray(filteredDiscounts) ? filteredDiscounts : []).length / ITEMS_PER_PAGE);
 
   const paginatedDiscounts = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredDiscounts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    return (Array.isArray(filteredDiscounts) ? filteredDiscounts : []).slice(startIndex, startIndex + ITEMS_PER_PAGE);
   }, [filteredDiscounts, currentPage]);
 
   const openCreateModal = () => {

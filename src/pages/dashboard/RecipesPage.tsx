@@ -172,17 +172,17 @@ export function RecipesPage() {
     }
   };
 
-  const filteredSub = useMemo(() => subRecipes.filter(r => r.name.toLowerCase().includes(searchQuery.toLowerCase())), [subRecipes, searchQuery]);
-  const filteredFinal = useMemo(() => finalRecipes.filter(r => r.item?.name?.toLowerCase().includes(searchQuery.toLowerCase())), [finalRecipes, searchQuery]);
+  const filteredSub = useMemo(() => (Array.isArray(subRecipes) ? subRecipes : []).filter(r => r.name.toLowerCase().includes(searchQuery.toLowerCase())), [subRecipes, searchQuery]);
+  const filteredFinal = useMemo(() => (Array.isArray(finalRecipes) ? finalRecipes : []).filter(r => r.item?.name?.toLowerCase().includes(searchQuery.toLowerCase())), [finalRecipes, searchQuery]);
 
-  const totalPages = Math.ceil((activeTab === 'final' ? filteredFinal.length : filteredSub.length) / itemsPerPage);
+  const totalPages = Math.ceil(((activeTab === 'final' ? filteredFinal : filteredSub) || []).length / itemsPerPage);
   const paginatedItems = useMemo(() => {
     const start = (page - 1) * itemsPerPage;
     const items = activeTab === 'final' ? filteredFinal : filteredSub;
-    return items.slice(start, start + itemsPerPage);
+    return (Array.isArray(items) ? items : []).slice(start, start + itemsPerPage);
   }, [activeTab, filteredFinal, filteredSub, page]);
 
-  const products = menuItems.filter(p => !finalRecipes.some(r => r.itemId === p.id) || (editingRecipe as Record<string, any>)?.itemId === p.id);
+  const products = (Array.isArray(menuItems) ? menuItems : []).filter(p => !(Array.isArray(finalRecipes) ? finalRecipes : []).some(r => r.itemId === p.id) || (editingRecipe as Record<string, any>)?.itemId === p.id);
 
   const openEditSubRecipe = (recipe: SubRecipe) => {
     setEditingRecipe(recipe);
@@ -417,44 +417,45 @@ export function RecipesPage() {
                         <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm">
                           {activeTab === 'final' ? <Pizza size={20} /> : <Package size={20} />}
                         </div>
-                        <div>
-                          <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[150px] group-hover:text-paymint-green transition-colors">
-                            {activeTab === 'final' ? (recipe as FinalRecipe).item?.name : (recipe as SubRecipe).name}
-                          </h3>
-                          <p className="text-xs font-black text-gray-400 tracking-widest">{recipe.ingredients.length} Ingredients</p>
-                        </div>
-                      </div>
-                      <div className="flex gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all translate-x-0 sm:translate-x-4 group-hover:translate-x-0">
-                        <button onClick={() => activeTab === 'final' ? openEditFinalRecipe(recipe as FinalRecipe) : openEditSubRecipe(recipe as SubRecipe)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-colors"><Edit2 size={16} /></button>
-                        <button onClick={() => handleDeleteRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 transition-colors"><Trash2 size={16} /></button>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3 mb-6 bg-gray-50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-100 dark:border-white/5">
-                      {recipe.ingredients.slice(0, 3).map((ing: Record<string, any>, i: number) => {
-                        const baseUnit = ing.rawMaterial?.unit || ing.subRecipe?.yieldUnit || 'Units';
-
-                        let currentUnit = ing.selectedUnit || baseUnit;
-                        // Smart scaling if no explicit unit is saved and value is fractional
-                        if (!ing.selectedUnit) {
-                          if (baseUnit === 'L' && ing.quantity < 1) currentUnit = 'Ml';
-                          else if (baseUnit === 'Kg' && ing.quantity < 1) currentUnit = 'G';
-                          else if (baseUnit === 'G' && ing.quantity < 1) currentUnit = 'Mg';
-                        }
-
-                        const displayQty = convertToDisplay(ing.quantity, baseUnit, currentUnit);
-
-                        return (
-                          <div key={i} className="flex items-center justify-between">
-                            <span className="text-xs font-bold text-gray-500 dark:text-gray-400 truncate max-w-[120px]">{ing.rawMaterial?.name || ing.subRecipe?.name}</span>
-                            <span className="text-xs font-bold text-gray-900 dark:text-white">
-                              {Number(displayQty.toFixed(4))} <span className="text-xs opacity-50">{currentUnit}</span>
-                            </span>
-                          </div>
-                        );
-                      })}
-                      {recipe.ingredients.length > 3 && <p className="text-xs font-black text-paymint-green text-center mt-2 tracking-widest">+ {recipe.ingredients.length - 3} Additional Elements</p>}
-                    </div>
+                                                  <div>
+                                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[150px] group-hover:text-paymint-green transition-colors">
+                                                      {activeTab === 'final' ? (recipe as FinalRecipe).item?.name : (recipe as SubRecipe).name}
+                                                    </h3>
+                                                    <p className="text-xs font-black text-gray-400 tracking-widest">{(recipe.ingredients || []).length} Ingredients</p>
+                                                  </div>
+                                                </div>
+                                                <div className="flex gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all translate-x-0 sm:translate-x-4 group-hover:translate-x-0">
+                                                  <button onClick={() => activeTab === 'final' ? openEditFinalRecipe(recipe as FinalRecipe) : openEditSubRecipe(recipe as SubRecipe)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-colors"><Edit2 size={16} /></button>
+                                                  <button onClick={() => handleDeleteRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 transition-colors"><Trash2 size={16} /></button>
+                                                </div>
+                                              </div>
+                        
+                                              <div className="space-y-3 mb-6 bg-gray-50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-100 dark:border-white/5">
+                                                {(Array.isArray(recipe.ingredients) ? recipe.ingredients : []).slice(0, 3).map((ing: Record<string, any>, i: number) => {
+                                                  const baseUnit = ing.rawMaterial?.unit || ing.subRecipe?.yieldUnit || 'Units';
+                        
+                                                  let currentUnit = ing.selectedUnit || baseUnit;
+                                                  // Smart scaling if no explicit unit is saved and value is fractional
+                                                  if (!ing.selectedUnit) {
+                                                    if (baseUnit === 'L' && ing.quantity < 1) currentUnit = 'Ml';
+                                                    else if (baseUnit === 'Kg' && ing.quantity < 1) currentUnit = 'G';
+                                                    else if (baseUnit === 'G' && ing.quantity < 1) currentUnit = 'Mg';
+                                                  }
+                        
+                                                  const displayQty = convertToDisplay(ing.quantity, baseUnit, currentUnit);
+                        
+                                                  return (
+                                                    <div key={i} className="flex items-center justify-between">
+                                                      <span className="text-xs font-bold text-gray-500 dark:text-gray-400 truncate max-w-[120px]">{ing.rawMaterial?.name || ing.subRecipe?.name}</span>
+                                                      <span className="text-xs font-bold text-gray-900 dark:text-white">
+                                                        {Number(displayQty.toFixed(4))} <span className="text-xs opacity-50">{currentUnit}</span>
+                                                      </span>
+                                                    </div>
+                                                  );
+                                                })}
+                                                {(recipe.ingredients || []).length > 3 && <p className="text-xs font-black text-paymint-green text-center mt-2 tracking-widest">+ {(recipe.ingredients || []).length - 3} Additional Elements</p>}
+                                              </div>
+                        
                     {activeTab === 'sub' && (
                       <button onClick={() => openManufactureModal(recipe as SubRecipe)} className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
                         Produce Batch
@@ -705,12 +706,12 @@ export function RecipesPage() {
                         const currentUnit = ing.selectedUnit || baseUnit;
                         const displayValue = convertToDisplay(ing.quantity, baseUnit, currentUnit);
 
-                        const validMaterialOptions = rawMaterials
-                          .filter(m => !finalRecipeForm.ingredients.some((other, i) => i !== index && other.type === 'raw' && other.rawMaterialId === m.id))
+                        const validMaterialOptions = (Array.isArray(rawMaterials) ? rawMaterials : [])
+                          .filter(m => !(Array.isArray(finalRecipeForm.ingredients) ? finalRecipeForm.ingredients : []).some((other, i) => i !== index && other.type === 'raw' && other.rawMaterialId === m.id))
                           .map(m => ({ label: `${m.name} (${m.unit})`, value: m.id }));
 
-                        const validSubRecipeOptions = subRecipes
-                          .filter(r => !finalRecipeForm.ingredients.some((other, i) => i !== index && other.type === 'sub' && other.subRecipeId === r.id))
+                        const validSubRecipeOptions = (Array.isArray(subRecipes) ? subRecipes : [])
+                          .filter(r => !(Array.isArray(finalRecipeForm.ingredients) ? finalRecipeForm.ingredients : []).some((other, i) => i !== index && other.type === 'sub' && other.subRecipeId === r.id))
                           .map(r => ({ label: `${r.name} (${r.yieldUnit})`, value: r.id }));
 
                         return (

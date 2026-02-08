@@ -112,33 +112,33 @@ export function AddonsPage() {
   }, [location.state, isLoading]);
 
   const filteredAttributes = useMemo(() => {
-    return attributes.filter((attr) => {
+    return (Array.isArray(attributes) ? attributes : []).filter((attr) => {
       const matchesSearch = attr.name.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesSelection = filterSelection === 'ALL' || attr.inputType === filterSelection;
       const matchesRequirement = filterRequirement === 'ALL' || (filterRequirement === 'MANDATORY' ? attr.isRequired : !attr.isRequired);
 
-      const hasPaid = attr.subAttributes?.some(sub => Number(sub.price) > 0);
-      const hasFree = attr.subAttributes?.some(sub => Number(sub.price) === 0);
+      const hasPaid = (Array.isArray(attr.subAttributes) ? attr.subAttributes : []).some(sub => Number(sub.price) > 0);
+      const hasFree = (Array.isArray(attr.subAttributes) ? attr.subAttributes : []).some(sub => Number(sub.price) === 0);
       const matchesPricing = filterPricing === 'ALL' || (filterPricing === 'PAID' ? hasPaid : hasFree);
 
       return matchesSearch && matchesSelection && matchesRequirement && matchesPricing;
     });
   }, [attributes, searchQuery, filterSelection, filterRequirement, filterPricing]);
 
-  const totalPages = Math.ceil(filteredAttributes.length / itemsPerPage);
+  const totalPages = Math.ceil((Array.isArray(filteredAttributes) ? filteredAttributes : []).length / itemsPerPage);
   const paginatedAttributes = useMemo(() => {
     const start = (page - 1) * itemsPerPage;
-    return filteredAttributes.slice(start, start + itemsPerPage);
+    return (Array.isArray(filteredAttributes) ? filteredAttributes : []).slice(start, start + itemsPerPage);
   }, [filteredAttributes, page]);
 
   // Compute real stats from add-on data
   const stats = useMemo(() => {
-    const totalOptions = attributes.reduce((sum, attr) => sum + (attr.subAttributes?.length || 0), 0);
-    const paidOptions = attributes.reduce((sum, attr) =>
-      sum + (attr.subAttributes?.filter(sub => Number(sub.price) > 0).length || 0), 0);
-    const requiredGroups = attributes.filter(attr => attr.isRequired).length;
-    const topGroup = [...attributes].sort((a, b) =>
-      (b.subAttributes?.length || 0) - (a.subAttributes?.length || 0)
+    const totalOptions = (Array.isArray(attributes) ? attributes : []).reduce((sum, attr) => sum + (Array.isArray(attr.subAttributes) ? attr.subAttributes.length : 0), 0);
+    const paidOptions = (Array.isArray(attributes) ? attributes : []).reduce((sum, attr) =>
+      sum + ((Array.isArray(attr.subAttributes) ? attr.subAttributes : []).filter(sub => Number(sub.price) > 0).length || 0), 0);
+    const requiredGroups = (Array.isArray(attributes) ? attributes : []).filter(attr => attr.isRequired).length;
+    const topGroup = [...(Array.isArray(attributes) ? attributes : [])].sort((a, b) =>
+      ((Array.isArray(b.subAttributes) ? b.subAttributes.length : 0)) - ((Array.isArray(a.subAttributes) ? a.subAttributes.length : 0))
     )[0];
 
     return {

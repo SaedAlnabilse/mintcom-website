@@ -10,8 +10,8 @@ import { useAuth } from '../context/AuthContext';
 import { GoogleAuthButton, AuthDivider } from '../components/GoogleAuthButton';
 
 // Paymint Logo imports
-import PaymintLogoGreen from '../assets/green-full-logo.png';
-import PaymintLogoWhite from '../assets/white-green-full-logo.png';
+import PaymintLogoGreen from '../assets/green-full-logo.svg';
+import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
 
 const signUpSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),

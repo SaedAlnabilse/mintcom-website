@@ -290,7 +290,7 @@ export function CustomersPage() {
             </div>
             <div>
               <p className="text-xs font-black text-gray-400 tracking-widest">Total Customers</p>
-              <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mt-0.5">{customers.length}</p>
+              <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mt-0.5">{(Array.isArray(customers) ? customers : []).length}</p>
             </div>
           </div>
         </motion.div>
@@ -309,7 +309,7 @@ export function CustomersPage() {
             <div>
               <p className="text-xs font-black text-gray-400 tracking-widest">Total Points</p>
               <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mt-0.5">
-                {customers.reduce((acc, curr) => acc + curr.points, 0).toLocaleString()}
+                {(Array.isArray(customers) ? customers : []).reduce((acc, curr) => acc + (curr.points || 0), 0).toLocaleString()}
               </p>
             </div>
           </div>
@@ -329,7 +329,7 @@ export function CustomersPage() {
             <div>
               <p className="text-xs font-black text-gray-400 tracking-widest">Total Spent</p>
               <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mt-0.5">
-                {formatCurrency(customers.reduce((acc, curr) => acc + (Number(curr.totalSpent) || 0), 0))}
+                {formatCurrency((Array.isArray(customers) ? customers : []).reduce((acc, curr) => acc + (Number(curr.totalSpent) || 0), 0))}
               </p>
             </div>
           </div>

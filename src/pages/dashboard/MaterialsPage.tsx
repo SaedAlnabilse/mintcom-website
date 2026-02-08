@@ -112,13 +112,13 @@ export function MaterialsPage() {
   };
 
   const filteredMaterials = useMemo(() => {
-    return rawMaterials.filter((m) =>
+    return (Array.isArray(rawMaterials) ? rawMaterials : []).filter((m) =>
       m.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [rawMaterials, searchQuery]);
 
   const filteredPrepared = useMemo(() => {
-    return subRecipes.filter((r) =>
+    return (Array.isArray(subRecipes) ? subRecipes : []).filter((r) =>
       r.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [subRecipes, searchQuery]);
@@ -126,10 +126,10 @@ export function MaterialsPage() {
   const paginatedItems = useMemo(() => {
     const start = (page - 1) * itemsPerPage;
     const items = activeTab === 'materials' ? filteredMaterials : filteredPrepared;
-    return items.slice(start, start + itemsPerPage);
+    return (Array.isArray(items) ? items : []).slice(start, start + itemsPerPage);
   }, [activeTab, filteredMaterials, filteredPrepared, page]);
 
-  const totalPages = Math.ceil((activeTab === 'materials' ? filteredMaterials.length : filteredPrepared.length) / itemsPerPage);
+  const totalPages = Math.ceil(((activeTab === 'materials' ? filteredMaterials : filteredPrepared) || []).length / itemsPerPage);
 
   const handleMaterialSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -297,7 +297,7 @@ export function MaterialsPage() {
                         <div className="grid grid-cols-2 gap-3 text-sm">
                           <div className="bg-gray-50 dark:bg-white/5 rounded-lg p-2">
                             <p className="text-xs font-bold text-gray-400 mb-0.5">Quantity</p>
-                            <p className="font-bold text-gray-900 dark:text-white">{m.quantity.toFixed(2)} <span className="text-xs text-gray-500">{m.unit}</span></p>
+                            <p className="font-bold text-gray-900 dark:text-white">{Number(m.quantity || 0).toFixed(2)} <span className="text-xs text-gray-500">{m.unit}</span></p>
                           </div>
                           <div className="bg-gray-50 dark:bg-white/5 rounded-lg p-2">
                             <p className="text-xs font-bold text-gray-400 mb-0.5">Cost/Unit</p>
@@ -336,7 +336,7 @@ export function MaterialsPage() {
                               </div>
                             </td>
                             <td className="px-6 py-4">
-                              <span className="font-bold text-gray-900 dark:text-white">{m.quantity.toFixed(2)}</span>
+                              <span className="font-bold text-gray-900 dark:text-white">{Number(m.quantity || 0).toFixed(2)}</span>
                               <span className="ml-1 text-xs font-medium text-gray-500">{m.unit}</span>
                             </td>
                             <td className="px-6 py-4 font-bold text-gray-900 dark:text-white text-sm">{formatCurrency(m.costPerUnit)}</td>
@@ -396,7 +396,7 @@ export function MaterialsPage() {
                           </div>
                           <div className="text-right">
                             <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Stock</p>
-                            <p className="font-bold text-paymint-green text-sm">{r.quantity.toFixed(2)} <span className="text-xs">{r.yieldUnit}</span></p>
+                            <p className="font-bold text-paymint-green text-sm">{Number(r.quantity || 0).toFixed(2)} <span className="text-xs">{r.yieldUnit}</span></p>
                           </div>
                         </div>
                       </div>
@@ -465,7 +465,7 @@ export function MaterialsPage() {
                       <input
                         type="text"
                         inputMode="numeric"
-                        value={materialForm.costPerUnit === 0 ? '' : materialForm.costPerUnit.toFixed(2)}
+                        value={materialForm.costPerUnit === 0 ? '' : Number(materialForm.costPerUnit || 0).toFixed(2)}
                         placeholder="0.00"
                         onChange={(e) => {
                           const val = e.target.value.replace(/\D/g, '');

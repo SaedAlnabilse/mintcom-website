@@ -204,7 +204,7 @@ export function LoyaltyPage() {
             confirmText: 'Delete Reward',
             onConfirm: async () => {
                 if (!loyaltyConfig) return;
-                const updatedRewards = rewards.filter(r => r.id !== rewardId);
+                const updatedRewards = (Array.isArray(rewards) ? rewards : []).filter(r => r.id !== rewardId);
                 const updatedConfig = {
                     ...loyaltyConfig,
                     rewards: updatedRewards,
@@ -246,9 +246,9 @@ export function LoyaltyPage() {
 
         let updatedRewards: LoyaltyReward[];
         if (editingReward) {
-            updatedRewards = rewards.map(r => r.id === editingReward.id ? newReward : r);
+            updatedRewards = (Array.isArray(rewards) ? rewards : []).map(r => r.id === editingReward.id ? newReward : r);
         } else {
-            updatedRewards = [...rewards, newReward];
+            updatedRewards = [...(Array.isArray(rewards) ? rewards : []), newReward];
         }
 
         const updatedConfig = {
@@ -275,8 +275,8 @@ export function LoyaltyPage() {
         }
     };
 
-    const totalPages = Math.ceil(rewards.length / ITEMS_PER_PAGE);
-    const paginatedRewards = rewards.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+    const totalPages = Math.ceil((Array.isArray(rewards) ? rewards : []).length / ITEMS_PER_PAGE);
+    const paginatedRewards = (Array.isArray(rewards) ? rewards : []).slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
     const hasChanges = JSON.stringify(loyaltyConfig) !== JSON.stringify(initialLoyaltyConfig);
 

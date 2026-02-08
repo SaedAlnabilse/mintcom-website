@@ -83,17 +83,17 @@ export function EstablishmentsPage() {
   };
 
   const filteredEstablishments = useMemo(() => {
-    return (establishments as Establishment[]).filter(est =>
+    return (Array.isArray(establishments) ? establishments : []).filter(est =>
       est.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      est.type?.toLowerCase().includes(searchQuery.toLowerCase())
+      (est.type || '').toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [establishments, searchQuery]);
 
-  const totalPages = Math.ceil(filteredEstablishments.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil((Array.isArray(filteredEstablishments) ? filteredEstablishments : []).length / ITEMS_PER_PAGE);
 
   const paginatedEstablishments = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredEstablishments.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    return (Array.isArray(filteredEstablishments) ? filteredEstablishments : []).slice(startIndex, startIndex + ITEMS_PER_PAGE);
   }, [filteredEstablishments, currentPage]);
 
   useEffect(() => {

@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Smartphone, Laptop, BarChart2, Play } from 'lucide-react';
-import WhiteLogo from '../assets/white-green-full-logo.png';
-import GreenLogo from '../assets/green-full-logo.png';
+import WhiteLogo from '../assets/white-green-full-logo.svg';
+import GreenLogo from '../assets/green-full-logo.svg';
 
 export const AdminControl = () => {
   const [isVideoVisible, setIsVideoVisible] = useState(false);
@@ -120,8 +120,8 @@ export const AdminControl = () => {
 
             {/* Logo Lockup */}
             <div className="flex items-center gap-6 mb-8 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 w-fit">
-              <img src={WhiteLogo} alt="PayMint Logo" className="h-8 w-auto object-contain hidden dark:block" loading="lazy" />
-              <img src={GreenLogo} alt="PayMint Logo" className="h-8 w-auto object-contain block dark:hidden" loading="lazy" />
+              <img src={WhiteLogo} alt="PayMint Logo" width={128} height={32} className="h-8 w-auto object-contain hidden dark:block" loading="lazy" decoding="async" />
+              <img src={GreenLogo} alt="PayMint Logo" width={128} height={32} className="h-8 w-auto object-contain block dark:hidden" loading="lazy" decoding="async" />
               <div className="h-8 w-px bg-gray-300 dark:bg-white/20"></div>
               <div className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
                 <Smartphone size={16} />

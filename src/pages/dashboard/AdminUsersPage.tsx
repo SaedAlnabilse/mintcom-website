@@ -91,19 +91,19 @@ export function AdminUsersPage() {
     };
 
     const filteredAdmins = useMemo(() => {
-        return adminUsers.filter(admin =>
-            admin.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            admin.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            admin.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        return (Array.isArray(adminUsers) ? adminUsers : []).filter(admin =>
+            (admin.firstName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (admin.lastName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (admin.email || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
             (admin.phone && admin.phone.toLowerCase().includes(searchQuery.toLowerCase()))
         );
     }, [adminUsers, searchQuery]);
 
-    const totalPages = Math.ceil(filteredAdmins.length / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil((Array.isArray(filteredAdmins) ? filteredAdmins : []).length / ITEMS_PER_PAGE);
 
     const paginatedAdmins = useMemo(() => {
         const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-        return filteredAdmins.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+        return (Array.isArray(filteredAdmins) ? filteredAdmins : []).slice(startIndex, startIndex + ITEMS_PER_PAGE);
     }, [filteredAdmins, currentPage]);
 
     useEffect(() => {

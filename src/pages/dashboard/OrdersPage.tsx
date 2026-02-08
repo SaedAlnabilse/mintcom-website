@@ -460,7 +460,7 @@ export function OrdersPage() {
       let heldOrdersList: Order[] = [];
       let filteredHeldCount = 0;
       
-      if (heldRes?.data) {
+      if (heldRes?.data && Array.isArray(heldRes.data)) {
         heldOrdersList = heldRes.data
           .map(mapHeldOrder)
           .filter((h: Record<string, any>) => {
@@ -472,8 +472,8 @@ export function OrdersPage() {
       }
 
       // Process Overall Total (for KPI)
-      const regularTotalForPeriod = overallRes?.data?.totalOrders || overallRes?.data?.total || 0;
-      setOverallTotalCount(regularTotalForPeriod + filteredHeldCount);
+      const regularTotalForPeriod = (overallRes?.data?.totalOrders || overallRes?.data?.total || 0);
+      setOverallTotalCount(Number(regularTotalForPeriod) + filteredHeldCount);
 
       // Process Main Display Data
       if (statusFilter === 'HELD') {
@@ -482,11 +482,11 @@ export function OrdersPage() {
         setTotalCount(total);
         setTotalPages(Math.ceil(total / 10) || 1);
         const startIndex = (page - 1) * 10;
-        setOrders(heldOrdersList.slice(startIndex, startIndex + 10));
+        setOrders((Array.isArray(heldOrdersList) ? heldOrdersList : []).slice(startIndex, startIndex + 10));
       } else {
         // Show Regular Orders (possibly mixed with held if page 1)
         const responseData = mainRes?.data || {};
-        let fetchedOrders = responseData.orders || responseData || [];
+        let fetchedOrders = Array.isArray(responseData.orders) ? responseData.orders : (Array.isArray(responseData) ? responseData : []);
         let totalOrders = responseData.totalOrders || responseData.total || fetchedOrders.length;
         let serverTotalPages = responseData.totalPages || Math.ceil(totalOrders / 10) || 1;
 
@@ -499,7 +499,7 @@ export function OrdersPage() {
            if (fetchedOrders.length > 10) {
              fetchedOrders = fetchedOrders.slice(0, 10);
            }
-           totalOrders += filteredHeldCount;
+           totalOrders = Number(totalOrders) + filteredHeldCount;
            serverTotalPages = Math.ceil(totalOrders / 10) || 1;
         }
 

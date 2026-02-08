@@ -1,16 +1,29 @@
 import React from 'react';
 
-// Import actual Paymint logos
-import PaymintLogoGreen from '../assets/green-full-logo.png';
-import PaymintLogoWhite from '../assets/white-green-full-logo.png';
-import PaymintLeafIcon from '../assets/small-logo.png';
+// Import SVG logos (vector graphics - infinitely scalable, tiny file size)
+import PaymintLogoGreen from '../assets/green-full-logo.svg';
+import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
+import PaymintLeafIcon from '../assets/small-logo.svg';
 
 interface LogoProps {
   className?: string;
   variant?: 'full' | 'icon';
-  theme?: 'auto' | 'dark' | 'light'; // 'auto' uses system theme
+  theme?: 'auto' | 'dark' | 'light';
   size?: 'sm' | 'md' | 'lg';
 }
+
+// Explicit dimensions for responsive images (prevents CLS)
+const sizeConfig = {
+  sm: { height: 24, width: 96 },
+  md: { height: 32, width: 128 },
+  lg: { height: 40, width: 160 },
+};
+
+const iconSizeConfig = {
+  sm: { height: 24, width: 24 },
+  md: { height: 32, width: 32 },
+  lg: { height: 40, width: 40 },
+};
 
 export const Logo: React.FC<LogoProps> = ({
   className = '',
@@ -18,27 +31,22 @@ export const Logo: React.FC<LogoProps> = ({
   theme = 'auto',
   size = 'md'
 }) => {
-  // Size classes for the logo
-  const sizeClasses = {
-    sm: 'h-6',
-    md: 'h-8',
-    lg: 'h-10'
-  };
+  const dimensions = sizeConfig[size];
+  const iconDimensions = iconSizeConfig[size];
 
-  const iconSizeClasses = {
-    sm: 'h-6 w-6',
-    md: 'h-8 w-8',
-    lg: 'h-10 w-10'
-  };
-
-  // For icon variant, show only the SVG leaf logo
+  // For icon variant, show only the leaf logo
   if (variant === 'icon') {
     return (
       <div className={`flex items-center justify-center ${className}`}>
         <img
           src={PaymintLeafIcon}
           alt="PayMint"
-          className={`${iconSizeClasses[size]} object-contain`}
+          width={iconDimensions.width}
+          height={iconDimensions.height}
+          loading="lazy"
+          decoding="async"
+          className="object-contain"
+          style={{ width: iconDimensions.width, height: iconDimensions.height }}
         />
       </div>
     );
@@ -51,7 +59,12 @@ export const Logo: React.FC<LogoProps> = ({
         <img
           src={PaymintLogoGreen}
           alt="PayMint"
-          className={`${sizeClasses[size]} w-auto object-contain`}
+          width={dimensions.width}
+          height={dimensions.height}
+          loading="lazy"
+          decoding="async"
+          className="object-contain"
+          style={{ height: dimensions.height, width: 'auto' }}
         />
       </div>
     );
@@ -63,7 +76,12 @@ export const Logo: React.FC<LogoProps> = ({
         <img
           src={PaymintLogoWhite}
           alt="PayMint"
-          className={`${sizeClasses[size]} w-auto object-contain`}
+          width={dimensions.width}
+          height={dimensions.height}
+          loading="lazy"
+          decoding="async"
+          className="object-contain"
+          style={{ height: dimensions.height, width: 'auto' }}
         />
       </div>
     );
@@ -72,18 +90,31 @@ export const Logo: React.FC<LogoProps> = ({
   // Auto theme - show appropriate logo based on system theme
   return (
     <div className={`flex items-center ${className}`}>
-      {/* Light mode logo - shows green text */}
+      {/* Light mode logo */}
       <img
         src={PaymintLogoGreen}
         alt="PayMint"
-        className={`${sizeClasses[size]} w-auto object-contain dark:hidden`}
+        width={dimensions.width}
+        height={dimensions.height}
+        loading="lazy"
+        decoding="async"
+        className="object-contain dark:hidden"
+        style={{ height: dimensions.height, width: 'auto' }}
       />
-      {/* Dark mode logo - shows white text with green leaf */}
+      {/* Dark mode logo */}
       <img
         src={PaymintLogoWhite}
         alt="PayMint"
-        className={`${sizeClasses[size]} w-auto object-contain hidden dark:block`}
+        width={dimensions.width}
+        height={dimensions.height}
+        loading="lazy"
+        decoding="async"
+        className="object-contain hidden dark:block"
+        style={{ height: dimensions.height, width: 'auto' }}
       />
     </div>
   );
 };
+
+// Export the SVG imports for use in other components
+export { PaymintLogoGreen, PaymintLogoWhite, PaymintLeafIcon };

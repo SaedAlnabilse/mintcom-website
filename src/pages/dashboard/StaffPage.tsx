@@ -139,7 +139,7 @@ export function StaffPage() {
   };
 
   const filteredStaff = useMemo(() => {
-    const result = staff.filter(s => {
+    const result = (Array.isArray(staff) ? staff : []).filter(s => {
       const matchesRole = filterRole === 'ALL' || (filterRole === 'USER' ? s.role !== 'ADMIN' : s.role === filterRole);
       const matchesSearch = s.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (s.name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
@@ -189,8 +189,8 @@ export function StaffPage() {
   // Pagination Logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredStaff.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredStaff.length / itemsPerPage);
+  const currentItems = (Array.isArray(filteredStaff) ? filteredStaff : []).slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil((Array.isArray(filteredStaff) ? filteredStaff : []).length / itemsPerPage);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 

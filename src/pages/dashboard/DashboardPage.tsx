@@ -162,7 +162,7 @@ export const DashboardPage = () => {
 
       // Process stats
       const summaryData = summaryRes.data || {};
-      const categoryData = categoryRes.data?.breakdown || [];
+      const categoryData = Array.isArray(categoryRes.data?.breakdown) ? categoryRes.data.breakdown : [];
       
       // Process categories specifically from the robust report endpoint
       const processedCategories = categoryData.map((cat: any) => ({
@@ -189,7 +189,7 @@ export const DashboardPage = () => {
       });
 
       // Process top products
-      const topItems = (topItemsRes.data || []) as TopSellingItem[];
+      const topItems = (Array.isArray(topItemsRes.data) ? topItemsRes.data : []) as TopSellingItem[];
       setTopProducts(topItems.map((item: any) => ({
         name: item.itemName || item.name || 'Unknown',
         orders: item.quantity || item.orders || item.count || 0,
@@ -197,7 +197,7 @@ export const DashboardPage = () => {
       })));
 
       // Process peak hours
-      setPeakHours(peakRes.data || []);
+      setPeakHours(Array.isArray(peakRes.data) ? peakRes.data : []);
 
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);

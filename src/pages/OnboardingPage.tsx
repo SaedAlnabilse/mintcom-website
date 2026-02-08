@@ -49,8 +49,8 @@ import { useAuth } from '../context/AuthContext';
 import { QuickInfo } from '../components/QuickInfo';
 
 // Paymint Logo imports
-import PaymintLogoGreen from '../assets/green-full-logo.png';
-import PaymintLogoWhite from '../assets/white-green-full-logo.png';
+import PaymintLogoGreen from '../assets/green-full-logo.svg';
+import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
 
 // Step 1: Location Details
 const step1Schema = z.object({

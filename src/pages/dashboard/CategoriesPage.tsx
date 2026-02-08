@@ -116,17 +116,17 @@ export function CategoriesPage() {
   };
 
   const filteredCategories = useMemo(() => {
-    return categories.filter(cat =>
+    return (Array.isArray(categories) ? categories : []).filter(cat =>
       cat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       cat.description?.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [categories, searchQuery]);
 
-  const totalPages = Math.ceil(filteredCategories.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil((Array.isArray(filteredCategories) ? filteredCategories : []).length / ITEMS_PER_PAGE);
 
   const paginatedCategories = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredCategories.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    return (Array.isArray(filteredCategories) ? filteredCategories : []).slice(startIndex, startIndex + ITEMS_PER_PAGE);
   }, [filteredCategories, currentPage]);
 
   useEffect(() => {

@@ -243,8 +243,8 @@ export function ReportsPage() {
 
           setSalesData({
             totalDiscounts: discountRes.data?.totalDiscountGiven || 0,
-            totalDiscountCount: discountReports.reduce((acc: number, curr: any) => acc + (curr.count || 0), 0),
-            discountBreakdown: discountReports.map((r: any) => ({
+            totalDiscountCount: (Array.isArray(discountReports) ? discountReports : []).reduce((acc: number, curr: any) => acc + (curr.count || 0), 0),
+            discountBreakdown: (Array.isArray(discountReports) ? discountReports : []).map((r: any) => ({
               name: r.name || 'Unknown',
               count: r.count || 0,
               value: r.totalAmount || 0

@@ -244,10 +244,11 @@ export function ProductsPage() {
     const handleExport = () => {
         // Placeholder for export functionality
         const headers = ['Name', 'Price', 'Category', 'Stock'];
+        const productsToExport = Array.isArray(filteredProducts) ? filteredProducts : [];
         const csvContent = [
             headers.join(','),
-            ...filteredProducts.map(p => {
-                const catName = categories.find(c => c.id === p.categoryId)?.name || 'Uncategorized';
+            ...productsToExport.map(p => {
+                const catName = (Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || 'Uncategorized';
                 return `"${p.name}",${p.price},"${catName}",${p.trackStock ? p.availableStock : 'Unlimited'}`;
             })
         ].join('\n');
@@ -271,7 +272,7 @@ export function ProductsPage() {
     };
 
     const filteredProducts = useMemo(() => {
-        let result = [...products];
+        let result = Array.isArray(products) ? [...products] : [];
 
         // Filter by Category
         if (selectedCategoryId !== 'all') {
@@ -316,8 +317,9 @@ export function ProductsPage() {
 
                 // Handle special case for category sorting
                 if (sortConfig.key === 'category') {
-                    aValue = categories.find(c => c.id === a.categoryId)?.name || '';
-                    bValue = categories.find(c => c.id === b.categoryId)?.name || '';
+                    const cats = Array.isArray(categories) ? categories : [];
+                    aValue = cats.find(c => c.id === a.categoryId)?.name || '';
+                    bValue = cats.find(c => c.id === b.categoryId)?.name || '';
                 } else {
                     const valA = a[sortConfig.key as keyof Product];
                     const valB = b[sortConfig.key as keyof Product];
@@ -348,9 +350,9 @@ export function ProductsPage() {
         return result;
     }, [products, selectedCategoryId, searchQuery, sortConfig, stockFilter, categories]);
 
-    const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+    const totalPages = Math.ceil((Array.isArray(filteredProducts) ? filteredProducts : []).length / ITEMS_PER_PAGE);
     const paginatedProducts = useMemo(() => {
-        return filteredProducts.slice(
+        return (Array.isArray(filteredProducts) ? filteredProducts : []).slice(
             (currentPage - 1) * ITEMS_PER_PAGE,
             currentPage * ITEMS_PER_PAGE
         );
@@ -358,7 +360,7 @@ export function ProductsPage() {
 
     // Statistics - calculated from all products (not filtered) so counts remain accurate
     const stats = useMemo(() => {
-        const trackingProducts = products.filter(p => p.trackStock);
+        const trackingProducts = (Array.isArray(products) ? products : []).filter(p => p.trackStock);
 
         // Out of stock: stock is 0 or negative
         const outOfStock = trackingProducts.filter(p => (p.availableStock || 0) <= 0).length;
@@ -379,12 +381,12 @@ export function ProductsPage() {
         }).length;
 
         return {
-            total: products.length,
+            total: (Array.isArray(products) ? products : []).length,
             yellowThreshold,
             redThreshold,
             outOfStock,
-            totalValue: products.reduce((acc, curr) => acc + (curr.price * (curr.availableStock || 0)), 0),
-            categories: categories.length
+            totalValue: (Array.isArray(products) ? products : []).reduce((acc, curr) => acc + (curr.price * (curr.availableStock || 0)), 0),
+            categories: (Array.isArray(categories) ? categories : []).length
         };
     }, [products, categories]);
 

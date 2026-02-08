@@ -156,8 +156,8 @@ export function ActivityLogsPage() {
   };
 
   const handleExport = () => {
-    if (!Array.isArray(logs)) return;
-    const exportData = logs.map(l => ({
+    const logsToExport = Array.isArray(logs) ? logs : [];
+    const exportData = logsToExport.map(l => ({
       time: formatDate(l.timestamp),
       user: l.performedBy?.username || 'Owner',
       action: l.action,
