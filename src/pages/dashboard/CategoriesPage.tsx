@@ -16,7 +16,6 @@ import {
   Image as ImageIcon,
   Tag,
   AlertTriangle,
-  RefreshCw,
   Grid,
   List
 } from 'lucide-react';
