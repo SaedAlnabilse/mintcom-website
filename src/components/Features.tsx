@@ -1,5 +1,6 @@
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ShieldCheck, Zap, Settings, Store } from 'lucide-react';
+import { ShieldCheck, Zap, Settings, Store, Play } from 'lucide-react';
 
 const features = [
   {
@@ -15,7 +16,7 @@ const features = [
   {
     icon: <ShieldCheck className="w-6 h-6 text-white" />,
     title: "Enterprise-Grade Security",
-    description: "Your data is fully encrypted, securely stored, and automatically archived. We’ve invested heavily in top-tier security standards to ensure your business information is protected at all times."
+    description: "Your data is fully encrypted, securely stored, and automatically archived. We've invested heavily in top-tier security standards to ensure your business information is protected at all times."
   },
   {
     icon: <Settings className="w-6 h-6 text-white" />,
@@ -25,6 +26,32 @@ const features = [
 ];
 
 export const Features = () => {
+  const [isVideoVisible, setIsVideoVisible] = useState(false);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const videoRef = useRef<HTMLDivElement>(null);
+
+  // Lazy load video when section comes into view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !isVideoLoaded) {
+            setIsVideoVisible(true);
+            setIsVideoLoaded(true);
+            observer.disconnect();
+          }
+        });
+      },
+      { rootMargin: '200px', threshold: 0 }
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [isVideoLoaded]);
+
   return (
     <section id="features" className="py-24 lg:py-32 bg-gray-50 dark:bg-[#0f0f0f] overflow-hidden relative">
       {/* Background Decor */}
@@ -33,8 +60,9 @@ export const Features = () => {
       <div className="container mx-auto px-8 md:px-16 lg:px-24">
         <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
 
-          {/* Left Side: Video Preview */}
+          {/* Left Side: Video Preview - Lazy Loaded */}
           <motion.div
+            ref={videoRef}
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -42,14 +70,28 @@ export const Features = () => {
             className="w-full lg:w-1/2 relative"
           >
             <div className="absolute -inset-4 bg-gradient-to-r from-paymint-green/30 to-blue-500/30 rounded-[2rem] blur-2xl opacity-50" />
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 dark:border-white/10 aspect-video">
-              <iframe
-                src="https://player.vimeo.com/video/1158972798?h=234e7f9175&autoplay=1&background=1&muted=1&loop=1"
-                className="w-full h-full"
-                allow="autoplay; fullscreen; picture-in-picture"
-                allowFullScreen
-                style={{ pointerEvents: 'none' }}
-              />
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 dark:border-white/10 aspect-video bg-gray-900">
+              {isVideoVisible ? (
+                <iframe
+                  src="https://player.vimeo.com/video/1158972798?h=234e7f9175&autoplay=1&background=1&muted=1&loop=1"
+                  className="w-full h-full"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  style={{ pointerEvents: 'none' }}
+                  loading="lazy"
+                  title="PayMint Demo Video"
+                />
+              ) : (
+                // Placeholder while video loads
+                <div className="w-full h-full flex items-center justify-center bg-gray-900">
+                  <div className="text-center">
+                    <div className="w-16 h-16 rounded-full bg-paymint-green/20 flex items-center justify-center mx-auto mb-4">
+                      <Play className="w-8 h-8 text-paymint-green" fill="currentColor" />
+                    </div>
+                    <p className="text-white/60 text-sm">Loading video...</p>
+                  </div>
+                </div>
+              )}
 
               {/* Overlay Gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
@@ -109,6 +151,3 @@ export const Features = () => {
     </section>
   );
 };
-
-
-

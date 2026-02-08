@@ -1,9 +1,36 @@
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Smartphone, Laptop, BarChart2 } from 'lucide-react';
+import { Smartphone, Laptop, BarChart2, Play } from 'lucide-react';
 import WhiteLogo from '../assets/white-green-full-logo.png';
 import GreenLogo from '../assets/green-full-logo.png';
 
 export const AdminControl = () => {
+  const [isVideoVisible, setIsVideoVisible] = useState(false);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const videoRef = useRef<HTMLDivElement>(null);
+
+  // Lazy load video when section comes into view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !isVideoLoaded) {
+            setIsVideoVisible(true);
+            setIsVideoLoaded(true);
+            observer.disconnect();
+          }
+        });
+      },
+      { rootMargin: '200px', threshold: 0 }
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [isVideoLoaded]);
+
   return (
     <section id="admin" className="py-24 lg:py-32 bg-white dark:bg-[#0f0f0f] overflow-hidden relative">
       {/* Background Decor */}
@@ -12,8 +39,9 @@ export const AdminControl = () => {
       <div className="container mx-auto px-8 md:px-16 lg:px-24">
         <div className="flex flex-col lg:flex-row-reverse items-center gap-16 lg:gap-24">
 
-          {/* Right Side: Video Preview (Mobile App Style) */}
+          {/* Right Side: Video Preview (Mobile App Style) - Lazy Loaded */}
           <motion.div
+            ref={videoRef}
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -24,13 +52,26 @@ export const AdminControl = () => {
             <div className="relative w-[300px] h-[600px] bg-black rounded-[3rem] border-[8px] border-gray-800 shadow-2xl overflow-hidden ring-1 ring-white/10">
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-gray-800 rounded-b-2xl z-20" />
               <div className="w-full h-full bg-black relative">
-                {/* Video with object-cover equivalent for iframe via absolute positioning */}
-                <iframe
-                  src="https://player.vimeo.com/video/1158972798?h=234e7f9175&autoplay=1&background=1&muted=1&loop=1"
-                  className="absolute top-1/2 left-1/2 w-[300%] h-[100%] -translate-x-1/2 -translate-y-1/2"
-                  allow="autoplay; fullscreen; picture-in-picture"
-                  style={{ pointerEvents: 'none' }}
-                />
+                {isVideoVisible ? (
+                  <iframe
+                    src="https://player.vimeo.com/video/1158972798?h=234e7f9175&autoplay=1&background=1&muted=1&loop=1"
+                    className="absolute top-1/2 left-1/2 w-[300%] h-[100%] -translate-x-1/2 -translate-y-1/2"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    style={{ pointerEvents: 'none' }}
+                    loading="lazy"
+                    title="PayMint Admin App Demo"
+                  />
+                ) : (
+                  // Placeholder while video loads
+                  <div className="w-full h-full flex items-center justify-center bg-black">
+                    <div className="text-center">
+                      <div className="w-12 h-12 rounded-full bg-paymint-green/20 flex items-center justify-center mx-auto mb-3">
+                        <Play className="w-6 h-6 text-paymint-green" fill="currentColor" />
+                      </div>
+                      <p className="text-white/40 text-xs">Loading...</p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Floating Badge */}
@@ -79,8 +120,8 @@ export const AdminControl = () => {
 
             {/* Logo Lockup */}
             <div className="flex items-center gap-6 mb-8 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 w-fit">
-              <img src={WhiteLogo} alt="PayMint Logo" className="h-8 w-auto object-contain hidden dark:block" />
-              <img src={GreenLogo} alt="PayMint Logo" className="h-8 w-auto object-contain block dark:hidden" />
+              <img src={WhiteLogo} alt="PayMint Logo" className="h-8 w-auto object-contain hidden dark:block" loading="lazy" />
+              <img src={GreenLogo} alt="PayMint Logo" className="h-8 w-auto object-contain block dark:hidden" loading="lazy" />
               <div className="h-8 w-px bg-gray-300 dark:bg-white/20"></div>
               <div className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
                 <Smartphone size={16} />
@@ -115,6 +156,3 @@ export const AdminControl = () => {
     </section>
   );
 };
-
-
-

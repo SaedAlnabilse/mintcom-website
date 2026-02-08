@@ -10,32 +10,85 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        // Manual chunks to optimize bundle splitting and fix circular dependency warnings
-        manualChunks: {
-          // Group Recharts into its own chunk to:
-          // 1. Fix circular dependency warnings
-          // 2. Allow it to be cached separately (it rarely changes)
-          // 3. Only load when charts are actually needed
-          'recharts': ['recharts'],
+        // Optimized chunking strategy to reduce HTTP requests
+        manualChunks: (id) => {
+          // React ecosystem - always needed
+          if (id.includes('node_modules/react') ||
+              id.includes('node_modules/react-dom') ||
+              id.includes('node_modules/react-router-dom') ||
+              id.includes('node_modules/scheduler')) {
+            return 'react-vendor';
+          }
 
-          // Group Framer Motion separately (used widely but stable)
-          'framer-motion': ['framer-motion'],
+          // Framer Motion - used widely but stable
+          if (id.includes('node_modules/framer-motion')) {
+            return 'framer-motion';
+          }
 
-          // Group React core libraries
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          // Recharts - large library, lazy loaded for dashboard
+          if (id.includes('node_modules/recharts') ||
+              id.includes('node_modules/d3-') ||
+              id.includes('node_modules/victory-')) {
+            return 'recharts';
+          }
 
-          // Group form libraries
-          'forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
+          // Form libraries
+          if (id.includes('node_modules/react-hook-form') ||
+              id.includes('node_modules/@hookform') ||
+              id.includes('node_modules/zod')) {
+            return 'forms';
+          }
 
-          // Group date utilities
-          'date-utils': ['date-fns'],
+          // Date utilities
+          if (id.includes('node_modules/date-fns')) {
+            return 'date-utils';
+          }
+
+          // Lucide icons - bundle all icons together to reduce requests
+          if (id.includes('node_modules/lucide-react')) {
+            return 'icons';
+          }
+
+          // Socket.io - only needed for realtime features
+          if (id.includes('node_modules/socket.io')) {
+            return 'realtime';
+          }
+
+          // Axios and HTTP utilities
+          if (id.includes('node_modules/axios')) {
+            return 'http';
+          }
+
+          // Toast notifications
+          if (id.includes('node_modules/react-hot-toast')) {
+            return 'notifications';
+          }
         },
       },
     },
-    // Generate source maps for debugging (disable in production if not needed)
+    // Disable source maps for production
     sourcemap: false,
-    // Increase chunk size warning limit (Recharts is large)
-    chunkSizeWarningLimit: 500,
+    // Increase chunk size warning limit
+    chunkSizeWarningLimit: 600,
+    // Use default esbuild minification (faster than terser)
+    minify: 'esbuild',
+    // Target modern browsers for smaller bundles
+    target: 'es2020',
+    // CSS code splitting
+    cssCodeSplit: true,
+    // Asset inlining threshold (inline small assets)
+    assetsInlineLimit: 4096,
+  },
+
+  // Optimize dependencies
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react-router-dom',
+      'framer-motion',
+      'lucide-react',
+    ],
   },
 
   server: {
