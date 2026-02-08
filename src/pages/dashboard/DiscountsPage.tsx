@@ -330,7 +330,7 @@ export function DiscountsPage() {
                       {discount.type === 'percentage' ? <Percent size={20} /> : <DollarSign size={20} />}
                     </div>
 
-                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-[-10px] group-hover:translate-y-0">
+                    <div className="flex gap-2 transition-all translate-y-0">
                       <button
                         onClick={() => openEditModal(discount)}
                         className="p-2 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-600 dark:text-white transition-colors"

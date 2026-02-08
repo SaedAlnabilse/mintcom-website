@@ -575,7 +575,7 @@ export function AddonsPage() {
                                 {Number(sub.price) > 0 ? `+${formatAmount(Number(sub.price))}` : 'Complimentary'}
                               </p>
                             </div>
-                            <div className="flex gap-1 opacity-0 group-hover/sub:opacity-100 transition-opacity">
+                            <div className="flex gap-1 transition-opacity">
                               <button onClick={() => openSubAttributeModal(attr.id, sub)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10">
                                 <Edit2 size={14} />
                               </button>

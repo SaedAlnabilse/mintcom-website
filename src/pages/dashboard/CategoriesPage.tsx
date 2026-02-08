@@ -376,7 +376,7 @@ export function CategoriesPage() {
                       >
                         <IconComponent size={24} />
                       </div>
-                      <div className="flex gap-1 transition-all">
+                      <div className="flex gap-1">
                         <button
                           onClick={(e) => openEditModal(e, category)}
                           className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-green transition-colors"

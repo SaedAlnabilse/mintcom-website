@@ -302,7 +302,7 @@ export function CustomRolesPage() {
                         </span>
                       </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 relative z-20">
                       <button
                         onClick={() => handleEdit(role)}
                         className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all"

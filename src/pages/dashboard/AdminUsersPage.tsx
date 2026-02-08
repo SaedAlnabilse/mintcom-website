@@ -357,7 +357,7 @@ export function AdminUsersPage() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                                        <div className="flex flex-col gap-2 transition-all translate-x-0">
                                             <button
                                                 onClick={() => openEditModal(admin)}
                                                 className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-all border border-gray-200 dark:border-white/10 shadow-sm"

@@ -460,7 +460,7 @@ export function LoyaltyPage() {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="relative z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                                                <div className="relative z-10 flex gap-1 transition-all translate-x-0">
                                                     <button type="button" onClick={() => handleEditReward(reward)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
                                                         <Edit2 size={16} />
                                                     </button>

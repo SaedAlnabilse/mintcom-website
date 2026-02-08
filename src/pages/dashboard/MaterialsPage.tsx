@@ -347,7 +347,7 @@ export function MaterialsPage() {
                               </div>
                             </td>
                             <td className="px-6 py-4 text-right">
-                              <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <div className="flex items-center justify-end gap-2 transition-opacity">
                                 <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-paymint-green transition-colors">
                                   <Edit2 size={14} />
                                 </button>
@@ -381,7 +381,7 @@ export function MaterialsPage() {
                           <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm">
                             <Package size={20} />
                           </div>
-                          <button onClick={() => navigate(`/dashboard/${locationSlug}/recipes`)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green opacity-0 group-hover:opacity-100 transition-all">
+                          <button onClick={() => navigate(`/dashboard/${locationSlug}/recipes`)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green transition-all">
                             <Edit2 size={16} />
                           </button>
                         </div>

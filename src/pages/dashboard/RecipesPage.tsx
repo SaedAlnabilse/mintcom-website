@@ -417,19 +417,18 @@ export function RecipesPage() {
                         <div className="w-12 h-12 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm">
                           {activeTab === 'final' ? <Pizza size={20} /> : <Package size={20} />}
                         </div>
-                                                  <div>
-                                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[150px] group-hover:text-paymint-green transition-colors">
-                                                      {activeTab === 'final' ? (recipe as FinalRecipe).item?.name : (recipe as SubRecipe).name}
-                                                    </h3>
-                                                    <p className="text-xs font-black text-gray-400 tracking-widest">{(recipe.ingredients || []).length} Ingredients</p>
-                                                  </div>
-                                                </div>
-                                                <div className="flex gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all translate-x-0 sm:translate-x-4 group-hover:translate-x-0">
-                                                  <button onClick={() => activeTab === 'final' ? openEditFinalRecipe(recipe as FinalRecipe) : openEditSubRecipe(recipe as SubRecipe)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-colors"><Edit2 size={16} /></button>
-                                                  <button onClick={() => handleDeleteRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 transition-colors"><Trash2 size={16} /></button>
-                                                </div>
-                                              </div>
-                        
+                                                                          <div>
+                                                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[150px] group-hover:text-paymint-green transition-colors">
+                                                                              {activeTab === 'final' ? (recipe as FinalRecipe).item?.name : (recipe as SubRecipe).name}
+                                                                            </h3>
+                                                                            <p className="text-xs font-black text-gray-400 tracking-widest">{(recipe.ingredients || []).length} Ingredients</p>
+                                                                          </div>
+                                                                        </div>
+                                                                        <div className="flex gap-1 transition-all">
+                                                                          <button onClick={() => activeTab === 'final' ? openEditFinalRecipe(recipe as FinalRecipe) : openEditSubRecipe(recipe as SubRecipe)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-colors"><Edit2 size={16} /></button>
+                                                                          <button onClick={() => handleDeleteRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 transition-colors"><Trash2 size={16} /></button>
+                                                                        </div>
+                                                                      </div>                        
                                               <div className="space-y-3 mb-6 bg-gray-50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-100 dark:border-white/5">
                                                 {(Array.isArray(recipe.ingredients) ? recipe.ingredients : []).slice(0, 3).map((ing: Record<string, any>, i: number) => {
                                                   const baseUnit = ing.rawMaterial?.unit || ing.subRecipe?.yieldUnit || 'Units';

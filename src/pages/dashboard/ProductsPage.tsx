@@ -667,7 +667,7 @@ export function ProductsPage() {
                                                     <Package size={32} />
                                                 </div>
                                             )}
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-3">
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 flex items-end justify-between p-3">
                                                 <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label="Edit product" className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-gray-900 hover:bg-paymint-green hover:text-black transition-colors"><Edit2 size={18} /></button>
                                                 <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label="Delete product" className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors"><Trash2 size={18} /></button>
                                             </div>
