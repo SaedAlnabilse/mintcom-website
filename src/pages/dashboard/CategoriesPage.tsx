@@ -255,15 +255,6 @@ export function CategoriesPage() {
 
         <div className="flex items-center gap-3">
           <button
-            onClick={fetchData}
-            disabled={isLoading}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 font-bold text-xs hover:bg-gray-200 dark:hover:bg-white/10 transition-all shadow-sm disabled:opacity-50"
-            title="Refresh data"
-          >
-            <RefreshCw size={16} className={isLoading ? 'animate-spin' : ''} />
-            <span className="hidden sm:inline">Refresh</span>
-          </button>
-          <button
             onClick={openCreateModal}
             className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-xs sm:text-sm hover:bg-emerald-400 transition-all shadow-sm"
           >
@@ -384,22 +375,6 @@ export function CategoriesPage() {
                           <Edit2 size={16} />
                         </button>
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/dashboard/${locationSlug}/products`, { 
-                              state: { 
-                                openCreateModal: true, 
-                                categoryId: category.id,
-                                filterCategoryId: category.id
-                              } 
-                            });
-                          }}
-                          className="p-2 rounded-lg text-gray-400 hover:text-paymint-green transition-all group/plus"
-                          title="Add product to this category"
-                        >
-                          <Plus size={16} className="group-hover/plus:scale-125 transition-transform" />
-                        </button>
-                        <button
                           onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
                           className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-red transition-colors"
                         >
@@ -468,22 +443,6 @@ export function CategoriesPage() {
                                 <Edit2 size={16} />
                               </button>
                               <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  navigate(`/dashboard/${locationSlug}/products`, { 
-                                    state: { 
-                                      openCreateModal: true, 
-                                      categoryId: category.id,
-                                      filterCategoryId: category.id
-                                    } 
-                                  });
-                                }}
-                                className="p-2 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-all"
-                                title="Add Product"
-                              >
-                                <Plus size={16} />
-                              </button>
-                              <button
                                 onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
                                 className="p-2 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"
                                 title="Delete"
@@ -547,19 +506,6 @@ export function CategoriesPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => navigate(`/dashboard/${locationSlug}/products`, { 
-                        state: { 
-                          openCreateModal: true, 
-                          categoryId: viewingCategory.id,
-                          filterCategoryId: viewingCategory.id
-                        } 
-                      })}
-                      className="p-2 rounded-xl bg-paymint-green/10 text-paymint-green hover:bg-paymint-green hover:text-black transition-all shadow-sm"
-                      title="Add Product"
-                    >
-                      <Plus size={20} />
-                    </button>
-                    <button
                       onClick={() => setViewingCategory(null)}
                       className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                     >
@@ -575,20 +521,7 @@ export function CategoriesPage() {
                         <Package size={40} strokeWidth={1.5} className="text-gray-300" />
                       </div>
                       <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No items in this category</h3>
-                      <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto mb-8">Start building your menu by adding products to this category.</p>
-                      <button
-                        onClick={() => navigate(`/dashboard/${locationSlug}/products`, { 
-                          state: { 
-                            openCreateModal: true, 
-                            categoryId: viewingCategory.id,
-                            filterCategoryId: viewingCategory.id
-                          } 
-                        })}
-                        className="flex items-center gap-2 px-6 py-3.5 bg-paymint-green text-black font-black text-xs rounded-xl hover:scale-[1.02] transition-all shadow-lg active:scale-95 tracking-widest"
-                      >
-                        <Plus size={18} strokeWidth={3} />
-                        <span>Add Product</span>
-                      </button>
+                      <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto mb-8">Items in this category will appear here.</p>
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -615,25 +548,6 @@ export function CategoriesPage() {
                           </div>
                         </div>
                       ))}
-
-                      {/* Add New Product Card */}
-                      <button
-                        onClick={() => navigate(`/dashboard/${locationSlug}/products`, { 
-                          state: { 
-                            openCreateModal: true, 
-                            categoryId: viewingCategory.id,
-                            filterCategoryId: viewingCategory.id
-                          } 
-                        })}
-                        className="p-4 bg-gray-50 dark:bg-white/[0.02] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-xl group hover:border-paymint-green hover:bg-paymint-green/5 transition-all cursor-pointer active:scale-[0.98] flex items-center justify-center gap-3 h-full min-h-[80px]"
-                      >
-                        <div className="w-10 h-10 rounded-full bg-white dark:bg-white/5 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                          <Plus size={20} className="text-gray-400 group-hover:text-paymint-green" />
-                        </div>
-                        <span className="text-sm font-bold text-gray-400 group-hover:text-paymint-green">
-                          Add New Item
-                        </span>
-                      </button>
                     </div>
                   )}
                 </div>
