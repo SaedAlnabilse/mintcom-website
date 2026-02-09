@@ -27,23 +27,6 @@ const plans = [
     cta: "Start Free Trial",
     highlight: true,
     type: "standard"
-  },
-  {
-    name: "Custom Plan",
-    price: "Custom",
-    period: "",
-    description: "Custom solutions for large businesses.",
-    features: ["Custom Features", "Api Access", "Dedicated Account Manager", "White Label Options", "Multi-branch Management"],
-    detailedFeatures: [
-      "Custom Features",
-      "Custom Workflows",
-      "Custom Hardware",
-      "Dedicated Support",
-      "Enterprise Sla"
-    ],
-    cta: "Contact Sales",
-    highlight: false,
-    type: "custom"
   }
 ];
 
@@ -68,7 +51,7 @@ export const Pricing = () => {
       {/* Background Decor */}
       <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-paymint-green/5 rounded-full blur-[150px] -z-10" />
 
-      <div className="container mx-auto px-8 md:px-16 lg:px-24 max-w-7xl">
+      <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -83,8 +66,8 @@ export const Pricing = () => {
           </p>
         </motion.div>
 
-        {/* Grid centered with max-width adjustment for 2 columns */}
-        <div className="grid md:grid-cols-2 gap-8 relative z-10 max-w-4xl mx-auto">
+        {/* Single plan centered */}
+        <div className="grid grid-cols-1 gap-8 relative z-10 max-w-md mx-auto">
           {plans.map((plan, index) => (
             <motion.div
               key={index}

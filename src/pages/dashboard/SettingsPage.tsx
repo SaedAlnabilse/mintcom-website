@@ -24,7 +24,6 @@ interface AppSettings {
   restaurantName: string;
   restaurantDescription?: string;
   restaurantAddress?: string;
-  phone?: string;
   email?: string;
   logo?: string;
   receiptLogo?: string;
@@ -123,7 +122,7 @@ export function SettingsPage() {
     if (!initialSettings) return false;
     // Compare relevant form fields that are actually in the form
     const fieldsToCompare = [
-      'restaurantName', 'restaurantDescription', 'restaurantAddress', 'phone', 'email',
+      'restaurantName', 'restaurantDescription', 'restaurantAddress', 'email',
       'taxIdNumber', 'taxRate', 'currency', 'showLogoOnReceipt', 'receiptHeader',
       'farewellMessage', 'showRestaurantName', 'showDescription', 'showAddress',
       'showTaxId', 'showFarewellMessage'
@@ -658,10 +657,6 @@ export function SettingsPage() {
               <div>
                 <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Address</label>
                 <input type="text" {...register('restaurantAddress')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
-              </div>
-              <div>
-                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Phone</label>
-                <input type="text" {...register('phone')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
               <div>
                 <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Email</label>

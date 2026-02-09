@@ -3,7 +3,6 @@ import { useState, useEffect, useMemo } from 'react';
 import {
     Plus,
     Mail,
-    Phone,
     Shield,
     Edit2,
     Trash2,
@@ -33,7 +32,6 @@ interface AdminUser {
     email: string;
     firstName: string;
     lastName: string;
-    phone?: string;
     createdAt: string;
     establishments: { id: string; name: string }[];
 }
@@ -55,7 +53,6 @@ export function AdminUsersPage() {
         password: '',
         firstName: '',
         lastName: '',
-        phone: '',
         establishmentIds: [] as string[],
     });
 
@@ -94,8 +91,7 @@ export function AdminUsersPage() {
         return (Array.isArray(adminUsers) ? adminUsers : []).filter(admin =>
             (admin.firstName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
             (admin.lastName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (admin.email || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (admin.phone && admin.phone.toLowerCase().includes(searchQuery.toLowerCase()))
+            (admin.email || '').toLowerCase().includes(searchQuery.toLowerCase())
         );
     }, [adminUsers, searchQuery]);
 
@@ -119,7 +115,6 @@ export function AdminUsersPage() {
                 await api.put(`/api/accounts/admins/${editingAdmin.id}`, {
                     firstName: formData.firstName,
                     lastName: formData.lastName,
-                    phone: formData.phone,
                     establishmentIds: formData.establishmentIds,
                 });
                 toast.success('Admin updated');
@@ -162,7 +157,6 @@ export function AdminUsersPage() {
             password: '',
             firstName: admin.firstName,
             lastName: admin.lastName,
-            phone: admin.phone || '',
             establishmentIds: admin.establishments.map((e) => e.id),
         });
         setShowModal(true);
@@ -175,7 +169,6 @@ export function AdminUsersPage() {
             password: '',
             firstName: '',
             lastName: '',
-            phone: '',
             establishmentIds: [],
         });
     };
@@ -348,12 +341,6 @@ export function AdminUsersPage() {
                                                         <Mail size={12} className="text-gray-400" />
                                                         {admin.email}
                                                     </span>
-                                                    {admin.phone && (
-                                                        <span className="flex items-center gap-1.5 text-xs text-gray-500 font-medium">
-                                                            <Phone size={12} className="text-gray-400" />
-                                                            {admin.phone}
-                                                        </span>
-                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -496,19 +483,6 @@ export function AdminUsersPage() {
                                         </p>
                                     </div>
                                 )}
-
-                                <div className="space-y-2">
-                                    <label className="block text-xs font-black text-gray-400 tracking-widest px-1">
-                                        Phone
-                                    </label>
-                                    <input
-                                        type="tel"
-                                        value={formData.phone}
-                                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                        className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
-                                        placeholder="+000 000 000"
-                                    />
-                                </div>
 
                                 <div className="space-y-3">
                                     <label className="block text-xs font-black text-gray-400 tracking-widest px-1">

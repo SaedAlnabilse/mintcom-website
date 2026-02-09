@@ -4,7 +4,6 @@ import { Hero } from '../components/Hero';
 import { Features } from '../components/Features';
 import { WorkflowSupport } from '../components/WorkflowSupport';
 import { AdminControl } from '../components/AdminControl';
-import { FeaturedTestimonial } from '../components/FeaturedTestimonial';
 import { Hardware } from '../components/Hardware';
 import { Pricing } from '../components/Pricing';
 
@@ -23,7 +22,6 @@ export const LandingPage = () => {
         <Features />
         <WorkflowSupport />
         <AdminControl />
-        <FeaturedTestimonial />
         <Hardware />
         <Pricing />
         <DownloadApp />

@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Phone, Check, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Check, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { GoogleAuthButton, AuthDivider } from '../components/GoogleAuthButton';
@@ -17,7 +17,6 @@ const signUpSchema = z.object({
   firstName: z.string().min(2, 'First name must be at least 2 characters'),
   lastName: z.string().min(2, 'Last name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email'),
-  phone: z.string().min(5, 'Please enter a valid phone number'),
   password: z
     .string()
     .min(8, 'Password must be at least 8 characters')
@@ -80,7 +79,6 @@ export function SignUpPage() {
         password: data.password,
         firstName: data.firstName,
         lastName: data.lastName,
-        phone: data.phone,
       });
 
       if (result.success) {
@@ -262,29 +260,6 @@ export function SignUpPage() {
               </div>
               {errors.email?.message && (
                 <p id="email-error" role="alert" className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.email.message}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="phone" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
-                PHONE NUMBER<span className="text-accent ml-1">*</span>
-              </label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  {...register('phone')}
-                  type="tel"
-                  id="phone"
-                  aria-label="Phone number"
-                  aria-describedby={errors.phone ? 'phone-error' : undefined}
-                  autoComplete="tel"
-                  className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.phone ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 pl-10 pr-4 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                  placeholder="+1 (555) 000-0000"
-                />
-              </div>
-              {errors.phone?.message && (
-                <p id="phone-error" role="alert" className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.phone.message}</p>
               )}
             </div>
 

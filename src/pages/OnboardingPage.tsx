@@ -31,8 +31,6 @@ import {
   EyeOff,
   Smartphone,
   Tablet,
-  Download,
-  Monitor,
   BookOpen,
   Settings,
   PlayCircle,
@@ -57,7 +55,6 @@ const step1Schema = z.object({
   name: z.string().min(1, 'Location name is required'),
   type: z.string().min(1, 'Business type is required'),
   address: z.string().min(1, 'Address is required'),
-  phone: z.string().min(1, 'Phone is required'),
   currency: z.string().min(1, 'Currency is required'),
 });
 
@@ -93,9 +90,6 @@ export function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<any>({});
   const [useSavedCard, setUseSavedCard] = useState(true); // Default to using saved card if available
-  const [selectedCountry, setSelectedCountry] = useState({ code: 'JO', name: 'Jordan', dialCode: '+962', flag: '🇯🇴' });
-  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
-  const [countrySearch, setCountrySearch] = useState('');
 
   // Password Visibility State
   const [showEstablishmentPassword, setShowEstablishmentPassword] = useState(false);
@@ -112,24 +106,29 @@ export function OnboardingPage() {
 
   const launchCenterTourSteps: TourStep[] = [
     {
-      targetId: 'tour-portal-section',
-      title: 'Owner Portal',
-      description: 'This is your command center. Click here to open the Owner Portal in your browser where you can manage everything - employees, menu, analytics, and billing.'
+      targetId: 'tour-open-portal',
+      title: '🚀 Open Owner Portal',
+      description: 'This is your main command center. Click here to open your Owner Portal in a new browser tab where you can manage employees, menu items, view analytics, and handle billing.'
     },
     {
       targetId: 'tour-pos-app',
-      title: 'POS App for Staff',
-      description: 'Download this app on tablets or phones for your staff. They will use it to take orders and process payments at your establishment.'
+      title: '📱 POS App for Staff',
+      description: 'Your staff will use this app on tablets or phones to take orders and process payments. Download it from Google Play or App Store and install on your POS devices.'
     },
     {
       targetId: 'tour-owner-app',
-      title: 'Owner App for You',
-      description: 'This is the same Owner Portal, but as a mobile app. Monitor your sales and manage your business on the go. Use your same login info.'
+      title: '👤 Owner App',
+      description: 'Take your business management mobile! This app gives you the same portal features on your phone. Monitor sales, check reports, and manage on the go.'
+    },
+    {
+      targetId: 'tour-location-stats',
+      title: '📍 Your Location Info',
+      description: 'Quick reference for your Location ID and Currency. You will need the Location ID when logging into the POS app. Keep this handy for your staff.'
     },
     {
       targetId: 'tour-resources',
-      title: 'Guides & Tutorials',
-      description: 'Find everything you need here: User & Setup Manuals, Video Tutorials, Q&A, Legal Policies, and more about us.'
+      title: '📚 Resources & Help',
+      description: 'Everything you need to succeed: User Manuals, Setup Guides, Video Tutorials, FAQs, and Legal documents. Check here if you need help getting started.'
     }
   ];
 
@@ -143,29 +142,6 @@ export function OnboardingPage() {
       return () => clearTimeout(timer);
     }
   }, [step]);
-
-  // Country codes list
-  const countries = [
-    { code: 'JO', name: 'Jordan', dialCode: '+962', flag: '🇯🇴' },
-    { code: 'AE', name: 'Uae', dialCode: '+971', flag: '🇦🇪' },
-    { code: 'SA', name: 'Saudi Arabia', dialCode: '+966', flag: '🇸🇦' },
-    { code: 'US', name: 'Usa', dialCode: '+1', flag: '🇺🇸' },
-    { code: 'GB', name: 'Uk', dialCode: '+44', flag: '🇬🇧' },
-    { code: 'EG', name: 'Egypt', dialCode: '+20', flag: '🇪🇬' },
-    { code: 'LB', name: 'Lebanon', dialCode: '+961', flag: '🇱🇧' },
-    { code: 'KW', name: 'Kuwait', dialCode: '+965', flag: '🇰🇼' },
-    { code: 'QA', name: 'Qatar', dialCode: '+974', flag: '🇶🇦' },
-    { code: 'BH', name: 'Bahrain', dialCode: '+973', flag: '🇧🇭' },
-    { code: 'OM', name: 'Oman', dialCode: '+968', flag: '🇴🇲' },
-    { code: 'IQ', name: 'Iraq', dialCode: '+964', flag: '🇮🇶' },
-    { code: 'PS', name: 'Palestine', dialCode: '+970', flag: '🇵🇸' },
-    { code: 'SY', name: 'Syria', dialCode: '+963', flag: '🇸🇾' },
-    { code: 'TR', name: 'Turkey', dialCode: '+90', flag: '🇹🇷' },
-    { code: 'DE', name: 'Germany', dialCode: '+49', flag: '🇩🇪' },
-    { code: 'FR', name: 'France', dialCode: '+33', flag: '🇫🇷' },
-    { code: 'IN', name: 'India', dialCode: '+91', flag: '🇮🇳' },
-    { code: 'PK', name: 'Pakistan', dialCode: '+92', flag: '🇵🇰' },
-  ];
 
   // Determine if this is a Trial (first est) or Paid (additional est) flow
   const isTrialFlow = needsOnboarding;
@@ -220,14 +196,10 @@ export function OnboardingPage() {
   };
 
   const onStep1Submit = (data: any) => {
-    // Combine country dial code with phone number
-    const fullPhone = `${selectedCountry.dialCode} ${data.phone}`;
-
     // Save duplication preferences
     setFormData((prev: any) => ({
       ...prev,
       ...data,
-      phone: fullPhone,
       duplicateFromId,
       duplicateInventory: duplicateFromId ? duplicateInventory : false,
       duplicateDiscounts: duplicateFromId ? duplicateDiscounts : false,
@@ -319,7 +291,6 @@ export function OnboardingPage() {
         name: formData.name,
         type: formData.type,
         address: formData.address,
-        phone: formData.phone,
         currency: formData.currency,
         establishmentLoginId: formData.establishmentLoginId, // User-provided unique ID for this establishment
         establishmentPassword: formData.establishmentPassword, // User-provided password
@@ -374,34 +345,6 @@ export function OnboardingPage() {
   ];
 
   const totalSteps = 4;
-
-  // Auto-select currency based on country
-  useEffect(() => {
-    const countryToCurrency: Record<string, string> = {
-      'JO': 'JOD',
-      'AE': 'AED',
-      'SA': 'SAR',
-      'KW': 'KWD',
-      'QA': 'QAR',
-      'BH': 'BHD',
-      'OM': 'OMR',
-      'EG': 'EGP',
-      'IQ': 'IQD',
-      'PS': 'JOD',
-      'LB': 'LBP',
-      'SY': 'SYP',
-      'TR': 'TRY',
-      'IN': 'INR',
-      'PK': 'PKR',
-      'US': 'USD',
-      'GB': 'GBP',
-      'DE': 'EUR',
-      'FR': 'EUR'
-    };
-    
-    const currency = countryToCurrency[selectedCountry.code] || 'USD';
-    form1.setValue('currency', currency);
-  }, [selectedCountry.code, form1]);
 
   // Clear currentEstablishment on mount to prevent 'X-Establishment-Id' errors during onboarding
   useEffect(() => {
@@ -503,100 +446,6 @@ export function OnboardingPage() {
                           </button>
                         ))}
                       </div>
-                    </div>
-
-                    {/* Phone Number Row */}
-                    <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
-                        Phone <span className="text-paymint-red mx-1">*</span>
-                        <QuickInfo text="To confirm account." />
-                      </label>
-                      <div className="flex gap-2">
-                        {/* Country Code Selector */}
-                        <div className="relative">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setShowCountryDropdown(!showCountryDropdown);
-                              if (showCountryDropdown) setCountrySearch('');
-                            }}
-                            className={`flex items-center gap-1 bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-paymint-red' : 'border-gray-200 dark:border-white/10'} rounded-2xl h-[60px] px-2.5 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all min-w-[90px]`}
-                          >
-                            <span className="text-xs font-black">{selectedCountry.code}</span>
-                            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{selectedCountry.dialCode}</span>
-                            <ChevronDown size={12} className="text-gray-400 ml-0.5" />
-                          </button>
-                          <AnimatePresence>
-                            {showCountryDropdown && (
-                              <motion.div
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                className="absolute top-full left-0 mt-2 w-72 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden"
-                              >
-                                {/* Search Input */}
-                                <div className="p-3 border-b border-gray-100 dark:border-white/5">
-                                  <input
-                                    type="text"
-                                    value={countrySearch}
-                                    onChange={(e) => setCountrySearch(e.target.value)}
-                                    placeholder="Search country..."
-                                    className="w-full bg-gray-50 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded-xl py-2 px-3 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
-                                    autoFocus
-                                  />
-                                </div>
-                                {/* Filtered Countries List */}
-                                <div className="max-h-52 overflow-y-auto">
-                                  {countries
-                                    .filter((country) =>
-                                      country.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
-                                      country.code.toLowerCase().includes(countrySearch.toLowerCase()) ||
-                                      country.dialCode.includes(countrySearch)
-                                    )
-                                    .map((country) => (
-                                      <button
-                                        key={country.code}
-                                        type="button"
-                                        onClick={() => {
-                                          setSelectedCountry(country);
-                                          setShowCountryDropdown(false);
-                                          setCountrySearch('');
-                                        }}
-                                        className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-paymint-green/10 transition-colors ${selectedCountry.code === country.code ? 'bg-paymint-green/5 text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}
-                                      >
-                                        <span className="text-xl">{country.flag}</span>
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{country.name}</span>
-                                        <span className="text-xs font-bold text-gray-400 ml-auto">{country.dialCode}</span>
-                                      </button>
-                                    ))}
-                                  {countries.filter((country) =>
-                                    country.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
-                                    country.code.toLowerCase().includes(countrySearch.toLowerCase()) ||
-                                    country.dialCode.includes(countrySearch)
-                                  ).length === 0 && (
-                                      <p className="text-center text-xs font-bold text-gray-500 py-4">No countries found</p>
-                                    )}
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                        {/* Phone Number Input */}
-                        <div className="relative flex-1">
-                          <input
-                            type="tel"
-                            {...form1.register('phone')}
-                            onChange={(e) => {
-                              // Only allow numbers
-                              const value = e.target.value.replace(/[^0-9]/g, '');
-                              form1.setValue('phone', value);
-                            }}
-                            className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.phone ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl h-[60px] px-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                            placeholder="Enter phone number"
-                          />
-                        </div>
-                      </div>
-                      {form1.formState.errors.phone && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form1.formState.errors.phone.message as string}</p>}
                     </div>
 
                     {/* Base Currency Row */}
@@ -1133,347 +982,346 @@ export function OnboardingPage() {
             </motion.div>
           )}
 
-          {/* STEP 5: Launch Center */}
+          {/* STEP 5: Launch Center - Redesigned */}
           {step === 5 && (
             <motion.div
               key="step5"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="max-w-5xl w-full"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="w-full max-w-7xl px-4"
             >
-              <div className="bg-white dark:bg-white/5 rounded-[3rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl">
-                {/* Header */}
-                <div className="text-center mb-10">
-                  <div className="w-20 h-20 bg-paymint-green rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-paymint-green/20">
-                    <Sparkles size={40} className="text-black" />
-                  </div>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">Welcome!</h2>
-                  <p className="text-sm font-bold text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
-                    <span className="text-gray-900 dark:text-white font-bold">{formData.name}</span> is ready.
-                  </p>
-                </div>
-
-                {/* Section 1: Access Your Portal */}
-                <div id="tour-portal-section" className="mb-8">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 bg-paymint-green/10 rounded-lg flex items-center justify-center">
-                      <Monitor size={18} className="text-paymint-green" />
-                    </div>
-                    <h3 className="text-xs font-black text-gray-400 tracking-widest">Access Your Portal</h3>
-                  </div>
-
-                  <div className="relative">
-                    <motion.div
-                      animate={{ 
-                        y: [0, -8, 0],
-                        scale: [1, 1.05, 1]
-                      }}
-                      transition={{ 
-                        duration: 3, 
-                        repeat: Infinity, 
-                        ease: "easeInOut" 
-                      }}
-                      className="absolute -top-14 left-1/2 -translate-x-1/2 z-20 pointer-events-none"
-                    >
-                      <div className="relative">
-                        {/* Glow Effect */}
-                        <div className="absolute inset-0 bg-paymint-green/40 blur-xl rounded-full" />
-                        
-                        <div className="relative bg-gradient-to-br from-gray-900 via-black to-gray-900 dark:from-white dark:via-gray-100 dark:to-white text-white dark:text-black font-black text-[10px] tracking-[0.2em] uppercase px-4 py-2 rounded-2xl shadow-2xl flex items-center gap-2.5 whitespace-nowrap border border-white/10 dark:border-black/5">
-                          <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
-                          </span>
-                          Start Here
-                        </div>
-                        
-                        {/* Refined Pointer */}
-                        <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-gray-900 dark:bg-white rotate-45 rounded-sm shadow-xl" />
+              {/* Top Hero Bar */}
+              <div className="relative mb-6">
+                <div className="absolute -inset-1 bg-gradient-to-r from-paymint-green/30 via-paymint-green/10 to-transparent rounded-[2rem] blur-xl opacity-60" />
+                <div className="relative bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-3xl p-6 lg:p-8 overflow-hidden">
+                  <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+                    {/* Left: Welcome Message */}
+                    <div className="flex items-center gap-5">
+                      <motion.div 
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+                        className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-paymint-green to-emerald-400 rounded-3xl flex items-center justify-center shadow-2xl shadow-paymint-green/40"
+                      >
+                        <Sparkles size={32} className="text-black" />
+                      </motion.div>
+                      <div>
+                        <motion.h2 
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.3 }}
+                          className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white"
+                        >
+                          Welcome to PayMint!
+                        </motion.h2>
+                        <motion.p 
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.4 }}
+                          className="text-gray-500 dark:text-gray-400 mt-1"
+                        >
+                          <span className="text-paymint-green font-bold">{formData.name}</span> is ready to go
+                        </motion.p>
                       </div>
-                    </motion.div>
+                    </div>
 
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      animate={{
-                        boxShadow: [
-                          "0 15px 30px -5px rgba(74, 222, 128, 0.4)",
-                          "0 15px 40px -5px rgba(74, 222, 128, 0.6)",
-                          "0 15px 30px -5px rgba(74, 222, 128, 0.4)"
-                        ],
-                        borderColor: [
-                          "rgba(74, 222, 128, 0)",
-                          "rgba(74, 222, 128, 0.8)",
-                          "rgba(74, 222, 128, 0)"
-                        ]
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }}
-                      onClick={() => {
-                        const newEstablishment = establishments.find(e => e.id === formData.establishmentId);
-                        if (newEstablishment) {
-                          setCurrentEstablishment(newEstablishment);
-                        }
-                        window.open(`/owner/establishments?highlight=${formData.establishmentId}`, '_blank');
-                      }}
-                      className="relative w-full p-6 bg-paymint-green text-black rounded-2xl text-left border-2 border-transparent overflow-hidden group flex items-center gap-5 z-10"
+                    {/* Right: CTA Button */}
+                    <motion.div
+                      id="tour-open-portal"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.5 }}
+                      className="relative"
                     >
-                      {/* Shimmer Effect */}
+                      {/* Animated pulse ring */}
                       <motion.div
-                        initial={{ x: "-100%" }}
-                        animate={{ x: "200%" }}
-                        transition={{
-                          repeat: Infinity,
-                          repeatType: "loop",
-                          duration: 3,
-                          ease: "linear",
-                          repeatDelay: 1
-                        }}
-                        className="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -skew-x-12"
+                        animate={{ scale: [1, 1.15, 1], opacity: [0.4, 0, 0.4] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                        className="absolute inset-0 bg-paymint-green rounded-2xl"
                       />
 
-                      <div className="relative z-10 w-14 h-14 bg-black/10 rounded-2xl flex items-center justify-center group-hover:rotate-6 transition-transform flex-shrink-0">
-                        <Building2 size={28} className="text-black" />
-                      </div>
-                      <div className="relative z-10 flex-1">
-                        <h3 className="text-base font-bold mb-1">Open Owner Portal</h3>
-                        <p className="text-xs font-black text-black/70 tracking-widest">Manage Your Business From Any Browser</p>
-                      </div>
-                      <div className="relative z-10 flex items-center gap-2 text-xs font-black tracking-widest opacity-80">
-                        <ExternalLink size={18} />
-                      </div>
-                    </motion.button>
+                      <motion.button
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          const newEstablishment = establishments.find(e => e.id === formData.establishmentId);
+                          if (newEstablishment) {
+                            setCurrentEstablishment(newEstablishment);
+                          }
+                          window.open(`/owner/establishments?highlight=${formData.establishmentId}`, '_blank');
+                        }}
+                        className="relative flex items-center gap-3 bg-paymint-green text-black px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-paymint-green/30"
+                      >
+                        <Building2 size={24} />
+                        Open Owner Portal
+                        <ExternalLink size={20} />
+                      </motion.button>
+                    </motion.div>
                   </div>
-                </div>
-
-                {/* Section 2: Download Apps */}
-                <div className="mb-8">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                      <Download size={18} className="text-blue-500" />
-                    </div>
-                    <h3 className="text-xs font-black text-gray-400 tracking-widest">Download Apps</h3>
-                  </div>
-
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    {/* Pos App Card */}
-                    <div id="tour-pos-app" className="p-5 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl">
-                      <div className="flex items-start gap-4 mb-4">
-                        <div className="w-12 h-12 bg-orange-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                          <Tablet size={24} className="text-orange-500" />
-                        </div>
-                        <div>
-                          <h4 className="text-base font-bold text-gray-900 dark:text-white mb-1">POS App</h4>
-                          <p className="text-xs font-bold text-gray-500">For tablets and phones. Your staff uses this to take orders and process payments.</p>
-                        </div>
-                      </div>
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        <a
-                          href="https://play.google.com/store/apps/details?id=com.paymint.pos"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl text-xs font-black tracking-widest hover:opacity-90 transition-opacity"
-                        >
-                          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 010 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z" />
-                          </svg>
-                          Google Play
-                        </a>
-                        <a
-                          href="https://apps.apple.com/app/paymint-pos/id0000000000"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl text-xs font-black tracking-widest hover:opacity-90 transition-opacity"
-                        >
-                          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
-                          </svg>
-                          App Store
-                        </a>
-                      </div>
-                    </div>
-
-                    {/* Owner Portal App Card */}
-                    <div id="tour-owner-app" className="p-5 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl">
-                      <div className="flex items-start gap-4 mb-4">
-                        <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                          <Smartphone size={24} className="text-purple-500" />
-                        </div>
-                        <div>
-                          <h4 className="text-base font-bold text-gray-900 dark:text-white mb-1">Owner Portal App</h4>
-                          <p className="text-xs font-bold text-gray-500">Same portal, on your phone. Monitor sales and manage on the go. Uses your main account login.</p>
-                        </div>
-                      </div>
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        <a
-                          href="https://play.google.com/store/apps/details?id=com.paymint.owner"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl text-xs font-black tracking-widest hover:opacity-90 transition-opacity"
-                        >
-                          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 010 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z" />
-                          </svg>
-                          Google Play
-                        </a>
-                        <a
-                          href="https://apps.apple.com/app/paymint-owner/id0000000001"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black py-3 px-4 rounded-xl text-xs font-black tracking-widest hover:opacity-90 transition-opacity"
-                        >
-                          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
-                          </svg>
-                          App Store
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Section 3: Resources & Help */}
-                <div id="tour-resources" className="mb-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 bg-emerald-500/10 rounded-lg flex items-center justify-center">
-                      <BookOpen size={18} className="text-emerald-500" />
-                    </div>
-                    <h3 className="text-xs font-black text-gray-400 tracking-widest">Resources & Help</h3>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    {/* User Manual */}
-                    <a
-                      href="/docs/paymint-user-manual.md"
-                      download="Paymint_User_Manual.md"
-                      className="p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group flex items-center gap-4"
-                    >
-                      <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                        <BookOpen size={20} className="text-blue-500" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">User Manual</h4>
-                        <p className="text-xs font-bold text-gray-500 truncate">Complete software guide</p>
-                      </div>
-                      <Download size={16} className="text-gray-400 flex-shrink-0" />
-                    </a>
-
-                    {/* Setup Manual */}
-                    <a
-                      href="/docs/paymint-setup-manual.pdf"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group flex items-center gap-4"
-                    >
-                      <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                        <Settings size={20} className="text-amber-500" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">Setup Manual</h4>
-                        <p className="text-xs font-bold text-gray-500 truncate">Hardware & printer setup</p>
-                      </div>
-                      <Download size={16} className="text-gray-400 flex-shrink-0" />
-                    </a>
-
-                    {/* Video Tutorial */}
-                    <a
-                      href="https://www.youtube.com/watch?v=YOUR_VIDEO_ID"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group flex items-center gap-4"
-                    >
-                      <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                        <PlayCircle size={20} className="text-red-500" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">Video Tutorial</h4>
-                        <p className="text-xs font-bold text-gray-500 truncate">7-min quick start guide</p>
-                      </div>
-                      <ExternalLink size={16} className="text-gray-400 flex-shrink-0" />
-                    </a>
-
-                    {/* Q&A Center */}
-                    <a
-                      href="/qa"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group flex items-center gap-4"
-                    >
-                      <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                        <HelpCircle size={20} className="text-purple-500" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">Q&A Center</h4>
-                        <p className="text-xs font-bold text-gray-500 truncate">Common questions</p>
-                      </div>
-                      <ExternalLink size={16} className="text-gray-400 flex-shrink-0" />
-                    </a>
-
-                    {/* Privacy Policy */}
-                    <a
-                      href="/legal/privacy"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group flex items-center gap-4"
-                    >
-                      <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                        <Shield size={20} className="text-emerald-500" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">Privacy Policy</h4>
-                        <p className="text-xs font-bold text-gray-500 truncate">Data protection</p>
-                      </div>
-                      <ExternalLink size={16} className="text-gray-400 flex-shrink-0" />
-                    </a>
-
-                    {/* Terms of Use */}
-                    <a
-                      href="/legal/terms"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group flex items-center gap-4"
-                    >
-                      <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                        <Scale size={20} className="text-blue-500" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">Terms of Use</h4>
-                        <p className="text-xs font-bold text-gray-500 truncate">User agreement</p>
-                      </div>
-                      <ExternalLink size={16} className="text-gray-400 flex-shrink-0" />
-                    </a>
-
-                    {/* About Us */}
-                    <a
-                      href="/about"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group flex items-center gap-4"
-                    >
-                      <div className="w-10 h-10 bg-paymint-green/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                        <Info size={20} className="text-paymint-green" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">About Us</h4>
-                        <p className="text-xs font-bold text-gray-500 truncate">Our story</p>
-                      </div>
-                      <ExternalLink size={16} className="text-gray-400 flex-shrink-0" />
-                    </a>
-                  </div>
-                </div>
-
-                {/* Footer Note */}
-                <div className="text-center pt-6 border-t border-gray-100 dark:border-white/5">
-                  <p className="text-xs font-bold text-gray-500">
-                    Need help? Contact us at <a href="mailto:support@paymint.com" className="text-sm font-bold text-paymint-green hover:underline">support@paymint.com</a>
-                  </p>
                 </div>
               </div>
 
-              {/* Tour Guide for Launch Center */}
+              {/* Main Content Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                {/* Left Column: Download Apps (5 cols) */}
+                <div className="lg:col-span-5 space-y-4">
+                  {/* POS App */}
+                  <motion.div 
+                    id="tour-pos-app"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 }}
+                    className="bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-5"
+                  >
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                        <Tablet size={28} className="text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">POS App</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">For your staff to take orders & payments</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <a
+                        href="https://play.google.com/store/apps/details?id=com.paymint.pos"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white py-3 px-4 rounded-xl text-xs font-bold transition-colors border border-white/10"
+                      >
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92z" />
+                        </svg>
+                        Play Store
+                      </a>
+                      <a
+                        href="https://apps.apple.com/app/paymint-pos/id0000000000"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white py-3 px-4 rounded-xl text-xs font-bold transition-colors border border-white/10"
+                      >
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+                        </svg>
+                        App Store
+                      </a>
+                    </div>
+                  </motion.div>
+
+                  {/* Owner App */}
+                  <motion.div 
+                    id="tour-owner-app"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.7 }}
+                    className="bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-5"
+                  >
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-700 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                        <Smartphone size={28} className="text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Owner App</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Manage on the go from your phone</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <a
+                        href="https://play.google.com/store/apps/details?id=com.paymint.owner"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white py-3 px-4 rounded-xl text-xs font-bold transition-colors border border-white/10"
+                      >
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92z" />
+                        </svg>
+                        Play Store
+                      </a>
+                      <a
+                        href="https://apps.apple.com/app/paymint-owner/id0000000001"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white py-3 px-4 rounded-xl text-xs font-bold transition-colors border border-white/10"
+                      >
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+                        </svg>
+                        App Store
+                      </a>
+                    </div>
+                  </motion.div>
+
+                  {/* Quick Stats */}
+                  <motion.div 
+                    id="tour-location-stats"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8 }}
+                    className="bg-[#151515] border border-white/10 rounded-2xl p-4 text-white"
+                  >
+                    {/* Header */}
+                    <div className="flex items-center gap-3 pb-3 border-b border-white/5 mb-3">
+                      <div className="w-10 h-10 bg-paymint-green/20 rounded-xl flex items-center justify-center">
+                        <Building2 size={20} className="text-paymint-green" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-white text-sm">Location Ready</h3>
+                        <p className="text-xs text-gray-500">Your setup is complete</p>
+                      </div>
+                    </div>
+                    
+                    {/* Location ID Row */}
+                    <div className="flex items-center gap-3 py-2.5 border-b border-white/5">
+                      <Hash size={16} className="text-gray-500 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-500 mb-0.5">Location ID</p>
+                        <p className="font-mono text-paymint-green text-sm truncate">{formData.establishmentLoginId}</p>
+                      </div>
+                    </div>
+                    
+                    {/* Currency Row */}
+                    <div className="flex items-center gap-3 py-2.5">
+                      <DollarSign size={16} className="text-gray-500 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-500 mb-0.5">Currency</p>
+                        <p className="text-white font-bold text-sm">{formData.currency}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                </div>
+
+                {/* Right Column: Resources Grid (7 cols) */}
+                <div className="lg:col-span-7">
+                  <motion.div 
+                    id="tour-resources"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 }}
+                    className="bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-5 h-full"
+                  >
+                    <div className="flex items-center gap-3 mb-5">
+                      <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center">
+                        <BookOpen size={20} className="text-emerald-500" />
+                      </div>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">Resources & Help</h3>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {/* User Manual */}
+                      <a
+                        href="/docs/paymint-user-manual.md"
+                        download="Paymint_User_Manual.md"
+                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all"
+                      >
+                        <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                          <BookOpen size={20} className="text-blue-500" />
+                        </div>
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">User Manual</h4>
+                        <p className="text-xs text-gray-500 mt-1">Complete guide</p>
+                      </a>
+
+                      {/* Setup Manual */}
+                      <a
+                        href="/docs/paymint-setup-manual.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all"
+                      >
+                        <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                          <Settings size={20} className="text-amber-500" />
+                        </div>
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">Setup Manual</h4>
+                        <p className="text-xs text-gray-500 mt-1">Hardware setup</p>
+                      </a>
+
+                      {/* Video Tutorial */}
+                      <a
+                        href="https://www.youtube.com/watch?v=YOUR_VIDEO_ID"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all"
+                      >
+                        <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                          <PlayCircle size={20} className="text-red-500" />
+                        </div>
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">Video Guide</h4>
+                        <p className="text-xs text-gray-500 mt-1">7-min start</p>
+                      </a>
+
+                      {/* Q&A Center */}
+                      <a
+                        href="/qa"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all"
+                      >
+                        <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                          <HelpCircle size={20} className="text-purple-500" />
+                        </div>
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">Q&A Center</h4>
+                        <p className="text-xs text-gray-500 mt-1">FAQs</p>
+                      </a>
+
+                      {/* Privacy */}
+                      <a
+                        href="/legal/privacy"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all"
+                      >
+                        <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                          <Shield size={20} className="text-emerald-500" />
+                        </div>
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">Privacy</h4>
+                        <p className="text-xs text-gray-500 mt-1">Data protection</p>
+                      </a>
+
+                      {/* Terms */}
+                      <a
+                        href="/legal/terms"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all"
+                      >
+                        <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                          <Scale size={20} className="text-blue-500" />
+                        </div>
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">Terms</h4>
+                        <p className="text-xs text-gray-500 mt-1">Agreement</p>
+                      </a>
+
+                      {/* About - spans 2 cols on sm */}
+                      <a
+                        href="/about"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 rounded-xl hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all col-span-2 sm:col-span-1"
+                      >
+                        <div className="w-10 h-10 bg-paymint-green/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                          <Info size={20} className="text-paymint-green" />
+                        </div>
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">About Us</h4>
+                        <p className="text-xs text-gray-500 mt-1">Our story</p>
+                      </a>
+                    </div>
+                  </motion.div>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1 }}
+                className="mt-6 text-center"
+              >
+                <p className="text-sm text-gray-500">
+                  Need help? <a href="mailto:support@paymint.com" className="text-paymint-green font-bold hover:underline">support@paymint.com</a>
+                </p>
+              </motion.div>
+
+              {/* Tour Guide */}
               <TourGuide
                 steps={launchCenterTourSteps}
                 isOpen={isTourOpen}

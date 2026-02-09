@@ -36,8 +36,8 @@ export const AdminControl = () => {
       {/* Background Decor */}
       <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] -z-10" />
 
-      <div className="container mx-auto px-8 md:px-16 lg:px-24">
-        <div className="flex flex-col lg:flex-row-reverse items-center gap-16 lg:gap-24">
+      <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl">
+        <div className="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-16">
 
           {/* Right Side: Video Preview (Mobile App Style) - Lazy Loaded */}
           <motion.div

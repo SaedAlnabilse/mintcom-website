@@ -79,7 +79,7 @@ export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSi
             )}
           </AnimatePresence>
         </div>
-        {showLabel && <span className="ml-3">Switch Theme</span>}
+        {showLabel && <span>Switch Theme</span>}
       </button>
 
       <AnimatePresence>

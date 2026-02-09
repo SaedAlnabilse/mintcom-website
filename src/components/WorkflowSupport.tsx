@@ -1,6 +1,6 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, X, CreditCard, Package, Users, BarChart3, Building2, Cloud, TrendingUp } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
+import { CreditCard, Package, Users, BarChart3, Building2, Cloud, TrendingUp } from 'lucide-react';
+import { useMemo } from 'react';
 
 const workflowFeatures = [
   {
@@ -102,7 +102,6 @@ const workflowFeatures = [
 ];
 
 export const WorkflowSupport = () => {
-  const [selectedFeature, setSelectedFeature] = useState<typeof workflowFeatures[0] | null>(null);
 
   // Pre-generate random heights for the charts to ensure purity during render
   const chartHeights = useMemo(() => {
@@ -118,8 +117,8 @@ export const WorkflowSupport = () => {
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-paymint-green/5 rounded-full blur-[120px] -z-10" />
         <div className="absolute top-20 right-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px] -z-10" />
 
-        <div className="container mx-auto px-8 md:px-16 lg:px-24 max-w-7xl">
-          <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
+        <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl">
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
 
             {/* Left Side: Content */}
             <motion.div
@@ -154,8 +153,7 @@ export const WorkflowSupport = () => {
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1, duration: 0.5 }}
                     whileHover={{ scale: 1.02 }}
-                    onClick={() => setSelectedFeature(feature)}
-                    className="group flex items-start gap-4 p-5 rounded-2xl border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 hover:border-paymint-green/30 hover:shadow-lg hover:shadow-paymint-green/5 transition-all duration-300 cursor-pointer"
+                    className="group flex items-start gap-4 p-5 rounded-2xl border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 hover:border-paymint-green/30 hover:shadow-lg hover:shadow-paymint-green/5 transition-all duration-300"
                   >
                     <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-paymint-green/10 dark:bg-paymint-green/20 flex items-center justify-center group-hover:bg-paymint-green group-hover:scale-110 transition-all duration-300">
                       <feature.icon size={20} className="text-paymint-green group-hover:text-white transition-colors" />
@@ -297,90 +295,7 @@ export const WorkflowSupport = () => {
           </div>
         </div>
 
-        {/* Modal Popup */}
-        <AnimatePresence>
-          {selectedFeature && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedFeature(null)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                onClick={(e) => e.stopPropagation()}
-                className="bg-white dark:bg-[#1a1a1a] rounded-3xl border border-gray-100 dark:border-white/5 max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl"
-              >
-                {/* Header */}
-                <div className="sticky top-0 bg-white dark:bg-[#1a1a1a] border-b border-gray-100 dark:border-white/5 p-6 flex items-start justify-between rounded-t-3xl">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/20">
-                      <selectedFeature.icon size={24} className="text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-                        {selectedFeature.title}
-                      </h3>
-                      <p className="text-gray-500 dark:text-gray-400 text-sm">
-                        {selectedFeature.description}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setSelectedFeature(null)}
-                    className="flex-shrink-0 p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-colors"
-                  >
-                    <X size={20} className="text-gray-400" />
-                  </button>
-                </div>
 
-                {/* Content */}
-                <div className="p-6 space-y-6">
-                  <div className="bg-gray-50 dark:bg-black/20 rounded-2xl p-5">
-                    <h4 className="text-sm font-bold text-gray-500 dark:text-gray-400 tracking-wider mb-3">
-                      Overview
-                    </h4>
-                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                      {selectedFeature.details.overview}
-                    </p>
-                  </div>
-
-                  <div>
-                    <h4 className="text-sm font-bold text-gray-500 dark:text-gray-400 tracking-wider mb-4">
-                      Key Features
-                    </h4>
-                    <ul className="space-y-3">
-                      {selectedFeature.details.features.map((feature, idx) => (
-                        <motion.li
-                          key={idx}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: idx * 0.05 }}
-                          className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 dark:bg-white/5"
-                        >
-                          <CheckCircle2 size={18} className="text-paymint-green flex-shrink-0 mt-0.5" />
-                          <span className="text-gray-700 dark:text-gray-300 text-sm">
-                            {feature}
-                          </span>
-                        </motion.li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <button
-                    onClick={() => setSelectedFeature(null)}
-                    className="w-full py-4 px-6 bg-paymint-green hover:bg-paymint-green/90 text-black font-bold rounded-xl transition-colors shadow-lg shadow-paymint-green/20"
-                  >
-                    Got it
-                  </button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </section>
     </>
   );

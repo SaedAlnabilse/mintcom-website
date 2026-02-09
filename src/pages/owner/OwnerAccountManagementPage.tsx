@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     User,
     Mail,
-    Phone,
     Calendar,
     Key,
     Store,
@@ -41,7 +40,6 @@ interface AccountDetails {
     email: string;
     firstName: string;
     lastName: string;
-    phone?: string;
     avatar?: string;
     emailVerified: boolean;
     createdAt: string;
@@ -105,8 +103,7 @@ export function OwnerAccountManagementPage() {
     const [editForm, setEditForm] = useState({
         firstName: '',
         lastName: '',
-        email: '',
-        phone: ''
+        email: ''
     });
 
     const [isDeletingAccount, setIsDeletingAccount] = useState(false);
@@ -121,8 +118,7 @@ export function OwnerAccountManagementPage() {
             setEditForm({
                 firstName: accountDetails.firstName || '',
                 lastName: accountDetails.lastName || '',
-                email: accountDetails.email || '',
-                phone: accountDetails.phone || ''
+                email: accountDetails.email || ''
             });
             setIsEditing(true);
         }
@@ -133,8 +129,7 @@ export function OwnerAccountManagementPage() {
         setEditForm({
             firstName: '',
             lastName: '',
-            email: '',
-            phone: ''
+            email: ''
         });
     };
 
@@ -168,7 +163,6 @@ export function OwnerAccountManagementPage() {
                     firstName: updatedData.firstName,
                     lastName: updatedData.lastName,
                     email: updatedData.email,
-                    phone: updatedData.phone,
                     emailVerified: updatedData.emailVerified
                 }) : null);
 
@@ -177,7 +171,6 @@ export function OwnerAccountManagementPage() {
                     firstName: updatedData.firstName,
                     lastName: updatedData.lastName,
                     email: updatedData.email,
-                    phone: updatedData.phone,
                     emailVerified: updatedData.emailVerified
                 });
 
@@ -267,7 +260,6 @@ export function OwnerAccountManagementPage() {
                 email: data.email,
                 firstName: data.firstName,
                 lastName: data.lastName,
-                phone: data.phone,
                 avatar: data.avatar,
                 emailVerified: data.emailVerified,
                 createdAt: data.createdAt,
@@ -386,12 +378,11 @@ export function OwnerAccountManagementPage() {
     const getProfileCompletion = () => {
         if (!accountDetails) return 0;
         let completed = 0;
-        const total = 4;
+        const total = 3;
 
         if (accountDetails.firstName && accountDetails.lastName) completed++;
         if (accountDetails.email) completed++;
         if (accountDetails.emailVerified) completed++;
-        if (accountDetails.phone) completed++;
 
         return Math.round((completed / total) * 100);
     };
@@ -633,26 +624,6 @@ export function OwnerAccountManagementPage() {
                                                 </span>
                                             )}
                                         </div>
-                                    )}
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-xs font-black text-gray-400 tracking-widest flex items-center gap-2">
-                                        <Phone size={12} />
-                                        Phone
-                                    </label>
-                                    {isEditing ? (
-                                        <input
-                                            type="tel"
-                                            value={editForm.phone}
-                                            onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                                            placeholder="Phone Number"
-                                            className="w-full px-3 py-2 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50"
-                                        />
-                                    ) : (
-                                        <p className="text-sm font-bold text-gray-900 dark:text-white">
-                                            {accountDetails?.phone || <span className="text-gray-400 italic">Not set</span>}
-                                        </p>
                                     )}
                                 </div>
 

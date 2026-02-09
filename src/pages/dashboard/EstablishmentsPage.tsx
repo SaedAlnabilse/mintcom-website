@@ -21,7 +21,6 @@ interface Establishment {
   type: string;
   currency: string;
   address?: string;
-  phone?: string;
   subscriptionStatus: string;
   trialEndDate?: string;
   employeeCount?: number;

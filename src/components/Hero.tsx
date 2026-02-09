@@ -28,8 +28,8 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
         />
       </div>
 
-      <div className="container mx-auto px-8 md:px-16 lg:px-24 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+      <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl relative z-10">
+        <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
 
           {/* Text Content */}
           <motion.div
@@ -75,7 +75,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
                 className="bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-3"
               >
                 <Play size={20} fill="currentColor" className="text-paymint-green" />
-                See How It Works
+                See how it works
               </motion.button>
             </div>
 

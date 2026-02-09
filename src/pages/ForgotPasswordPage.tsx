@@ -27,12 +27,16 @@ export function ForgotPasswordPage() {
   const onSubmit = async (data: ForgotPasswordFormData) => {
     setIsSubmitting(true);
     try {
-      await api.post('/auth/forgot-password', data);
+      await api.post('/api/accounts/forgot-password', data);
       setSentEmail(data.email);
       setIsSuccess(true);
       toast.success('Reset link sent!');
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Something went wrong. Please try again.');
+      // Always show success to prevent email enumeration
+      // The backend returns success even for non-existent emails
+      setSentEmail(data.email);
+      setIsSuccess(true);
+      toast.success('Reset link sent!');
     } finally {
       setIsSubmitting(false);
     }

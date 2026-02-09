@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Mail, Phone, MapPin, X, CheckCircle2, Loader2 } from 'lucide-react';
+import { Send, Mail, Phone, X, CheckCircle2, Loader2 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
 
@@ -58,7 +58,6 @@ export const Contact = () => {
                   {[
                     { icon: Mail, label: 'Email', value: 'hello@paymint.com', color: 'text-paymint-green' },
                     { icon: Phone, label: 'Phone', value: '+962 7XXXXXXXX', color: 'text-blue-400' },
-                    { icon: MapPin, label: 'Office', value: 'Amman, Jordan', color: 'text-purple-400' },
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-4 group">
                       <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center transition-transform duration-500">

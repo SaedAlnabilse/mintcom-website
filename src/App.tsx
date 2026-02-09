@@ -37,6 +37,30 @@ const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage').then(m 
 const TermsPage = lazy(() => import('./pages/TermsPage').then(m => ({ default: m.TermsPage })));
 
 // ============================================================================
+// Lazy Imports - Support Pages
+// ============================================================================
+const SupportPage = lazy(() => import('./pages/support/SupportPage').then(m => ({ default: m.SupportPage })));
+const TicketsPage = lazy(() => import('./pages/support/TicketsPage').then(m => ({ default: m.TicketsPage })));
+const TicketDetailPage = lazy(() => import('./pages/support/TicketDetailPage').then(m => ({ default: m.TicketDetailPage })));
+const NewTicketPage = lazy(() => import('./pages/support/NewTicketPage').then(m => ({ default: m.NewTicketPage })));
+const SupportCategoryPage = lazy(() => import('./pages/support/SupportCategoryPage').then(m => ({ default: m.SupportCategoryPage })));
+const ArticlePage = lazy(() => import('./pages/support/ArticlePage').then(m => ({ default: m.ArticlePage })));
+const AllArticlesPage = lazy(() => import('./pages/support/AllArticlesPage').then(m => ({ default: m.AllArticlesPage })));
+
+// ============================================================================
+// Lazy Imports - Community Pages
+// ============================================================================
+const CommunityPage = lazy(() => import('./pages/community/CommunityPage').then(m => ({ default: m.CommunityPage })));
+const DiscussionsPage = lazy(() => import('./pages/community/DiscussionsPage').then(m => ({ default: m.DiscussionsPage })));
+const IdeasPage = lazy(() => import('./pages/community/IdeasPage').then(m => ({ default: m.IdeasPage })));
+const GuidesPage = lazy(() => import('./pages/community/GuidesPage').then(m => ({ default: m.GuidesPage })));
+
+// ============================================================================
+// Lazy Imports - Portal Pages
+// ============================================================================
+const PortalPage = lazy(() => import('./pages/portal/PortalPage').then(m => ({ default: m.PortalPage })));
+
+// ============================================================================
 // Lazy Imports - Onboarding
 // ============================================================================
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage').then(m => ({ default: m.OnboardingPage })));
@@ -221,10 +245,126 @@ const router = createBrowserRouter([
         ),
       },
 
-      // ========== Protected Routes (Require Authentication) ==========
+      // ========== Support Routes (Public) ==========
+      {
+        path: "/support",
+        element: (
+          <PageSuspense>
+            <SupportPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/support/tickets",
+        element: (
+          <PageSuspense>
+            <TicketsPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/support/tickets/new",
+        element: (
+          <PageSuspense>
+            <NewTicketPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/support/tickets/:ticketId",
+        element: (
+          <PageSuspense>
+            <TicketDetailPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/support/category/:categoryId",
+        element: (
+          <PageSuspense>
+            <SupportCategoryPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/support/article/:articleId",
+        element: (
+          <PageSuspense>
+            <ArticlePage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/support/articles",
+        element: (
+          <PageSuspense>
+            <AllArticlesPage />
+          </PageSuspense>
+        ),
+      },
+
+      // ========== Community Routes (Public) ==========
+      {
+        path: "/community",
+        element: (
+          <PageSuspense>
+            <CommunityPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/community/discussions",
+        element: (
+          <PageSuspense>
+            <DiscussionsPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/community/discussions/:discussionId",
+        element: (
+          <PageSuspense>
+            <DiscussionsPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/community/ideas",
+        element: (
+          <PageSuspense>
+            <IdeasPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/community/guides",
+        element: (
+          <PageSuspense>
+            <GuidesPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/community/guides/:guideId",
+        element: (
+          <PageSuspense>
+            <GuidesPage />
+          </PageSuspense>
+        ),
+      },
+
+      // ========== Portal Routes (Protected) ==========
       {
         element: <ProtectedRoute />,
         children: [
+          {
+            path: "/portal",
+            element: (
+              <PageSuspense>
+                <PortalPage />
+              </PageSuspense>
+            ),
+          },
           {
             path: "/onboarding",
             element: (

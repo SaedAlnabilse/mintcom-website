@@ -316,7 +316,85 @@ export function OwnerLayout() {
                             </div>
                         </div>
                     ) : (
-                        <div className="flex justify-center">
+                        <div className="flex flex-col items-center gap-2">
+                            {/* Mobile App Icon for Closed Sidebar */}
+                            <div className="relative group">
+                                <button
+                                    className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all"
+                                >
+                                    <Smartphone size={24} />
+                                </button>
+                                {/* Tooltip/Popup for Closed Sidebar */}
+                                <div className="absolute left-full bottom-0 ml-4 bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[80] translate-x-2 group-hover:translate-x-0 w-[200px]">
+                                    {/* QR Code Container */}
+                                    <div className="bg-white rounded-xl p-3 mb-4 shadow-inner">
+                                        <div className="w-full aspect-square bg-white relative overflow-hidden rounded-lg">
+                                            <svg viewBox="0 0 100 100" className="w-full h-full">
+                                                <rect width="100" height="100" fill="white" />
+                                                <rect x="5" y="5" width="25" height="25" fill="black" />
+                                                <rect x="8" y="8" width="19" height="19" fill="white" />
+                                                <rect x="11" y="11" width="13" height="13" fill="black" />
+                                                <rect x="70" y="5" width="25" height="25" fill="black" />
+                                                <rect x="73" y="8" width="19" height="19" fill="white" />
+                                                <rect x="76" y="11" width="13" height="13" fill="black" />
+                                                <rect x="5" y="70" width="25" height="25" fill="black" />
+                                                <rect x="8" y="73" width="19" height="19" fill="white" />
+                                                <rect x="11" y="76" width="13" height="13" fill="black" />
+                                                <rect x="35" y="5" width="5" height="5" fill="black" />
+                                                <rect x="45" y="5" width="5" height="5" fill="black" />
+                                                <rect x="55" y="5" width="5" height="5" fill="black" />
+                                                <rect x="35" y="15" width="5" height="5" fill="black" />
+                                                <rect x="50" y="15" width="5" height="5" fill="black" />
+                                                <rect x="60" y="15" width="5" height="5" fill="black" />
+                                                <rect x="40" y="25" width="5" height="5" fill="black" />
+                                                <rect x="55" y="25" width="5" height="5" fill="black" />
+                                                <rect x="5" y="35" width="5" height="5" fill="black" />
+                                                <rect x="15" y="35" width="5" height="5" fill="black" />
+                                                <rect x="25" y="35" width="5" height="5" fill="black" />
+                                                <rect x="5" y="45" width="5" height="5" fill="black" />
+                                                <rect x="20" y="45" width="5" height="5" fill="black" />
+                                                <rect x="5" y="55" width="5" height="5" fill="black" />
+                                                <rect x="15" y="55" width="5" height="5" fill="black" />
+                                                <rect x="25" y="55" width="5" height="5" fill="black" />
+                                                <rect x="35" y="35" width="30" height="30" fill="black" />
+                                                <rect x="40" y="40" width="20" height="20" fill="white" />
+                                                <rect x="45" y="45" width="10" height="10" fill="black" />
+                                                <rect x="70" y="35" width="5" height="5" fill="black" />
+                                                <rect x="80" y="35" width="5" height="5" fill="black" />
+                                                <rect x="90" y="35" width="5" height="5" fill="black" />
+                                                <rect x="75" y="45" width="5" height="5" fill="black" />
+                                                <rect x="85" y="45" width="5" height="5" fill="black" />
+                                                <rect x="70" y="55" width="5" height="5" fill="black" />
+                                                <rect x="80" y="55" width="5" height="5" fill="black" />
+                                                <rect x="35" y="70" width="5" height="5" fill="black" />
+                                                <rect x="45" y="70" width="5" height="5" fill="black" />
+                                                <rect x="55" y="70" width="5" height="5" fill="black" />
+                                                <rect x="70" y="70" width="5" height="5" fill="black" />
+                                                <rect x="80" y="70" width="5" height="5" fill="black" />
+                                                <rect x="90" y="70" width="5" height="5" fill="black" />
+                                                <rect x="40" y="80" width="5" height="5" fill="black" />
+                                                <rect x="50" y="80" width="5" height="5" fill="black" />
+                                                <rect x="75" y="80" width="5" height="5" fill="black" />
+                                                <rect x="85" y="80" width="5" height="5" fill="black" />
+                                                <rect x="35" y="90" width="5" height="5" fill="black" />
+                                                <rect x="55" y="90" width="5" height="5" fill="black" />
+                                                <rect x="70" y="90" width="5" height="5" fill="black" />
+                                                <rect x="90" y="90" width="5" height="5" fill="black" />
+                                            </svg>
+                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                                                    <img src={PaymintLeafIcon} alt="P" className="w-5 h-5 object-contain" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p className="text-center text-sm font-bold text-gray-900 dark:text-white leading-tight">
+                                        Scan to download<br />
+                                        <span className="text-paymint-green">Paymint App</span>
+                                    </p>
+                                </div>
+                            </div>
+
                             {/* Settings Circle */}
                             <button
                                 onClick={() => setSettingsMenuOpen(!settingsMenuOpen)}
@@ -362,87 +440,6 @@ export function OwnerLayout() {
 
                                             {/* Menu Items */}
                                             <div className="space-y-1">
-                                                <div className="relative group">
-                                                    <button
-                                                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left"
-                                                    >
-                                                        <Smartphone size={18} />
-                                                        <span>Get Mobile App</span>
-                                                    </button>
-                                                    {/* QR Code Popup */}
-                                                    <div className="absolute left-full bottom-0 ml-2 bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[80] translate-x-2 group-hover:translate-x-0 w-[200px]">
-                                                        {/* QR Code Container */}
-                                                        <div className="bg-white rounded-xl p-3 mb-4 shadow-inner">
-                                                            {/* Fake QR Code Pattern */}
-                                                            <div className="w-full aspect-square bg-white relative overflow-hidden rounded-lg">
-                                                                <svg viewBox="0 0 100 100" className="w-full h-full">
-                                                                    <rect width="100" height="100" fill="white" />
-                                                                    <rect x="5" y="5" width="25" height="25" fill="black" />
-                                                                    <rect x="8" y="8" width="19" height="19" fill="white" />
-                                                                    <rect x="11" y="11" width="13" height="13" fill="black" />
-                                                                    <rect x="70" y="5" width="25" height="25" fill="black" />
-                                                                    <rect x="73" y="8" width="19" height="19" fill="white" />
-                                                                    <rect x="76" y="11" width="13" height="13" fill="black" />
-                                                                    <rect x="5" y="70" width="25" height="25" fill="black" />
-                                                                    <rect x="8" y="73" width="19" height="19" fill="white" />
-                                                                    <rect x="11" y="76" width="13" height="13" fill="black" />
-                                                                    <rect x="35" y="5" width="5" height="5" fill="black" />
-                                                                    <rect x="45" y="5" width="5" height="5" fill="black" />
-                                                                    <rect x="55" y="5" width="5" height="5" fill="black" />
-                                                                    <rect x="35" y="15" width="5" height="5" fill="black" />
-                                                                    <rect x="50" y="15" width="5" height="5" fill="black" />
-                                                                    <rect x="60" y="15" width="5" height="5" fill="black" />
-                                                                    <rect x="40" y="25" width="5" height="5" fill="black" />
-                                                                    <rect x="55" y="25" width="5" height="5" fill="black" />
-                                                                    <rect x="5" y="35" width="5" height="5" fill="black" />
-                                                                    <rect x="15" y="35" width="5" height="5" fill="black" />
-                                                                    <rect x="25" y="35" width="5" height="5" fill="black" />
-                                                                    <rect x="5" y="45" width="5" height="5" fill="black" />
-                                                                    <rect x="20" y="45" width="5" height="5" fill="black" />
-                                                                    <rect x="5" y="55" width="5" height="5" fill="black" />
-                                                                    <rect x="15" y="55" width="5" height="5" fill="black" />
-                                                                    <rect x="25" y="55" width="5" height="5" fill="black" />
-                                                                    <rect x="35" y="35" width="30" height="30" fill="black" />
-                                                                    <rect x="40" y="40" width="20" height="20" fill="white" />
-                                                                    <rect x="45" y="45" width="10" height="10" fill="black" />
-                                                                    <rect x="70" y="35" width="5" height="5" fill="black" />
-                                                                    <rect x="80" y="35" width="5" height="5" fill="black" />
-                                                                    <rect x="90" y="35" width="5" height="5" fill="black" />
-                                                                    <rect x="75" y="45" width="5" height="5" fill="black" />
-                                                                    <rect x="85" y="45" width="5" height="5" fill="black" />
-                                                                    <rect x="70" y="55" width="5" height="5" fill="black" />
-                                                                    <rect x="80" y="55" width="5" height="5" fill="black" />
-                                                                    <rect x="35" y="70" width="5" height="5" fill="black" />
-                                                                    <rect x="45" y="70" width="5" height="5" fill="black" />
-                                                                    <rect x="55" y="70" width="5" height="5" fill="black" />
-                                                                    <rect x="70" y="70" width="5" height="5" fill="black" />
-                                                                    <rect x="80" y="70" width="5" height="5" fill="black" />
-                                                                    <rect x="90" y="70" width="5" height="5" fill="black" />
-                                                                    <rect x="40" y="80" width="5" height="5" fill="black" />
-                                                                    <rect x="50" y="80" width="5" height="5" fill="black" />
-                                                                    <rect x="75" y="80" width="5" height="5" fill="black" />
-                                                                    <rect x="85" y="80" width="5" height="5" fill="black" />
-                                                                    <rect x="35" y="90" width="5" height="5" fill="black" />
-                                                                    <rect x="55" y="90" width="5" height="5" fill="black" />
-                                                                    <rect x="70" y="90" width="5" height="5" fill="black" />
-                                                                    <rect x="90" y="90" width="5" height="5" fill="black" />
-                                                                </svg>
-                                                                {/* Center logo placeholder */}
-                                                                <div className="absolute inset-0 flex items-center justify-center">
-                                                                    <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                                                                        <img src={PaymintLeafIcon} alt="P" className="w-5 h-5 object-contain" />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        {/* Text */}
-                                                        <p className="text-center text-sm font-bold text-gray-900 dark:text-white leading-tight">
-                                                            Scan to download<br />
-                                                            <span className="text-paymint-green">Paymint App</span>
-                                                        </p>
-                                                    </div>
-                                                </div>
-
                                                 <div className="relative">
                                                     <ThemeToggle
                                                         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left"

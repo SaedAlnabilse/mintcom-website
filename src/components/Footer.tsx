@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Phone, MapPin, Instagram, Youtube, X, Tablet, Printer, CheckCircle2 } from 'lucide-react';
+import { Mail, Phone, Instagram, Youtube, X, Tablet, Printer, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './Logo';
 
@@ -74,18 +74,27 @@ export const Footer = () => {
     { name: 'Features', href: '/#features' },
     { name: 'Pricing', href: '/#pricing' },
     { name: 'Hardware', action: () => setShowHardwareModal(true) },
+    { name: 'Support', href: '/support' },
   ];
 
   const companyLinks: FooterLink[] = [
     { name: 'About Us', href: '/about' },
     { name: 'Contact', href: '/#contact' },
+    { name: 'Community', href: '/community' },
+  ];
+
+  const resourceLinks: FooterLink[] = [
+    { name: 'Help Center', href: '/support' },
+    { name: 'Guides', href: '/community/guides' },
+    { name: 'Feature Ideas', href: '/community/ideas' },
+    { name: 'Discussions', href: '/community/discussions' },
   ];
 
   return (
     <>
       <footer className="bg-gray-50 dark:bg-[#050505] border-t border-gray-200 dark:border-white/10 pt-20 pb-10 transition-colors duration-300">
         <div className="container mx-auto px-8 md:px-16 lg:px-24">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-20">
             {/* Brand */}
             <div className="space-y-8">
               <Logo size="lg" />
@@ -162,6 +171,32 @@ export const Footer = () => {
               </ul>
             </div>
 
+            {/* Resources */}
+            <div>
+              <h4 className="text-xs font-black text-gray-400 tracking-widest mb-8">Resources</h4>
+              <ul className="space-y-4">
+                {resourceLinks.map((link) => (
+                  <li key={link.name}>
+                    {link.href ? (
+                      <a
+                        href={link.href}
+                        className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
+                      >
+                        {link.name}
+                      </a>
+                    ) : (
+                      <button
+                        onClick={link.action}
+                        className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
+                      >
+                        {link.name}
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
             {/* Contact */}
             <div>
               <h4 className="text-xs font-black text-gray-400 tracking-widest mb-8">Get in Touch</h4>
@@ -177,12 +212,6 @@ export const Footer = () => {
                     <Phone size={14} className="text-paymint-green" />
                   </div>
                   <span>+962 790 000 000</span>
-                </li>
-                <li className="flex items-center gap-3 text-gray-600 dark:text-gray-400 font-medium">
-                  <div className="w-8 h-8 rounded-lg bg-gray-200/50 dark:bg-white/5 flex items-center justify-center">
-                    <MapPin size={14} className="text-paymint-green" />
-                  </div>
-                  <span>Amman, Jordan</span>
                 </li>
               </ul>
             </div>
