@@ -415,21 +415,21 @@ export function CustomersPage() {
                   {/* Card Actions */}
                   <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 dark:border-white/5" onClick={(e) => e.stopPropagation()}>
                     <button
-                      onClick={() => { setSelectedCustomer(member); setPointsAmount(0); setShowPointsModal(true); }}
+                      onClick={() => { setSelectedCustomer(customer); setPointsAmount(0); setShowPointsModal(true); }}
                       className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-paymint-green/10 text-paymint-green text-xs font-bold touch-target"
                     >
                       <Award size={14} />
                       {t('customers.details.points')}
                     </button>
                     <button
-                      onClick={() => openEditModal(member)}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 text-xs font-bold touch-target"
+                      onClick={() => openEditModal(customer)}
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 text-xs font-bold touch-target"
                     >
                       <Edit2 size={14} />
                       {t('common.edit')}
                     </button>
                     <button
-                      onClick={() => handleDeleteCustomer(member)}
+                      onClick={() => handleDeleteCustomer(customer)}
                       className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 dark:border-red-500/20 text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-all text-xs font-bold touch-target"
                     >
                       <Trash2 size={14} />

@@ -1,4 +1,3 @@
-import { AppStrings } from '../../constants/AppStrings';
 import { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +21,12 @@ import { CustomSelect } from '../../components/CustomSelect';
 import { Pagination } from '../../components/ui';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 
+type ViewMode = 'grid' | 'list';
+const ITEMS_PER_PAGE = 10;
+
+export function OwnerEstablishmentsPage() {
+    const { t } = useTranslation();
+
     const STATUS_OPTIONS = [
         { label: t('owner.locations.allStatuses'), value: 'all' },
         { label: t('common.active'), value: 'ACTIVE' },
@@ -37,11 +42,6 @@ import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
         { label: t('onboarding.step1.businessTypes.retail'), value: 'RETAIL' }
     ];
 
-type ViewMode = 'grid' | 'list';
-const ITEMS_PER_PAGE = 10;
-
-export function OwnerEstablishmentsPage() {
-    const { t } = useTranslation();
     const navigate = useNavigate();
     const { establishments, setCurrentEstablishment } = useAuth();
     const [searchParams] = useSearchParams();

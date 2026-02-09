@@ -701,13 +701,6 @@ export function OrdersPage() {
     }
   };
 
-  const getStatusLabel = (status: string) => {
-    if (status === 'PENDING' || status === 'HELD') return t('orders.status.onHold');
-    if (status === 'COMPLETED') return t('orders.status.completed');
-    if (status === 'REFUNDED') return t('orders.status.refunded');
-    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
-  };
-
   const handleExport = () => {
     const exportData = orders.map(o => ({
       orderNumber: o.orderNumber,

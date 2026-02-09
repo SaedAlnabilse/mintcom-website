@@ -6,14 +6,12 @@ import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import React from 'react';
 import { Pagination } from '../../../ui';
-import { useTranslation } from 'react-i18next';
 
 interface CashDiscrepancyViewProps {
   shifts: Shift[];
 }
 
 export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shifts }: CashDiscrepancyViewProps) {
-  const { t } = useTranslation();
   const { formatAmount, currencySymbol } = useCurrency();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;

@@ -1,4 +1,3 @@
-import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBlocker } from 'react-router-dom';
@@ -482,6 +481,7 @@ export function SettingsPage() {
   const handleTabChange = (newTab: SettingsTab) => {
     if (activeTab === newTab) return;
 
+    if (hasUnsavedChanges) {
       setConfirmConfig({
         isOpen: true,
         title: t('common.notice'),

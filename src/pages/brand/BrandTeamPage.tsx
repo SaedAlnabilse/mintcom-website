@@ -27,6 +27,7 @@ import { CustomSelect } from '../../components/CustomSelect';
 import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { useAuth } from '../../context/AuthContext';
 import { Pagination } from '../../components/ui';
+import { AppStrings } from '../../constants/AppStrings';
 
 interface Employee {
     id: string;
@@ -49,6 +50,7 @@ type RoleFilter = 'all' | 'ADMIN' | 'CASHIER';
 type SortOption = 'name' | 'role' | 'locations';
 
 export function BrandTeamPage() {
+    const { t } = useTranslation();
     const { brandId: paramBrandId } = useParams<{ brandId: string }>();
     const context = useOutletContext<{ brand: any }>() || {};
     const brandId = context.brand?.id || paramBrandId;

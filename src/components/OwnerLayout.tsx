@@ -29,6 +29,10 @@ import PaymintLogoGreen from '../assets/green-full-logo.svg';
 import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
 import PaymintLeafIcon from '../assets/small-logo.svg';
 
+export function OwnerLayout() {
+    const { t } = useTranslation();
+    const { account, logout } = useAuth();
+    
     const menuItems = useMemo(() => [
         { path: '/owner', label: t('owner.menu.overview'), icon: LayoutDashboard },
         { path: '/owner/establishments', label: t('owner.menu.locations'), icon: Store },
@@ -39,9 +43,6 @@ import PaymintLeafIcon from '../assets/small-logo.svg';
         { path: '/owner/account', label: t('owner.menu.accountManagement'), icon: KeyRound },
     ], [t]);
 
-export function OwnerLayout() {
-    const { t } = useTranslation();
-    const { account, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
     const [sidebarOpen, setSidebarOpen] = useState(false);
