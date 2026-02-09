@@ -501,35 +501,3 @@ export function DiscountsPage() {
     </div>
   );
 }
-
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
-        </div>
-      )}
-
-      {/* Discount Modal */}
-      <DiscountFormModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        onSubmit={onSubmit}
-        onDelete={editingDiscount ? () => handleDelete(editingDiscount.id, editingDiscount.name) : undefined}
-        initialData={editingDiscount}
-        isSubmitting={isSubmitting}
-      />
-
-      <ConfirmModal
-        isOpen={confirmConfig.isOpen}
-        onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
-        onConfirm={confirmConfig.onConfirm}
-        title={confirmConfig.title}
-        message={confirmConfig.message}
-        type={confirmConfig.type}
-        confirmText={confirmConfig.confirmText}
-        showCancel={confirmConfig.showCancel}
-      />
-    </div>
-  );
-}

@@ -675,13 +675,13 @@ export function OrdersPage() {
       onConfirm: async () => {
         try {
           await api.post(`/api/orders/${order.id}/refund`, {
-            reason: 'Refunded via web dashboard',
+            reason: t('orders.messages.refundReasonWeb'),
           });
           toast.success(t('orders.messages.refundSuccess'));
           fetchOrders(); // Refresh the list
           setConfirmConfig(prev => ({ ...prev, isOpen: false }));
         } catch (err) {
-          toast.error((err as ApiError).response?.data?.message || t('orders.messages.refundFailed') || 'Failed to process refund');
+          toast.error((err as ApiError).response?.data?.message || t('orders.messages.refundFailed'));
         }
       }
     });
@@ -762,13 +762,13 @@ export function OrdersPage() {
                        label: t('dashboard.viewMode.currentShift'),
                        value: 'current_shift',
                        icon: <PlayCircle size={18} className="text-paymint-green" />,
-                       subtitle: shiftStatus?.activeShift?.startTime ? `Started ${format(new Date(shiftStatus.activeShift.startTime), 'h:mm a')}` : 'Active now'
+                       subtitle: shiftStatus?.activeShift?.startTime ? t('dashboard.shiftStatus.started', { time: format(new Date(shiftStatus.activeShift.startTime), 'h:mm a') }) : t('dashboard.shiftStatus.live')
                    }] : []),
                    ...(lastShiftSnapshot ? [{
                        label: t('dashboard.viewMode.previousShift'),
                        value: 'previous_shift',
                        icon: <History size={18} />,
-                       subtitle: 'Last completed shift'
+                       subtitle: t('dashboard.shiftStatus.lastCompleted')
                    }] : [])
                 ]}
                 placeholder={t('orders.checkShift')}
