@@ -306,7 +306,7 @@ export function OrdersPage() {
               options.push({
                 label: displayName,
                 value: method,
-                group: 'Delivery Apps'
+                group: t('orders.payment.deliveryApps')
               });
             }
           });
