@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
     Trash2,
     AlertTriangle,
@@ -86,6 +87,7 @@ export function EstablishmentDeletionWizard({
     onClose,
     onDeletionRequested,
 }: EstablishmentDeletionWizardProps) {
+    const { t } = useTranslation();
     const [step, setStep] = useState<WizardStep>('warning');
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -113,7 +115,7 @@ export function EstablishmentDeletionWizard({
                 const response = await api.get(`/api/establishments/${establishmentId}/stats`);
                 setStats(response.data);
             } catch (err) {
-                toast.error((err as ApiError).response?.data?.message || 'Failed to load establishment data');
+                toast.error((err as ApiError).response?.data?.message || t('security.deletion.loadFailed') || 'Failed to load establishment data');
                 onClose();
             } finally {
                 setIsLoading(false);
@@ -124,22 +126,22 @@ export function EstablishmentDeletionWizard({
 
     const handleRequestDeletion = async () => {
         if (!establishmentLoginId) {
-            toast.error('Please enter Location ID');
+            toast.error(t('owner.brands.wizard.adminLoginId') || 'Please enter Location ID');
             return;
         }
 
         if (establishmentPassword.length < 6) {
-            toast.error('Please enter Location Password');
+            toast.error(t('security.deletion.confirm.locationPassword') || 'Please enter Location Password');
             return;
         }
 
         if (!accountEmail || !accountEmail.includes('@')) {
-            toast.error('Please enter a valid Account Email');
+            toast.error(t('security.deletion.confirm.yourEmail') || 'Please enter a valid Account Email');
             return;
         }
 
         if (password.length < 6) {
-            toast.error('Please enter your account password');
+            toast.error(t('security.deletion.confirm.yourPassword') || 'Please enter your account password');
             return;
         }
 
@@ -152,11 +154,11 @@ export function EstablishmentDeletionWizard({
                 accountEmail,
                 password,
             });
-            toast.success('Deletion scheduled. Check your email for data exports.');
+            toast.success(t('security.deletion.confirm.success'));
             onDeletionRequested();
             onClose();
         } catch (err) {
-            toast.error((err as ApiError).response?.data?.message || 'Failed to request deletion');
+            toast.error((err as ApiError).response?.data?.message || t('security.deletion.confirm.fail') || 'Failed to request deletion');
         } finally {
             setIsSubmitting(false);
         }
@@ -179,9 +181,9 @@ export function EstablishmentDeletionWizard({
             a.click();
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
-            toast.success(`${exportType} export downloaded`);
+            toast.success(t('security.deletion.export.downloaded', { type: t(`security.deletion.export.${exportType}`) }));
         } catch {
-            toast.error('Failed to download export');
+            toast.error(t('security.deletion.export.fail') || 'Failed to download export');
         }
     };
 
@@ -190,7 +192,7 @@ export function EstablishmentDeletionWizard({
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <div className="bg-white dark:bg-[#1E293B] rounded-2xl p-8 border border-gray-200 dark:border-white/5 shadow-xl">
                 <div className="w-12 h-12 border-4 border-paymint-red/10 border-t-paymint-red rounded-full animate-spin mx-auto" />
-                <p className="text-xs font-black tracking-widest text-gray-400 mt-4 text-center">Loading Location Data...</p>
+                <p className="text-xs font-black tracking-widest text-gray-400 mt-4 text-center">{t('security.deletion.loading')}</p>
             </div>
             </div>
         );
@@ -217,7 +219,7 @@ export function EstablishmentDeletionWizard({
                             <Trash2 size={28} />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold">Delete Location</h2>
+                            <h2 className="text-xl font-bold">{t('security.deletion.title')}</h2>
                             <p className="text-white/80 text-sm">{establishmentName}</p>
                         </div>
                     </div>
@@ -266,10 +268,10 @@ export function EstablishmentDeletionWizard({
                                         <AlertTriangle className="text-paymint-red flex-shrink-0 mt-0.5" size={20} />
                                         <div>
                                             <h3 className="font-bold text-red-700 dark:text-paymint-red">
-                                                This cannot be undone
+                                                {t('security.deletion.warning.title')}
                                             </h3>
                                             <p className="text-paymint-red dark:text-red-300 text-sm mt-1">
-                                                All data will be gone forever after 30 days.
+                                                {t('security.deletion.warning.subtitle')}
                                             </p>
                                         </div>
                                     </div>
@@ -278,27 +280,27 @@ export function EstablishmentDeletionWizard({
                                 <div>
                                     <h3 className="text-xs font-black text-gray-400 dark:text-gray-500 tracking-[0.2em] mb-4 flex items-center gap-2 px-1">
                                         <Package size={14} className="text-paymint-red" />
-                                        Deletion Summary
+                                        {t('security.deletion.warning.summary')}
                                     </h3>
                                     <div className="grid grid-cols-2 gap-3">
                                         <StatCard
                                             icon={ShoppingCart}
-                                            label="Orders"
+                                            label={t('dashboard.stats.totalOrders')}
                                             value={stats?.stats.orders || 0}
                                         />
                                         <StatCard
                                             icon={Users}
-                                            label="Customers"
+                                            label={t('dashboard.menu.customers')}
                                             value={stats?.stats.customers || 0}
                                         />
                                         <StatCard
                                             icon={Package}
-                                            label="Products"
+                                            label={t('dashboard.menu.products')}
                                             value={stats?.stats.products || 0}
                                         />
                                         <StatCard
                                             icon={Users}
-                                            label="Employees"
+                                            label={t('dashboard.menu.team')}
                                             value={stats?.stats.employees || 0}
                                         />
                                     </div>
@@ -313,7 +315,7 @@ export function EstablishmentDeletionWizard({
                                                     {stats.dataRange.age}
                                                 </span>
                                                 <span className="text-amber-600 dark:text-amber-300 text-sm ml-2">
-                                                    of business data
+                                                    {t('owner.overview.managed')}
                                                 </span>
                                             </div>
                                         </div>
@@ -336,10 +338,10 @@ export function EstablishmentDeletionWizard({
                                         <Mail className="text-blue-500 flex-shrink-0 mt-0.5" size={20} />
                                         <div>
                                             <h3 className="font-bold text-blue-700 dark:text-blue-400">
-                                                Export Data
+                                                {t('security.deletion.export.title')}
                                             </h3>
                                             <p className="text-blue-600 dark:text-blue-300 text-sm mt-1">
-                                                We'll email you these files.
+                                                {t('security.deletion.export.subtitle')}
                                             </p>
                                         </div>
                                     </div>
@@ -347,49 +349,49 @@ export function EstablishmentDeletionWizard({
 
                                 <div className="space-y-3">
                                     <ExportOption
-                                        label="Sales & Revenue"
-                                        description="Sales, revenue, and tax info"
+                                        label={t('security.deletion.export.financial')}
+                                        description={t('security.deletion.export.financialDesc')}
                                         checked={exportOptions.exportFinancial}
                                         onChange={(v) => setExportOptions({ ...exportOptions, exportFinancial: v })}
                                         onDownload={() => handleDownloadExport('financial')}
                                         count={stats?.stats.orders || 0}
-                                        countLabel="orders"
+                                        countLabel={t('dashboard.stats.totalOrders')}
                                     />
                                     <ExportOption
-                                        label="Customers"
-                                        description="Customer lists and points"
+                                        label={t('security.deletion.export.customers')}
+                                        description={t('security.deletion.export.customersDesc')}
                                         checked={exportOptions.exportCustomers}
                                         onChange={(v) => setExportOptions({ ...exportOptions, exportCustomers: v })}
                                         onDownload={() => handleDownloadExport('customers')}
                                         count={stats?.stats.customers || 0}
-                                        countLabel="customers"
+                                        countLabel={t('dashboard.menu.customers')}
                                     />
                                     <ExportOption
-                                        label="Products"
-                                        description="Menu items and inventory"
+                                        label={t('security.deletion.export.inventory')}
+                                        description={t('security.deletion.export.inventoryDesc')}
                                         checked={exportOptions.exportInventory}
                                         onChange={(v) => setExportOptions({ ...exportOptions, exportInventory: v })}
                                         onDownload={() => handleDownloadExport('inventory')}
                                         count={stats?.stats.products || 0}
-                                        countLabel="products"
+                                        countLabel={t('dashboard.menu.products')}
                                     />
                                     <ExportOption
-                                        label="Staff"
-                                        description="Team members and roles"
+                                        label={t('security.deletion.export.staff')}
+                                        description={t('security.deletion.export.staffDesc')}
                                         checked={exportOptions.exportEmployees}
                                         onChange={(v) => setExportOptions({ ...exportOptions, exportEmployees: v })}
                                         onDownload={() => handleDownloadExport('employees')}
                                         count={stats?.stats.employees || 0}
-                                        countLabel="employees"
+                                        countLabel={t('dashboard.menu.team')}
                                     />
                                     <ExportOption
-                                        label="Shifts"
-                                        description="Work shifts and cash logs"
+                                        label={t('security.deletion.export.shifts')}
+                                        description={t('security.deletion.export.shiftsDesc')}
                                         checked={exportOptions.exportShifts}
                                         onChange={(v) => setExportOptions({ ...exportOptions, exportShifts: v })}
                                         onDownload={() => handleDownloadExport('shifts')}
                                         count={stats?.stats.shifts || 0}
-                                        countLabel="shifts"
+                                        countLabel={t('dashboard.menu.shiftsReports')}
                                     />
                                 </div>
                             </motion.div>
@@ -409,10 +411,10 @@ export function EstablishmentDeletionWizard({
                                         <Calendar className="text-purple-500 flex-shrink-0 mt-0.5" size={20} />
                                         <div>
                                             <h3 className="font-bold text-purple-700 dark:text-purple-400">
-                                                Grace Period
+                                                {t('security.deletion.confirm.gracePeriod')}
                                             </h3>
                                             <p className="text-purple-600 dark:text-purple-300 text-sm mt-1">
-                                                You can stop this anytime in the next 30 days.
+                                                {t('security.deletion.confirm.gracePeriodDesc')}
                                             </p>
                                         </div>
                                     </div>
@@ -420,10 +422,10 @@ export function EstablishmentDeletionWizard({
 
                                 <div className="bg-gray-100 dark:bg-white/5 rounded-2xl p-6 text-center">
                                     <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">
-                                        Deletion date:
+                                        {t('security.deletion.confirm.deletionDate')}
                                     </p>
                                     <p className="text-2xl font-bold text-paymint-red">
-                                        {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', {
+                                        {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', {
                                             weekday: 'long',
                                             year: 'numeric',
                                             month: 'long',
@@ -434,14 +436,14 @@ export function EstablishmentDeletionWizard({
 
                                 <div>
                                     <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center">
-                                        Location ID
-                                        <QuickInfo text="The ID used for Login." />
+                                        {t('security.deletion.confirm.locationId')}
+                                        <QuickInfo text={t('onboarding.tour.locationStatsDesc')} />
                                     </label>
                                     <input
                                         type="text"
                                         value={establishmentLoginId}
                                         onChange={(e) => setEstablishmentLoginId(e.target.value)}
-                                        placeholder="Enter Location ID"
+                                        placeholder={t('security.deletion.confirm.locationId')}
                                         className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-red transition-colors"
                                     />
                                 </div>
@@ -451,16 +453,16 @@ export function EstablishmentDeletionWizard({
                                     <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center gap-2">
                                         <div className="flex items-center gap-2">
                                             <Lock size={14} className="text-paymint-red" />
-                                            Location Password
+                                            {t('security.deletion.confirm.locationPassword')}
                                         </div>
-                                        <QuickInfo text="The main password for this location." />
+                                        <QuickInfo text={t('onboarding.validation.locationPasswordMin')} />
                                     </label>
                                     <div className="relative">
                                         <input
                                             type={showEstablishmentPassword ? 'text' : 'password'}
                                             value={establishmentPassword}
                                             onChange={(e) => setEstablishmentPassword(e.target.value)}
-                                            placeholder="Location password"
+                                            placeholder={t('security.deletion.confirm.locationPassword')}
                                             className="w-full px-4 py-3 pr-12 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-red transition-colors"
                                         />
                                         <button
@@ -478,15 +480,15 @@ export function EstablishmentDeletionWizard({
                                     <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center gap-2">
                                         <div className="flex items-center gap-2">
                                             <Mail size={14} className="text-paymint-red" />
-                                            Your Email
+                                            {t('security.deletion.confirm.yourEmail')}
                                         </div>
-                                        <QuickInfo text="Your login email." />
+                                        <QuickInfo text={t('security.identityLabel')} />
                                     </label>
                                     <input
                                         type="email"
                                         value={accountEmail}
                                         onChange={(e) => setAccountEmail(e.target.value)}
-                                        placeholder="Enter your email"
+                                        placeholder={t('security.deletion.confirm.yourEmail')}
                                         className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-paymint-red transition-colors"
                                     />
                                 </div>
@@ -496,16 +498,16 @@ export function EstablishmentDeletionWizard({
                                     <label className="block text-sm font-bold text-gray-600 dark:text-gray-400 mb-2 flex items-center gap-2">
                                         <div className="flex items-center gap-2">
                                             <Lock size={14} className="text-paymint-red" />
-                                            Your Password
+                                            {t('security.deletion.confirm.yourPassword')}
                                         </div>
-                                        <QuickInfo text="To confirm it's you." />
+                                        <QuickInfo text={t('security.deletion.confirm.confirmYou')} />
                                     </label>
                                     <div className="relative">
                                         <input
                                             type={showPassword ? 'text' : 'password'}
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
-                                            placeholder="Your account password"
+                                            placeholder={t('security.deletion.confirm.yourPassword')}
                                             className={`w-full px-4 py-3 pr-12 bg-white dark:bg-[#2a2a2a] border rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none transition-colors ${password.length >= 6
                                                 ? 'border-green-500 focus:border-green-500'
                                                 : 'border-gray-300 dark:border-gray-700 focus:border-paymint-red'
@@ -521,7 +523,7 @@ export function EstablishmentDeletionWizard({
                                     </div>
                                     {password.length >= 6 && (
                                         <p className="text-green-500 text-sm mt-2 flex items-center gap-1">
-                                            <Check size={14} /> Password entered
+                                            <Check size={14} /> {t('security.deletion.confirm.passwordEntered')}
                                         </p>
                                     )}
                                 </div>
@@ -539,14 +541,14 @@ export function EstablishmentDeletionWizard({
                             }
                             className="px-6 py-3 bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                         >
-                            Back
+                            {t('common.back')}
                         </button>
                     )}
                     <button
                         onClick={onClose}
                         className="px-6 py-3 bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-100 dark:hover:bg-white/10 transition-colors ml-auto"
                     >
-                        Cancel
+                        {t('common.cancel')}
                     </button>
                     {step !== 'confirm' ? (
                         <button
@@ -555,7 +557,7 @@ export function EstablishmentDeletionWizard({
                             }
                             className="px-6 py-3 bg-paymint-red text-white rounded-xl font-bold hover:bg-paymint-red transition-colors flex items-center gap-2"
                         >
-                            Continue
+                            {t('common.continue')}
                             <ChevronRight size={18} />
                         </button>
                     ) : (
@@ -573,12 +575,12 @@ export function EstablishmentDeletionWizard({
                             {isSubmitting ? (
                                 <>
                                     <Loader2 size={18} className="animate-spin" />
-                                    Processing...
+                                    {t('security.deletion.confirm.processing')}
                                 </>
                             ) : (
                                 <>
                                     <Trash2 size={18} />
-                                    Schedule Deletion
+                                    {t('security.deletion.confirm.button')}
                                 </>
                             )}
                         </button>
@@ -599,11 +601,12 @@ function StatCard({
     label: string;
     value: number;
 }) {
+    const { t } = useTranslation();
     return (
         <div className="bg-gray-100 dark:bg-white/5 rounded-xl p-4 text-center">
             <Icon size={20} className="text-paymint-red mx-auto mb-2" />
             <div className="text-2xl font-bold text-gray-900 dark:text-white tracking-tighter">
-                {value.toLocaleString()}
+                {value.toLocaleString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US')}
             </div>
             <div className="text-xs text-gray-500 dark:text-gray-400 font-black tracking-widest mt-1">
                 {label}
@@ -629,6 +632,7 @@ function ExportOption({
     count: number;
     countLabel: string;
 }) {
+    const { t } = useTranslation();
     return (
         <div className="bg-gray-100 dark:bg-white/5 rounded-xl p-4 flex items-center gap-4">
             <input
@@ -644,14 +648,14 @@ function ExportOption({
             </div>
             <div className="text-right">
                 <div className="text-sm font-bold text-gray-900 dark:text-white">
-                    {count.toLocaleString()}
+                    {count.toLocaleString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US')}
                 </div>
                 <div className="text-xs text-gray-500 dark:text-gray-400">{countLabel}</div>
             </div>
             <button
                 onClick={onDownload}
                 className="p-2 bg-white dark:bg-white/10 rounded-lg hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
-                title="Download now"
+                title={t('security.deletion.export.download')}
             >
                 <Download size={16} className="text-gray-600 dark:text-gray-300" />
             </button>
@@ -671,10 +675,11 @@ export function PendingDeletionBanner({
     onCancelDeletion,
     isCancelling,
 }: PendingDeletionBannerProps) {
+    const { t } = useTranslation();
     if (deletionStatus.status !== 'pending_deletion') return null;
 
     const scheduledDate = deletionStatus.deletionScheduledFor
-        ? new Date(deletionStatus.deletionScheduledFor).toLocaleDateString('en-US', {
+        ? new Date(deletionStatus.deletionScheduledFor).toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
@@ -694,17 +699,16 @@ export function PendingDeletionBanner({
                         <AlertTriangle size={28} />
                     </div>
                     <div>
-                        <h3 className="font-bold text-lg">Deletion Scheduled</h3>
+                        <h3 className="font-bold text-lg">{t('security.deletion.banner.title')}</h3>
                         <p className="text-white/80 text-sm">
-                            This location will be permanently deleted on{' '}
-                            <span className="font-bold">{scheduledDate}</span>
+                            {t('security.deletion.banner.desc', { date: scheduledDate })}
                         </p>
                     </div>
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="text-center">
-                        <div className="text-2xl sm:text-3xl font-bold">{deletionStatus.daysRemaining}</div>
-                        <div className="text-xs text-white/80">Days Left</div>
+                        <div className="text-2xl sm:text-3xl font-bold">{deletionStatus.daysRemaining?.toLocaleString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US')}</div>
+                        <div className="text-xs text-white/80">{t('security.deletion.banner.daysLeft')}</div>
                     </div>
                     <button
                         onClick={onCancelDeletion}
@@ -714,12 +718,12 @@ export function PendingDeletionBanner({
                         {isCancelling ? (
                             <>
                                 <Loader2 size={18} className="animate-spin" />
-                                Cancelling...
+                                {t('security.deletion.banner.cancelling')}
                             </>
                         ) : (
                             <>
                                 <Shield size={18} />
-                                Cancel Deletion
+                                {t('security.deletion.banner.cancel')}
                             </>
                         )}
                     </button>

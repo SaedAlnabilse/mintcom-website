@@ -3,6 +3,7 @@ import { TrendingUp, Activity, Zap } from 'lucide-react';
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { format } from 'date-fns';
 import { useTheme } from '../../../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 interface RevenueChartProps {
   dailyBreakdown: { date: string; revenue: number }[];
@@ -11,6 +12,7 @@ interface RevenueChartProps {
 }
 
 export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, viewMode, selectedDateRange }: RevenueChartProps) {
+  const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
 
@@ -91,13 +93,13 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
           <div>
             <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
               <TrendingUp className="text-paymint-green" size={20} />
-              {viewMode === 'current_shift' ? 'Current Shift Sales' : viewMode === 'previous_shift' ? 'Previous Shift Sales' : 'Sales (Last 24h)'}
+              {viewMode === 'current_shift' ? t('dashboard.revenueChart.currentTitle') : viewMode === 'previous_shift' ? t('dashboard.revenueChart.previousTitle') : t('dashboard.revenueChart.last24hTitle')}
             </h3>
-            <p className="text-xs text-gray-500 mt-1">Hourly sales breakdown</p>
+            <p className="text-xs text-gray-500 mt-1">{t('dashboard.revenueChart.subtitle')}</p>
           </div>
           <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
             <Activity size={12} className="text-paymint-green" />
-            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">Real-time</span>
+            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">{t('dashboard.revenueChart.realtime')}</span>
           </div>
         </div>
 
@@ -163,7 +165,7 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
                         <YAxis hide domain={[0, maxY]} />
                         <Tooltip
                         cursor={{ stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' }}
-                        formatter={(val: any) => [Number(val).toFixed(3), 'Revenue']}
+                        formatter={(val: any) => [Number(val).toFixed(3), t('dashboard.revenueChart.revenue')]}
                         contentStyle={{
                             backgroundColor: isDark ? '#0B1120' : '#fff',
                             borderRadius: '16px',
@@ -225,7 +227,7 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
                         <YAxis hide domain={[0, maxY]} />
                         <Tooltip
                         cursor={{ stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' }}
-                        formatter={(val: any) => [Number(val).toFixed(3), 'Revenue']}
+                        formatter={(val: any) => [Number(val).toFixed(3), t('dashboard.revenueChart.revenue')]}
                         contentStyle={{
                             backgroundColor: isDark ? '#0B1120' : '#fff',
                             borderRadius: '16px',

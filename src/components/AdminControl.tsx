@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Smartphone, Laptop, BarChart2, Play } from 'lucide-react';
 import WhiteLogo from '../assets/white-green-full-logo.svg';
 import GreenLogo from '../assets/green-full-logo.svg';
 
 export const AdminControl = () => {
+  const { t } = useTranslation();
   const [isVideoVisible, setIsVideoVisible] = useState(false);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const videoRef = useRef<HTMLDivElement>(null);
@@ -86,7 +88,7 @@ export const AdminControl = () => {
                     <BarChart2 size={20} className="text-black" />
                   </div>
                   <div>
-                    <p className="text-white text-xs font-medium">Daily Revenue</p>
+                    <p className="text-white text-xs font-medium">{t('admin.dailyRevenue')}</p>
                     <p className="text-white font-bold text-lg">$2,450.00</p>
                   </div>
                 </div>
@@ -109,13 +111,13 @@ export const AdminControl = () => {
               <span className="p-2 bg-paymint-green/10 rounded-lg">
                 <Laptop size={20} className="text-paymint-green" />
               </span>
-              <span className="text-paymint-green font-bold tracking-wide text-sm">Owner & Admin Portal</span>
+              <span className="text-paymint-green font-bold tracking-wide text-sm">{t('admin.badge')}</span>
             </div>
 
             <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-8 tracking-tight leading-tight">
-              Full Visibility. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-blue-500">Full Control.</span> <br />
-              From Your Pocket.
+              {t('admin.title1')} <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-blue-500">{t('admin.title2')}</span> <br />
+              {t('admin.title3')}
             </h2>
 
             {/* Logo Lockup */}
@@ -125,16 +127,16 @@ export const AdminControl = () => {
               <div className="h-8 w-px bg-gray-300 dark:bg-white/20"></div>
               <div className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
                 <Smartphone size={16} />
-                <span>Admin App</span>
+                <span>{t('admin.adminApp')}</span>
               </div>
             </div>
 
             <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
-              With the PayMint Admin Mobile App, you can monitor and manage your business anytime, anywhere—right from your phone.
+              {t('admin.description')}
             </p>
 
             <ul className="space-y-4">
-              {['Shift Alerts', 'Stock Alerts', 'Live Sales & Performance Reports'].map((item, i) => (
+              {[t('admin.shiftAlerts'), t('admin.stockAlerts'), t('admin.liveReports')].map((item, i) => (
                 <motion.li
                   key={i}
                   initial={{ opacity: 0, x: -20 }}

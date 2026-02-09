@@ -10,6 +10,7 @@ import {
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { useCurrency } from '../../context/CurrencyContext';
+import { useTranslation } from 'react-i18next';
 
 import { ReceiptsReport } from '../../components/dashboard/reports/ReceiptsReport';
 import { SingleSelect } from '../../components/SingleSelect';
@@ -40,6 +41,7 @@ interface EmployeeOption {
 }
 
 export function ReportsPage() {
+  const { t } = useTranslation();
   const { currencySymbol } = useCurrency();
   const location = useLocation();
   const navigate = useNavigate();
@@ -323,15 +325,27 @@ export function ReportsPage() {
       case 'discounts':
       case 'taxes':
         dataToExport = salesData?.dailyBreakdown || [];
-        headers = { date: 'Date', revenue: `Revenue (${currencySymbol})`, count: 'Orders' };
+        headers = {
+          date: t('orders.exportFields.date'),
+          revenue: `${t('dashboard.stats.revenue')} (${currencySymbol})`,
+          count: t('orders.exportFields.orderNumber')
+        };
         break;
       case 'top-items':
         dataToExport = itemReportData?.breakdown || [];
-        headers = { itemName: 'Item', quantity: 'Units Sold', totalSales: 'Total Revenue' };
+        headers = {
+          itemName: t('orders.table.order'),
+          quantity: t('orders.reports.items.unitsSold'),
+          totalSales: t('orders.reports.items.grossRevenue')
+        };
         break;
       case 'peak-hours':
         dataToExport = peakHours;
-        headers = { hour: 'Hour', total: 'Revenue', count: 'Orders' };
+        headers = {
+          hour: t('orders.reports.sales.hours'),
+          total: t('dashboard.stats.revenue'),
+          count: t('orders.exportFields.orderNumber')
+        };
         break;
       case 'shifts':
         dataToExport = shifts.map(s => {
@@ -339,20 +353,29 @@ export function ReportsPage() {
           const end = s.endTime ? new Date(s.endTime) : new Date();
           const hoursWorked = ((end.getTime() - start.getTime()) / (1000 * 60 * 60)).toFixed(1);
           const cashOverShort = s.discrepancy !== null && s.discrepancy !== undefined
-            ? (s.discrepancy > 0.001 ? `+${s.discrepancy.toFixed(3)} Over` : s.discrepancy < -0.001 ? `${s.discrepancy.toFixed(3)} Short` : '0')
-            : 'Active';
+            ? (s.discrepancy > 0.001 ? `+${s.discrepancy.toFixed(3)} ${t('dashboard.stats.over')}` : s.discrepancy < -0.001 ? `${s.discrepancy.toFixed(3)} ${t('dashboard.stats.short')}` : '0')
+            : t('dashboard.shiftStatus.live');
           return {
             username: s.user?.username,
-            period: `${start.toLocaleTimeString()} - ${s.endTime ? end.toLocaleTimeString() : 'Active'}`,
+            period: `${start.toLocaleTimeString()} - ${s.endTime ? end.toLocaleTimeString() : t('dashboard.shiftStatus.live')}`,
             hoursWorked: hoursWorked,
             opening: s.openingBalance,
             sales: s.totalSales,
-            closing: s.closingBalance !== null && s.closingBalance !== undefined ? s.closingBalance : 'Active',
+            closing: s.closingBalance !== null && s.closingBalance !== undefined ? s.closingBalance : t('dashboard.shiftStatus.live'),
             cashOverShort: cashOverShort,
             status: s.status
           };
         });
-        headers = { username: 'Staff', period: 'Shift Period', hoursWorked: 'Hours Worked', opening: 'Opening Bal', sales: 'Net Sales', closing: 'Closing Bal', cashOverShort: 'Cash Over/Short', status: 'Status' };
+        headers = {
+          username: t('orders.table.staff'),
+          period: t('orders.reports.shifts.time'),
+          hoursWorked: t('orders.reports.sales.hours'),
+          opening: t('orders.reports.shifts.opening'),
+          sales: t('orders.reports.shifts.sales'),
+          closing: t('orders.reports.shifts.closing'),
+          cashOverShort: t('orders.reports.shifts.variance'),
+          status: t('orders.reports.shifts.status')
+        };
         break;
     }
 
@@ -366,7 +389,7 @@ export function ReportsPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-wide border border-paymint-green/20">
-              Sales and Reporting
+              {t('dashboard.menu.salesAndReporting')}
             </span>
             <div className="flex items-center gap-2">
               <span className="relative flex h-2 w-2">
@@ -376,8 +399,8 @@ export function ReportsPage() {
               <span className="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wide">Live</span>
             </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Sales and Reporting</h1>
-          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">Tracking All Business Performance</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('dashboard.menu.salesAndReporting')}</h1>
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">{t('dashboard.trackingPerformance')}</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -386,7 +409,7 @@ export function ReportsPage() {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
           >
             <Download size={18} className="text-gray-900 dark:text-white" />
-            <span>Export to CSV</span>
+            <span>{t('orders.export')}</span>
           </button>
         </div>
       </div>
@@ -396,14 +419,14 @@ export function ReportsPage() {
         {/* Report Type Selector - Improved Pills */}
         <div className="flex w-full gap-2 overflow-x-auto scrollbar-none pb-2">
           {[
-            { id: 'sales', label: 'Sales Summary', icon: TrendingUp },
-            { id: 'items-categories', label: 'Sales by Items', icon: ShoppingBag },
-            { id: 'addons', label: 'Sales by Add-Ons', icon: Tag },
-            { id: 'staff-sales', label: 'Sales by Staff', icon: Activity },
-            { id: 'shifts', label: 'Shifts', icon: Clock },
-            { id: 'cash-discrepancy', label: 'Cash Gap', icon: Scale },
-            { id: 'payments', label: 'Payments', icon: CreditCard },
-            { id: 'discounts', label: 'Discounts', icon: Percent },
+            { id: 'sales', label: t('dashboard.menu.salesSummary'), icon: TrendingUp },
+            { id: 'items-categories', label: t('dashboard.menu.salesByItems'), icon: ShoppingBag },
+            { id: 'addons', label: t('dashboard.menu.salesByAddons'), icon: Tag },
+            { id: 'staff-sales', label: t('dashboard.menu.salesByStaff'), icon: Activity },
+            { id: 'shifts', label: t('dashboard.menu.shiftsReports'), icon: Clock },
+            { id: 'cash-discrepancy', label: t('dashboard.menu.cashGapReports'), icon: Scale },
+            { id: 'payments', label: t('dashboard.menu.paymentsReports'), icon: CreditCard },
+            { id: 'discounts', label: t('dashboard.menu.discountReports'), icon: Percent },
           ].map((type) => {
             const isSelected = type.id === 'items-categories'
               ? (reportType === 'top-items' && (itemReportTab === 'items' || itemReportTab === 'categories'))
@@ -468,14 +491,14 @@ export function ReportsPage() {
                   className="px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-black text-xs font-bold text-center rounded-lg shadow-2xl whitespace-nowrap relative"
                 >
                   {[
-                    { id: 'sales', label: 'Sales Summary' },
-                    { id: 'items-categories', label: 'Sales by Items' },
-                    { id: 'addons', label: 'Sales by Add-Ons' },
-                    { id: 'staff-sales', label: 'Sales by Staff' },
-                    { id: 'shifts', label: 'Shifts Reports' },
-                    { id: 'cash-discrepancy', label: 'Cash Gap Reports' },
-                    { id: 'payments', label: 'Payments Reports' },
-                    { id: 'discounts', label: 'Discount Reports' },
+                    { id: 'sales', label: t('dashboard.menu.salesSummary') },
+                    { id: 'items-categories', label: t('dashboard.menu.salesByItems') },
+                    { id: 'addons', label: t('dashboard.menu.salesByAddons') },
+                    { id: 'staff-sales', label: t('dashboard.menu.salesByStaff') },
+                    { id: 'shifts', label: t('dashboard.menu.shiftsReports') },
+                    { id: 'cash-discrepancy', label: t('dashboard.menu.cashGapReports') },
+                    { id: 'payments', label: t('dashboard.menu.paymentsReports') },
+                    { id: 'discounts', label: t('dashboard.menu.discountReports') },
                   ].find(r => r.id === hoveredReportId)?.label}
                   {/* Arrow */}
                   <div className="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-gray-900 dark:border-t-white"></div>
@@ -532,7 +555,7 @@ export function ReportsPage() {
                 <div className={`flex-none w-auto min-w-[155px] sm:min-w-[180px] relative z-[55]`}>
                   <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isTimeFiltered ? 'bg-paymint-green/5 border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'bg-gray-50 dark:bg-white/5 border-transparent'}`}>
                     <div className="flex items-center gap-1.5 mb-0.5">
-                      <span className={`text-[9px] font-black tracking-wider transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Active Hours</span>
+                      <span className={`text-[9px] font-black tracking-wider transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>{t('owner.overview.activeHours')}</span>
                     </div>
                     <div className="flex items-center gap-2 justify-between relative">
                       <CustomTimePicker
@@ -566,7 +589,7 @@ export function ReportsPage() {
                   setSelectedShiftId(null);
                 }}
                 options={employees}
-                placeholder="All Staff"
+                placeholder={t('common.all') + ' ' + t('dashboard.menu.team')}
                 className="w-full h-full"
                 buttonClassName="!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !px-3 !py-2 !h-full !text-xs sm:!text-sm !font-bold"
               />
@@ -578,7 +601,7 @@ export function ReportsPage() {
                 value={selectedShiftId}
                 onChange={setSelectedShiftId}
                 options={employeeShifts}
-                placeholder="Select Shift"
+                placeholder={t('common.select') + ' ' + t('dashboard.shiftStatus.lastCompleted')}
                 className="w-full h-full"
                 buttonClassName="!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !px-3 !py-2 !h-full !text-xs sm:!text-sm !font-bold"
               />
@@ -593,7 +616,7 @@ export function ReportsPage() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-32">
             <div className="w-16 h-16 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-xs font-black text-gray-400 tracking-widest">Processing Analytics...</p>
+            <p className="text-xs font-black text-gray-400 tracking-widest">{t('dashboard.processing')}</p>
           </div>
         ) : (
           <motion.div key={reportType} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">

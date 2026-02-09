@@ -1,6 +1,5 @@
-import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect, useMemo } from 'react';
-
+import { useTranslation } from 'react-i18next';
 import {
     Search,
     Users,
@@ -24,7 +23,6 @@ import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { Pagination } from '../../components/ui';
-
 import { CustomSelect } from '../../components/CustomSelect';
 
 interface EmployeeAssignment {
@@ -55,6 +53,7 @@ type ViewMode = 'grid' | 'list';
 type SortKey = 'name' | 'role' | 'status' | 'access';
 
 export function OwnerEmployeesPage() {
+    const { t } = useTranslation();
     const { establishments, account } = useAuth();
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -106,7 +105,7 @@ export function OwnerEmployeesPage() {
             setEmployees(response.data);
         } catch (error) {
             console.error('Failed to fetch employees:', error);
-            toast.error('Failed to synchronize workforce data');
+            toast.error(t('owner.staff.syncError'));
         } finally {
             setIsLoading(false);
         }
@@ -130,7 +129,7 @@ export function OwnerEmployeesPage() {
         if (!employeeToDelete || !account?.email) return;
 
         if (!deletePassword.trim()) {
-            setDeleteError('Please enter your password');
+            setDeleteError(t('owner.staff.enterPassword'));
             return;
         }
 
@@ -142,11 +141,11 @@ export function OwnerEmployeesPage() {
             await api.delete(`/api/accounts/employees/${employeeToDelete.id}`, {
                 data: { email: account.email, password: deletePassword }
             });
-            toast.success('Employee removed');
+            toast.success(t('owner.staff.staffRemoved'));
             closeDeleteModal();
             fetchEmployees();
         } catch (error: any) {
-            setDeleteError(error.response?.data?.message || 'Incorrect password or failed to delete');
+            setDeleteError(error.response?.data?.message || t('owner.staff.incorrectPassword'));
         } finally {
             setIsDeleting(false);
         }
@@ -164,16 +163,16 @@ export function OwnerEmployeesPage() {
         try {
             if (editingEmployee) {
                 await api.put(`/api/accounts/employees/${editingEmployee.id}`, data);
-                toast.success('Employee updated');
+                toast.success(t('common.success'));
             } else {
                 await api.post('/api/accounts/employees', data);
-                toast.success('Employee added');
+                toast.success(t('common.success'));
             }
             setIsFormModalOpen(false);
             setEditingEmployee(null);
             fetchEmployees();
         } catch (error: any) {
-            toast.error(error.response?.data?.message || 'Failed to save employee');
+            toast.error(error.response?.data?.message || t('common.error'));
             throw error; // Re-throw to let the modal know it failed
         }
     };
@@ -256,11 +255,11 @@ export function OwnerEmployeesPage() {
         const base = "px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border";
         switch (role?.toUpperCase()) {
             case 'ADMIN':
-                return <span className={`${base} bg-paymint-green/10 text-paymint-green border-paymint-green/20`}>Admin</span>;
+                return <span className={`${base} bg-paymint-green/10 text-paymint-green border-paymint-green/20`}>{t('onboarding.step4.adminUsernamePlaceholder')}</span>;
             case 'MANAGER':
-                return <span className={`${base} bg-purple-500/10 text-purple-500 border-purple-500/20`}>Manager</span>;
+                return <span className={`${base} bg-purple-500/10 text-purple-500 border-purple-500/20`}>{t('attributes.filters.mandatory')}</span>;
             case 'USER':
-                return <span className={`${base} bg-blue-500/10 text-blue-500 border-blue-500/20`}>Staff</span>;
+                return <span className={`${base} bg-blue-500/10 text-blue-500 border-blue-500/20`}>{t('staff.form.standardUsers')}</span>;
             default:
                 return <span className={`${base} bg-gray-500/10 text-gray-500 border-gray-500/20`}>{role ? role.charAt(0).toUpperCase() + role.slice(1).toLowerCase() : ''}</span>;
         }
@@ -271,13 +270,13 @@ export function OwnerEmployeesPage() {
             return (
                 <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-xs font-bold tracking-wide w-fit mx-auto">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    Active
+                    {t('common.active')}
                 </span>
             );
         }
         return (
             <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 border border-gray-200 dark:border-white/10 text-xs font-bold tracking-wide w-fit mx-auto">
-                Not Active
+                {t('paymentMethods.messages.notActive')}
             </span>
         );
     };
@@ -298,12 +297,12 @@ export function OwnerEmployeesPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                            Team Access
+                            {t('owner.staff.badge')}
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">All Staff</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.staff.title')}</h1>
                     <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
-                        Manage staff across {establishments.length} locations.
+                        {t('owner.staff.subtitle')}
                     </p>
                 </div>
 
@@ -315,7 +314,7 @@ export function OwnerEmployeesPage() {
                         className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20"
                     >
                         <UserPlus size={18} />
-                        <span>Add Staff</span>
+                        <span>{t('staff.newEmployee')}</span>
                     </button>
                 </div>
             </div>
@@ -323,10 +322,10 @@ export function OwnerEmployeesPage() {
             {/* Stats Grid */}
             <div id="tour-stats-grid" className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {[
-                    { label: 'Total Users', info: 'Total number of registered users across all locations.', value: stats.total, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: 'Active Now', info: 'Users clocked in or active.', value: stats.active, icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-                    { label: 'Admins', info: 'Users with full access to settings.', value: stats.admins, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-                    { label: 'Users', info: 'Standard users with restricted access based on assigned roles.', value: stats.staff, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+                    { label: t('owner.staff.totalUsers'), info: t('owner.staff.usersInfo'), value: stats.total, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                    { label: t('owner.staff.activeNow'), info: t('owner.staff.activeInfo'), value: stats.active, icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+                    { label: t('owner.staff.admins'), info: t('owner.staff.adminsInfo'), value: stats.admins, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+                    { label: t('owner.staff.standardUsers'), info: t('owner.staff.standardInfo'), value: stats.staff, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
                 ].map((stat, i) => (
                     <div
                         key={i}
@@ -361,7 +360,7 @@ export function OwnerEmployeesPage() {
                         />
                         <input
                             type="text"
-                            placeholder="Filter by name, email or location..."
+                            placeholder={t('owner.staff.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm focus:shadow-lg"
@@ -376,9 +375,9 @@ export function OwnerEmployeesPage() {
                                     value={roleFilter}
                                     onChange={(val) => setRoleFilter(val as string)}
                                     options={[
-                                        { label: 'All Roles', value: 'all' },
-                                        { label: 'Admin', value: 'ADMIN' },
-                                        { label: 'User', value: 'USER' }
+                                        { label: t('owner.staff.allRoles'), value: 'all' },
+                                        { label: t('onboarding.step4.adminUsernamePlaceholder'), value: 'ADMIN' },
+                                        { label: t('staff.form.standardUsers'), value: 'USER' }
                                     ]}
                                 />
                             </div>
@@ -387,9 +386,9 @@ export function OwnerEmployeesPage() {
                                     value={statusFilter}
                                     onChange={(val) => setStatusFilter(val as string)}
                                     options={[
-                                        { label: 'All Status', value: 'all' },
-                                        { label: AppStrings.STATUS.ACTIVE, value: 'active' },
-                                        { label: 'Not Active', value: 'inactive' }
+                                        { label: t('owner.staff.allStatus'), value: 'all' },
+                                        { label: t('common.active'), value: 'active' },
+                                        { label: t('paymentMethods.messages.notActive'), value: 'inactive' }
                                     ]}
                                 />
                             </div>

@@ -1,6 +1,7 @@
 import { AppStrings } from '../../constants/AppStrings';
 import { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import {
     Plus,
@@ -21,25 +22,26 @@ import { CustomSelect } from '../../components/CustomSelect';
 import { Pagination } from '../../components/ui';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 
-const STATUS_OPTIONS = [
-    { label: 'All Statuses', value: 'all' },
-    { label: AppStrings.STATUS.ACTIVE, value: 'ACTIVE' },
-    { label: 'Trial', value: 'TRIAL' },
-    { label: 'Canceled', value: 'CANCELED' },
-    { label: 'Expired', value: 'EXPIRED' }
-];
+    const STATUS_OPTIONS = [
+        { label: t('owner.locations.allStatuses'), value: 'all' },
+        { label: t('common.active'), value: 'ACTIVE' },
+        { label: t('owner.locations.trial'), value: 'TRIAL' },
+        { label: t('owner.locations.canceled'), value: 'CANCELED' },
+        { label: t('owner.locations.expired'), value: 'EXPIRED' }
+    ];
 
-const TYPE_OPTIONS = [
-    { label: 'All Types', value: 'all' },
-    { label: 'Restaurant', value: 'RESTAURANT' },
-    { label: 'Cafe', value: 'CAFE' },
-    { label: 'Retail', value: 'RETAIL' }
-];
+    const TYPE_OPTIONS = [
+        { label: t('owner.locations.allTypes'), value: 'all' },
+        { label: t('onboarding.step1.businessTypes.restaurant'), value: 'RESTAURANT' },
+        { label: t('onboarding.step1.businessTypes.cafe'), value: 'CAFE' },
+        { label: t('onboarding.step1.businessTypes.retail'), value: 'RETAIL' }
+    ];
 
 type ViewMode = 'grid' | 'list';
 const ITEMS_PER_PAGE = 10;
 
 export function OwnerEstablishmentsPage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { establishments, setCurrentEstablishment } = useAuth();
     const [searchParams] = useSearchParams();
@@ -135,12 +137,12 @@ export function OwnerEstablishmentsPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                            Locations
+                            {t('owner.locations.badge')}
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Locations</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.locations.title')}</h1>
                     <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
-                        Manage your locations.
+                        {t('owner.locations.subtitle')}
                     </p>
                 </div>
 
@@ -150,14 +152,14 @@ export function OwnerEstablishmentsPage() {
                         className="px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all flex items-center gap-2"
                     >
                         <Building2 size={18} className="text-purple-500" />
-                        <span>Brands</span>
+                        <span>{t('owner.overview.brands')}</span>
                     </button>
                     <button
                         onClick={handleAddEstablishment}
                         className="px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20 flex items-center gap-2"
                     >
                         <Plus size={18} />
-                        <span>Add Location</span>
+                        <span>{t('owner.overview.addLocation')}</span>
                     </button>
                 </div>
             </div>
@@ -173,7 +175,7 @@ export function OwnerEstablishmentsPage() {
                             <Store size={24} />
                         </div>
                         <div>
-                            <p className="text-xs font-black text-gray-400 tracking-widest">Total</p>
+                            <p className="text-xs font-black text-gray-400 tracking-widest">{t('owner.locations.total')}</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">{establishments.length}</p>
                         </div>
                     </div>
@@ -188,7 +190,7 @@ export function OwnerEstablishmentsPage() {
                             <Zap size={24} />
                         </div>
                         <div>
-                            <p className="text-xs font-black text-gray-400 tracking-widest">Active</p>
+                            <p className="text-xs font-black text-gray-400 tracking-widest">{t('owner.locations.active')}</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">
                                 {establishments.filter(e => e.subscriptionStatus === 'ACTIVE').length}
                             </p>
@@ -205,7 +207,7 @@ export function OwnerEstablishmentsPage() {
                             <Settings size={24} />
                         </div>
                         <div>
-                            <p className="text-xs font-black text-gray-400 tracking-widest">Trial</p>
+                            <p className="text-xs font-black text-gray-400 tracking-widest">{t('owner.locations.trial')}</p>
                             <p className="text-2xl font-bold text-gray-900 dark:text-white">
                                 {establishments.filter(e => e.subscriptionStatus === 'TRIAL').length}
                             </p>
@@ -225,7 +227,7 @@ export function OwnerEstablishmentsPage() {
                         />
                         <input
                             type="text"
-                            placeholder="Search locations..."
+                            placeholder={t('owner.locations.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm focus:shadow-lg"
@@ -274,9 +276,9 @@ export function OwnerEstablishmentsPage() {
             {filteredEstablishments.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Store size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="text-xl font-bold text-gray-900 dark:text-white">No locations found</p>
+                    <p className="text-xl font-bold text-gray-900 dark:text-white">{t('owner.locations.noLocations')}</p>
                     <p className="text-sm font-bold text-gray-500 mt-1">
-                        Add your first location to get started.
+                        {t('owner.locations.addFirstLocation')}
                     </p>
                 </div>
             ) : viewMode === 'grid' ? (
@@ -299,7 +301,7 @@ export function OwnerEstablishmentsPage() {
 
                                 {est.id === highlightId && (
                                     <div className="absolute top-0 right-0 p-2">
-                                        <span className="bg-paymint-green text-black text-xs font-black px-2 py-1 rounded-bl-xl rounded-tr-xl tracking-widest shadow-sm">New</span>
+                                        <span className="bg-paymint-green text-black text-xs font-black px-2 py-1 rounded-bl-xl rounded-tr-xl tracking-widest shadow-sm">{t('owner.locations.new')}</span>
                                     </div>
                                 )}
 
@@ -315,7 +317,7 @@ export function OwnerEstablishmentsPage() {
                                                 {est.name}
                                             </h3>
                                                 <div className="flex items-center gap-2 mt-1">
-                                                    <span className="text-xs font-bold text-gray-500">{est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : 'Standard'}</span>
+                                                    <span className="text-xs font-bold text-gray-500">{est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : t('owner.locations.standard')}</span>
                                                     <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
                                                     <span className="text-xs font-bold text-gray-500">{est.currency || 'JOD'}</span>
                                                 </div>
@@ -345,14 +347,14 @@ export function OwnerEstablishmentsPage() {
                                                             className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                                                         >
                                                             <Eye size={16} />
-                                                            Enter
+                                                            {t('owner.locations.enter')}
                                                         </button>
                                                         <button
                                                             onClick={(e) => e.stopPropagation()}
                                                             className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                                                         >
                                                             <Settings size={16} />
-                                                            Settings
+                                                            {t('owner.locations.settings')}
                                                         </button>
                                                 </div>
                                             )}
@@ -375,16 +377,16 @@ export function OwnerEstablishmentsPage() {
                                         <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5 group-hover:border-blue-500/10 transition-colors">
                                             <div className="flex items-center gap-2 mb-1 text-gray-400">
                                                 <DollarSign size={12} />
-                                                <p className="text-xs font-bold tracking-wide">Currency</p>
+                                                <p className="text-xs font-bold tracking-wide">{t('owner.locations.currency')}</p>
                                             </div>
                                             <p className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'JOD'}</p>
                                         </div>
                                         <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5 group-hover:border-blue-500/10 transition-colors">
                                             <div className="flex items-center gap-2 mb-1 text-gray-400">
                                                 <Zap size={12} />
-                                                <p className="text-xs font-bold tracking-wide">Status</p>
+                                                <p className="text-xs font-bold tracking-wide">{t('owner.locations.status')}</p>
                                             </div>
-                                            <p className="text-sm font-bold text-emerald-500">Online</p>
+                                            <p className="text-sm font-bold text-emerald-500">{t('owner.locations.online')}</p>
                                         </div>
                                     </div>
 
@@ -396,7 +398,7 @@ export function OwnerEstablishmentsPage() {
                                         }}
                                         className="w-full py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-blue-500 shadow-sm"
                                     >
-                                        <span>Open</span>
+                                        <span>{t('owner.locations.open')}</span>
                                         <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
                                     </button>
                                 </div>
@@ -425,9 +427,9 @@ export function OwnerEstablishmentsPage() {
                                             <div>
                                                 <h3 className="font-bold text-gray-900 dark:text-white text-sm">{est.name}</h3>
                                                 <div className="flex items-center gap-2 mt-1">
-                                                    <span className="text-xs text-gray-500">{est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : 'Standard'}</span>
+                                                    <span className="text-xs text-gray-500">{est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : t('owner.locations.standard')}</span>
                                                     {est.id === highlightId && (
-                                                        <span className="text-xs text-paymint-green font-bold tracking-wider">New</span>
+                                                        <span className="text-xs text-paymint-green font-bold tracking-wider">{t('owner.locations.new')}</span>
                                                     )}
                                                 </div>
                                             </div>
@@ -453,7 +455,7 @@ export function OwnerEstablishmentsPage() {
                                                             }}
                                                             className="w-full px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-2"
                                                         >
-                                                            <Eye size={14} /> View
+                                                            <Eye size={14} /> {t('owner.locations.view')}
                                                         </button>
                                                 </div>
                                             )}
@@ -473,11 +475,11 @@ export function OwnerEstablishmentsPage() {
 
                     {/* Desktop Table Header */}
                     <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest uppercase">
-                        <div className="col-span-4">Location</div>
-                        <div className="col-span-2">Type</div>
-                        <div className="col-span-2">Status</div>
-                        <div className="col-span-2">Currency</div>
-                        <div className="col-span-2 text-center">Actions</div>
+                        <div className="col-span-4">{t('owner.locations.title')}</div>
+                        <div className="col-span-2">{t('owner.locations.type')}</div>
+                        <div className="col-span-2">{t('owner.locations.status')}</div>
+                        <div className="col-span-2">{t('owner.locations.currency')}</div>
+                        <div className="col-span-2 text-center">{t('owner.locations.actions')}</div>
                     </div>
 
                     {/* Desktop Table Body */}
@@ -504,7 +506,7 @@ export function OwnerEstablishmentsPage() {
                                                 {est.name}
                                             </h3>
                                             {est.id === highlightId && (
-                                                <span className="text-xs text-paymint-green font-bold tracking-wider">New</span>
+                                                <span className="text-xs text-paymint-green font-bold tracking-wider">{t('owner.locations.new')}</span>
                                             )}
                                         </div>
                                     </div>
@@ -512,7 +514,7 @@ export function OwnerEstablishmentsPage() {
                                     {/* Type */}
                                     <div className="col-span-2 flex items-center">
                                         <span className="text-sm font-bold text-gray-900 dark:text-white">
-                                            {est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : 'Standard'}
+                                            {est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : t('owner.locations.standard')}
                                         </span>
                                     </div>
 
@@ -543,7 +545,7 @@ export function OwnerEstablishmentsPage() {
                                             }}
                                             className="px-4 py-2 rounded-lg bg-paymint-green text-black text-xs font-bold tracking-wide hover:bg-emerald-400 transition-all flex items-center gap-2"
                                         >
-                                            Enter
+                                            {t('owner.locations.enter')}
                                         </button>
                                     </div>
                                 </div>

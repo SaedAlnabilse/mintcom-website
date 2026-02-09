@@ -1,6 +1,6 @@
-import { AppStrings } from '../../constants/AppStrings';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, Eye, EyeOff, ChevronDown, Check } from 'lucide-react';
 import api from '../../config/api';
@@ -62,34 +62,6 @@ interface EmployeeFormModalProps {
   isSubmitting?: boolean;
 }
 
-const POS_PERMISSIONS = [
-  { id: 'accept_payments', label: 'Accept Payments', description: 'Process payments' },
-  { id: 'apply_discounts', label: 'Apply Discounts', description: 'Apply discounts to orders' },
-  { id: 'change_taxes', label: 'Change Tax', description: 'Change tax rate at checkout' },
-  { id: 'open_cash_drawer', label: 'Open Drawer', description: 'Open cash drawer manually' },
-  { id: 'view_all_receipts', label: 'View Receipts', description: 'View all past receipts' },
-  { id: 'refunds', label: 'Refunds', description: 'Process refunds' },
-  { id: 'reprint_receipts', label: 'Reprint', description: 'Reprint receipts' },
-  { id: 'inventory', label: 'Manage Items', description: 'Edit menu items' },
-  { id: 'view_item_cost', label: 'View Costs', description: 'See item costs' },
-  { id: 'settings', label: 'Settings', description: 'Change app settings' },
-  { id: 'live_chat', label: 'Support', description: 'Chat with support' },
-];
-
-const BACKOFFICE_PERMISSIONS = [
-  { id: 'view_reports', label: 'View Reports', description: 'See sales and data' },
-  { id: 'manage_items', label: 'Manage Items', description: 'Edit products and inventory' },
-  { id: 'view_cost', label: 'View Costs', description: 'See costs and profits' },
-  { id: 'manage_employees', label: 'Manage Staff', description: 'Add/edit staff' },
-  { id: 'manage_customers', label: 'Manage Customers', description: 'Edit customer info' },
-  { id: 'manage_settings', label: 'Settings', description: 'Store settings' },
-  { id: 'manage_billing', label: 'Billing', description: 'Payments and plans' },
-  { id: 'manage_payment_types', label: 'Payments', description: 'Edit payment methods' },
-  { id: 'manage_loyalty', label: 'Loyalty', description: 'Edit loyalty program' },
-  { id: 'manage_taxes', label: 'Taxes', description: 'Edit tax rates' },
-  { id: 'manage_devices', label: 'Devices', description: 'Manage registers' },
-];
-
 export function EmployeeFormModal({
   isOpen,
   onClose,
@@ -99,8 +71,37 @@ export function EmployeeFormModal({
   establishments,
   isSubmitting = false,
 }: EmployeeFormModalProps) {
+  const { t } = useTranslation();
   // Get current establishment from context (for dashboard-level pages)
   const { currentEstablishment } = useAuth();
+
+  const POS_PERMISSIONS = useMemo(() => [
+    { id: 'accept_payments', label: t('staff.permissions.pos_list.accept_payments'), description: t('staff.permissions.descriptions.accept_payments') },
+    { id: 'apply_discounts', label: t('staff.permissions.pos_list.apply_discounts'), description: t('staff.permissions.descriptions.apply_discounts') },
+    { id: 'change_taxes', label: t('staff.permissions.pos_list.change_taxes'), description: t('staff.permissions.descriptions.change_taxes') },
+    { id: 'open_cash_drawer', label: t('staff.permissions.pos_list.open_cash_drawer'), description: t('staff.permissions.descriptions.open_cash_drawer') },
+    { id: 'view_all_receipts', label: t('staff.permissions.pos_list.view_all_receipts'), description: t('staff.permissions.descriptions.view_all_receipts') },
+    { id: 'refunds', label: t('staff.permissions.pos_list.refunds'), description: t('staff.permissions.descriptions.refunds') },
+    { id: 'reprint_receipts', label: t('staff.permissions.pos_list.reprint_receipts'), description: t('staff.permissions.descriptions.reprint_receipts') },
+    { id: 'inventory', label: t('staff.permissions.pos_list.inventory'), description: t('staff.permissions.descriptions.inventory') },
+    { id: 'view_item_cost', label: t('staff.permissions.pos_list.view_item_cost'), description: t('staff.permissions.descriptions.view_item_cost') },
+    { id: 'settings', label: t('staff.permissions.pos_list.settings'), description: t('staff.permissions.descriptions.settings') },
+    { id: 'live_chat', label: t('staff.permissions.pos_list.live_chat'), description: t('staff.permissions.descriptions.live_chat') },
+  ], [t]);
+
+  const BACKOFFICE_PERMISSIONS = useMemo(() => [
+    { id: 'view_reports', label: t('staff.permissions.backoffice_list.view_reports'), description: t('staff.permissions.descriptions.view_reports') },
+    { id: 'manage_items', label: t('staff.permissions.backoffice_list.manage_items'), description: t('staff.permissions.descriptions.manage_items') },
+    { id: 'view_cost', label: t('staff.permissions.backoffice_list.view_cost'), description: t('staff.permissions.descriptions.view_cost') },
+    { id: 'manage_employees', label: t('staff.permissions.backoffice_list.manage_employees'), description: t('staff.permissions.descriptions.manage_employees') },
+    { id: 'manage_customers', label: t('staff.permissions.backoffice_list.manage_customers'), description: t('staff.permissions.descriptions.manage_customers') },
+    { id: 'manage_settings', label: t('staff.permissions.backoffice_list.manage_settings'), description: t('staff.permissions.descriptions.manage_settings') },
+    { id: 'manage_billing', label: t('staff.permissions.backoffice_list.manage_billing'), description: t('staff.permissions.descriptions.manage_billing') },
+    { id: 'manage_payment_types', label: t('staff.permissions.backoffice_list.manage_payment_types'), description: t('staff.permissions.descriptions.manage_payment_types') },
+    { id: 'manage_loyalty', label: t('staff.permissions.backoffice_list.manage_loyalty'), description: t('staff.permissions.descriptions.manage_loyalty') },
+    { id: 'manage_taxes', label: t('staff.permissions.backoffice_list.manage_taxes'), description: t('staff.permissions.descriptions.manage_taxes') },
+    { id: 'manage_devices', label: t('staff.permissions.backoffice_list.manage_devices'), description: t('staff.permissions.descriptions.manage_devices') },
+  ], [t]);
 
   useScrollLock(isOpen);
 
@@ -158,7 +159,7 @@ export function EmployeeFormModal({
               allRoles.push({
                 ...r,
                 isGlobal: true,
-                establishmentName: 'All Locations'
+                establishmentName: t('staff.form.allLocations')
               });
             }
           }
@@ -179,7 +180,7 @@ export function EmployeeFormModal({
               allRoles.push({
                 ...r,
                 establishmentId: estId,
-                establishmentName: est?.name || 'Unknown',
+                establishmentName: est?.name || t('common.none'),
                 isGlobal: false
               });
             }
@@ -207,7 +208,7 @@ export function EmployeeFormModal({
       const response = await api.get(`/api/custom-roles/${estId}`);
       const rolesWithNames = (response.data || []).map((r: any) => ({
         ...r,
-        establishmentName: r.establishmentName || currentEstablishment?.name || 'Location'
+        establishmentName: r.establishmentName || currentEstablishment?.name || t('staff.form.location')
       }));
       setCustomRoles(rolesWithNames);
     } catch (error) {
@@ -381,24 +382,24 @@ export function EmployeeFormModal({
 
     // Validation
     const newErrors: Record<string, string> = {};
-    if (!name.trim()) newErrors.name = 'Required';
-    if (!username.trim()) newErrors.username = 'Required';
-    if (role === 'ADMIN' && !email.trim()) newErrors.email = 'Required';
+    if (!name.trim()) newErrors.name = t('staff.errors.nameRequired');
+    if (!username.trim()) newErrors.username = t('staff.errors.usernameRequired');
+    if (role === 'ADMIN' && !email.trim()) newErrors.email = t('staff.errors.emailRequired');
 
     // Validate role selection - must be ADMIN or have a custom role selected
     if (role !== 'ADMIN' && !selectedCustomRoleId) {
-      newErrors.role = 'Please select a role';
+      newErrors.role = t('staff.errors.roleRequired');
     }
 
-    if (!initialData && !password) newErrors.password = 'Required';
-    if (password && password.length < 5) newErrors.password = 'Min 5 chars';
+    if (!initialData && !password) newErrors.password = t('staff.errors.passwordRequired');
+    if (password && password.length < 5) newErrors.password = t('staff.errors.passwordMin');
     if (password !== confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = t('staff.errors.passwordsNotMatch');
     }
 
     // Validate establishment selection if in Owner Mode
     if (establishments && selectedEstablishmentIds.length === 0) {
-      newErrors.establishments = 'Select at least one location';
+      newErrors.establishments = t('staff.errors.selectLocation');
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -414,7 +415,7 @@ export function EmployeeFormModal({
 
     // Split name into first and last name
     const nameParts = name.trim().split(/\s+/);
-    const firstName = nameParts[0] || 'Staff';
+    const firstName = nameParts[0] || t('staff.form.defaultFirstName');
     const lastName = nameParts.slice(1).join(' ');
 
     const payload: Partial<StaffMember> & { password?: string; pinCode?: string } = {
@@ -467,9 +468,9 @@ export function EmployeeFormModal({
           <div className="flex items-center justify-between p-4 sm:p-8 pb-4 border-b border-gray-100 dark:border-white/5">
             <div>
               <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
-                {initialData ? 'Edit Employee' : 'New Employee'}
+                {initialData ? t('staff.editEmployee') : t('staff.newEmployee')}
               </h2>
-              <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">Staff</p>
+              <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">{t('staff.title')}</p>
             </div>
             <button
               onClick={onClose}
@@ -485,20 +486,20 @@ export function EmployeeFormModal({
               {Object.keys(errors).length > 0 && (
                 <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
-                  Please correct the highlighted errors below
+                  {t('common.validationError')}
                 </div>
               )}
 
               {/* Name */}
               <div>
                 <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                  Name <span className="text-paymint-red">*</span>
+                  {t('staff.form.nameLabel')} <span className="text-paymint-red">*</span>
                 </label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
-                  placeholder="E.g. John Doe"
+                  placeholder={t('staff.form.namePlaceholder')}
                   className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
                 />
                 {errors.name && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
@@ -507,13 +508,13 @@ export function EmployeeFormModal({
               {/* Username */}
               <div>
                 <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                  Username <span className="text-paymint-red">*</span>
+                  {t('staff.form.usernameLabel')} <span className="text-paymint-red">*</span>
                 </label>
                 <input
                   type="text"
                   value={username}
                   onChange={(e) => { setUsername(e.target.value); if (errors.username) setErrors({ ...errors, username: '' }); }}
-                  placeholder="E.g. johndoe"
+                  placeholder={t('staff.form.usernamePlaceholder')}
                   className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.username ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
                 />
                 {errors.username && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.username}</p>}
@@ -522,13 +523,13 @@ export function EmployeeFormModal({
               {/* Email */}
               <div>
                 <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                  Email {role === 'ADMIN' ? <span className="text-paymint-red">*</span> : '(Optional)'}
+                  {t('staff.form.emailLabel')} {role === 'ADMIN' ? <span className="text-paymint-red">*</span> : t('staff.form.emailOptional')}
                 </label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors({ ...errors, email: '' }); }}
-                  placeholder="E.g. name@email.com"
+                  placeholder={t('staff.form.emailPlaceholder')}
                   className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.email ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
                 />
                 {errors.email && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.email}</p>}
@@ -537,13 +538,13 @@ export function EmployeeFormModal({
               {/* Phone */}
               <div>
                 <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                  Phone (Optional)
+                  {t('staff.form.phoneLabel')} {t('staff.form.phoneOptional')}
                 </label>
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="E.g. +1 234 567 8900"
+                  placeholder={t('staff.form.phonePlaceholder')}
                   className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors"
                 />
               </div>
@@ -552,7 +553,7 @@ export function EmployeeFormModal({
               {establishments && (
                 <div className="relative">
                   <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                    Access <span className="text-paymint-red">*</span>
+                    {t('staff.form.accessLabel')} <span className="text-paymint-red">*</span>
                   </label>
                   <button
                     ref={establishmentButtonRef}
@@ -562,10 +563,10 @@ export function EmployeeFormModal({
                   >
                     <span className={`text-sm font-bold ${selectedEstablishmentIds.length ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}>
                       {selectedEstablishmentIds.length === 0
-                        ? 'Select location...'
+                        ? t('staff.form.selectLocation')
                         : selectedEstablishmentIds.length === establishments.length
-                          ? 'All Locations'
-                          : `${selectedEstablishmentIds.length} Location${selectedEstablishmentIds.length === 1 ? '' : 's'}`}
+                          ? t('staff.form.allLocations')
+                          : `${selectedEstablishmentIds.length} ${t('onboarding.step1.address')}${selectedEstablishmentIds.length === 1 ? '' : 's'}`}
                     </span>
                     <ChevronDown size={16} className={`text-gray-400 transition-transform ${activeDropdown === 'ESTABLISHMENT' ? 'rotate-180' : ''}`} />
                   </button>
@@ -584,7 +585,7 @@ export function EmployeeFormModal({
                         <div className="p-3 border-b border-gray-100 dark:border-white/5 shrink-0">
                           <input
                             type="text"
-                            placeholder="Search locations..."
+                            placeholder={t('common.search')}
                             value={establishmentSearch}
                             onChange={(e) => setEstablishmentSearch(e.target.value)}
                             className="w-full bg-gray-50 dark:bg-white/5 border-none rounded-lg px-3 py-2 text-xs font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:ring-0"
@@ -618,7 +619,7 @@ export function EmployeeFormModal({
                               );
                             })}
                           {establishments.filter(e => e.name.toLowerCase().includes(establishmentSearch.toLowerCase())).length === 0 && (
-                            <div className="p-4 text-center text-xs font-bold text-gray-500">No Locations Found</div>
+                            <div className="p-4 text-center text-xs font-bold text-gray-500">{t('products.messages.noMatches')}</div>
                           )}
                         </div>
                         {/* Footer */}
@@ -628,7 +629,7 @@ export function EmployeeFormModal({
                             onClick={() => setActiveDropdown(null)}
                             className="w-full py-2.5 bg-paymint-green text-black font-black text-xs tracking-wide rounded-lg hover:bg-paymint-green/90 transition-colors shadow-sm"
                           >
-                            Done
+                            {t('common.done')}
                           </button>
                         </div>
                       </motion.div>
@@ -640,15 +641,15 @@ export function EmployeeFormModal({
               {/* Role Selection - Now uses Role Template dropdown */}
               <div className="relative">
                 <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center justify-between">
-                  <span className="flex items-center gap-1">Role <span className="text-paymint-red">*</span></span>
+                  <span className="flex items-center gap-1">{t('staff.form.roleLabel')} <span className="text-paymint-red">*</span></span>
                   {isModifiedFromTemplate() && (
-                    <span className="text-paymint-red lowercase font-bold tracking-normal">(Modified)</span>
+                    <span className="text-paymint-red lowercase font-bold tracking-normal">{t('staff.form.modified')}</span>
                   )}
                 </label>
                 {/* Show hint if no establishments selected in owner mode */}
                 {establishments && selectedEstablishmentIds.length === 0 ? (
                   <div className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 text-left">
-                    <span className="text-sm font-bold text-gray-400 dark:text-gray-500">Select location first</span>
+                    <span className="text-sm font-bold text-gray-400 dark:text-gray-500">{t('staff.form.selectLocation')}</span>
                   </div>
                 ) : (
                   <>
@@ -660,10 +661,10 @@ export function EmployeeFormModal({
                     >
                       <span className={`text-sm font-bold ${(selectedCustomRoleId || role === 'ADMIN') ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}>
                         {role === 'ADMIN'
-                          ? 'Admin (Full Access)'
+                          ? t('staff.form.adminRole')
                           : selectedCustomRoleId
-                            ? customRoles.find(r => r.id === selectedCustomRoleId)?.name || 'Select Role...'
-                            : 'Select Role...'}
+                            ? customRoles.find(r => r.id === selectedCustomRoleId)?.name || t('staff.form.selectRole')
+                            : t('staff.form.selectRole')}
                       </span>
                       <ChevronDown size={16} className={`text-gray-400 transition-transform ${activeDropdown === 'ROLE' ? 'rotate-180' : ''}`} />
                     </button>
@@ -695,9 +696,9 @@ export function EmployeeFormModal({
                             >
                               <div>
                                 <span className={`text-xs font-bold ${role === 'ADMIN' ? 'text-purple-500' : 'text-gray-700 dark:text-gray-300'}`}>
-                                  Admin (Full Access)
+                                  {t('staff.form.adminRole')}
                                 </span>
-                                <p className="text-xs font-bold text-gray-500 mt-0.5">All permissions enabled</p>
+                                <p className="text-xs font-bold text-gray-500 mt-0.5">{t('staff.form.adminDesc')}</p>
                               </div>
                               {role === 'ADMIN' && <Check size={14} className="text-purple-500" />}
                             </button>
@@ -711,7 +712,7 @@ export function EmployeeFormModal({
                                   onClick={(e) => toggleSection('global', e)}
                                   className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                                 >
-                                  <span className="text-[10px] font-black text-gray-500 dark:text-gray-400 tracking-widest uppercase">Global Roles</span>
+                                  <span className="text-[10px] font-black text-gray-500 dark:text-gray-400 tracking-widest uppercase">{t('staff.form.globalRoles')}</span>
                                   <ChevronDown size={14} className={`text-gray-400 transition-transform duration-200 ${expandedRoleSections.has('global') ? 'rotate-180' : ''}`} />
                                 </button>
                                 <AnimatePresence>
@@ -734,7 +735,7 @@ export function EmployeeFormModal({
                                             <span className={`text-xs font-bold ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
                                               {customRole.name}
                                             </span>
-                                            <p className="text-xs font-bold text-gray-500 mt-0.5">{customRole.permissions.length + (customRole.backofficePermissions?.length || 0)} Permissions</p>
+                                            <p className="text-xs font-bold text-gray-500 mt-0.5">{customRole.permissions.length + (customRole.backofficePermissions?.length || 0)} {t('onboarding.step1.menu')}</p>
                                           </div>
                                           {selectedCustomRoleId === customRole.id && role !== 'ADMIN' && <Check size={14} className="text-paymint-green" />}
                                         </button>
@@ -751,7 +752,7 @@ export function EmployeeFormModal({
                               // Group by establishment
                               const grouped: Record<string, CustomRole[]> = {};
                               estRoles.forEach(r => {
-                                const key = r.establishmentName || 'Location';
+                                const key = r.establishmentName || t('staff.form.accessLabel');
                                 if (!grouped[key]) grouped[key] = [];
                                 grouped[key].push(r);
                               });
@@ -787,7 +788,7 @@ export function EmployeeFormModal({
                                               <span className={`text-xs font-bold ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
                                                 {customRole.name}
                                               </span>
-                                              <p className="text-xs font-bold text-gray-500 mt-0.5">{customRole.permissions.length + (customRole.backofficePermissions?.length || 0)} Permissions</p>
+                                              <p className="text-xs font-bold text-gray-500 mt-0.5">{customRole.permissions.length + (customRole.backofficePermissions?.length || 0)} {t('onboarding.step1.menu')}</p>
                                             </div>
                                             {selectedCustomRoleId === customRole.id && role !== 'ADMIN' && <Check size={14} className="text-paymint-green" />}
                                           </button>
@@ -802,8 +803,8 @@ export function EmployeeFormModal({
                             {/* No custom roles message */}
                             {customRoles.length === 0 && (
                               <div className="p-3 text-center">
-                                <p className="text-xs text-gray-500">No Roles</p>
-                                <p className="text-xs font-bold text-gray-500 mt-1">Create roles in settings</p>
+                                <p className="text-xs text-gray-500">{t('staff.form.noRoles')}</p>
+                                <p className="text-xs font-bold text-gray-500 mt-1">{t('staff.form.createRolesInSettings')}</p>
                               </div>
                             )}
                           </div>
@@ -820,14 +821,14 @@ export function EmployeeFormModal({
               {/* Password wrapper start (to match existing indentation/structure) */}
               <div className="pt-4 border-t border-gray-100 dark:border-white/5">
                 <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                  {initialData ? 'New Password (Optional)' : 'Password'} {(!initialData) && <span className="text-paymint-red">*</span>}
+                  {initialData ? t('staff.form.newPasswordOptional') : t('staff.form.passwordLabel')} {(!initialData) && <span className="text-paymint-red">*</span>}
                 </label>
                 <div className="relative">
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => { setPassword(e.target.value); if (errors.password) setErrors({ ...errors, password: '' }); }}
-                    placeholder={initialData ? "Leave blank to keep current" : "Min 5 characters"}
+                    placeholder={initialData ? t('staff.form.leaveBlank') : t('staff.form.passwordPlaceholder')}
                     className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.password ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
                   />
                   <button
@@ -843,14 +844,14 @@ export function EmployeeFormModal({
 
               <div>
                 <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                  Confirm Password {(!initialData || password) && <span className="text-paymint-red">*</span>}
+                  {t('staff.form.confirmPasswordLabel')} {(!initialData || password) && <span className="text-paymint-red">*</span>}
                 </label>
                 <div className="relative">
                   <input
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={(e) => { setConfirmPassword(e.target.value); if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: '' }); }}
-                    placeholder="Confirm password"
+                    placeholder={t('staff.form.confirmPasswordPlaceholder')}
                     className={`w-full bg-gray-50 dark:bg-white/5 border ${errors.confirmPassword ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-colors`}
                   />
                   <button
@@ -883,7 +884,7 @@ export function EmployeeFormModal({
               onClick={onClose}
               className="flex-1 h-12 sm:h-14 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-black text-xs tracking-widest hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
             >
-              Cancel
+              {t('common.cancel')}
             </button>
             <button
               type="submit"
@@ -894,7 +895,7 @@ export function EmployeeFormModal({
               {isSubmitting ? (
                 <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
               ) : (
-                initialData ? AppStrings.COMMON.SAVE : AppStrings.COMMON.ADD
+                initialData ? t('common.save') : t('common.add')
               )}
             </button>
           </div>

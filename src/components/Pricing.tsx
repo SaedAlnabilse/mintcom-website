@@ -1,36 +1,39 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Check, X, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const plans = [
-  {
-    name: "Monthly Plan",
-    price: "20$",
-    period: "/m",
-    description: "Your “aha” moment is just minutes away.",
-    features: [
-      "POS for tablets and mobile devices",
-      "Online dashboard & management system",
-      "Unlimited staff accounts",
-      "Access to the Admin Mobile App",
-      "Dedicated customer support",
-      "Advanced reports & analytics"
-    ],
-    detailedFeatures: [
-      "Point of Sale",
-      "Inventory Management",
-      "Staff Management",
-      "Advanced Reporting",
-      "Production & Cost Tracking"
-    ],
-    notIncluded: null,
-    cta: "Start Free Trial",
-    highlight: true,
-    type: "standard"
-  }
-];
-
 export const Pricing = () => {
+  const { t } = useTranslation();
+
+  const plans = [
+    {
+      name: t('pricing.monthlyPlan'),
+      price: "20$",
+      period: t('pricing.perMonth'),
+      description: t('pricing.planDescription'),
+      features: [
+        t('pricing.features.pos'),
+        t('pricing.features.dashboard'),
+        t('pricing.features.unlimitedStaff'),
+        t('pricing.features.adminApp'),
+        t('pricing.features.support'),
+        t('pricing.features.reports')
+      ],
+      detailedFeatures: [
+        t('pricing.features.pointOfSale'),
+        t('pricing.features.inventory'),
+        t('pricing.features.staffManagement'),
+        t('pricing.features.advancedReporting'),
+        t('pricing.features.production')
+      ],
+      notIncluded: null,
+      cta: t('pricing.startFreeTrial'),
+      highlight: true,
+      type: "standard"
+    }
+  ];
+
   const [selectedPlan, setSelectedPlan] = useState<typeof plans[0] | null>(null);
 
   const handlePlanAction = (plan: typeof plans[0]) => {
@@ -59,10 +62,10 @@ export const Pricing = () => {
           className="text-center mb-20"
         >
           <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-6 tracking-tight">
-            Get Started
+            {t('pricing.title')}
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            All-in-one plans. No hidden fees.
+            {t('pricing.subtitle')}
           </p>
         </motion.div>
 
@@ -83,7 +86,7 @@ export const Pricing = () => {
             >
               {plan.highlight && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-paymint-green text-black px-6 py-1.5 rounded-full text-sm font-bold shadow-lg shadow-paymint-green/20">
-                  Most Popular
+                  {t('pricing.mostPopular')}
                 </div>
               )}
 
@@ -116,14 +119,14 @@ export const Pricing = () => {
                   }`}
               >
                 {plan.cta}
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                <ArrowRight size={18} className="group-hover:translate-x-1 rtl:group-hover:-translate-x-1 rtl:rotate-180 transition-transform" />
               </button>
 
               <button
                 onClick={() => setSelectedPlan(plan)}
                 className="mt-4 text-sm text-gray-500 hover:text-paymint-green transition-colors text-center font-medium"
               >
-                View full details
+                {t('pricing.viewDetails')}
               </button>
             </motion.div>
           ))}
@@ -149,7 +152,7 @@ export const Pricing = () => {
               className="bg-white dark:bg-[#1a1a1a] w-full max-w-lg rounded-3xl shadow-2xl relative z-10 overflow-hidden border border-gray-100 dark:border-white/5 transition-colors duration-300"
             >
               <div className="p-6 border-b border-gray-100 dark:border-white/5 flex justify-between items-center bg-gray-50/50 dark:bg-transparent">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Plan Details</h3>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('pricing.planDetails')}</h3>
                 <button
                   onClick={() => setSelectedPlan(null)}
                   className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
@@ -169,7 +172,7 @@ export const Pricing = () => {
                 </div>
 
                 <div className="bg-gray-50 dark:bg-black/20 rounded-2xl p-6 mb-8 border border-gray-100 dark:border-transparent transition-colors">
-                  <h4 className="font-bold text-gray-900 dark:text-white mb-4 text-sm tracking-wider">What's Included</h4>
+                  <h4 className="font-bold text-gray-900 dark:text-white mb-4 text-sm tracking-wider">{t('pricing.whatsIncluded')}</h4>
                   <ul className="space-y-3">
                     {[...selectedPlan.features, ...(selectedPlan.detailedFeatures || [])].map((feature, i) => (
                       <li key={i} className="flex items-start gap-3 text-gray-700 dark:text-gray-300 text-sm">

@@ -1,11 +1,12 @@
 import { AppStrings } from '../constants/AppStrings';
-import { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import { useState, useEffect, useRef, useLayoutEffect, useMemo } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { ThemeToggle } from './ThemeToggle';
 import { ConfirmModal } from './ConfirmModal';
 import { DeletionRestorationBanner } from './DeletionRestorationBanner';
+import { useTranslation } from 'react-i18next';
 import {
     LayoutDashboard,
     Store,
@@ -28,17 +29,18 @@ import PaymintLogoGreen from '../assets/green-full-logo.svg';
 import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
 import PaymintLeafIcon from '../assets/small-logo.svg';
 
-const menuItems = [
-    { path: '/owner', label: 'Overview', icon: LayoutDashboard },
-    { path: '/owner/establishments', label: 'Locations', icon: Store },
-    { path: '/owner/brands', label: 'Brands', icon: Building2 },
-    { path: '/owner/employees', label: 'Employees', icon: Users },
-    { path: '/owner/roles', label: 'Global Roles', icon: Shield },
-    { path: '/owner/billing', label: 'Billing', icon: CreditCard },
-    { path: '/owner/account', label: 'Account Management', icon: KeyRound },
-];
+    const menuItems = useMemo(() => [
+        { path: '/owner', label: t('owner.menu.overview'), icon: LayoutDashboard },
+        { path: '/owner/establishments', label: t('owner.menu.locations'), icon: Store },
+        { path: '/owner/brands', label: t('owner.menu.brands'), icon: Building2 },
+        { path: '/owner/employees', label: t('owner.menu.employees'), icon: Users },
+        { path: '/owner/roles', label: t('owner.menu.globalRoles'), icon: Shield },
+        { path: '/owner/billing', label: t('owner.menu.billing'), icon: CreditCard },
+        { path: '/owner/account', label: t('owner.menu.accountManagement'), icon: KeyRound },
+    ], [t]);
 
 export function OwnerLayout() {
+    const { t } = useTranslation();
     const { account, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
@@ -148,7 +150,7 @@ export function OwnerLayout() {
                                         className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
                                     />
                                     <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
-                                        Open sidebar
+                                        {t('owner.menu.openSidebar')}
                                     </div>
                                 </button>
                             </motion.div>
@@ -170,7 +172,7 @@ export function OwnerLayout() {
 
                 {/* Navigation Section */}
                 <div className={`flex-1 ${sidebarOpen ? 'overflow-y-auto' : 'overflow-visible'} px-3 space-y-1.5 scrollbar-none scroll-smooth pb-4 relative z-10`}>
-                    {sidebarOpen && <p className="px-3 py-2 text-xs font-black text-gray-400 tracking-widest mb-4 mt-2">Main Menu</p>}
+                    {sidebarOpen && <p className="px-3 py-2 text-xs font-black text-gray-400 tracking-widest mb-4 mt-2">{t('owner.menu.mainMenu')}</p>}
                     {menuItems.map((item) => {
                         const Icon = item.icon;
 
@@ -209,7 +211,7 @@ export function OwnerLayout() {
                         <div className="relative group">
                             <button className="w-full flex items-center gap-3 px-3 py-2.5 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
                                 <Smartphone size={16} className="text-gray-400" />
-                                <span className="text-sm font-bold">Mobile App</span>
+                                <span className="text-sm font-bold">{t('owner.menu.getMobileApp')}</span>
                             </button>
                             {/* QR Code Popup */}
                             <div className="absolute left-full bottom-0 ml-3 bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[70] translate-x-2 group-hover:translate-x-0 w-[200px]">
@@ -279,7 +281,7 @@ export function OwnerLayout() {
                                 </div>
                                 {/* Text */}
                                 <p className="text-center text-sm font-bold text-gray-900 dark:text-white leading-tight">
-                                    Scan to download<br />
+                                    {t('owner.menu.scanToDownload')}<br />
                                     <span className="text-paymint-green">Paymint App</span>
                                 </p>
                             </div>
@@ -301,7 +303,7 @@ export function OwnerLayout() {
                                 <p className="text-xs font-black text-gray-900 dark:text-white tracking-widest truncate">
                                     {account?.firstName} {account?.lastName}
                                 </p>
-                                <p className="text-xs font-black text-gray-400 tracking-widest truncate">Enterprise Owner</p>
+                                <p className="text-xs font-black text-gray-400 tracking-widest truncate">{t('owner.menu.enterpriseOwner')}</p>
                             </div>
 
                             <div className="flex items-center gap-1">
@@ -406,7 +408,7 @@ export function OwnerLayout() {
                                 <Settings size={24} />
                                 {/* Tooltip */}
                                 <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
-                                    Settings
+                                    {t('dashboard.menu.settings')}
                                 </div>
                             </button>
 

@@ -1,66 +1,69 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tablet, Printer, X, CheckCircle2, ExternalLink } from 'lucide-react';
 
-const hardwareItems = [
-  {
-    id: 'tablets',
-    name: 'Pos Tablets',
-    icon: Tablet,
-    description: 'Tablets that work well.',
-    products: [
-      {
-        name: 'Samsung Galaxy Tab A8',
-        specs: '10.5" display, 4gb Ram, Wi-fi',
-        price: '~$180',
-        link: 'https://www.amazon.com/s?k=samsung+galaxy+tab+a8'
-      },
-      {
-        name: 'Ipad 10th Gen',
-        specs: '10.9" display, A14 chip, Premium option',
-        price: '~$350',
-        link: 'https://www.amazon.com/s?k=ipad+10th+generation'
-      },
-      {
-        name: 'Lenovo Tab M10 Plus',
-        specs: '10.3" Fhd display, 4gb Ram, Long battery',
-        price: '~$150',
-        link: 'https://www.amazon.com/s?k=lenovo+tab+m10+plus'
-      }
-    ],
-    note: 'Any Android tablet (8"+ screen) or Ipad works with PayMint'
-  },
-  {
-    id: 'printers',
-    name: 'Receipt Printers',
-    icon: Printer,
-    description: 'Good receipt printers.',
-    products: [
-      {
-        name: 'Munbyn Thermal Printer',
-        specs: '80mm, Usb + Bluetooth, Auto-cutter',
-        price: '~$100',
-        link: 'https://www.amazon.com/s?k=munbyn+thermal+receipt+printer+80mm'
-      },
-      {
-        name: 'Epson Tm-T20III',
-        specs: '80mm, Usb, Fast & reliable',
-        price: '~$180',
-        link: 'https://www.amazon.com/s?k=epson+tm-t20iii'
-      },
-      {
-        name: 'Star Micronics TSP143',
-        specs: '80mm, Bluetooth, Kitchen-grade',
-        price: '~$250',
-        link: 'https://www.amazon.com/s?k=star+micronics+tsp143'
-      }
-    ],
-    note: 'We support most 80mm and 58mm Esc/Pos thermal printers'
-  }
-];
-
 export const Hardware = () => {
+  const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
+
+  const hardwareItems = [
+    {
+      id: 'tablets',
+      name: t('hardware.tablets.name'),
+      icon: Tablet,
+      description: t('hardware.tablets.description'),
+      products: [
+        {
+          name: t('hardware.products.samsungTab.name'),
+          specs: t('hardware.products.samsungTab.specs'),
+          price: '~$180',
+          link: 'https://www.amazon.com/s?k=samsung+galaxy+tab+a8'
+        },
+        {
+          name: t('hardware.products.ipad.name'),
+          specs: t('hardware.products.ipad.specs'),
+          price: '~$350',
+          link: 'https://www.amazon.com/s?k=ipad+10th+generation'
+        },
+        {
+          name: t('hardware.products.lenovo.name'),
+          specs: t('hardware.products.lenovo.specs'),
+          price: '~$150',
+          link: 'https://www.amazon.com/s?k=lenovo+tab+m10+plus'
+        }
+      ],
+      note: t('hardware.tablets.note')
+    },
+    {
+      id: 'printers',
+      name: t('hardware.printers.name'),
+      icon: Printer,
+      description: t('hardware.printers.description'),
+      products: [
+        {
+          name: t('hardware.products.munbyn.name'),
+          specs: t('hardware.products.munbyn.specs'),
+          price: '~$100',
+          link: 'https://www.amazon.com/s?k=munbyn+thermal+receipt+printer+80mm'
+        },
+        {
+          name: t('hardware.products.epson.name'),
+          specs: t('hardware.products.epson.specs'),
+          price: '~$180',
+          link: 'https://www.amazon.com/s?k=epson+tm-t20iii'
+        },
+        {
+          name: t('hardware.products.star.name'),
+          specs: t('hardware.products.star.specs'),
+          price: '~$250',
+          link: 'https://www.amazon.com/s?k=star+micronics+tsp143'
+        }
+      ],
+      note: t('hardware.printers.note')
+    }
+  ];
+
   const [selectedHardware, setSelectedHardware] = useState(hardwareItems[0]);
 
   return (
@@ -77,10 +80,10 @@ export const Hardware = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
-              Compatible <span className="text-paymint-green">Hardware</span>
+              {t('hardware.title')} <span className="text-paymint-green">{t('hardware.titleHighlight')}</span>
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Use your own devices or ours. Works with most tablets and printers.
+              {t('hardware.subtitle')}
             </p>
           </motion.div>
 
@@ -125,7 +128,7 @@ export const Hardware = () => {
                   }}
                   className="w-full py-3 bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white font-bold rounded-xl hover:bg-paymint-green hover:text-black transition-all"
                 >
-                  View All Options →
+                  {t('hardware.viewAllOptions')}
                 </button>
               </motion.div>
             ))}
@@ -139,7 +142,7 @@ export const Hardware = () => {
             className="text-center"
           >
             <p className="text-gray-500 dark:text-gray-400">
-              💡 <span className="font-medium">Already have hardware?</span> PayMint works with most Android tablets, iPads, and ESC/Pos printers.
+              💡 <span className="font-medium">{t('hardware.alreadyHave')}</span> {t('hardware.alreadyHaveDesc')}
             </p>
           </motion.div>
         </div>

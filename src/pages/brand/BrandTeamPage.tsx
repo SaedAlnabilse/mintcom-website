@@ -1,6 +1,6 @@
-import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import {
     Users,
@@ -116,7 +116,7 @@ export function BrandTeamPage() {
             setEmployees(response.data || []);
         } catch (err) {
             console.error('Failed to fetch employees:', err);
-            toast.error('Failed to load team data');
+            toast.error(t('owner.staff.syncError'));
         } finally {
             setIsLoading(false);
         }
@@ -126,16 +126,16 @@ export function BrandTeamPage() {
         try {
             if (editingEmployee) {
                 await api.put(`/api/accounts/employees/${editingEmployee.id}`, data);
-                toast.success('Employee updated');
+                toast.success(t('common.success'));
             } else {
                 await api.post('/api/accounts/employees', data);
-                toast.success('Employee added');
+                toast.success(t('common.success'));
             }
             setIsFormModalOpen(false);
             setEditingEmployee(null);
             fetchEmployees();
         } catch (error: any) {
-            toast.error(error.response?.data?.message || 'Failed to save employee');
+            toast.error(error.response?.data?.message || t('common.error'));
             throw error; // Re-throw to let the modal know it failed
         }
     };
@@ -170,7 +170,7 @@ export function BrandTeamPage() {
         if (!employeeToDelete || !account?.email) return;
 
         if (!deletePassword.trim()) {
-            setDeleteError('Please enter your password');
+            setDeleteError(t('owner.staff.enterPassword'));
             return;
         }
 
@@ -181,11 +181,11 @@ export function BrandTeamPage() {
             await api.delete(`/api/accounts/employees/${employeeToDelete.id}`, {
                 data: { email: account.email, password: deletePassword }
             });
-            toast.success('Employee removed');
+            toast.success(t('owner.staff.staffRemoved'));
             closeDeleteModal();
             fetchEmployees();
         } catch (error: any) {
-            setDeleteError(error.response?.data?.message || 'Incorrect password or failed to delete');
+            setDeleteError(error.response?.data?.message || t('owner.staff.incorrectPassword'));
         } finally {
             setIsDeleting(false);
         }
@@ -278,7 +278,7 @@ export function BrandTeamPage() {
 
     const getRoleDisplay = (role: string) => {
         // Map all roles to Admin or User
-        return role.toUpperCase() === 'ADMIN' ? 'Admin' : 'User';
+        return role.toUpperCase() === 'ADMIN' ? t('onboarding.step4.adminUsernamePlaceholder') : t('staff.form.standardUsers');
     };
 
     const getRoleBadgeStyle = (role: string) => {
@@ -306,7 +306,7 @@ export function BrandTeamPage() {
                     <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
                     <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
                 </div>
-                <p className="text-sm font-bold text-gray-400 tracking-widest">Loading Team Data...</p>
+                <p className="text-sm font-bold text-gray-400 tracking-widest">{t('owner.staff.loading')}</p>
             </div>
         );
     }
@@ -318,12 +318,12 @@ export function BrandTeamPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-purple-500/10 text-purple-500 text-xs font-black tracking-widest border border-purple-500/20">
-                            Team
+                            {t('owner.staff.badge')}
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Team</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.staff.title')}</h1>
                     <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
-                        Manage staff for {brandName}
+                        {t('owner.staff.subtitle')} {brandName}
                     </p>
                 </div>
 
@@ -333,7 +333,7 @@ export function BrandTeamPage() {
                         className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
                     >
                         <UserPlus size={18} />
-                        <span>Add Staff</span>
+                        <span>{t('staff.newEmployee')}</span>
                     </button>
                 </div>
             </div>
@@ -341,9 +341,9 @@ export function BrandTeamPage() {
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
-                    { label: 'Total Staff', value: stats.total, icon: Users, color: 'text-gray-900 dark:text-white', bg: 'bg-gray-100 dark:bg-white/5' },
-                    { label: 'Users', value: stats.users, icon: UserCheck, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: 'Admins', value: stats.admins, icon: Shield, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+                    { label: t('owner.staff.totalUsers'), value: stats.total, icon: Users, color: 'text-gray-900 dark:text-white', bg: 'bg-gray-100 dark:bg-white/5' },
+                    { label: t('staff.form.standardUsers'), value: stats.users, icon: UserCheck, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                    { label: t('owner.staff.admins'), value: stats.admins, icon: Shield, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
                 ].map((stat, i) => (
                     <div
                         key={i}
@@ -371,7 +371,7 @@ export function BrandTeamPage() {
                         <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input
                             type="text"
-                            placeholder="Search staff..."
+                            placeholder={t('owner.staff.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm focus:shadow-lg"
@@ -386,9 +386,9 @@ export function BrandTeamPage() {
                                 value={roleFilter}
                                 onChange={(val) => setRoleFilter(val as RoleFilter)}
                                 options={[
-                                    { label: 'All Roles', value: 'all' },
-                                    { label: 'Admin', value: 'ADMIN' },
-                                    { label: 'User', value: 'CASHIER' },
+                                    { label: t('owner.staff.allRoles'), value: 'all' },
+                                    { label: t('onboarding.step4.adminUsernamePlaceholder'), value: 'ADMIN' },
+                                    { label: t('staff.form.standardUsers'), value: 'CASHIER' },
                                 ]}
                             />
                         </div>
@@ -400,7 +400,7 @@ export function BrandTeamPage() {
                                     value={locationFilter}
                                     onChange={(val) => setLocationFilter(val as string)}
                                     options={[
-                                        { label: 'All Locations', value: 'all' },
+                                        { label: t('owner.staff.allLocations'), value: 'all' },
                                         ...locations.map(loc => ({ label: loc.name, value: loc.id }))
                                     ]}
                                 />
@@ -413,9 +413,9 @@ export function BrandTeamPage() {
                                 value={sortBy}
                                 onChange={(val) => setSortBy(val as SortOption)}
                                 options={[
-                                    { label: 'Sort by Name', value: 'name' },
-                                    { label: 'Sort by Role', value: 'role' },
-                                    { label: 'Sort by Locations', value: 'locations' },
+                                    { label: t('common.sortByName'), value: 'name' },
+                                    { label: t('common.sortByRole'), value: 'role' },
+                                    { label: t('common.sortByLocations'), value: 'locations' },
                                 ]}
                             />
                         </div>
@@ -443,7 +443,7 @@ export function BrandTeamPage() {
                                 className="flex items-center gap-2 px-4 py-3 rounded-xl bg-paymint-red/10 text-paymint-red text-xs font-black tracking-widest hover:bg-paymint-red/20 transition-all"
                             >
                                 <X size={14} />
-                                Clear
+                                {t('attributes.filters.reset')}
                             </button>
                         )}
                     </div>

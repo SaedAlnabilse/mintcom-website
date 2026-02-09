@@ -1,5 +1,6 @@
 import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
   Plus,
@@ -49,6 +50,7 @@ interface Discount {
 }
 
 export function StaffPage() {
+  const { t } = useTranslation();
   // Permission guard - redirects if user lacks permission
   usePermissionGuard();
 
@@ -124,7 +126,7 @@ export function StaffPage() {
       const response = await api.get('/api/users');
       setStaff(response.data || []);
     } catch {
-      toast.error('Failed to load team members');
+      toast.error(t('dashboard.roles.messages.loadFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -216,17 +218,17 @@ export function StaffPage() {
       email: s.email || 'N/a',
       phone: s.phone || 'N/a',
       status: s.isActive ? AppStrings.STATUS.ACTIVE : AppStrings.STATUS.INACTIVE,
-      joined: new Date(s.createdAt).toLocaleDateString()
+      joined: new Date(s.createdAt).toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US')
     }));
 
     exportToCSV(exportData, 'staff_directory', {
-      username: 'Username',
-      name: 'Full Name',
-      role: 'Role',
-      email: 'Email',
-      phone: 'Phone',
-      status: 'Status',
-      joined: 'Join Date'
+      username: t('staff.form.usernameLabel'),
+      name: t('staff.form.nameLabel'),
+      role: t('staff.form.roleLabel'),
+      email: t('staff.form.emailLabel'),
+      phone: t('staff.form.phoneLabel'),
+      status: t('staff.table.status'),
+      joined: t('staff.table.joined')
     });
   };
 
@@ -235,15 +237,15 @@ export function StaffPage() {
       setIsSubmitting(true);
       if (editingStaff) {
         await api.put(`/api/users/${editingStaff.id}`, payload);
-        toast.success('Member updated');
+        toast.success(t('dashboard.roles.messages.updated'));
       } else {
         await api.post('/api/users', payload);
-        toast.success('Member added');
+        toast.success(t('dashboard.roles.messages.created'));
       }
       setShowModal(false);
       fetchStaff();
     } catch {
-      toast.error('Error saving team member');
+      toast.error(t('dashboard.roles.messages.saveFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -275,18 +277,18 @@ export function StaffPage() {
         <div>
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
             <span className="px-2.5 sm:px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              Team
+              {t('staff.badge')}
             </span>
             <div className="flex items-center gap-2">
               <div className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
               </div>
-              <span className="text-xs font-bold text-paymint-green tracking-widest">Live</span>
+              <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
             </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Staff</h1>
-          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">Manage your team</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('staff.title')}</h1>
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">{t('staff.subtitle')}</p>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
@@ -295,14 +297,14 @@ export function StaffPage() {
             className="hidden sm:flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm"
           >
             <Download size={18} />
-            <span>Export to CSV</span>
+            <span>{t('orders.export')}</span>
           </button>
           <button
             onClick={() => { setEditingStaff(null); setShowModal(true); }}
             className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20 touch-target"
           >
             <Plus size={18} />
-            <span className="hidden xs:inline">Add Member</span>
+            <span className="hidden xs:inline">{t('staff.addMember')}</span>
           </button>
         </div>
       </div>
@@ -310,10 +312,10 @@ export function StaffPage() {
       {/* Stats Cards - horizontal scroll on mobile */}
       <div className="flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-4 sm:overflow-visible pb-2 sm:pb-0">
         {[
-          { label: 'Total Users', info: 'Total number of registered users.', value: staff.length, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-          { label: 'Active Now', info: 'Users currently clocked in.', value: staff.filter(s => s.isClockedIn).length, icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-          { label: 'Admins', info: 'Users with full system access.', value: staff.filter(s => s.role === 'ADMIN').length, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-          { label: 'Users', info: 'Standard users with restricted access.', value: staff.filter(s => s.role !== 'ADMIN').length, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+          { label: t('owner.employees.totalUsers'), info: t('owner.staff.usersInfo'), value: staff.length, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+          { label: t('owner.employees.activeNow'), info: t('owner.staff.activeInfo'), value: staff.filter(s => s.isClockedIn).length, icon: UserCheck, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+          { label: t('owner.staff.admins'), info: t('owner.staff.adminsInfo'), value: staff.filter(s => s.role === 'ADMIN').length, icon: Shield, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+          { label: t('owner.staff.standardUsers'), info: t('owner.staff.standardInfo'), value: staff.filter(s => s.role !== 'ADMIN').length, icon: Star, color: 'text-orange-500', bg: 'bg-orange-500/10' },
         ].map((stat, i) => (
           <div
             key={i}
@@ -346,11 +348,11 @@ export function StaffPage() {
               setCurrentPage(1);
             }}
             options={[
-              { label: 'Admin', value: 'ADMIN' },
-              { label: 'User', value: 'USER' },
+              { label: t('owner.staff.admins'), value: 'ADMIN' },
+              { label: t('owner.staff.standardUsers'), value: 'USER' },
             ]}
-            allOptionLabel="All Roles"
-            placeholder="All Roles"
+            allOptionLabel={t('owner.employees.allRoles')}
+            placeholder={t('owner.employees.allRoles')}
           />
         </div>
 
@@ -359,7 +361,7 @@ export function StaffPage() {
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
             onClear={() => setSearchQuery('')}
-            placeholder="Search staff..."
+            placeholder={t('staff.searchPlaceholder')}
             className="w-full"
           />
         </div>
@@ -370,15 +372,15 @@ export function StaffPage() {
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32">
             <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-xs font-black tracking-widest text-gray-400">Loading Staff...</p>
+            <p className="text-xs font-black tracking-widest text-gray-400">{t('staff.messages.loading')}</p>
           </div>
         ) : filteredStaff.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32 text-center bg-gray-50/30 dark:bg-black/10">
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
               <Users size={32} className="sm:w-10 sm:h-10 text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No staff found</h3>
-            <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto">Add a team member to get started.</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('staff.messages.noStaff')}</h3>
+            <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto">{t('staff.messages.noStaffDesc')}</p>
           </div>
         ) : (
           <>
@@ -410,14 +412,14 @@ export function StaffPage() {
                     {/* Card Details */}
                     <div className="grid grid-cols-2 gap-3 mb-3 pt-3 border-t border-gray-100 dark:border-white/5">
                       <div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Email</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('staff.form.emailLabel')}</p>
                         <div className="flex items-center gap-1.5 text-sm font-bold text-gray-900 dark:text-white truncate">
                           <Mail size={12} className="text-gray-400 flex-shrink-0" />
-                          <span className="truncate">{member.email || 'N/A'}</span>
+                          <span className="truncate">{member.email || t('common.na')}</span>
                         </div>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Status</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('staff.table.status')}</p>
                         <div className={`flex items-center gap-2 font-bold text-xs ${!member.isActive
                           ? 'text-paymint-red'
                           : member.isClockedIn
@@ -427,7 +429,7 @@ export function StaffPage() {
                           {!member.isActive ? (
                             <>
                               <XCircle size={12} />
-                              <span>Suspended</span>
+                              <span>{t('staff.status.suspended')}</span>
                             </>
                           ) : member.isClockedIn ? (
                             <>
@@ -435,12 +437,12 @@ export function StaffPage() {
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
                               </div>
-                              <span>Online</span>
+                              <span>{t('staff.status.online')}</span>
                             </>
                           ) : (
                             <>
                               <div className="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-600" />
-                              <span>Offline</span>
+                              <span>{t('staff.status.offline')}</span>
                             </>
                           )}
                         </div>
@@ -454,14 +456,14 @@ export function StaffPage() {
                         className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all text-xs font-bold touch-target"
                       >
                         <Edit2 size={14} />
-                        Edit
+                        {t('common.edit')}
                       </button>
                       <button
                         onClick={() => handleDelete(member.id, member.username)}
                         className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 dark:border-red-500/20 text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-all text-xs font-bold touch-target"
                       >
                         <Trash2 size={14} />
-                        Delete
+                        {t('common.delete')}
                       </button>
                     </div>
                 </div>
@@ -473,35 +475,35 @@ export function StaffPage() {
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-white/[0.02]">
                   <tr className="border-b border-gray-200 dark:border-white/5">
-                    <th 
+                    <th
                       className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
                       onClick={() => handleSort('username')}
                     >
                       <div className="flex items-center gap-1">
-                        Name
+                        {t('staff.table.name')}
                         {sortConfig?.key === 'username' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                       </div>
                     </th>
-                    <th 
+                    <th
                       className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
                       onClick={() => handleSort('role')}
                     >
                       <div className="flex items-center gap-1">
-                        Role
+                        {t('staff.table.role')}
                         {sortConfig?.key === 'role' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Contact</th>
-                    <th 
+                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('staff.table.contact')}</th>
+                    <th
                       className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
                       onClick={() => handleSort('status')}
                     >
                       <div className="flex items-center gap-1">
-                        Status
+                        {t('staff.table.status')}
                         {sortConfig?.key === 'status' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">Actions</th>
+                    <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('owner.locations.actions')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -532,11 +534,11 @@ export function StaffPage() {
                           <div className="space-y-1">
                             <div className="flex items-center gap-2 text-xs text-gray-500">
                               <Mail size={12} className="text-gray-400" />
-                              <span className="font-medium">{member.email || 'No email'}</span>
+                              <span className="font-medium">{member.email || t('owner.staff.noEmail')}</span>
                             </div>
                             <div className="flex items-center gap-2 text-xs text-gray-500">
                               <Phone size={12} className="text-gray-400" />
-                              <span className="font-medium">{member.phone || 'No phone'}</span>
+                              <span className="font-medium">{member.phone || t('owner.staff.noPhone')}</span>
                             </div>
                           </div>
                         </td>
@@ -550,7 +552,7 @@ export function StaffPage() {
                             {!member.isActive ? (
                               <>
                                 <XCircle size={14} />
-                                <span>Suspended</span>
+                                <span>{t('staff.status.suspended')}</span>
                               </>
                             ) : member.isClockedIn ? (
                               <>
@@ -558,12 +560,12 @@ export function StaffPage() {
                                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
                                   <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
                                 </div>
-                                <span>Online</span>
+                                <span>{t('staff.status.online')}</span>
                               </>
                             ) : (
                               <>
                                 <div className="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-600" />
-                                <span>Offline</span>
+                                <span>{t('staff.status.offline')}</span>
                               </>
                             )}
                           </div>
@@ -572,7 +574,7 @@ export function StaffPage() {
                           <div className="flex items-center justify-center gap-1 sm:gap-2">
                             <button
                               onClick={() => openEditModal(member)}
-                              aria-label="Edit staff member"
+                              aria-label={t('staff.editEmployee')}
                               className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-90"
                             >
                               <Edit2 size={18} />
@@ -583,7 +585,7 @@ export function StaffPage() {
                                   e.stopPropagation();
                                   setActiveDropdown(activeDropdown === member.id ? null : member.id);
                                 }}
-                                aria-label="More actions"
+                                aria-label={t('common.actions')}
                                 aria-expanded={activeDropdown === member.id}
                                 className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border transition-all active:scale-90 shadow-sm ${activeDropdown === member.id ? 'bg-paymint-green text-black border-paymint-green' : 'bg-white dark:bg-white/5 border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/10'}`}
                               >
@@ -593,18 +595,18 @@ export function StaffPage() {
                                 {activeDropdown === member.id && (
                                   <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl shadow-2xl border border-gray-100 dark:border-white/10 z-50 overflow-hidden py-1.5">
                                     <button
-                                      onClick={() => { setActiveDropdown(null); toast.success('Reset email sent'); }}
+                                      onClick={() => { setActiveDropdown(null); toast.success(t('staff.messages.resetSuccess')); }}
                                       className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black tracking-widest text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
                                     >
                                       <Key size={14} className="text-paymint-green" />
-                                      <span>Reset Password</span>
+                                      <span>{t('staff.actions.resetPassword')}</span>
                                     </button>
                                     <button
                                       onClick={() => { setActiveDropdown(null); handleDelete(member.id, member.username); }}
                                       className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black tracking-widest text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
                                     >
                                       <Trash2 size={14} />
-                                      <span>Delete</span>
+                                      <span>{t('common.delete')}</span>
                                     </button>
                                   </div>
                                 )}
@@ -652,7 +654,7 @@ export function StaffPage() {
         isOpen={securityModal.isOpen}
         onClose={() => setSecurityModal(prev => ({ ...prev, isOpen: false }))}
         onSuccess={() => {
-          toast.success('Member removed');
+          toast.success(t('owner.staff.staffRemoved'));
           fetchStaff();
         }}
         targetId={securityModal.memberId}

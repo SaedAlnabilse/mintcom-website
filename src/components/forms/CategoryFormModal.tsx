@@ -1,6 +1,6 @@
-import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X, Trash2, Tag, Coffee, IceCream, Pizza, ShoppingBag, Gift, Star, Heart,
@@ -63,6 +63,7 @@ export function CategoryFormModal({
   isSubmitting = false,
   externalError,
 }: CategoryFormModalProps) {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [selectedIcon, setSelectedIcon] = useState('tag');
   const [sortOrder, setSortOrder] = useState(0);
@@ -90,7 +91,7 @@ export function CategoryFormModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
-      setErrors({ name: 'Name is required' });
+      setErrors({ name: t('categories.errors.nameRequired') });
       // Scroll to error
       setTimeout(() => {
         errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -124,12 +125,12 @@ export function CategoryFormModal({
             <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-black text-gray-400 tracking-widest">Category</span>
+                <span className="text-xs font-black text-gray-400 tracking-widest">{t('categories.title')}</span>
                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                <span className="text-xs font-black text-paymint-green tracking-widest">Active</span>
+                <span className="text-xs font-black text-paymint-green tracking-widest">{t('common.active')}</span>
               </div>
               <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
-                {initialData ? 'Edit Category' : 'New Category'}
+                {initialData ? t('categories.editCategory') : t('categories.newCategory')}
               </h2>
             </div>
             <button
@@ -148,7 +149,7 @@ export function CategoryFormModal({
               >
                 <SelectedIconComponent size={48} className="text-black" strokeWidth={2.5} />
               </div>
-              <span className="text-xs font-black text-gray-400 tracking-[0.3em]">Icon Preview</span>
+              <span className="text-xs font-black text-gray-400 tracking-[0.3em]">{t('categories.iconPreview')}</span>
             </div>
 
             <form id="category-form" onSubmit={handleSubmit} className="space-y-8">
@@ -156,21 +157,21 @@ export function CategoryFormModal({
               {(Object.keys(errors).length > 0 || externalError) && (
                 <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
-                  {externalError || 'Please correct the highlighted errors below'}
+                  {externalError || t('common.validationError')}
                 </div>
               )}
 
               {/* Name */}
               <div className="space-y-3">
                 <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                  Name <span className="text-paymint-red">*</span>
-                  <QuickInfo text="Category name." />
+                  {t('categories.form.nameLabel')} <span className="text-paymint-red">*</span>
+                  <QuickInfo text={t('categories.form.nameTip')} />
                 </label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
-                  placeholder="E.g. Hot Infusions"
+                  placeholder={t('categories.form.namePlaceholder')}
                   className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name || (externalError && externalError.toLowerCase().includes('already exists')) ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                 />
                 {errors.name && <p className="mt-1.5 px-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
@@ -179,8 +180,8 @@ export function CategoryFormModal({
               {/* Icon Grid */}
               <div className="space-y-4">
                 <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                  Icon
-                  <QuickInfo text="Icon for the menu." />
+                  {t('categories.form.iconLabel')}
+                  <QuickInfo text={t('categories.form.iconTip')} />
                 </label>
                 <div className="grid grid-cols-5 gap-3">
                   {ICONS.map(icon => {
@@ -226,7 +227,7 @@ export function CategoryFormModal({
               onClick={onClose}
               className="flex-1 h-12 sm:h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-black text-xs tracking-widest hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
             >
-              Cancel
+              {t('common.cancel')}
             </button>
             <button
               type="submit"
@@ -237,7 +238,7 @@ export function CategoryFormModal({
               {isSubmitting ? (
                 <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" />
               ) : (
-                initialData ? AppStrings.COMMON.SAVE : AppStrings.COMMON.ADD
+                initialData ? t('common.save') : t('common.add')
               )}
             </button>
           </div>

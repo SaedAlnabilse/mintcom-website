@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Search,
   History,
@@ -64,6 +65,7 @@ const actionColors: Record<string, string> = {
 };
 
 export function ActivityLogsPage() {
+  const { t } = useTranslation();
   const [logs, setLogs] = useState<ActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -135,7 +137,7 @@ export function ActivityLogsPage() {
       setTotalPages(response.data.totalPages || 1);
       setTotalLogs(response.data.total || validLogs.length);
     } catch {
-      toast.error('Failed to sync logs');
+      toast.error(t('activity.syncError') || 'Failed to sync logs');
     } finally {
       setIsLoading(false);
     }
@@ -159,18 +161,18 @@ export function ActivityLogsPage() {
     const logsToExport = Array.isArray(logs) ? logs : [];
     const exportData = logsToExport.map(l => ({
       time: formatDate(l.timestamp),
-      user: l.performedBy?.username || 'Owner',
+      user: l.performedBy?.username || t('activity.owner'),
       action: l.action,
       desc: l.description,
       ip: l.ipAddress
     }));
 
     exportToCSV(exportData, 'system_activity', {
-      time: 'Time',
-      user: 'User',
-      action: 'Action',
-      desc: 'Details',
-      ip: 'IP Address'
+      time: t('activity.time'),
+      user: t('activity.user'),
+      action: t('activity.action'),
+      desc: t('activity.details'),
+      ip: t('activity.ip') || 'IP Address'
     });
   };
 
@@ -181,12 +183,12 @@ export function ActivityLogsPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              History
+              {t('activity.history')}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Activity</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('activity.title')}</h1>
           <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
-            See recent changes
+            {t('activity.subtitle')}
           </p>
         </div>
 
@@ -196,7 +198,7 @@ export function ActivityLogsPage() {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
           >
             <Download size={18} />
-            <span>Export to CSV</span>
+            <span>{t('activity.export')}</span>
           </button>
         </div>
       </div>
@@ -210,7 +212,7 @@ export function ActivityLogsPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-              placeholder="Search logs..."
+              placeholder={t('activity.searchPlaceholder')}
               className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
             />
           </div>
@@ -222,30 +224,30 @@ export function ActivityLogsPage() {
                 value={actionFilter === 'all' ? null : actionFilter}
                 onChange={(val) => { setActionFilter(val || 'all'); setPage(1); }}
                 options={[
-                  { label: 'Product: Add', value: 'Added product' },
-                  { label: 'Product: Update', value: 'Updated product' },
-                  { label: 'Product: Delete', value: 'Deleted product' },
-                  { label: 'Product: Remove Image', value: 'Removed product image' },
-                  { label: 'Category: Add', value: 'Added category' },
-                  { label: 'Category: Update', value: 'Updated category' },
-                  { label: 'Category: Delete', value: 'Deleted category' },
-                  { label: 'Staff: Add', value: 'Added employee' },
-                  { label: 'Staff: Delete', value: 'Deleted employee' },
-                  { label: 'Update: Name', value: 'Updated restaurant name' },
-                  { label: 'Update: Hours', value: 'Updated working hours' },
-                  { label: 'Update: Message', value: 'Updated farewell message' },
-                  { label: 'Update: Logo', value: 'Updated restaurant logo' },
-                  { label: 'Update: Tax', value: 'Updated tax rate' },
-                  { label: 'Update: Loyalty', value: 'Updated loyalty program' },
-                  { label: 'Discount: Add', value: 'Added discount' },
-                  { label: 'Discount: Update', value: 'Updated discount' },
-                  { label: 'Discount: Delete', value: 'Deleted discount' },
-                  { label: 'Payment: Add', value: 'Added payment method' },
-                  { label: 'Payment: Update', value: 'Updated payment method' },
-                  { label: 'Payment: Delete', value: 'Deleted payment method' },
+                  { label: t('activity.actions.addProduct'), value: 'Added product' },
+                  { label: t('activity.actions.updateProduct'), value: 'Updated product' },
+                  { label: t('activity.actions.deleteProduct'), value: 'Deleted product' },
+                  { label: t('activity.actions.removeProductImage'), value: 'Removed product image' },
+                  { label: t('activity.actions.addCategory'), value: 'Added category' },
+                  { label: t('activity.actions.updateCategory'), value: 'Updated category' },
+                  { label: t('activity.actions.deleteCategory'), value: 'Deleted category' },
+                  { label: t('activity.actions.addEmployee'), value: 'Added employee' },
+                  { label: t('activity.actions.deleteEmployee'), value: 'Deleted employee' },
+                  { label: t('activity.actions.updateName'), value: 'Updated restaurant name' },
+                  { label: t('activity.actions.updateHours'), value: 'Updated working hours' },
+                  { label: t('activity.actions.updateMessage'), value: 'Updated farewell message' },
+                  { label: t('activity.actions.updateLogo'), value: 'Updated restaurant logo' },
+                  { label: t('activity.actions.updateTax'), value: 'Updated tax rate' },
+                  { label: t('activity.actions.updateLoyalty'), value: 'Updated loyalty program' },
+                  { label: t('activity.actions.addDiscount'), value: 'Added discount' },
+                  { label: t('activity.actions.updateDiscount'), value: 'Updated discount' },
+                  { label: t('activity.actions.deleteDiscount'), value: 'Deleted discount' },
+                  { label: t('activity.actions.addPayment'), value: 'Added payment method' },
+                  { label: t('activity.actions.updatePayment'), value: 'Updated payment method' },
+                  { label: t('activity.actions.deletePayment'), value: 'Deleted payment method' },
                 ]}
-                allOptionLabel="All Actions"
-                placeholder="All Actions"
+                allOptionLabel={t('activity.allActions')}
+                placeholder={t('activity.allActions')}
               />
             </div>
 
@@ -259,7 +261,7 @@ export function ActivityLogsPage() {
                     if (val) handlePresetChange(val);
                   }}
                   options={DATE_PERIOD_OPTIONS}
-                  placeholder="Custom Range"
+                  placeholder={t('activity.customRange')}
                   showAllOption={false}
                   allowClear={false}
                 />
@@ -293,7 +295,7 @@ export function ActivityLogsPage() {
               <div className="py-32 text-center">
                 <div className="flex flex-col items-center gap-4">
                   <div className="w-10 h-10 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin" />
-                  <p className="text-xs font-black text-gray-400 tracking-widest">Loading logs...</p>
+                  <p className="text-xs font-black text-gray-400 tracking-widest">{t('activity.loading')}</p>
                 </div>
               </div>
             ) : logs.length === 0 ? (
@@ -302,7 +304,7 @@ export function ActivityLogsPage() {
                   <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center">
                     <History size={24} className="text-gray-300" />
                   </div>
-                  <p className="text-gray-500 font-bold text-xs tracking-widest">No logs found.</p>
+                  <p className="text-gray-500 font-bold text-xs tracking-widest">{t('activity.noLogs')}</p>
                 </div>
               </div>
             ) : (
@@ -317,12 +319,12 @@ export function ActivityLogsPage() {
                         {log.performedBy?.username?.charAt(0).toUpperCase() || 'A'}
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-gray-900 dark:text-white tracking-tight truncate max-w-[150px]">{log.performedBy?.username || 'Owner'}</p>
-                        <p className="text-xs text-gray-400 font-black">{log.ipAddress || 'Internal'}</p>
+                        <p className="text-sm font-bold text-gray-900 dark:text-white tracking-tight truncate max-w-[150px]">{log.performedBy?.username || t('activity.owner')}</p>
+                        <p className="text-xs text-gray-400 font-black">{log.ipAddress || t('activity.internal')}</p>
                       </div>
                     </div>
                     <span className={`inline-flex px-2 py-0.5 rounded-lg text-[10px] font-black tracking-widest border ${getActionColor(log.action)}`}>
-                      {log.action?.replace(/_/g, ' ').charAt(0).toUpperCase() + log.action?.replace(/_/g, ' ').slice(1).toLowerCase()}
+                      {t(`activity.actions.${log.action.toLowerCase().replace(/ /g, '_').replace(/:/g, '')}`) || log.action?.replace(/_/g, ' ')}
                     </span>
                   </div>
 
@@ -354,11 +356,11 @@ export function ActivityLogsPage() {
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-white/[0.02]">
               <tr className="border-b border-gray-200 dark:border-white/5">
-                <th className="px-8 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Time</th>
-                <th className="px-8 py-4 text-left text-xs font-black text-gray-400 tracking-widest">User</th>
-                <th className="px-8 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Action</th>
-                <th className="px-8 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Details</th>
-                <th className="px-8 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Data</th>
+                <th className="px-8 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('activity.time')}</th>
+                <th className="px-8 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('activity.user')}</th>
+                <th className="px-8 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('activity.action')}</th>
+                <th className="px-8 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('activity.details')}</th>
+                <th className="px-8 py-4 text-right text-xs font-black text-gray-400 tracking-widest">{t('activity.data')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -367,7 +369,7 @@ export function ActivityLogsPage() {
                     <td colSpan={5} className="py-32 text-center">
                       <div className="flex flex-col items-center gap-4">
                         <div className="w-10 h-10 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin" />
-                        <p className="text-xs font-black text-gray-400 tracking-widest">Loading logs...</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest">{t('activity.loading')}</p>
                       </div>
                     </td>
                   </tr>
@@ -378,7 +380,7 @@ export function ActivityLogsPage() {
                         <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center">
                           <History size={24} className="text-gray-300" />
                         </div>
-                        <p className="text-gray-500 font-bold text-xs tracking-widest">No logs found.</p>
+                        <p className="text-gray-500 font-bold text-xs tracking-widest">{t('activity.noLogs')}</p>
                       </div>
                     </td>
                   </tr>
@@ -400,14 +402,14 @@ export function ActivityLogsPage() {
                             {log.performedBy?.username?.charAt(0).toUpperCase() || 'A'}
                           </div>
                           <div>
-                            <p className="text-sm font-bold text-gray-900 dark:text-white tracking-tight truncate max-w-[100px]">{log.performedBy?.username || 'Owner'}</p>
-                            <p className="text-xs text-gray-400 font-black">{log.ipAddress || 'Internal'}</p>
+                            <p className="text-sm font-bold text-gray-900 dark:text-white tracking-tight truncate max-w-[100px]">{log.performedBy?.username || t('activity.owner')}</p>
+                            <p className="text-xs text-gray-400 font-black">{log.ipAddress || t('activity.internal')}</p>
                           </div>
                         </div>
                       </td>
                       <td className="px-8 py-4">
                         <span className={`inline-flex px-2 py-0.5 rounded-lg text-xs font-black tracking-widest border ${getActionColor(log.action)}`}>
-                          {log.action?.replace(/_/g, ' ').charAt(0).toUpperCase() + log.action?.replace(/_/g, ' ').slice(1).toLowerCase()}
+                          {t(`activity.actions.${log.action.toLowerCase().replace(/ /g, '_').replace(/:/g, '')}`) || log.action?.replace(/_/g, ' ')}
                         </span>
                       </td>
                       <td className="px-8 py-4">
@@ -449,8 +451,8 @@ export function ActivityLogsPage() {
                     <Shield size={24} />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Log Details</h2>
-                    <p className="text-xs font-black text-paymint-green tracking-widest">{selectedLog.action ? selectedLog.action.replace(/_/g, ' ').charAt(0).toUpperCase() + selectedLog.action.replace(/_/g, ' ').slice(1).toLowerCase() : ''}</p>
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('activity.logDetails')}</h2>
+                    <p className="text-xs font-black text-paymint-green tracking-widest">{selectedLog.action ? (t(`activity.actions.${selectedLog.action.toLowerCase().replace(/ /g, '_').replace(/:/g, '')}`) || selectedLog.action.replace(/_/g, ' ')) : ''}</p>
                   </div>
                 </div>
                 <button onClick={() => setSelectedLog(null)} className="p-3 rounded-2xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-black dark:hover:text-white transition-colors">
@@ -461,17 +463,17 @@ export function ActivityLogsPage() {
               <div className="p-8 overflow-y-auto custom-scrollbar space-y-8">
                 <div className="grid grid-cols-2 gap-8">
                   <div>
-                    <p className="text-xs font-black text-gray-400 tracking-widest mb-2">Time</p>
+                    <p className="text-xs font-black text-gray-400 tracking-widest mb-2">{t('activity.time')}</p>
                     <p className="font-bold text-gray-900 dark:text-white">{formatDate(selectedLog.timestamp)}</p>
                   </div>
                   <div>
-                    <p className="text-xs font-black text-gray-400 tracking-widest mb-2">User</p>
-                    <p className="font-bold text-gray-900 dark:text-white">{selectedLog.performedBy?.name || 'Administrative Account'}</p>
+                    <p className="text-xs font-black text-gray-400 tracking-widest mb-2">{t('activity.user')}</p>
+                    <p className="font-bold text-gray-900 dark:text-white">{selectedLog.performedBy?.name || t('activity.administrativeAccount')}</p>
                   </div>
                 </div>
 
                 <div>
-                  <p className="text-xs font-black text-gray-400 tracking-widest mb-3">Data</p>
+                  <p className="text-xs font-black text-gray-400 tracking-widest mb-3">{t('activity.data')}</p>
                   <pre className="bg-gray-50 dark:bg-black/40 p-6 rounded-[1.5rem] overflow-x-auto text-xs text-gray-700 dark:text-paymint-green font-mono leading-relaxed border border-gray-200 dark:border-white/5">
                     {JSON.stringify(selectedLog.metadata, null, 2)}
                   </pre>
@@ -480,7 +482,7 @@ export function ActivityLogsPage() {
 
               <div className="p-8 border-t border-gray-200 dark:border-white/5">
                 <button onClick={() => setSelectedLog(null)} className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl tracking-widest text-xs hover:scale-[1.02] transition-transform">
-                  Close
+                  {t('common.close')}
                 </button>
               </div>
             </div>

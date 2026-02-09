@@ -1,7 +1,10 @@
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Download, Smartphone, CheckCircle2, Apple, Tablet } from 'lucide-react';
 
 export const DownloadApp = () => {
+  const { t } = useTranslation();
+
   return (
     <section id="download" className="py-24 lg:py-32 bg-white dark:bg-[#0f0f0f] relative overflow-hidden">
       {/* Background Decor */}
@@ -21,24 +24,24 @@ export const DownloadApp = () => {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-paymint-green/10 text-paymint-green font-medium text-sm mb-6 border border-paymint-green/20">
               <Smartphone size={16} />
-              <span>Mobile & Tablet Ready</span>
+              <span>{t('download.badge')}</span>
             </div>
 
             <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-6 tracking-tight leading-tight">
-              Take PayMint <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-emerald-400">Wherever You Go</span>
+              {t('download.title')} <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-emerald-400">{t('download.titleHighlight')}</span>
             </h2>
 
             <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-              Manage your restaurant from anywhere. Whether you're on the floor taking orders or checking sales from home, our universal app keeps you connected.
+              {t('download.description')}
             </p>
 
             <div className="flex flex-col gap-4 mb-10">
               {[
-                "Works on Tablets & Phones (Universal)",
-                "Offline Mode Support",
-                "Instant Sync across devices",
-                "Built for Android & Ios"
+                t('download.universal'),
+                t('download.offline'),
+                t('download.instantSync'),
+                t('download.platforms')
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
                   <CheckCircle2 size={20} className="text-paymint-green flex-shrink-0" />
@@ -55,22 +58,22 @@ export const DownloadApp = () => {
               >
                 <Download className="w-6 h-6" />
                 <div className="text-left">
-                  <div className="text-xs font-medium opacity-80">Download for</div>
-                  <div className="text-lg font-bold leading-none">Android</div>
+                  <div className="text-xs font-medium opacity-80">{t('download.downloadFor')}</div>
+                  <div className="text-lg font-bold leading-none">{t('download.android')}</div>
                 </div>
               </a>
 
               <div className="flex items-center justify-center gap-3 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-400 dark:text-gray-500 py-4 px-8 rounded-xl cursor-not-allowed opacity-80">
                 <Apple className="w-6 h-6" />
                 <div className="text-left">
-                  <div className="text-xs font-medium opacity-80">Coming Soon</div>
-                  <div className="text-lg font-bold leading-none">App Store</div>
+                  <div className="text-xs font-medium opacity-80">{t('download.comingSoon')}</div>
+                  <div className="text-lg font-bold leading-none">{t('download.appStore')}</div>
                 </div>
               </div>
             </div>
 
             <p className="mt-6 text-sm text-gray-500 dark:text-gray-400 italic">
-              * Supports Android 8.0+ and Ios 17+
+              {t('download.requirements')}
             </p>
           </motion.div>
 
@@ -127,7 +130,7 @@ export const DownloadApp = () => {
                 </div>
 
                 <div className="bg-gradient-to-br from-paymint-green/20 to-transparent p-6 rounded-2xl border border-paymint-green/10">
-                  <div className="text-gray-400 text-xs mb-1">Total Sales</div>
+                  <div className="text-gray-400 text-xs mb-1">{t('download.totalSales')}</div>
                   <div className="text-white text-2xl font-bold">$1,240.50</div>
                 </div>
 
@@ -155,8 +158,8 @@ export const DownloadApp = () => {
                 <Tablet size={20} />
               </div>
               <div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Order #1024</p>
-                <p className="text-sm font-bold text-gray-900 dark:text-white">Completed</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{t('download.order')} #1024</p>
+                <p className="text-sm font-bold text-gray-900 dark:text-white">{t('download.completed')}</p>
               </div>
             </motion.div>
 

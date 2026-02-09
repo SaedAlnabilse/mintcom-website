@@ -8,6 +8,7 @@ import { Eye, EyeOff, ArrowLeft, Mail, Lock, X, AlertTriangle, Send } from 'luci
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { GoogleAuthButton, AuthDivider } from '../components/GoogleAuthButton';
+import { useTranslation } from 'react-i18next';
 
 // Paymint Logo imports
 import PaymintLogoGreen from '../assets/green-full-logo.svg';
@@ -21,6 +22,7 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export function LoginPage() {
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showVerifyModal, setShowVerifyModal] = useState(false);
@@ -120,7 +122,7 @@ export function LoginPage() {
           className="inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to home
+          {t('auth.login.backToHome')}
         </Link>
 
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-2xl p-8 transition-colors duration-300 border border-gray-100 dark:border-transparent">
@@ -137,8 +139,8 @@ export function LoginPage() {
                 className="h-10 w-auto object-contain hidden dark:block"
               />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Welcome</h2>
-            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">Sign in to your account</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">{t('auth.login.title')}</h2>
+            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('auth.login.subtitle')}</p>
           </div>
 
           {/* Google Sign-In Button */}
@@ -154,7 +156,7 @@ export function LoginPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
               <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">
-                Email Address
+                {t('auth.login.emailLabel')}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -177,7 +179,7 @@ export function LoginPage() {
 
             <div>
               <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">
-                Password
+                {t('auth.login.passwordLabel')}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -213,10 +215,10 @@ export function LoginPage() {
                   aria-label="Keep me logged in"
                   className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green bg-gray-50 dark:bg-gray-700"
                 />
-                <span className="ml-2 text-sm font-bold text-gray-600 dark:text-gray-300">Keep me logged in</span>
+                <span className="ml-2 text-sm font-bold text-gray-600 dark:text-gray-300">{t('auth.login.keepLoggedIn')}</span>
               </label>
               <Link to="/forgot-password" className="text-sm font-bold text-paymint-green hover:underline">
-                Forgot password?
+                {t('auth.login.forgotPassword')}
               </Link>
             </div>
 
@@ -225,15 +227,15 @@ export function LoginPage() {
               disabled={isSubmitting}
               className="w-full bg-paymint-green text-black text-xs font-black tracking-widest hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-paymint-wait py-3 px-4 rounded-lg transition-colors shadow-lg shadow-paymint-green/20"
             >
-              {isSubmitting ? 'Signing In...' : 'Log In'}
+              {isSubmitting ? t('auth.login.loggingIn') : t('auth.login.loginButton')}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
-              No account?{' '}
+              {t('auth.login.noAccount')}{' '}
               <Link to="/signup" className="text-sm font-bold text-paymint-green hover:underline">
-                Sign up
+                {t('auth.login.signUp')}
               </Link>
             </p>
           </div>
@@ -263,10 +265,10 @@ export function LoginPage() {
                   <AlertTriangle className="w-8 h-8 text-yellow-600 dark:text-yellow-500" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                  Verify Your Email
+                  {t('auth.verifyEmail.title')}
                 </h3>
                 <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
-                  Please confirm your email to log in. Check your inbox.
+                  {t('auth.verifyEmail.subtitle')}
                 </p>
                 <p className="text-sm font-bold text-gray-900 dark:text-white mt-2">
                   {unverifiedEmail}
@@ -280,11 +282,11 @@ export function LoginPage() {
                   className="w-full flex items-center justify-center bg-paymint-green text-black text-xs font-black tracking-widest py-3 px-4 rounded-lg hover:bg-paymint-green/90 transition-colors disabled:opacity-50"
                 >
                   {isResending ? (
-                    'SENDING...'
+                    t('auth.verifyEmail.sending')
                   ) : (
                     <>
                       <Send className="w-4 h-4 mr-2" />
-                      Resend Verification Email
+                      {t('auth.verifyEmail.resendButton')}
                     </>
                   )}
                 </button>
@@ -292,7 +294,7 @@ export function LoginPage() {
                   onClick={() => setShowVerifyModal(false)}
                   className="w-full py-3 px-4 rounded-lg border border-gray-200 dark:border-gray-700 text-xs font-black tracking-widest text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
-                  CLOSE
+                  {t('common.close').toUpperCase()}
                 </button>
               </div>
             </motion.div>

@@ -3,6 +3,7 @@ import { Clock } from 'lucide-react';
 import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip, CartesianGrid } from 'recharts';
 import { useTheme } from '../../../context/ThemeContext';
 import { useCurrency } from '../../../context/CurrencyContext';
+import { useTranslation } from 'react-i18next';
 
 interface PeakHour {
   hour: number | string;
@@ -15,6 +16,7 @@ interface PeakHoursChartProps {
 }
 
 export const PeakHoursChart = React.memo(function PeakHoursChart({ peakHours }: PeakHoursChartProps) {
+  const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
   const { formatAmount, currencySymbol } = useCurrency();
   const isDark = resolvedTheme === 'dark';
@@ -29,8 +31,8 @@ export const PeakHoursChart = React.memo(function PeakHoursChart({ peakHours }: 
               <Clock size={20} />
             </div>
             <div>
-              <h3 className="text-base font-bold text-gray-900 dark:text-white">Rush Hours</h3>
-              <p className="text-xs font-bold text-gray-500 tracking-wide">Hourly traffic</p>
+              <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('dashboard.peakHours.title')}</h3>
+              <p className="text-xs font-bold text-gray-500 tracking-wide">{t('dashboard.peakHours.subtitle')}</p>
             </div>
           </div>
         </div>
@@ -54,7 +56,7 @@ export const PeakHoursChart = React.memo(function PeakHoursChart({ peakHours }: 
                     labelStyle={{ color: '#7CC39F', fontWeight: 'bold', marginBottom: '4px', fontSize: '10px' }}
                     formatter={(val: any) => formatAmount(val).replace(currencySymbol, '').trim()}
                   />
-                  <Bar dataKey="total" name="Revenue" fill="url(#barGradientDash)" radius={[4, 4, 0, 0]} barSize={20} animationDuration={1500} />
+                  <Bar dataKey="total" name={t('dashboard.peakHours.revenue')} fill="url(#barGradientDash)" radius={[4, 4, 0, 0]} barSize={20} animationDuration={1500} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -64,8 +66,8 @@ export const PeakHoursChart = React.memo(function PeakHoursChart({ peakHours }: 
                 <Clock size={28} className="text-gray-400 dark:text-gray-600" />
               </div>
               <div className="text-center">
-                <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">No traffic data</p>
-                <p className="text-xs text-gray-500 mt-1">There is no transaction activity recorded.</p>
+                <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('dashboard.peakHours.noData')}</p>
+                <p className="text-xs text-gray-500 mt-1">{t('dashboard.peakHours.noDataDesc')}</p>
               </div>
             </div>
           )}

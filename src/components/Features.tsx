@@ -1,34 +1,36 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { ShieldCheck, Zap, Settings, Store, Play } from 'lucide-react';
 
-const features = [
-  {
-    icon: <Store className="w-6 h-6 text-white" />,
-    title: "A Complete Solution — No Hidden Costs",
-    description: "PayMint is more than a checkout system. You get a powerful reporting engine with advanced filters, staff and role management, customer profiles and loyalty programs, discounts, raw material and stock tracking, and much more—all included in one fixed monthly plan."
-  },
-  {
-    icon: <Zap className="w-6 h-6 text-white" />,
-    title: "Designed for Real Users",
-    description: "PayMint is built for business owners, cashiers, and managers—not tech experts. We worked closely with real users to design an intuitive experience that minimizes training time. From login to first sale in under 10 minutes."
-  },
-  {
-    icon: <ShieldCheck className="w-6 h-6 text-white" />,
-    title: "Enterprise-Grade Security",
-    description: "Your data is fully encrypted, securely stored, and automatically archived. We've invested heavily in top-tier security standards to ensure your business information is protected at all times."
-  },
-  {
-    icon: <Settings className="w-6 h-6 text-white" />,
-    title: "Multi-Branch Management",
-    description: "Run one store or many—PayMint supports multiple merged branches or separate stores under one unified dashboard."
-  }
-];
-
 export const Features = () => {
+  const { t } = useTranslation();
   const [isVideoVisible, setIsVideoVisible] = useState(false);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const videoRef = useRef<HTMLDivElement>(null);
+
+  const features = [
+    {
+      icon: <Store className="w-6 h-6 text-white" />,
+      title: t('features.feature1.title'),
+      description: t('features.feature1.description')
+    },
+    {
+      icon: <Zap className="w-6 h-6 text-white" />,
+      title: t('features.feature2.title'),
+      description: t('features.feature2.description')
+    },
+    {
+      icon: <ShieldCheck className="w-6 h-6 text-white" />,
+      title: t('features.feature3.title'),
+      description: t('features.feature3.description')
+    },
+    {
+      icon: <Settings className="w-6 h-6 text-white" />,
+      title: t('features.feature4.title'),
+      description: t('features.feature4.description')
+    }
+  ];
 
   // Lazy load video when section comes into view
   useEffect(() => {
@@ -70,14 +72,14 @@ export const Features = () => {
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-paymint-green/10 border border-paymint-green/20 mb-6">
             <div className="w-1.5 h-1.5 rounded-full bg-paymint-green" />
-            <span className="text-paymint-green text-xs font-bold uppercase tracking-wider">The PayMint Difference</span>
+            <span className="text-paymint-green text-xs font-bold uppercase tracking-wider">{t('features.badge')}</span>
           </div>
-          
+
           <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-5 tracking-tight leading-[1.1]">
-            Why <span className="text-paymint-green">PayMint?</span>
+            {t('features.title')} <span className="text-paymint-green">{t('features.titleHighlight')}</span>
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl mx-auto">
-            At PayMint, we believe in keeping things simple: simple onboarding, simple installation, simple setup, and simple pricing.
+            {t('features.subtitle')}
           </p>
         </motion.div>
 
@@ -126,10 +128,10 @@ export const Features = () => {
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                       </span>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-white/90">Live Demo</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-white/90">{t('features.liveDemo')}</span>
                     </div>
-                    <h4 className="font-bold text-xl lg:text-2xl mb-1 tracking-tight">See PayMint in Action</h4>
-                    <p className="text-sm text-white/70">Seamless real-time sync across all your devices</p>
+                    <h4 className="font-bold text-xl lg:text-2xl mb-1 tracking-tight">{t('features.seeInAction')}</h4>
+                    <p className="text-sm text-white/70">{t('features.seamlessSync')}</p>
                   </div>
                 </div>
               </div>

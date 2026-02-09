@@ -1,107 +1,43 @@
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { CreditCard, Package, Users, BarChart3, Building2, Cloud, TrendingUp } from 'lucide-react';
 import { useMemo } from 'react';
 
-const workflowFeatures = [
-  {
-    title: "Sales",
-    description: "Fast and easy checkout.",
-    icon: CreditCard,
-    details: {
-      overview: "Process payments quickly and easily.",
-      features: [
-        "Accept all payment types",
-        "Split payments easily",
-        "Fast refunds",
-        "Auto tax calculation",
-        "Manage discounts",
-        "Digital receipts"
-      ]
-    }
-  },
-  {
-    title: "Inventory",
-    description: "Track stock in real-time.",
-    icon: Package,
-    details: {
-      overview: "Know exactly what you have in stock.",
-      features: [
-        "Live stock tracking",
-        "Low stock alerts",
-        "Barcode scanning",
-        "Batch tracking",
-        "Supplier management",
-        "Stock reports"
-      ]
-    }
-  },
-  {
-    title: "Staff Roles",
-    description: "Control staff access.",
-    icon: Users,
-    details: {
-      overview: "Manage what your team can see and do.",
-      features: [
-        "Custom access roles",
-        "Sales tracking per staff",
-        "Shift management",
-        "Commission tracking",
-        "Activity logs",
-        "Staff scheduling"
-      ]
-    }
-  },
-  {
-    title: "Dashboards",
-    description: "See live business data.",
-    icon: BarChart3,
-    details: {
-      overview: "Get real-time insights into your business.",
-      features: [
-        "Live sales tracking",
-        "Top selling items",
-        "Customer trends",
-        "Staff performance",
-        "Custom widgets",
-        "Export reports"
-      ]
-    }
-  },
-  {
-    title: "Multi-Location",
-    description: "Manage all locations together.",
-    icon: Building2,
-    details: {
-      overview: "Control all your stores from one place.",
-      features: [
-        "Centralized inventory",
-        "Stock transfers",
-        "Location-based pricing",
-        "Combined reporting",
-        "Branch comparison",
-        "Remote management"
-      ]
-    }
-  },
-  {
-    title: "Cloud Sync",
-    description: "Data backed up automatically.",
-    icon: Cloud,
-    details: {
-      overview: "Your data is safe and accessible anywhere.",
-      features: [
-        "Automatic backups",
-        "Real-time sync",
-        "Access on any device",
-        "99.9% uptime",
-        "Secure encryption",
-        "Easy recovery"
-      ]
-    }
-  }
-];
-
 export const WorkflowSupport = () => {
+  const { t } = useTranslation();
+
+  const workflowFeatures = [
+    {
+      title: t('workflow.sales.title'),
+      description: t('workflow.sales.description'),
+      icon: CreditCard,
+    },
+    {
+      title: t('workflow.inventory.title'),
+      description: t('workflow.inventory.description'),
+      icon: Package,
+    },
+    {
+      title: t('workflow.staffRoles.title'),
+      description: t('workflow.staffRoles.description'),
+      icon: Users,
+    },
+    {
+      title: t('workflow.dashboards.title'),
+      description: t('workflow.dashboards.description'),
+      icon: BarChart3,
+    },
+    {
+      title: t('workflow.multiLocation.title'),
+      description: t('workflow.multiLocation.description'),
+      icon: Building2,
+    },
+    {
+      title: t('workflow.cloudSync.title'),
+      description: t('workflow.cloudSync.description'),
+      icon: Cloud,
+    }
+  ];
 
   // Pre-generate random heights for the charts to ensure purity during render
   const chartHeights = useMemo(() => {
@@ -136,10 +72,10 @@ export const WorkflowSupport = () => {
                 className="mb-12"
               >
                 <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-6 tracking-tight">
-                  Everything You Need <span className="text-paymint-green">to Grow</span>
+                  {t('workflow.title')} <span className="text-paymint-green">{t('workflow.titleHighlight')}</span>
                 </h2>
                 <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                  Tools for every part of your restaurant.
+                  {t('workflow.subtitle')}
                 </p>
               </motion.div>
 
@@ -187,11 +123,11 @@ export const WorkflowSupport = () => {
                   <div className="flex items-center gap-2 text-xs text-gray-500">
                     <div className="flex items-center gap-1.5">
                       <div className="w-3 h-3 rounded bg-amber-500" />
-                      <span>Visits</span>
+                      <span>{t('workflow.stats.visits')}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <div className="w-3 h-3 rounded bg-blue-500" />
-                      <span>Sales</span>
+                      <span>{t('workflow.stats.sales')}</span>
                     </div>
                   </div>
                 </div>
@@ -251,7 +187,7 @@ export const WorkflowSupport = () => {
                   <div className="flex-1 space-y-3">
                     <div className="bg-[#111] rounded-xl p-3 border border-white/5">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-gray-400">Total Orders</span>
+                        <span className="text-xs text-gray-400">{t('workflow.stats.totalOrders')}</span>
                         <TrendingUp size={12} className="text-paymint-green" />
                       </div>
                       <div className="text-xl font-bold text-white">8,052</div>
@@ -264,7 +200,7 @@ export const WorkflowSupport = () => {
 
                     <div className="bg-[#111] rounded-xl p-3 border border-white/5">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-gray-400">New Users</span>
+                        <span className="text-xs text-gray-400">{t('workflow.stats.newUsers')}</span>
                         <Users size={12} className="text-blue-500" />
                       </div>
                       <div className="text-xl font-bold text-white">1.3K</div>
@@ -277,7 +213,7 @@ export const WorkflowSupport = () => {
 
                     <div className="bg-[#111] rounded-xl p-3 border border-white/5">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-gray-400">Total Visits</span>
+                        <span className="text-xs text-gray-400">{t('workflow.stats.totalVisits')}</span>
                         <BarChart3 size={12} className="text-amber-500" />
                       </div>
                       <div className="text-xl font-bold text-white">12M</div>

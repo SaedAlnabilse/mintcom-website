@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
   Search,
@@ -36,6 +37,7 @@ type ViewMode = 'grid' | 'list';
 type SortKey = 'name' | 'baseRole' | 'createdAt';
 
 export function CustomRolesPage() {
+  const { t } = useTranslation();
   // Permission guard - redirects if user lacks permission
   usePermissionGuard();
 
@@ -74,7 +76,7 @@ export function CustomRolesPage() {
       // Backend returns { items, total, limit, offset }
       setRoles(response.data?.items || []);
     } catch {
-      toast.error('Failed to load roles');
+      toast.error(t('dashboard.roles.messages.loadFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -149,10 +151,10 @@ export function CustomRolesPage() {
   const handleDeleteConfirm = async () => {
     try {
       await api.delete(`/api/custom-roles/${confirmConfig.roleId}`);
-      toast.success('Role deleted');
+      toast.success(t('dashboard.roles.messages.deleted'));
       fetchRoles();
     } catch {
-      toast.error('Failed to delete role');
+      toast.error(t('dashboard.roles.messages.deleteFailed'));
     } finally {
       setConfirmConfig({ ...confirmConfig, isOpen: false });
     }
@@ -164,22 +166,22 @@ export function CustomRolesPage() {
 
       const currentEstablishment = sessionStorage.getItem('currentEstablishment');
       if (!currentEstablishment) {
-        toast.error('No location selected');
+        toast.error(t('dashboard.roles.messages.noLocation'));
         return;
       }
       const { id: establishmentId } = JSON.parse(currentEstablishment);
 
       if (editingRole) {
         await api.put(`/api/custom-roles/${editingRole.id}`, payload);
-        toast.success('Role updated');
+        toast.success(t('dashboard.roles.messages.updated'));
       } else {
         await api.post(`/api/custom-roles/${establishmentId}`, payload);
-        toast.success('Role created');
+        toast.success(t('dashboard.roles.messages.created'));
       }
       setShowModal(false);
       fetchRoles();
     } catch {
-      toast.error('Failed to save role');
+      toast.error(t('dashboard.roles.messages.saveFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -205,11 +207,11 @@ export function CustomRolesPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              Team
+              {t('dashboard.menu.team')}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Roles</h1>
-          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">Manage team access</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('dashboard.roles.title')}</h1>
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">{t('dashboard.roles.subtitle')}</p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -218,7 +220,7 @@ export function CustomRolesPage() {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20"
           >
             <Plus size={18} />
-            <span>Add Role</span>
+            <span>{t('dashboard.roles.addRole')}</span>
           </button>
         </div>
       </div>
@@ -229,7 +231,7 @@ export function CustomRolesPage() {
           <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            placeholder="Search roles..."
+            placeholder={t('dashboard.roles.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
             className="w-full pl-11 pr-4 py-2.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
@@ -249,14 +251,14 @@ export function CustomRolesPage() {
           <button
             onClick={() => setViewMode('grid')}
             className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-            title="Grid View"
+            title={t('dashboard.roles.gridView')}
           >
             <Grid3X3 size={18} />
           </button>
           <button
             onClick={() => setViewMode('list')}
             className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-            title="List View"
+            title={t('dashboard.roles.listView')}
           >
             <List size={18} />
           </button>
@@ -268,15 +270,15 @@ export function CustomRolesPage() {
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-32">
             <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-xs font-black tracking-widest text-gray-400">Loading Roles...</p>
+            <p className="text-xs font-black tracking-widest text-gray-400">{t('dashboard.roles.loading')}</p>
           </div>
         ) : filteredRoles.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center p-32 text-center bg-gray-50/30 dark:bg-black/10">
             <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
               <Shield size={40} className="text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No roles found</h3>
-            <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto">Create a role to manage permissions.</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('dashboard.roles.noRoles')}</h3>
+            <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto">{t('dashboard.roles.noRolesDesc')}</p>
           </div>
         ) : viewMode === 'grid' ? (
           /* Grid View */
@@ -306,14 +308,14 @@ export function CustomRolesPage() {
                       <button
                         onClick={() => handleEdit(role)}
                         className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all"
-                        title="Edit Role"
+                        title={t('dashboard.roles.editRole')}
                       >
                         <Edit2 size={16} />
                       </button>
                       <button
                         onClick={() => handleDeleteClick(role)}
                         className="p-2 rounded-xl bg-red-50 dark:bg-red-500/10 text-red-400 hover:text-red-500 transition-all"
-                        title="Delete Role"
+                        title={t('dashboard.roles.deleteRole')}
                       >
                         <Trash2 size={16} />
                       </button>
@@ -322,15 +324,15 @@ export function CustomRolesPage() {
 
                   {/* Stats */}
                   <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl mb-6 relative z-10">
-                    <span className="text-xs font-black text-gray-400 tracking-widest block mb-2">Permissions</span>
+                    <span className="text-xs font-black text-gray-400 tracking-widest block mb-2">{t('dashboard.roles.permissions')}</span>
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-paymint-green"></span>
-                        <span className="text-xs font-bold text-paymint-green">POS: {role.permissions?.length || 0}</span>
+                        <span className="text-xs font-bold text-paymint-green">{t('dashboard.roles.pos')}: {role.permissions?.length || 0}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                        <span className="text-xs font-bold text-blue-500">Office: {role.backofficePermissions?.length || 0}</span>
+                        <span className="text-xs font-bold text-blue-500">{t('dashboard.roles.office')}: {role.backofficePermissions?.length || 0}</span>
                       </div>
                     </div>
                   </div>
@@ -338,7 +340,7 @@ export function CustomRolesPage() {
                   {/* Date */}
                   <div className="pt-4 border-t border-gray-100 dark:border-white/5 relative z-10">
                     <span className="text-xs text-gray-400 font-medium">
-                      Created {new Date(role.createdAt).toLocaleDateString()}
+                      {t('dashboard.roles.created')} {new Date(role.createdAt).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
@@ -385,14 +387,14 @@ export function CustomRolesPage() {
 
                     <div className="grid grid-cols-2 gap-3 text-xs">
                       <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-lg">
-                        <span className="text-gray-500 block mb-1">Permissions</span>
+                        <span className="text-gray-500 block mb-1">{t('dashboard.roles.permissions')}</span>
                         <div className="flex gap-2">
-                          <span className="font-bold text-paymint-green">POS: {role.permissions?.length || 0}</span>
-                          <span className="font-bold text-blue-500">Office: {role.backofficePermissions?.length || 0}</span>
+                          <span className="font-bold text-paymint-green">{t('dashboard.roles.pos')}: {role.permissions?.length || 0}</span>
+                          <span className="font-bold text-blue-500">{t('dashboard.roles.office')}: {role.backofficePermissions?.length || 0}</span>
                         </div>
                       </div>
                       <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-lg">
-                        <span className="text-gray-500 block mb-1">Date Created</span>
+                        <span className="text-gray-500 block mb-1">{t('dashboard.roles.date')}</span>
                         <span className="font-bold text-gray-900 dark:text-white">
                           {new Date(role.createdAt).toLocaleDateString()}
                         </span>
@@ -407,35 +409,35 @@ export function CustomRolesPage() {
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-white/[0.02]">
                   <tr className="border-b border-gray-200 dark:border-white/5">
-                    <th 
+                    <th
                       className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
                       onClick={() => handleSort('name')}
                     >
                       <div className="flex items-center gap-1">
-                        Name
+                        {t('dashboard.roles.name')}
                         {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                       </div>
                     </th>
-                    <th 
+                    <th
                       className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
                       onClick={() => handleSort('baseRole')}
                     >
                       <div className="flex items-center gap-1">
-                        Type
+                        {t('dashboard.roles.type')}
                         {sortConfig?.key === 'baseRole' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Access</th>
-                    <th 
+                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('dashboard.roles.access')}</th>
+                    <th
                       className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
                       onClick={() => handleSort('createdAt')}
                     >
                       <div className="flex items-center gap-1">
-                        Date
+                        {t('dashboard.roles.date')}
                         {sortConfig?.key === 'createdAt' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">Actions</th>
+                    <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('dashboard.roles.actions')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -464,11 +466,11 @@ export function CustomRolesPage() {
                           <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2">
                               <span className="w-1.5 h-1.5 rounded-full bg-paymint-green"></span>
-                              <span className="text-xs text-gray-500 font-medium">POS: {role.permissions?.length || 0}</span>
+                              <span className="text-xs text-gray-500 font-medium">{t('dashboard.roles.pos')}: {role.permissions?.length || 0}</span>
                             </div>
                             <div className="flex items-center gap-2">
                               <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                              <span className="text-xs text-gray-500 font-medium">Office: {role.backofficePermissions?.length || 0}</span>
+                              <span className="text-xs text-gray-500 font-medium">{t('dashboard.roles.office')}: {role.backofficePermissions?.length || 0}</span>
                             </div>
                           </div>
                         </td>
@@ -482,14 +484,14 @@ export function CustomRolesPage() {
                             <button
                               onClick={() => handleEdit(role)}
                               className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-90"
-                              title="Edit Role"
+                              title={t('dashboard.roles.editRole')}
                             >
                               <Edit2 size={16} />
                             </button>
                             <button
                               onClick={() => handleDeleteClick(role)}
                               className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-paymint-red/60 hover:text-paymint-red hover:bg-paymint-red/5 transition-all shadow-sm active:scale-90"
-                              title="Delete Role"
+                              title={t('dashboard.roles.deleteRole')}
                             >
                               <Trash2 size={16} />
                             </button>
@@ -518,10 +520,10 @@ export function CustomRolesPage() {
         isOpen={confirmConfig.isOpen}
         onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
         onConfirm={handleDeleteConfirm}
-        title="Delete Role"
-        message={`Are you sure you want to delete the "${confirmConfig.roleName}" role? This action cannot be undone.`}
+        title={t('dashboard.roles.deleteTitle')}
+        message={t('dashboard.roles.deleteMessage', { name: confirmConfig.roleName })}
         type="danger"
-        confirmText="Delete Role"
+        confirmText={t('dashboard.roles.deleteRole')}
       />
     </div>
   );

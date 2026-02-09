@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
     Check,
     ChevronDown,
@@ -52,6 +53,7 @@ interface Product {
 }
 
 export function ProductsPage() {
+    const { t } = useTranslation();
     const { formatAmount } = useCurrency();
     const location = useLocation();
     const navigate = useNavigate();
@@ -125,9 +127,9 @@ export function ProductsPage() {
             setCategories(Array.isArray(categoriesRes.data) ? categoriesRes.data : []);
 
             // Handle product ID from state if available
-            const state = location.state as { 
-                productId?: string; 
-                filterCategoryId?: string; 
+            const state = location.state as {
+                productId?: string;
+                filterCategoryId?: string;
                 openCreateModal?: boolean;
                 categoryId?: string;
             };
@@ -155,7 +157,7 @@ export function ProductsPage() {
 
         } catch (err) {
             console.error('Failed to load data', err);
-            toast.error('Failed to load products');
+            toast.error(t('products.messages.loadFailed'));
         } finally {
             setIsLoading(false);
         }
@@ -178,18 +180,18 @@ export function ProductsPage() {
     const handleDelete = async (id: string) => {
         setConfirmConfig({
             isOpen: true,
-            title: 'Delete Product',
-            message: 'Are you sure you want to delete this product? This action cannot be undone.',
+            title: t('products.delete.title'),
+            message: t('products.delete.message'),
             type: 'danger',
             onConfirm: async () => {
                 try {
                     await api.delete(`/api/items/${id}`);
-                    toast.success('Product deleted');
+                    toast.success(t('products.messages.deleted'));
                     fetchData(); // Refresh list
                     setShowModal(false); // Close modal if open
                 } catch (err) {
                     console.error('Delete error', err);
-                    toast.error('Failed to delete product');
+                    toast.error(t('products.messages.deleteFailed'));
                 } finally {
                     setConfirmConfig(prev => ({ ...prev, isOpen: false }));
                 }
@@ -226,16 +228,16 @@ export function ProductsPage() {
 
             if (editingProduct) {
                 await api.patch(`/api/items/${editingProduct.id}`, formData, config);
-                toast.success('Product updated');
+                toast.success(t('products.messages.updated'));
             } else {
                 await api.post('/api/items', formData, config);
-                toast.success('Product created');
+                toast.success(t('products.messages.created'));
             }
             setShowModal(false);
             fetchData();
         } catch (err) {
             console.error('Save error', err);
-            toast.error('Failed to save product');
+            toast.error(t('products.messages.saveFailed'));
         } finally {
             setIsSubmitting(false);
         }
@@ -243,13 +245,19 @@ export function ProductsPage() {
 
     const handleExport = () => {
         // Placeholder for export functionality
-        const headers = ['Name', 'Price', 'Category', 'Stock'];
+        const headers = [
+            t('products.table.name'),
+            t('products.table.price'),
+            t('products.table.category'),
+            t('products.table.stock')
+        ];
         const productsToExport = Array.isArray(filteredProducts) ? filteredProducts : [];
         const csvContent = [
             headers.join(','),
             ...productsToExport.map(p => {
-                const catName = (Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || 'Uncategorized';
-                return `"${p.name}",${p.price},"${catName}",${p.trackStock ? p.availableStock : 'Unlimited'}`;
+                const catName = (Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized');
+                const stockVal = p.trackStock ? p.availableStock : t('products.table.unlimited');
+                return `"${p.name}",${p.price},"${catName}",${stockVal}`;
             })
         ].join('\n');
 
@@ -261,6 +269,7 @@ export function ProductsPage() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        toast.success(t('products.messages.exportDownloaded'));
     };
 
     const handleSort = (key: keyof Product | 'category') => {
@@ -399,29 +408,29 @@ export function ProductsPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                            Menu
+                            {t('products.title')}
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Products</h1>
-                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">Manage items and stock.</p>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('products.title')}</h1>
+                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">{t('products.subtitle')}</p>
                 </div>
 
                 <div className="flex items-center gap-2 sm:gap-3">
                     <button
                         onClick={handleExport}
                         className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm group"
-                        title="Export to CSV"
+                        title={t('orders.export')}
                     >
                         <Download size={18} className="group-hover:text-paymint-green transition-colors" />
-                        <span className="font-bold text-xs sm:text-sm hidden sm:inline">Export to CSV</span>
+                        <span className="font-bold text-xs sm:text-sm hidden sm:inline">{t('orders.export')}</span>
                     </button>
                     <button
                         onClick={handleCreateNew}
                         className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-xs sm:text-sm hover:bg-emerald-400 transition-all shadow-lg active:scale-95"
                     >
                         <Plus size={18} strokeWidth={2.5} />
-                        <span className="hidden xs:inline">Add Product</span>
-                        <span className="xs:hidden">Add</span>
+                        <span className="hidden xs:inline">{t('products.addProduct')}</span>
+                        <span className="xs:hidden">{t('common.add')}</span>
                     </button>
                 </div>
             </div>
@@ -434,7 +443,7 @@ export function ProductsPage() {
                 {/* Search */}
                 <div className="relative flex-1">
                     <SearchInput
-                        placeholder="Search Products..."
+                        placeholder={t('products.searchPlaceholder')}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onClear={() => setSearchQuery('')}
@@ -451,8 +460,8 @@ export function ProductsPage() {
                         >
                             <span>
                                 {selectedCategoryId === 'all'
-                                    ? 'All Items'
-                                    : categories.find(c => c.id === selectedCategoryId)?.name || 'Select Category'}
+                                    ? t('products.all')
+                                    : categories.find(c => c.id === selectedCategoryId)?.name || t('common.select') + ' ' + t('products.table.category')}
                             </span>
                             <ChevronDown
                                 size={16}
@@ -474,7 +483,7 @@ export function ProductsPage() {
                                             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" size={12} />
                                             <input
                                                 type="text"
-                                                placeholder="Search..."
+                                                placeholder={t('common.search')}
                                                 value={categorySearchQuery}
                                                 onChange={(e) => setCategorySearchQuery(e.target.value)}
                                                 onClick={(e) => e.stopPropagation()}
@@ -494,7 +503,7 @@ export function ProductsPage() {
                                                 : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5'
                                                 }`}
                                         >
-                                            All Items
+                                            {t('products.all')}
                                             {selectedCategoryId === 'all' && <Check size={14} />}
                                         </button>
 
@@ -556,8 +565,8 @@ export function ProductsPage() {
                             <Package size={18} className="sm:w-5 sm:h-5" />
                         </div>
                         <div className="flex items-center gap-1">
-                            <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">Total</span>
-                            <QuickInfo text="Total count of unique products. Click to show all." />
+                            <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">{t('products.stats.total')}</span>
+                            <QuickInfo text={t('products.stats.totalDesc') || "Total count of unique products. Click to show all."} />
                         </div>
                     </div>
                     <p className={`text-2xl sm:text-3xl font-black ${stockFilter === 'all' ? 'text-blue-500' : 'text-gray-900 dark:text-white'}`}>
@@ -578,8 +587,8 @@ export function ProductsPage() {
                             <AlertCircle size={18} className="sm:w-5 sm:h-5" />
                         </div>
                         <div className="flex items-center gap-1">
-                            <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">Low</span>
-                            <QuickInfo text="Products with stock at yellow warning level. Click to filter." />
+                            <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">{t('products.stats.low')}</span>
+                            <QuickInfo text={t('products.stats.lowDesc') || "Products with stock at yellow warning level. Click to filter."} />
                         </div>
                     </div>
                     <p className="text-2xl sm:text-3xl font-black text-[#ffc107]">
@@ -600,8 +609,8 @@ export function ProductsPage() {
                             <AlertCircle size={18} className="sm:w-5 sm:h-5" />
                         </div>
                         <div className="flex items-center gap-1">
-                            <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">Critical</span>
-                            <QuickInfo text="Products with stock at critical red level. Click to filter." />
+                            <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">{t('products.stats.critical')}</span>
+                            <QuickInfo text={t('products.stats.criticalDesc') || "Products with stock at critical red level. Click to filter."} />
                         </div>
                     </div>
                     <p className="text-2xl sm:text-3xl font-black text-[#D55263]">
@@ -622,8 +631,8 @@ export function ProductsPage() {
                             <Package size={18} className="sm:w-5 sm:h-5" />
                         </div>
                         <div className="flex items-center gap-1">
-                            <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">Out of Stock</span>
-                            <QuickInfo text="Products with zero or negative stock. Click to filter." />
+                            <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">{t('products.stats.outOfStock')}</span>
+                            <QuickInfo text={t('products.stats.outOfStockDesc') || "Products with zero or negative stock. Click to filter."} />
                         </div>
                     </div>
                     <p className="text-2xl sm:text-3xl font-black text-slate-500">
@@ -639,14 +648,14 @@ export function ProductsPage() {
                     <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
                         <Package className="w-10 h-10 text-gray-300" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No products found</h3>
-                    <p className="text-sm font-bold text-gray-500 max-w-xs mb-6">Adjust search or add a product.</p>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('products.messages.noProducts')}</h3>
+                    <p className="text-sm font-bold text-gray-500 max-w-xs mb-6">{t('products.messages.noProductsDesc')}</p>
                     <button
                         onClick={handleCreateNew}
                         className="flex items-center gap-2 px-6 py-3 bg-paymint-green text-black font-bold text-xs rounded-xl hover:bg-emerald-400 transition-all tracking-widest"
                     >
                         <Plus size={16} />
-                        Add First Product
+                        {t('products.messages.addFirst')}
                     </button>
                 </div>
             ) : (
@@ -676,19 +685,19 @@ export function ProductsPage() {
                                             <div className="flex items-start justify-between mb-2 gap-2">
                                                 <h3 className="font-bold text-sm text-gray-900 dark:text-white leading-tight line-clamp-2">{p.name}</h3>
                                                 <span className="text-xs font-black tracking-widest text-gray-400 bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded-md whitespace-nowrap shrink-0">
-                                                    {categories.find(c => c.id === p.categoryId)?.name || 'Uncategorized'}
+                                                    {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
                                                 </span>
                                             </div>
                                             {p.description && <p className="text-xs text-gray-500 line-clamp-2 mb-3 flex-1">{p.description}</p>}
                                             <div className="border-t border-gray-100 dark:border-white/5 pt-3 flex items-center justify-between mt-auto">
                                                 <div>
-                                                    <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">Price</p>
+                                                    <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">{t('products.table.price')}</p>
                                                     <p className="text-sm font-black text-paymint-green">
                                                         {formatAmount(p.price)}
                                                     </p>
                                                 </div>
                                                 <div className="text-right">
-                                                    <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">Stock</p>
+                                                    <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">{t('products.table.stock')}</p>
                                                     {p.trackStock ? (
                                                         <div className={`text-xs font-bold flex items-center justify-end gap-1 ${getStockColor(p.availableStock || 0, p.lowStockThresholdRed, p.lowStockThresholdYellow)}`}>
                                                             {(p.availableStock || 0) <= (p.lowStockThresholdYellow || 5) && <AlertCircle size={10} />}
@@ -711,13 +720,13 @@ export function ProductsPage() {
                                 <table className="w-full">
                                     <thead className="bg-gray-50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
                                         <tr>
-                                            <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest w-16">Image</th>
+                                            <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest w-16">{t('products.table.image')}</th>
                                             <th
                                                 className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
                                                 onClick={() => handleSort('name')}
                                             >
                                                 <div className="flex items-center gap-1">
-                                                    Name
+                                                    {t('products.table.name')}
                                                     {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                                                 </div>
                                             </th>
@@ -726,7 +735,7 @@ export function ProductsPage() {
                                                 onClick={() => handleSort('category')}
                                             >
                                                 <div className="flex items-center gap-1">
-                                                    Category
+                                                    {t('products.table.category')}
                                                     {sortConfig?.key === 'category' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                                                 </div>
                                             </th>
@@ -735,7 +744,7 @@ export function ProductsPage() {
                                                 onClick={() => handleSort('availableStock')}
                                             >
                                                 <div className="flex items-center gap-1">
-                                                    Stock
+                                                    {t('products.table.stock')}
                                                     {sortConfig?.key === 'availableStock' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                                                 </div>
                                             </th>
@@ -744,11 +753,11 @@ export function ProductsPage() {
                                                 onClick={() => handleSort('price')}
                                             >
                                                 <div className="flex items-center justify-end gap-1">
-                                                    Price
+                                                    {t('products.table.price')}
                                                     {sortConfig?.key === 'price' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                                                 </div>
                                             </th>
-                                            <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest w-24">Actions</th>
+                                            <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest w-24">{t('owner.locations.actions')}</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -768,13 +777,13 @@ export function ProductsPage() {
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <span className="inline-flex px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-500">
-                                                        {categories.find(c => c.id === p.categoryId)?.name || 'Uncategorized'}
+                                                        {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     {p.trackStock ? (
                                                         <span className={`text-xs font-bold ${getStockColor(p.availableStock || 0, p.lowStockThresholdRed, p.lowStockThresholdYellow, true)}`}>
-                                                            {p.availableStock} Units
+                                                            {t('products.table.units', { count: p.availableStock || 0 })}
                                                         </span>
                                                     ) : (
                                                         <div className="inline-flex items-center px-2 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200/50 dark:border-white/5">
@@ -824,13 +833,13 @@ export function ProductsPage() {
             />
 
             <ConfirmModal
-                isOpen={confirmConfig.isOpen}
-                onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
-                onConfirm={confirmConfig.onConfirm}
-                title={confirmConfig.title}
-                message={confirmConfig.message}
-                type={confirmConfig.type}
-            />
+        isOpen={confirmConfig.isOpen}
+        onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
+        onConfirm={confirmConfig.onConfirm}
+        title={t('products.delete.title')}
+        message={t('products.delete.message')}
+        type={confirmConfig.type}
+      />
         </div>
 
     );

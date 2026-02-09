@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-
+import { useTranslation } from 'react-i18next';
 import { Plus, Percent, DollarSign, Trash2, Edit2, Tag, ShieldAlert, Award, Grid3X3, List, ArrowUpDown } from 'lucide-react';
 import api from '../../config/api';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -31,6 +31,7 @@ type ViewMode = 'grid' | 'list';
 type SortKey = 'name' | 'value' | 'type' | 'adminOnly';
 
 export function DiscountsPage() {
+  const { t } = useTranslation();
   const { formatAmount } = useCurrency();
   const [discounts, setDiscounts] = useState<Discount[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -80,7 +81,7 @@ export function DiscountsPage() {
       }));
       setDiscounts(mappedDiscounts);
     } catch {
-      toast.error('Failed to load discounts');
+      toast.error(t('common.error'));
     } finally {
       setIsLoading(false);
     }
@@ -163,18 +164,18 @@ export function DiscountsPage() {
 
       if (editingDiscount) {
         await api.put(`/app-settings/discounts/${editingDiscount.id}`, payload);
-        toast.success('Discount updated');
+        toast.success(t('common.success'));
       } else {
         await api.post('/app-settings/discounts', payload);
-        toast.success('Discount created');
+        toast.success(t('common.success'));
       }
 
       setShowModal(false);
       fetchDiscounts();
     } catch (err) {
-      toast.error((err as ApiError).response?.data?.message || 'Failed to save discount');
+      toast.error((err as ApiError).response?.data?.message || t('common.error'));
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
@@ -183,16 +184,16 @@ export function DiscountsPage() {
   const handleDelete = async (discountId: string, name: string) => {
     setConfirmConfig({
       isOpen: true,
-      title: 'Delete Discount',
-      message: `Are you sure you want to delete "${name}"?`,
+      title: t('common.delete'),
+      message: `${t('common.confirm')} "${name}"?`,
       type: 'danger',
       onConfirm: async () => {
         try {
           await api.delete(`/app-settings/discounts/${discountId}`);
-          toast.success('Discount deleted');
+          toast.success(t('common.success'));
           fetchDiscounts();
         } catch {
-          toast.error('Failed to delete discount');
+          toast.error(t('common.error'));
         }
       }
     });
@@ -220,12 +221,12 @@ export function DiscountsPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              Discounts and Loyalty Programs
+              {t('dashboard.menu.discountsAndLoyalty')}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Discounts</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('discounts.title')}</h1>
           <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
-            Manage deals and codes
+            {t('dashboard.menu.discounts')}
           </p>
         </div>
 
@@ -235,7 +236,7 @@ export function DiscountsPage() {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20"
           >
             <Plus size={18} />
-            <span>Add Discount</span>
+            <span>{t('discounts.newDiscount')}</span>
           </button>
         </div>
       </div>
@@ -247,7 +248,7 @@ export function DiscountsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onClear={() => setSearchQuery('')}
-            placeholder="Search discounts..."
+            placeholder={t('common.search')}
           />
         </div>
 
@@ -256,14 +257,14 @@ export function DiscountsPage() {
           <button
             onClick={() => setViewMode('grid')}
             className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-            title="Grid View"
+            title={t('common.view')}
           >
             <Grid3X3 size={18} />
           </button>
           <button
             onClick={() => setViewMode('list')}
             className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-            title="List View"
+            title={t('common.view')}
           >
             <List size={18} />
           </button>
@@ -276,7 +277,7 @@ export function DiscountsPage() {
           <div className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex items-center justify-between transition-all overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
             <div className="relative z-10">
-              <p className="text-xs font-black text-gray-400 tracking-widest">Total</p>
+              <p className="text-xs font-black text-gray-400 tracking-widest">{t('common.all')}</p>
               <p className="text-3xl font-black text-gray-900 dark:text-white mt-1">{stats.total}</p>
             </div>
             <div className="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center relative z-10 transition-transform">
@@ -287,7 +288,7 @@ export function DiscountsPage() {
           <div className="group relative bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 flex items-center justify-between transition-all overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
             <div className="relative z-10">
-              <p className="text-xs font-black text-gray-400 tracking-widest">Manager Only</p>
+              <p className="text-xs font-black text-gray-400 tracking-widest">{t('discounts.form.managerOnly')}</p>
               <p className="text-3xl font-black text-amber-600 dark:text-yellow-400 mt-1">{stats.adminOnly}</p>
             </div>
             <div className="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center relative z-10 transition-transform">
@@ -307,10 +308,7 @@ export function DiscountsPage() {
           <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-[2rem] flex items-center justify-center mb-6">
             <Tag className="w-10 h-10 text-gray-300 dark:text-gray-600" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No discounts</h3>
-          <p className="text-sm font-bold text-gray-500 max-w-sm mb-8 mx-auto">
-            Create a discount to run a promotion.
-          </p>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('common.none')}</h3>
         </div>
       ) : (
         <div className="space-y-8">
@@ -348,15 +346,15 @@ export function DiscountsPage() {
 
                   <div className="relative z-10">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 truncate group-hover:text-paymint-green transition-colors" title={discount.name}>{discount.name}</h3>
-                    <p className="text-3xl font-black text-paymint-green mb-4 tracking-tight">{formatValue(discount)} <span className="text-xs font-bold text-gray-500 tracking-widest ml-1">Off</span></p>
+                    <p className="text-3xl font-black text-paymint-green mb-4 tracking-tight">{formatValue(discount)} <span className="text-xs font-bold text-gray-500 tracking-widest ml-1">{t('common.active')}</span></p>
 
                     <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100 dark:border-white/5">
                       <span className="px-2.5 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-xs text-gray-600 dark:text-gray-400 font-bold tracking-wider">
-                        {discount.type === 'percentage' ? 'Percentage' : 'Fixed'}
+                        {discount.type === 'percentage' ? t('attributes.filters.multi') : t('attributes.filters.single')}
                       </span>
                       {discount.adminOnly && (
                         <span className="px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-yellow-500/10 border border-amber-200 dark:border-yellow-500/20 text-xs text-amber-700 dark:text-yellow-500 font-bold tracking-wider">
-                          Manager Only
+                          {t('discounts.form.managerOnly')}
                         </span>
                       )}
                     </div>
@@ -376,7 +374,7 @@ export function DiscountsPage() {
                         onClick={() => handleSort('name')}
                       >
                         <div className="flex items-center gap-1">
-                          Name
+                          {t('common.search')}
                           {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
                       </th>
@@ -385,7 +383,7 @@ export function DiscountsPage() {
                         onClick={() => handleSort('value')}
                       >
                         <div className="flex items-center gap-1">
-                          Value
+                          {t('products.table.price')}
                           {sortConfig?.key === 'value' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
                       </th>
@@ -394,7 +392,7 @@ export function DiscountsPage() {
                         onClick={() => handleSort('type')}
                       >
                         <div className="flex items-center gap-1">
-                          Type
+                          {t('attributes.form.typeLabel')}
                           {sortConfig?.key === 'type' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
                       </th>
@@ -403,11 +401,11 @@ export function DiscountsPage() {
                         onClick={() => handleSort('adminOnly')}
                       >
                         <div className="flex items-center gap-1">
-                          Access
+                          {t('staff.form.accessLabel')}
                           {sortConfig?.key === 'adminOnly' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
                       </th>
-                      <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">Actions</th>
+                      <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('orders.table.actions')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -431,18 +429,18 @@ export function DiscountsPage() {
                           </td>
                           <td className="px-6 py-4">
                             <span className="px-2.5 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-xs text-gray-600 dark:text-gray-400 font-bold tracking-wider">
-                              {discount.type === 'percentage' ? 'Percentage' : 'Fixed'}
+                              {discount.type === 'percentage' ? t('attributes.filters.multi') : t('attributes.filters.single')}
                             </span>
                           </td>
                           <td className="px-6 py-4">
                             {discount.adminOnly ? (
                               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-yellow-500/10 border border-amber-200 dark:border-yellow-500/20 text-xs text-amber-700 dark:text-yellow-500 font-bold tracking-wide">
                                 <ShieldAlert size={10} />
-                                Manager Only
+                                {t('discounts.form.managerOnly')}
                               </span>
                             ) : (
                               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs text-gray-500 font-bold tracking-wide">
-                                All Users
+                                {t('common.all')}
                               </span>
                             )}
                           </td>
@@ -451,14 +449,14 @@ export function DiscountsPage() {
                               <button
                                 onClick={() => openEditModal(discount)}
                                 className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-90"
-                                title="Edit Discount"
+                                title={t('common.edit')}
                               >
                                 <Edit2 size={16} />
                               </button>
                               <button
                                 onClick={() => handleDelete(discount.id, discount.name)}
                                 className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-paymint-red/60 hover:text-paymint-red hover:bg-paymint-red/5 transition-all shadow-sm active:scale-90"
-                                title="Delete Discount"
+                                title={t('common.delete')}
                               >
                                 <Trash2 size={16} />
                               </button>
@@ -471,6 +469,38 @@ export function DiscountsPage() {
               </div>
             </div>
           )}
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
+        </div>
+      )}
+
+      {/* Discount Modal */}
+      <DiscountFormModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onSubmit={onSubmit}
+        onDelete={editingDiscount ? () => handleDelete(editingDiscount.id, editingDiscount.name) : undefined}
+        initialData={editingDiscount}
+        isSubmitting={isSubmitting}
+      />
+
+      <ConfirmModal
+        isOpen={confirmConfig.isOpen}
+        onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
+        onConfirm={confirmConfig.onConfirm}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        type={confirmConfig.type}
+        confirmText={confirmConfig.confirmText}
+        showCancel={confirmConfig.showCancel}
+      />
+    </div>
+  );
+}
 
           <Pagination
             currentPage={currentPage}

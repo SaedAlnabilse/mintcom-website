@@ -8,6 +8,7 @@ import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Check, Loader2 } from 'lucide
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { GoogleAuthButton, AuthDivider } from '../components/GoogleAuthButton';
+import { useTranslation } from 'react-i18next';
 
 // Paymint Logo imports
 import PaymintLogoGreen from '../assets/green-full-logo.svg';
@@ -32,6 +33,7 @@ const signUpSchema = z.object({
 type SignUpFormData = z.infer<typeof signUpSchema>;
 
 export function SignUpPage() {
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -106,22 +108,22 @@ export function SignUpPage() {
           <div className="w-16 h-16 bg-paymint-green/10 dark:bg-paymint-green/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <Check className="w-8 h-8 text-paymint-green" />
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">Check Your Email</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('auth.signup.checkEmail')}</h2>
           <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mb-6">
-            We've sent a verification link to <span className="text-gray-900 dark:text-white font-bold">{registeredEmail}</span>.
-            Please click the link to verify your account.
+            {t('auth.signup.verificationSent')} <span className="text-gray-900 dark:text-white font-bold">{registeredEmail}</span>.
+            {t('auth.signup.clickToVerify')}
           </p>
           <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 mb-6 border border-gray-100 dark:border-transparent">
             <p className="text-xs font-bold text-gray-500">
-              Didn't receive the email? Check your spam folder or{' '}
-              <button className="text-sm font-bold text-paymint-green hover:underline">resend verification</button>
+              {t('auth.signup.didntReceive')}{' '}
+              <button className="text-sm font-bold text-paymint-green hover:underline">{t('auth.signup.resendVerification')}</button>
             </p>
           </div>
           <Link
             to="/login"
             className="inline-flex items-center justify-center w-full bg-paymint-green text-black font-bold py-3 px-4 rounded-lg transition-colors shadow-lg shadow-paymint-green/20"
           >
-            Go to Login
+            {t('auth.signup.goToLogin')}
           </Link>
         </motion.div>
       </div>
@@ -146,8 +148,8 @@ export function SignUpPage() {
               className="bg-white dark:bg-gray-800 rounded-2xl p-8 flex flex-col items-center gap-4 shadow-2xl"
             >
               <Loader2 className="w-16 h-16 text-paymint-green animate-spin" />
-              <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Creating your account...</p>
-              <p className="text-xs font-bold text-gray-500">Please wait a moment</p>
+              <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.signup.creatingYourAccount')}</p>
+              <p className="text-xs font-bold text-gray-500">{t('auth.signup.pleaseWait')}</p>
             </motion.div>
           </motion.div>
         )}
@@ -165,7 +167,7 @@ export function SignUpPage() {
             className="inline-flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white mb-8 transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
+            {t('auth.signup.backButton')}
           </Link>
 
           <div className="mb-8">
@@ -181,8 +183,8 @@ export function SignUpPage() {
                 className="h-12 w-auto object-contain hidden dark:block"
               />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Sign up</h2>
-            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">Start free trial.</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">{t('auth.signup.title')}</h2>
+            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('auth.signup.subtitle')}</p>
           </div>
 
           {/* Google Sign-Up Button */}
@@ -199,7 +201,7 @@ export function SignUpPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="firstName" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
-                  FIRST NAME<span className="text-accent ml-1">*</span>
+                  {t('auth.signup.firstNameLabel')}<span className="text-accent ml-1">*</span>
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -221,7 +223,7 @@ export function SignUpPage() {
               </div>
               <div>
                 <label htmlFor="lastName" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
-                  LAST NAME<span className="text-accent ml-1">*</span>
+                  {t('auth.signup.lastNameLabel')}<span className="text-accent ml-1">*</span>
                 </label>
                 <input
                   {...register('lastName')}
@@ -242,7 +244,7 @@ export function SignUpPage() {
 
             <div>
               <label htmlFor="email" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
-                Email Address<span className="text-accent ml-1">*</span>
+                {t('auth.signup.emailLabel')}<span className="text-accent ml-1">*</span>
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -265,7 +267,7 @@ export function SignUpPage() {
 
             <div>
               <label htmlFor="password" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
-                Password<span className="text-accent ml-1">*</span>
+                {t('auth.signup.passwordLabel')}<span className="text-accent ml-1">*</span>
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -296,7 +298,7 @@ export function SignUpPage() {
 
             <div>
               <label htmlFor="confirmPassword" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
-                Confirm Password<span className="text-accent ml-1">*</span>
+                {t('auth.signup.confirmPasswordLabel')}<span className="text-accent ml-1">*</span>
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -330,14 +332,14 @@ export function SignUpPage() {
               disabled={isSubmitting}
               className="w-full bg-paymint-green text-black text-xs font-black tracking-widest hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-paymint-wait py-3 px-4 rounded-lg transition-colors shadow-lg shadow-paymint-green/20"
             >
-              {isSubmitting ? 'CREATING...' : 'SIGN UP'}
+              {isSubmitting ? t('auth.signup.creatingAccount') : t('auth.signup.signUpButton')}
             </button>
           </form>
 
           <p className="mt-6 text-center text-sm font-bold text-gray-600 dark:text-gray-300">
-            Have an account?{' '}
+            {t('auth.signup.haveAccount')}{' '}
             <Link to="/login" className="text-sm font-bold text-paymint-green hover:underline">
-              Log in
+              {t('auth.signup.logIn')}
             </Link>
           </p>
         </motion.div>
@@ -346,14 +348,14 @@ export function SignUpPage() {
       {/* Right Side - Benefits */}
       <div className="hidden lg:flex flex-1 bg-paymint-green/5 dark:bg-gradient-to-br dark:from-paymint-green/20 dark:to-paymint-green/5 items-center justify-center p-8 transition-colors duration-300">
         <div className="max-w-md">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-8">All features included</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-8">{t('auth.signup.allFeaturesIncluded')}</h2>
           <div className="space-y-6">
             {[
-              { title: '7-Day Free Trial', desc: 'Try all features with no commitment' },
-              { title: 'Unlimited Employees', desc: 'Add as many staff members as you need' },
-              { title: 'Unlimited Devices', desc: 'Use on any device, anywhere' },
-              { title: 'Real-time Analytics', desc: 'Track sales and performance instantly' },
-              { title: 'Multi-Location Support', desc: 'Manage multiple establishments' },
+              { title: t('auth.signup.feature1Title'), desc: t('auth.signup.feature1Desc') },
+              { title: t('auth.signup.feature2Title'), desc: t('auth.signup.feature2Desc') },
+              { title: t('auth.signup.feature3Title'), desc: t('auth.signup.feature3Desc') },
+              { title: t('auth.signup.feature4Title'), desc: t('auth.signup.feature4Desc') },
+              { title: t('auth.signup.feature5Title'), desc: t('auth.signup.feature5Desc') },
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-4">
                 <div className="w-6 h-6 rounded-full bg-paymint-green/20 flex items-center justify-center flex-shrink-0 mt-0.5">

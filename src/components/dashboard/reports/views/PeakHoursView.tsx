@@ -4,12 +4,14 @@ import type { PeakHour } from '../../../../types';
 import { ResponsiveContainer, BarChart, Bar, CartesianGrid, XAxis, Tooltip } from 'recharts';
 import { useTheme } from '../../../../context/ThemeContext';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface PeakHoursViewProps {
   peakHours: PeakHour[];
 }
 
 export const PeakHoursView = React.memo(function PeakHoursView({ peakHours }: PeakHoursViewProps) {
+  const { t } = useTranslation();
   const { formatAmount } = useCurrency();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
@@ -22,8 +24,8 @@ export const PeakHoursView = React.memo(function PeakHoursView({ peakHours }: Pe
             <Clock size={20} />
           </div>
           <div>
-            <h3 className="text-base font-bold text-gray-900 dark:text-white">Busy Times</h3>
-            <p className="text-xs font-bold text-gray-500 tracking-widest">Sales by hour</p>
+            <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('orders.reports.peakHours.title')}</h3>
+            <p className="text-xs font-bold text-gray-500 tracking-widest">{t('orders.reports.peakHours.subtitle')}</p>
           </div>
         </div>
       </div>
@@ -58,9 +60,9 @@ export const PeakHoursView = React.memo(function PeakHoursView({ peakHours }: Pe
                 }}
                 itemStyle={{ color: '#f97316', fontWeight: 'bold', fontSize: '12px', textTransform: 'capitalize' }}
                 labelStyle={{ color: isDark ? '#fff' : '#000', fontWeight: 'bold', marginBottom: '4px', fontSize: '10px' }}
-                formatter={(val: any) => [formatAmount(val), 'Revenue']}
+                formatter={(val: any) => [formatAmount(val), t('orders.reports.peakHours.revenue')]}
               />
-              <Bar dataKey="total" name="Revenue" fill="url(#barGradient)" radius={[6, 6, 0, 0]} barSize={40} animationDuration={1500} />
+              <Bar dataKey="total" name={t('orders.reports.peakHours.revenue')} fill="url(#barGradient)" radius={[6, 6, 0, 0]} barSize={40} animationDuration={1500} />
             </BarChart>
           </ResponsiveContainer>
         ) : (
@@ -69,8 +71,8 @@ export const PeakHoursView = React.memo(function PeakHoursView({ peakHours }: Pe
               <Clock size={36} className="text-gray-400 dark:text-gray-600" />
             </div>
             <div className="text-center">
-              <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">No traffic data</p>
-              <p className="text-xs text-gray-500 mt-1">There is no transaction activity recorded for the selected period.</p>
+              <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('orders.reports.peakHours.noData')}</p>
+              <p className="text-xs text-gray-500 mt-1">{t('orders.reports.peakHours.noDataDesc')}</p>
             </div>
           </div>
         )}

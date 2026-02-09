@@ -4,6 +4,7 @@ import { Wallet, CreditCard } from 'lucide-react';
 import { PieChart as RechartsPie, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { useCurrency } from '../../../context/CurrencyContext';
 import { useTheme } from '../../../context/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 interface PaymentMethodsBreakdownProps {
   paymentMethodBreakdown: { name: string; value: number }[];
@@ -13,6 +14,7 @@ interface PaymentMethodsBreakdownProps {
 const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899'];
 
 export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdown({ paymentMethodBreakdown, viewMode }: PaymentMethodsBreakdownProps) {
+  const { t } = useTranslation();
   const { locationSlug } = useParams();
   const navigate = useNavigate();
   const { formatAmount } = useCurrency();
@@ -33,9 +35,9 @@ export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdo
               <Wallet size={20} />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">Payment Methods</h3>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('dashboard.paymentMethods.title')}</h3>
               <p className="text-xs font-bold text-gray-500 tracking-wide">
-                {viewMode === 'current_shift' ? 'This Shift' : viewMode === 'previous_shift' ? 'Previous Shift' : 'Last 24h'} Distribution
+                {viewMode === 'current_shift' ? t('dashboard.stats.thisShift') : viewMode === 'previous_shift' ? t('dashboard.stats.previousShift') : t('dashboard.stats.last24h')} {t('dashboard.paymentMethods.distribution')}
               </p>
             </div>
           </div>
@@ -43,7 +45,7 @@ export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdo
             onClick={() => navigate(`/dashboard/${locationSlug}/reports/payments`)}
             className="text-xs font-bold text-blue-500 hover:underline tracking-wide"
           >
-            View All
+            {t('common.viewAll')}
           </button>
         </div>
 
@@ -93,7 +95,7 @@ export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdo
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-gray-400">
               <CreditCard size={32} className="mb-3 opacity-20" />
-              <p className="text-xs font-bold tracking-wide">No payment data</p>
+              <p className="text-xs font-bold tracking-wide">{t('dashboard.paymentMethods.noData')}</p>
             </div>
           )}
         </div>

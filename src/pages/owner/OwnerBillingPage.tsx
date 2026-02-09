@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Plus, CreditCard, DollarSign, Trash2, Star, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye } from 'lucide-react';
 import api from '../../config/api';
 import { AddPaymentMethodModal } from '../../components/AddPaymentMethodModal';
@@ -41,6 +42,7 @@ interface BillingData {
 }
 
 export function OwnerBillingPage() {
+    const { t } = useTranslation();
     const [billingData, setBillingData] = useState<BillingData | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isAddCardModalOpen, setIsAddCardModalOpen] = useState(false);
@@ -90,7 +92,7 @@ export function OwnerBillingPage() {
             setBillingData(response.data);
         } catch (err) {
             console.error('Failed to fetch billing info:', err);
-            if (!silent) toast.error('Failed to load billing information');
+            if (!silent) toast.error(t('owner.billing.failedToLoad'));
         } finally {
             if (!silent) setIsLoading(false);
         }
@@ -132,10 +134,10 @@ export function OwnerBillingPage() {
     const handleSetDefaultCard = async (cardId: string) => {
         try {
             await api.post(`/api/accounts/cards/${cardId}/set-default`);
-            toast.success('Default card updated');
+            toast.success(t('owner.billing.cardUpdated'));
             fetchBillingInfo();
         } catch (err: any) {
-            toast.error(err.response?.data?.message || 'Failed to update default card');
+            toast.error(err.response?.data?.message || t('owner.billing.cardUpdateFailed'));
         }
     };
 
@@ -164,7 +166,7 @@ export function OwnerBillingPage() {
                 toast.success(res.data.message);
                 fetchBillingInfo();
             } catch (err: any) {
-                toast.error(err.response?.data?.message || 'Failed to resume subscription');
+                toast.error(err.response?.data?.message || t('owner.billing.resumeFailed'));
             }
         } else {
             setSecurityModal({
@@ -190,7 +192,7 @@ export function OwnerBillingPage() {
             return (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-lg text-xs font-bold tracking-widest text-amber-500">
                     <Calendar size={12} />
-                    Cancels Soon
+                    {t('owner.billing.cancelsSoon')}
                 </span>
             );
         }
@@ -200,27 +202,27 @@ export function OwnerBillingPage() {
                 return (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-xs font-bold tracking-widest text-emerald-500">
                         <Zap size={12} />
-                        Trial
+                        {t('owner.locations.trial')}
                     </span>
                 );
             case 'ACTIVE':
                 return (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg text-xs font-bold tracking-widest text-paymint-green">
                         <CheckCircle2 size={12} />
-                        Active
+                        {t('common.active')}
                     </span>
                 );
             case 'CANCELED':
                 return (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-xs font-bold tracking-widest text-red-500">
                         <XCircle size={12} />
-                        Canceled
+                        {t('owner.locations.canceled')}
                     </span>
                 );
             default:
                 return (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-500/10 border border-gray-500/20 rounded-lg text-xs font-bold tracking-widest text-gray-500">
-                        {est.subscriptionStatus ? est.subscriptionStatus.charAt(0).toUpperCase() + est.subscriptionStatus.slice(1).toLowerCase() : 'Unknown'}
+                        {est.subscriptionStatus ? est.subscriptionStatus.charAt(0).toUpperCase() + est.subscriptionStatus.slice(1).toLowerCase() : t('common.error')}
                     </span>
                 );
         }
@@ -243,18 +245,18 @@ export function OwnerBillingPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                            Billing
+                            {t('dashboard.menu.billing')}
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Billing</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.billing.title')}</h1>
                     <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
-                        Manage payments and subscriptions
+                        {t('owner.billing.subtitle')}
                     </p>
                 </div>
 
                 <div className="flex items-center gap-6">
                     <div className="text-right hidden sm:block">
-                        <p className="text-xs font-black text-gray-400 tracking-widestst mb-1">Monthly Cost</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widestst mb-1">{t('owner.billing.monthlyCost')}</p>
                         <div className="flex items-baseline justify-end gap-1">
                             <span className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">${totalMonthlyCost.toFixed(2)}</span>
                             <span className="text-xs font-bold text-gray-400">/mo</span>
@@ -266,7 +268,7 @@ export function OwnerBillingPage() {
                         className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
                     >
                         <Plus size={18} />
-                        <span>Add Payment Method</span>
+                        <span>{t('owner.billing.addPaymentMethod')}</span>
                     </button>
                 </div>
             </div>
@@ -274,13 +276,13 @@ export function OwnerBillingPage() {
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
-                    { label: 'Cards', value: billingData?.savedCards.length || 0, icon: CreditCard, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: 'Plans', value: billingData?.establishments.filter(e => e.subscriptionStatus === 'ACTIVE' || e.subscriptionStatus === 'TRIAL').length || 0, icon: Zap, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+                    { label: t('owner.billing.cards'), value: billingData?.savedCards.length || 0, icon: CreditCard, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                    { label: t('owner.billing.plans'), value: billingData?.establishments.filter(e => e.subscriptionStatus === 'ACTIVE' || e.subscriptionStatus === 'TRIAL').length || 0, icon: Zap, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
                     {
-                        label: 'Next Bill',
+                        label: t('owner.billing.nextBill'),
                         value: billingData?.nextInvoiceDate
-                            ? new Date(billingData.nextInvoiceDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                            : 'No bill',
+                            ? new Date(billingData.nextInvoiceDate).toLocaleDateString(t('common.language') === 'Arabic' ? 'ar-SA' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                            : t('owner.billing.noBill'),
                         icon: Calendar,
                         color: 'text-purple-500',
                         bg: 'bg-purple-500/10'
@@ -312,7 +314,7 @@ export function OwnerBillingPage() {
                 <div className="lg:col-span-1 space-y-6">
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <CreditCard size={18} className="text-paymint-green" />
-                        Cards
+                        {t('owner.billing.cards')}
                     </h2>
 
                     {isLoading ? (
@@ -331,7 +333,7 @@ export function OwnerBillingPage() {
                             <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center">
                                 <Plus size={24} />
                             </div>
-                            <span className="text-xs font-bold tracking-wide">Add Card</span>
+                            <span className="text-xs font-bold tracking-wide">{t('owner.billing.addCard')}</span>
                         </motion.button>
                     ) : (
                         <div className="space-y-4">
@@ -351,7 +353,7 @@ export function OwnerBillingPage() {
 
                                     <div className="relative z-10 flex justify-between items-start">
                                         <div className="space-y-1.5">
-                                            <p className="text-xs font-black text-gray-400 tracking-widest">Card</p>
+                                            <p className="text-xs font-black text-gray-400 tracking-widest">{t('owner.billing.addCard')}</p>
                                             <p className="text-xl font-bold tracking-[0.15em] text-gray-900 dark:text-white">
                                                 <span className="opacity-30">••••</span> {card.last4}
                                             </p>
@@ -361,7 +363,7 @@ export function OwnerBillingPage() {
                                             {card.isDefault && (
                                                 <div className="flex items-center gap-1.5 px-2.5 py-1 bg-paymint-green text-black text-[8px] font-black rounded-full tracking-widest shadow-lg shadow-paymint-green/20">
                                                     <div className="w-1 h-1 rounded-full bg-black animate-pulse" />
-                                                    Primary
+                                                    {t('owner.billing.primary')}
                                                 </div>
                                             )}
                                             {card.brand === 'VISA' && (
@@ -374,11 +376,11 @@ export function OwnerBillingPage() {
 
                                     <div className="relative z-10 flex justify-between items-end">
                                         <div className="space-y-1">
-                                            <p className="text-xs font-black text-gray-400 tracking-widest">Name</p>
+                                            <p className="text-xs font-black text-gray-400 tracking-widest">{t('categories.form.nameLabel')}</p>
                                             <p className="font-bold tracking-wider text-xs text-gray-800 dark:text-gray-200">{card.cardholderName || 'User'}</p>
                                         </div>
                                         <div className="text-right space-y-1">
-                                            <p className="text-xs font-black text-gray-400 tracking-widest">Expires</p>
+                                            <p className="text-xs font-black text-gray-400 tracking-widest">{t('owner.billing.expires')}</p>
                                             <p className="font-bold text-xs text-gray-800 dark:text-gray-200">{card.expMonth}/{card.expYear.toString().slice(-2)}</p>
                                         </div>
                                     </div>
@@ -389,7 +391,7 @@ export function OwnerBillingPage() {
                                             <button
                                                 onClick={() => handleSetDefaultCard(card.id)}
                                                 className="w-12 h-12 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-400 hover:text-paymint-green hover:border-paymint-green/50 flex items-center justify-center transition-all shadow-xl hover:scale-110"
-                                                title="Set as Default"
+                                                title={t('owner.billing.setDefault')}
                                             >
                                                 <Star size={20} />
                                             </button>
@@ -398,12 +400,12 @@ export function OwnerBillingPage() {
                                             <button
                                                 onClick={() => handleDeleteCard(card.id, card.last4)}
                                                 className="w-12 h-12 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-400 hover:text-red-500 hover:border-red-500/50 flex items-center justify-center transition-all shadow-xl hover:scale-110"
-                                                title="Delete Card"
+                                                title={t('owner.billing.deleteCard')}
                                             >
                                                 <Trash2 size={20} />
                                             </button>
                                         ) : (
-                                            <div className="w-12 h-12 rounded-2xl bg-white/50 dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-300 dark:text-gray-600 flex items-center justify-center cursor-not-allowed" title="Linked to active subscriptions">
+                                            <div className="w-12 h-12 rounded-2xl bg-white/50 dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-300 dark:text-gray-600 flex items-center justify-center cursor-not-allowed" title={t('owner.billing.linkedNote')}>
                                                 <Trash2 size={20} />
                                             </div>
                                         )}
@@ -418,16 +420,16 @@ export function OwnerBillingPage() {
                 <div className="lg:col-span-2 space-y-6">
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <DollarSign size={18} className="text-paymint-green" />
-                        Subscriptions
+                        {t('owner.billing.plans')}
                     </h2>
 
                     <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-visible shadow-sm">
                         {/* Table Header */}
                         <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest uppercase">
-                            <div className="col-span-4">Service</div>
-                            <div className="col-span-3">Status</div>
-                            <div className="col-span-2">Cost</div>
-                            <div className="col-span-3 text-center">Payment</div>
+                            <div className="col-span-4">{t('owner.billing.service')}</div>
+                            <div className="col-span-3">{t('owner.billing.status')}</div>
+                            <div className="col-span-2">{t('owner.billing.cost')}</div>
+                            <div className="col-span-3 text-center">{t('owner.billing.payment')}</div>
                         </div>
 
                         {isLoading ? (
@@ -438,7 +440,7 @@ export function OwnerBillingPage() {
                             </div>
                         ) : billingData?.establishments.length === 0 ? (
                             <div className="text-center py-20">
-                                <p className="text-sm font-bold text-gray-500">No active subscriptions</p>
+                                <p className="text-sm font-bold text-gray-500">{t('owner.billing.noSubscriptions')}</p>
                             </div>
                         ) : (
                             <div className="divide-y divide-gray-100 dark:divide-white/5">
@@ -454,7 +456,7 @@ export function OwnerBillingPage() {
                                             </div>
                                             <div>
                                                 <h3 className="text-sm font-bold text-gray-900 dark:text-white">{est.name}</h3>
-                                                <p className="text-xs font-bold text-gray-500">Standard Plan</p>
+                                                <p className="text-xs font-bold text-gray-500">{t('owner.billing.standardPlan')}</p>
                                             </div>
                                         </div>
 
@@ -472,7 +474,7 @@ export function OwnerBillingPage() {
                                         {/* Payment & Actions */}
                                         <div className="col-span-3 flex items-center justify-center relative">
                                             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
-                                                {est.paymentCard ? `•••• ${est.paymentCard.last4}` : 'No card'}
+                                                {est.paymentCard ? `•••• ${est.paymentCard.last4}` : t('owner.billing.noCard')}
                                             </span>
 
                                             <div className="absolute right-0">
@@ -500,7 +502,7 @@ export function OwnerBillingPage() {
                                                                     onClick={() => handleStopTrial(est.id, est.name)}
                                                                     className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 tracking-wide transition-colors"
                                                                 >
-                                                                    Stop Trial
+                                                                    {t('owner.billing.stopTrial')}
                                                                 </button>
                                                             )}
                                                             {est.subscriptionStatus === 'ACTIVE' && !est.cancelAtPeriodEnd && (
@@ -508,7 +510,7 @@ export function OwnerBillingPage() {
                                                                     onClick={() => handleCancelSubscription(est.id, est.name)}
                                                                     className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 tracking-wide transition-colors"
                                                                 >
-                                                                    Cancel Sub
+                                                                    {t('owner.billing.cancelSub')}
                                                                 </button>
                                                             )}
                                                             {(est.cancelAtPeriodEnd || est.subscriptionStatus === 'CANCELED') && (
@@ -516,7 +518,7 @@ export function OwnerBillingPage() {
                                                                     onClick={() => handleResumeSubscription(est.id, est.name, est.cancelAtPeriodEnd)}
                                                                     className="w-full px-4 py-3 text-left text-xs font-bold text-paymint-green hover:bg-paymint-green/10 tracking-wide transition-colors"
                                                                 >
-                                                                    {est.subscriptionStatus === 'CANCELED' ? 'Reactivate ($20)' : 'Resume'}
+                                                                    {est.subscriptionStatus === 'CANCELED' ? t('owner.billing.reactivate') : t('owner.billing.resume')}
                                                                 </button>
                                                             )}
                                                             <button
@@ -524,7 +526,7 @@ export function OwnerBillingPage() {
                                                                 className="w-full px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 tracking-wide transition-colors flex items-center gap-2"
                                                             >
                                                                 <Eye size={14} />
-                                                                View Dashboard
+                                                                {t('owner.billing.viewDashboard')}
                                                             </button>
                                                         </motion.div>
                                                     )}
@@ -544,9 +546,9 @@ export function OwnerBillingPage() {
                         <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-3">
                             <AlertCircle size={18} className="text-amber-500 shrink-0 mt-0.5" />
                             <div>
-                                <h4 className="text-xs font-black text-amber-500 tracking-widest mb-1">Ending Soon</h4>
+                                <h4 className="text-xs font-black text-amber-500 tracking-widest mb-1">{t('owner.billing.endingSoon')}</h4>
                                 <p className="text-xs font-bold text-amber-500 leading-relaxed">
-                                    Some subscriptions will end after this billing cycle.
+                                    {t('owner.billing.endingSoonDesc')}
                                 </p>
                             </div>
                         </div>

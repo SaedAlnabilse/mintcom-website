@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Pagination } from '../../../ui';
 import { useState, useMemo } from 'react';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface DiscountsViewProps {
   salesData: SalesSummary;
@@ -12,6 +13,7 @@ interface DiscountsViewProps {
 }
 
 export const DiscountsView = React.memo(function DiscountsView({ salesData, isFetching }: DiscountsViewProps) {
+  const { t } = useTranslation();
   const { formatAmount } = useCurrency();
   const [discountPage, setDiscountPage] = useState(1);
   const itemsPerPage = 10;
@@ -58,7 +60,7 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
             <Percent size={24} />
           </div>
           <div>
-            <p className="text-xs font-black text-gray-400 tracking-widest">Total Discounted</p>
+            <p className="text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.discounts.totalDiscounted')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
               {formatCurrency(salesData.totalDiscounts || 0)}
             </p>
@@ -69,7 +71,7 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
             <Tag size={24} />
           </div>
           <div>
-            <p className="text-xs font-black text-gray-400 tracking-widest">Times Applied</p>
+            <p className="text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.discounts.timesApplied')}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
               {salesData.totalDiscountCount || 0}
             </p>
@@ -80,7 +82,7 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
       {/* Discounts Table */}
       <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
         <div className="p-6 border-b border-gray-100 dark:border-white/5">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white">Discount Breakdown</h3>
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('orders.reports.discounts.breakdown')}</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -90,19 +92,19 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
                   className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                   onClick={() => requestSort('name')}
                 >
-                  Name
+                  {t('orders.reports.discounts.name')}
                 </th>
                 <th
                   className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                   onClick={() => requestSort('count')}
                 >
-                  Count
+                  {t('orders.reports.discounts.count')}
                 </th>
                 <th
                   className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                   onClick={() => requestSort('value')}
                 >
-                  Value
+                  {t('orders.reports.discounts.value')}
                 </th>
               </tr>
             </thead>
@@ -132,7 +134,7 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
               ) : (
                 <tr>
                   <td colSpan={3} className="py-20 text-center text-gray-400 font-black text-xs tracking-[0.2em]">
-                    No discounts applied in this period
+                    {t('orders.reports.discounts.noData')}
                   </td>
                 </tr>
               )}

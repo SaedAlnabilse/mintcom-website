@@ -14,6 +14,7 @@ import api from '../../config/api';
 import { useAuth } from '../../context/AuthContext';
 import { useRealtime } from '../../hooks/useRealtime';
 import { DataChangeEventTypes } from '../../services/realtimeService';
+import { useTranslation } from 'react-i18next';
 
 import type { 
   PeakHour, 
@@ -39,6 +40,7 @@ type ViewMode = 'current_shift' | 'previous_shift' | 'last_24_hours';
 const AUTO_REFRESH_INTERVAL = 60 * 60 * 1000;
 
 export const DashboardPage = () => {
+  const { t } = useTranslation();
   const { locationSlug } = useParams();
   const navigate = useNavigate();
   const { currentEstablishment } = useAuth();
@@ -289,33 +291,33 @@ export const DashboardPage = () => {
     if (shiftStatus?.shiftStatus === 'ACTIVE') {
       modes.push({
         mode: 'current_shift',
-        label: 'Current Shift',
+        label: t('dashboard.viewMode.currentShift'),
         icon: <PlayCircle size={16} />,
-        description: `Started ${shiftStatus.activeShift ? format(new Date(shiftStatus.activeShift.startTime), 'h:mm a') : ''}`
+        description: t('dashboard.shiftStatus.started', { time: shiftStatus.activeShift ? format(new Date(shiftStatus.activeShift.startTime), 'h:mm a') : '' })
       });
     }
 
     if (shiftStatus?.shiftStatus === 'ACTIVE' || shiftStatus?.shiftStatus === 'LAST_SHIFT') {
       modes.push({
         mode: 'previous_shift',
-        label: 'Previous Shift',
+        label: t('dashboard.viewMode.previousShift'),
         icon: <History size={16} />,
-        description: 'Last completed shift'
+        description: t('dashboard.shiftStatus.lastCompleted')
       });
     }
 
     modes.push({
       mode: 'last_24_hours',
-      label: 'Last 24 Hours',
+      label: t('dashboard.viewMode.last24Hours'),
       icon: <Timer size={16} />,
-      description: 'Rolling 24-hour window'
+      description: t('dashboard.shiftStatus.rolling24h')
     });
 
     return modes;
   };
 
   const formatDate = () => {
-    return new Date().toLocaleDateString('en-US', {
+    return new Date().toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -325,9 +327,9 @@ export const DashboardPage = () => {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Good Morning';
-    if (hour < 18) return 'Good Afternoon';
-    return 'Good Evening';
+    if (hour < 12) return t('dashboard.greetings.morning');
+    if (hour < 18) return t('dashboard.greetings.afternoon');
+    return t('dashboard.greetings.evening');
   };
 
   // Get current view mode info
@@ -354,7 +356,7 @@ export const DashboardPage = () => {
             <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
             <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
           </div>
-          <p className="text-xs font-black text-gray-400 tracking-widest">Loading Dashboard...</p>
+          <p className="text-xs font-black text-gray-400 tracking-widest">{t('dashboard.loading')}</p>
         </motion.div>
       ) : (
         <motion.div
@@ -375,8 +377,8 @@ export const DashboardPage = () => {
                   : 'bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/20'
                   }`}>
                   {shiftStatus?.shiftStatus === 'ACTIVE'
-                    ? `Active Shift - ${getShiftEmployeeName()}`
-                    : 'No active shift'}
+                    ? t('dashboard.shiftStatus.active', { name: getShiftEmployeeName() })
+                    : t('dashboard.shiftStatus.none')}
                 </span>
 
                 {/* Live indicator for active shift */}
@@ -386,7 +388,7 @@ export const DashboardPage = () => {
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
                     </span>
-                    <span className="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wide">LIVE</span>
+                    <span className="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wide">{t('dashboard.shiftStatus.live')}</span>
                   </div>
                 )}
               </div>
@@ -452,7 +454,7 @@ export const DashboardPage = () => {
                   className="flex items-center gap-2 px-4 sm:px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all touch-target"
                 >
                   <FileBarChart size={18} className="text-paymint-green" />
-                  <span className="hidden xs:inline">Reports</span>
+                  <span className="hidden xs:inline">{t('dashboard.menu.salesAndReporting')}</span>
                 </button>
               </div>
             </div>
@@ -467,15 +469,15 @@ export const DashboardPage = () => {
               <div>
                 <span className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white">
                   {viewMode === 'current_shift' && shiftStatus?.activeShift && (
-                    <>Showing data since {format(new Date(shiftStatus.activeShift.startTime), 'MMM d, h:mm a')}</>
+                    <>{t('dashboard.viewMode.showingSince', { date: format(new Date(shiftStatus.activeShift.startTime), 'MMM d, h:mm a') })}</>
                   )}
-                  {viewMode === 'previous_shift' && 'Showing data from last completed shift'}
-                  {viewMode === 'last_24_hours' && 'Showing data from the last 24 hours'}
+                  {viewMode === 'previous_shift' && t('dashboard.viewMode.showingLastShift')}
+                  {viewMode === 'last_24_hours' && t('dashboard.viewMode.showingLast24h')}
                 </span>
               </div>
             </div>
             <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">
-              Updated {format(lastRefresh, 'h:mm a')}
+              {t('dashboard.lastUpdated')} {format(lastRefresh, 'h:mm a')}
             </span>
           </div>
 

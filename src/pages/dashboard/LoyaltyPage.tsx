@@ -1,5 +1,5 @@
-import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCurrency } from '../../context/CurrencyContext';
 import { motion } from 'framer-motion';
 import { Award, Plus, Edit2, Trash2, Percent, Gift } from 'lucide-react';
@@ -42,6 +42,7 @@ interface LoyaltyReward {
 }
 
 export function LoyaltyPage() {
+    const { t } = useTranslation();
     const [loyaltyConfig, setLoyaltyConfig] = useState<LoyaltyConfig | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [initialLoyaltyConfig, setInitialLoyaltyConfig] = useState<LoyaltyConfig | null>(null);
@@ -105,7 +106,7 @@ export function LoyaltyPage() {
                 pointsPerCurrency: 1,
                 currencyPerPoint: 1,
                 ...response.data,
-                enabled: true // Ensure it is always true
+                enabled: true
             };
             setLoyaltyConfig(config);
             setInitialLoyaltyConfig(JSON.parse(JSON.stringify(config)));
@@ -116,7 +117,7 @@ export function LoyaltyPage() {
             }
         } catch {
             console.error('Failed to load loyalty config');
-            toast.error('Failed to load loyalty configuration');
+            toast.error(t('rewards.errors.failedToLoad'));
         } finally {
             setIsLoading(false);
         }
@@ -198,10 +199,10 @@ export function LoyaltyPage() {
     const handleDeleteReward = (rewardId: string) => {
         setConfirmConfig({
             isOpen: true,
-            title: 'Delete Reward',
-            message: 'Are you sure you want to permanently remove this reward from the loyalty catalog? This action cannot be reversed.',
+            title: t('rewards.messages.deleteTitle'),
+            message: t('rewards.messages.deleteMsg'),
             type: 'danger',
-            confirmText: 'Delete Reward',
+            confirmText: t('common.delete'),
             onConfirm: async () => {
                 if (!loyaltyConfig) return;
                 const updatedRewards = (Array.isArray(rewards) ? rewards : []).filter(r => r.id !== rewardId);
@@ -215,15 +216,15 @@ export function LoyaltyPage() {
                     setRewards(updatedRewards);
                     setConfirmConfig({
                         isOpen: true,
-                        title: 'Reward Deleted',
-                        message: 'Reward deleted',
+                        title: t('rewards.messages.rewardDeleted'),
+                        message: t('rewards.messages.rewardDeleted'),
                         type: 'success',
-                        confirmText: 'OK',
+                        confirmText: t('common.done'),
                         showCancel: false,
                         onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
                     });
                 } catch (err) {
-                    toast.error((err as ApiError).response?.data?.message || 'Failed to delete reward');
+                    toast.error((err as ApiError).response?.data?.message || t('rewards.errors.deleteFailed'));
                 }
             },
             onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
@@ -263,15 +264,15 @@ export function LoyaltyPage() {
             setEditingReward(null);
             setConfirmConfig({
                 isOpen: true,
-                title: editingReward ? 'Reward Updated' : 'Reward Added',
-                message: editingReward ? 'Reward updated' : 'Reward added',
+                title: editingReward ? t('rewards.messages.rewardUpdated') : t('rewards.messages.rewardAdded'),
+                message: editingReward ? t('rewards.messages.rewardUpdated') : t('rewards.messages.rewardAdded'),
                 type: 'success',
-                confirmText: 'OK',
+                confirmText: t('common.done'),
                 showCancel: false,
                 onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
             });
         } catch (err) {
-            toast.error((err as ApiError).response?.data?.message || 'Failed to save reward');
+            toast.error((err as ApiError).response?.data?.message || t('rewards.errors.saveFailed'));
         }
     };
 
@@ -282,7 +283,7 @@ export function LoyaltyPage() {
 
     const saveConfig = async () => {
         if (!loyaltyConfig || loyaltyConfig.pointsPerCurrency < 0 || loyaltyConfig.currencyPerPoint <= 0) {
-            toast.error("Please enter valid values (Currency must be positive, Points can be 0 or more)");
+            toast.error(t('rewards.errors.validValues'));
             return;
         }
 
@@ -290,10 +291,10 @@ export function LoyaltyPage() {
             await safeUpdateLoyaltyConfig(loyaltyConfig);
 
             setInitialLoyaltyConfig(JSON.parse(JSON.stringify(loyaltyConfig)));
-            toast.success("Loyalty configuration saved");
+            toast.success(t('rewards.messages.configSaved'));
         } catch (err) {
             console.error("Save config error:", err);
-            const errorMessage = (err as ApiError).response?.data?.message || (err as Error).message || "Failed to save configuration";
+            const errorMessage = (err as ApiError).response?.data?.message || (err as Error).message || t('rewards.errors.saveFailed');
             toast.error(errorMessage);
         }
     }
@@ -305,7 +306,7 @@ export function LoyaltyPage() {
                     <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
                     <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
                 </div>
-                <p className="text-sm font-bold text-gray-400 tracking-widest">Loading loyalty settings...</p>
+                <p className="text-sm font-bold text-gray-400 tracking-widest">{t('rewards.loading')}</p>
             </div>
         );
     }
@@ -317,12 +318,12 @@ export function LoyaltyPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                            Loyalty Program
+                            {t('rewards.badge')}
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Loyalty & Rewards</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('rewards.title')}</h1>
                     <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
-                        Configure how customers earn points and redeem rewards
+                        {t('rewards.subtitle')}
                     </p>
                 </div>
                 {hasChanges && (
@@ -330,7 +331,7 @@ export function LoyaltyPage() {
                         onClick={saveConfig}
                         className="px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20"
                     >
-                        Save Changes
+                        {t('common.save')}
                     </button>
                 )}
             </div>
@@ -343,8 +344,8 @@ export function LoyaltyPage() {
                                 <Award className="w-6 h-6" />
                             </div>
                             <div>
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Configuration</h3>
-                                <p className="text-xs font-black text-gray-400 tracking-widest">Manage earning rules</p>
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('rewards.configuration')}</h3>
+                                <p className="text-xs font-black text-gray-400 tracking-widest">{t('rewards.configurationSubtitle')}</p>
                             </div>
                         </div>
                         {/* Toggle removed */}
@@ -354,14 +355,14 @@ export function LoyaltyPage() {
                         <div className="space-y-5 pt-4">
                             <div className="flex items-center gap-2">
                                 <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
-                                <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">Earning Rules</h4>
+                                <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">{t('rewards.earningRules')}</h4>
                             </div>
                             <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
                                 <div className="flex flex-col lg:flex-row items-center gap-8">
                                     {/* Spend Input Section */}
                                     <div className="flex-1 w-full lg:w-auto space-y-4">
                                         <div className="flex items-center gap-3">
-                                            <span className="text-xs font-black text-gray-400 tracking-[0.2em]">For Every</span>
+                                            <span className="text-xs font-black text-gray-400 tracking-[0.2em]">{t('rewards.forEvery')}</span>
                                         </div>
                                         <div className="flex items-stretch bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
                                             <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
@@ -372,13 +373,14 @@ export function LoyaltyPage() {
                                                 value={currencyPerPointDisplay}
                                                 onChange={handleCurrencyPerPointChange}
                                                 className="flex-1 w-full bg-transparent font-bold text-3xl text-gray-900 dark:text-white focus:outline-none transition-all px-6 py-4"
+                                                placeholder="0.00"
                                             />
                                         </div>
                                     </div>
 
                                     {/* Connector */}
                                     <div className="flex flex-col items-center justify-center py-4 lg:py-0 self-end lg:pb-5">
-                                        <div className="text-xs font-black text-gray-400 tracking-widest">Equals</div>
+                                        <div className="text-xs font-black text-gray-400 tracking-widest">{t('rewards.equals')}</div>
                                     </div>
 
                                     {/* Points Input Section */}
@@ -388,13 +390,14 @@ export function LoyaltyPage() {
                                         </div>
                                         <div className="flex items-stretch bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-paymint-green/10 focus-within:border-paymint-green transition-all group/field">
                                             <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
-                                                <span className="text-sm font-black text-paymint-green">Pts</span>
+                                                <span className="text-sm font-black text-paymint-green">{t('rewards.points')}</span>
                                             </div>
                                             <input
                                                 type="text"
                                                 value={pointsPerCurrencyDisplay}
                                                 onChange={handlePointsPerCurrencyChange}
                                                 className="flex-1 w-full bg-transparent font-bold text-3xl text-paymint-green focus:outline-none transition-all px-6 py-4"
+                                                placeholder="0"
                                             />
                                         </div>
                                     </div>
@@ -404,7 +407,7 @@ export function LoyaltyPage() {
                                     <div className="flex items-center gap-4 bg-white dark:bg-[#0B1120] px-6 py-4 rounded-2xl border border-gray-100 dark:border-white/[0.03] shadow-sm">
                                         <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
                                         <p className="text-sm font-bold text-gray-900 dark:text-white">
-                                            Active Rule: <span className="text-gray-900 dark:text-white">Customers earn {pointsPerCurrencyDisplay} points for every {currencyPerPointDisplay} {currency} spent</span>
+                                            {t('rewards.activeRule', { points: pointsPerCurrencyDisplay, amount: currencyPerPointDisplay, currency: currency })}
                                         </p>
                                     </div>
                                 </div>
@@ -416,10 +419,10 @@ export function LoyaltyPage() {
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <div className="w-1.5 h-6 bg-paymint-green rounded-full" />
-                                    <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">Rewards</h4>
+                                    <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">{t('dashboard.menu.loyalty')}</h4>
                                 </div>
                                 <button type="button" onClick={() => { setEditingReward(null); setShowRewardModal(true); }} className="flex items-center gap-2 px-4 py-2 bg-paymint-green/10 text-paymint-green rounded-xl text-xs font-black tracking-widest hover:bg-paymint-green/20 transition-all border border-paymint-green/20">
-                                    <Plus size={14} /> Add Pattern
+                                    <Plus size={14} /> {t('rewards.addPattern')}
                                 </button>
                             </div>
                             {rewards.length === 0 ? (
@@ -427,8 +430,8 @@ export function LoyaltyPage() {
                                     <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-paymint-green shadow-sm">
                                         <Award size={24} />
                                     </div>
-                                    <p className="text-xs font-black text-gray-400 tracking-widest">Catalog empty</p>
-                                    <p className="text-xs font-black text-gray-400 mt-1 tracking-widest">Create reward tiers to activate redemption</p>
+                                    <p className="text-xs font-black text-gray-400 tracking-widest">{t('rewards.catalogEmpty')}</p>
+                                    <p className="text-xs font-black text-gray-400 mt-1 tracking-widest">{t('rewards.createTiers')}</p>
                                 </div>
                             ) : (
                                 <div className="space-y-4">
@@ -448,14 +451,14 @@ export function LoyaltyPage() {
                                                         {reward.type === 'DISCOUNT' ? <Percent size={22} /> : <Gift size={22} />}
                                                     </div>
                                                     <div>
-                                                        <p className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-paymint-green transition-colors">{reward.name}</p>
+                                                        <p className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-paymint-green transition-colors">{reward.name.includes('Discount') ? reward.name.replace('Discount', t('discounts.title')) : reward.name.includes('Free Item') ? reward.name.replace('Free Item', t('rewards.form.freeItem')) : reward.name}</p>
                                                         <div className="flex items-center gap-1.5 mt-0.5">
-                                                            <span className="text-xs text-gray-400 font-black tracking-widest">{reward.pointsRequired} Points</span>
+                                                            <span className="text-xs text-gray-400 font-black tracking-widest">{reward.pointsRequired} {t('rewards.pointsUnit')}</span>
                                                             <span className="text-xs text-gray-300 dark:text-gray-600">•</span>
                                                             <span className="text-xs text-paymint-green font-black tracking-widest">
                                                                 {reward.type === 'DISCOUNT'
-                                                                    ? `${reward.discountPercentage}% Off`
-                                                                    : reward.freeCategoryName ? `Free from ${reward.freeCategoryName}` : 'Free Product'}
+                                                                    ? `${reward.discountPercentage}% ${t('rewards.off')}`
+                                                                    : reward.freeCategoryName ? t('rewards.freeFrom', { category: reward.freeCategoryName }) : t('rewards.freeProduct')}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -501,7 +504,7 @@ export function LoyaltyPage() {
                 onClose={confirmConfig.onClose || (() => setConfirmConfig(prev => ({ ...prev, isOpen: false })))}
                 type={confirmConfig.type || 'info'}
                 confirmText={confirmConfig.confirmText}
-                cancelText={confirmConfig.showCancel === false ? undefined : AppStrings.COMMON.CANCEL}
+                cancelText={confirmConfig.showCancel === false ? undefined : t('common.cancel')}
             />
         </div>
     );

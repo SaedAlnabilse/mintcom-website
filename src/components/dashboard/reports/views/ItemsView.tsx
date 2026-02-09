@@ -1,5 +1,6 @@
 import { Search, ArrowUpDown } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import type { ItemReportData } from '../../../../types';
 import { Pagination } from '../../../ui';
@@ -15,14 +16,15 @@ interface ItemsViewProps {
   isFetching: boolean;
 }
 
-export const ItemsView = React.memo(function ItemsView({ 
-  itemReportData, 
-  itemReportTab, 
-  setItemReportTab, 
-  itemSearchQuery, 
+export const ItemsView = React.memo(function ItemsView({
+  itemReportData,
+  itemReportTab,
+  setItemReportTab,
+  itemSearchQuery,
   setItemSearchQuery,
   isFetching
 }: ItemsViewProps) {
+  const { t } = useTranslation();
   const { formatAmount } = useCurrency();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -91,7 +93,7 @@ export const ItemsView = React.memo(function ItemsView({
           <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            placeholder={`Search ${itemReportTab === 'categories' ? 'categories' : itemReportTab === 'modifiers' ? 'add-ons' : itemReportTab === 'attributes' ? 'attributes' : 'items'}...`}
+            placeholder={t('orders.reports.items.searchPlaceholder', { type: t(`orders.reports.items.types.${itemReportTab}`) })}
             value={itemSearchQuery}
             onChange={(e) => setItemSearchQuery(e.target.value)}
             className="w-full pl-12 pr-4 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
@@ -109,7 +111,7 @@ export const ItemsView = React.memo(function ItemsView({
                   : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
                   }`}
               >
-                by Products
+                {t('orders.reports.items.byProducts')}
               </button>
               <button
                 onClick={() => setItemReportTab('categories')}
@@ -118,7 +120,7 @@ export const ItemsView = React.memo(function ItemsView({
                   : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
                   }`}
               >
-                by Category
+                {t('orders.reports.items.byCategory')}
               </button>
             </>
           ) : (
@@ -130,7 +132,7 @@ export const ItemsView = React.memo(function ItemsView({
                   : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
                   }`}
               >
-                by Add-ons
+                {t('orders.reports.items.byAddons')}
               </button>
               <button
                 onClick={() => setItemReportTab('attributes')}
@@ -139,7 +141,7 @@ export const ItemsView = React.memo(function ItemsView({
                   : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
                   }`}
               >
-                by Attributes (Groups)
+                {t('orders.reports.items.byAttributes')}
               </button>
             </>
           )}
@@ -157,7 +159,7 @@ export const ItemsView = React.memo(function ItemsView({
                   onClick={() => requestSort('name')}
                 >
                   <div className="flex items-center gap-2">
-                    {itemReportTab === 'categories' ? 'Category Name' : (itemReportTab === 'modifiers' ? 'Add-on Name' : itemReportTab === 'attributes' ? 'Attribute Group' : 'Product Name')}
+                    {itemReportTab === 'categories' ? t('orders.reports.items.categoryName') : (itemReportTab === 'modifiers' ? t('orders.reports.items.addonName') : itemReportTab === 'attributes' ? t('orders.reports.items.attributeGroup') : t('orders.reports.items.productName'))}
                     <ArrowUpDown size={14} className={`transition-all ${sortConfig?.key === 'name' ? 'opacity-100 scale-110' : 'opacity-20 group-hover:opacity-100'}`} />
                   </div>
                 </th>
@@ -166,7 +168,7 @@ export const ItemsView = React.memo(function ItemsView({
                   onClick={() => requestSort('quantity')}
                 >
                   <div className="flex items-center justify-end gap-2">
-                    Units Sold
+                    {t('orders.reports.items.unitsSold')}
                     <ArrowUpDown size={14} className={`transition-all ${sortConfig?.key === 'quantity' ? 'opacity-100 scale-110' : 'opacity-20 group-hover:opacity-100'}`} />
                   </div>
                 </th>
@@ -175,7 +177,7 @@ export const ItemsView = React.memo(function ItemsView({
                   onClick={() => requestSort('revenue')}
                 >
                   <div className="flex items-center justify-end gap-2">
-                    Gross Revenue
+                    {t('orders.reports.items.grossRevenue')}
                     <ArrowUpDown size={14} className={`transition-all ${sortConfig?.key === 'revenue' ? 'opacity-100 scale-110' : 'opacity-20 group-hover:opacity-100'}`} />
                   </div>
                 </th>
@@ -211,7 +213,7 @@ export const ItemsView = React.memo(function ItemsView({
                   ))
               ) : (
                 <tr>
-                  <td colSpan={3} className="py-20 text-center text-gray-400 font-black text-xs tracking-[0.2em]">No transactional data identified for this period</td>
+                  <td colSpan={3} className="py-20 text-center text-gray-400 font-black text-xs tracking-[0.2em]">{t('orders.reports.items.noData')}</td>
                 </tr>
               )}
             </tbody>

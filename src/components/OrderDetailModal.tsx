@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import api from '../config/api';
 import { ConfirmModal } from './ConfirmModal';
 import { QuickInfo } from './QuickInfo';
@@ -53,6 +54,7 @@ export interface OrderDetailModalProps {
 }
 
 export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetailModalProps) {
+    const { t } = useTranslation();
     const [confirmConfig, setConfirmConfig] = useState<{
         isOpen: boolean;
         title: string;
@@ -95,19 +97,19 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
     const handleRefund = async () => {
         setConfirmConfig({
             isOpen: true,
-            title: 'Refund Order',
-            message: 'Are you sure you want to refund this order? This action is permanent.',
+            title: t('orders.details.refundConfirmTitle'),
+            message: t('orders.details.refundConfirmMessage'),
             type: 'danger',
             onConfirm: async () => {
                 try {
                     await api.post(`/api/orders/${order.id}/refund`, {
                         reason: 'Refunded via web dashboard',
                     });
-                    toast.success('Order refunded');
+                    toast.success(t('orders.messages.refundSuccess'));
                     if (onRefundSuccess) onRefundSuccess();
                     onClose();
                 } catch (err) {
-                    toast.error((err as ApiError).response?.data?.message || 'Failed to process refund');
+                    toast.error((err as ApiError).response?.data?.message || t('orders.messages.refundFailed'));
                 }
             }
         });
@@ -132,11 +134,11 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                         <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
                         <div>
                             <div className="flex items-center gap-2 mb-1">
-                                <span className="text-xs font-black text-gray-400 tracking-widest">Order Details</span>
+                                <span className="text-xs font-black text-gray-400 tracking-widest">{t('orders.details.title')}</span>
                                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                                <span className="text-xs font-black text-paymint-green tracking-widest">Processed</span>
+                                <span className="text-xs font-black text-paymint-green tracking-widest">{t('orders.details.processed')}</span>
                             </div>
-                            <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Order #{order.orderNumber}</h2>
+                            <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{t('orders.table.order')} #{order.orderNumber}</h2>
                         </div>
                         <button
                             onClick={onClose}
@@ -151,15 +153,15 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                             <div>
                                 <p className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center gap-1">
-                                    Date
-                                    <QuickInfo text="When the order was created." />
+                                    {t('orders.details.date')}
+                                    <QuickInfo text={t('orders.details.dateTip')} />
                                 </p>
                                 <p className="text-sm font-bold text-gray-900 dark:text-white">{formatDate(order.createdAt)}</p>
                             </div>
                             <div>
                                 <p className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center gap-1">
-                                    Status
-                                    <QuickInfo text="Order payment status." />
+                                    {t('orders.details.status')}
+                                    <QuickInfo text={t('orders.details.statusTip')} />
                                 </p>
                                 <span
                                     className={`inline-flex px-2 py-0.5 text-xs font-black tracking-widest rounded-md border ${getStatusColor(
@@ -171,23 +173,23 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                             </div>
                             <div>
                                 <p className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center gap-1">
-                                    Payment
-                                    <QuickInfo text="Payment method used." />
+                                    {t('orders.details.payment')}
+                                    <QuickInfo text={t('orders.details.paymentTip')} />
                                 </p>
                                 <p className="text-sm font-bold text-gray-900 dark:text-white">{order.paymentMethod}</p>
                             </div>
                             <div>
                                 <p className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center gap-1">
-                                    Staff
-                                    <QuickInfo text="Staff who processed the order." />
+                                    {t('orders.details.staff')}
+                                    <QuickInfo text={t('orders.details.staffTip')} />
                                 </p>
                                 <p className="text-sm font-bold text-gray-900 dark:text-white">{order.employeeName || order.user?.username || 'System'}</p>
                             </div>
                             {order.refundedByName && (
                                 <div>
                                     <p className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center gap-1">
-                                        Refunded By
-                                        <QuickInfo text="Who refunded this order." />
+                                        {t('orders.details.refundedBy')}
+                                        <QuickInfo text={t('orders.details.refundedByTip')} />
                                     </p>
                                     <p className="text-sm font-bold text-paymint-red">{order.refundedByName}</p>
                                 </div>
@@ -196,15 +198,15 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                                 <>
                                     <div className="col-span-2">
                                         <p className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center gap-1">
-                                            Customer
-                                            <QuickInfo text="Customer name." />
+                                            {t('orders.details.customer')}
+                                            <QuickInfo text={t('orders.details.customerTip')} />
                                         </p>
                                         <p className="text-sm font-bold text-gray-900 dark:text-white">{order.customer.name}</p>
                                     </div>
                                     <div className="col-span-2">
                                         <p className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center gap-1">
-                                            Contact
-                                            <QuickInfo text="Customer phone number." />
+                                            {t('orders.details.contact')}
+                                            <QuickInfo text={t('orders.details.contactTip')} />
                                         </p>
                                         <p className="text-sm font-bold text-gray-900 dark:text-white">{order.customer.phone}</p>
                                     </div>
@@ -215,7 +217,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                         {/* Order Items */}
                         <div>
                             <div className="flex items-center gap-2 mb-4">
-                                <h3 className="text-sm font-black text-gray-900 dark:text-white tracking-widest">Items</h3>
+                                <h3 className="text-sm font-black text-gray-900 dark:text-white tracking-widest">{t('orders.details.items')}</h3>
                             </div>
                             <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/5 overflow-hidden shadow-inner">
                                 <div className="divide-y divide-gray-100 dark:divide-white/5">
@@ -224,7 +226,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                                             <div>
                                                 <p className="text-gray-900 dark:text-white font-bold text-sm">{item.name}</p>
                                                 <p className="text-xs font-black text-gray-400 tracking-widest mt-0.5">
-                                                    Qty: {item.quantity} × {formatCurrency(item.price || item.basePrice || 0)}
+                                                    {t('orders.details.qty')}: {item.quantity} × {formatCurrency(item.price || item.basePrice || 0)}
                                                 </p>
                                             </div>
                                             <p className="text-sm font-bold text-gray-900 dark:text-white">{formatCurrency(item.total || item.finalPrice || 0)}</p>
@@ -240,28 +242,28 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
 
                             <div className="flex justify-between text-gray-400">
                                 <span className="text-xs font-black tracking-widest flex items-center gap-1">
-                                    Subtotal
+                                    {t('orders.details.subtotal')}
                                 </span>
                                 <span className="text-sm font-bold">{formatCurrency(order.subtotal || 0)}</span>
                             </div>
                             {(order.discount || 0) > 0 && (
                                 <div className="flex justify-between text-paymint-red">
                                     <span className="text-xs font-black tracking-widest flex items-center gap-1">
-                                        Discount
+                                        {t('orders.details.discount')}
                                     </span>
                                     <span className="text-sm font-bold">-{formatCurrency(order.discount || 0)}</span>
                                 </div>
                             )}
                             <div className="flex justify-between text-gray-400">
                                 <span className="text-xs font-black tracking-widest flex items-center gap-1">
-                                    Tax
+                                    {t('orders.details.tax')}
                                 </span>
                                 <span className="text-sm font-bold">{formatCurrency(order.tax || 0)}</span>
                             </div>
                             <div className="flex justify-between text-white font-bold text-xl pt-6 border-t border-white/10 mt-2">
                                 <span className="flex items-center gap-2">
                                     <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
-                                    <span className="text-xs font-black tracking-[0.2em]">Total</span>
+                                    <span className="text-xs font-black tracking-[0.2em]">{t('orders.details.total')}</span>
                                 </span>
                                 <span className="text-2xl tracking-tighter text-paymint-green">{formatCurrency(order.total || 0)}</span>
                             </div>
@@ -270,7 +272,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                         {/* Notes */}
                         {order.note && (
                             <div>
-                                <p className="text-xs font-black text-gray-400 tracking-widest mb-2 px-1">Notes</p>
+                                <p className="text-xs font-black text-gray-400 tracking-widest mb-2 px-1">{t('orders.details.notes')}</p>
                                 <p className="text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-100 dark:border-white/5 font-medium leading-relaxed italic">
                                     "{order.note}"
                                 </p>
@@ -283,14 +285,14 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                                 onClick={onClose}
                                 className="flex-1 py-4 px-6 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-black tracking-[0.2em] text-xs rounded-2xl transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm"
                             >
-                                Close
+                                {t('common.close')}
                             </button>
                             {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
                                 <button
                                     onClick={handleRefund}
                                     className="flex-1 py-4 px-6 bg-paymint-red/10 text-paymint-red hover:bg-paymint-red hover:text-white font-black tracking-[0.2em] text-xs rounded-2xl transition-all border border-paymint-red/20 active:scale-95 shadow-lg shadow-paymint-red/10"
                                 >
-                                    Refund
+                                    {t('orders.actions.refund')}
                                 </button>
                             )}
                         </div>

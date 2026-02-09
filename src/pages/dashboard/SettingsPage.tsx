@@ -10,6 +10,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { EstablishmentDeletionWizard, PendingDeletionBanner } from '../../components/EstablishmentDeletionWizard';
 import { CustomSelect } from '../../components/CustomSelect';
 import { useCurrency } from '../../context/CurrencyContext';
+import { useTranslation } from 'react-i18next';
 
 interface ApiError {
   response?: {
@@ -73,6 +74,7 @@ interface EstablishmentInfo {
 }
 
 export function SettingsPage() {
+  const { t } = useTranslation();
   const { refreshCurrency } = useCurrency();
   const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
   const [, setSettings] = useState<AppSettings | null>(null);
@@ -154,11 +156,11 @@ export function SettingsPage() {
   );
 
   useEffect(() => {
-    if (blocker.state === 'blocked') {
+      if (blocker.state === 'blocked') {
       setConfirmConfig({
         isOpen: true,
-        title: 'Unsaved Changes',
-        message: 'You have unsaved changes. Leaving this page will discard them. Are you sure you want to proceed?',
+        title: t('common.notice'),
+        message: t('common.validationError'),
         type: 'warning',
         onConfirm: () => {
           blocker.proceed();
@@ -480,11 +482,10 @@ export function SettingsPage() {
   const handleTabChange = (newTab: SettingsTab) => {
     if (activeTab === newTab) return;
 
-    if (hasUnsavedChanges) {
       setConfirmConfig({
         isOpen: true,
-        title: 'Unsaved Changes',
-        message: 'You have unsaved changes. Leaving this page will discard them. Are you sure you want to proceed?',
+        title: t('common.notice'),
+        message: t('common.validationError'),
         type: 'warning',
         onConfirm: () => {
           // Reset form data to initial state
@@ -519,11 +520,11 @@ export function SettingsPage() {
   };
 
   const tabs = [
-    { id: 'profile', label: 'Profile', icon: Store },
-    { id: 'sales', label: 'Tax & Currency', icon: CreditCard },
-    { id: 'receipt', label: 'Receipts', icon: Receipt },
+    { id: 'profile', label: t('settings.tabs.profile'), icon: Store },
+    { id: 'sales', label: t('settings.tabs.sales'), icon: CreditCard },
+    { id: 'receipt', label: t('settings.tabs.receipts'), icon: Receipt },
 
-    { id: 'danger', label: AppStrings.COMMON.DELETE, icon: Trash2, isDanger: true },
+    { id: 'danger', label: t('settings.tabs.danger'), icon: Trash2, isDanger: true },
   ];
 
   if (isLoading) {
@@ -544,7 +545,7 @@ export function SettingsPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              Config
+              {t('settings.badge')}
             </span>
             <div className="flex items-center gap-2">
               <span className="relative flex h-2 w-2">
@@ -554,9 +555,9 @@ export function SettingsPage() {
               <span className="text-xs font-bold text-gray-400 tracking-widest">Live</span>
             </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Settings</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('settings.title')}</h1>
           <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
-            Manage your store settings
+            {t('settings.subtitle')}
           </p>
         </div>
 
@@ -582,7 +583,7 @@ export function SettingsPage() {
           className="flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 disabled:scale-100 disabled:shadow-none"
         >
           {isSaving ? <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" /> : <Save size={18} />}
-          <span>Save Changes</span>
+          <span>{t('settings.saveChanges')}</span>
         </button>
       </div>
 
@@ -632,38 +633,38 @@ export function SettingsPage() {
       })} className="space-y-8">
         {activeTab === 'profile' && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Profile</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('settings.tabs.profile')}</h3>
             <div>
-              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Logo</label>
+              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('settings.profile.logo')}</label>
               <div className="flex items-center gap-8">
                 <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-2xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
                   {previewImage ? <img src={previewImage} alt="Logo" className="w-full h-full object-cover" /> : <Store className="w-12 h-12 text-gray-300 dark:text-gray-600" />}
                 </div>
                 <label className="px-5 py-3 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/[0.03] rounded-xl text-gray-900 dark:text-white font-bold text-sm shadow-sm transition-all">
-                  Change Logo
+                  {t('settings.profile.changeLogo')}
                   <input type="file" accept="image/*" onChange={handleLogoChange} className="hidden" />
                 </label>
               </div>
             </div>
             <div>
-              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Name</label>
+              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('settings.profile.name')}</label>
               <input type="text" {...register('restaurantName')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
             </div>
             <div>
-              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">About</label>
+              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('settings.profile.about')}</label>
               <textarea {...register('restaurantDescription')} rows={3} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium resize-none" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Address</label>
+                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('settings.profile.address')}</label>
                 <input type="text" {...register('restaurantAddress')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
               <div>
-                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Email</label>
+                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('settings.profile.email')}</label>
                 <input type="email" {...register('email')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
               <div>
-                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Tax ID / TRN</label>
+                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('settings.profile.taxId')}</label>
                 <input type="text" {...register('taxIdNumber')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
             </div>
@@ -672,7 +673,7 @@ export function SettingsPage() {
               <div className="absolute inset-0 z-20 bg-white/60 dark:bg-[#0B1120]/80 backdrop-blur-[2px] flex items-center justify-center">
                 <div className="bg-white dark:bg-gray-900 px-6 py-3 rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 flex items-center gap-3 animate-bounce-slow">
                   <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
-                  <span className="text-sm font-black text-gray-900 dark:text-white tracking-widest uppercase">Coming Soon</span>
+                  <span className="text-sm font-black text-gray-900 dark:text-white tracking-widest uppercase">{t('settings.profile.comingSoon')}</span>
                 </div>
               </div>
 
@@ -681,8 +682,8 @@ export function SettingsPage() {
                   <Clock size={18} />
                 </div>
                 <div>
-                  <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">Opening Hours</h4>
-                  <p className="text-xs text-gray-400 font-black tracking-widest px-1">Set service times</p>
+                  <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">{t('settings.profile.openingHours')}</h4>
+                  <p className="text-xs text-gray-400 font-black tracking-widest px-1">{t('settings.profile.setServiceTimes')}</p>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2 mb-6 opacity-40 grayscale-[0.5]">
@@ -717,8 +718,8 @@ export function SettingsPage() {
                   <DollarSign size={20} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sales Setup</h3>
-                  <p className="text-xs text-gray-400 font-black tracking-widest px-1">Set tax and currency</p>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('settings.sales.title')}</h3>
+                  <p className="text-xs text-gray-400 font-black tracking-widest px-1">{t('settings.sales.subtitle')}</p>
                 </div>
               </div>
 
@@ -727,9 +728,9 @@ export function SettingsPage() {
                   <div className="flex items-center justify-between mb-6">
                     <div>
                       <p className="text-xs font-black text-paymint-green tracking-[0.2em] mb-1">Tax</p>
-                      <h4 className="text-lg font-bold text-gray-900 dark:text-white">Tax Rate (%)</h4>
+                      <h4 className="text-lg font-bold text-gray-900 dark:text-white">{t('settings.sales.taxRate')}</h4>
                     </div>
-                    <button type="button" onClick={updateTaxRate} className="px-4 py-2 bg-paymint-green text-black text-xs font-black tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md shadow-paymint-green/10">Update</button>
+                    <button type="button" onClick={updateTaxRate} className="px-4 py-2 bg-paymint-green text-black text-xs font-black tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md shadow-paymint-green/10">{t('settings.sales.update')}</button>
                   </div>
                   <div className={`relative group transition-all`}>
                     <input
@@ -778,21 +779,21 @@ export function SettingsPage() {
                         <AlertTriangle size={18} className="text-red-500" />
                       </div>
                       <div>
-                        <p className="text-xs font-black text-red-500 tracking-widest leading-none mb-1">Invalid Input</p>
+                        <p className="text-xs font-black text-red-500 tracking-widest leading-none mb-1">{t('settings.sales.invalidInput')}</p>
                         <p className="text-xs font-bold text-red-500/80 tracking-tight">{errors.taxRate.message as string || 'Tax rate error'}</p>
                       </div>
                     </motion.div>
                   )}
                   <p className="text-xs font-black text-gray-400 mt-6 leading-relaxed tracking-tight flex items-start gap-2">
                     <span className="text-paymint-green">•</span>
-                    Modifying this will affect future transactions and net revenue calculations.
+                    {t('settings.sales.taxWarning')}
                   </p>
                 </div>
 
                 <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all hover:border-paymint-green/20 group/card">
                   <div className="mb-6">
                     <p className="text-xs font-black text-blue-500 tracking-[0.2em] mb-1">Currency</p>
-                    <h4 className="text-sm font-bold text-gray-900 dark:text-white">System Currency</h4>
+                    <h4 className="text-sm font-bold text-gray-900 dark:text-white">{t('settings.sales.currency')}</h4>
                   </div>
                   <div className="relative">
                     <input type="hidden" {...register('currency')} />
@@ -800,24 +801,24 @@ export function SettingsPage() {
                       value={watch('currency')}
                       onChange={(val) => { setValue('currency', String(val), { shouldDirty: true }); }}
                       options={[
-                        { label: 'JOD - Jordanian Dinar', value: 'JOD' },
-                        { label: 'USD - US Dollar', value: 'USD' },
-                        { label: 'AED - UAE Dirham', value: 'AED' },
-                        { label: 'SAR - Saudi Riyal', value: 'SAR' },
-                        { label: 'KWD - Kuwaiti Dinar', value: 'KWD' },
-                        { label: 'QAR - Qatari Riyal', value: 'QAR' },
-                        { label: 'BHD - Bahraini Dinar', value: 'BHD' },
-                        { label: 'OMR - Omani Rial', value: 'OMR' },
-                        { label: 'EGP - Egyptian Pound', value: 'EGP' },
-                        { label: 'GBP - British Pound', value: 'GBP' },
-                        { label: 'EUR - Euro', value: 'EUR' },
-                        { label: 'TRY - Turkish Lira', value: 'TRY' },
+                        { label: t('onboarding.step1.currencies.JOD'), value: 'JOD' },
+                        { label: t('onboarding.step1.currencies.USD'), value: 'USD' },
+                        { label: t('onboarding.step1.currencies.AED'), value: 'AED' },
+                        { label: t('onboarding.step1.currencies.SAR'), value: 'SAR' },
+                        { label: t('onboarding.step1.currencies.KWD'), value: 'KWD' },
+                        { label: t('onboarding.step1.currencies.QAR'), value: 'QAR' },
+                        { label: t('onboarding.step1.currencies.BHD'), value: 'BHD' },
+                        { label: t('onboarding.step1.currencies.OMR'), value: 'OMR' },
+                        { label: t('onboarding.step1.currencies.EGP'), value: 'EGP' },
+                        { label: t('onboarding.step1.currencies.GBP'), value: 'GBP' },
+                        { label: t('onboarding.step1.currencies.EUR'), value: 'EUR' },
+                        { label: t('onboarding.step1.currencies.TRY'), value: 'TRY' },
                       ]}
                     />
                   </div>
                   <p className="text-xs font-black text-gray-400 mt-6 leading-relaxed tracking-tight flex items-start gap-2">
                     <span className="text-blue-500">•</span>
-                    Main currency for sales and reports.
+                    {t('settings.sales.currencyDesc')}
                   </p>
                 </div>
               </div>
@@ -832,13 +833,13 @@ export function SettingsPage() {
                 <Receipt className="w-6 h-6 text-paymint-green" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Receipts</h3>
-                <p className="text-sm text-gray-500 font-medium">Edit receipt look</p>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('settings.receipts.title')}</h3>
+                <p className="text-sm text-gray-500 font-medium">{t('settings.receipts.subtitle')}</p>
               </div>
             </div>
             <div className="space-y-8">
               <div className="space-y-4 p-6 bg-gray-50 dark:bg-white/[0.02] rounded-2xl border border-gray-200 dark:border-white/5">
-                <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest mb-6 px-1">Options</h4>
+                <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest mb-6 px-1">{t('settings.receipts.options')}</h4>
                 <div className="space-y-4">
                   {/* Identity Visibility */}
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
@@ -847,8 +848,8 @@ export function SettingsPage() {
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <div>
-                            <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">Name</span>
-                            <span className="block text-xs font-bold text-gray-400 mt-0.5">Show business name</span>
+                            <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showName')}</span>
+                            <span className="block text-xs font-bold text-gray-400 mt-0.5">{t('settings.receipts.showNameDesc')}</span>
                           </div>
                           <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" {...register('showRestaurantName')} className="sr-only peer" />
@@ -867,8 +868,8 @@ export function SettingsPage() {
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <div>
-                            <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">Tagline</span>
-                            <span className="block text-xs font-bold text-gray-400 mt-0.5">Show secondary text</span>
+                            <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showTagline')}</span>
+                            <span className="block text-xs font-bold text-gray-400 mt-0.5">{t('settings.receipts.showTaglineDesc')}</span>
                           </div>
                           <label className="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" {...register('showDescription')} className="sr-only peer" />
@@ -890,8 +891,8 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">Logo</span>
-                        <span className="block text-xs font-bold text-gray-400 mt-0.5">Show logo at top</span>
+                        <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showLogo')}</span>
+                        <span className="block text-xs font-bold text-gray-400 mt-0.5">{t('settings.receipts.showLogoDesc')}</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" {...register('showLogoOnReceipt')} className="sr-only peer" />
@@ -904,7 +905,7 @@ export function SettingsPage() {
                           {receiptLogoPreview ? <img src={receiptLogoPreview} alt="Receipt Logo" className="w-full h-full object-cover" /> : <Store className="w-8 h-8 text-gray-300 dark:text-gray-600" />}
                         </div>
                         <label className="px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl hover:opacity-90 cursor-pointer text-xs font-black tracking-widest transition-all">
-                          Upload Logo
+                          {t('settings.receipts.uploadLogo')}
                           <input type="file" accept="image/*" onChange={handleReceiptLogoChange} className="hidden" disabled={!watch('showLogoOnReceipt')} />
                         </label>
                       </div>
@@ -915,8 +916,8 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">Address</span>
-                        <span className="block text-xs font-bold text-gray-400 mt-0.5">Show full address</span>
+                        <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showAddress')}</span>
+                        <span className="block text-xs font-bold text-gray-400 mt-0.5">{t('settings.receipts.showAddressDesc')}</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" {...register('showAddress')} className="sr-only peer" />
@@ -936,8 +937,8 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">Tax ID</span>
-                        <span className="block text-xs font-bold text-gray-400 mt-0.5">Show Tax ID on footer</span>
+                        <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.showTaxId')}</span>
+                        <span className="block text-xs font-bold text-gray-400 mt-0.5">{t('settings.receipts.showTaxIdDesc')}</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" {...register('showTaxId')} className="sr-only peer" />
@@ -957,8 +958,8 @@ export function SettingsPage() {
                   <div className="p-4 bg-white dark:bg-[#0B1120] rounded-xl border border-gray-100 dark:border-white/[0.03] shadow-sm space-y-4 transition-all">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">Footer Message</span>
-                        <span className="block text-xs font-bold text-gray-400 mt-0.5">Show custom message</span>
+                        <span className="block text-xs font-black text-gray-700 dark:text-gray-300 tracking-tight">{t('settings.receipts.footerMessage')}</span>
+                        <span className="block text-xs font-bold text-gray-400 mt-0.5">{t('settings.receipts.footerMessageDesc')}</span>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" {...register('showFarewellMessage')} className="sr-only peer" />

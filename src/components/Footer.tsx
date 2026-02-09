@@ -1,67 +1,70 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Mail, Phone, Instagram, Youtube, X, Tablet, Printer, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './Logo';
 
-const hardwareItems = [
-  {
-    id: 'tablets',
-    name: 'Pos Tablets',
-    icon: Tablet,
-    description: 'Recommended tablets that work great with PayMint',
-    products: [
-      {
-        name: 'Samsung Galaxy Tab A8',
-        specs: '10.5" display, 4gb Ram, Wi-fi',
-        price: '~$180',
-        link: 'https://www.amazon.com/s?k=samsung+galaxy+tab+a8'
-      },
-      {
-        name: 'Ipad 10th Gen',
-        specs: '10.9" display, A14 chip, Premium option',
-        price: '~$350',
-        link: 'https://www.amazon.com/s?k=ipad+10th+generation'
-      },
-      {
-        name: 'Lenovo Tab M10 Plus',
-        specs: '10.3" Fhd display, 4gb Ram, Long battery',
-        price: '~$150',
-        link: 'https://www.amazon.com/s?k=lenovo+tab+m10+plus'
-      }
-    ],
-    note: 'Any Android tablet (8"+ screen) or Ipad works with PayMint'
-  },
-  {
-    id: 'printers',
-    name: 'Receipt Printers',
-    icon: Printer,
-    description: 'Recommended thermal printers for receipts',
-    products: [
-      {
-        name: 'Munbyn Thermal Printer',
-        specs: '80mm, Usb + Bluetooth, Auto-cutter',
-        price: '~$100',
-        link: 'https://www.amazon.com/s?k=munbyn+thermal+receipt+printer+80mm'
-      },
-      {
-        name: 'Epson Tm-T20III',
-        specs: '80mm, Usb, Fast & reliable',
-        price: '~$180',
-        link: 'https://www.amazon.com/s?k=epson+tm-t20iii'
-      },
-      {
-        name: 'Star Micronics TSP143',
-        specs: '80mm, Bluetooth, Kitchen-grade',
-        price: '~$250',
-        link: 'https://www.amazon.com/s?k=star+micronics+tsp143'
-      }
-    ],
-    note: 'We support most 80mm and 58mm Esc/Pos thermal printers'
-  }
-];
-
 export const Footer = () => {
+  const { t } = useTranslation();
   const [showHardwareModal, setShowHardwareModal] = useState(false);
+
+  const hardwareItems = [
+    {
+      id: 'tablets',
+      name: t('hardware.tablets.name'),
+      icon: Tablet,
+      description: t('hardware.tablets.description'),
+      products: [
+        {
+          name: t('hardware.products.samsungTab.name'),
+          specs: t('hardware.products.samsungTab.specs'),
+          price: '~$180',
+          link: 'https://www.amazon.com/s?k=samsung+galaxy+tab+a8'
+        },
+        {
+          name: t('hardware.products.ipad.name'),
+          specs: t('hardware.products.ipad.specs'),
+          price: '~$350',
+          link: 'https://www.amazon.com/s?k=ipad+10th+generation'
+        },
+        {
+          name: t('hardware.products.lenovo.name'),
+          specs: t('hardware.products.lenovo.specs'),
+          price: '~$150',
+          link: 'https://www.amazon.com/s?k=lenovo+tab+m10+plus'
+        }
+      ],
+      note: t('hardware.tablets.note')
+    },
+    {
+      id: 'printers',
+      name: t('hardware.printers.name'),
+      icon: Printer,
+      description: t('hardware.printers.description'),
+      products: [
+        {
+          name: t('hardware.products.munbyn.name'),
+          specs: t('hardware.products.munbyn.specs'),
+          price: '~$100',
+          link: 'https://www.amazon.com/s?k=munbyn+thermal+receipt+printer+80mm'
+        },
+        {
+          name: t('hardware.products.epson.name'),
+          specs: t('hardware.products.epson.specs'),
+          price: '~$180',
+          link: 'https://www.amazon.com/s?k=epson+tm-t20iii'
+        },
+        {
+          name: t('hardware.products.star.name'),
+          specs: t('hardware.products.star.specs'),
+          price: '~$250',
+          link: 'https://www.amazon.com/s?k=star+micronics+tsp143'
+        }
+      ],
+      note: t('hardware.printers.note')
+    }
+  ];
+
   const [selectedHardware, setSelectedHardware] = useState(hardwareItems[0]);
 
   type FooterLink = {
@@ -71,23 +74,23 @@ export const Footer = () => {
   };
 
   const productLinks: FooterLink[] = [
-    { name: 'Features', href: '/#features' },
-    { name: 'Pricing', href: '/#pricing' },
-    { name: 'Hardware', action: () => setShowHardwareModal(true) },
-    { name: 'Support', href: '/support' },
+    { name: t('nav.features'), href: '/#features' },
+    { name: t('nav.pricing'), href: '/#pricing' },
+    { name: t('nav.hardware'), action: () => setShowHardwareModal(true) },
+    { name: t('nav.support'), href: '/support' },
   ];
 
   const companyLinks: FooterLink[] = [
-    { name: 'About Us', href: '/about' },
-    { name: 'Contact', href: '/#contact' },
-    { name: 'Community', href: '/community' },
+    { name: t('footer.aboutUs'), href: '/about' },
+    { name: t('contact.title'), href: '/#contact' },
+    { name: t('nav.community'), href: '/community' },
   ];
 
   const resourceLinks: FooterLink[] = [
-    { name: 'Help Center', href: '/support' },
-    { name: 'Guides', href: '/community/guides' },
-    { name: 'Feature Ideas', href: '/community/ideas' },
-    { name: 'Discussions', href: '/community/discussions' },
+    { name: t('footer.helpCenter'), href: '/support' },
+    { name: t('footer.guides'), href: '/community/guides' },
+    { name: t('footer.featureIdeas'), href: '/community/ideas' },
+    { name: t('footer.discussions'), href: '/community/discussions' },
   ];
 
   return (
@@ -99,7 +102,7 @@ export const Footer = () => {
             <div className="space-y-8">
               <Logo size="lg" />
               <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed max-w-xs">
-                Simple, secure Pos for growing businesses.
+                {t('brand.description')}
               </p>
               <div className="flex gap-4">
                 {[
@@ -121,7 +124,7 @@ export const Footer = () => {
 
             {/* Product */}
             <div>
-              <h4 className="text-xs font-black text-gray-400 tracking-widest mb-8">Product</h4>
+              <h4 className="text-xs font-black text-gray-400 tracking-widest mb-8">{t('footer.product')}</h4>
               <ul className="space-y-4">
                 {productLinks.map((link) => (
                   <li key={link.name}>
@@ -147,7 +150,7 @@ export const Footer = () => {
 
             {/* Company */}
             <div>
-              <h4 className="text-xs font-black text-gray-400 tracking-widest mb-8">Company</h4>
+              <h4 className="text-xs font-black text-gray-400 tracking-widest mb-8">{t('footer.company')}</h4>
               <ul className="space-y-4">
                 {companyLinks.map((link) => (
                   <li key={link.name}>
@@ -173,7 +176,7 @@ export const Footer = () => {
 
             {/* Resources */}
             <div>
-              <h4 className="text-xs font-black text-gray-400 tracking-widest mb-8">Resources</h4>
+              <h4 className="text-xs font-black text-gray-400 tracking-widest mb-8">{t('footer.resources')}</h4>
               <ul className="space-y-4">
                 {resourceLinks.map((link) => (
                   <li key={link.name}>
@@ -199,7 +202,7 @@ export const Footer = () => {
 
             {/* Contact */}
             <div>
-              <h4 className="text-xs font-black text-gray-400 tracking-widest mb-8">Get in Touch</h4>
+              <h4 className="text-xs font-black text-gray-400 tracking-widest mb-8">{t('footer.getInTouch')}</h4>
               <ul className="space-y-6">
                 <li className="flex items-center gap-3 text-gray-600 dark:text-gray-400 font-medium">
                   <div className="w-8 h-8 rounded-lg bg-gray-200/50 dark:bg-white/5 flex items-center justify-center">
@@ -219,11 +222,11 @@ export const Footer = () => {
 
           <div className="border-t border-gray-200 dark:border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center gap-6">
             <p className="text-gray-500 dark:text-gray-500 text-sm font-bold">
-              © 2025 PayMint Llc. All rights reserved.
+              {t('brand.copyright')}
             </p>
             <div className="flex gap-8">
-              <a href="/legal/privacy" target="_blank" className="text-gray-500 dark:text-gray-500 text-xs font-bold hover:text-paymint-green transition-colors tracking-widest">Privacy Policy</a>
-              <a href="/legal/terms" target="_blank" className="text-gray-500 dark:text-gray-500 text-xs font-bold hover:text-paymint-green transition-colors tracking-widest">Terms of Service</a>
+              <a href="/legal/privacy" target="_blank" className="text-gray-500 dark:text-gray-500 text-xs font-bold hover:text-paymint-green transition-colors tracking-widest">{t('footer.privacyPolicy')}</a>
+              <a href="/legal/terms" target="_blank" className="text-gray-500 dark:text-gray-500 text-xs font-bold hover:text-paymint-green transition-colors tracking-widest">{t('footer.termsOfService')}</a>
             </div>
           </div>
         </div>
@@ -249,8 +252,8 @@ export const Footer = () => {
               {/* Header */}
               <div className="bg-gray-50 dark:bg-black/20 border-b border-gray-100 dark:border-white/5 p-6 flex items-center justify-between">
                 <div>
-                  <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Hardware Solutions</h3>
-                  <p className="text-sm font-bold text-gray-500 mt-1">Professional equipment for your business</p>
+                  <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{t('footer.hardwareSolutions')}</h3>
+                  <p className="text-sm font-bold text-gray-500 mt-1">{t('footer.professionalEquipment')}</p>
                 </div>
                 <button
                   onClick={() => setShowHardwareModal(false)}
@@ -321,7 +324,7 @@ export const Footer = () => {
                             </div>
                             <div className="text-right">
                               <p className="font-bold text-paymint-green">{product.price}</p>
-                              <p className="text-xs text-gray-400">View on Amazon →</p>
+                              <p className="text-xs text-gray-400">{t('footer.viewOnAmazon')}</p>
                             </div>
                           </a>
                         ))}
@@ -330,7 +333,7 @@ export const Footer = () => {
                       {/* Note */}
                       <div className="p-4 bg-blue-50 dark:bg-blue-500/10 rounded-2xl border border-blue-200 dark:border-blue-500/20">
                         <p className="text-sm text-blue-700 dark:text-blue-400">
-                          <span className="font-bold">💡 Tip:</span> {selectedHardware.note}
+                          <span className="font-bold">💡 {t('hardware.tip')}</span> {selectedHardware.note}
                         </p>
                       </div>
                     </motion.div>

@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TourGuide, type TourStep } from '../components/TourGuide';
+import { useTranslation } from 'react-i18next';
 import {
   Store,
   MapPin,
@@ -85,6 +86,7 @@ const step4Schema = z.object({
 });
 
 export function OnboardingPage() {
+  const { t } = useTranslation();
   const { refreshEstablishments, account, needsOnboarding, setCurrentEstablishment, establishments, updateAccount } = useAuth();
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -107,28 +109,28 @@ export function OnboardingPage() {
   const launchCenterTourSteps: TourStep[] = [
     {
       targetId: 'tour-open-portal',
-      title: '🚀 Open Owner Portal',
-      description: 'This is your main command center. Click here to open your Owner Portal in a new browser tab where you can manage employees, menu items, view analytics, and handle billing.'
+      title: t('onboarding.tour.openPortalTitle'),
+      description: t('onboarding.tour.openPortalDesc')
     },
     {
       targetId: 'tour-pos-app',
-      title: '📱 POS App for Staff',
-      description: 'Your staff will use this app on tablets or phones to take orders and process payments. Download it from Google Play or App Store and install on your POS devices.'
+      title: t('onboarding.tour.posAppTitle'),
+      description: t('onboarding.tour.posAppDesc')
     },
     {
       targetId: 'tour-owner-app',
-      title: '👤 Owner App',
-      description: 'Take your business management mobile! This app gives you the same portal features on your phone. Monitor sales, check reports, and manage on the go.'
+      title: t('onboarding.tour.ownerAppTitle'),
+      description: t('onboarding.tour.ownerAppDesc')
     },
     {
       targetId: 'tour-location-stats',
-      title: '📍 Your Location Info',
-      description: 'Quick reference for your Location ID and Currency. You will need the Location ID when logging into the POS app. Keep this handy for your staff.'
+      title: t('onboarding.tour.locationStatsTitle'),
+      description: t('onboarding.tour.locationStatsDesc')
     },
     {
       targetId: 'tour-resources',
-      title: '📚 Resources & Help',
-      description: 'Everything you need to succeed: User Manuals, Setup Guides, Video Tutorials, FAQs, and Legal documents. Check here if you need help getting started.'
+      title: t('onboarding.tour.resourcesTitle'),
+      description: t('onboarding.tour.resourcesDesc')
     }
   ];
 
@@ -338,10 +340,10 @@ export function OnboardingPage() {
 
 
   const businessTypes = [
-    { id: 'restaurant', label: 'Restaurant', icon: UtensilsCrossed },
-    { id: 'cafe', label: 'Cafe', icon: Coffee },
-    { id: 'retail', label: 'Retail', icon: ShoppingBag },
-    { id: 'other', label: 'Other', icon: Building2 },
+    { id: 'restaurant', label: t('onboarding.step1.businessTypes.restaurant'), icon: UtensilsCrossed },
+    { id: 'cafe', label: t('onboarding.step1.businessTypes.cafe'), icon: Coffee },
+    { id: 'retail', label: t('onboarding.step1.businessTypes.retail'), icon: ShoppingBag },
+    { id: 'other', label: t('onboarding.step1.businessTypes.other'), icon: Building2 },
   ];
 
   const totalSteps = 4;
@@ -384,7 +386,7 @@ export function OnboardingPage() {
                   />
                 ))}
               </div>
-              <span className="text-xs font-black text-gray-400 tracking-widest">STEP {step} OF {totalSteps}</span>
+              <span className="text-xs font-black text-gray-400 tracking-widest">{t('onboarding.step')} {step} {t('onboarding.of')} {totalSteps}</span>
             </div>
           )}
         </div>
@@ -404,8 +406,8 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">Location Setup</h2>
-                  <p className="text-sm font-bold text-gray-600 dark:text-gray-300">Add your first location.</p>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step1.title')}</h2>
+                  <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('onboarding.step1.subtitle')}</p>
                 </div>
 
                 <form onSubmit={form1.handleSubmit(onStep1Submit)} className="space-y-8">
@@ -1006,21 +1008,21 @@ export function OnboardingPage() {
                         <Sparkles size={32} className="text-black" />
                       </motion.div>
                       <div>
-                        <motion.h2 
+                        <motion.h2
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 0.3 }}
                           className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white"
                         >
-                          Welcome to PayMint!
+                          {t('onboarding.step5.welcomeTitle')}
                         </motion.h2>
-                        <motion.p 
+                        <motion.p
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 0.4 }}
                           className="text-gray-500 dark:text-gray-400 mt-1"
                         >
-                          <span className="text-paymint-green font-bold">{formData.name}</span> is ready to go
+                          <span className="text-paymint-green font-bold">{formData.name}</span> {t('onboarding.step5.isReadyToGo')}
                         </motion.p>
                       </div>
                     </div>
@@ -1053,7 +1055,7 @@ export function OnboardingPage() {
                         className="relative flex items-center gap-3 bg-paymint-green text-black px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-paymint-green/30"
                       >
                         <Building2 size={24} />
-                        Open Owner Portal
+                        {t('onboarding.step5.openOwnerPortal')}
                         <ExternalLink size={20} />
                       </motion.button>
                     </motion.div>
@@ -1079,8 +1081,8 @@ export function OnboardingPage() {
                         <Tablet size={28} className="text-white" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">POS App</h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">For your staff to take orders & payments</p>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.posApp')}</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{t('onboarding.step5.posAppDesc')}</p>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
@@ -1093,7 +1095,7 @@ export function OnboardingPage() {
                         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92z" />
                         </svg>
-                        Play Store
+                        {t('onboarding.step5.playStore')}
                       </a>
                       <a
                         href="https://apps.apple.com/app/paymint-pos/id0000000000"
@@ -1104,7 +1106,7 @@ export function OnboardingPage() {
                         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
                         </svg>
-                        App Store
+                        {t('onboarding.step5.appStore')}
                       </a>
                     </div>
                   </motion.div>
@@ -1122,8 +1124,8 @@ export function OnboardingPage() {
                         <Smartphone size={28} className="text-white" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Owner App</h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Manage on the go from your phone</p>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.ownerApp')}</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{t('onboarding.step5.ownerAppDesc')}</p>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
@@ -1166,8 +1168,8 @@ export function OnboardingPage() {
                         <Building2 size={20} className="text-paymint-green" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-white text-sm">Location Ready</h3>
-                        <p className="text-xs text-gray-500">Your setup is complete</p>
+                        <h3 className="font-bold text-white text-sm">{t('onboarding.step5.locationReady')}</h3>
+                        <p className="text-xs text-gray-500">{t('onboarding.step5.setupComplete')}</p>
                       </div>
                     </div>
                     
@@ -1175,16 +1177,16 @@ export function OnboardingPage() {
                     <div className="flex items-center gap-3 py-2.5 border-b border-white/5">
                       <Hash size={16} className="text-gray-500 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-500 mb-0.5">Location ID</p>
+                        <p className="text-xs text-gray-500 mb-0.5">{t('onboarding.step5.locationId')}</p>
                         <p className="font-mono text-paymint-green text-sm truncate">{formData.establishmentLoginId}</p>
                       </div>
                     </div>
-                    
+
                     {/* Currency Row */}
                     <div className="flex items-center gap-3 py-2.5">
                       <DollarSign size={16} className="text-gray-500 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-500 mb-0.5">Currency</p>
+                        <p className="text-xs text-gray-500 mb-0.5">{t('onboarding.step5.currency')}</p>
                         <p className="text-white font-bold text-sm">{formData.currency}</p>
                       </div>
                     </div>
@@ -1204,7 +1206,7 @@ export function OnboardingPage() {
                       <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center">
                         <BookOpen size={20} className="text-emerald-500" />
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">Resources & Help</h3>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.resourcesAndHelp')}</h3>
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -1217,8 +1219,8 @@ export function OnboardingPage() {
                         <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <BookOpen size={20} className="text-blue-500" />
                         </div>
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">User Manual</h4>
-                        <p className="text-xs text-gray-500 mt-1">Complete guide</p>
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.userManual')}</h4>
+                        <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.completeGuide')}</p>
                       </a>
 
                       {/* Setup Manual */}
@@ -1231,8 +1233,8 @@ export function OnboardingPage() {
                         <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <Settings size={20} className="text-amber-500" />
                         </div>
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">Setup Manual</h4>
-                        <p className="text-xs text-gray-500 mt-1">Hardware setup</p>
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.setupManual')}</h4>
+                        <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.hardwareSetup')}</p>
                       </a>
 
                       {/* Video Tutorial */}
@@ -1245,8 +1247,8 @@ export function OnboardingPage() {
                         <div className="w-10 h-10 bg-red-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <PlayCircle size={20} className="text-red-500" />
                         </div>
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">Video Guide</h4>
-                        <p className="text-xs text-gray-500 mt-1">7-min start</p>
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.videoGuide')}</h4>
+                        <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.quickStart')}</p>
                       </a>
 
                       {/* Q&A Center */}
@@ -1259,8 +1261,8 @@ export function OnboardingPage() {
                         <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <HelpCircle size={20} className="text-purple-500" />
                         </div>
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">Q&A Center</h4>
-                        <p className="text-xs text-gray-500 mt-1">FAQs</p>
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.qaCenter')}</h4>
+                        <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.faqs')}</p>
                       </a>
 
                       {/* Privacy */}
@@ -1273,8 +1275,8 @@ export function OnboardingPage() {
                         <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <Shield size={20} className="text-emerald-500" />
                         </div>
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">Privacy</h4>
-                        <p className="text-xs text-gray-500 mt-1">Data protection</p>
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.privacy')}</h4>
+                        <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.dataProtection')}</p>
                       </a>
 
                       {/* Terms */}
@@ -1287,8 +1289,8 @@ export function OnboardingPage() {
                         <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <Scale size={20} className="text-blue-500" />
                         </div>
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">Terms</h4>
-                        <p className="text-xs text-gray-500 mt-1">Agreement</p>
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.terms')}</h4>
+                        <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.agreement')}</p>
                       </a>
 
                       {/* About - spans 2 cols on sm */}
@@ -1301,8 +1303,8 @@ export function OnboardingPage() {
                         <div className="w-10 h-10 bg-paymint-green/10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                           <Info size={20} className="text-paymint-green" />
                         </div>
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">About Us</h4>
-                        <p className="text-xs text-gray-500 mt-1">Our story</p>
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.aboutUs')}</h4>
+                        <p className="text-xs text-gray-500 mt-1">{t('onboarding.step5.ourStory')}</p>
                       </a>
                     </div>
                   </motion.div>
@@ -1310,14 +1312,14 @@ export function OnboardingPage() {
               </div>
 
               {/* Footer */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}
                 className="mt-6 text-center"
               >
                 <p className="text-sm text-gray-500">
-                  Need help? <a href="mailto:support@paymint.com" className="text-paymint-green font-bold hover:underline">support@paymint.com</a>
+                  {t('onboarding.step5.needHelp')} <a href="mailto:support@paymint.com" className="text-paymint-green font-bold hover:underline">support@paymint.com</a>
                 </p>
               </motion.div>
 

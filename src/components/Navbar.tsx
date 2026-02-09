@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, Globe, Laptop } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Menu, X, Laptop } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './Logo';
 import { ThemeToggle } from './ThemeToggle';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 export const Navbar = () => {
+  const { t } = useTranslation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -16,11 +19,11 @@ export const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Features', href: '#features' },
-    { name: 'Hardware', href: '#hardware' },
-    { name: 'Pricing', href: '#pricing' },
-    { name: 'Support', href: '/support' },
-    { name: 'Community', href: '/community' },
+    { name: t('nav.features'), href: '#features' },
+    { name: t('nav.hardware'), href: '#hardware' },
+    { name: t('nav.pricing'), href: '#pricing' },
+    { name: t('nav.support'), href: '/support' },
+    { name: t('nav.community'), href: '/community' },
   ];
 
   return (
@@ -59,7 +62,7 @@ export const Navbar = () => {
               rel="noopener noreferrer"
               className="text-sm font-bold text-gray-900 dark:text-white hover:text-paymint-green dark:hover:text-paymint-green transition-colors"
             >
-              Log In
+              {t('nav.login')}
             </Link>
             <Link
               to="/signup"
@@ -67,8 +70,9 @@ export const Navbar = () => {
               rel="noopener noreferrer"
               className="bg-gray-900 dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all active:scale-95 shadow-lg shadow-gray-900/20 dark:shadow-white/10"
             >
-              Get Started
+              {t('nav.getStarted')}
             </Link>
+            <LanguageSwitcher />
             <ThemeToggle />
           </div>
         </div>
@@ -124,7 +128,7 @@ export const Navbar = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="w-full py-5 border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white rounded-[2rem] text-xl font-black tracking-tight text-center"
                 >
-                  Log In
+                  {t('nav.login')}
                 </Link>
                 <Link
                   to="/signup"
@@ -133,14 +137,14 @@ export const Navbar = () => {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="w-full py-5 bg-paymint-green text-black rounded-[2rem] text-xl font-black tracking-tight text-center shadow-xl shadow-paymint-green/20"
                 >
-                  Create Account
+                  {t('nav.createAccount')}
                 </Link>
               </div>
 
               {/* Mobile Footer Info */}
               <div className="pt-10 flex flex-col items-center gap-6 opacity-50">
                 <div className="flex gap-8">
-                  <Globe size={20} className="text-gray-900 dark:text-white" />
+                  <LanguageSwitcher />
                   <Laptop size={20} className="text-gray-900 dark:text-white" />
                 </div>
                 <p className="text-xs font-bold tracking-widest text-gray-500">Paymint Enterprise v2.0</p>

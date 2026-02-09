@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   Wallet,
   DollarSign,
@@ -43,6 +44,7 @@ interface DashboardStatsCardsProps {
 }
 
 export const DashboardStatsCards = React.memo(function DashboardStatsCards({ stats, viewMode, previousShiftSnapshot, setShowPayInOutModal }: DashboardStatsCardsProps) {
+  const { t } = useTranslation();
   const { locationSlug } = useParams();
   const navigate = useNavigate();
   const { formatAmount } = useCurrency();
@@ -53,41 +55,41 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
 
   const statCards: any[] = [
     {
-      label: 'Total Sales',
+      label: t('dashboard.stats.totalSales'),
       value: formatCurrency((stats?.totalRevenue || 0) + (stats?.taxCollected || 0)),
-      sub: 'Including Tax',
+      sub: t('dashboard.stats.includingTax'),
       icon: Wallet,
       color: 'text-blue-500',
       bg: 'bg-blue-500/10'
     },
     {
-      label: 'Net Sales',
+      label: t('dashboard.stats.netSales'),
       value: formatCurrency(stats?.totalRevenue || 0),
-      sub: 'Excluding Tax',
+      sub: t('dashboard.stats.excludingTax'),
       icon: DollarSign,
       color: 'text-paymint-green',
       bg: 'bg-paymint-green/10'
     },
     {
-      label: 'Profit',
+      label: t('dashboard.stats.profit'),
       value: formatCurrency(stats?.grossProfit || 0),
-      sub: 'Net Sales - Costs',
+      sub: t('dashboard.stats.netSalesCosts'),
       icon: TrendingUp,
       color: 'text-purple-500',
       bg: 'bg-purple-500/10'
     },
     {
-      label: 'Tax',
+      label: t('dashboard.stats.tax'),
       value: formatCurrency(stats?.taxCollected || 0),
-      sub: 'Total Tax',
+      sub: t('dashboard.stats.totalTax'),
       icon: Percent,
       color: 'text-orange-500',
       bg: 'bg-orange-500/10'
     },
     {
-      label: 'Orders',
+      label: t('dashboard.stats.totalOrders'),
       value: stats?.totalOrders?.toString() || '0',
-      sub: viewMode === 'current_shift' ? 'This Shift' : viewMode === 'previous_shift' ? 'Previous Shift' : 'Last 24h',
+      sub: viewMode === 'current_shift' ? t('dashboard.stats.thisShift') : viewMode === 'previous_shift' ? t('dashboard.stats.previousShift') : t('dashboard.stats.last24h'),
       icon: Receipt,
       color: 'text-indigo-500',
       bg: 'bg-indigo-500/10',
@@ -102,9 +104,9 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
 
   if (viewMode === 'current_shift') {
     statCards.push({
-      label: 'On Hold',
+      label: t('dashboard.stats.onHold'),
       value: stats?.pendingOrders?.toString() || '0',
-      sub: 'Pending Orders',
+      sub: t('dashboard.stats.pendingOrders'),
       icon: ShoppingBag,
       color: 'text-orange-500',
       bg: 'bg-orange-500/10',
@@ -118,23 +120,23 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
 
   statCards.push(
     {
-      label: 'Avg Order',
+      label: t('dashboard.stats.avgOrder'),
       value: formatCurrency(stats?.averageOrderValue || 0),
-      sub: 'Average Value',
+      sub: t('dashboard.stats.averageValue'),
       icon: Scale,
       color: 'text-pink-500',
       bg: 'bg-pink-500/10'
     },
     {
-      label: 'Refunds',
+      label: t('dashboard.stats.refunds'),
       value: formatCurrency(stats?.totalRefunds || 0),
-      sub: viewMode === 'current_shift' ? 'This Shift' : viewMode === 'previous_shift' ? 'Previous Shift' : 'Last 24h',
+      sub: viewMode === 'current_shift' ? t('dashboard.stats.thisShift') : viewMode === 'previous_shift' ? t('dashboard.stats.previousShift') : t('dashboard.stats.last24h'),
       icon: ArrowDownRight,
       color: 'text-orange-500',
       bg: 'bg-orange-500/10'
     },
     {
-      label: 'Non Sales',
+      label: t('dashboard.stats.nonSales'),
       value: null, // Custom content
       sub: null,
       icon: ArrowUpRight,
@@ -143,12 +145,12 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
       customContent: (
         <div className="space-y-3 mt-6">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Pay In</span>
+            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.payIn')}</span>
             <span className="text-sm font-bold text-paymint-green tracking-tight">+{formatCurrency(stats?.totalPayIn || 0)}</span>
           </div>
           <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Pay Out</span>
+            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.payOut')}</span>
             <span className="text-sm font-bold text-red-500 tracking-tight">-{formatCurrency(stats?.totalPayOut || 0)}</span>
           </div>
         </div>
@@ -159,7 +161,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
 
   if (viewMode === 'previous_shift' && previousShiftSnapshot) {
     statCards.push({
-      label: 'Cash Variance',
+      label: t('dashboard.stats.variance'),
       value: null as any,
       sub: null as any,
       icon: Scale,
@@ -168,23 +170,23 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
       customContent: (
         <div className="space-y-3 mt-6">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Expected</span>
+            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.expected')}</span>
             <span className="text-sm font-bold text-gray-700 dark:text-gray-300 tracking-tight">{formatCurrency(previousShiftSnapshot.drawerAmount || 0)}</span>
           </div>
           <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Actual</span>
+            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.actual')}</span>
             <span className="text-sm font-bold text-blue-500 tracking-tight">{formatCurrency(previousShiftSnapshot.closingBalance || 0)}</span>
           </div>
           <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">Variance</span>
+            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.variance')}</span>
             <span className={`text-sm font-bold tracking-tight ${previousShiftSnapshot.discrepancy > 0.01 ? 'text-paymint-green' : previousShiftSnapshot.discrepancy < -0.01 ? 'text-red-500' : 'text-gray-500'}`}>
               {previousShiftSnapshot.discrepancy > 0.01
-                ? `+${formatCurrency(previousShiftSnapshot.discrepancy)} Over`
+                ? `+${formatCurrency(previousShiftSnapshot.discrepancy)} ${t('dashboard.stats.over')}`
                 : previousShiftSnapshot.discrepancy < -0.01
-                  ? `${formatCurrency(previousShiftSnapshot.discrepancy)} Short`
-                  : 'Perfect $0.00'}
+                  ? `${formatCurrency(previousShiftSnapshot.discrepancy)} ${t('dashboard.stats.short')}`
+                  : `${t('dashboard.stats.perfect')} ${formatCurrency(0)}`}
             </span>
           </div>
         </div>
@@ -197,7 +199,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
     <div id="tour-kpi-cards" className="space-y-3">
       <div className="flex items-center gap-2">
         <span className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-500 text-xs font-bold tracking-wide border border-blue-500/20">
-          Overview
+          {t('dashboard.stats.overview')}
         </span>
       </div>
       {/* Mobile: horizontal scroll, Desktop: grid */}

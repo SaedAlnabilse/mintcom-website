@@ -1,6 +1,6 @@
-import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, MousePointerClick, CheckSquare, AlertCircle } from 'lucide-react';
 import { QuickInfo } from '../QuickInfo';
@@ -29,6 +29,7 @@ export function AttributeFormModal({
     initialData,
     isSubmitting = false,
 }: AttributeFormModalProps) {
+    const { t } = useTranslation();
     const [name, setName] = useState('');
     const [inputType, setInputType] = useState<'SINGLE_SELECT' | 'MULTI_SELECT'>('SINGLE_SELECT');
     const [isRequired, setIsRequired] = useState(false);
@@ -58,7 +59,7 @@ export function AttributeFormModal({
 
         const newErrors: Record<string, string> = {};
         if (!name.trim()) {
-            newErrors.name = 'Name is required';
+            newErrors.name = t('attributes.errors.nameRequired');
         }
 
         if (Object.keys(newErrors).length > 0) {
@@ -95,12 +96,12 @@ export function AttributeFormModal({
                         <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
                         <div>
                             <div className="flex items-center gap-2 mb-1">
-                                <span className="text-xs font-black text-gray-400 tracking-widest">Add-on</span>
+                                <span className="text-xs font-black text-gray-400 tracking-widest">{t('attributes.title')}</span>
                                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                                <span className="text-xs font-black text-paymint-green tracking-widest">Active</span>
+                                <span className="text-xs font-black text-paymint-green tracking-widest">{t('common.active')}</span>
                             </div>
                             <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
-                                {initialData ? 'Edit Add-on' : 'New Add-on'}
+                                {initialData ? t('attributes.editAttribute') : t('attributes.newAttribute')}
                             </h2>
                         </div>
                         <button
@@ -117,21 +118,21 @@ export function AttributeFormModal({
                             {Object.keys(errors).length > 0 && (
                                 <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
                                     <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
-                                    Please correct the highlighted errors below
+                                    {t('common.validationError')}
                                 </div>
                             )}
 
                             {/* Name */}
                             <div className="space-y-3">
                                 <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                                    Name <span className="text-paymint-red">*</span>
-                                    <QuickInfo text="Name (e.g. Size, Sauce)." />
+                                    {t('attributes.form.nameLabel')} <span className="text-paymint-red">*</span>
+                                    <QuickInfo text={t('attributes.form.nameTip')} />
                                 </label>
                                 <input
                                     type="text"
                                     value={name}
                                     onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
-                                    placeholder="E.g. Spice Level"
+                                    placeholder={t('attributes.form.namePlaceholder')}
                                     className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                                 />
                                 {errors.name && <p className="mt-1.5 px-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
@@ -140,8 +141,8 @@ export function AttributeFormModal({
                             {/* Input Type Selection */}
                             <div className="space-y-4">
                                 <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                                    Type
-                                    <QuickInfo text="Allow one or many?" />
+                                    {t('attributes.form.typeLabel')}
+                                    <QuickInfo text={t('attributes.form.typeTip')} />
                                 </label>
                                 <div className="grid grid-cols-2 gap-4">
                                     <button
@@ -156,8 +157,8 @@ export function AttributeFormModal({
                                             <MousePointerClick size={20} strokeWidth={2.5} />
                                         </div>
                                         <div>
-                                            <p className={`text-sm font-bold ${inputType === 'SINGLE_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>Single</p>
-                                            <p className="text-xs font-bold text-gray-500 mt-1">Pick one.</p>
+                                            <p className={`text-sm font-bold ${inputType === 'SINGLE_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.single')}</p>
+                                            <p className="text-xs font-bold text-gray-500 mt-1">{t('attributes.form.singleDesc')}</p>
                                         </div>
                                         {inputType === 'SINGLE_SELECT' && (
                                             <div className="absolute top-4 right-4 text-paymint-green">
@@ -178,8 +179,8 @@ export function AttributeFormModal({
                                             <CheckSquare size={20} strokeWidth={2.5} />
                                         </div>
                                         <div>
-                                            <p className={`text-sm font-bold ${inputType === 'MULTI_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>Multiple</p>
-                                            <p className="text-xs font-bold text-gray-500 mt-1">Pick many.</p>
+                                            <p className={`text-sm font-bold ${inputType === 'MULTI_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.multiple')}</p>
+                                            <p className="text-xs font-bold text-gray-500 mt-1">{t('attributes.form.multipleDesc')}</p>
                                         </div>
                                         {inputType === 'MULTI_SELECT' && (
                                             <div className="absolute top-4 right-4 text-paymint-green">
@@ -193,8 +194,8 @@ export function AttributeFormModal({
                             {/* Required Toggle */}
                             <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
                                 <div>
-                                    <p className="text-sm font-bold text-gray-900 dark:text-white">Required</p>
-                                    <p className="text-xs font-bold text-gray-500 mt-0.5">Force selection</p>
+                                    <p className="text-sm font-bold text-gray-900 dark:text-white">{t('attributes.form.requiredLabel')}</p>
+                                    <p className="text-xs font-bold text-gray-500 mt-0.5">{t('attributes.form.requiredDesc')}</p>
                                 </div>
                                 <label className="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" checked={isRequired} onChange={() => setIsRequired(!isRequired)} className="sr-only peer" />
@@ -205,9 +206,9 @@ export function AttributeFormModal({
                             <div className="bg-blue-50 dark:bg-blue-500/5 border border-blue-100 dark:border-blue-500/10 rounded-xl p-4 flex gap-3">
                                 <AlertCircle size={18} className="text-blue-500 shrink-0 mt-0.5" />
                                 <div>
-                                    <p className="text-xs font-black tracking-widest text-blue-500 mb-1">Info</p>
+                                    <p className="text-xs font-black tracking-widest text-blue-500 mb-1">{t('attributes.form.infoTitle')}</p>
                                     <p className="text-xs font-bold text-gray-500 leading-relaxed">
-                                        Add options like 'Small' or 'Large' after saving.
+                                        {t('attributes.form.infoDesc')}
                                     </p>
                                 </div>
                             </div>
@@ -231,7 +232,7 @@ export function AttributeFormModal({
                             onClick={onClose}
                             className="flex-1 h-12 sm:h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-black text-xs tracking-widest hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
                         >
-                            Cancel
+                            {t('common.cancel')}
                         </button>
                         <button
                             type="submit"
@@ -242,7 +243,7 @@ export function AttributeFormModal({
                             {isSubmitting ? (
                                 <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" />
                             ) : (
-                                initialData ? AppStrings.COMMON.SAVE : 'Create'
+                                initialData ? t('common.save') : t('common.add')
                             )}
                         </button>
                     </div>

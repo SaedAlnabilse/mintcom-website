@@ -1,8 +1,8 @@
-import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useTranslation } from 'react-i18next';
 import {
   Plus,
   CreditCard,
@@ -49,6 +49,7 @@ interface CardType {
 }
 
 export function PaymentMethodsPage() {
+  const { t } = useTranslation();
   const { currentEstablishment } = useAuth();
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [cardTypes, setCardTypes] = useState<CardType[]>([]);
@@ -101,7 +102,7 @@ export function PaymentMethodsPage() {
       const response = await api.get('/app-settings/payment-methods');
       setPaymentMethods(Array.isArray(response.data) ? response.data : []);
     } catch {
-      toast.error('Failed to load payment methods');
+      toast.error(t('paymentMethods.messages.failedToLoad'));
       setPaymentMethods([]);
     } finally {
       setIsLoading(false);
@@ -114,6 +115,7 @@ export function PaymentMethodsPage() {
       setCardTypes(Array.isArray(response.data) ? response.data : []);
     } catch {
       console.error('Failed to load card types');
+      toast.error(t('paymentMethods.messages.failedToLoad'));
     }
   };
 
@@ -180,17 +182,17 @@ export function PaymentMethodsPage() {
 
       if (editingMethod) {
         await api.put(`/app-settings/payment-methods/${editingMethod.id}`, payload);
-        toast.success('Payment method updated');
+        toast.success(t('paymentMethods.messages.updated'));
       } else {
         await api.post('/app-settings/payment-methods', payload);
-        toast.success('Payment method created');
+        toast.success(t('paymentMethods.messages.created'));
       }
 
       setShowModal(false);
       fetchPaymentMethods();
     } catch (error: any) {
       console.error('Failed to save payment method:', error);
-      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to save payment method';
+      const errorMessage = error?.response?.data?.message || error?.message || t('paymentMethods.messages.failedToSave');
       toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -200,16 +202,16 @@ export function PaymentMethodsPage() {
   const handleDelete = async (methodId: string, name: string) => {
     setConfirmConfig({
       isOpen: true,
-      title: 'Remove Payment Method',
-      message: `Are you sure you want to delete "${name}"? This may affect historical reporting.`,
+      title: t('paymentMethods.confirm.removeTitle'),
+      message: t('paymentMethods.confirm.removeMessage', { name }),
       type: 'danger',
       onConfirm: async () => {
         try {
           await api.delete(`/app-settings/payment-methods/${methodId}`);
-          toast.success('Payment method removed');
+          toast.success(t('paymentMethods.messages.removed'));
           fetchPaymentMethods();
         } catch {
-          toast.error('Failed to remove method');
+          toast.error(t('paymentMethods.messages.failedToRemove'));
         }
       }
     });
@@ -218,7 +220,7 @@ export function PaymentMethodsPage() {
   const handleAddCardType = async () => {
     setCardErrors({});
     if (!newCardName.trim()) {
-      setCardErrors({ cardName: 'Required' });
+      setCardErrors({ cardName: t('common.required') });
       return;
     }
     try {
@@ -239,17 +241,17 @@ export function PaymentMethodsPage() {
 
       if (editingCard) {
         await api.patch(`/card-types/${editingCard.id}`, payload);
-        toast.success('Brand updated');
+        toast.success(t('paymentMethods.messages.brandUpdated'));
       } else {
         await api.post('/card-types', payload);
-        toast.success('Brand added');
+        toast.success(t('paymentMethods.messages.brandAdded'));
       }
 
       setShowCardModal(false);
       fetchCardTypes();
     } catch (error: any) {
       console.error('Failed to save brand:', error);
-      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to save brand';
+      const errorMessage = error?.response?.data?.message || error?.message || t('paymentMethods.messages.failedToSaveBrand');
       toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -259,16 +261,16 @@ export function PaymentMethodsPage() {
   const handleDeleteCardType = async (cardId: string, name: string) => {
     setConfirmConfig({
       isOpen: true,
-      title: 'Delete Card Type',
-      message: `Remove "${name}" from accepted card types?`,
+      title: t('paymentMethods.confirm.deleteCardTitle'),
+      message: t('paymentMethods.confirm.deleteCardMessage', { name }),
       type: 'danger',
       onConfirm: async () => {
         try {
           await api.delete(`/card-types/${cardId}`);
-          toast.success('Card type removed');
+          toast.success(t('paymentMethods.messages.cardTypeRemoved'));
           fetchCardTypes();
         } catch {
-          toast.error('Failed to delete');
+          toast.error(t('paymentMethods.messages.failedToDelete'));
         }
       }
     });
@@ -290,18 +292,18 @@ export function PaymentMethodsPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              Payments
+              {t('paymentMethods.title')}
             </span>
             <div className="flex items-center gap-2">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
               </span>
-              <span className="text-xs font-bold text-gray-400 tracking-widest">Active</span>
+              <span className="text-xs font-bold text-gray-400 tracking-widest">{t('common.active')}</span>
             </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Payment Methods</h1>
-          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">Manage how you accept payments</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.title')}</h1>
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">{t('paymentMethods.subtitle')}</p>
         </div>
       </div>
 
@@ -312,15 +314,15 @@ export function PaymentMethodsPage() {
             <CreditCard size={24} />
           </div>
           <div className="flex flex-col gap-1">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Card Brands</h2>
-            <p className="text-sm font-bold text-gray-500 dark:text-gray-400">Manage accepted card logos.</p>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('paymentMethods.cardBrands')}</h2>
+            <p className="text-sm font-bold text-gray-500 dark:text-gray-400">{t('paymentMethods.cardBrandsSubtitle')}</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {cardTypes.length === 0 ? (
             <div className="col-span-full py-12 text-center">
-              <p className="text-gray-400 font-black tracking-widest text-xs">No card brands added yet.</p>
+              <p className="text-gray-400 font-black tracking-widest text-xs">{t('paymentMethods.noCardBrands')}</p>
             </div>
           ) : (
             Array.isArray(cardTypes) && cardTypes.map((card) => (
@@ -333,10 +335,11 @@ export function PaymentMethodsPage() {
                   <button
                     onClick={(e) => { e.stopPropagation(); setEditingCard(card); setNewCardName(card.name); setCardImagePreview(card.imageUrl || card.logo || null); setSelectedCardImage(null); setShowCardModal(true); setCardErrors({}); }}
                     className="p-2 rounded-lg bg-white dark:bg-black/50 text-gray-400 hover:text-paymint-green shadow-sm border border-gray-100 dark:border-white/5 backdrop-blur-sm"
+                    title={t('common.edit')}
                   >
                     <Edit2 size={14} />
                   </button>
-                  <button onClick={(e) => { e.stopPropagation(); handleDeleteCardType(card.id, card.name); }} className="p-2 rounded-lg bg-white dark:bg-black/50 text-gray-400 hover:text-paymint-red shadow-sm border border-gray-100 dark:border-white/5 backdrop-blur-sm">
+                  <button onClick={(e) => { e.stopPropagation(); handleDeleteCardType(card.id, card.name); }} className="p-2 rounded-lg bg-white dark:bg-black/50 text-gray-400 hover:text-paymint-red shadow-sm border border-gray-100 dark:border-white/5 backdrop-blur-sm" title={t('common.delete')}>
                     <Trash2 size={14} />
                   </button>
                 </div>
@@ -363,8 +366,8 @@ export function PaymentMethodsPage() {
             <div className="w-16 h-16 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all shadow-sm">
               <Plus size={24} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
             </div>
-            <h3 className="text-base font-bold text-gray-900 dark:text-white">Add Brand</h3>
-            <p className="text-gray-500 text-xs font-black tracking-widest mt-1">Show Logo</p>
+            <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('paymentMethods.addBrand')}</h3>
+            <p className="text-gray-500 text-xs font-black tracking-widest mt-1">{t('paymentMethods.showLogo')}</p>
           </motion.div>
         </div>
       </section>
@@ -377,7 +380,7 @@ export function PaymentMethodsPage() {
               <Wallet size={20} />
             </div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-              Payment Types
+              {t('paymentMethods.paymentTypes')}
             </h2>
           </div>
         </div>
@@ -402,10 +405,10 @@ export function PaymentMethodsPage() {
                 <div className="absolute top-3 right-3 flex gap-1 z-10">
                   {!method.isDefault && (
                     <>
-                      <button onClick={(e) => { e.stopPropagation(); setEditingMethod(method); reset({ name: method.name, isActive: method.isActive }); setImagePreview(method.imageUrl || null); setShowModal(true); }} className="p-2 rounded-lg bg-gray-50 dark:bg-black/50 text-gray-400 hover:text-paymint-green border border-gray-100 dark:border-white/5 shadow-sm backdrop-blur-sm">
+                      <button onClick={(e) => { e.stopPropagation(); setEditingMethod(method); reset({ name: method.name, isActive: method.isActive }); setImagePreview(method.imageUrl || null); setShowModal(true); }} className="p-2 rounded-lg bg-gray-50 dark:bg-black/50 text-gray-400 hover:text-paymint-green border border-gray-100 dark:border-white/5 shadow-sm backdrop-blur-sm" title={t('common.edit')}>
                         <Edit2 size={14} />
                       </button>
-                      <button onClick={(e) => { e.stopPropagation(); handleDelete(method.id, method.name); }} className="p-2 rounded-lg bg-gray-50 dark:bg-black/50 text-gray-400 hover:text-paymint-red border border-gray-100 dark:border-white/5 shadow-sm backdrop-blur-sm">
+                      <button onClick={(e) => { e.stopPropagation(); handleDelete(method.id, method.name); }} className="p-2 rounded-lg bg-gray-50 dark:bg-black/50 text-gray-400 hover:text-paymint-red border border-gray-100 dark:border-white/5 shadow-sm backdrop-blur-sm" title={t('common.delete')}>
                         <Trash2 size={14} />
                       </button>
                     </>
@@ -424,7 +427,7 @@ export function PaymentMethodsPage() {
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate w-full text-center">{method.name}</h3>
                 {method.isDefault && (
                   <span className="mt-3 text-[10px] font-black text-blue-500 tracking-widest flex items-center gap-1 bg-blue-500/10 px-3 py-1 rounded-full uppercase border border-blue-500/20">
-                    <Star size={10} fill="currentColor" /> System
+                    <Star size={10} fill="currentColor" /> {t('paymentMethods.system')}
                   </span>
                 )}
               </motion.div>
@@ -439,8 +442,8 @@ export function PaymentMethodsPage() {
               <div className="w-16 h-16 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all shadow-sm">
                 <Plus size={24} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
               </div>
-              <h3 className="text-base font-bold text-gray-900 dark:text-white">Add Payment</h3>
-              <p className="text-gray-500 text-xs font-black tracking-widest mt-1">New Type</p>
+              <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('paymentMethods.addPayment')}</h3>
+              <p className="text-gray-500 text-xs font-black tracking-widest mt-1">{t('paymentMethods.newType')}</p>
             </motion.div>
           </div>
         )}
@@ -453,7 +456,7 @@ export function PaymentMethodsPage() {
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md overflow-hidden shadow-2xl">
               <div className="p-8 border-b border-gray-50 dark:border-white/5 flex items-center justify-between">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                  {editingMethod ? 'Edit Payment' : 'Add Payment'}
+                  {editingMethod ? t('paymentMethods.editPayment') : t('paymentMethods.addPayment')}
                 </h2>
                 <button
                   onClick={() => setShowModal(false)}
@@ -485,28 +488,28 @@ export function PaymentMethodsPage() {
                   </div>
 
                   <div className="flex items-center">
-                    <p className="text-xs font-black text-gray-400 tracking-widest">Icon (Optional)</p>
-                    <QuickInfo text="Icon displayed for this payment method." />
+                    <p className="text-xs font-black text-gray-400 tracking-widest">{t('paymentMethods.form.iconLabel')}</p>
+                    <QuickInfo text={t('paymentMethods.form.iconTip')} />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
-                    Name <span className="text-paymint-red mx-1">*</span>
-                    <QuickInfo text="The name used for reporting." />
+                    {t('paymentMethods.form.nameLabel')} <span className="text-paymint-red mx-1">*</span>
+                    <QuickInfo text={t('paymentMethods.form.nameTip')} />
                   </label>
                   <input
                     type="text"
                     {...register('name')}
                     className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-none'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
-                    placeholder="e.g. Digital Wallet"
+                    placeholder={t('paymentMethods.form.namePlaceholder')}
                   />
                   {errors.name && <p className="text-paymint-red text-xs font-black mt-2 px-1">{errors.name.message}</p>}
                 </div>
 
 
                 <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2">
-                  {editingMethod ? AppStrings.COMMON.SAVE : AppStrings.COMMON.ADD}
+                  {editingMethod ? t('common.save') : t('common.add')}
                 </button>
               </form>
             </motion.div>
@@ -521,7 +524,7 @@ export function PaymentMethodsPage() {
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-100 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl">
               <div className="p-8 border-b border-gray-50 dark:border-white/5 flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                  {editingCard ? 'Edit Brand' : 'Add Brand'}
+                  {editingCard ? t('paymentMethods.editBrand') : t('paymentMethods.addBrand')}
                 </h2>
                 <button onClick={() => setShowCardModal(false)} className="p-2 text-gray-400 hover:text-white transition-colors">
                   <X size={24} />
@@ -550,15 +553,15 @@ export function PaymentMethodsPage() {
                   </div>
 
                   <div className="flex items-center">
-                    <p className="text-xs font-black text-gray-400 tracking-widest">Logo</p>
-                    <QuickInfo text="Logo displayed to customers." />
+                    <p className="text-xs font-black text-gray-400 tracking-widest">{t('paymentMethods.form.logoLabel')}</p>
+                    <QuickInfo text={t('paymentMethods.form.logoTip')} />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
-                    Name <span className="text-paymint-red mx-1">*</span>
-                    <QuickInfo text="Brand name (e.g. Visa)." />
+                    {t('paymentMethods.form.nameLabel')} <span className="text-paymint-red mx-1">*</span>
+                    <QuickInfo text={t('paymentMethods.form.brandTip')} />
                   </label>
                   <input
                     type="text"
@@ -568,7 +571,7 @@ export function PaymentMethodsPage() {
                       if (cardErrors.cardName) setCardErrors({ ...cardErrors, cardName: '' });
                     }}
                     className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${cardErrors.cardName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-none'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
-                    placeholder="e.g. Mastercard"
+                    placeholder={t('paymentMethods.form.brandPlaceholder')}
                   />
                   {cardErrors.cardName && <p className="text-paymint-red text-xs font-black mt-2 px-1">{cardErrors.cardName}</p>}
                 </div>
@@ -578,7 +581,7 @@ export function PaymentMethodsPage() {
                   disabled={isSubmitting || !newCardName.trim()}
                   className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl hover:scale-[1.02] transition-all tracking-widest text-xs flex items-center justify-center gap-2"
                 >
-                  {editingCard ? AppStrings.COMMON.SAVE : AppStrings.COMMON.ADD}
+                  {editingCard ? t('common.save') : t('common.add')}
                 </button>
               </div>
             </motion.div>

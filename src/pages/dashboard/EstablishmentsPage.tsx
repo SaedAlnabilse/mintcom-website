@@ -14,6 +14,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { SearchInput, Pagination } from '../../components/ui';
+import { useTranslation } from 'react-i18next';
 
 interface Establishment {
   id: string;
@@ -27,6 +28,7 @@ interface Establishment {
 }
 
 export function EstablishmentsPage() {
+  const { t } = useTranslation();
   const { locationSlug } = useParams();
   const navigate = useNavigate();
   const { establishments, currentEstablishment, setCurrentEstablishment } = useAuth();
@@ -76,7 +78,7 @@ export function EstablishmentsPage() {
 
     setTimeout(() => {
       setCurrentEstablishment(est);
-      toast.success(`Active: ${est.name}`);
+      toast.success(t('establishments.activeToast', { name: est.name }));
       setIsSwitching(false);
     }, 800);
   };
@@ -114,11 +116,11 @@ export function EstablishmentsPage() {
             <div>
               <div className="flex items-center gap-3 mb-1">
                 <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                  Network
+                  {t('establishments.network')}
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Locations</h1>
-              <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">Manage your locations</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('establishments.title')}</h1>
+              <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">{t('establishments.subtitle')}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -127,7 +129,7 @@ export function EstablishmentsPage() {
               className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20"
             >
               <Plus size={18} />
-              <span>Add Location</span>
+              <span>{t('establishments.addLocation')}</span>
             </button>
           </div>
         </div>
@@ -140,7 +142,7 @@ export function EstablishmentsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onClear={() => setSearchQuery('')}
-            placeholder="Search locations..."
+            placeholder={t('establishments.searchPlaceholder')}
           />
         </div>
       </div>
@@ -170,7 +172,7 @@ export function EstablishmentsPage() {
                 <div>
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight leading-tight group-hover:text-paymint-green transition-colors">{est.name}</h3>
                   <span className={`inline-flex items-center px-2 py-0.5 text-xs font-black tracking-[0.2em] rounded-md mt-2 border transition-colors ${getStatusColor(est.subscriptionStatus)}`}>
-                    {est.subscriptionStatus}
+                    {t(`owner.billing.${est.subscriptionStatus.toLowerCase()}`, { defaultValue: est.subscriptionStatus })}
                   </span>
                 </div>
               </div>
@@ -191,10 +193,10 @@ export function EstablishmentsPage() {
                       className="absolute right-0 mt-3 w-56 bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/[0.1] rounded-2xl z-50 overflow-hidden py-2 shadow-2xl"
                     >
                       <button onClick={() => { handleSelectEstablishment(est); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green hover:text-black transition-all flex items-center gap-3 tracking-widest">
-                        <CheckCircle size={14} /> Switch
+                        <CheckCircle size={14} /> {t('establishments.switch')}
                       </button>
-                      <button onClick={() => { navigate(`/dashboard/${locationSlug}/settings`); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green/10 transition-all tracking-widest">Settings</button>
-                      <button onClick={() => { navigate(`/dashboard/${locationSlug}/staff`); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green/10 transition-all tracking-widest">Staff</button>
+                      <button onClick={() => { navigate(`/dashboard/${locationSlug}/settings`); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green/10 transition-all tracking-widest">{t('dashboard.menu.settings')}</button>
+                      <button onClick={() => { navigate(`/dashboard/${locationSlug}/staff`); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green/10 transition-all tracking-widest">{t('dashboard.menu.team')}</button>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -207,7 +209,7 @@ export function EstablishmentsPage() {
                 <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center border border-gray-100 dark:border-white/10">
                   <DollarSign size={14} className="text-paymint-green" />
                 </div>
-                <span>Currency: {est.currency?.toUpperCase()}</span>
+                <span>{t('establishments.details.currency')}: {est.currency?.toUpperCase()}</span>
               </div>
               <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 text-xs font-black tracking-widest">
                 <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center border border-gray-100 dark:border-white/10">
@@ -222,14 +224,14 @@ export function EstablishmentsPage() {
               {currentEstablishment?.id === est.id ? (
                 <div className="flex items-center justify-center gap-2 py-4 px-6 rounded-xl bg-paymint-green text-black shadow-lg shadow-paymint-green/20">
                   <CheckCircle size={18} strokeWidth={3} />
-                  <span className="font-black text-xs tracking-[0.2em]">Current Location</span>
+                  <span className="font-black text-xs tracking-[0.2em]">{t('establishments.currentLocation')}</span>
                 </div>
               ) : (
                 <button
                   onClick={() => handleSelectEstablishment(est)}
                   className="w-full py-4 px-6 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl hover:scale-[1.02] transition-all active:scale-95 text-xs tracking-[0.2em] shadow-md"
                 >
-                  Switch
+                  {t('establishments.switch')}
                 </button>
               )}
             </div>
@@ -245,8 +247,8 @@ export function EstablishmentsPage() {
             <Plus size={40} className="text-gray-300 group-hover:text-paymint-green transition-colors" />
           </div>
           <div className="text-center">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Add Location</h3>
-            <p className="text-xs font-black text-gray-400 tracking-widest max-w-[200px]">Create a new location</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('establishments.addLocation')}</h3>
+            <p className="text-xs font-black text-gray-400 tracking-widest max-w-[200px]">{t('establishments.details.create')}</p>
           </div>
         </motion.button>
       </div>
@@ -270,7 +272,7 @@ export function EstablishmentsPage() {
               <Loader2 size={40} className="text-paymint-green animate-spin" />
               <div className="absolute inset-0 bg-paymint-green/20 rounded-2xl animate-ping" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Opening...</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t('establishments.opening')}</h2>
             <p className="text-paymint-green font-black tracking-[0.3em] text-sm mt-4">{selectedName}</p>
 
             <div className="mt-12 w-48 h-1 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">

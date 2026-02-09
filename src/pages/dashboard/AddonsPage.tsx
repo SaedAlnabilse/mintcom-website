@@ -1,10 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Plus,
   Search,
   Package,
-
   Edit2,
   Trash2,
   ChevronDown,
@@ -38,6 +38,7 @@ interface Attribute {
 }
 
 export function AddonsPage() {
+  const { t } = useTranslation();
   const { formatAmount, currencySymbol } = useCurrency();
   const location = useLocation();
   const [attributes, setAttributes] = useState<Attribute[]>([]);
@@ -97,7 +98,7 @@ export function AddonsPage() {
       const response = await api.get('/api/attributes');
       setAttributes(response.data || []);
     } catch {
-      toast.error('Failed to load attributes');
+      toast.error(t('attributes.errors.failedToLoad'));
     } finally {
       setIsLoading(false);
     }
@@ -187,22 +188,22 @@ export function AddonsPage() {
   const handleSaveAttribute = async () => {
     setErrors({});
     if (!attributeForm.name.trim()) {
-      setErrors({ groupName: 'Required' });
+      setErrors({ groupName: t('attributes.errors.groupNameRequired') });
       return;
     }
     setIsSubmitting(true);
     try {
       if (editingAttribute) {
         await api.put(`/api/attributes/${editingAttribute.id}`, attributeForm);
-        toast.success('Group updated');
+        toast.success(t('attributes.messages.groupUpdated'));
       } else {
         await api.post('/api/attributes', attributeForm);
-        toast.success('Group created');
+        toast.success(t('attributes.messages.groupCreated'));
       }
       setShowAttributeModal(false);
       fetchAttributes();
     } catch {
-      toast.error('Error saving group');
+      toast.error(t('attributes.errors.errorSaving'));
     } finally {
       setIsSubmitting(false);
     }
@@ -214,10 +215,10 @@ export function AddonsPage() {
     if (attr && attr.subAttributes?.length > 0) {
       setConfirmConfig({
         isOpen: true,
-        title: 'Deletion Blocked',
-        message: `The group "${attr.name}" contains ${attr.subAttributes.length} active options. You must delete all options within this group before you can remove the group itself.`,
+        title: t('attributes.errors.deletionBlocked'),
+        message: t('attributes.errors.deletionBlockedMsg', { name: attr.name, count: attr.subAttributes.length }),
         type: 'warning',
-        confirmText: 'Got it',
+        confirmText: t('common.gotIt') || 'Got it',
         showCancel: false,
         onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
       });
@@ -226,17 +227,17 @@ export function AddonsPage() {
 
     setConfirmConfig({
       isOpen: true,
-      title: 'Delete Add-on Group',
-      message: `Are you sure you want to permanently remove the "${attr?.name}" group? This action cannot be undone.`,
+      title: t('attributes.errors.deleteGroupTitle'),
+      message: t('attributes.errors.deleteGroupMsg', { name: attr?.name }),
       type: 'danger',
       showCancel: true,
       onConfirm: async () => {
         try {
           await api.delete(`/api/attributes/${id}`);
-          toast.success('Group removed');
+          toast.success(t('attributes.messages.groupRemoved'));
           fetchAttributes();
         } catch {
-          toast.error('Failed to delete');
+          toast.error(t('attributes.errors.deleteFailed') || 'Failed to delete');
         }
       }
     });
@@ -245,7 +246,7 @@ export function AddonsPage() {
   const handleSaveSubAttribute = async () => {
     setErrors({});
     if (!subAttributeForm.name.trim()) {
-      setErrors({ optionName: 'Required' });
+      setErrors({ optionName: t('attributes.errors.optionNameRequired') });
       return;
     }
     if (!parentAttributeId) return;
@@ -253,15 +254,15 @@ export function AddonsPage() {
     try {
       if (editingSubAttribute) {
         await api.put(`/api/attributes/sub-attributes/${editingSubAttribute.id}`, subAttributeForm);
-        toast.success('Option saved');
+        toast.success(t('attributes.messages.optionSaved'));
       } else {
         await api.post(`/api/attributes/${parentAttributeId}/sub-attributes`, subAttributeForm);
-        toast.success('Option added');
+        toast.success(t('attributes.messages.optionAdded'));
       }
       setShowSubAttributeModal(false);
       fetchAttributes();
     } catch {
-      toast.error('Failed to save option');
+      toast.error(t('attributes.errors.errorSavingOption'));
     } finally {
       setIsSubmitting(false);
     }
@@ -270,16 +271,16 @@ export function AddonsPage() {
   const handleDeleteSubAttribute = async (subAttrId: string) => {
     setConfirmConfig({
       isOpen: true,
-      title: 'Delete Option',
-      message: 'Remove this specific add-on option?',
+      title: t('attributes.errors.deleteOptionTitle'),
+      message: t('attributes.errors.deleteOptionMsg'),
       type: 'danger',
       onConfirm: async () => {
         try {
           await api.delete(`/api/attributes/sub-attributes/${subAttrId}`);
-          toast.success('Option removed');
+          toast.success(t('attributes.messages.optionRemoved'));
           fetchAttributes();
         } catch {
-          toast.error('Failed to delete');
+          toast.error(t('attributes.errors.deleteFailed') || 'Failed to delete');
         }
       }
     });
@@ -332,12 +333,12 @@ export function AddonsPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              Menu
+              {t('dashboard.menu.itemsMenu')}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Add-ons</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('attributes.title')}</h1>
           <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
-            Manage extra options and pricing
+            {t('attributes.subtitle')}
           </p>
         </div>
 
@@ -347,7 +348,7 @@ export function AddonsPage() {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
           >
             <Plus size={18} />
-            <span>New Group</span>
+            <span>{t('attributes.newGroup')}</span>
           </button>
         </div>
       </div>
@@ -356,7 +357,7 @@ export function AddonsPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
           {
-            label: 'Attributes / groups',
+            label: t('attributes.stats.groups'),
             value: stats.totalGroups,
             icon: Layers,
             color: 'text-blue-500',
@@ -364,7 +365,7 @@ export function AddonsPage() {
             action: () => handleQuickFilter('ALL')
           },
           {
-            label: 'Add-on options',
+            label: t('attributes.stats.options'),
             value: stats.totalOptions,
             icon: Package,
             color: 'text-paymint-green',
@@ -372,9 +373,9 @@ export function AddonsPage() {
             action: () => handleQuickFilter('ALL', true)
           },
           {
-            label: 'Sales from paid add-ons',
+            label: t('attributes.stats.sales'),
             value: stats.paidOptions,
-            sub: 'With price',
+            sub: t('attributes.stats.withPrice'),
             icon: DollarSign,
             color: 'text-orange-500',
             bg: 'bg-orange-500/10',
@@ -409,7 +410,7 @@ export function AddonsPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-            placeholder="Search groups..."
+            placeholder={t('attributes.filters.searchPlaceholder')}
             className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
           />
         </div>
@@ -417,7 +418,7 @@ export function AddonsPage() {
         <div className="pt-4 border-t border-gray-100 dark:border-white/5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Selection Filter */}
           <div className="space-y-2">
-            <p className="text-xs font-black text-gray-400 dark:text-gray-500 tracking-widest px-1">Selection</p>
+            <p className="text-xs font-black text-gray-400 dark:text-gray-500 tracking-widest px-1">{t('attributes.filters.selection')}</p>
             <div className="flex bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/10">
               {['ALL', 'SINGLE_SELECT', 'MULTI_SELECT'].map((f) => (
                 <button
@@ -428,7 +429,7 @@ export function AddonsPage() {
                     : 'text-gray-400 hover:text-gray-600'
                     }`}
                 >
-                  {f === 'SINGLE_SELECT' ? 'Single' : f === 'MULTI_SELECT' ? 'Multi' : 'All'}
+                  {f === 'SINGLE_SELECT' ? t('attributes.filters.single') : f === 'MULTI_SELECT' ? t('attributes.filters.multi') : t('attributes.filters.all')}
                 </button>
               ))}
             </div>
@@ -436,7 +437,7 @@ export function AddonsPage() {
 
           {/* Requirement Filter */}
           <div className="space-y-2">
-            <p className="text-xs font-black text-gray-400 dark:text-gray-500 tracking-widest px-1">Required</p>
+            <p className="text-xs font-black text-gray-400 dark:text-gray-500 tracking-widest px-1">{t('attributes.filters.required')}</p>
             <div className="flex bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/10">
               {['ALL', 'MANDATORY', 'OPTIONAL'].map((f) => (
                 <button
@@ -447,7 +448,7 @@ export function AddonsPage() {
                     : 'text-gray-400 hover:text-gray-600'
                     }`}
                 >
-                  {f === 'MANDATORY' ? 'Mandatory' : f === 'OPTIONAL' ? 'Optional' : 'All'}
+                  {f === 'MANDATORY' ? t('attributes.filters.mandatory') : f === 'OPTIONAL' ? t('attributes.filters.optional') : t('attributes.filters.all')}
                 </button>
               ))}
             </div>
@@ -455,7 +456,7 @@ export function AddonsPage() {
 
           {/* Pricing Model */}
           <div className="space-y-2">
-            <p className="text-xs font-black text-gray-400 dark:text-gray-500 tracking-widest px-1">Price</p>
+            <p className="text-xs font-black text-gray-400 dark:text-gray-500 tracking-widest px-1">{t('attributes.filters.price')}</p>
             <div className="flex bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/10">
               {['ALL', 'FREE', 'PAID'].map((f) => (
                 <button
@@ -466,7 +467,7 @@ export function AddonsPage() {
                     : 'text-gray-400 hover:text-gray-600'
                     }`}
                 >
-                  {f === 'FREE' ? 'Free' : f === 'PAID' ? 'Paid' : 'All'}
+                  {f === 'FREE' ? t('attributes.filters.free') : f === 'PAID' ? t('attributes.filters.paid') : t('attributes.filters.all')}
                 </button>
               ))}
             </div>
@@ -484,7 +485,7 @@ export function AddonsPage() {
             }}
             className="text-xs font-black text-gray-400 hover:text-paymint-red tracking-widest flex items-center gap-1.5 transition-colors"
           >
-            Reset Filters
+            {t('attributes.filters.reset')}
           </button>
         </div>
       </div>
@@ -499,8 +500,8 @@ export function AddonsPage() {
           <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
             <Package size={32} className="text-gray-300" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No add-ons</h3>
-          <p className="text-sm font-bold text-gray-500 max-w-xs">Create add-ons to allow staff to customize items.</p>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('attributes.list.noAddons')}</h3>
+          <p className="text-sm font-bold text-gray-500 max-w-xs">{t('attributes.list.noAddonsDesc')}</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -525,20 +526,20 @@ export function AddonsPage() {
                     <div className="flex items-center gap-3">
                       <h3 className="font-bold text-gray-900 dark:text-white text-lg">{attr.name}</h3>
                       {attr.isRequired && (
-                        <span className="text-xs font-black tracking-widest px-2 py-0.5 bg-paymint-green/10 text-paymint-green rounded-md border border-paymint-green/20">Mandatory</span>
+                        <span className="text-xs font-black tracking-widest px-2 py-0.5 bg-paymint-green/10 text-paymint-green rounded-md border border-paymint-green/20">{t('attributes.list.mandatory')}</span>
                       )}
                     </div>
                     <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">
-                      {attr.inputType === 'SINGLE_SELECT' ? 'Single choice' : 'Multiple choice'} • {attr.subAttributes?.length || 0} options
+                      {attr.inputType === 'SINGLE_SELECT' ? t('attributes.list.singleChoice') : t('attributes.list.multipleChoice')} • {attr.subAttributes?.length || 0} {t('attributes.list.options')}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="flex gap-3">
-                    <button onClick={(e) => { e.stopPropagation(); openAttributeModal(attr); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green hover:border-paymint-green/30 transition-colors">
+                    <button onClick={(e) => { e.stopPropagation(); openAttributeModal(attr); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green hover:border-paymint-green/30 transition-colors" title={t('common.edit')}>
                       <Edit2 size={16} />
                     </button>
-                    <button onClick={(e) => { e.stopPropagation(); handleDeleteAttribute(attr.id); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-red hover:border-paymint-red/30 transition-colors">
+                    <button onClick={(e) => { e.stopPropagation(); handleDeleteAttribute(attr.id); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-red hover:border-paymint-red/30 transition-colors" title={t('common.delete')}>
                       <Trash2 size={16} />
                     </button>
                   </div>
@@ -551,12 +552,12 @@ export function AddonsPage() {
                     className="border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 p-8"
                   >
                     <div className="flex items-center justify-between mb-6">
-                      <span className="text-xs font-black text-gray-400 tracking-[0.2em]">Options</span>
+                      <span className="text-xs font-black text-gray-400 tracking-[0.2em]">{t('attributes.list.options')}</span>
                       <button
                         onClick={() => openSubAttributeModal(attr.id)}
                         className="px-4 py-2 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white text-xs font-bold tracking-widest rounded-xl hover:bg-paymint-green hover:text-black hover:border-paymint-green transition-all flex items-center gap-2"
                       >
-                        <Plus size={14} /> Add Option
+                        <Plus size={14} /> {t('attributes.list.addOption')}
                       </button>
                     </div>
 
@@ -572,14 +573,14 @@ export function AddonsPage() {
                             <div>
                               <p className="font-bold text-gray-900 dark:text-white text-base">{sub.name}</p>
                               <p className="text-xs font-black text-paymint-green mt-1">
-                                {Number(sub.price) > 0 ? `+${formatAmount(Number(sub.price))}` : 'Complimentary'}
+                                {Number(sub.price) > 0 ? `+${formatAmount(Number(sub.price))}` : t('attributes.list.complimentary')}
                               </p>
                             </div>
                             <div className="flex gap-1 transition-opacity">
-                              <button onClick={() => openSubAttributeModal(attr.id, sub)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10">
+                              <button onClick={() => openSubAttributeModal(attr.id, sub)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10" title={t('common.edit')}>
                                 <Edit2 size={14} />
                               </button>
-                              <button onClick={() => handleDeleteSubAttribute(sub.id)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10">
+                              <button onClick={() => handleDeleteSubAttribute(sub.id)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10" title={t('common.delete')}>
                                 <Trash2 size={14} />
                               </button>
                             </div>
@@ -604,7 +605,7 @@ export function AddonsPage() {
                 <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
               </div>
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Add-on Group</h2>
+                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{t('attributes.form.groupTitle')}</h2>
                 <button onClick={() => setShowAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
                   <X size={24} />
                 </button>
@@ -612,7 +613,7 @@ export function AddonsPage() {
               <div className="p-8 space-y-8 overflow-y-auto flex-1 custom-scrollbar">
                 <div>
                   <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1">
-                    Group Name <span className="text-paymint-red">*</span>
+                    {t('attributes.form.groupNameLabel')} <span className="text-paymint-red">*</span>
                   </label>
                   <input
                     type="text"
@@ -622,7 +623,7 @@ export function AddonsPage() {
                       if (errors.groupName) setErrors({ ...errors, groupName: '' });
                     }}
                     className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.groupName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
-                    placeholder="e.g. Cooking Preference"
+                    placeholder={t('attributes.form.groupNamePlaceholder')}
                   />
                   {errors.groupName && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.groupName}</p>}
                 </div>
@@ -640,8 +641,8 @@ export function AddonsPage() {
                       <MousePointerClick size={20} strokeWidth={2.5} />
                     </div>
                     <div>
-                      <p className={`text-sm font-bold ${attributeForm.inputType === 'SINGLE_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>Single Select</p>
-                      <p className="text-xs font-medium text-gray-400 mt-1">Customer picks exactly one option.</p>
+                      <p className={`text-sm font-bold ${attributeForm.inputType === 'SINGLE_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.single')}</p>
+                      <p className="text-xs font-medium text-gray-400 mt-1">{t('attributes.form.singleDesc')}</p>
                     </div>
                     {attributeForm.inputType === 'SINGLE_SELECT' && (
                       <div className="absolute top-4 right-4 text-paymint-green">
@@ -662,8 +663,8 @@ export function AddonsPage() {
                       <CheckSquare size={20} strokeWidth={2.5} />
                     </div>
                     <div>
-                      <p className={`text-sm font-bold ${attributeForm.inputType === 'MULTI_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>Multi Select</p>
-                      <p className="text-xs font-medium text-gray-400 mt-1">Customer can pick multiple options.</p>
+                      <p className={`text-sm font-bold ${attributeForm.inputType === 'MULTI_SELECT' ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.multiple')}</p>
+                      <p className="text-xs font-medium text-gray-400 mt-1">{t('attributes.form.multipleDesc')}</p>
                     </div>
                     {attributeForm.inputType === 'MULTI_SELECT' && (
                       <div className="absolute top-4 right-4 text-paymint-green">
@@ -675,8 +676,8 @@ export function AddonsPage() {
 
                 <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
                   <div>
-                    <p className="text-sm font-bold text-gray-900 dark:text-white">Required</p>
-                    <p className="text-xs text-gray-500 font-bold mt-0.5">Customer must select an option</p>
+                    <p className="text-sm font-bold text-gray-900 dark:text-white">{t('attributes.form.requiredLabel')}</p>
+                    <p className="text-xs text-gray-500 font-bold mt-0.5">{t('attributes.form.requiredDesc')}</p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" checked={attributeForm.isRequired} onChange={() => setAttributeForm({ ...attributeForm, isRequired: !attributeForm.isRequired })} className="sr-only peer" />
@@ -685,7 +686,7 @@ export function AddonsPage() {
                 </div>
 
                 <button onClick={handleSaveAttribute} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs flex items-center justify-center gap-2">
-                  Save
+                  {t('common.save')}
                 </button>
               </div>
             </div>
@@ -701,7 +702,7 @@ export function AddonsPage() {
                 <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
               </div>
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Add-on Option</h2>
+                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{t('attributes.form.optionTitle')}</h2>
                 <button onClick={() => setShowSubAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
                   <X size={24} />
                 </button>
@@ -709,7 +710,7 @@ export function AddonsPage() {
               <div className="p-8 space-y-8 overflow-y-auto flex-1 custom-scrollbar">
                 <div>
                   <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1">
-                    Option Name <span className="text-paymint-red">*</span>
+                    {t('attributes.form.optionNameLabel')} <span className="text-paymint-red">*</span>
                   </label>
                   <input
                     type="text"
@@ -719,13 +720,13 @@ export function AddonsPage() {
                       if (errors.optionName) setErrors({ ...errors, optionName: '' });
                     }}
                     className={`w-full px-5 py-4 bg-gray-50 dark:bg-white/5 border ${errors.optionName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
-                    placeholder="e.g. Double Espresso"
+                    placeholder={t('attributes.form.optionNamePlaceholder')}
                   />
                   {errors.optionName && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.optionName}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-400 tracking-widest mb-2 px-1">Price</label>
+                  <label className="block text-sm font-bold text-gray-400 tracking-widest mb-2 px-1">{t('attributes.form.priceLabel')}</label>
                   <div className="relative group">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-gray-100 dark:bg-white/10 rounded-lg">
                       <span className="text-gray-500 dark:text-gray-400 text-xs font-black">{currencySymbol}</span>
@@ -743,19 +744,19 @@ export function AddonsPage() {
                       className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-4 py-3 text-gray-900 dark:text-white font-bold text-lg focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
                     />
                   </div>
-                  <p className="mt-2 text-xs font-black text-paymint-green tracking-widest px-1">Digits shift right to left (Atm style)</p>
+                  <p className="mt-2 text-xs font-black text-paymint-green tracking-widest px-1">{t('attributes.form.atmStyle')}</p>
                 </div>
 
                 <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
-                  <p className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">Available</p>
+                  <p className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">{t('attributes.form.availableLabel')}</p>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" checked={subAttributeForm.isAvailable} onChange={() => setSubAttributeForm({ ...subAttributeForm, isAvailable: !subAttributeForm.isAvailable })} className="sr-only peer" />
                     <div className="w-12 h-6 bg-gray-200 dark:bg-gray-800 rounded-full peer peer-checked:bg-paymint-green transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6"></div>
                   </label>
                 </div>
 
-                <button onClick={handleSaveSubAttribute} disabled={isSubmitting} className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2">
-                  Save Option
+                <button onClick={handleSaveSubAttribute} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all flex items-center justify-center gap-2">
+                  {t('common.save')}
                 </button>
               </div>
             </div>

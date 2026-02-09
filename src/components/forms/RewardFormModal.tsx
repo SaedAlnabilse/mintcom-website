@@ -1,6 +1,6 @@
-import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Award, Check } from 'lucide-react';
 import { CustomSelect } from '../CustomSelect';
@@ -28,6 +28,7 @@ interface RewardFormModalProps {
 }
 
 export function RewardFormModal({ isOpen, onClose, onSave, initialData, categories }: RewardFormModalProps) {
+  const { t } = useTranslation();
   const [type, setType] = useState<'DISCOUNT' | 'FREE_ITEM'>('DISCOUNT');
   const [pointsRequired, setPointsRequired] = useState('');
   const [discountPercentage, setDiscountPercentage] = useState('');
@@ -66,16 +67,16 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
 
     const newErrors: Record<string, string> = {};
     if (!pointsRequired || parseFloat(pointsRequired) <= 0) {
-      newErrors.pointsRequired = 'Valid points required';
+      newErrors.pointsRequired = t('rewards.errors.pointsRequired');
     }
 
     if (type === 'DISCOUNT') {
       if (!discountPercentage || parseFloat(discountPercentage) <= 0 || parseFloat(discountPercentage) > 100) {
-        newErrors.discountPercentage = 'Valid percentage (1-100) required';
+        newErrors.discountPercentage = t('rewards.errors.percentageRequired');
       }
     } else {
       if (!freeCategoryId) {
-        newErrors.freeCategoryId = 'Category required';
+        newErrors.freeCategoryId = t('rewards.errors.categoryRequired');
       }
     }
 
@@ -121,7 +122,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                 <Award size={22} strokeWidth={2.5} />
               </div>
               <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">
-                {initialData ? 'Edit Reward' : 'New Reward'}
+                {initialData ? t('rewards.editReward') : t('rewards.newReward')}
               </h2>
             </div>
             <button
@@ -137,13 +138,13 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
             {Object.keys(errors).length > 0 && (
               <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
-                Please correct the highlighted errors below
+                {t('common.validationError')}
               </div>
             )}
 
             {/* Reward Type */}
             <div>
-              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Type</label>
+              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('rewards.form.typeLabel')}</label>
               <div className="flex p-1 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/5 relative isolate">
                 <button
                   type="button"
@@ -154,7 +155,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                   {type === 'DISCOUNT' && (
                     <motion.div layoutId="active-reward-type" className="absolute inset-0 bg-paymint-green rounded-lg -z-10 shadow-sm" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />
                   )}
-                  Value Off
+                  {t('rewards.form.valueOff')}
                 </button>
                 <button
                   type="button"
@@ -165,14 +166,14 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                   {type === 'FREE_ITEM' && (
                     <motion.div layoutId="active-reward-type" className="absolute inset-0 bg-paymint-green rounded-lg -z-10 shadow-sm" transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }} />
                   )}
-                  Free Item
+                  {t('rewards.form.freeItem')}
                 </button>
               </div>
             </div>
 
             {/* Points Required */}
             <div>
-              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Points Cost</label>
+              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('rewards.form.pointsCostLabel')}</label>
               <div className="relative group">
                 <input
                   type="number"
@@ -182,7 +183,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                     if (errors.pointsRequired) setErrors({ ...errors, pointsRequired: '' });
                   }}
                   className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.pointsRequired ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all pr-12 group-hover:border-paymint-green/50 shadow-sm`}
-                  placeholder="0"
+                  placeholder={t('rewards.form.pointsCostPlaceholder')}
                 />
                 <div className="absolute right-5 top-1/2 -translate-y-1/2 text-paymint-green">
                   <Award size={20} strokeWidth={2.5} />
@@ -195,7 +196,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
             <div className="min-h-[90px]">
               {type === 'DISCOUNT' ? (
                 <motion.div key="discount" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                  <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">Discount %</label>
+                  <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('rewards.form.discountPercentageLabel')}</label>
                   <div className="relative group">
                     <input
                       type="number"
@@ -214,7 +215,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
               ) : (
                 <motion.div key="category" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                   <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center justify-between gap-1">
-                    <span>Category</span>
+                    <span>{t('rewards.form.categoryLabel')}</span>
                     {errors.freeCategoryId && <span className="text-paymint-red normal-case tracking-normal font-bold text-[10px]">{errors.freeCategoryId}</span>}
                   </label>
                   <div className={errors.freeCategoryId ? 'ring-2 ring-paymint-red/20 rounded-2xl' : ''}>
@@ -228,10 +229,10 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                         if (errors.freeCategoryId) setErrors({ ...errors, freeCategoryId: '' });
                       }}
                       options={[
-                        { label: 'Select category...', value: '' },
+                        { label: t('rewards.form.selectCategory'), value: '' },
                         ...categories.map(c => ({ label: c.name, value: c.id }))
                       ]}
-                      placeholder="Select category..."
+                      placeholder={t('rewards.form.selectCategory')}
                       direction="up"
                     />
                   </div>
@@ -248,7 +249,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
               onClick={onClose}
               className="flex-1 h-12 sm:h-14 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-black text-xs tracking-widest hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
             >
-              Cancel
+              {t('common.cancel')}
             </button>
             <button
               type="submit"
@@ -256,7 +257,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
               className="flex-[2] h-12 sm:h-14 rounded-xl bg-paymint-green text-black font-black text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-paymint-green/20"
             >
               <Check size={18} strokeWidth={3} />
-              {initialData ? AppStrings.COMMON.SAVE : AppStrings.COMMON.ADD}
+              {initialData ? t('common.save') : t('common.add')}
             </button>
           </div>
         </motion.div>

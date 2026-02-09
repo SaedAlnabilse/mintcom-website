@@ -5,6 +5,7 @@ import { useCurrency } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
 import { useRealtime } from '../../hooks/useRealtime';
 import { DataChangeEventTypes } from '../../services/realtimeService';
+import { useTranslation } from 'react-i18next';
 
 import {
   ShoppingCart,
@@ -89,6 +90,7 @@ interface ShiftStatus {
 }
 
 export function OrdersPage() {
+  const { t } = useTranslation();
   const { formatAmount, currencySymbol } = useCurrency();
   const { currentEstablishment } = useAuth();
   const location = useLocation();
@@ -107,10 +109,13 @@ export function OrdersPage() {
   // Helper function to format payment method display
   const formatPaymentMethod = (order: Order): string => {
     if (order.paymentMethod === 'CARD' && order.cardType) {
-      return `Card (${order.cardType})`;
+      return t('orders.payment.cardWithBrand', { brand: order.cardType });
     }
     if (order.paymentMethod === 'OTHER' && order.otherPaymentMethod) {
       return order.otherPaymentMethod;
+    }
+    if (order.paymentMethod === 'CASH') {
+      return t('orders.payment.cash');
     }
     // Format enum values nicely
     return order.paymentMethod
@@ -171,8 +176,8 @@ export function OrdersPage() {
 
     // Handle nested properties
     if (sortConfig.key === 'customer') {
-      aValue = a.customer?.name || 'Walk-in Customer';
-      bValue = b.customer?.name || 'Walk-in Customer';
+      aValue = a.customer?.name || t('orders.table.walkIn');
+      bValue = b.customer?.name || t('orders.table.walkIn');
     } else if (sortConfig.key === 'staff') {
       aValue = a.user?.username || '';
       bValue = b.user?.username || '';
@@ -209,9 +214,9 @@ export function OrdersPage() {
       if (showToast) {
         if (res.data?.shiftStatus === 'ACTIVE') {
           const time = res.data.activeShift?.startTime ? format(new Date(res.data.activeShift.startTime), 'h:mm a') : '';
-          toast.success(`Active Shift Found${time ? ` (${time})` : ''}`);
+          toast.success(t('orders.messages.shiftFound', { time: time ? ` (${time})` : '' }));
         } else {
-          toast.error('No Active Shift Found');
+          toast.error(t('orders.messages.noShiftFound'));
         }
       }
 
@@ -227,7 +232,7 @@ export function OrdersPage() {
     } catch (err: any) {
       console.error('Failed to fetch shift status:', err);
       if (showToast) {
-        const errorMessage = err.response?.data?.message || err.message || 'Failed to check shift status';
+        const errorMessage = err.response?.data?.message || err.message || t('orders.messages.checkShiftFailed');
         toast.error(errorMessage);
       }
     }
@@ -256,13 +261,13 @@ export function OrdersPage() {
 
           // Add main payment methods
           if (paymentMethods.includes('CASH')) {
-            options.push({ label: 'Cash', value: 'CASH', group: 'Main' });
+            options.push({ label: t('orders.payment.cash'), value: 'CASH', group: t('orders.payment.all') });
           }
 
           // Add card options
           if (paymentMethods.includes('CARD')) {
             // Add "All Cards" option first
-            options.push({ label: 'All Cards', value: 'CARD', group: 'Cards' });
+            options.push({ label: t('orders.payment.allCards'), value: 'CARD', group: t('orders.payment.allCards') });
 
             // Add individual card types
             if (cardTypes && cardTypes.length > 0) {
@@ -270,7 +275,7 @@ export function OrdersPage() {
                 options.push({
                   label: cardType,
                   value: `CARD_TYPE:${cardType}`,
-                  group: 'Cards'
+                  group: t('orders.payment.allCards')
                 });
               });
             }
@@ -279,13 +284,13 @@ export function OrdersPage() {
           // Add other payment methods
           if (paymentMethods.includes('OTHER') && otherMethods && otherMethods.length > 0) {
             // Add "All Other" option first
-            options.push({ label: 'All Other', value: 'OTHER', group: 'Other Payments' });
+            options.push({ label: t('orders.payment.allOther'), value: 'OTHER', group: t('orders.payment.allOther') });
 
             otherMethods.forEach((method: string) => {
               options.push({
                 label: method,
                 value: `OTHER_METHOD:${method}`,
-                group: 'Other Payments'
+                group: t('orders.payment.allOther')
               });
             });
           }
@@ -310,9 +315,9 @@ export function OrdersPage() {
         // If no options from endpoint, fallback to defaults
         if (options.length === 0) {
           options.push(
-            { label: 'Cash', value: 'CASH', group: 'Main' },
-            { label: 'All Cards', value: 'CARD', group: 'Cards' },
-            { label: 'All Other', value: 'OTHER', group: 'Other Payments' },
+            { label: t('orders.payment.cash'), value: 'CASH', group: t('owner.overview.total') },
+            { label: t('orders.payment.allCards'), value: 'CARD', group: t('orders.payment.allCards') },
+            { label: t('orders.payment.allOther'), value: 'OTHER', group: t('orders.payment.allOther') },
           );
         }
 
@@ -321,9 +326,9 @@ export function OrdersPage() {
         console.error('Failed to fetch payment options', err);
         // Fallback options
         setPaymentOptions([
-          { label: 'Cash', value: 'CASH', group: 'Main' },
-          { label: 'All Cards', value: 'CARD', group: 'Cards' },
-          { label: 'All Other', value: 'OTHER', group: 'Other Payments' },
+          { label: t('orders.payment.cash'), value: 'CASH', group: t('owner.overview.total') },
+          { label: t('orders.payment.allCards'), value: 'CARD', group: t('orders.payment.allCards') },
+          { label: t('orders.payment.allOther'), value: 'OTHER', group: t('orders.payment.allOther') },
         ]);
       }
     };
@@ -401,7 +406,7 @@ export function OrdersPage() {
         subtotal: h.orderData?.subtotal || 0,
         tax: h.orderData?.tax || 0,
         discount: h.orderData?.discount?.amount || 0,
-        paymentMethod: 'N/a',
+        paymentMethod: t('common.none'),
         paymentStatus: 'HELD',
         status: 'HELD',
         createdAt: h.pinnedAt,
@@ -413,7 +418,7 @@ export function OrdersPage() {
           total: item.finalPrice,
         })),
         user: {
-          username: h.heldBy?.username || 'Unknown',
+          username: h.heldBy?.username || t('common.notAvailable'),
         },
         note: h.orderData?.note,
       });
@@ -520,7 +525,7 @@ export function OrdersPage() {
       setError('');
     } catch (err) {
       console.error('Orders fetch error:', err);
-      setError((err as ApiError).response?.data?.message || 'Failed to load orders');
+      setError((err as ApiError).response?.data?.message || t('orders.messages.loadFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -650,10 +655,13 @@ export function OrdersPage() {
     const options: { label: string; value: string; icon?: React.ReactNode; subtitle?: string }[] = [];
 
     // Add all standard date period options
-    options.push(...DATE_PERIOD_OPTIONS);
+    options.push(...DATE_PERIOD_OPTIONS.map(opt => ({
+      ...opt,
+      label: t(`common.datePeriods.${opt.value}`)
+    })));
 
     // Add All Time option
-    options.push({ label: 'All Time', value: 'all' });
+    options.push({ label: t('common.datePeriods.all'), value: 'all' });
 
     return options;
   };
@@ -661,19 +669,19 @@ export function OrdersPage() {
   const handleRefund = (order: Order) => {
     setConfirmConfig({
       isOpen: true,
-      title: 'Refund Order',
-      message: 'Are you sure you want to refund this order? This action cannot be undone.',
+      title: t('orders.messages.refundConfirmTitle'),
+      message: t('orders.messages.refundConfirmMessage'),
       type: 'danger',
       onConfirm: async () => {
         try {
           await api.post(`/api/orders/${order.id}/refund`, {
             reason: 'Refunded via web dashboard',
           });
-          toast.success('Order refunded');
+          toast.success(t('orders.messages.refundSuccess'));
           fetchOrders(); // Refresh the list
           setConfirmConfig(prev => ({ ...prev, isOpen: false }));
         } catch (err) {
-          toast.error((err as ApiError).response?.data?.message || 'Failed to process refund');
+          toast.error((err as ApiError).response?.data?.message || t('orders.messages.refundFailed') || 'Failed to process refund');
         }
       }
     });
@@ -694,7 +702,9 @@ export function OrdersPage() {
   };
 
   const getStatusLabel = (status: string) => {
-    if (status === 'PENDING' || status === 'HELD') return 'On Hold';
+    if (status === 'PENDING' || status === 'HELD') return t('orders.status.onHold');
+    if (status === 'COMPLETED') return t('orders.status.completed');
+    if (status === 'REFUNDED') return t('orders.status.refunded');
     return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
   };
 
@@ -702,19 +712,19 @@ export function OrdersPage() {
     const exportData = orders.map(o => ({
       orderNumber: o.orderNumber,
       date: formatDate(o.createdAt),
-      customer: o.customer?.name || 'Walk-in',
+      customer: o.customer?.name || t('orders.table.walkIn'),
       total: o.total,
       status: o.paymentStatus || o.status,
       paymentMethod: o.paymentMethod
     }));
 
     exportToCSV(exportData, 'orders_history', {
-      orderNumber: 'Order #',
-      date: 'Date',
-      customer: 'Customer',
-      total: `Total (${currencySymbol})`,
-      status: 'Status',
-      paymentMethod: 'Payment Method'
+      orderNumber: t('orders.exportFields.orderNumber'),
+      date: t('orders.exportFields.date'),
+      customer: t('orders.exportFields.customer'),
+      total: t('orders.exportFields.total', { currency: currencySymbol }),
+      status: t('orders.exportFields.status'),
+      paymentMethod: t('orders.exportFields.paymentMethod')
     });
   };
 
@@ -725,12 +735,12 @@ export function OrdersPage() {
         <div>
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
             <span className="px-2.5 sm:px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              Sales
+              {t('orders.badge')}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">View Customer Orders</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('orders.title')}</h1>
           <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
-            Manage orders
+            {t('orders.subtitle')}
           </p>
         </div>
 
@@ -749,19 +759,19 @@ export function OrdersPage() {
                 }}
                 options={[
                    ...(shiftStatus?.shiftStatus === 'ACTIVE' ? [{
-                       label: 'Current Shift',
+                       label: t('dashboard.viewMode.currentShift'),
                        value: 'current_shift',
                        icon: <PlayCircle size={18} className="text-paymint-green" />,
                        subtitle: shiftStatus?.activeShift?.startTime ? `Started ${format(new Date(shiftStatus.activeShift.startTime), 'h:mm a')}` : 'Active now'
                    }] : []),
                    ...(lastShiftSnapshot ? [{
-                       label: 'Previous Shift',
+                       label: t('dashboard.viewMode.previousShift'),
                        value: 'previous_shift',
                        icon: <History size={18} />,
                        subtitle: 'Last completed shift'
                    }] : [])
                 ]}
-                placeholder="Check Shift"
+                placeholder={t('orders.checkShift')}
                 showAllOption={false}
                 buttonClassName="!bg-white dark:!bg-white/5 !text-gray-900 dark:!text-white !border-gray-200 dark:!border-white/10 hover:!bg-gray-50 dark:hover:!bg-white/10 !h-auto !py-2.5 sm:!py-3"
               />
@@ -773,7 +783,7 @@ export function OrdersPage() {
             className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all touch-target"
           >
             <Download size={18} />
-            <span className="hidden xs:inline">Export to CSV</span>
+            <span className="hidden xs:inline">{t('orders.export')}</span>
           </button>
         </div>
       </div>
@@ -790,7 +800,7 @@ export function OrdersPage() {
               onChange={(e) => setSearchQuery(e.target.value)}
               onClear={() => { setSearchQuery(''); fetchOrders(); }}
               onKeyPress={(e) => e.key === 'Enter' && searchOrder()}
-              placeholder="Search orders..."
+              placeholder={t('orders.searchPlaceholder')}
               className="w-full h-full"
             />
           </div>
@@ -802,7 +812,7 @@ export function OrdersPage() {
               onChange={(val) => setQuickDate(val || 'today')}
               options={getDateRangeOptions()}
               showAllOption={false}
-              placeholder="Period"
+              placeholder={t('orders.period') || 'Period'}
               className="w-full h-full"
             />
           </div>
@@ -841,13 +851,13 @@ export function OrdersPage() {
                   }
                 }}
                 options={[
-                  { label: 'Completed', value: 'COMPLETED' },
-                  { label: 'On Hold', value: 'HELD' },
-                  { label: 'Refunded', value: 'REFUNDED' },
+                  { label: t('orders.status.completed'), value: 'COMPLETED' },
+                  { label: t('orders.status.onHold'), value: 'HELD' },
+                  { label: t('orders.status.refunded'), value: 'REFUNDED' },
                 ]}
                 showAllOption={true}
-                allOptionLabel="All Status"
-                placeholder="Status"
+                allOptionLabel={t('orders.status.all')}
+                placeholder={t('orders.table.status') || 'Status'}
                 className="w-full h-full"
               />
             </div>
@@ -858,10 +868,10 @@ export function OrdersPage() {
                 value={paymentFilter === 'all' ? null : paymentFilter}
                 onChange={(val) => { setPaymentFilter(val || 'all'); setPage(1); }}
                 disabled={statusFilter === 'HELD'}
-                placeholder="Payment"
+                placeholder={t('orders.table.payment') || 'Payment'}
                 options={paymentOptions}
                 showAllOption={true}
-                allOptionLabel="All Payments"
+                allOptionLabel={t('orders.payment.all')}
                 className="w-full h-full"
               />
             </div>
@@ -880,10 +890,10 @@ export function OrdersPage() {
             <div>
               <span className="text-sm font-bold text-gray-900 dark:text-white">
                 {selectedDateRange === 'current_shift' && shiftStatus?.activeShift && (
-                  <>Showing orders since {format(new Date(shiftStatus.activeShift.startTime), 'MMM d, h:mm a')}</>
+                  <>{t('dashboard.viewMode.showingSince', { date: format(new Date(shiftStatus.activeShift.startTime), 'MMM d, h:mm a') })}</>
                 )}
                 {selectedDateRange === 'previous_shift' && lastShiftSnapshot && (
-                  <>Showing orders from {format(new Date(lastShiftSnapshot.startTime), 'MMM d, h:mm a')} to {format(new Date(lastShiftSnapshot.timestamp), 'h:mm a')}</>
+                  <>{t('dashboard.viewMode.showingLastShift')}</>
                 )}
               </span>
             </div>
@@ -895,7 +905,7 @@ export function OrdersPage() {
       <div className="flex overflow-x-auto scrollbar-none gap-3 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible pb-2 sm:pb-0">
         {[
           {
-            label: 'Total Sales',
+            label: t('orders.kpi.totalSales'),
             value: formatAmount(orders.reduce((acc, o) => acc + (o.total || 0), 0)),
             icon: TrendingUp,
             color: 'text-paymint-green',
@@ -904,7 +914,7 @@ export function OrdersPage() {
             active: false
           },
           {
-            label: 'Total Orders',
+            label: t('orders.kpi.totalOrders'),
             value: overallTotalCount,
             icon: ShoppingCart,
             color: 'text-blue-500',
@@ -913,7 +923,7 @@ export function OrdersPage() {
             active: statusFilter === 'all'
           },
           {
-            label: 'On Hold',
+            label: t('orders.kpi.onHold'),
             value: totalHeldCount,
             icon: Clock,
             color: 'text-orange-500',
@@ -958,7 +968,7 @@ export function OrdersPage() {
           <div className="py-20 text-center">
             <div className="flex flex-col items-center justify-center">
               <div className="w-12 h-12 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
-              <p className="text-xs font-black text-gray-400">Loading Orders...</p>
+              <p className="text-xs font-black text-gray-400">{t('orders.messages.loading')}</p>
             </div>
           </div>
         )}
@@ -970,7 +980,7 @@ export function OrdersPage() {
               <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4">
                 <ShoppingCart className="w-8 h-8 text-gray-300" />
               </div>
-              <p className="text-xl font-bold text-gray-900 dark:text-white">No orders found</p>
+              <p className="text-xl font-bold text-gray-900 dark:text-white">{t('orders.messages.noOrders')}</p>
             </div>
           </div>
         )}
@@ -999,7 +1009,7 @@ export function OrdersPage() {
                       </div>
                     </div>
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
-                      {getStatusLabel(order.paymentStatus || order.status || 'PENDING')}
+                      {t(`orders.status.${(order.paymentStatus || order.status || 'PENDING').toLowerCase() === 'pending' || (order.paymentStatus || order.status || 'PENDING').toLowerCase() === 'held' ? 'onHold' : (order.paymentStatus || order.status || 'PENDING').toLowerCase()}`)}
                     </span>
                   </div>
 
@@ -1007,10 +1017,10 @@ export function OrdersPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-gray-800 dark:text-gray-300 text-sm truncate">
-                        {order.customer?.name || 'Walk-in Customer'}
+                        {order.customer?.name || t('orders.table.walkIn')}
                       </p>
                       <p className="text-xs text-gray-500">
-                        {order.user?.username ? `Staff: ${order.user.username}` : 'Pos'} • {formatPaymentMethod(order)}
+                        {order.user?.username ? `${t('orders.table.staff')}: ${order.user.username}` : 'Pos'} • {formatPaymentMethod(order)}
                       </p>
                     </div>
                     <div className="text-right ml-4 flex-shrink-0">
@@ -1028,7 +1038,7 @@ export function OrdersPage() {
                       className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                     >
                       <Eye size={14} />
-                      View Details
+                      {t('orders.actions.viewDetails')}
                     </button>
 
                     {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
@@ -1040,7 +1050,7 @@ export function OrdersPage() {
                         className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-paymint-red hover:bg-paymint-red/10 transition-colors"
                       >
                         <Undo2 size={14} />
-                        Refund
+                        {t('orders.actions.refund')}
                       </button>
                     )}
 
@@ -1062,7 +1072,7 @@ export function OrdersPage() {
                     onClick={() => requestSort('date')}
                   >
                     <div className="flex items-center gap-2">
-                      Order
+                      {t('orders.table.order')}
                       <ArrowUpDown size={14} className={`transition-all ${sortConfig?.key === 'date' ? 'opacity-100 scale-110' : 'opacity-20 group-hover:opacity-100'}`} />
                     </div>
                   </th>
@@ -1071,7 +1081,7 @@ export function OrdersPage() {
                     onClick={() => requestSort('customer')}
                   >
                      <div className="flex items-center gap-2">
-                      Customer
+                      {t('orders.table.customer')}
                       <ArrowUpDown size={14} className={`transition-all ${sortConfig?.key === 'customer' ? 'opacity-100 scale-110' : 'opacity-20 group-hover:opacity-100'}`} />
                     </div>
                   </th>
@@ -1080,7 +1090,7 @@ export function OrdersPage() {
                     onClick={() => requestSort('total')}
                   >
                      <div className="flex items-center gap-2">
-                      Amount
+                      {t('orders.table.amount')}
                       <ArrowUpDown size={14} className={`transition-all ${sortConfig?.key === 'total' ? 'opacity-100 scale-110' : 'opacity-20 group-hover:opacity-100'}`} />
                     </div>
                   </th>
@@ -1089,11 +1099,11 @@ export function OrdersPage() {
                      onClick={() => requestSort('status')}
                   >
                      <div className="flex items-center gap-2">
-                      Status
+                      {t('orders.table.status')}
                       <ArrowUpDown size={14} className={`transition-all ${sortConfig?.key === 'status' ? 'opacity-100 scale-110' : 'opacity-20 group-hover:opacity-100'}`} />
                     </div>
                   </th>
-                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Actions</th>
+                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.table.actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -1116,8 +1126,8 @@ export function OrdersPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <p className="font-bold text-gray-800 dark:text-gray-300 text-sm">{order.customer?.name || 'Walk-in Customer'}</p>
-                        <p className="text-xs text-gray-500">{order.user?.username ? `Staff: ${order.user.username}` : 'Pos'}</p>
+                        <p className="font-bold text-gray-800 dark:text-gray-300 text-sm">{order.customer?.name || t('orders.table.walkIn')}</p>
+                        <p className="text-xs text-gray-500">{order.user?.username ? `${t('orders.table.staff')}: ${order.user.username}` : 'Pos'}</p>
                       </td>
                       <td className="px-6 py-4">
                         <p className="font-bold text-gray-900 dark:text-white">{formatAmount(order.total)}</p>
@@ -1125,7 +1135,7 @@ export function OrdersPage() {
                       </td>
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
-                          {getStatusLabel(order.paymentStatus || order.status || 'PENDING')}
+                          {t(`orders.status.${(order.paymentStatus || order.status || 'PENDING').toLowerCase() === 'pending' || (order.paymentStatus || order.status || 'PENDING').toLowerCase() === 'held' ? 'onHold' : (order.paymentStatus || order.status || 'PENDING').toLowerCase()}`)}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
@@ -1160,7 +1170,7 @@ export function OrdersPage() {
                                       className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                                     >
                                       <Eye size={14} />
-                                      View Details
+                                      {t('orders.actions.viewDetails')}
                                     </button>
 
                                     {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
@@ -1173,7 +1183,7 @@ export function OrdersPage() {
                                         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-paymint-red hover:bg-paymint-red/10 transition-colors"
                                       >
                                         <Undo2 size={14} />
-                                        Refund Order
+                                        {t('orders.actions.refundOrder')}
                                       </button>
                                     )}
                                   </div>
@@ -1214,8 +1224,8 @@ export function OrdersPage() {
         isOpen={confirmConfig.isOpen}
         onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
         onConfirm={confirmConfig.onConfirm}
-        title={confirmConfig.title}
-        message={confirmConfig.message}
+        title={t('orders.messages.refundConfirmTitle')}
+        message={t('orders.messages.refundConfirmMessage')}
         type={confirmConfig.type}
         confirmText={confirmConfig.confirmText}
         showCancel={confirmConfig.showCancel}

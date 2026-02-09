@@ -80,6 +80,7 @@ const createBrandSchema = z.object({
 type BrandFormData = z.infer<typeof createBrandSchema>;
 
 export function OwnerBrandsPage() {
+    const { t } = useTranslation();
     const { establishments, refreshEstablishments } = useAuth();
     const [brands, setBrands] = useState<Brand[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -211,7 +212,7 @@ export function OwnerBrandsPage() {
             setBrands(response.data);
         } catch (error) {
             console.error('Failed to fetch brands:', error);
-            toast.error('Failed to load brands');
+            toast.error(t('owner.brands.failedToLoad'));
         } finally {
             setIsLoading(false);
         }
@@ -307,7 +308,7 @@ export function OwnerBrandsPage() {
             }
         } else if (wizardStep === 2) {
             if (selectedEstablishments.length < 2) {
-                setError('Select at least 2 locations to create a brand');
+                setError(t('owner.brands.wizard.selectMinLocations'));
                 return;
             }
             setError('');
@@ -335,7 +336,7 @@ export function OwnerBrandsPage() {
 
     const onCreateBrand = async (data: BrandFormData) => {
         if (selectedEstablishments.length < 2) {
-            setError('Select at least 2 locations to merge');
+            setError(t('owner.brands.wizard.selectMinLocations'));
             return;
         }
 
@@ -346,20 +347,20 @@ export function OwnerBrandsPage() {
                 establishmentIds: selectedEstablishments,
                 mergeEmployeeIds: selectedEmployees,
             });
-            toast.success('Brand created!');
+            toast.success(t('owner.brands.wizard.createSuccess'));
             handleCloseModal();
             fetchBrands();
             refreshEstablishments();
         } catch (error: any) {
-            toast.error(error.response?.data?.message || 'Failed to create brand');
-            setError(error.response?.data?.message || 'Failed to create brand');
+            toast.error(error.response?.data?.message || t('owner.brands.wizard.createFailed'));
+            setError(error.response?.data?.message || t('owner.brands.wizard.createFailed'));
         } finally {
             setIsCreating(false);
         }
     };
 
     const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
+        return new Date(dateString).toLocaleDateString(t('common.language') === 'Arabic' ? 'ar-SA' : 'en-US', {
             month: 'short',
             day: 'numeric',
             year: 'numeric'
@@ -375,7 +376,7 @@ export function OwnerBrandsPage() {
                     <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
                     <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
                 </div>
-                <p className="text-sm font-bold text-gray-400 tracking-widest">Loading brands...</p>
+                <p className="text-sm font-bold text-gray-400 tracking-widest">{t('owner.brands.loading')}</p>
             </div>
         );
     }
@@ -387,12 +388,12 @@ export function OwnerBrandsPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                            Brands
+                            {t('owner.brands.badge')}
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Brands</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.brands.title')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
-                        Manage multiple locations under one brand
+                        {t('owner.brands.subtitle')}
                     </p>
                 </div>
 
@@ -403,7 +404,7 @@ export function OwnerBrandsPage() {
                             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20"
                         >
                             <Plus size={18} />
-                            <span>Create Brand</span>
+                            <span>{t('owner.brands.createBrand')}</span>
                         </button>
                     )}
                 </div>
@@ -412,9 +413,9 @@ export function OwnerBrandsPage() {
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
-                    { label: 'Active Brands', value: stats.totalBrands, icon: Building2, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: 'Linked Locations', value: stats.totalMerged, icon: Link2, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-                    { label: 'Available Locations', value: stats.availableNodes, icon: Store, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+                    { label: t('owner.brands.activeBrands'), value: stats.totalBrands, icon: Building2, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                    { label: t('owner.brands.linkedLocations'), value: stats.totalMerged, icon: Link2, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+                    { label: t('owner.brands.availableLocations'), value: stats.availableNodes, icon: Store, color: 'text-orange-500', bg: 'bg-orange-500/10' },
                 ].map((stat, i) => (
                     <div
                         key={i}
@@ -445,7 +446,7 @@ export function OwnerBrandsPage() {
                         />
                         <input
                             type="text"
-                            placeholder="Search brands by name or Login ID..."
+                            placeholder={t('owner.brands.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm focus:shadow-lg"
@@ -460,9 +461,9 @@ export function OwnerBrandsPage() {
                                 value={sortBy}
                                 onChange={(val) => setSortBy(val as SortOption)}
                                 options={[
-                                    { label: 'Sort by Name', value: 'name' },
-                                    { label: 'Sort by Date', value: 'date' },
-                                    { label: 'Sort by Locations', value: 'locations' },
+                                    { label: t('common.sortByName'), value: 'name' },
+                                    { label: t('common.sortByDate'), value: 'date' },
+                                    { label: t('common.sortByLocations'), value: 'locations' },
                                 ]}
                             />
                         </div>

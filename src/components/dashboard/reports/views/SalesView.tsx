@@ -14,6 +14,7 @@ import {
 import { motion } from 'framer-motion';
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell } from 'recharts';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import { useTheme } from '../../../../context/ThemeContext';
 import type { SalesSummary } from '../../../../types';
@@ -29,6 +30,7 @@ interface SalesViewProps {
 }
 
 export const SalesView = React.memo(function SalesView({ salesData, selectedDateRange, setShowPayInOutModal }: SalesViewProps) {
+  const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
   const { formatAmount, currencySymbol } = useCurrency();
   const isDark = resolvedTheme === 'dark';
@@ -42,69 +44,69 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {[
           {
-            label: 'Total Sales',
+            label: t('reports.sales.totalSales'),
             value: ((salesData.totalRevenue || 0) + (salesData.taxCollected || 0)).toFixed(3),
             icon: Wallet,
             color: 'text-blue-500',
             bg: 'bg-blue-500/10',
-            sub: 'Total (Inc. Tax)'
+            sub: t('reports.sales.totalIncTax')
           },
           {
-            label: 'Net Sales',
+            label: t('reports.sales.netSales'),
             value: (salesData.totalRevenue || 0).toFixed(3),
             icon: TrendingUp,
             color: 'text-paymint-green',
             bg: 'bg-paymint-green/10',
-            sub: 'Excl. Tax'
+            sub: t('reports.sales.exclTax')
           },
           {
-            label: 'Profit',
+            label: t('reports.sales.profit'),
             value: (salesData.grossProfit || 0).toFixed(3),
             icon: DollarSign,
             color: (salesData.grossProfit || 0) >= 0 ? 'text-emerald-500' : 'text-red-500',
             bg: (salesData.grossProfit || 0) >= 0 ? 'bg-emerald-500/10' : 'bg-red-500/10',
-            sub: 'Net Sales - Cost'
+            sub: t('reports.sales.netSalesCost')
           },
           {
-            label: 'Total Tax',
+            label: t('reports.sales.totalTax'),
             value: (salesData.taxCollected || 0).toFixed(3),
             icon: Percent,
             color: 'text-orange-500',
             bg: 'bg-orange-500/10',
-            sub: 'Tax Amount'
+            sub: t('reports.sales.taxAmount')
           },
           {
-            label: 'Number of Orders',
+            label: t('reports.sales.numOrders'),
             value: (salesData.totalOrders || 0).toString(),
-            suffix: 'Ord',
+            suffix: t('dashboard.stats.orders'),
             icon: ShoppingBag,
             color: 'text-indigo-500',
             bg: 'bg-indigo-500/10',
-            sub: 'Completed'
+            sub: t('reports.sales.completed')
           },
           {
-            label: 'Refunds',
+            label: t('reports.sales.refunds'),
             value: (salesData.totalRefunds || 0).toFixed(3),
             icon: ArrowDownRight,
             color: 'text-red-500',
             bg: 'bg-red-500/10',
-            sub: 'Returns'
+            sub: t('reports.sales.returns')
           },
           {
-            label: 'Hours',
+            label: t('reports.sales.hours'),
             value: (salesData.totalHoursWorked || 0).toFixed(1),
-            suffix: 'Hrs',
+            suffix: t('reports.sales.hours'),
             icon: Clock,
             color: 'text-orange-500',
             bg: 'bg-orange-500/10',
-            sub: 'Staff Hours',
+            sub: t('reports.sales.staffHours'),
             onClick: () => {
               window.scrollTo({ top: 0, behavior: 'smooth' });
               setTimeout(() => navigate(`/dashboard/${locationSlug}/reports/shifts`), 700);
             }
           },
           {
-            label: 'Non Sales',
+            label: t('reports.sales.nonSales'),
             value: null,
             icon: ArrowUpRight,
             color: 'text-cyan-500',
@@ -113,12 +115,12 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             customContent: (
               <div className="w-full mt-6 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-gray-400">Pay In</span>
+                  <span className="text-xs font-bold text-gray-400">{t('reports.sales.payIn')}</span>
                   <span className="text-sm font-bold text-paymint-green tracking-tight">+{formatAmount(salesData.totalPayIn || 0).replace(currencySymbol, '').trim()}</span>
                 </div>
                 <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-gray-400">Pay Out</span>
+                  <span className="text-xs font-bold text-gray-400">{t('reports.sales.payOut')}</span>
                   <span className="text-sm font-bold text-red-500 tracking-tight">-{formatAmount(salesData.totalPayOut || 0).replace(currencySymbol, '').trim()}</span>
                 </div>
               </div>
@@ -172,13 +174,13 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             <div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                 <TrendingUp className="text-paymint-green" size={20} />
-                Revenue Stats
+                {t('reports.sales.revenueStats')}
               </h3>
-              <p className="text-xs text-gray-500 mt-1">Performance over time</p>
+              <p className="text-xs text-gray-500 mt-1">{t('reports.sales.performance')}</p>
             </div>
             <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
               <Activity size={12} className="text-paymint-green" />
-              <span className="text-xs font-bold text-gray-500 tracking-wide">Real-time</span>
+              <span className="text-xs font-bold text-gray-500 tracking-wide">{t('reports.sales.realtime')}</span>
             </div>
           </div>
           <div className="h-[400px]">
@@ -247,8 +249,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                         <Activity size={36} className="text-gray-400 dark:text-gray-600" />
                       </div>
                       <div className="text-center">
-                        <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">No revenue data</p>
-                        <p className="text-xs text-gray-500 mt-1">There are no sales recorded for the selected period.</p>
+                        <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('reports.sales.noRevenue')}</p>
+                        <p className="text-xs text-gray-500 mt-1">{t('reports.sales.noRevenueDesc')}</p>
                       </div>
                     </div>
                   );
@@ -307,7 +309,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                             <YAxis hide domain={[0, maxY]} />
                             <Tooltip
                               cursor={{ stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' }}
-                              formatter={(val: any) => [Number(val).toFixed(3), 'Revenue']}
+                              formatter={(val: any) => [Number(val).toFixed(3), t('dashboard.revenueChart.revenue')]}
                               contentStyle={{
                                 backgroundColor: isDark ? '#0B1120' : '#fff',
                                 borderRadius: '16px',
@@ -356,15 +358,15 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                 <Wallet size={20} />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">Payment Methods</h3>
-                <p className="text-xs font-bold text-gray-500 tracking-wide">Breakdown Chart</p>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('reports.sales.paymentMethods')}</h3>
+                <p className="text-xs font-bold text-gray-500 tracking-wide">{t('reports.sales.breakdown')}</p>
               </div>
             </div>
             <button
               onClick={() => navigate(`/dashboard/${locationSlug}/reports/payments`)}
               className="text-xs font-bold text-blue-500 hover:underline tracking-wide"
             >
-              View All
+              {t('reports.sales.viewAll')}
             </button>
           </div>
           <div className="flex-1 flex flex-col justify-center">
@@ -418,7 +420,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-gray-400">
                 <CreditCard size={32} className="mb-3 opacity-20" />
-                <p className="text-xs font-bold tracking-wide">No payment data</p>
+                <p className="text-xs font-bold tracking-wide">{t('dashboard.paymentMethods.noData')}</p>
               </div>
             )}
           </div>

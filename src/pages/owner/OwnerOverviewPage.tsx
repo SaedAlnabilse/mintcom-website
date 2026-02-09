@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     TrendingUp,
     TrendingDown,
@@ -41,6 +42,7 @@ interface OverviewStats {
 }
 
 export function OwnerOverviewPage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { establishments } = useAuth();
     const [stats, setStats] = useState<OverviewStats>({
@@ -132,7 +134,7 @@ export function OwnerOverviewPage() {
         : getDatePeriodLabel(selectedDateRange);
 
     const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('en-US', {
+        return new Intl.NumberFormat(t('common.language') === 'Arabic' ? 'ar-SA' : 'en-US', {
             style: 'currency',
             currency: 'USD',
             minimumFractionDigits: 0,
@@ -147,16 +149,16 @@ export function OwnerOverviewPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                            Overview
+                            {t('owner.overview.badge')}
                         </span>
                         <span className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
                             <Activity size={14} className="text-emerald-500" />
-                            Online
+                            {t('owner.overview.online')}
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Dashboard</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.overview.title')}</h1>
                     <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
-                        Managing {establishments.length} locations and {stats.totalBrands} brands.
+                        {t('owner.overview.subtitle', { count: establishments.length, brands: stats.totalBrands })}
                     </p>
                 </div>
 
@@ -172,7 +174,7 @@ export function OwnerOverviewPage() {
                                     onChange={(val) => setQuickDate(val || 'today')}
                                     options={DATE_PERIOD_OPTIONS}
                                     showAllOption={false}
-                                    placeholder="Select Period"
+                                    placeholder={t('owner.overview.selectPeriod')}
                                     className="w-full"
                                     buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-2.5 !h-full !text-xs !font-bold ${selectedDateRange !== 'custom' ? '!text-paymint-green' : ''}`}
                                 />
@@ -210,7 +212,7 @@ export function OwnerOverviewPage() {
                                         <div className={`flex-none w-auto min-w-[155px] sm:min-w-[180px] relative z-[55]`}>
                                             <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isTimeFiltered ? '!bg-emerald-50 dark:!bg-[#064E3B] border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : '!bg-gray-50 dark:!bg-[#1E293B] border-transparent'}`}>
                                                 <div className="flex items-center gap-1.5 mb-0.5">
-                                                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Active Hours</span>
+                                                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>{t('owner.overview.activeHours')}</span>
                                                 </div>
                                                 <div className="flex items-center gap-2 justify-between relative">
                                                     <CustomTimePicker
@@ -242,7 +244,7 @@ export function OwnerOverviewPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 {[
                     {
-                        label: 'Total Sales',
+                        label: t('owner.overview.totalSales'),
                         value: formatCurrency(stats.totalRevenue),
                         change: stats.revenueChange,
                         icon: DollarSign,
@@ -251,7 +253,7 @@ export function OwnerOverviewPage() {
                         hideChange: true
                     },
                     {
-                        label: 'Total Profit',
+                        label: t('owner.overview.totalProfit'),
                         value: formatCurrency(stats.totalProfit),
                         change: stats.profitChange,
                         icon: TrendingUp,
@@ -260,25 +262,25 @@ export function OwnerOverviewPage() {
                         hideChange: true
                     },
                     {
-                        label: 'Active Locations',
+                        label: t('owner.overview.activeLocations'),
                         value: stats.activeLocations,
-                        sub: 'Open',
+                        sub: t('owner.overview.open'),
                         icon: Store,
                         color: 'text-blue-500',
                         bg: 'bg-blue-500/10'
                     },
                     {
-                        label: 'Brands',
+                        label: t('owner.overview.brands'),
                         value: stats.totalBrands,
-                        sub: 'Managed',
+                        sub: t('owner.overview.managed'),
                         icon: Building2,
                         color: 'text-purple-500',
                         bg: 'bg-purple-500/10'
                     },
                     {
-                        label: 'Total Staff',
+                        label: t('owner.overview.totalStaff'),
                         value: stats.totalEmployees || '-',
-                        sub: 'Total',
+                        sub: t('owner.overview.total'),
                         icon: Users,
                         color: 'text-orange-500',
                         bg: 'bg-orange-500/10'
@@ -327,12 +329,12 @@ export function OwnerOverviewPage() {
                 >
                     <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sales Trends</h3>
-                            <p className="text-xs text-gray-500 mt-1">Period: {selectedFilterLabel}</p>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('owner.overview.salesTrends')}</h3>
+                            <p className="text-xs text-gray-500 mt-1">{t('owner.overview.period')}: {selectedFilterLabel}</p>
                         </div>
                         <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-white/5">
                             <div className="w-2 h-2 rounded-full bg-paymint-green" />
-                            <span className="text-xs font-black tracking-wider text-gray-600 dark:text-gray-400">Total Revenue</span>
+                            <span className="text-xs font-black tracking-wider text-gray-600 dark:text-gray-400">{t('owner.overview.totalRevenue')}</span>
                         </div>
                     </div>
 
@@ -388,10 +390,10 @@ export function OwnerOverviewPage() {
                                     <Activity size={32} className="text-gray-400 dark:text-gray-500" />
                                 </div>
                                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                                    No revenue data
+                                    {t('owner.overview.noRevenueData')}
                                 </h3>
                                 <p className="text-sm font-bold text-gray-500 text-center">
-                                    There are no sales recorded for the selected period.
+                                    {t('owner.overview.noSalesRecorded')}
                                 </p>
                             </div>
                         )}
@@ -411,20 +413,20 @@ export function OwnerOverviewPage() {
                             <div className="w-12 h-12 rounded-xl bg-paymint-green flex items-center justify-center text-black mb-4">
                                 <Zap size={24} />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Grow Business</h3>
-                            <p className="text-sm font-bold text-gray-500 mb-6">Add new locations or create brands.</p>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('owner.overview.growBusiness')}</h3>
+                            <p className="text-sm font-bold text-gray-500 mb-6">{t('owner.overview.growBusinessDesc')}</p>
                             <div className="space-y-3">
                                 <button
                                     onClick={() => navigate('/onboarding')}
                                     className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl text-sm active:scale-95 transition-all shadow-sm"
                                 >
-                                    Add Location
+                                    {t('owner.overview.addLocation')}
                                 </button>
                                 <button
                                     onClick={() => navigate('/owner/brands')}
                                     className="w-full py-3 bg-white dark:bg-white/10 text-gray-900 dark:text-white font-bold rounded-xl text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/20 transition-all"
                                 >
-                                    Manage Brands
+                                    {t('owner.overview.manageBrands')}
                                 </button>
                             </div>
                         </div>
@@ -433,7 +435,7 @@ export function OwnerOverviewPage() {
                     <div className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm hover:shadow-lg transition-all duration-300 group relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-gray-100 dark:bg-white/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                         <div className="relative z-10">
-                            <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Quick Management</h4>
+                            <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('owner.overview.quickManagement')}</h4>
                             <div className="space-y-3">
                                 <button
                                     onClick={() => navigate('/owner/employees')}
@@ -443,7 +445,7 @@ export function OwnerOverviewPage() {
                                         <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
                                             <UserPlus size={16} />
                                         </div>
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white">Staff Management</span>
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{t('owner.overview.staffManagement')}</span>
                                     </div>
                                     <Activity size={14} className="text-gray-400 group-hover/btn:text-blue-500 transition-colors" />
                                 </button>
@@ -455,7 +457,7 @@ export function OwnerOverviewPage() {
                                         <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
                                             <Store size={16} />
                                         </div>
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white">Manage Locations</span>
+                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{t('owner.overview.manageLocations')}</span>
                                     </div>
                                     <Activity size={14} className="text-gray-400 group-hover/btn:text-emerald-500 transition-colors" />
                                 </button>

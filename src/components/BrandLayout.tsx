@@ -1,10 +1,11 @@
 import { AppStrings } from '../constants/AppStrings';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { ThemeToggle } from './ThemeToggle';
 import { DeletionRestorationBanner } from './DeletionRestorationBanner';
+import { useTranslation } from 'react-i18next';
 import {
     LayoutDashboard,
     Store,
@@ -41,13 +42,11 @@ interface Brand {
 
 const SIDEBAR_STATE_KEY = 'brand_sidebar_expanded';
 
-const getMenuItems = (brandId: string) => [
-    { path: `/brand/${brandId}`, label: 'Overview', icon: LayoutDashboard, description: 'Dashboard & Analytics' },
-    { path: `/brand/${brandId}/locations`, label: 'Locations', icon: Store, description: 'Manage Locations' },
-    { path: `/brand/${brandId}/team`, label: 'Team', icon: Users, description: 'Staff Management' },
-];
+// Remove getMenuItems function as it is now inside the component with useMemo
+
 
 export function BrandLayout() {
+    const { t } = useTranslation();
     const { brandId } = useParams<{ brandId: string }>();
     const { account, logout } = useAuth();
     const navigate = useNavigate();
@@ -62,7 +61,11 @@ export function BrandLayout() {
     const [isLoading, setIsLoading] = useState(true);
     const mainContentRef = useRef<HTMLDivElement>(null);
 
-    const menuItems = brandId ? getMenuItems(brandId) : [];
+    const menuItems = useMemo(() => brandId ? [
+        { path: `/brand/${brandId}`, label: t('brand.menu.overview'), icon: LayoutDashboard, description: 'Dashboard & Analytics' },
+        { path: `/brand/${brandId}/locations`, label: t('brand.menu.locations'), icon: Store, description: 'Manage Locations' },
+        { path: `/brand/${brandId}/team`, label: t('brand.menu.team'), icon: Users, description: 'Staff Management' },
+    ] : [], [brandId, t]);
 
     // Scroll to top on route change
     useEffect(() => {
@@ -205,7 +208,7 @@ export function BrandLayout() {
                                         className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
                                     />
                                     <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
-                                        Open sidebar
+                                        {t('owner.menu.openSidebar')}
                                     </div>
                                 </button>
                             </motion.div>
@@ -237,7 +240,7 @@ export function BrandLayout() {
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-xs font-black text-paymint-green tracking-widest mb-0.5">
-                                            {brand?.id === 'cmkek5eme0001vjjqvfm3wjwa' ? 'Top Performance' : 'Active Brand'}
+                                            {brand?.id === 'cmkek5eme0001vjjqvfm3wjwa' ? 'Top Performance' : t('brand.menu.activeBrand')}
                                         </p>
                                         <h2 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight leading-[1.2] font-sans truncate">
                                             {brand?.name || AppStrings.COMMON.LOADING}
@@ -247,10 +250,10 @@ export function BrandLayout() {
                                 <div className="flex items-center justify-between mt-2.5 pt-2.5 border-t border-gray-100 dark:border-white/10">
                                     <div className="flex items-center gap-1.5">
                                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] dark:shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                                        <span className="text-xs font-black text-gray-400 tracking-widest">Online</span>
+                                        <span className="text-xs font-black text-gray-400 tracking-widest">{t('owner.overview.online')}</span>
                                     </div>
                                     <div className="flex items-center gap-1 text-xs font-bold text-gray-500 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
-                                        Switch Brand <ChevronRight size={10} className="mt-0.5" />
+                                        {t('brand.menu.switchBrand')} <ChevronRight size={10} className="mt-0.5" />
                                     </div>
                                 </div>
                             </div>
@@ -262,7 +265,7 @@ export function BrandLayout() {
                         >
                             <ArrowLeft size={24} />
                             <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
-                                Switch Brand
+                                {t('brand.menu.switchBrand')}
                             </div>
                         </button>
                     )}
@@ -271,7 +274,7 @@ export function BrandLayout() {
                 {/* Navigation */}
                 <nav className={`flex-1 px-3 space-y-1.5 scrollbar-none ${sidebarOpen ? 'overflow-y-auto' : 'overflow-visible'}`}>
                     {sidebarOpen && (
-                        <p className="px-3 py-2 text-xs font-black text-gray-400 tracking-widest">Main Menu</p>
+                        <p className="px-3 py-2 text-xs font-black text-gray-400 tracking-widest">{t('owner.menu.mainMenu')}</p>
                     )}
                     {menuItems.map((item) => {
                         const Icon = item.icon;
@@ -312,7 +315,7 @@ export function BrandLayout() {
                         <div className="relative group">
                             <button className="w-full flex items-center gap-3 px-3 py-2.5 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
                                 <Smartphone size={16} className="text-gray-400" />
-                                <span className="text-sm font-bold">Mobile App</span>
+                                <span className="text-sm font-bold">{t('owner.menu.getMobileApp')}</span>
                             </button>
                             {/* QR Code Popup */}
                             <div className="absolute left-full bottom-0 ml-3 bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[70] translate-x-2 group-hover:translate-x-0 w-[200px]">
@@ -382,7 +385,7 @@ export function BrandLayout() {
                                 </div>
                                 {/* Text */}
                                 <p className="text-center text-sm font-bold text-gray-900 dark:text-white leading-tight">
-                                    Scan to download<br />
+                                    {t('owner.menu.scanToDownload')}<br />
                                     <span className="text-paymint-green">Paymint App</span>
                                 </p>
                             </div>
@@ -404,7 +407,7 @@ export function BrandLayout() {
                                 <p className="text-xs font-black text-gray-900 dark:text-white tracking-widest truncate">
                                     {account?.firstName} {account?.lastName}
                                 </p>
-                                <p className="text-xs font-black text-gray-400 tracking-widest truncate">Brand Administrator</p>
+                                <p className="text-xs font-black text-gray-400 tracking-widest truncate">{t('brand.menu.brandAdmin')}</p>
                             </div>
 
                             <div className="flex items-center gap-1">
@@ -431,7 +434,7 @@ export function BrandLayout() {
                                 <Settings size={24} />
                                 {/* Tooltip */}
                                 <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
-                                    Settings
+                                    {t('dashboard.menu.settings')}
                                 </div>
                             </button>
 
@@ -470,7 +473,7 @@ export function BrandLayout() {
                                                         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left"
                                                     >
                                                         <Smartphone size={18} />
-                                                        <span>Get Mobile App</span>
+                                                        <span>{t('owner.menu.getMobileApp')}</span>
                                                     </button>
                                                     {/* QR Code Popup */}
                                                     <div className="absolute left-full bottom-0 ml-2 bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[80] translate-x-2 group-hover:translate-x-0 w-[200px]">
@@ -540,7 +543,7 @@ export function BrandLayout() {
                                                         </div>
                                                         {/* Text */}
                                                         <p className="text-center text-sm font-bold text-gray-900 dark:text-white leading-tight">
-                                                            Scan to download<br />
+                                                            {t('owner.menu.scanToDownload')}<br />
                                                             <span className="text-paymint-green">Paymint App</span>
                                                         </p>
                                                     </div>
@@ -560,7 +563,7 @@ export function BrandLayout() {
                                                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all text-left"
                                                 >
                                                     <LogOut size={18} />
-                                                    <span>Sign Out</span>
+                                                    <span>{t('owner.menu.signOut')}</span>
                                                 </button>
                                             </div>
                                         </motion.div>
@@ -637,7 +640,7 @@ export function BrandLayout() {
                                         <Building2 size={20} className="text-paymint-green" />
                                     </div>
                                     <div>
-                                        <p className="text-xs font-bold text-paymint-green">Active Brand</p>
+                                        <p className="text-xs font-bold text-paymint-green">{t('brand.menu.activeBrand')}</p>
                                         <h2 className="text-sm font-bold text-white truncate">{brand?.name}</h2>
                                     </div>
                                 </div>
@@ -651,7 +654,7 @@ export function BrandLayout() {
                                 className="w-full flex items-center gap-3 p-3 rounded-xl text-gray-500 hover:text-paymint-green hover:bg-paymint-green/5 transition-all group mb-4"
                             >
                                 <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-                                <span className="text-sm font-bold">Back to Brands</span>
+                                <span className="text-sm font-bold">{t('brand.menu.backToBrands')}</span>
                             </button>
 
                             {menuItems.map((item) => {
@@ -685,7 +688,7 @@ export function BrandLayout() {
                                 </div>
                                 <div className="flex-1">
                                     <p className="text-sm font-bold text-gray-900 dark:text-white">{account?.firstName}</p>
-                                    <p className="text-xs text-gray-500">Administrator</p>
+                                    <p className="text-xs text-gray-500">{t('brand.menu.brandAdmin')}</p>
                                 </div>
                                 <button
                                     onClick={handleLogout}
@@ -703,10 +706,10 @@ export function BrandLayout() {
                 isOpen={isLogoutModalOpen}
                 onClose={() => setIsLogoutModalOpen(false)}
                 onConfirm={confirmLogout}
-                title="Sign Out"
+                title={t('auth.login.loginButton')} // Reusing login button text as "Sign Out" or similar if available, otherwise fallback
                 message="Are you sure you want to sign out of the brand dashboard?"
-                confirmText="Sign Out"
-                cancelText={AppStrings.COMMON.CANCEL}
+                confirmText={t('owner.menu.signOut')}
+                cancelText={t('common.cancel')}
                 type="danger"
             />
         </div>

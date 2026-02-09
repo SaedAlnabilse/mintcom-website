@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   Plus,
   User,
@@ -60,6 +61,7 @@ interface Customer {
 }
 
 export function CustomersPage() {
+  const { t } = useTranslation();
   // Permission guard - redirects if user lacks permission
   usePermissionGuard();
 
@@ -125,15 +127,15 @@ export function CustomersPage() {
     try {
       if (editingCustomer) {
         await api.patch(`/customers/${editingCustomer.id}`, data);
-        toast.success('Customer updated');
+        toast.success(t('customers.messages.updated'));
       } else {
         await api.post('/customers', data);
-        toast.success('Customer created');
+        toast.success(t('customers.messages.created'));
       }
       setShowModal(false);
       fetchCustomers();
     } catch (err) {
-      toast.error((err as ApiError).response?.data?.message || 'Error saving customer');
+      toast.error((err as ApiError).response?.data?.message || t('customers.messages.errorSaving'));
     } finally {
       setIsSubmitting(false);
     }
@@ -142,16 +144,16 @@ export function CustomersPage() {
   const handleDeleteCustomer = (customer: Customer) => {
     setConfirmConfig({
       isOpen: true,
-      title: 'Remove Customer',
-      message: `Are you sure you want to delete ${customer.name}? All loyalty data will be lost.`,
+      title: t('paymentMethods.confirm.removeTitle'),
+      message: t('customers.messages.removed') + ` ${customer.name}?`,
       type: 'danger',
       onConfirm: async () => {
         try {
           await api.delete(`/customers/${customer.id}`);
-          toast.success('Customer removed');
+          toast.success(t('customers.messages.removed'));
           fetchCustomers();
         } catch (err) {
-          toast.error((err as ApiError).response?.data?.message || 'Failed to delete');
+          toast.error((err as ApiError).response?.data?.message || t('common.error'));
         }
       }
     });
@@ -162,7 +164,7 @@ export function CustomersPage() {
     setPointsError(null);
 
     if (pointsAction === 'deduct' && pointsAmount > selectedCustomer.points) {
-      setPointsError(`Insufficient points. Customer only has ${selectedCustomer.points} points.`);
+      setPointsError(t('customers.messages.insufficientPoints', { points: selectedCustomer.points }));
       return;
     }
 
@@ -171,12 +173,12 @@ export function CustomersPage() {
       await api.post(`/customers/${selectedCustomer.id}/points`, {
         points: pointsAction === 'add' ? pointsAmount : -pointsAmount,
       });
-      toast.success('Loyalty points adjusted');
+      toast.success(t('customers.messages.pointsAdjusted'));
       setShowPointsModal(false);
       setPointsAmount(0);
       fetchCustomers();
     } catch (err) {
-      setPointsError((err as ApiError).response?.data?.message || 'Failed to adjust points');
+      setPointsError((err as ApiError).response?.data?.message || t('common.error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -244,7 +246,7 @@ export function CustomersPage() {
         <div>
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
             <span className="px-2.5 sm:px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              Loyalty
+              {t('customers.badge')}
             </span>
             <div className="flex items-center gap-2">
               <div className="relative flex h-2 w-2">
@@ -254,8 +256,8 @@ export function CustomersPage() {
               <span className="text-xs font-bold text-paymint-green tracking-widest">Live</span>
             </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Customers</h1>
-          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">Manage customer data</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('customers.title')}</h1>
+          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">{t('customers.subtitle')}</p>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
@@ -264,14 +266,14 @@ export function CustomersPage() {
             className="hidden sm:flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm"
           >
             <Download size={18} />
-            <span>Export to CSV</span>
+            <span>{t('orders.export')}</span>
           </button>
           <button
             onClick={() => { setEditingCustomer(null); reset({ name: '', phone: '', email: '', address: '', notes: '' }); setShowModal(true); }}
             className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20 touch-target"
           >
             <Plus size={18} />
-            <span className="hidden xs:inline">Add Customer</span>
+            <span className="hidden xs:inline">{t('customers.addCustomer')}</span>
           </button>
         </div>
       </div>
@@ -289,7 +291,7 @@ export function CustomersPage() {
               <User size={20} className="sm:w-6 sm:h-6" />
             </div>
             <div>
-              <p className="text-xs font-black text-gray-400 tracking-widest">Total Customers</p>
+              <p className="text-xs font-black text-gray-400 tracking-widest">{t('customers.stats.total')}</p>
               <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mt-0.5">{(Array.isArray(customers) ? customers : []).length}</p>
             </div>
           </div>
@@ -307,7 +309,7 @@ export function CustomersPage() {
               <Award size={20} className="sm:w-6 sm:h-6" />
             </div>
             <div>
-              <p className="text-xs font-black text-gray-400 tracking-widest">Total Points</p>
+              <p className="text-xs font-black text-gray-400 tracking-widest">{t('customers.stats.points')}</p>
               <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mt-0.5">
                 {(Array.isArray(customers) ? customers : []).reduce((acc, curr) => acc + (curr.points || 0), 0).toLocaleString()}
               </p>
@@ -327,7 +329,7 @@ export function CustomersPage() {
               <ShoppingBag size={20} className="sm:w-6 sm:h-6" />
             </div>
             <div>
-              <p className="text-xs font-black text-gray-400 tracking-widest">Total Spent</p>
+              <p className="text-xs font-black text-gray-400 tracking-widest">{t('customers.stats.spent')}</p>
               <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mt-0.5">
                 {formatCurrency((Array.isArray(customers) ? customers : []).reduce((acc, curr) => acc + (Number(curr.totalSpent) || 0), 0))}
               </p>
@@ -343,7 +345,7 @@ export function CustomersPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onClear={() => setSearchQuery('')}
-            placeholder="Search customers..."
+            placeholder={t('customers.searchPlaceholder')}
             className="w-full"
           />
         </div>
@@ -355,15 +357,15 @@ export function CustomersPage() {
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32">
             <div className="w-12 h-12 border-4 border-paymint-green/10 border-t-paymint-green rounded-full animate-spin mb-4" />
-            <p className="text-xs font-black tracking-widest text-gray-400">Loading customers...</p>
+            <p className="text-xs font-black tracking-widest text-gray-400">{t('customers.messages.loading')}</p>
           </div>
         ) : customers.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32 text-center bg-gray-50/30 dark:bg-black/10">
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
               <User size={32} className="sm:w-10 sm:h-10 text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No customers</h3>
-            <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto">Add a customer to get started.</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('customers.messages.noCustomers')}</h3>
+            <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto">{t('customers.messages.noCustomersDesc')}</p>
           </div>
         ) : (
           <>
@@ -386,26 +388,26 @@ export function CustomersPage() {
                       </div>
                       <div>
                         <p className="font-bold text-gray-900 dark:text-white text-sm">{customer.name}</p>
-                        <p className="text-xs text-gray-500">{customer.totalVisits} visits</p>
+                        <p className="text-xs text-gray-500">{customer.totalVisits} {t('customers.details.visits')}</p>
                       </div>
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-black text-paymint-green">{customer.points}</p>
-                      <p className="text-xs text-gray-400">Points</p>
+                      <p className="text-xs text-gray-400">{t('rewards.points')}</p>
                     </div>
                   </div>
 
                   {/* Card Details */}
                   <div className="grid grid-cols-2 gap-3 mb-3 pt-3 border-t border-gray-100 dark:border-white/5">
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Phone</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('staff.form.phoneLabel')}</p>
                       <div className="flex items-center gap-1.5 text-sm font-bold text-gray-900 dark:text-white truncate">
                         <Phone size={12} className="text-gray-400 flex-shrink-0" />
-                        <span className="truncate">{customer.phone || 'N/A'}</span>
+                        <span className="truncate">{customer.phone || t('common.notAvailable')}</span>
                       </div>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Total Spent</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('customers.details.spent')}</p>
                       <p className="text-sm font-bold text-gray-900 dark:text-white">{formatCurrency(customer.totalSpent)}</p>
                     </div>
                   </div>
@@ -413,18 +415,25 @@ export function CustomersPage() {
                   {/* Card Actions */}
                   <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 dark:border-white/5" onClick={(e) => e.stopPropagation()}>
                     <button
-                      onClick={() => { setSelectedCustomer(customer); setPointsAmount(0); setShowPointsModal(true); }}
+                      onClick={() => { setSelectedCustomer(member); setPointsAmount(0); setShowPointsModal(true); }}
                       className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-paymint-green/10 text-paymint-green text-xs font-bold touch-target"
                     >
                       <Award size={14} />
-                      Points
+                      {t('customers.details.points')}
                     </button>
                     <button
-                      onClick={() => openEditModal(customer)}
+                      onClick={() => openEditModal(member)}
                       className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 text-xs font-bold touch-target"
                     >
                       <Edit2 size={14} />
-                      Edit
+                      {t('common.edit')}
+                    </button>
+                    <button
+                      onClick={() => handleDeleteCustomer(member)}
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 dark:border-red-500/20 text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-all text-xs font-bold touch-target"
+                    >
+                      <Trash2 size={14} />
+                      {t('common.delete')}
                     </button>
                   </div>
                 </motion.div>
@@ -436,11 +445,11 @@ export function CustomersPage() {
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-white/[0.02]">
                   <tr className="border-b border-gray-200 dark:border-white/5">
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Name</th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Points</th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Contact</th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Total Spent</th>
-                    <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">Actions</th>
+                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('customers.form.name')}</th>
+                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('customers.details.points')}</th>
+                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('staff.table.contact')}</th>
+                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('customers.details.spent')}</th>
+                    <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('owner.locations.actions')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -460,14 +469,14 @@ export function CustomersPage() {
                           </div>
                           <div>
                             <p className="font-bold text-gray-900 dark:text-white text-sm">{customer.name}</p>
-                            <p className="text-xs font-black text-gray-400 tracking-widest">{customer.totalVisits} Total Visits</p>
+                            <p className="text-xs font-black text-gray-400 tracking-widest">{customer.totalVisits} {t('customers.details.visits')}</p>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex flex-col gap-1">
                           <p className="text-sm font-black text-paymint-green">{customer.points}</p>
-                          <p className="text-xs font-black text-gray-400 tracking-widest">Points</p>
+                          <p className="text-xs font-black text-gray-400 tracking-widest">{t('rewards.points')}</p>
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -478,13 +487,13 @@ export function CustomersPage() {
                           </div>
                           <div className="flex items-center gap-2 text-xs text-gray-500">
                             <Mail size={12} className="text-gray-400" />
-                            <span className="font-medium">{customer.email || 'No email'}</span>
+                            <span className="font-medium">{customer.email || t('owner.staff.noEmail')}</span>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <p className="font-black text-gray-900 dark:text-white text-sm">{formatCurrency(customer.totalSpent)}</p>
-                        <p className="text-xs text-paymint-green font-black tracking-widest">Active</p>
+                        <p className="text-xs text-paymint-green font-black tracking-widest">{t('common.active')}</p>
                       </td>
                       <td className="px-6 py-4 text-center" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-center gap-1 sm:gap-2">

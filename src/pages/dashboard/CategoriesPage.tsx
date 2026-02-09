@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useNavigate, useLocation, useOutletContext, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 import {
   Plus,
@@ -46,6 +47,7 @@ interface Product {
 }
 
 export function CategoriesPage() {
+  const { t } = useTranslation();
   const { formatAmount } = useCurrency();
   const { locationSlug } = useParams();
   const navigate = useNavigate();
@@ -102,7 +104,7 @@ export function CategoriesPage() {
       // Items API returns { items, total, limit, offset }
       setProducts(prodsRes.data?.items || []);
     } catch {
-      toast.error('Failed to load data');
+      toast.error(t('categories.messages.loadFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -146,22 +148,22 @@ export function CategoriesPage() {
       const payload = { name, icon, sortOrder };
       if (editingCategory) {
         await api.patch(`/api/categories/${editingCategory.id}`, payload);
-        toast.success('Category updated');
+        toast.success(t('categories.messages.updated'));
       } else {
         await api.post('/api/categories', payload);
-        toast.success('Category created');
+        toast.success(t('categories.messages.created'));
       }
       setShowModal(false);
       fetchData();
     } catch (error: any) {
       console.error('Save category error:', error.response?.data || error.message);
-      let message = error.response?.data?.message || 'Failed to save category';
-      
+      let message = error.response?.data?.message || t('categories.messages.saveFailed');
+
       // Map database unique constraint errors to user-friendly messages
       if (message.includes('Unique constraint failed') && message.includes('name')) {
-        message = 'A category with this name already exists in this location.';
+        message = t('categories.messages.exists');
       }
-      
+
       setFormError(message);
     } finally {
       setIsSubmitting(false);
@@ -192,21 +194,21 @@ export function CategoriesPage() {
 
       setConfirmConfig({
         isOpen: true,
-        title: 'Delete Category',
-        message: 'Are you sure you want to delete this category? Archived items that have never been sold will be permanently deleted.',
+        title: t('categories.delete.title'),
+        message: t('categories.delete.message'),
         type: 'danger',
         onConfirm: async () => {
           try {
             await api.delete(`/api/categories/${categoryId}`);
-            toast.success('Category deleted');
+            toast.success(t('categories.messages.deleted'));
             fetchData();
           } catch (error: any) {
             console.error('Delete category error:', error.response?.data || error.message);
-            const errorMessage = error.response?.data?.message || 'Failed to delete category';
-            
+            const errorMessage = error.response?.data?.message || t('categories.messages.deleteFailed');
+
             // Show more helpful message for items with order history
             if (errorMessage.includes('historical records') || errorMessage.includes('used in orders')) {
-              toast.error('Cannot delete: Category contains archived items with sales history. These must be kept for records.', { duration: 6000 });
+              toast.error(t('categories.delete.blocked'), { duration: 6000 });
             } else {
               toast.error(errorMessage, { duration: 4000 });
             }
@@ -214,7 +216,7 @@ export function CategoriesPage() {
         }
       });
     } catch (error) {
-      toast.error('Failed to verify category status');
+      toast.error(t('categories.messages.verifyFailed'));
     }
   };
 
@@ -243,12 +245,12 @@ export function CategoriesPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              Menu
+              {t('categories.title')}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Categories</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('categories.title')}</h1>
           <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
-            Organize your menu items
+            {t('categories.subtitle')}
           </p>
         </div>
 
@@ -258,8 +260,8 @@ export function CategoriesPage() {
             className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-xs sm:text-sm hover:bg-emerald-400 transition-all shadow-sm"
           >
             <Plus size={18} />
-            <span className="hidden xs:inline">New Category</span>
-            <span className="xs:hidden">Add</span>
+            <span className="hidden xs:inline">{t('categories.newCategory')}</span>
+            <span className="xs:hidden">{t('common.add')}</span>
           </button>
         </div>
       </div>
@@ -267,9 +269,9 @@ export function CategoriesPage() {
       {/* Stats Section - Horizontal scroll on mobile */}
       <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 scrollbar-none snap-x snap-mandatory">
         {[
-          { label: 'Total Categories', value: stats.total, icon: Layers, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-          { label: 'Total Items', value: stats.products, icon: Package, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
-          { label: 'Most Selling Category', value: stats.top?.name || 'N/a', sub: `${stats.top?._count?.items || 0} items`, icon: TrendingUp, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+          { label: t('categories.stats.totalCategories'), value: stats.total, icon: Layers, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+          { label: t('categories.stats.totalItems'), value: stats.products, icon: Package, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+          { label: t('categories.stats.topCategory'), value: stats.top?.name || t('common.notAvailable'), sub: `${stats.top?._count?.items || 0} ${t('dashboard.menu.products')}`, icon: TrendingUp, color: 'text-purple-500', bg: 'bg-purple-500/10' },
         ].map((stat, i) => (
 
           <motion.div
@@ -302,7 +304,7 @@ export function CategoriesPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onClear={() => setSearchQuery('')}
-            placeholder="Search categories..."
+            placeholder={t('categories.searchPlaceholder')}
           />
         </div>
 
@@ -326,7 +328,7 @@ export function CategoriesPage() {
       {isLoading ? (
         <div className="py-24 flex flex-col items-center">
           <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
-          <p className="text-xs font-black text-gray-400">Loading Categories...</p>
+          <p className="text-xs font-black text-gray-400">{t('categories.messages.loading')}</p>
         </div>
       ) : filteredCategories.length === 0 ? (
         <div className="py-24 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10 text-center flex flex-col items-center">
@@ -334,10 +336,10 @@ export function CategoriesPage() {
             <Layers className="w-10 h-10 text-gray-300" />
           </div>
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-            {searchQuery ? 'No results found' : 'No categories'}
+            {searchQuery ? t('categories.messages.noResults') : t('categories.messages.noCategories')}
           </h3>
           <p className="text-sm font-bold text-gray-500 max-w-xs">
-            {searchQuery ? `We couldn't find any categories matching "${searchQuery}"` : 'Create a category to organize your items.'}
+            {searchQuery ? t('categories.messages.noResultsDesc', { query: searchQuery }) : t('categories.messages.noCategoriesDesc')}
           </p>
         </div>
       ) : (
@@ -370,12 +372,14 @@ export function CategoriesPage() {
                         <button
                           onClick={(e) => openEditModal(e, category)}
                           className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-green transition-colors"
+                          title={t('common.edit')}
                         >
                           <Edit2 size={16} />
                         </button>
                         <button
                           onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
                           className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-paymint-red transition-colors"
+                          title={t('common.delete')}
                         >
                           <Trash2 size={16} />
                         </button>
@@ -389,7 +393,7 @@ export function CategoriesPage() {
                     <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between relative z-10">
                       <div className="flex items-center gap-2">
                         <Package size={14} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
-                        <span className="text-xs font-bold text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">{category._count?.items || 0} Items</span>
+                        <span className="text-xs font-bold text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">{t('categories.itemsCount', { count: category._count?.items || 0 })}</span>
                       </div>
                       <ChevronRight size={16} className="text-gray-300 group-hover:text-paymint-green group-hover:translate-x-1 transition-all" />
                     </div>
@@ -403,10 +407,10 @@ export function CategoriesPage() {
                 <table className="w-full">
                   <thead className="bg-gray-50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
                     <tr>
-                      <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest w-16">Icon</th>
-                      <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Name</th>
-                      <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Items</th>
-                      <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest w-32">Actions</th>
+                      <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest w-16">{t('categories.table.icon')}</th>
+                      <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('categories.table.name')}</th>
+                      <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('categories.table.items')}</th>
+                      <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest w-32">{t('owner.locations.actions')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -432,19 +436,19 @@ export function CategoriesPage() {
                               {category._count?.items || 0}
                             </span>
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-6 py-4 text-center">
                             <div className="flex items-center justify-center gap-2">
                               <button
                                 onClick={(e) => openEditModal(e, category)}
                                 className="p-2 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"
-                                title="Edit"
+                                title={t('common.edit')}
                               >
                                 <Edit2 size={16} />
                               </button>
                               <button
                                 onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
                                 className="p-2 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"
-                                title="Delete"
+                                title={t('common.delete')}
                               >
                                 <Trash2 size={16} />
                               </button>
@@ -500,7 +504,7 @@ export function CategoriesPage() {
                     </div>
                     <div>
                       <h2 className="text-xl font-bold text-gray-900 dark:text-white">{viewingCategory.name}</h2>
-                      <p className="text-xs font-black text-paymint-green tracking-widest">{categoryProducts.length} Items</p>
+                      <p className="text-xs font-black text-paymint-green tracking-widest">{t('categories.itemsCount', { count: categoryProducts.length })}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -519,8 +523,8 @@ export function CategoriesPage() {
                       <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 shadow-sm">
                         <Package size={40} strokeWidth={1.5} className="text-gray-300" />
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No items in this category</h3>
-                      <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto mb-8">Items in this category will appear here.</p>
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('categories.messages.noCategories')}</h3>
+                      <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto mb-8">{t('categories.messages.noCategoriesDesc')}</p>
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -571,8 +575,8 @@ export function CategoriesPage() {
         isOpen={confirmConfig.isOpen}
         onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
         onConfirm={confirmConfig.onConfirm}
-        title={confirmConfig.title}
-        message={confirmConfig.message}
+        title={t('categories.delete.title')}
+        message={t('categories.delete.message')}
         type={confirmConfig.type}
       />
 
@@ -606,7 +610,7 @@ export function CategoriesPage() {
                     </div>
                     <div>
                       <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{deleteBlockedCategory.name}</h2>
-                      <p className="text-xs font-black text-red-500 tracking-widest">{categoryProducts.length} Items</p>
+                      <p className="text-xs font-black text-red-500 tracking-widest">{t('categories.itemsCount', { count: categoryProducts.length })}</p>
                     </div>
                   </div>
                   <button
@@ -621,7 +625,7 @@ export function CategoriesPage() {
                   <div className="mb-6 p-4 bg-red-50 dark:bg-red-500/10 rounded-xl border border-red-100 dark:border-red-500/20">
                     <p className="text-sm text-red-600 dark:text-red-400 font-medium flex items-center gap-2">
                       <AlertTriangle size={16} />
-                      You cannot delete this category while it has items. Please remove the items first.
+                      {t('categories.messages.deleteBlocked')}
                     </p>
                   </div>
 
@@ -641,7 +645,7 @@ export function CategoriesPage() {
                             </div>
                           )}
                         </div>
-                        <div className="min-w-0">
+                        <div className="min-w-0 flex-1">
                           <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
                           <p className="text-xs font-black text-paymint-green mt-0.5">
                             {formatAmount(p.price)}

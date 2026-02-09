@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, ArrowLeft, CheckCircle2, Loader2 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 const forgotPasswordSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -15,6 +16,7 @@ const forgotPasswordSchema = z.object({
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export function ForgotPasswordPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -52,7 +54,7 @@ export function ForgotPasswordPage() {
             className="flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors mb-8 group"
           >
             <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-            <span className="text-xs font-black tracking-widest">Log In</span>
+            <span className="text-xs font-black tracking-widest">{t('auth.login.loginButton')}</span>
           </button>
         )}
 
@@ -69,13 +71,13 @@ export function ForgotPasswordPage() {
                 <div className="w-16 h-16 bg-paymint-green/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Mail className="text-paymint-green" size={32} />
                 </div>
-                <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">Forgot Password?</h1>
-                <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mt-2">We'll send you a reset link.</p>
+                <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">{t('auth.forgotPassword.title')}</h1>
+                <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mt-2">{t('auth.forgotPassword.subtitle')}</p>
               </div>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-black text-gray-400 tracking-widest ml-1">Email</label>
+                  <label className="text-xs font-black text-gray-400 tracking-widest ml-1">{t('auth.forgotPassword.emailLabel')}</label>
                   <div className="relative group">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                     <input
@@ -96,7 +98,7 @@ export function ForgotPasswordPage() {
                   className="w-full py-5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3"
                 >
                   {isSubmitting ? <Loader2 className="animate-spin" size={24} /> : null}
-                  Send Link
+                  {t('auth.forgotPassword.sendLink')}
                 </button>
               </form>
             </motion.div>
@@ -110,21 +112,21 @@ export function ForgotPasswordPage() {
               <div className="w-20 h-20 bg-paymint-green/10 rounded-full flex items-center justify-center mx-auto mb-8">
                 <CheckCircle2 className="text-paymint-green" size={40} />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Email Sent</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.forgotPassword.emailSent')}</h2>
               <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mt-4">
-                Link sent to:
+                {t('auth.forgotPassword.linkSentTo')}
                 <br />
                 <span className="text-gray-900 dark:text-white font-bold">{sentEmail}</span>
               </p>
-              
+
               <div className="mt-10 pt-8 border-t border-gray-100 dark:border-white/5">
                 <p className="text-xs font-bold text-gray-500">
-                  Didn't receive the email?{' '}
-                  <button 
+                  {t('auth.forgotPassword.didntReceive')}{' '}
+                  <button
                     onClick={() => setIsSuccess(false)}
                     className="text-sm font-bold text-paymint-green hover:underline"
                   >
-                    Try another email
+                    {t('auth.forgotPassword.tryAnotherEmail')}
                   </button>
                 </p>
               </div>
@@ -134,7 +136,7 @@ export function ForgotPasswordPage() {
                 className="mt-8 inline-flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white hover:text-paymint-green transition-colors"
               >
                 <ArrowLeft size={16} />
-                Back to Login
+                {t('auth.forgotPassword.backToLogin')}
               </Link>
             </motion.div>
           )}

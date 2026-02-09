@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Send, Mail, Phone, X, CheckCircle2, Loader2 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
 
 export const Contact = () => {
+  const { t } = useTranslation();
   const [activeModal, setActiveModal] = useState<'privacy' | 'terms' | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -49,15 +51,15 @@ export const Contact = () => {
             {/* Contact Info Sidebar */}
             <div className="lg:w-2/5 bg-gray-900 p-12 lg:p-16 text-white relative overflow-hidden flex flex-col justify-between">
               <div className="relative z-10">
-                <h2 className="text-4xl font-black tracking-tight mb-6">Let's <span className="text-paymint-green">Connect.</span></h2>
+                <h2 className="text-4xl font-black tracking-tight mb-6">{t('contact.title')} <span className="text-paymint-green">{t('contact.titleHighlight')}</span></h2>
                 <p className="text-gray-400 text-lg leading-relaxed mb-12">
-                  Ready to grow? We're here to help you get started.
+                  {t('contact.subtitle')}
                 </p>
 
                 <div className="space-y-8">
                   {[
-                    { icon: Mail, label: 'Email', value: 'hello@paymint.com', color: 'text-paymint-green' },
-                    { icon: Phone, label: 'Phone', value: '+962 7XXXXXXXX', color: 'text-blue-400' },
+                    { icon: Mail, label: t('contact.email'), value: 'hello@paymint.com', color: 'text-paymint-green' },
+                    { icon: Phone, label: t('contact.phone'), value: '+962 7XXXXXXXX', color: 'text-blue-400' },
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-4 group">
                       <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center transition-transform duration-500">
@@ -90,14 +92,14 @@ export const Contact = () => {
                       <CheckCircle2 size={48} className="text-paymint-green" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Message Sent!</h3>
-                      <p className="text-gray-600 dark:text-gray-400 font-medium">We'll get back to you within 24 hours.</p>
+                      <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">{t('contact.messageSent')}</h3>
+                      <p className="text-gray-600 dark:text-gray-400 font-medium">{t('contact.responseTime')}</p>
                     </div>
                     <button
                       onClick={() => setIsSuccess(false)}
                       className="text-paymint-green font-bold tracking-widest text-xs hover:underline"
                     >
-                      Send another message
+                      {t('contact.sendAnother')}
                     </button>
                   </motion.div>
                 ) : (
@@ -109,7 +111,7 @@ export const Contact = () => {
                   >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">Full Name</label>
+                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">{t('contact.fullName')}</label>
                         <input
                           required
                           type="text"
@@ -117,11 +119,11 @@ export const Contact = () => {
                           value={formData.fullName}
                           onChange={handleInputChange}
                           className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-2xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
-                          placeholder="John Doe"
+                          placeholder={t('contact.placeholder.name')}
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">Business Name</label>
+                        <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">{t('contact.businessName')}</label>
                         <input
                           required
                           type="text"
@@ -129,13 +131,13 @@ export const Contact = () => {
                           value={formData.businessName}
                           onChange={handleInputChange}
                           className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-2xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
-                          placeholder="Acme Corp"
+                          placeholder={t('contact.placeholder.business')}
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">Email Address</label>
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">{t('contact.emailAddress')}</label>
                       <input
                         required
                         type="email"
@@ -143,12 +145,12 @@ export const Contact = () => {
                         value={formData.email}
                         onChange={handleInputChange}
                         className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-2xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
-                        placeholder="john@example.com"
+                        placeholder={t('contact.placeholder.email')}
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">Your Message</label>
+                      <label className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest ml-1">{t('contact.yourMessage')}</label>
                       <textarea
                         required
                         name="message"
@@ -156,7 +158,7 @@ export const Contact = () => {
                         onChange={handleInputChange}
                         rows={4}
                         className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-2xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none"
-                        placeholder="How can we help?"
+                        placeholder={t('contact.placeholder.message')}
                       />
                     </div>
 
@@ -168,7 +170,7 @@ export const Contact = () => {
                         className="mt-1.5 w-4 h-4 rounded border-gray-300 dark:border-white/20 text-paymint-green focus:ring-paymint-green cursor-pointer"
                       />
                       <label htmlFor="terms" className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                        I agree to the <button type="button" onClick={() => setActiveModal('privacy')} className="text-paymint-green font-bold hover:underline">Privacy Policy</button> and <button type="button" onClick={() => setActiveModal('terms')} className="text-paymint-green font-bold hover:underline">Terms of Service</button>.
+                        {t('contact.termsAgree')} <button type="button" onClick={() => setActiveModal('privacy')} className="text-paymint-green font-bold hover:underline">{t('contact.privacyPolicy')}</button> {t('contact.and')} <button type="button" onClick={() => setActiveModal('terms')} className="text-paymint-green font-bold hover:underline">{t('contact.termsOfService')}</button>.
                       </label>
                     </div>
 
@@ -178,7 +180,7 @@ export const Contact = () => {
                       className="w-full py-5 bg-paymint-green text-black font-black text-xl rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
                       {isSubmitting ? <Loader2 className="animate-spin" size={24} /> : <Send size={24} />}
-                      Send Message
+                      {t('contact.sendMessage')}
                     </button>
                   </motion.form>
                 )}
@@ -207,7 +209,7 @@ export const Contact = () => {
             >
               <div className="p-8 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
                 <h3 className="text-2xl font-black text-gray-900 dark:text-white capitalize">
-                  {activeModal} Policy
+                  {activeModal} {t('contact.policy')}
                 </h3>
                 <button
                   onClick={() => setActiveModal(null)}
@@ -226,7 +228,7 @@ export const Contact = () => {
                   onClick={() => setActiveModal(null)}
                   className="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl transition-all"
                 >
-                  I Understand
+                  {t('contact.iUnderstand')}
                 </button>
               </div>
             </motion.div>

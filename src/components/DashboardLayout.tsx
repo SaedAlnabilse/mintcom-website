@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { ThemeToggle } from './ThemeToggle';
 import { DeletionRestorationBanner } from './DeletionRestorationBanner';
 import { BottomNavigation } from './mobile/BottomNavigation';
+import { useTranslation } from 'react-i18next';
 import {
   LayoutDashboard,
 
@@ -123,6 +124,7 @@ import { REQUIRED_PERMISSIONS } from '../config/permissions';
 const SIDEBAR_STATE_KEY = 'dashboard_sidebar_expanded';
 
 export function DashboardLayout() {
+  const { t } = useTranslation();
   const { account, currentEstablishment, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -143,8 +145,65 @@ export function DashboardLayout() {
 
   // Filter menu based on permissions
   const filteredMenu = useMemo(() => {
+    // Translate menu structure dynamically
+    const translatedMenuStructure: MenuItemOrGroup[] = [
+      { path: '.', label: t('dashboard.menu.dashboard'), icon: LayoutDashboard },
+      {
+        label: t('dashboard.menu.salesAndReporting'),
+        icon: FileBarChart,
+        items: [
+          { path: 'reports/sales', label: t('dashboard.menu.salesSummary'), icon: FileBarChart },
+          { path: 'reports/items', label: t('dashboard.menu.salesByItems'), icon: Package },
+          { path: 'reports/modifiers', label: t('dashboard.menu.salesByAddons'), icon: Package },
+          { path: 'reports/staff-sales', label: t('dashboard.menu.salesByStaff'), icon: Users },
+          { path: 'reports/shifts', label: t('dashboard.menu.shiftsReports'), icon: FileBarChart },
+          { path: 'reports/cash-discrepancy', label: t('dashboard.menu.cashGapReports'), icon: Scale },
+          { path: 'reports/payments', label: t('dashboard.menu.paymentsReports'), icon: CreditCard },
+          { path: 'reports/discounts', label: t('dashboard.menu.discountReports'), icon: Percent },
+        ],
+      },
+      { path: 'orders', label: t('dashboard.menu.viewCustomerOrders'), icon: ShoppingCart },
+      {
+        label: t('dashboard.menu.itemsMenu'),
+        icon: Package,
+        items: [
+          { path: 'categories', label: t('dashboard.menu.categories'), icon: LayoutDashboard },
+          { path: 'products', label: t('dashboard.menu.products'), icon: Package },
+          { path: 'addons', label: t('dashboard.menu.addons'), icon: Package },
+          { path: 'materials', label: t('dashboard.menu.ingredients'), icon: Package },
+          { path: 'recipes', label: t('dashboard.menu.recipes'), icon: FileBarChart },
+        ],
+      },
+      { path: 'payment-methods', label: t('dashboard.menu.paymentMethods'), icon: CreditCard },
+      {
+        label: t('dashboard.menu.teamManagement'),
+        icon: Users,
+        items: [
+          { path: 'staff', label: t('dashboard.menu.team'), icon: Users },
+          { path: 'roles', label: t('dashboard.menu.roles'), icon: Shield },
+        ],
+      },
+      {
+        label: t('dashboard.menu.discountsAndLoyalty'),
+        icon: Heart,
+        items: [
+          { path: 'discounts', label: t('dashboard.menu.discounts'), icon: Percent },
+          { path: 'loyalty', label: t('dashboard.menu.loyalty'), icon: Award },
+          { path: 'customers', label: t('dashboard.menu.customers'), icon: Users },
+        ],
+      },
+      {
+        label: t('dashboard.menu.system'),
+        icon: Sliders,
+        items: [
+          { path: 'settings', label: t('dashboard.menu.settings'), icon: Sliders },
+          { path: 'activity-logs', label: t('dashboard.menu.systemLogs'), icon: History },
+        ],
+      },
+    ];
+
     if (!account) return [];
-    if (!account.isSecondaryAdmin) return menuStructure;
+    if (!account.isSecondaryAdmin) return translatedMenuStructure;
 
     const userPerms = new Set(account.permissions || []);
 
@@ -157,7 +216,7 @@ export function DashboardLayout() {
       return required.some(p => userPerms.has(p));
     };
 
-    return menuStructure.map(item => {
+    return translatedMenuStructure.map(item => {
       if (isMenuGroup(item)) {
         const visibleItems = item.items.filter(subItem => hasAccess(subItem.path));
         if (visibleItems.length > 0) {
@@ -167,7 +226,7 @@ export function DashboardLayout() {
       }
       return hasAccess(item.path) ? item : null;
     }).filter((item): item is MenuItemOrGroup => item !== null);
-  }, [account]);
+  }, [account, t]);
 
 
   // ... (keep useEffects, but updated dependencies if needed)

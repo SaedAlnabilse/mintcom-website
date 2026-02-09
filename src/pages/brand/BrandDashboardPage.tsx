@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
     Users,
     Store,
@@ -70,6 +71,7 @@ type DateRangePreset = DatePeriod;
 const CHART_COLORS = ['#7CC39F', '#8B5CF6', '#F59E0B', '#EF4444', '#3B82F6', '#EC4899'];
 
 export function BrandDashboardPage() {
+    const { t } = useTranslation();
     const { brandId: paramBrandId } = useParams<{ brandId: string }>();
     const { brand } = useOutletContext<{ brand: any }>() || {};
     const brandId = brand?.id || paramBrandId;
@@ -131,7 +133,7 @@ export function BrandDashboardPage() {
                 api.get(`/api/brands/${brandId}/dashboard-stats`, { params })
             ]);
 
-            setBrandName(brandResponse.data?.name || 'Brand Overview');
+            setBrandName(brandResponse.data?.name || t('brand.dashboard.title'));
 
             const dashboardData = statsResponse.data;
             const establishments = brandResponse.data?.establishments || [];
@@ -167,14 +169,12 @@ export function BrandDashboardPage() {
             setLocations(locationData);
 
             // Generate chart data based on loaded stats or simple mapping
-            // Note: generateChartData logic needs to be updated to use new state or just standard mapping
-            // For now, we'll keep using generateChartData but adapt the 'range' arg
             const chartData = generateChartData(selectedDateRange, totalRevenue, totalOrders, startDate, endDate);
             setRevenueData(chartData);
 
         } catch (error) {
             console.error('Failed to fetch brand data:', error);
-            toast.error('Failed to load brand data');
+            toast.error(t('brand.dashboard.failedToLoad'));
         } finally {
             setIsLoading(false);
         }
@@ -205,19 +205,19 @@ export function BrandDashboardPage() {
                     labels = Array.from({ length: points }, (_, i) => {
                         const date = new Date(start);
                         date.setDate(date.getDate() + i);
-                        return date.toLocaleDateString('en-US', { weekday: 'short' });
+                        return date.toLocaleDateString(t('common.language') === 'Arabic' ? 'ar-SA' : 'en-US', { weekday: 'short' });
                     });
                 } else if (diffDays <= 31) {
                     points = diffDays;
                     labels = Array.from({ length: diffDays }, (_, i) => {
                         const date = new Date(start);
                         date.setDate(date.getDate() + i);
-                        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                        return date.toLocaleDateString(t('common.language') === 'Arabic' ? 'ar-SA' : 'en-US', { month: 'short', day: 'numeric' });
                     });
                 } else {
                     const weeks = Math.ceil(diffDays / 7);
                     points = Math.min(weeks, 12);
-                    labels = Array.from({ length: points }, (_, i) => `Week ${i + 1}`);
+                    labels = Array.from({ length: points }, (_, i) => `${t('owner.roles.global')} ${i + 1}`);
                 }
                 break;
             }
@@ -240,12 +240,12 @@ export function BrandDashboardPage() {
     // Category distribution for pie chart
     const categoryData = useMemo(() => {
         return [
-            { name: 'Food', value: 45, color: CHART_COLORS[0] },
-            { name: 'Beverages', value: 25, color: CHART_COLORS[1] },
-            { name: 'Desserts', value: 15, color: CHART_COLORS[2] },
-            { name: 'Others', value: 15, color: CHART_COLORS[3] },
+            { name: t('onboarding.step1.businessTypes.restaurant'), value: 45, color: CHART_COLORS[0] },
+            { name: t('common.system'), value: 25, color: CHART_COLORS[1] },
+            { name: t('onboarding.step1.businessTypes.bakery'), value: 15, color: CHART_COLORS[2] },
+            { name: t('common.language'), value: 15, color: CHART_COLORS[3] },
         ];
-    }, []);
+    }, [t]);
 
     const formatCurrency = (value: number) => {
         if (value >= 1000000) {
@@ -274,7 +274,7 @@ export function BrandDashboardPage() {
                     <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
                     <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
                 </div>
-                <p className="text-sm font-bold text-gray-400 tracking-widest">Loading Dashboard...</p>
+                <p className="text-sm font-bold text-gray-400 tracking-widest">{t('brand.dashboard.loading')}</p>
             </div>
         );
     }
@@ -292,7 +292,7 @@ export function BrandDashboardPage() {
                     <div className="flex items-center gap-3 mb-2">
                         <span className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
                             <Activity size={14} className="text-emerald-500" />
-                            Live Data
+                            {t('brand.dashboard.liveData')}
                         </span>
                     </div>
                     <div className="flex items-center gap-4">
@@ -301,12 +301,12 @@ export function BrandDashboardPage() {
                     <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400 text-sm mt-2">
                         <div className="flex items-center gap-1.5">
                             <Store size={16} />
-                            <span>{locations.length} Locations</span>
+                            <span>{locations.length} {t('brand.dashboard.locations')}</span>
                         </div>
                         <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
                         <div className="flex items-center gap-1.5">
                             <Clock size={16} />
-                            <span>Updated just now</span>
+                            <span>{t('brand.dashboard.updatedNow')}</span>
                         </div>
                     </div>
                 </div>
@@ -323,7 +323,7 @@ export function BrandDashboardPage() {
                                     onChange={(val) => setQuickDate(val as DateRangePreset || 'today')}
                                     options={DATE_PERIOD_OPTIONS}
                                     showAllOption={false}
-                                    placeholder="Select Period"
+                                    placeholder={t('owner.overview.selectPeriod')}
                                     className="w-full"
                                     buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-2.5 !h-full !text-xs !font-bold ${selectedDateRange !== 'custom' ? '!text-paymint-green' : ''}`}
                                 />
@@ -361,7 +361,7 @@ export function BrandDashboardPage() {
                                         <div className={`flex-none w-auto min-w-[155px] sm:min-w-[180px] relative z-[55]`}>
                                             <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isTimeFiltered ? '!bg-emerald-50 dark:!bg-[#064E3B] border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : '!bg-gray-50 dark:!bg-[#1E293B] border-transparent'}`}>
                                                 <div className="flex items-center gap-1.5 mb-0.5">
-                                                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>Active Hours</span>
+                                                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isTimeFiltered ? "text-[#7CC39F]" : "text-gray-400"}`}>{t('owner.overview.activeHours')}</span>
                                                 </div>
                                                 <div className="flex items-center gap-2 justify-between relative">
                                                     <CustomTimePicker
@@ -393,7 +393,7 @@ export function BrandDashboardPage() {
             <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {[
                     {
-                        label: 'Total Revenue',
+                        label: t('brand.dashboard.totalRevenue'),
                         value: formatCurrency(stats?.totalRevenue || 0),
                         change: null,
                         icon: DollarSign,
@@ -401,7 +401,7 @@ export function BrandDashboardPage() {
                         bg: 'bg-emerald-500/10'
                     },
                     {
-                        label: 'Total Orders',
+                        label: t('brand.dashboard.totalOrders'),
                         value: formatNumber(stats?.totalOrders || 0),
                         change: null,
                         icon: ShoppingBag,
@@ -409,7 +409,7 @@ export function BrandDashboardPage() {
                         bg: 'bg-blue-500/10'
                     },
                     {
-                        label: 'Avg Order Value',
+                        label: t('brand.dashboard.avgOrderValue'),
                         value: `$${(stats?.avgOrderValue || 0).toFixed(2)}`,
                         change: null,
                         icon: Target,
@@ -417,7 +417,7 @@ export function BrandDashboardPage() {
                         bg: 'bg-purple-500/10'
                     },
                     {
-                        label: 'Team Size',
+                        label: t('brand.dashboard.teamSize'),
                         value: formatNumber(stats?.totalEmployees || 0),
                         change: null,
                         icon: Users,
@@ -468,14 +468,14 @@ export function BrandDashboardPage() {
             >
                 <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-white/5">
                     <div>
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Location Performance</h3>
-                        <p className="text-xs text-gray-500 mt-1">Ranked by revenue contribution</p>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('brand.dashboard.locationPerformance')}</h3>
+                        <p className="text-xs text-gray-500 mt-1">{t('brand.dashboard.rankedByRevenue')}</p>
                     </div>
                     <button
                         onClick={() => navigate(`/brand/${brandId}/locations`)}
                         className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all"
                     >
-                        View All
+                        {t('brand.dashboard.viewAll')}
                         <ChevronRight size={16} />
                     </button>
                 </div>
@@ -483,8 +483,8 @@ export function BrandDashboardPage() {
                 {locations.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-16 text-center">
                         <Store size={48} className="text-gray-300 dark:text-gray-700 mb-4" />
-                        <p className="text-xl font-bold text-gray-900 dark:text-white">No locations found</p>
-                        <p className="text-sm font-bold text-gray-500 mt-1">Add locations to your brand to see performance data</p>
+                        <p className="text-xl font-bold text-gray-900 dark:text-white">{t('brand.dashboard.noLocations')}</p>
+                        <p className="text-sm font-bold text-gray-500 mt-1">{t('brand.dashboard.addLocationsDesc')}</p>
                     </div>
                 ) : (
                     <div className="divide-y divide-gray-100 dark:divide-white/5">
@@ -514,11 +514,11 @@ export function BrandDashboardPage() {
                                     <div className="flex items-center gap-4 mt-1 text-xs text-gray-500">
                                         <span className="flex items-center gap-1">
                                             <ShoppingBag size={12} />
-                                            {loc.orders} orders
+                                            {loc.orders} {t('brand.dashboard.orders')}
                                         </span>
                                         <span className="flex items-center gap-1">
                                             <Users size={12} />
-                                            {loc.employees} staff
+                                            {loc.employees} {t('brand.dashboard.staff')}
                                         </span>
                                     </div>
                                 </div>
@@ -529,7 +529,7 @@ export function BrandDashboardPage() {
                                         {formatCurrency(loc.revenue)}
                                     </p>
                                     <p className="text-xs text-gray-500">
-                                        {((loc.revenue / (stats?.totalRevenue || 1)) * 100).toFixed(1)}% of total
+                                        {((loc.revenue / (stats?.totalRevenue || 1)) * 100).toFixed(1)}% {t('brand.dashboard.ofTotal')}
                                     </p>
                                 </div>
 
@@ -563,8 +563,8 @@ export function BrandDashboardPage() {
                 >
                     <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Revenue Trend</h3>
-                            <p className="text-xs text-gray-500 mt-1">Consolidated performance across all locations</p>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('brand.dashboard.revenueTrend')}</h3>
+                            <p className="text-xs text-gray-500 mt-1">{t('brand.dashboard.consolidatedPerformance')}</p>
                         </div>
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-2">
@@ -645,8 +645,8 @@ export function BrandDashboardPage() {
                                     <BarChart3 size={32} className="text-gray-400 dark:text-gray-600" />
                                 </div>
                                 <div className="text-center">
-                                    <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">No performance data</p>
-                                    <p className="text-xs text-gray-500 mt-1">There are no sales or order records for this period.</p>
+                                    <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('owner.overview.noRevenueData')}</p>
+                                    <p className="text-xs text-gray-500 mt-1">{t('owner.overview.noSalesRecorded')}</p>
                                 </div>
                             </div>
                         )}
@@ -662,8 +662,8 @@ export function BrandDashboardPage() {
                 >
                     <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Sales by Category</h3>
-                            <p className="text-xs text-gray-500 mt-1">Revenue distribution</p>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('brand.dashboard.salesByCategory')}</h3>
+                            <p className="text-xs text-gray-500 mt-1">{t('brand.dashboard.revenueDistribution')}</p>
                         </div>
                     </div>
 
@@ -714,16 +714,16 @@ export function BrandDashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
                     {
-                        title: 'View All Locations',
-                        description: 'Manage locations and view details',
+                        title: t('brand.dashboard.viewAllLocations'),
+                        description: t('brand.dashboard.manageLocationsDesc'),
                         icon: Store,
                         color: 'text-blue-500',
                         bg: 'bg-blue-500/10',
                         action: () => navigate(`/brand/${brandId}/locations`)
                     },
                     {
-                        title: 'Manage Team',
-                        description: 'View and manage team members across locations',
+                        title: t('brand.dashboard.manageTeam'),
+                        description: t('brand.dashboard.manageTeamDesc'),
                         icon: Users,
                         color: 'text-purple-500',
                         bg: 'bg-purple-500/10',
@@ -745,7 +745,7 @@ export function BrandDashboardPage() {
                         </h4>
                         <p className="text-sm font-bold text-gray-500">{action.description}</p>
                         <div className="flex items-center gap-1 mt-4 text-xs font-bold text-paymint-green opacity-0 group-hover:opacity-100 transition-opacity">
-                            <span>Go to {action.title.split(' ')[0]}</span>
+                            <span>{t('brand.dashboard.goTo')} {action.title.split(' ')[0]}</span>
                             <ArrowRight size={14} />
                         </div>
                     </motion.button>

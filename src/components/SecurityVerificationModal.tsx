@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
     ShieldAlert,
     X,
@@ -43,6 +44,7 @@ export function SecurityVerificationModal({
     targetName,
     mode
 }: SecurityVerificationModalProps) {
+    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -57,9 +59,9 @@ export function SecurityVerificationModal({
         switch (mode) {
             case 'cancel':
                 return {
-                    title: 'Cancel Subscription',
-                    warning: `Canceling locks access. Your data for "${targetName}" will be deleted in 30 days.`,
-                    buttonText: 'Confirm Cancellation',
+                    title: t('security.modes.cancel.title'),
+                    warning: t('security.modes.cancel.warning', { name: targetName }),
+                    buttonText: t('security.modes.cancel.button'),
                     icon: ShieldAlert,
                     color: 'text-red-500',
                     bg: 'bg-red-500/10',
@@ -68,9 +70,9 @@ export function SecurityVerificationModal({
                 };
             case 'stop-trial':
                 return {
-                    title: 'Stop Trial',
-                    warning: `End trial for "${targetName}". Access will be revoked and services will stop.`,
-                    buttonText: 'Stop Trial Now',
+                    title: t('security.modes.stop-trial.title'),
+                    warning: t('security.modes.stop-trial.warning', { name: targetName }),
+                    buttonText: t('security.modes.stop-trial.button'),
                     icon: AlertTriangle,
                     color: 'text-amber-500',
                     bg: 'bg-amber-500/10',
@@ -79,9 +81,9 @@ export function SecurityVerificationModal({
                 };
             case 'delete-card':
                 return {
-                    title: 'Delete Payment Method',
-                    warning: `Removing card ending in "${targetName}". This action is permanent. You won't be able to use this card for future payments unless re-added.`,
-                    buttonText: 'Delete Card',
+                    title: t('security.modes.delete-card.title'),
+                    warning: t('security.modes.delete-card.warning', { name: targetName }),
+                    buttonText: t('security.modes.delete-card.button'),
                     icon: CreditCard,
                     color: 'text-red-500',
                     bg: 'bg-red-500/10',
@@ -90,9 +92,9 @@ export function SecurityVerificationModal({
                 };
             case 'dissolve-brand':
                 return {
-                    title: 'Delete Brand',
-                    warning: `You are about to delete "${targetName}". All locations will return to independent mode.`,
-                    buttonText: 'Delete Brand',
+                    title: t('security.modes.dissolveBrand.title'),
+                    warning: t('security.modes.dissolveBrand.warning', { name: targetName }),
+                    buttonText: t('security.modes.dissolveBrand.button'),
                     icon: Building2,
                     color: 'text-purple-500',
                     bg: 'bg-purple-500/10',
@@ -101,9 +103,9 @@ export function SecurityVerificationModal({
                 };
             case 'delete-employee':
                 return {
-                    title: 'Delete Team Member',
-                    warning: `You are about to permanently remove "${targetName}" from the team. This will revoke all their access permissions immediately.`,
-                    buttonText: 'Delete Member',
+                    title: t('security.modes.deleteEmployee.title'),
+                    warning: t('security.modes.deleteEmployee.warning', { name: targetName }),
+                    buttonText: t('security.modes.deleteEmployee.button'),
                     icon: ShieldAlert,
                     color: 'text-red-500',
                     bg: 'bg-red-500/10',
@@ -112,9 +114,9 @@ export function SecurityVerificationModal({
                 };
             case 'dissolve-establishment':
                 return {
-                    title: 'Dissolve Location',
-                    warning: `You are about to dissolve "${targetName}". This will permanently cease operations and remove this location from your brand portfolio.`,
-                    buttonText: 'Dissolve Location',
+                    title: t('security.modes.dissolveEstablishment.title'),
+                    warning: t('security.modes.dissolveEstablishment.warning', { name: targetName }),
+                    buttonText: t('security.modes.dissolveEstablishment.button'),
                     icon: Building2,
                     color: 'text-red-500',
                     bg: 'bg-red-500/10',
@@ -123,9 +125,9 @@ export function SecurityVerificationModal({
                 };
             case 'reactivate':
                 return {
-                    title: 'Reactivate Subscription',
-                    warning: `This will charge your default card $20.00 to start a new billing cycle for "${targetName}".`,
-                    buttonText: 'Reactivate Now',
+                    title: t('security.modes.reactivate.title'),
+                    warning: t('security.modes.reactivate.warning', { name: targetName }),
+                    buttonText: t('security.modes.reactivate.button'),
                     icon: ShieldCheck,
                     color: 'text-paymint-green',
                     bg: 'bg-paymint-green/10',
@@ -161,13 +163,13 @@ export function SecurityVerificationModal({
                 ? api.post(config.endpoint, { email, password })
                 : api.delete(config.endpoint, { data: { email, password } }));
 
-            toast.success(res.data.message || 'Done');
+            toast.success(res.data.message || t('common.done') || 'Done');
             onSuccess();
             onClose();
             setEmail('');
             setPassword('');
         } catch (err) {
-            const msg = (err as ApiError).response?.data?.message || 'Verification failed';
+            const msg = (err as ApiError).response?.data?.message || t('security.verificationFailed') || 'Verification failed';
             setErrors({ general: msg });
             setTimeout(() => {
                 errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -213,7 +215,7 @@ export function SecurityVerificationModal({
                                 <div>
                                     <div className="flex items-center gap-2 mb-1">
                                         <ShieldCheck size={12} className="text-paymint-green" />
-                                        <span className="text-xs font-black text-paymint-green tracking-widest">High Impact Action</span>
+                                        <span className="text-xs font-black text-paymint-green tracking-widest">{t('security.highImpact')}</span>
                                     </div>
                                     <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
                                         {config.title}
@@ -235,13 +237,13 @@ export function SecurityVerificationModal({
                             {Object.keys(errors).length > 0 && (
                                 <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
                                     <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
-                                    Please correct the highlighted errors below
+                                    {t('security.errorBanner')}
                                 </div>
                             )}
 
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-gray-400 tracking-widest block ml-1">Identity Confirmation (Email)</label>
+                                    <label className="text-xs font-black text-gray-400 tracking-widest block ml-1">{t('security.identityLabel')}</label>
                                     <div className="relative group">
                                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-paymint-green opacity-50 group-focus-within:opacity-100 transition-opacity" size={16} />
                                         <input
@@ -260,7 +262,7 @@ export function SecurityVerificationModal({
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-gray-400 tracking-widest block ml-1">Master Access Key (Password)</label>
+                                    <label className="text-xs font-black text-gray-400 tracking-widest block ml-1">{t('security.passwordLabel')}</label>
                                     <div className="relative group">
                                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-paymint-green opacity-50 group-focus-within:opacity-100 transition-opacity" size={16} />
                                         <input
@@ -293,7 +295,7 @@ export function SecurityVerificationModal({
                                     className="px-6 py-3.5 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 font-black text-xs tracking-widest hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
                                     disabled={isSubmitting}
                                 >
-                                    Dismiss
+                                    {t('security.dismiss')}
                                 </button>
                                 <button
                                     type="submit"
@@ -303,7 +305,7 @@ export function SecurityVerificationModal({
                                     {isSubmitting ? (
                                         <>
                                             <Loader2 size={16} className="animate-spin" />
-                                            <span>Verifying...</span>
+                                            <span>{t('security.verifying')}</span>
                                         </>
                                     ) : (
                                         <>
@@ -316,7 +318,7 @@ export function SecurityVerificationModal({
 
                             <p className="text-xs font-black text-gray-400 tracking-widest text-center mt-4 flex items-center justify-center gap-2">
                                 <ShieldCheck size={12} className="text-paymint-green" />
-                                <span className="text-xs font-black text-paymint-green tracking-widest">End-to-End Encrypted Security Session</span>
+                                <span className="text-xs font-black text-paymint-green tracking-widest">{t('security.encrypted')}</span>
                             </p>
                         </form>
                     </motion.div>

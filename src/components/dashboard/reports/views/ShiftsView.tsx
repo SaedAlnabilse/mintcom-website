@@ -4,12 +4,14 @@ import type { Shift } from '../../../../types';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ShiftsViewProps {
   shifts: Shift[];
 }
 
 export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewProps) {
+  const { t } = useTranslation();
   const { formatAmount, currencySymbol } = useCurrency();
 
   const formatCurrency = (value: number) => formatAmount(value);
@@ -21,9 +23,9 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
         <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 transform rotate-3">
           <Clock size={32} className="text-gray-400" />
         </div>
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No shift activity found</h3>
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('orders.reports.shifts.noActivity')}</h3>
         <p className="text-xs font-medium text-gray-500 max-w-sm leading-relaxed">
-          There are no shifts recorded for the selected time period.
+          {t('orders.reports.shifts.noActivityDesc')}
         </p>
       </div>
     );
@@ -39,28 +41,28 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
         <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
           <div className="flex items-center gap-3 mb-4 text-orange-500">
             <Activity size={20} />
-            <h4 className="text-xs font-black tracking-widest text-gray-400">Cash Variance</h4>
+            <h4 className="text-xs font-black tracking-widest text-gray-400">{t('orders.reports.shifts.cashVariance')}</h4>
           </div>
           <p className={`text-3xl font-black ${totalVariance < -0.01 ? 'text-red-500' : 'text-paymint-green'}`}>
             {totalVariance > 0 ? '+' : ''}{formatCurrency(totalVariance)}
           </p>
-          <p className="text-xs font-bold text-gray-500 mt-2">Total over/short</p>
+          <p className="text-xs font-bold text-gray-500 mt-2">{t('orders.reports.shifts.totalOverShort')}</p>
         </div>
         <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
           <div className="flex items-center gap-3 mb-4 text-blue-500">
             <Clock size={20} />
-            <h4 className="text-xs font-black tracking-widest text-gray-400">Shifts</h4>
+            <h4 className="text-xs font-black tracking-widest text-gray-400">{t('dashboard.menu.shiftsReports')}</h4>
           </div>
           <p className="text-3xl font-black text-gray-900 dark:text-white">{shifts.length}</p>
-          <p className="text-xs font-bold text-gray-500 mt-2">{activeShifts} active shifts</p>
+          <p className="text-xs font-bold text-gray-500 mt-2">{t('orders.reports.shifts.activeShifts', { count: activeShifts })}</p>
         </div>
         <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
           <div className="flex items-center gap-3 mb-4 text-paymint-green">
             <Wallet size={20} />
-            <h4 className="text-xs font-black tracking-widest text-gray-400">Audited</h4>
+            <h4 className="text-xs font-black tracking-widest text-gray-400">{t('orders.reports.shifts.audited')}</h4>
           </div>
           <p className="text-3xl font-black text-paymint-green">100%</p>
-          <p className="text-xs font-bold text-gray-500 mt-2">Shifts closed</p>
+          <p className="text-xs font-bold text-gray-500 mt-2">{t('orders.reports.shifts.shiftsClosed')}</p>
         </div>
       </div>
 
@@ -70,13 +72,13 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-white/[0.02]">
               <tr className="border-b border-gray-200 dark:border-white/5">
-                <th className="px-5 py-5 text-left text-xs font-black text-gray-400 tracking-widest">Staff</th>
-                <th className="px-5 py-5 text-left text-xs font-black text-gray-400 tracking-widest">Time</th>
-                <th className="px-5 py-5 text-right text-xs font-black text-gray-400 tracking-widest">Opening</th>
-                <th className="px-5 py-5 text-right text-xs font-black text-gray-400 tracking-widest">Sales</th>
-                <th className="px-5 py-5 text-right text-xs font-black text-gray-400 tracking-widest">Closing</th>
-                <th className="px-5 py-5 text-center text-xs font-black text-gray-400 tracking-widest">Variance</th>
-                <th className="px-5 py-5 text-center text-xs font-black text-gray-400 tracking-widest">Status</th>
+                <th className="px-5 py-5 text-left text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.staff')}</th>
+                <th className="px-5 py-5 text-left text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.time')}</th>
+                <th className="px-5 py-5 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.opening')}</th>
+                <th className="px-5 py-5 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.stats.totalSales')}</th>
+                <th className="px-5 py-5 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.closing')}</th>
+                <th className="px-5 py-5 text-center text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.variance')}</th>
+                <th className="px-5 py-5 text-center text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.status')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -102,7 +104,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                         {format(new Date(shift.startTime), 'MMM d, HH:mm')}
                       </span>
                       <span className="text-xs font-medium text-gray-500">
-                        to {shift.endTime ? format(new Date(shift.endTime), 'HH:mm') : 'Present'}
+                        {t('common.to', 'to')} {shift.endTime ? format(new Date(shift.endTime), 'HH:mm') : t('orders.reports.shifts.present')}
                       </span>
                     </div>
                   </td>
@@ -120,7 +122,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                           : '—'}
                       </span>
                     ) : (
-                      <span className="text-xs font-black text-gray-400 tracking-widest">Active</span>
+                      <span className="text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.active')}</span>
                     )}
                   </td>
                   <td className="px-5 py-5 text-center">
@@ -133,9 +135,9 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                             : 'bg-gray-100 dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10'
                           }`}>
                           {shift.discrepancy > 0.001
-                            ? `+${formatAmount(shift.discrepancy).replace(currencySymbol, '').trim()} Over`
+                            ? `+${formatAmount(shift.discrepancy).replace(currencySymbol, '').trim()} ${t('orders.reports.shifts.over')}`
                             : shift.discrepancy < -0.001
-                              ? `${formatAmount(shift.discrepancy).replace(currencySymbol, '').trim()} Short`
+                              ? `${formatAmount(shift.discrepancy).replace(currencySymbol, '').trim()} ${t('orders.reports.shifts.short')}`
                               : '0'}
                         </span>
                       </div>
@@ -148,7 +150,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                       ? 'bg-paymint-green/10 text-paymint-green border-paymint-green/20'
                       : 'bg-gray-100 dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10'
                       }`}>
-                      {shift.status.charAt(0).toUpperCase() + shift.status.slice(1).toLowerCase()}
+                      {shift.status === 'OPEN' ? t('orders.reports.shifts.active') : t('orders.status.completed')}
                     </span>
                   </td>
                 </motion.tr>

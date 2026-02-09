@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 import {
     Store,
@@ -42,6 +43,7 @@ type SortOption = 'name' | 'revenue' | 'orders' | 'employees';
 type StatusFilter = 'all' | 'ACTIVE' | 'INACTIVE' | 'TRIAL';
 
 export function BrandLocationsPage() {
+    const { t } = useTranslation();
     const { brandId: paramBrandId } = useParams<{ brandId: string }>();
     const context = useOutletContext<{ brand: any }>() || {};
     const brandId = context.brand?.id || paramBrandId;
@@ -104,7 +106,7 @@ export function BrandLocationsPage() {
                 console.warn('Failed to fetch dashboard stats:', statsErr);
             }
 
-            setBrandName(brandResponse.data?.name || 'Brand');
+            setBrandName(brandResponse.data?.name || t('brand.dashboard.title'));
             setStatsData(statsResponse.data?.stats);
 
             const establishments = brandResponse.data?.establishments || [];
@@ -120,7 +122,7 @@ export function BrandLocationsPage() {
                     const stats = performanceMap.get(loc.id) || {} as any;
                     return {
                         ...loc,
-                        type: loc.type || 'Restaurant',
+                        type: loc.type || t('onboarding.step1.businessTypes.restaurant'),
                         currency: loc.currency?.toUpperCase() || 'USD',
                         subscriptionStatus: loc.subscriptionStatus || 'ACTIVE',
                         employeeCount: stats.employees || 0,
@@ -133,7 +135,7 @@ export function BrandLocationsPage() {
             }
         } catch (err: any) {
             console.error('Failed to fetch locations:', err);
-            toast.error(`Failed to load locations: ${err.message || 'Unknown error'}`);
+            toast.error(`${t('brand.dashboard.failedToLoad')}: ${err.message || t('common.error')}`);
         } finally {
             setIsLoading(false);
         }
@@ -238,7 +240,7 @@ export function BrandLocationsPage() {
     };
 
     const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat('en-US', {
+        return new Intl.NumberFormat(t('common.language') === 'Arabic' ? 'ar-SA' : 'en-US', {
             style: 'currency',
             currency: 'USD',
             minimumFractionDigits: 0,
@@ -263,7 +265,7 @@ export function BrandLocationsPage() {
                     <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
                     <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
                 </div>
-                <p className="text-sm font-bold text-gray-400 tracking-widest">Loading Locations...</p>
+                <p className="text-sm font-bold text-gray-400 tracking-widest">{t('owner.brands.loading')}</p>
             </div>
         );
     }
@@ -275,12 +277,12 @@ export function BrandLocationsPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                            Fleet Hub
+                            {t('owner.brands.badge')}
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Locations</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('brand.menu.locations')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
-                        Manage and monitor all locations under {brandName}
+                        {t('brand.dashboard.manageLocationsDesc')} {brandName}
                     </p>
                 </div>
 
@@ -292,11 +294,11 @@ export function BrandLocationsPage() {
             {/* Stats Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
                 {[
-                    { label: 'Total Locations', value: stats.totalLocations, icon: Store, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: 'Active', value: stats.activeLocations, icon: Activity, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-                    { label: 'Total Revenue', value: formatCurrency(stats.totalRevenue), icon: DollarSign, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-                    { label: 'Employees', value: stats.totalEmployees, icon: Users, color: 'text-orange-500', bg: 'bg-orange-500/10' },
-                    { label: 'Orders', value: stats.totalOrders.toLocaleString(), icon: ShoppingBag, color: 'text-pink-500', bg: 'bg-pink-500/10' },
+                    { label: t('owner.locations.total'), value: stats.totalLocations, icon: Store, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                    { label: t('owner.locations.active'), value: stats.activeLocations, icon: Activity, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+                    { label: t('brand.dashboard.totalRevenue'), value: formatCurrency(stats.totalRevenue), icon: DollarSign, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+                    { label: t('owner.menu.employees'), value: stats.totalEmployees, icon: Users, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+                    { label: t('brand.dashboard.orders'), value: stats.totalOrders.toLocaleString(), icon: ShoppingBag, color: 'text-pink-500', bg: 'bg-pink-500/10' },
                 ].map((stat, i) => (
                     <div
                         key={i}
@@ -324,7 +326,7 @@ export function BrandLocationsPage() {
                         <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input
                             type="text"
-                            placeholder="Search locations..."
+                            placeholder={t('owner.locations.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm focus:shadow-lg"
@@ -339,10 +341,10 @@ export function BrandLocationsPage() {
                                 value={statusFilter}
                                 onChange={(val) => setStatusFilter(val as StatusFilter)}
                                 options={[
-                                    { label: 'All Status', value: 'all' },
-                                    { label: 'Active', value: 'ACTIVE' },
-                                    { label: 'Inactive', value: 'INACTIVE' },
-                                    { label: 'Trial', value: 'TRIAL' },
+                                    { label: t('owner.locations.allStatuses'), value: 'all' },
+                                    { label: t('common.active'), value: 'ACTIVE' },
+                                    { label: t('paymentMethods.messages.notActive'), value: 'INACTIVE' },
+                                    { label: t('owner.locations.trial'), value: 'TRIAL' },
                                 ]}
                             />
                         </div>
@@ -354,7 +356,7 @@ export function BrandLocationsPage() {
                                     value={typeFilter}
                                     onChange={(val) => setTypeFilter(val as string)}
                                     options={[
-                                        { label: 'All Types', value: 'all' },
+                                        { label: t('owner.locations.allTypes'), value: 'all' },
                                         ...locationTypes.map(type => ({ label: type, value: type }))
                                     ]}
                                 />
@@ -367,10 +369,10 @@ export function BrandLocationsPage() {
                                 value={sortBy}
                                 onChange={(val) => setSortBy(val as SortOption)}
                                 options={[
-                                    { label: 'Sort by Name', value: 'name' },
-                                    { label: 'Sort by Revenue', value: 'revenue' },
-                                    { label: 'Sort by Orders', value: 'orders' },
-                                    { label: 'Sort by Employees', value: 'employees' },
+                                    { label: t('common.sortByName'), value: 'name' },
+                                    { label: t('owner.overview.totalRevenue'), value: 'revenue' },
+                                    { label: t('brand.dashboard.orders'), value: 'orders' },
+                                    { label: t('brand.dashboard.staff'), value: 'employees' },
                                 ]}
                             />
                         </div>
@@ -400,7 +402,7 @@ export function BrandLocationsPage() {
                                 className="flex items-center gap-2 px-4 py-3 rounded-xl bg-paymint-red/10 text-paymint-red text-xs font-bold tracking-wide hover:bg-paymint-red/20 transition-all"
                             >
                                 <X size={14} />
-                                Clear
+                                {t('attributes.filters.reset')}
                             </button>
                         )}
                     </div>
@@ -409,26 +411,26 @@ export function BrandLocationsPage() {
                 {/* Active Filters Display */}
                 {hasActiveFilters && (
                     <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
-                        <span className="text-xs font-bold text-gray-400 tracking-wide">Active filters:</span>
+                        <span className="text-xs font-bold text-gray-400 tracking-wide">{t('owner.staff.badge')}:</span>
                         <div className="flex items-center gap-2 flex-wrap">
                             {searchQuery && (
                                 <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
-                                    Search: "{searchQuery}"
+                                    {t('common.search')}: "{searchQuery}"
                                 </span>
                             )}
                             {statusFilter !== 'all' && (
                                 <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
-                                    Status: {statusFilter}
+                                    {t('owner.locations.status')}: {statusFilter}
                                 </span>
                             )}
                             {typeFilter !== 'all' && (
                                 <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
-                                    Type: {typeFilter}
+                                    {t('owner.locations.type')}: {typeFilter}
                                 </span>
                             )}
                         </div>
                         <span className="text-xs font-medium text-gray-400 ml-auto">
-                            {filteredLocations.length} of {locations.length} locations
+                            {filteredLocations.length} {t('common.of')} {locations.length} {t('brand.dashboard.locations')}
                         </span>
                     </div>
                 )}
@@ -438,9 +440,9 @@ export function BrandLocationsPage() {
             {filteredLocations.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Store size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="text-lg font-medium text-gray-900 dark:text-white">No locations found</p>
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">{t('owner.locations.noLocations')}</p>
                     <p className="text-sm text-gray-500 mt-1">
-                        {hasActiveFilters ? 'Try adjusting your filters' : 'Add locations to your brand to see them here'}
+                        {hasActiveFilters ? 'Try adjusting your filters' : t('brand.dashboard.addLocationsDesc')}
                     </p>
                     {hasActiveFilters && (
                         <button
@@ -475,7 +477,7 @@ export function BrandLocationsPage() {
                                                 {loc.name}
                                             </h3>
                                             <div className="flex items-center gap-2 mt-1">
-                                                <span className="text-xs font-medium text-gray-500">{loc.type ? loc.type.charAt(0).toUpperCase() + loc.type.slice(1).toLowerCase() : 'Restaurant'}</span>
+                                                <span className="text-xs font-medium text-gray-500">{loc.type ? loc.type.charAt(0).toUpperCase() + loc.type.slice(1).toLowerCase() : t('onboarding.step1.businessTypes.restaurant')}</span>
                                                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
                                                 <span className="text-xs font-medium text-gray-500">{loc.currency ? loc.currency.toUpperCase() : 'USD'}</span>
                                             </div>
@@ -541,15 +543,15 @@ export function BrandLocationsPage() {
                                         <p className="text-base font-bold text-gray-900 dark:text-white">{formatCurrency(loc.totalRevenue || 0)}</p>
                                     </div>
                                     <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">Orders</p>
+                                        <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">{t('brand.dashboard.orders')}</p>
                                         <p className="text-base font-bold text-gray-900 dark:text-white">{loc.orderCount}</p>
                                     </div>
                                     <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">Staff</p>
+                                        <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">{t('brand.dashboard.staff')}</p>
                                         <p className="text-base font-bold text-gray-900 dark:text-white">{loc.employeeCount}</p>
                                     </div>
                                     <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">Products</p>
+                                        <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">{t('dashboard.menu.products')}</p>
                                         <p className="text-base font-bold text-gray-900 dark:text-white">{loc.itemCount}</p>
                                     </div>
                                 </div>

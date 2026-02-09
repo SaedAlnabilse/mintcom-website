@@ -1,7 +1,10 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Play, X, ArrowRight, Zap, BarChart3, Users, TrendingUp, ShoppingCart, DollarSign, CheckCircle2 } from 'lucide-react';
 
 export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; setIsVideoOpen: (open: boolean) => void }) => {
+  const { t } = useTranslation();
+
   return (
     <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-white dark:bg-[#0f0f0f]">
       {/* Animated Background Elements */}
@@ -45,18 +48,18 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-paymint-green/10 text-paymint-green font-medium text-sm mb-8 border border-paymint-green/20"
             >
               <Zap size={14} fill="currentColor" />
-              <span>All-in-One Point of Sale System</span>
+              <span>{t('hero.badge')}</span>
             </motion.div>
 
             <h1 className="text-5xl lg:text-7xl font-bold font-sans text-gray-900 dark:text-white mb-8 leading-[1.1] tracking-tight">
-              Earn More. <br />
+              {t('hero.title1')} <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-emerald-400">
-                Manage Better. <br /> Work Smarter.
+                {t('hero.title2')} <br /> {t('hero.title3')}
               </span>
             </h1>
 
             <p className="text-xl text-gray-600 dark:text-gray-400 mb-10 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-light">
-              PayMint is a complete 360° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations—all from one simple system.
+              {t('hero.description')}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -65,8 +68,8 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
                 onClick={() => window.open('/signup', '_blank')}
                 className="bg-paymint-green text-black px-8 py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 group"
               >
-                Start Free Trial
-                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                {t('hero.cta')}
+                <ArrowRight size={20} className="group-hover:translate-x-1 rtl:group-hover:-translate-x-1 rtl:rotate-180 transition-transform" />
               </motion.button>
 
               <motion.button
@@ -75,18 +78,18 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
                 className="bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-200 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-3"
               >
                 <Play size={20} fill="currentColor" className="text-paymint-green" />
-                See how it works
+                {t('hero.watchVideo')}
               </motion.button>
             </div>
 
             <div className="mt-12 flex items-center justify-center lg:justify-start gap-8 text-sm font-medium text-gray-500 dark:text-gray-400">
               <div className="flex items-center gap-2">
                 <CheckCircle2 size={18} className="text-paymint-green" />
-                <span>No Credit Card</span>
+                <span>{t('hero.noCreditCard')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 size={18} className="text-paymint-green" />
-                <span>14-Day Free Trial</span>
+                <span>{t('hero.freeTrial')}</span>
               </div>
             </div>
           </motion.div>
@@ -122,20 +125,20 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
                       <div className="p-2 bg-paymint-green/10 dark:bg-paymint-green/20 rounded-lg">
                         <BarChart3 size={16} className="text-paymint-green" />
                       </div>
-                      <span className="text-gray-500 dark:text-gray-400 text-sm">Revenue</span>
+                      <span className="text-gray-500 dark:text-gray-400 text-sm">{t('hero.revenue')}</span>
                     </div>
                     <div className="text-2xl font-bold text-gray-900 dark:text-white">$12,450</div>
-                    <div className="text-xs text-paymint-green mt-1">+15% from yesterday</div>
+                    <div className="text-xs text-paymint-green mt-1">+15% {t('hero.fromYesterday')}</div>
                   </div>
                   <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 transition-colors">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-2 bg-blue-500/10 dark:bg-blue-500/20 rounded-lg">
                         <ShoppingCart size={16} className="text-blue-600 dark:text-blue-500" />
                       </div>
-                      <span className="text-gray-500 dark:text-gray-400 text-sm">Orders</span>
+                      <span className="text-gray-500 dark:text-gray-400 text-sm">{t('hero.orders')}</span>
                     </div>
                     <div className="text-2xl font-bold text-gray-900 dark:text-white">142</div>
-                    <div className="text-xs text-blue-600 dark:text-blue-500 mt-1">Active right now</div>
+                    <div className="text-xs text-blue-600 dark:text-blue-500 mt-1">{t('hero.activeRightNow')}</div>
                   </div>
                 </div>
 
@@ -144,34 +147,34 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
                   <div className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-100 dark:border-gray-800 transition-colors">
                     <div className="flex items-center gap-2 mb-1">
                       <Users size={14} className="text-purple-500" />
-                      <span className="text-gray-500 dark:text-gray-400 text-xs">Customers</span>
+                      <span className="text-gray-500 dark:text-gray-400 text-xs">{t('hero.customers')}</span>
                     </div>
                     <div className="text-lg font-bold text-gray-900 dark:text-white">89</div>
-                    <div className="text-xs text-purple-500">+12 today</div>
+                    <div className="text-xs text-purple-500">+12 {t('hero.today')}</div>
                   </div>
                   <div className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-100 dark:border-gray-800 transition-colors">
                     <div className="flex items-center gap-2 mb-1">
                       <DollarSign size={14} className="text-amber-500" />
-                      <span className="text-gray-500 dark:text-gray-400 text-xs">Avg Order</span>
+                      <span className="text-gray-500 dark:text-gray-400 text-xs">{t('hero.avgOrder')}</span>
                     </div>
                     <div className="text-lg font-bold text-gray-900 dark:text-white">$87</div>
-                    <div className="text-xs text-amber-500">+8% this week</div>
+                    <div className="text-xs text-amber-500">+8% {t('hero.thisWeek')}</div>
                   </div>
                   <div className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-100 dark:border-gray-800 transition-colors">
                     <div className="flex items-center gap-2 mb-1">
                       <TrendingUp size={14} className="text-paymint-green" />
-                      <span className="text-gray-500 dark:text-gray-400 text-xs">Growth</span>
+                      <span className="text-gray-500 dark:text-gray-400 text-xs">{t('hero.growth')}</span>
                     </div>
                     <div className="text-lg font-bold text-gray-900 dark:text-white">23%</div>
-                    <div className="text-xs text-paymint-green">This month</div>
+                    <div className="text-xs text-paymint-green">{t('hero.thisMonth')}</div>
                   </div>
                 </div>
 
                 {/* Recent Orders List */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 px-1 mb-2">
-                    <span className="font-medium">Recent Orders</span>
-                    <span className="text-paymint-green cursor-pointer hover:underline">View all</span>
+                    <span className="font-medium">{t('hero.recentOrders')}</span>
+                    <span className="text-paymint-green cursor-pointer hover:underline">{t('hero.viewAll')}</span>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-gray-50/50 dark:bg-gray-800/30 rounded-xl transition-colors">
                     <div className="flex items-center gap-3">
@@ -179,8 +182,8 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
                         <span className="text-xs font-bold text-paymint-green">#24</span>
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">Table 5</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">3 items • 2 min ago</div>
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">{t('hero.table')} 5</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">3 {t('hero.items')} • 2 {t('hero.minAgo')}</div>
                       </div>
                     </div>
                     <div className="text-sm font-bold text-paymint-green">$45.80</div>
@@ -191,8 +194,8 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
                         <span className="text-xs font-bold text-blue-600 dark:text-blue-500">#23</span>
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">Takeaway</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">5 items • 8 min ago</div>
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">{t('hero.takeaway')}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">5 {t('hero.items')} • 8 {t('hero.minAgo')}</div>
                       </div>
                     </div>
                     <div className="text-sm font-bold text-blue-600 dark:text-blue-500">$72.50</div>
@@ -203,8 +206,8 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
                         <span className="text-xs font-bold text-amber-600 dark:text-amber-500">#22</span>
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">Table 12</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">7 items • 15 min ago</div>
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">{t('hero.table')} 12</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">7 {t('hero.items')} • 15 {t('hero.minAgo')}</div>
                       </div>
                     </div>
                     <div className="text-sm font-bold text-amber-600 dark:text-amber-500">$128.00</div>

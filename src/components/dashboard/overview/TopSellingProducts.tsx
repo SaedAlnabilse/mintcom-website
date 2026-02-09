@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Package, PieChart } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useCurrency } from '../../../context/CurrencyContext';
 
 interface TopProduct {
@@ -17,6 +18,7 @@ interface TopSellingProductsProps {
 }
 
 export const TopSellingProducts = React.memo(function TopSellingProducts({ topProducts, categoryBreakdown, viewMode }: TopSellingProductsProps) {
+  const { t } = useTranslation();
   const { locationSlug } = useParams();
   const navigate = useNavigate();
   const { formatAmount } = useCurrency();
@@ -35,9 +37,9 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({ topPr
               <Package size={20} />
             </div>
             <div>
-              <h3 className="text-base font-bold text-gray-900 dark:text-white">Your Best Sellers</h3>
+              <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('dashboard.stats.bestSellers')}</h3>
               <p className="text-xs font-bold text-gray-500 tracking-wide">
-                {viewMode === 'current_shift' ? 'This Shift' : viewMode === 'previous_shift' ? 'Previous Shift' : 'Last 24h'}
+                {viewMode === 'current_shift' ? t('dashboard.stats.thisShift') : viewMode === 'previous_shift' ? t('dashboard.stats.previousShift') : t('dashboard.stats.last24h')}
               </p>
             </div>
           </div>
@@ -45,13 +47,13 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({ topPr
             onClick={() => navigate(`/dashboard/${locationSlug}/reports`)}
             className="text-xs font-bold text-paymint-green hover:underline tracking-wide"
           >
-            View All
+            {t('orders.reports.sales.viewAll')}
           </button>
         </div>
         <div className="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           {/* Top Items Column */}
           <div className="space-y-3">
-            <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 text-center">Top 3 Items</h4>
+            <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 text-center">{t('dashboard.stats.top3Items')}</h4>
             {topProducts.length > 0 ? topProducts.slice(0, 3).map((item, index) => (
               <motion.div
                 key={item.name}
@@ -66,7 +68,7 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({ topPr
                   </div>
                   <div className="min-w-0">
                     <p className="font-bold text-xs text-gray-900 dark:text-white group-hover/item:text-paymint-green transition-colors truncate max-w-[120px]">{item.name}</p>
-                    <p className="text-xs text-gray-500 font-medium">{item.orders} sold</p>
+                    <p className="text-xs text-gray-500 font-medium">{item.orders} {t('dashboard.stats.sold')}</p>
                   </div>
                 </div>
                 <p className="text-xs font-bold text-gray-900 dark:text-white">
@@ -76,14 +78,14 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({ topPr
             )) : (
               <div className="flex flex-col items-center justify-center py-8 text-center">
                 <Package className="w-8 h-8 text-gray-200 dark:text-gray-700 mb-2" />
-                <p className="text-xs text-gray-400">No products data</p>
+                <p className="text-xs text-gray-400">{t('dashboard.stats.noProducts')}</p>
               </div>
             )}
           </div>
 
           {/* Top Categories Column */}
           <div className="space-y-3">
-            <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 text-center">Top 3 Categories</h4>
+            <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 text-center">{t('dashboard.stats.top3Categories')}</h4>
             {categoryBreakdown && categoryBreakdown.length > 0 ? categoryBreakdown.slice(0, 3).map((cat, index) => (
               <motion.div
                 key={cat.name}
@@ -98,7 +100,7 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({ topPr
                   </div>
                   <div className="min-w-0">
                     <p className="font-bold text-xs text-gray-900 dark:text-white group-hover/cat:text-purple-500 transition-colors truncate max-w-[120px]">{cat.name}</p>
-                    <p className="text-xs text-gray-500 font-medium">{cat.count || 0} orders</p>
+                    <p className="text-xs text-gray-500 font-medium">{cat.count || 0} {t('dashboard.stats.orders')}</p>
                   </div>
                 </div>
                 <p className="text-xs font-bold text-gray-900 dark:text-white">
@@ -108,7 +110,7 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({ topPr
             )) : (
               <div className="flex flex-col items-center justify-center py-8 text-center">
                 <PieChart className="w-8 h-8 text-gray-200 dark:text-gray-700 mb-2" />
-                <p className="text-xs text-gray-400">No category data</p>
+                <p className="text-xs text-gray-400">{t('dashboard.stats.noCategories')}</p>
               </div>
             )}
           </div>
