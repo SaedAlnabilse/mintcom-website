@@ -27,7 +27,7 @@ interface Attachment {
 }
 
 export const NewTicketPage = () => {
-  const { t } = useTranslation(['support', 'common']);
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
 

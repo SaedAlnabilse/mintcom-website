@@ -29,7 +29,7 @@ interface Message {
 }
 
 export const TicketDetailPage = () => {
-  const { t } = useTranslation(['support', 'common']);
+  const { t } = useTranslation();
   const { ticketId: _ticketId } = useParams();
   const [newMessage, setNewMessage] = useState('');
   const [isSending, setIsSending] = useState(false);

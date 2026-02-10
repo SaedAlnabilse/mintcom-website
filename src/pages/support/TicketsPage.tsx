@@ -82,7 +82,7 @@ const mockTickets: Ticket[] = [
 ];
 
 export const TicketsPage = () => {
-  const { t } = useTranslation(['support', 'common']);
+  const { t } = useTranslation();
   const [tickets] = useState<Ticket[]>(mockTickets);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<TicketStatus | 'all'>('all');

@@ -18,7 +18,7 @@ import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 
 export const AllArticlesPage = () => {
-  const { t } = useTranslation(['support', 'common']);
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState<'views' | 'recent'>('views');

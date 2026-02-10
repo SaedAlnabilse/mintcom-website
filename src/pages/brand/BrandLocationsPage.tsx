@@ -577,7 +577,7 @@ export function BrandLocationsPage() {
                     {/* Table Header */}
                     <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
                         <div className="col-span-4">{t('common.location')}</div>
-                        <div className="col-span-2">{t('common.status')}</div>
+                        <div className="col-span-2">{t('common.status.label')}</div>
                         <div className="col-span-2 text-right">{t('brand.dashboard.revenue')}</div>
                         <div className="col-span-1 text-right">{t('brand.dashboard.orders')}</div>
                         <div className="col-span-1 text-right">{t('brand.dashboard.staff')}</div>

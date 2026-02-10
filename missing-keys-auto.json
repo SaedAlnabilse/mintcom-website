@@ -1,0 +1,1303 @@
+{
+  "account": {
+    "restoreAction": "Restore Action",
+    "restored": "Restored",
+    "restoreFailed": "Restore Failed",
+    "restoring": "Restoring"
+  },
+  "attributes": {
+    "errors": {
+      "deleteFailed": "Delete Failed"
+    },
+    "filters": {
+      "activeFilters": "Active Filters"
+    }
+  },
+  "auth": {
+    "errors": {
+      "googleCancelled": "Google Cancelled",
+      "googleInitFailed": "Google Init Failed",
+      "googleLoadFailed": "Google Load Failed",
+      "googleNoSession": "Google No Session",
+      "googlePromptFailed": "Google Prompt Failed",
+      "googleUnavailable": "Google Unavailable"
+    },
+    "google": {
+      "continueWith": "Continue With",
+      "signIn": "Sign In",
+      "signUpWith": "Sign Up With"
+    },
+    "login": {
+      "checkingInfo": "Checking Info",
+      "failed": "Failed",
+      "signingIn": "Signing In"
+    },
+    "logout": {
+      "message": "Message"
+    },
+    "signup": {
+      "failed": "Failed",
+      "success": "Success"
+    },
+    "verifyEmail": {
+      "failed": "Failed",
+      "resendButton": "Resend Button"
+    }
+  },
+  "brand": {
+    "dashboard": {
+      "adjustFilters": "Adjust Filters",
+      "dissolveLocation": "Dissolve Location",
+      "openDashboard": "Open Dashboard",
+      "revenue": "Revenue",
+      "share": "Share",
+      "viewDashboard": "View Dashboard"
+    }
+  },
+  "categories": {
+    "errors": {
+      "failedToCreate": "Failed To Create"
+    }
+  },
+  "chat": {
+    "queries": {
+      "giveMeTips": "Give Me Tips",
+      "showMeReports": "Show Me Reports",
+      "whereAreOrders": "Where Are Orders"
+    },
+    "suggestions": {
+      "0": "0",
+      "1": "1",
+      "2": "2",
+      "3": "3",
+      "add_product": "Add product",
+      "contact_support": "Contact support",
+      "get_started": "Get started",
+      "manage_staff": "Manage staff",
+      "view_orders": "View orders",
+      "view_reports": "View reports"
+    }
+  },
+  "common": {
+    "actions": "Actions",
+    "aria": {
+      "nextMonth": "Next Month",
+      "previousMonth": "Previous Month",
+      "selectDateRange": "Select Date Range"
+    },
+    "category": "Category",
+    "confirmLogout": "Confirm Logout",
+    "connecting": "Connecting",
+    "copied": "Copied",
+    "copy": "Copy",
+    "copyFailed": "Copy Failed",
+    "creating": "Creating",
+    "currencySymbol": "Currency Symbol",
+    "days": {
+      "fri": "Fri",
+      "mon": "Mon",
+      "sat": "Sat",
+      "sun": "Sun",
+      "thu": "Thu",
+      "tue": "Tue",
+      "wed": "Wed"
+    },
+    "entryError": "Entry Error",
+    "finalConfirmation": "Final Confirmation",
+    "finish": "Finish",
+    "guide": "Guide",
+    "languages": {
+      "ar": "Ar",
+      "en": "En"
+    },
+    "live": "Live",
+    "loadingVideo": "Loading Video",
+    "location": "Location",
+    "locations": "Locations",
+    "logoAlt": "Logo Alt",
+    "logout": "Logout",
+    "mo": "Mo",
+    "month": "Month",
+    "na": "Na",
+    "name": "Name",
+    "noData": "No Data",
+    "noResults": "No Results",
+    "note": "Note",
+    "password": "Password",
+    "print": "Print",
+    "privacyPolicy": "Privacy Policy",
+    "restoring": "Restoring",
+    "role": "Role",
+    "saveChanges": "Save Changes",
+    "searchArticles": "Search Articles",
+    "searchPlaceholder": "Search Placeholder",
+    "security": "Security",
+    "selected": "Selected",
+    "settings": "Settings",
+    "share": "Share",
+    "sortByDate": "Sort By Date",
+    "sortByLocations": "Sort By Locations",
+    "sortByName": "Sort By Name",
+    "sortByRole": "Sort By Role",
+    "status": "Status",
+    "submitting": "Submitting",
+    "system": "System",
+    "time": {
+      "am": "Am",
+      "pm": "Pm"
+    },
+    "tip": "Tip",
+    "viewAll": "View All",
+    "website": "Website",
+    "welcome": "Welcome",
+    "welcomeBack": "Welcome Back"
+  },
+  "community": {
+    "discussions": {
+      "featured_1": {
+        "title": "Best practices for managing multiple locations"
+      },
+      "featured_2": {
+        "title": "How we reduced checkout time by 40%"
+      },
+      "featured_3": {
+        "title": "Integrating Paymint with our inventory system"
+      },
+      "item_1": {
+        "excerpt": "I recently expanded to 3 locations and looking for tips on how to manage inventory and staff across all of them efficiently...",
+        "title": "Best practices for managing multiple locations"
+      },
+      "item_2": {
+        "excerpt": "After optimizing our menu layout and training staff on quick keys, we managed to significantly speed up our service...",
+        "title": "How we reduced checkout time by 40%"
+      },
+      "item_3": {
+        "excerpt": "Has anyone successfully integrated Paymint with a third-party inventory management system? Looking for recommendations...",
+        "title": "Integrating Paymint with our inventory system"
+      },
+      "item_4": {
+        "excerpt": "I want to add our logo and customize the footer of our receipts. Is this possible with the current version?",
+        "title": "Custom receipt templates - is it possible?"
+      },
+      "item_5": {
+        "excerpt": "Looking for advice on the best loyalty program setup for a coffee shop. Should I use points or stamps?",
+        "title": "Setting up loyalty points for coffee shop"
+      }
+    },
+    "guides": {
+      "all": "All Guides",
+      "item_1": {
+        "title": "Complete Setup Guide for New Users"
+      },
+      "item_2": {
+        "title": "Optimizing Your Menu Layout"
+      },
+      "item_3": {
+        "title": "Understanding Sales Reports"
+      },
+      "item_4": {
+        "title": "Employee Management Best Practices"
+      }
+    },
+    "hub": {
+      "search_placeholder": "Search discussions, ideas, or guides..."
+    },
+    "ideas": {
+      "all": "All Ideas",
+      "item_1": {
+        "description": "Many users work in dim environments (bars, restaurants). A dark mode would reduce eye strain and look more professional.",
+        "title": "Dark mode for POS tablet app"
+      },
+      "item_2": {
+        "description": "Allow connecting multiple printers to a single tablet - one for customer receipts, one for kitchen orders.",
+        "title": "Multiple receipt printers per station"
+      },
+      "item_3": {
+        "description": "Support for a secondary display showing order details and total to customers during checkout.",
+        "title": "Customer-facing display support"
+      },
+      "item_4": {
+        "description": "Better offline functionality - sync orders automatically when connection is restored.",
+        "title": "Offline mode improvements"
+      },
+      "item_5": {
+        "description": "Built-in table layout editor and reservation system for restaurants.",
+        "title": "Table management & reservations"
+      },
+      "item_6": {
+        "description": "Let customers scan a QR code at their table to view menu and place orders from their phone.",
+        "title": "QR code ordering for customers"
+      }
+    }
+  },
+  "contact": {
+    "title": "Title"
+  },
+  "cookies": {
+    "banner": {
+      "acceptAll": "Accept All",
+      "description": "Description",
+      "policyLink": "Policy Link",
+      "preferences": "Preferences",
+      "rejectAll": "Reject All",
+      "title": "Title"
+    },
+    "policy": {
+      "declaration": "Declaration",
+      "p1": "P1",
+      "p2": "P2"
+    },
+    "preferences": {
+      "alwaysActive": "Always Active",
+      "manage": "Manage",
+      "save": "Save",
+      "subtitle": "Subtitle",
+      "title": "Title"
+    },
+    "types": {
+      "analytics": {
+        "description": "Description",
+        "title": "Title"
+      },
+      "essential": {
+        "description": "Description",
+        "title": "Title"
+      },
+      "marketing": {
+        "description": "Description",
+        "title": "Title"
+      }
+    }
+  },
+  "dashboard": {
+    "menu": {
+      "billing": "Billing",
+      "overview": "Overview"
+    },
+    "roles": {
+      "access": "Access",
+      "actions": "Actions",
+      "addRole": "Add Role",
+      "created": "Created",
+      "date": "Date",
+      "deleteRole": "Delete Role",
+      "deleteTitle": "Delete Title",
+      "editRole": "Edit Role",
+      "gridView": "Grid View",
+      "listView": "List View",
+      "loading": "Loading",
+      "messages": {
+        "created": "Created",
+        "deleted": "Deleted",
+        "deleteFailed": "Delete Failed",
+        "loadFailed": "Load Failed",
+        "noLocation": "No Location",
+        "saveFailed": "Save Failed",
+        "updated": "Updated"
+      },
+      "name": "Name",
+      "noRoles": "No Roles",
+      "noRolesDesc": "No Roles Desc",
+      "office": "Office",
+      "permissions": "Permissions",
+      "pos": "Pos",
+      "searchPlaceholder": "Search Placeholder",
+      "subtitle": "Subtitle",
+      "title": "Title",
+      "type": "Type"
+    },
+    "stats": {
+      "live": "Live"
+    }
+  },
+  "hardware": {
+    "tip": "Tip"
+  },
+  "inventory": {
+    "messages": {
+      "deleteFailed": "Delete Failed"
+    }
+  },
+  "landing": {
+    "contact": {
+      "terms": "Terms"
+    },
+    "pricing": {
+      "features": {
+        "adminApp": "Admin App",
+        "advancedReporting": "Advanced Reporting",
+        "dashboard": "Dashboard",
+        "inventory": "Inventory",
+        "pointOfSale": "Point Of Sale",
+        "pos": "Pos",
+        "production": "Production",
+        "reports": "Reports",
+        "staffManagement": "Staff Management",
+        "support": "Support",
+        "unlimitedStaff": "Unlimited Staff"
+      },
+      "monthlyPlan": "Monthly Plan",
+      "perMonth": "Per Month",
+      "planDescription": "Plan Description",
+      "startFreeTrial": "Start Free Trial"
+    }
+  },
+  "legal": {
+    "cookies": {
+      "cards": {
+        "advertisingDesc": "Advertising Desc",
+        "analyticsDesc": "Analytics Desc",
+        "essentialDesc": "Essential Desc"
+      },
+      "content": {
+        "control_1": "Control 1",
+        "control_2": "Control 2",
+        "fb": "Fb",
+        "fbDesc": "Fb Desc",
+        "ga": "Ga",
+        "gaDesc": "Ga Desc",
+        "questionsDesc": "Questions Desc",
+        "thirdParty_1": "Third Party 1",
+        "updates_1": "Updates 1",
+        "updates_2": "Updates 2",
+        "whatAre_1": "What Are 1",
+        "whatAre_2": "What Are 2",
+        "whyUse_1": "Why Use 1"
+      }
+    },
+    "privacy": {
+      "agreement": "Agreement",
+      "branch": {
+        "b1": "B1",
+        "b2": "B2",
+        "b3": "B3"
+      },
+      "changes": {
+        "desc": "Desc"
+      },
+      "children": {
+        "desc": "Desc"
+      },
+      "contact": {
+        "desc": "Desc"
+      },
+      "cookies": {
+        "c1": "C1",
+        "c2": "C2",
+        "c3": "C3",
+        "manage": "Manage"
+      },
+      "fields": {
+        "analytics": "Analytics",
+        "billingAddress": "Billing Address",
+        "businessInfo": "Business Info",
+        "cardDetails": "Card Details",
+        "cookies": "Cookies",
+        "credentials": "Credentials",
+        "deviceInfo": "Device Info",
+        "email": "Email",
+        "fullName": "Full Name",
+        "ipAddress": "Ip Address",
+        "loyalty": "Loyalty",
+        "phone": "Phone",
+        "products": "Products",
+        "sales": "Sales",
+        "staff": "Staff",
+        "transactionIds": "Transaction Ids",
+        "usageLogs": "Usage Logs"
+      },
+      "international": {
+        "desc": "Desc"
+      },
+      "intro": "Intro",
+      "retention": {
+        "deletionRequest": "Deletion Request",
+        "r1": "R1",
+        "r2": "R2",
+        "r3": "R3"
+      },
+      "rights": {
+        "contact": "Contact",
+        "ri1": "Ri1",
+        "ri2": "Ri2",
+        "ri3": "Ri3",
+        "ri4": "Ri4"
+      },
+      "sections": {
+        "s1_1_desc": "S1 1 desc",
+        "s1_2_desc": "S1 2 desc",
+        "s1_2_note": "S1 2 note",
+        "s1_3_desc": "S1 3 desc",
+        "s1_4_desc": "S1 4 desc",
+        "s1_desc": "S1 desc",
+        "s2_desc": "S2 desc",
+        "s3_desc": "S3 desc",
+        "s4_desc": "S4 desc",
+        "s5_desc": "S5 desc",
+        "s6_desc": "S6 desc",
+        "s7_desc": "S7 desc",
+        "s8_desc": "S8 desc"
+      },
+      "security": {
+        "noAbsoluteSecurity": "No Absolute Security",
+        "sec1": "Sec1",
+        "sec2": "Sec2",
+        "sec3": "Sec3",
+        "sec4": "Sec4"
+      },
+      "sharing": {
+        "obligation": "Obligation",
+        "sh1": "Sh1",
+        "sh2": "Sh2",
+        "sh3": "Sh3"
+      },
+      "usage": {
+        "noSell": "No Sell",
+        "u1": "U1",
+        "u2": "U2",
+        "u3": "U3",
+        "u4": "U4",
+        "u5": "U5",
+        "u6": "U6",
+        "u7": "U7",
+        "u8": "U8"
+      }
+    },
+    "terms": {
+      "availability": {
+        "desc": "Desc"
+      },
+      "contact": {
+        "desc": "Desc"
+      },
+      "intro": "Intro",
+      "ip": {
+        "desc": "Desc"
+      },
+      "law": {
+        "desc": "Desc"
+      },
+      "liability": {
+        "desc": "Desc"
+      },
+      "payments": {
+        "p1": "P1",
+        "p2": "P2"
+      },
+      "privacy": {
+        "p1": "P1",
+        "p2": "P2"
+      },
+      "responsibilities": {
+        "accuracy": "Accuracy",
+        "intro": "Intro",
+        "r1": "R1",
+        "r2": "R2",
+        "r3": "R3"
+      },
+      "termination": {
+        "desc": "Desc"
+      },
+      "use": {
+        "u1": "U1",
+        "u2": "U2"
+      }
+    }
+  },
+  "onboarding": {
+    "errors": {
+      "failedToComplete": "Failed To Complete"
+    },
+    "location": "Location",
+    "messages": {
+      "complete": "Complete"
+    },
+    "select": "Select",
+    "step1": {
+      "businessTypes": {
+        "bakery": "Bakery"
+      },
+      "currencies": {
+        "AED": "A E D",
+        "BHD": "B H D",
+        "EGP": "E G P",
+        "EUR": "E U R",
+        "GBP": "G B P",
+        "JOD": "J O D",
+        "KWD": "K W D",
+        "OMR": "O M R",
+        "QAR": "Q A R",
+        "SAR": "S A R",
+        "TRY": "T R Y",
+        "USD": "U S D"
+      }
+    },
+    "step4": {
+      "adminUsernamePlaceholder": "Admin Username Placeholder"
+    },
+    "step5": {
+      "ownerPortal": "Owner Portal"
+    },
+    "validation": {
+      "locationPasswordMin": "Location Password Min"
+    }
+  },
+  "orders": {
+    "actions": {
+      "refund": "Refund",
+      "refundOrder": "Refund Order",
+      "viewDetails": "View Details"
+    },
+    "details": {
+      "contact": "Contact",
+      "contactTip": "Contact Tip",
+      "customer": "Customer",
+      "customerTip": "Customer Tip",
+      "date": "Date",
+      "dateTip": "Date Tip",
+      "discount": "Discount",
+      "items": "Items",
+      "notes": "Notes",
+      "payment": "Payment",
+      "paymentTip": "Payment Tip",
+      "processed": "Processed",
+      "qty": "Qty",
+      "refundConfirmMessage": "Refund Confirm Message",
+      "refundConfirmTitle": "Refund Confirm Title",
+      "refundedBy": "Refunded By",
+      "refundedByTip": "Refunded By Tip",
+      "staff": "Staff",
+      "staffTip": "Staff Tip",
+      "status": "Status",
+      "statusTip": "Status Tip",
+      "subtotal": "Subtotal",
+      "tax": "Tax",
+      "title": "Title",
+      "total": "Total"
+    },
+    "kpi": {
+      "onHold": "On Hold",
+      "totalOrders": "Total Orders",
+      "totalSales": "Total Sales"
+    },
+    "messages": {
+      "checkShiftFailed": "Check Shift Failed",
+      "loadFailed": "Load Failed",
+      "loading": "Loading",
+      "noOrders": "No Orders",
+      "noShiftFound": "No Shift Found",
+      "refundConfirmMessage": "Refund Confirm Message",
+      "refundConfirmTitle": "Refund Confirm Title",
+      "refundFailed": "Refund Failed",
+      "refundReasonWeb": "Refund Reason Web",
+      "refundSuccess": "Refund Success"
+    },
+    "payment": {
+      "deliveryApps": "Delivery Apps"
+    },
+    "period": "Period",
+    "reports": {
+      "shifts": {
+        "sales": "Sales"
+      }
+    },
+    "stats": {
+      "totalSales": "Total Sales"
+    },
+    "table": {
+      "payment": "Payment"
+    }
+  },
+  "owner": {
+    "account": {
+      "accountRestored": "Account Restored",
+      "activeEstBlockModal": {
+        "activeLocations": "Active Locations",
+        "goToLocations": "Go To Locations",
+        "subtitle": "Subtitle",
+        "title": "Title"
+      },
+      "brandLoginId": "Brand Login Id",
+      "brandLoginsSubtitle": "Brand Logins Subtitle",
+      "dangerZoneHint": "Danger Zone Hint",
+      "deleteAccount": "Delete Account",
+      "deleteAccountModal": {
+        "confirmFinal": "Confirm Final",
+        "confirmPassword": "Confirm Password",
+        "deleting": "Deleting",
+        "feedbackHint": "Feedback Hint",
+        "passwordPlaceholder": "Password Placeholder",
+        "title": "Title",
+        "warning": "Warning",
+        "whyLeaving": "Why Leaving"
+      },
+      "deletionFailed": "Deletion Failed",
+      "deletionInitiated": "Deletion Initiated",
+      "deletionScheduledHint": "Deletion Scheduled Hint",
+      "loading": "Loading",
+      "locationLoginsSubtitle": "Location Logins Subtitle",
+      "noLocationsOrBrands": "No Locations Or Brands",
+      "noLocationsOrBrandsHint": "No Locations Or Brands Hint",
+      "profileUpdatedVerifyEmail": "Profile Updated Verify Email",
+      "resources": {
+        "aboutUs": {
+          "desc": "Desc",
+          "title": "Title"
+        },
+        "privacyPolicy": {
+          "desc": "Desc",
+          "title": "Title"
+        },
+        "qa": {
+          "desc": "Desc",
+          "title": "Title"
+        },
+        "setupManual": {
+          "desc": "Desc",
+          "title": "Title"
+        },
+        "subtitle": "Subtitle",
+        "termsOfUse": {
+          "desc": "Desc",
+          "title": "Title"
+        },
+        "title": "Title",
+        "userManual": {
+          "desc": "Desc",
+          "title": "Title"
+        },
+        "videoTutorial": {
+          "desc": "Desc",
+          "title": "Title"
+        }
+      },
+      "restoreAccount": "Restore Account",
+      "restoreMyAccount": "Restore My Account",
+      "securityTips": {
+        "neverShareOtp": "Never Share Otp",
+        "title": "Title",
+        "uniquePasswords": "Unique Passwords",
+        "updatePeriodically": "Update Periodically"
+      },
+      "stats": {
+        "admins": "Admins",
+        "brands": "Brands",
+        "locations": "Locations"
+      },
+      "validation": {
+        "requiredFields": "Required Fields"
+      }
+    },
+    "billing": {
+      "fetchFailed": "Fetch Failed",
+      "subtitle": "Subtitle",
+      "title": "Title"
+    },
+    "brands": {
+      "activeFilters": "Active Filters",
+      "adminLoginId": "Admin Login Id",
+      "adminLoginIdHint": "Admin Login Id Hint",
+      "adminLoginIdPlaceholder": "Admin Login Id Placeholder",
+      "adminPassword": "Admin Password",
+      "brand": "Brand",
+      "brandName": "Brand Name",
+      "brandNamePlaceholder": "Brand Name Placeholder",
+      "createBrandHint": "Create Brand Hint",
+      "createBrandSubtitle": "Create Brand Subtitle",
+      "createBrandTitle": "Create Brand Title",
+      "createFirstBrand": "Create First Brand",
+      "location": "Location",
+      "noBrandsFound": "No Brands Found",
+      "selectLocationsToLink": "Select Locations To Link",
+      "tryAdjustingSearch": "Try Adjusting Search",
+      "validation": {
+        "loginIdMin": "Login Id Min",
+        "loginIdRegex": "Login Id Regex",
+        "nameMin": "Name Min",
+        "passwordMin": "Password Min"
+      },
+      "wizard": {
+        "finalStepDesc": "Final Step Desc"
+      }
+    },
+    "employees": {
+      "activeNow": "Active Now",
+      "allRoles": "All Roles",
+      "totalUsers": "Total Users"
+    },
+    "merge": {
+      "availableLocations": "Available Locations",
+      "brand": "Brand",
+      "brandCreated": "Brand Created",
+      "brandDetailsSubtitle": "Brand Details Subtitle",
+      "brandName": "Brand Name",
+      "brandNamePlaceholder": "Brand Name Placeholder",
+      "createBrand": "Create Brand",
+      "createFailed": "Create Failed",
+      "enterBrandName": "Enter Brand Name",
+      "newBrandBadge": "New Brand Badge",
+      "readyForNextStep": "Ready For Next Step",
+      "selectedLocations": "Selected Locations",
+      "selectMinLocations": "Select Min Locations",
+      "steps": {
+        "details": "Details",
+        "select": "Select"
+      },
+      "whyMergeDesc": "Why Merge Desc"
+    },
+    "staff": {
+      "access": "Access",
+      "accessRights": "Access Rights",
+      "addStaffDesc": "Add Staff Desc",
+      "allLocations": "All Locations",
+      "enterPasswordPlaceholder": "Enter Password Placeholder",
+      "noStaffDesc": "No Staff Desc",
+      "noStaffFound": "No Staff Found",
+      "passwordPlaceholder": "Password Placeholder",
+      "staffRemoved": "Staff Removed",
+      "syncError": "Sync Error",
+      "undoneWarning": "Undone Warning",
+      "verifyPassword": "Verify Password"
+    }
+  },
+  "passwordReset": {
+    "form": {
+      "confirmPassword": "Confirm Password",
+      "confirmPlaceholder": "Confirm Placeholder",
+      "newPassword": "New Password",
+      "passwordPlaceholder": "Password Placeholder",
+      "resend": "Resend",
+      "resetButton": "Reset Button",
+      "resetting": "Resetting",
+      "sendCode": "Send Code",
+      "sending": "Sending",
+      "verifyCode": "Verify Code",
+      "verifying": "Verifying"
+    },
+    "messages": {
+      "codeSent": "Code Sent",
+      "codeVerified": "Code Verified",
+      "enterFullCode": "Enter Full Code",
+      "failedToReset": "Failed To Reset",
+      "failedToSend": "Failed To Send",
+      "invalidCode": "Invalid Code",
+      "passwordReset": "Password Reset"
+    },
+    "steps": {
+      "enterCodeTitle": "Enter Code Title",
+      "newPasswordDesc": "New Password Desc",
+      "newPasswordTitle": "New Password Title",
+      "successDesc": "Success Desc",
+      "successTitle": "Success Title",
+      "verifyDesc": "Verify Desc",
+      "verifyTitle": "Verify Title"
+    },
+    "title": {
+      "account": "Account",
+      "default": "Default"
+    }
+  },
+  "paymentMethods": {
+    "messages": {
+      "notActive": "Not Active"
+    },
+    "modal": {
+      "expiryPlaceholder": "Expiry Placeholder"
+    }
+  },
+  "pricing": {
+    "planDetails": "Plan Details",
+    "viewDetails": "View Details",
+    "whatsIncluded": "Whats Included"
+  },
+  "products": {
+    "form": {
+      "imagePreview": "Image Preview"
+    },
+    "messages": {
+      "addonCreated": "Addon Created",
+      "addonFailed": "Addon Failed"
+    }
+  },
+  "roles": {
+    "backoffice": {
+      "description": "Description",
+      "title": "Title"
+    },
+    "createRole": "Create Role",
+    "editRole": "Edit Role",
+    "form": {
+      "allAllowed": "All Allowed",
+      "allowAllDiscounts": "Allow All Discounts",
+      "allowedDiscounts": "Allowed Discounts",
+      "roleNamePlaceholder": "Role Name Placeholder"
+    },
+    "newRole": "New Role",
+    "permissions": "Permissions",
+    "pos": {
+      "description": "Description",
+      "title": "Title"
+    },
+    "validation": {
+      "atLeastOnePermission": "At Least One Permission"
+    }
+  },
+  "settings": {
+    "confirm": {
+      "criticalChange": "Critical Change"
+    },
+    "danger": {
+      "cancelFailed": "Cancel Failed"
+    },
+    "messages": {
+      "loading": "Loading"
+    },
+    "profile": {
+      "addressPlaceholder": "Address Placeholder"
+    },
+    "sales": {
+      "taxErrorGeneric": "Tax Error Generic",
+      "taxErrorRange": "Tax Error Range"
+    }
+  },
+  "staff": {
+    "form": {
+      "locationLabel": "Location Label",
+      "standardUsers": "Standard Users"
+    }
+  },
+  "support": {
+    "articles": {
+      "allTitle": "All Title",
+      "backTo": "Back To",
+      "backToHelp": "Back To Help",
+      "bl1": "Bl1",
+      "bl1_excerpt": "Bl1 excerpt",
+      "bl2_excerpt": "Bl2 excerpt",
+      "bl2": {
+        "h1": "H1",
+        "h2": "H2",
+        "h3": "H3",
+        "h4": "H4",
+        "h5": "H5",
+        "h6": "H6",
+        "li1": "Li1",
+        "li10": "Li10",
+        "li11": "Li11",
+        "li12": "Li12",
+        "li13": "Li13",
+        "li14": "Li14",
+        "li15": "Li15",
+        "li16": "Li16",
+        "li17": "Li17",
+        "li18": "Li18",
+        "li19": "Li19",
+        "li2": "Li2",
+        "li20": "Li20",
+        "li21": "Li21",
+        "li3": "Li3",
+        "li4": "Li4",
+        "li5": "Li5",
+        "li6": "Li6",
+        "li7": "Li7",
+        "li8": "Li8",
+        "li9": "Li9",
+        "note_desc": "Note desc",
+        "note_label": "Note label",
+        "p1": "P1",
+        "p2": "P2",
+        "p3": "P3"
+      },
+      "bl3": "Bl3",
+      "bl3_excerpt": "Bl3 excerpt",
+      "bl4": "Bl4",
+      "bl4_excerpt": "Bl4 excerpt",
+      "bl5": "Bl5",
+      "bl5_excerpt": "Bl5 excerpt",
+      "bl6": "Bl6",
+      "bl6_excerpt": "Bl6 excerpt",
+      "bl7": "Bl7",
+      "bl7_excerpt": "Bl7 excerpt",
+      "bl8": "Bl8",
+      "bl8_excerpt": "Bl8 excerpt",
+      "clearFilters": "Clear Filters",
+      "clearSearch": "Clear Search",
+      "count": "Count",
+      "featuredTitle": "Featured Title",
+      "feedbackSorry": "Feedback Sorry",
+      "feedbackThanks": "Feedback Thanks",
+      "ft1_excerpt": "Ft1 excerpt",
+      "ft1": {
+        "h1": "H1",
+        "h2": "H2",
+        "h3": "H3",
+        "h4": "H4",
+        "h5": "H5",
+        "h6": "H6",
+        "h7": "H7",
+        "li1_desc": "Li1 desc",
+        "li1_label": "Li1 label",
+        "li10": "Li10",
+        "li11": "Li11",
+        "li12": "Li12",
+        "li13": "Li13",
+        "li14": "Li14",
+        "li15": "Li15",
+        "li2_desc": "Li2 desc",
+        "li2_label": "Li2 label",
+        "li3_desc": "Li3 desc",
+        "li3_label": "Li3 label",
+        "li4_desc": "Li4 desc",
+        "li4_label": "Li4 label",
+        "li5": "Li5",
+        "li6": "Li6",
+        "li7": "Li7",
+        "li8": "Li8",
+        "li9": "Li9",
+        "p1": "P1",
+        "p2": "P2",
+        "p3": "P3",
+        "p4": "P4",
+        "p5": "P5",
+        "p6": "P6",
+        "type1_desc": "Type1 desc",
+        "type1_label": "Type1 label",
+        "type2_desc": "Type2 desc",
+        "type2_label": "Type2 label",
+        "type3_desc": "Type3 desc",
+        "type3_label": "Type3 label",
+        "type4_desc": "Type4 desc",
+        "type4_label": "Type4 label",
+        "type5_desc": "Type5 desc",
+        "type5_label": "Type5 label",
+        "type6_desc": "Type6 desc",
+        "type6_label": "Type6 label"
+      },
+      "ft10": "Ft10",
+      "ft10_excerpt": "Ft10 excerpt",
+      "ft2": "Ft2",
+      "ft2_excerpt": "Ft2 excerpt",
+      "ft3": "Ft3",
+      "ft3_excerpt": "Ft3 excerpt",
+      "ft4": "Ft4",
+      "ft4_excerpt": "Ft4 excerpt",
+      "ft5": "Ft5",
+      "ft5_excerpt": "Ft5 excerpt",
+      "ft6": "Ft6",
+      "ft6_excerpt": "Ft6 excerpt",
+      "ft7": "Ft7",
+      "ft7_excerpt": "Ft7 excerpt",
+      "ft8": "Ft8",
+      "ft8_excerpt": "Ft8 excerpt",
+      "ft9": "Ft9",
+      "ft9_excerpt": "Ft9 excerpt",
+      "gs1_excerpt": "Gs1 excerpt",
+      "gs1": {
+        "h1": "H1",
+        "h2": "H2",
+        "h3": "H3",
+        "h4": "H4",
+        "h5": "H5",
+        "h6": "H6",
+        "h7": "H7",
+        "li1_desc": "Li1 desc",
+        "li1_label": "Li1 label",
+        "li2_desc": "Li2 desc",
+        "li2_label": "Li2 label",
+        "li3_desc": "Li3 desc",
+        "li3_label": "Li3 label",
+        "li4_desc": "Li4 desc",
+        "li4_label": "Li4 label",
+        "p1": "P1",
+        "p2": "P2",
+        "p3": "P3",
+        "p4": "P4",
+        "p5": "P5",
+        "p6": "P6",
+        "p7": "P7"
+      },
+      "gs2_excerpt": "Gs2 excerpt",
+      "gs2": {
+        "h1": "H1",
+        "h2": "H2",
+        "h3": "H3",
+        "h4": "H4",
+        "h5": "H5",
+        "h6": "H6",
+        "li1_desc": "Li1 desc",
+        "li1_label": "Li1 label",
+        "li10_desc": "Li10 desc",
+        "li10_label": "Li10 label",
+        "li11": "Li11",
+        "li12": "Li12",
+        "li13": "Li13",
+        "li14": "Li14",
+        "li15": "Li15",
+        "li16": "Li16",
+        "li17": "Li17",
+        "li18": "Li18",
+        "li2_desc": "Li2 desc",
+        "li2_label": "Li2 label",
+        "li3_desc": "Li3 desc",
+        "li3_label": "Li3 label",
+        "li4_desc": "Li4 desc",
+        "li4_label": "Li4 label",
+        "li5": "Li5",
+        "li6": "Li6",
+        "li7": "Li7",
+        "li8_desc": "Li8 desc",
+        "li8_label": "Li8 label",
+        "li9_desc": "Li9 desc",
+        "li9_label": "Li9 label",
+        "p1": "P1",
+        "p2": "P2",
+        "p3": "P3",
+        "p4": "P4",
+        "p5": "P5",
+        "p6": "P6"
+      },
+      "gs3": "Gs3",
+      "gs3_excerpt": "Gs3 excerpt",
+      "gs4": "Gs4",
+      "gs4_excerpt": "Gs4 excerpt",
+      "gs5": "Gs5",
+      "gs5_excerpt": "Gs5 excerpt",
+      "gs6": "Gs6",
+      "gs6_excerpt": "Gs6 excerpt",
+      "gs7": "Gs7",
+      "gs7_excerpt": "Gs7 excerpt",
+      "gs8": "Gs8",
+      "gs8_excerpt": "Gs8 excerpt",
+      "helpfulNo": "Helpful No",
+      "helpfulQuestion": "Helpful Question",
+      "helpfulYes": "Helpful Yes",
+      "notFound": "Not Found",
+      "notFoundDesc": "Not Found Desc",
+      "notFoundDescDetail": "Not Found Desc Detail",
+      "popular": "Popular",
+      "read": "Read",
+      "related": "Related",
+      "sortBy": "Sort By",
+      "sortPopular": "Sort Popular",
+      "sortRecent": "Sort Recent",
+      "stubContentH1": "Stub Content H1",
+      "stubContentH2": "Stub Content H2",
+      "stubContentP1": "Stub Content P1",
+      "stubContentP2": "Stub Content P2",
+      "stubTitle": "Stub Title",
+      "tc1_excerpt": "Tc1 excerpt",
+      "tc1": {
+        "a1_1": "A1 1",
+        "a1_2": "A1 2",
+        "a1_3": "A1 3",
+        "a2_1": "A2 1",
+        "a2_2": "A2 2",
+        "a3_1": "A3 1",
+        "a3_2": "A3 2",
+        "a3_3": "A3 3",
+        "h1": "H1",
+        "h2": "H2",
+        "h3": "H3",
+        "h4": "H4",
+        "h5": "H5",
+        "li1": "Li1",
+        "li2": "Li2",
+        "li3": "Li3",
+        "li4": "Li4",
+        "li5": "Li5",
+        "li6": "Li6",
+        "li7": "Li7",
+        "p1": "P1",
+        "p2": "P2",
+        "p3": "P3",
+        "q1": "Q1",
+        "q2": "Q2",
+        "q3": "Q3",
+        "step1_desc": "Step1 desc",
+        "step1_label": "Step1 label",
+        "step2_desc": "Step2 desc",
+        "step2_label": "Step2 label",
+        "step3_desc": "Step3 desc",
+        "step3_label": "Step3 label",
+        "step4_desc": "Step4 desc",
+        "step4_label": "Step4 label",
+        "step5_desc": "Step5 desc",
+        "step5_label": "Step5 label"
+      },
+      "tc10": "Tc10",
+      "tc10_excerpt": "Tc10 excerpt",
+      "tc2": "Tc2",
+      "tc2_excerpt": "Tc2 excerpt",
+      "tc3": "Tc3",
+      "tc3_excerpt": "Tc3 excerpt",
+      "tc4": "Tc4",
+      "tc4_excerpt": "Tc4 excerpt",
+      "tc5": "Tc5",
+      "tc5_excerpt": "Tc5 excerpt",
+      "tc6": "Tc6",
+      "tc6_excerpt": "Tc6 excerpt",
+      "tc7": "Tc7",
+      "tc7_excerpt": "Tc7 excerpt",
+      "tc8": "Tc8",
+      "tc8_excerpt": "Tc8 excerpt",
+      "tc9": "Tc9",
+      "tc9_excerpt": "Tc9 excerpt",
+      "updated": "Updated",
+      "viewAll": "View All",
+      "views": "Views"
+    },
+    "categories": {
+      "all": "All",
+      "billing": "Billing",
+      "billingDesc": "Billing Desc",
+      "billingDescShort": "Billing Desc Short",
+      "bug": "Bug",
+      "bugDescShort": "Bug Desc Short",
+      "feature": "Feature",
+      "featureDescShort": "Feature Desc Short",
+      "features": "Features",
+      "featuresDesc": "Features Desc",
+      "gettingStarted": "Getting Started",
+      "gettingStartedDesc": "Getting Started Desc",
+      "gettingStartedDescShort": "Getting Started Desc Short",
+      "notFound": "Not Found",
+      "notFoundDesc": "Not Found Desc",
+      "other": "Other",
+      "otherDescShort": "Other Desc Short",
+      "sidebarTitle": "Sidebar Title",
+      "subtitle": "Subtitle",
+      "technical": "Technical",
+      "technicalDesc": "Technical Desc",
+      "technicalDescShort": "Technical Desc Short",
+      "title": "Title"
+    },
+    "cta": {
+      "stillNeedHelp": "Still Need Help",
+      "stillNeedHelpDesc": "Still Need Help Desc",
+      "subtitle": "Subtitle",
+      "title": "Title"
+    },
+    "hero": {
+      "badge": "Badge",
+      "searchPlaceholder": "Search Placeholder",
+      "subtitle": "Subtitle",
+      "titleHighlight": "Title Highlight",
+      "titlePart1": "Title Part1",
+      "titlePart2": "Title Part2"
+    },
+    "newTicket": {
+      "addFiles": "Add Files",
+      "attachmentLimit": "Attachment Limit",
+      "categoryLabel": "Category Label",
+      "descriptionLabel": "Description Label",
+      "descriptionPlaceholder": "Description Placeholder",
+      "error": "Error",
+      "errors": {
+        "category": "Category",
+        "description": "Description",
+        "descriptionLength": "Description Length",
+        "subject": "Subject",
+        "subjectLength": "Subject Length"
+      },
+      "priorityLabel": "Priority Label",
+      "privacyAgreement": "Privacy Agreement",
+      "subjectLabel": "Subject Label",
+      "subjectPlaceholder": "Subject Placeholder",
+      "submit": "Submit",
+      "subtitle": "Subtitle",
+      "success": "Success",
+      "title": "Title"
+    },
+    "popularArticles": {
+      "account": "Account",
+      "establishment": "Establishment",
+      "payment": "Payment",
+      "printer": "Printer",
+      "reports": "Reports"
+    },
+    "qa": {
+      "categories": {
+        "billing": "Billing",
+        "orders": "Orders",
+        "products": "Products",
+        "staff": "Staff",
+        "technical": "Technical"
+      },
+      "needMoreHelp": "Need More Help",
+      "noResults": "No Results",
+      "searchPlaceholder": "Search Placeholder",
+      "subtitle": "Subtitle",
+      "tryDifferent": "Try Different"
+    },
+    "quickLinks": {
+      "community": "Community",
+      "submitTicket": "Submit Ticket"
+    },
+    "tickets": {
+      "attachFile": "Attach File",
+      "attachments": "Attachments",
+      "conversation": "Conversation",
+      "created": "Created",
+      "createFirst": "Create First",
+      "id": "Id",
+      "lastUpdated": "Last Updated",
+      "markResolved": "Mark Resolved",
+      "mock": {
+        "desc1": "Desc1",
+        "reply1": "Reply1",
+        "reply2": "Reply2",
+        "reply3": "Reply3",
+        "subject1": "Subject1"
+      },
+      "myTickets": "My Tickets",
+      "new": "New",
+      "newLabel": "New Label",
+      "notFound": "Not Found",
+      "notFoundSearch": "Not Found Search",
+      "noTicketsYet": "No Tickets Yet",
+      "priority": {
+        "high": "High",
+        "highDesc": "High Desc",
+        "low": "Low",
+        "lowDesc": "Low Desc",
+        "medium": "Medium",
+        "mediumDesc": "Medium Desc",
+        "urgent": "Urgent",
+        "urgentDesc": "Urgent Desc"
+      },
+      "priorityLabel": "Priority Label",
+      "replyPlaceholder": "Reply Placeholder",
+      "resolvedQuestion": "Resolved Question",
+      "sarah": "Sarah",
+      "searchPlaceholder": "Search Placeholder",
+      "sendReply": "Send Reply",
+      "stats": {
+        "inProgress": "In Progress",
+        "open": "Open",
+        "resolved": "Resolved"
+      },
+      "status": {
+        "closed": "Closed",
+        "inProgress": "In Progress",
+        "open": "Open",
+        "resolved": "Resolved"
+      },
+      "statusLabel": "Status Label",
+      "subtitle": "Subtitle",
+      "toClose": "To Close",
+      "updated": "Updated",
+      "you": "You"
+    }
+  },
+  "validation": {
+    "emailInvalid": "Email Invalid",
+    "firstNameMin": "First Name Min",
+    "lastNameMin": "Last Name Min",
+    "passwordLowercase": "Password Lowercase",
+    "passwordMin": "Password Min",
+    "passwordNumber": "Password Number",
+    "passwordRequired": "Password Required",
+    "passwordsDoNotMatch": "Passwords Do Not Match",
+    "passwordUppercase": "Password Uppercase"
+  }
+}

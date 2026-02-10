@@ -20,7 +20,7 @@ import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 
 export const SupportPage = () => {
-  const { t } = useTranslation(['support', 'common']);
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
 
   const categories = [

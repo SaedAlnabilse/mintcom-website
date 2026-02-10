@@ -19,7 +19,7 @@ import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 
 export const SupportCategoryPage = () => {
-  const { t } = useTranslation(['support', 'common']);
+  const { t } = useTranslation();
   const { categoryId } = useParams<{ categoryId: string }>();
   const [searchQuery, setSearchQuery] = useState('');
 

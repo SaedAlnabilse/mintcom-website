@@ -545,7 +545,7 @@ export function OwnerEmployeesPage() {
                             className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
                             onClick={() => handleSort('status')}
                         >
-                            {t('common.status')}
+                            {t('common.status.label')}
                             {sortConfig?.key === 'status' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
                         <div

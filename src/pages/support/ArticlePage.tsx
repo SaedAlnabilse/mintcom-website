@@ -19,7 +19,7 @@ import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 
 export const ArticlePage = () => {
-  const { t } = useTranslation(['support', 'common']);
+  const { t } = useTranslation();
   const { articleId } = useParams<{ articleId: string }>();
   const [helpful, setHelpful] = useState<'yes' | 'no' | null>(null);
 

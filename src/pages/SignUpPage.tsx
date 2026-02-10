@@ -1,13 +1,13 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Check, Loader2, X } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Check, Loader2, X, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
-import { GoogleAuthButton, AuthDivider, GOOGLE_CLIENT_ID } from '../components/GoogleAuthButton';
+import { GoogleAuthButton, AuthDivider, GOOGLE_CLIENT_ID, type GoogleAuthButtonHandle } from '../components/GoogleAuthButton';
 import { useTranslation } from 'react-i18next';
 
 // Paymint Logo imports
@@ -44,6 +44,9 @@ export function SignUpPage() {
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState('');
   const [activeModal, setActiveModal] = useState<'privacy' | 'terms' | null>(null);
+  const [showGoogleTermsModal, setShowGoogleTermsModal] = useState(false);
+  const [modalAgreed, setModalAgreed] = useState(false);
+  const googleAuthRef = useRef<GoogleAuthButtonHandle>(null);
   
   const navigate = useNavigate();
   const { register: registerAccount, loginWithGoogle } = useAuth();
@@ -53,6 +56,7 @@ export function SignUpPage() {
     handleSubmit,
     watch,
     setError,
+    setValue,
     formState: { errors },
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
@@ -67,6 +71,25 @@ export function SignUpPage() {
   });
 
   const agreed = !!watch('agreeToTerms');
+
+  const handleGoogleAuthClick = (e: React.MouseEvent) => {
+    if (!agreed) {
+      e.stopPropagation();
+      setModalAgreed(false);
+      setShowGoogleTermsModal(true);
+    }
+  };
+
+  const handleModalContinue = () => {
+    if (modalAgreed) {
+      setValue('agreeToTerms', true);
+      setShowGoogleTermsModal(false);
+      // Small delay to ensure state update and then trigger Google
+      setTimeout(() => {
+        googleAuthRef.current?.triggerPrompt();
+      }, 100);
+    }
+  };
 
   const handleGoogleSuccess = async (credential: string) => {
     if (!agreed) {
@@ -374,8 +397,9 @@ export function SignUpPage() {
                 <AuthDivider />
 
                 {/* Google Sign-Up Button */}
-                <div className="w-full">
+                <div className="w-full" onClickCapture={handleGoogleAuthClick}>
                   <GoogleAuthButton
+                    ref={googleAuthRef}
                     onSuccess={handleGoogleSuccess}
                     onError={handleGoogleError}
                     text="signup_with"
@@ -467,6 +491,70 @@ export function SignUpPage() {
                   className="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl transition-all"
                 >
                   {t('common.gotIt')}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Google Terms Modal */}
+      <AnimatePresence>
+        {showGoogleTermsModal && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowGoogleTermsModal(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-md"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-[2.5rem] max-w-md w-full p-8 shadow-2xl"
+            >
+              <div className="text-center mb-8">
+                <div className="w-16 h-16 bg-paymint-green/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <ShieldCheck size={32} className="text-paymint-green" />
+                </div>
+                <h3 className="text-2xl font-black text-gray-900 dark:text-white">
+                  {t('common.security')}
+                </h3>
+                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
+                  {t('auth.signup.subtitle')}
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5">
+                  <input
+                    id="modal-agree"
+                    type="checkbox"
+                    checked={modalAgreed}
+                    onChange={(e) => setModalAgreed(e.target.checked)}
+                    className="mt-1 w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors"
+                  />
+                  <label htmlFor="modal-agree" className="text-sm font-bold text-gray-600 dark:text-gray-300 leading-snug cursor-pointer">
+                    {t('landing.contact.termsAgree')} <button type="button" onClick={() => setActiveModal('privacy')} className="text-paymint-green font-black hover:underline">{t('landing.contact.privacyPolicy')}</button> {t('common.and')} <button type="button" onClick={() => setActiveModal('terms')} className="text-paymint-green font-black hover:underline">{t('landing.contact.termsOfService')}</button>.
+                  </label>
+                </div>
+
+                <button
+                  onClick={handleModalContinue}
+                  disabled={!modalAgreed}
+                  className="w-full py-4 bg-paymint-green text-black font-black text-sm tracking-widest rounded-xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-2"
+                >
+                  {t('common.continue').toUpperCase()}
+                  <Check size={18} strokeWidth={3} />
+                </button>
+                
+                <button
+                  onClick={() => setShowGoogleTermsModal(false)}
+                  className="w-full py-2 text-xs font-black text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors uppercase tracking-widest"
+                >
+                  {t('common.cancel')}
                 </button>
               </div>
             </motion.div>

@@ -7,6 +7,7 @@
       "p4": "PayMint also supports multi-branch operations. Owners and account managers can add, merge, or separate establishments as needed, all from a single universal dashboard. This allows centralized control over sales, staff, products, and performance across multiple locations, with discounted pricing for additional branches."
     },
     "story": {
+      "description": "Paymint was founded with a mission to simplify business operations for merchants everywhere.",
       "p1": "PayMint LLC is a Jordanian company operating globally. The platform officially launched in 2025, built on insights gathered from years of research into the POS and retail technology space.",
       "p2": "Development spanned more than three years, with a strong focus on security, performance, and scalability. Every feature was designed to meet real-world business needs and compete confidently with leading global POS solutions. Today, PayMint stands as a modern, secure, and scalable system built to support businesses of all sizes—anywhere in the world.",
       "title": "Our Story"
@@ -1519,12 +1520,16 @@
       "comingSoon": "Coming Soon",
       "completed": "Completed",
       "description": "Experience the power of Paymint on all your devices. Our apps are designed for speed, reliability, and ease of use.",
+      "downloadAPK": "Download APK",
       "downloadFor": "Download for",
+      "getApp": "Get the App",
       "instantSync": "Instant cloud synchronization",
+      "ios": "iOS",
       "offline": "Full offline capabilities",
       "order": "Order",
       "platforms": "Available for iOS & Android",
       "playStore": "Play Store",
+      "qrCode": "Scan QR code to download",
       "requirements": "Requires iOS 13+ or Android 8+",
       "subtitle": "Download the app and transform your business.",
       "title": "Get Started Today",
@@ -1633,6 +1638,14 @@
       "orders": "Orders",
       "recentOrders": "Recent Orders",
       "revenue": "Revenue",
+      "stats": {
+        "activeNow": "Active Now",
+        "items": "Items",
+        "orders": "Orders",
+        "revenue": "Revenue",
+        "table": "Table"
+      },
+      "subtitle": "The all-in-one POS solution built for growth, efficiency, and seamless operations.",
       "table": "Table",
       "takeaway": "Takeaway",
       "thisMonth": "this month",
@@ -1775,18 +1788,26 @@
       "content": {
         "control_1": "Most web browsers are set to accept cookies by default. You can usually modify your browser settings to decline cookies if you prefer.",
         "control_2": "Please note that if you disable cookies, some features of our website may not function properly.",
+        "controlTitle": "Control Your Cookies",
         "fb": "Facebook Pixel",
         "fbDesc": "Used to measure the effectiveness of our advertising campaigns on Facebook and to deliver targeted ads.",
         "ga": "Google Analytics",
         "gaDesc": "Used to collect anonymous data about how visitors use our site, including pages visited, time spent, and traffic sources.",
         "questionsDesc": "If you have any questions about our use of cookies, please contact us at support@paymint.app",
+        "questionsTitle": "Questions About Cookies",
         "thirdParty_1": "We may use third-party cookies from services like Google Analytics and Facebook to help us analyze traffic and improve our services.",
+        "thirdPartyTitle": "Third-Party Services",
+        "typesTitle": "Types of Cookies",
         "updates_1": "We may update this Cookie Policy from time to time to reflect changes in our practices or for operational, legal, or regulatory reasons.",
         "updates_2": "We will notify you of any material changes by posting the updated policy on this page with a new effective date.",
+        "updatesTitle": "Policy Updates",
         "whatAre_1": "Cookies are small text files stored on your device when you visit a website. They are widely used to make websites work more efficiently and provide information to site owners.",
         "whatAre_2": "Cookies can be \"persistent\" (remaining on your device until deleted) or \"session\" cookies (deleted when you close your browser).",
-        "whyUse_1": "We use cookies to ensure the proper functioning of our website, remember your preferences, analyze site usage, and personalize your experience."
+        "whatAreTitle": "What Are Cookies?",
+        "whyUse_1": "We use cookies to ensure the proper functioning of our website, remember your preferences, analyze site usage, and personalize your experience.",
+        "whyUseTitle": "Why Do We Use Them?"
       },
+      "intro": "Cookie Policy",
       "lastUpdated": "Last Updated",
       "legalCenter": "Legal Center",
       "openSettings": "OPEN COOKIE SETTINGS",
@@ -1884,6 +1905,7 @@
         "ri4": "Right to restrict or object to processing of your data"
       },
       "sections": {
+        "lastUpdated": "Last Updated",
         "s1": "1. Information We Collect",
         "s1_1": "1.1 Personal Information",
         "s1_1_desc": "We collect information you provide directly, such as when you create an account, make a purchase, or contact us for support.",
@@ -1912,7 +1934,9 @@
         "s7_desc": "We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the updated policy on our website.",
         "s8": "8. Cookies & Tracking Technologies",
         "s8_desc": "If you have any questions about this Privacy Policy, please contact us at privacy@paymint.app",
-        "s9": "9. International Operations"
+        "s9": "9. International Operations",
+        "subtitle": "How we protect your data",
+        "title": "Privacy Policy"
       },
       "security": {
         "noAbsoluteSecurity": "While we strive to protect your personal information, no method of transmission over the Internet or electronic storage is 100% secure.",
@@ -1974,6 +1998,7 @@
         "r3": "Not attempt to interfere with or disrupt the services"
       },
       "sections": {
+        "lastUpdated": "Last Updated",
         "s1": "1. Use of the Service",
         "s10": "10. Contact",
         "s2": "2. Subscriptions & Payments",
@@ -1983,7 +2008,9 @@
         "s6": "6. Intellectual Property",
         "s7": "7. Limitation of Liability",
         "s8": "8. Termination",
-        "s9": "9. Governing Law"
+        "s9": "9. Governing Law",
+        "subtitle": "Terms & Conditions",
+        "title": "Terms of Service"
       },
       "termination": {
         "desc": "We may suspend or terminate your access to our services at any time for violation of these terms. You may cancel your account at any time through your account settings."
@@ -3159,9 +3186,11 @@
       "downloadInvoice": "Download Invoice",
       "manageTeam": "Manage Team",
       "securitySettings": "Security Settings",
+      "title": "Quick Actions",
       "updatePayment": "Update Payment Method"
     },
     "recentTickets": {
+      "newTicket": "New Ticket",
       "noTickets": "No open tickets",
       "submitNew": "Submit a new ticket",
       "title": "Recent Support Tickets",
@@ -3176,7 +3205,9 @@
       "guidesDesc": "Learn best practices",
       "helpCenter": "Help Center",
       "helpCenterDesc": "Browse knowledge base",
-      "title": "Resources"
+      "subtitle": "Helpful resources",
+      "title": "Resources",
+      "videoGuides": "Video Guides"
     },
     "status": {
       "inProgress": "In Progress",
@@ -3627,7 +3658,13 @@
       "location": "Location",
       "locationLabel": "Location Access",
       "locationsCount": "{{count}} location",
+      "locationsCount_few": "{{count}} locations",
+      "locationsCount_many": "{{count}} locations",
+      "locationsCount_one": "1 location",
+      "locationsCount_other": "{{count}} locations",
       "locationsCount_plural": "{{count}} locations",
+      "locationsCount_two": "2 locations",
+      "locationsCount_zero": "{{count}} locations",
       "modified": "(Modified)",
       "nameLabel": "Name",
       "namePlaceholder": "E.g. John Doe",
@@ -3636,7 +3673,13 @@
       "passwordLabel": "Password",
       "passwordPlaceholder": "Min 5 characters",
       "permissionsCount": "{{count}} permission",
+      "permissionsCount_few": "{{count}} permissions",
+      "permissionsCount_many": "{{count}} permissions",
+      "permissionsCount_one": "1 permission",
+      "permissionsCount_other": "{{count}} permissions",
       "permissionsCount_plural": "{{count}} permissions",
+      "permissionsCount_two": "2 permissions",
+      "permissionsCount_zero": "{{count}} permissions",
       "phoneLabel": "Phone",
       "phoneOptional": "(Optional)",
       "phonePlaceholder": "E.g. +1 234 567 8900",

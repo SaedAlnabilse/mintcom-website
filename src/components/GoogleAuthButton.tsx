@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState, forwardRef, useImperativeHandle } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
@@ -65,132 +65,138 @@ declare global {
 // Get Google Client ID from environment
 export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 
-export function GoogleAuthButton({ onSuccess, onError, text = 'continue_with', disabled = false }: GoogleAuthButtonProps) {
-  const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
-
-  // Load Google Identity Services script
-  useEffect(() => {
-    if (!GOOGLE_CLIENT_ID) {
-      console.warn('[GoogleAuth] No VITE_GOOGLE_CLIENT_ID found in environment');
-      return;
-    }
-
-    // Check if script is already loaded
-    if (window.google?.accounts?.id) {
-      setIsScriptLoaded(true);
-      return;
-    }
-
-    // Check if script tag already exists
-    const existingScript = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
-    if (existingScript) {
-      existingScript.addEventListener('load', () => setIsScriptLoaded(true));
-      return;
-    }
-
-    // Load the Google Identity Services script
-    const script = document.createElement('script');
-    script.src = 'https://accounts.google.com/gsi/client';
-    script.async = true;
-    script.defer = true;
-    script.onload = () => setIsScriptLoaded(true);
-    script.onerror = () => {
-      console.error('[GoogleAuth] Failed to load Google Identity Services');
-      onError?.(t('auth.errors.googleLoadFailed'));
-    };
-    document.head.appendChild(script);
-
-    return () => {
-      // Cleanup is optional since script is global
-    };
-  }, [onError]);
-
-  // Initialize Google Sign-In when script is loaded
-  useEffect(() => {
-    if (!isScriptLoaded || !window.google || !GOOGLE_CLIENT_ID) return;
-
-    try {
-      window.google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: (response) => {
-          if (response.credential) {
-            onSuccess(response.credential);
-          }
-        },
-        auto_select: false,
-        cancel_on_tap_outside: true,
-      });
-    } catch (error) {
-      console.error('[GoogleAuth] Failed to initialize:', error);
-      onError?.(t('auth.errors.googleInitFailed'));
-    }
-  }, [isScriptLoaded, onSuccess, onError]);
-
-  const handleClick = useCallback(() => {
-    if (!window.google || !GOOGLE_CLIENT_ID || disabled || isLoading) return;
-
-    setIsLoading(true);
-
-    try {
-      window.google.accounts.id.prompt((notification) => {
-        setIsLoading(false);
-        if (notification.isNotDisplayed()) {
-          const reason = notification.getNotDisplayedReason();
-          console.warn('[GoogleAuth] Prompt not displayed:', reason);
-
-          // If One Tap doesn't work, we could fall back to popup
-          // For now, show an error
-          if (reason === 'opt_out_or_no_session') {
-            onError?.(t('auth.errors.googleNoSession'));
-          } else if (reason === 'suppressed_by_user') {
-            onError?.(t('auth.errors.googleCancelled'));
-          } else {
-            onError?.(t('auth.errors.googleUnavailable'));
-          }
-        } else if (notification.isSkippedMoment()) {
-          // User dismissed the prompt
-          console.log('[GoogleAuth] User skipped the prompt');
-        }
-      });
-    } catch (error) {
-      setIsLoading(false);
-      console.error('[GoogleAuth] Error showing prompt:', error);
-      onError?.(t('auth.errors.googlePromptFailed'));
-    }
-  }, [disabled, isLoading, onError]);
-
-  // Don't render if no client ID configured
-  if (!GOOGLE_CLIENT_ID) {
-    return null;
-  }
-
-  const buttonText = {
-    signin_with: t('auth.google.signInWith'),
-    signup_with: t('auth.google.signUpWith'),
-    continue_with: t('auth.google.continueWith'),
-    signin: t('auth.google.signIn'),
-  }[text];
-
-  return (
-    <motion.button
-      type="button"
-      onClick={handleClick}
-      disabled={disabled || isLoading || !isScriptLoaded}
-      whileHover={{ scale: disabled ? 1 : 1.01 }}
-      whileTap={{ scale: disabled ? 1 : 0.99 }}
-      className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg py-3 px-4 text-sm font-bold text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
-    >
-      {isLoading ? (
-        <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
-      ) : (
-        <GoogleIcon />
-      )}
-      <span>{isLoading ? t('common.connecting') : buttonText}</span>
-    </motion.button>
-  );
+export interface GoogleAuthButtonHandle {
+  triggerPrompt: () => void;
 }
+
+export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthButtonProps>(
+  ({ onSuccess, onError, text = 'continue_with', disabled = false }, ref) => {
+    const { t } = useTranslation();
+    const [isLoading, setIsLoading] = useState(false);
+    const [isScriptLoaded, setIsScriptLoaded] = useState(false);
+
+    // Load Google Identity Services script
+    useEffect(() => {
+      if (!GOOGLE_CLIENT_ID) {
+        console.warn('[GoogleAuth] No VITE_GOOGLE_CLIENT_ID found in environment');
+        return;
+      }
+
+      // Check if script is already loaded
+      if (window.google?.accounts?.id) {
+        setIsScriptLoaded(true);
+        return;
+      }
+
+      // Check if script tag already exists
+      const existingScript = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+      if (existingScript) {
+        existingScript.addEventListener('load', () => setIsScriptLoaded(true));
+        return;
+      }
+
+      // Load the Google Identity Services script
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = () => setIsScriptLoaded(true);
+      script.onerror = () => {
+        console.error('[GoogleAuth] Failed to load Google Identity Services');
+        onError?.(t('auth.errors.googleLoadFailed'));
+      };
+      document.head.appendChild(script);
+
+      return () => {
+        // Cleanup is optional since script is global
+      };
+    }, [onError, t]);
+
+    // Initialize Google Sign-In when script is loaded
+    useEffect(() => {
+      if (!isScriptLoaded || !window.google || !GOOGLE_CLIENT_ID) return;
+
+      try {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: (response) => {
+            if (response.credential) {
+              onSuccess(response.credential);
+            }
+          },
+          auto_select: false,
+          cancel_on_tap_outside: true,
+        });
+      } catch (error) {
+        console.error('[GoogleAuth] Failed to initialize:', error);
+        onError?.(t('auth.errors.googleInitFailed'));
+      }
+    }, [isScriptLoaded, onSuccess, onError, t]);
+
+    const handleClick = useCallback(() => {
+      if (!window.google || !GOOGLE_CLIENT_ID || disabled || isLoading) return;
+
+      setIsLoading(true);
+
+      try {
+        window.google.accounts.id.prompt((notification) => {
+          setIsLoading(false);
+          if (notification.isNotDisplayed()) {
+            const reason = notification.getNotDisplayedReason();
+            console.warn('[GoogleAuth] Prompt not displayed:', reason);
+
+            if (reason === 'opt_out_or_no_session') {
+              onError?.(t('auth.errors.googleNoSession'));
+            } else if (reason === 'suppressed_by_user') {
+              onError?.(t('auth.errors.googleCancelled'));
+            } else {
+              onError?.(t('auth.errors.googleUnavailable'));
+            }
+          }
+        });
+      } catch (error) {
+        setIsLoading(false);
+        console.error('[GoogleAuth] Error showing prompt:', error);
+        onError?.(t('auth.errors.googlePromptFailed'));
+      }
+    }, [disabled, isLoading, onError, t]);
+
+    // Expose the triggerPrompt method to the parent
+    useImperativeHandle(ref, () => ({
+      triggerPrompt: handleClick,
+    }));
+
+    // Don't render if no client ID configured
+    if (!GOOGLE_CLIENT_ID) {
+      return null;
+    }
+
+    const buttonText = {
+      signin_with: t('auth.google.signInWith'),
+      signup_with: t('auth.google.signUpWith'),
+      continue_with: t('auth.google.continueWith'),
+      signin: t('auth.google.signIn'),
+    }[text];
+
+    return (
+      <motion.button
+        type="button"
+        onClick={handleClick}
+        disabled={disabled || isLoading || !isScriptLoaded}
+        whileHover={{ scale: disabled ? 1 : 1.01 }}
+        whileTap={{ scale: disabled ? 1 : 0.99 }}
+        className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg py-3 px-4 text-sm font-bold text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+      >
+        {isLoading ? (
+          <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+        ) : (
+          <GoogleIcon />
+        )}
+        <span>{isLoading ? t('common.connecting') : buttonText}</span>
+      </motion.button>
+    );
+  }
+);
 
 // Divider component for "or" separator
 export function AuthDivider() {
