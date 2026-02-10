@@ -1,10 +1,10 @@
 {
   "brand": {
     "name": "بيمنت",
-    "tagline": "للمؤسسات",
+    "tagline": "نظام نقاط البيع للمؤسسات",
     "version": "الإصدار 2.0",
     "copyright": "© 2025 بيمنت. جميع الحقوق محفوظة.",
-    "description": "نظام نقاط بيع بسيط وآمن للأعمال المتنامية.",
+    "description": "حل متكامل لنقاط البيع بنطاق 360 درجة مصمم للأعمال الحديثة المتنامية.",
     "dashboard": {
       "title": "لوحة تحكم العلامة التجارية",
       "failedToLoad": "فشل تحميل بيانات لوحة التحكم",
@@ -1464,6 +1464,7 @@
       "locationReady": "الموقع جاهز",
       "setupComplete": "اكتمل الإعداد",
       "locationId": "معرف الموقع",
+      "password": "كلمة مرور الموقع",
       "currency": "العملة",
       "resourcesAndHelp": "الموارد والمساعدة",
       "userManual": "دليل المستخدم",
@@ -2671,17 +2672,34 @@
       "version": "الإصدار 2.0"
     },
     "contact": {
-      "title": "تواصل معنا",
+      "title": "تواصل",
+      "titleHighlight": "معنا",
       "subtitle": "لديك أسئلة؟ فريقنا هنا للمساعدة.",
       "fullName": "الاسم الكامل",
+      "businessName": "اسم العمل",
       "email": "البريد الإلكتروني",
+      "emailAddress": "البريد الإلكتروني",
       "message": "الرسالة",
+      "yourMessage": "رسالتك",
       "sendMessage": "إرسال الرسالة",
       "sending": "جاري الإرسال...",
       "success": "تم إرسال الرسالة بنجاح!",
+      "messageSentSuccess": "تم إرسال الرسالة بنجاح!",
       "error": "فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى.",
+      "messageSentError": "فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى.",
+      "responseTime": "عادة ما نرد في غضون 24 ساعة.",
+      "sendAnother": "إرسال رسالة أخرى",
+      "termsAgree": "أوافق على",
+      "privacyPolicy": "سياسة الخصوصية",
+      "termsOfService": "شروط الخدمة",
       "privacy": "الخصوصية",
-      "policy": "السياسة"
+      "policy": "السياسة",
+      "placeholder": {
+        "name": "الاسم الكامل",
+        "business": "اسم الشركة",
+        "email": "you@example.com",
+        "message": "كيف يمكننا مساعدتك؟"
+      }
     }
   },
   "about": {
@@ -2708,10 +2726,14 @@
       "passwordNumber": "يجب أن تحتوي على رقم واحد على الأقل",
       "passwordsDoNotMatch": "كلمات المرور غير متطابقة",
       "firstNameMin": "يجب أن يتكون الاسم الأول من حرفين على الأقل",
-      "lastNameMin": "يجب أن يتكون اسم العائلة من حرفين على الأقل"
+      "lastNameMin": "يجب أن يتكون اسم العائلة من حرفين على الأقل",
+      "termsRequired": "يجب الموافقة على سياسة الخصوصية وشروط الخدمة"
     },
     "google": {
-      "signInWith": "تسجيل الدخول باستخدام Google"
+      "continueWith": "المتابعة باستخدام Google",
+      "signIn": "تسجيل الدخول باستخدام Google",
+      "signInWith": "تسجيل الدخول باستخدام Google",
+      "signUpWith": "التسجيل باستخدام Google"
     },
     "login": {
       "title": "مرحباً بعودتك",
@@ -2753,6 +2775,7 @@
       "verificationSent": "تم إرسال رابط التحقق",
       "clickToVerify": "انقر فوق الرابط الموجود في بريدك الإلكتروني للتحقق من حسابك",
       "didntReceive": "لم تستلم البريد الإلكتروني؟",
+      "disclaimerPrefix": "من خلال التسجيل، فإنك توافق على",
       "resendVerification": "إعادة إرسال التحقق",
       "goToLogin": "الذهاب لتسجيل الدخول",
       "backButton": "رجوع",

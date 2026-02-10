@@ -63,7 +63,7 @@ declare global {
 }
 
 // Get Google Client ID from environment
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 
 export function GoogleAuthButton({ onSuccess, onError, text = 'continue_with', disabled = false }: GoogleAuthButtonProps) {
   const { t } = useTranslation();

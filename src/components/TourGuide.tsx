@@ -127,11 +127,29 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
               dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
               className="absolute z-[10000] w-80 bg-white dark:bg-[#1E293B] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 p-5"
               style={{
-                // Simple positioning logic - can be enhanced with Popper.js if needed
-                top: targetRect.bottom + 20 < window.innerHeight - 200
-                  ? targetRect.bottom + 20
-                  : targetRect.top - 220, // Adjusted to ensure it clears the element and fits
-                left: Math.min(Math.max(20, targetRect.left + (targetRect.width / 2) - 160), window.innerWidth - 340)
+                // Enhanced positioning logic
+                top: (() => {
+                  if (currentStep.position === 'left' || currentStep.position === 'right') {
+                    return Math.min(Math.max(20, targetRect.top + (targetRect.height / 2) - 100), window.innerHeight - 250);
+                  }
+                  if (currentStep.position === 'top') {
+                    return targetRect.top - 220;
+                  }
+                  // Default or 'bottom'
+                  return targetRect.bottom + 20 < window.innerHeight - 200
+                    ? targetRect.bottom + 20
+                    : targetRect.top - 220;
+                })(),
+                left: (() => {
+                  if (currentStep.position === 'left') {
+                    return targetRect.left - 340;
+                  }
+                  if (currentStep.position === 'right') {
+                    return targetRect.right + 20;
+                  }
+                  // Default, 'top', or 'bottom'
+                  return Math.min(Math.max(20, targetRect.left + (targetRect.width / 2) - 160), window.innerWidth - 340);
+                })()
               }}
             >
               <div className="flex items-start justify-between mb-3">

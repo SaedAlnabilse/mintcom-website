@@ -131,7 +131,8 @@ export function OnboardingPage() {
     {
       targetId: 'tour-resources',
       title: t('onboarding.tour.resourcesTitle'),
-      description: t('onboarding.tour.resourcesDesc')
+      description: t('onboarding.tour.resourcesDesc'),
+      position: 'left'
     }
   ];
 
@@ -312,6 +313,11 @@ export function OnboardingPage() {
       if (!estId) {
         throw new Error('Failed to get establishment Id');
       }
+
+      // Set currentEstablishment in sessionStorage immediately so the axios interceptor
+      // includes the X-Establishment-Id header in the subsequent /api/employees call.
+      // This fixes the "X-Establishment-Id header is required" error.
+      sessionStorage.setItem('currentEstablishment', JSON.stringify({ id: estId, ...establishmentPayload }));
 
       // Save the establishment ID for navigation
       setFormData((prev: any) => ({ ...prev, establishmentId: estId }));
@@ -1078,8 +1084,8 @@ export function OnboardingPage() {
                     className="bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-5"
                   >
                     <div className="flex items-start gap-4 mb-4">
-                      <div className="w-14 h-14 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                        <Tablet size={28} className="text-white" />
+                      <div className="w-14 h-14 bg-orange-500/10 dark:bg-orange-500/20 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm transition-colors">
+                        <Tablet size={28} className="text-orange-600 dark:text-orange-400" />
                       </div>
                       <div>
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.posApp')}</h3>
@@ -1091,7 +1097,7 @@ export function OnboardingPage() {
                         href="https://play.google.com/store/apps/details?id=com.paymint.pos"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white py-3 px-4 rounded-xl text-xs font-bold transition-colors border border-white/10"
+                        className="flex items-center justify-center gap-2 bg-gray-50 dark:bg-white/10 hover:bg-gray-100 dark:hover:bg-white/20 text-gray-900 dark:text-white py-3 px-4 rounded-xl text-xs font-bold transition-colors border border-gray-200 dark:border-white/10"
                       >
                         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92z" />
@@ -1102,7 +1108,7 @@ export function OnboardingPage() {
                         href="https://apps.apple.com/app/paymint-pos/id0000000000"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white py-3 px-4 rounded-xl text-xs font-bold transition-colors border border-white/10"
+                        className="flex items-center justify-center gap-2 bg-gray-50 dark:bg-white/10 hover:bg-gray-100 dark:hover:bg-white/20 text-gray-900 dark:text-white py-3 px-4 rounded-xl text-xs font-bold transition-colors border border-gray-200 dark:border-white/10"
                       >
                         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
@@ -1120,8 +1126,8 @@ export function OnboardingPage() {
                     className="bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-5"
                   >
                     <div className="flex items-start gap-4 mb-4">
-                      <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-700 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                        <Smartphone size={28} className="text-white" />
+                      <div className="w-14 h-14 bg-purple-500/10 dark:bg-purple-500/20 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm transition-colors">
+                        <Smartphone size={28} className="text-purple-600 dark:text-purple-400" />
                       </div>
                       <div>
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.ownerApp')}</h3>
@@ -1133,7 +1139,7 @@ export function OnboardingPage() {
                         href="https://play.google.com/store/apps/details?id=com.paymint.owner"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white py-3 px-4 rounded-xl text-xs font-bold transition-colors border border-white/10"
+                        className="flex items-center justify-center gap-2 bg-gray-50 dark:bg-white/10 hover:bg-gray-100 dark:hover:bg-white/20 text-gray-900 dark:text-white py-3 px-4 rounded-xl text-xs font-bold transition-colors border border-gray-200 dark:border-white/10"
                       >
                         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92z" />
@@ -1144,7 +1150,7 @@ export function OnboardingPage() {
                         href="https://apps.apple.com/app/paymint-owner/id0000000001"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white py-3 px-4 rounded-xl text-xs font-bold transition-colors border border-white/10"
+                        className="flex items-center justify-center gap-2 bg-gray-50 dark:bg-white/10 hover:bg-gray-100 dark:hover:bg-white/20 text-gray-900 dark:text-white py-3 px-4 rounded-xl text-xs font-bold transition-colors border border-gray-200 dark:border-white/10"
                       >
                         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
@@ -1160,34 +1166,55 @@ export function OnboardingPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 }}
-                    className="bg-[#151515] border border-white/10 rounded-2xl p-4 text-white"
+                    className="bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-2xl p-4 text-gray-900 dark:text-white"
                   >
                     {/* Header */}
-                    <div className="flex items-center gap-3 pb-3 border-b border-white/5 mb-3">
+                    <div className="flex items-center gap-3 pb-3 border-b border-gray-100 dark:border-white/5 mb-3">
                       <div className="w-10 h-10 bg-paymint-green/20 rounded-xl flex items-center justify-center">
                         <Building2 size={20} className="text-paymint-green" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-white text-sm">{t('onboarding.step5.locationReady')}</h3>
+                        <h3 className="font-bold text-gray-900 dark:text-white text-sm">{t('onboarding.step5.locationReady')}</h3>
                         <p className="text-xs text-gray-500">{t('onboarding.step5.setupComplete')}</p>
                       </div>
                     </div>
                     
                     {/* Location ID Row */}
-                    <div className="flex items-center gap-3 py-2.5 border-b border-white/5">
-                      <Hash size={16} className="text-gray-500 flex-shrink-0" />
+                    <div className="flex items-center gap-3 py-2.5 border-b border-gray-100 dark:border-white/5">
+                      <Hash size={16} className="text-gray-400 dark:text-gray-500 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-500 mb-0.5">{t('onboarding.step5.locationId')}</p>
-                        <p className="font-mono text-paymint-green text-sm truncate">{formData.establishmentLoginId}</p>
+                        <p className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">{t('onboarding.step5.locationId')}</p>
+                        <p className="font-mono text-gray-900 dark:text-white font-bold text-sm truncate">{formData.establishmentLoginId}</p>
                       </div>
                     </div>
 
-                    {/* Currency Row */}
+                    {/* Password Row */}
                     <div className="flex items-center gap-3 py-2.5">
-                      <DollarSign size={16} className="text-gray-500 flex-shrink-0" />
+                      <Lock size={16} className="text-gray-400 dark:text-gray-500 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-500 mb-0.5">{t('onboarding.step5.currency')}</p>
-                        <p className="text-white font-bold text-sm">{formData.currency}</p>
+                        <p className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">{t('onboarding.step5.password')}</p>
+                        <p className="text-gray-900 dark:text-white font-bold text-sm truncate font-mono tracking-wider">
+                          {showEstablishmentPassword ? formData.establishmentPassword : '••••••••'}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => setShowEstablishmentPassword(!showEstablishmentPassword)}
+                          className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg text-gray-400 dark:text-gray-500 hover:text-paymint-green transition-colors"
+                          title={showEstablishmentPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
+                        >
+                          {showEstablishmentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(formData.establishmentPassword);
+                            toast.success(t('common.copied'));
+                          }}
+                          className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg text-gray-400 dark:text-gray-500 hover:text-paymint-green transition-colors"
+                          title={t('common.copy')}
+                        >
+                          <Copy size={16} />
+                        </button>
                       </div>
                     </div>
                   </motion.div>

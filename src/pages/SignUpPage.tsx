@@ -4,10 +4,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Check, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Check, Loader2, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
-import { GoogleAuthButton, AuthDivider } from '../components/GoogleAuthButton';
+import { GoogleAuthButton, AuthDivider, GOOGLE_CLIENT_ID } from '../components/GoogleAuthButton';
 import { useTranslation } from 'react-i18next';
 
 // Paymint Logo imports
@@ -18,18 +18,21 @@ export function SignUpPage() {
   const { t } = useTranslation();
 
   const signUpSchema = z.object({
-    firstName: z.string().min(2, t('validation.firstNameMin')),
-    lastName: z.string().min(2, t('validation.lastNameMin')),
-    email: z.string().email(t('validation.emailInvalid')),
+    firstName: z.string().min(2, t('auth.validation.firstNameMin')),
+    lastName: z.string().min(2, t('auth.validation.lastNameMin')),
+    email: z.string().email(t('auth.validation.emailInvalid')),
     password: z
       .string()
-      .min(8, t('validation.passwordMin'))
-      .regex(/[A-Z]/, t('validation.passwordUppercase'))
-      .regex(/[a-z]/, t('validation.passwordLowercase'))
-      .regex(/[0-9]/, t('validation.passwordNumber')),
+      .min(8, t('auth.validation.passwordMin'))
+      .regex(/[A-Z]/, t('auth.validation.passwordUppercase'))
+      .regex(/[a-z]/, t('auth.validation.passwordLowercase'))
+      .regex(/[0-9]/, t('auth.validation.passwordNumber')),
     confirmPassword: z.string(),
+    agreeToTerms: z.boolean().refine(val => val === true, {
+      message: t('auth.validation.termsRequired'),
+    }),
   }).refine((data) => data.password === data.confirmPassword, {
-    message: t('validation.passwordsDoNotMatch'),
+    message: t('auth.validation.passwordsDoNotMatch'),
     path: ['confirmPassword'],
   });
 
@@ -40,10 +43,39 @@ export function SignUpPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState('');
+  const [activeModal, setActiveModal] = useState<'privacy' | 'terms' | null>(null);
+  
   const navigate = useNavigate();
   const { register: registerAccount, loginWithGoogle } = useAuth();
 
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setError,
+    formState: { errors },
+  } = useForm<SignUpFormData>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      agreeToTerms: false,
+    }
+  });
+
+  const agreed = !!watch('agreeToTerms');
+
   const handleGoogleSuccess = async (credential: string) => {
+    if (!agreed) {
+      setError('agreeToTerms', { 
+        type: 'manual', 
+        message: t('auth.validation.termsRequired') 
+      });
+      return;
+    }
     try {
       const result = await loginWithGoogle(credential);
 
@@ -65,14 +97,6 @@ export function SignUpPage() {
   const handleGoogleError = (error: string) => {
     toast.error(error);
   };
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignUpFormData>({
-    resolver: zodResolver(signUpSchema),
-  });
 
   const onSubmit = async (data: SignUpFormData) => {
     setIsSubmitting(true);
@@ -157,11 +181,11 @@ export function SignUpPage() {
       </AnimatePresence>
 
       {/* Left Side - Form */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-white dark:bg-transparent transition-colors duration-300">
+      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-white dark:bg-transparent transition-colors duration-300 overflow-y-auto">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="w-full max-w-md"
+          className="w-full max-w-md py-8"
         >
           <Link
             to="/"
@@ -188,161 +212,194 @@ export function SignUpPage() {
             <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('auth.signup.subtitle')}</p>
           </div>
 
-          {/* Google Sign-Up Button */}
-          <GoogleAuthButton
-            onSuccess={handleGoogleSuccess}
-            onError={handleGoogleError}
-            text="signup_with"
-            disabled={isSubmitting}
-          />
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-2xl p-8 transition-colors duration-300 border border-gray-100 dark:border-transparent">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="firstName" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
+                    {t('auth.signup.firstNameLabel')}<span className="text-accent ml-1">*</span>
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      {...register('firstName')}
+                      type="text"
+                      id="firstName"
+                      aria-label={t('auth.signup.firstNameLabel')}
+                      aria-describedby={errors.firstName ? 'firstName-error' : undefined}
+                      autoComplete="given-name"
+                      className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.firstName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
+                        } rounded-lg py-3 pl-10 pr-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                      placeholder={t('auth.signup.firstNamePlaceholder')}
+                    />
+                  </div>
+                  {errors.firstName?.message && (
+                    <p id="firstName-error" role="alert" className="text-accent text-xs font-bold mt-1">{errors.firstName.message}</p>
+                  )}
+                </div>
+                <div>
+                  <label htmlFor="lastName" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
+                    {t('auth.signup.lastNameLabel')}<span className="text-accent ml-1">*</span>
+                  </label>
+                  <input
+                    {...register('lastName')}
+                    type="text"
+                    id="lastName"
+                    aria-label={t('auth.signup.lastNameLabel')}
+                    aria-describedby={errors.lastName ? 'lastName-error' : undefined}
+                    autoComplete="family-name"
+                    className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.lastName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
+                      } rounded-lg py-3 px-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    placeholder={t('auth.signup.lastNamePlaceholder')}
+                  />
+                  {errors.lastName?.message && (
+                    <p id="lastName-error" role="alert" className="text-accent text-xs font-bold mt-1">{errors.lastName.message}</p>
+                  )}
+                </div>
+              </div>
 
-          <AuthDivider />
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="firstName" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
-                  {t('auth.signup.firstNameLabel')}<span className="text-accent ml-1">*</span>
+                <label htmlFor="email" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
+                  {t('auth.signup.emailLabel')}<span className="text-accent ml-1">*</span>
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
-                    {...register('firstName')}
-                    type="text"
-                    id="firstName"
-                    aria-label={t('auth.signup.firstNameLabel')}
-                    aria-describedby={errors.firstName ? 'firstName-error' : undefined}
-                    autoComplete="given-name"
-                    className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.firstName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                      } rounded-lg py-3 pl-10 pr-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                    placeholder={t('auth.signup.firstNamePlaceholder')}
+                    {...register('email')}
+                    type="email"
+                    id="email"
+                    aria-label={t('auth.signup.emailLabel')}
+                    aria-describedby={errors.email ? 'email-error' : undefined}
+                    autoComplete="email"
+                    className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
+                      } rounded-lg py-3 pl-10 pr-4 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    placeholder={t('auth.signup.emailPlaceholder')}
                   />
                 </div>
-                {errors.firstName?.message && (
-                  <p id="firstName-error" role="alert" className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.firstName.message}</p>
+                {errors.email?.message && (
+                  <p id="email-error" role="alert" className="text-accent text-xs font-bold mt-1">{errors.email.message}</p>
                 )}
               </div>
+
               <div>
-                <label htmlFor="lastName" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
-                  {t('auth.signup.lastNameLabel')}<span className="text-accent ml-1">*</span>
+                <label htmlFor="password" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
+                  {t('auth.signup.passwordLabel')}<span className="text-accent ml-1">*</span>
                 </label>
-                <input
-                  {...register('lastName')}
-                  type="text"
-                  id="lastName"
-                  aria-label={t('auth.signup.lastNameLabel')}
-                  aria-describedby={errors.lastName ? 'lastName-error' : undefined}
-                  autoComplete="family-name"
-                  className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.lastName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 px-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                  placeholder={t('auth.signup.lastNamePlaceholder')}
-                />
-                {errors.lastName?.message && (
-                  <p id="lastName-error" role="alert" className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.lastName.message}</p>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    {...register('password')}
+                    type={showPassword ? 'text' : 'password'}
+                    id="password"
+                    aria-label={t('auth.signup.passwordLabel')}
+                    aria-describedby={errors.password ? 'password-error' : undefined}
+                    autoComplete="new-password"
+                    className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
+                      } rounded-lg py-3 pl-10 pr-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    placeholder={t('auth.signup.passwordPlaceholder')}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+                {errors.password?.message && (
+                  <p id="password-error" role="alert" className="text-accent text-xs font-bold mt-1">{errors.password.message}</p>
                 )}
               </div>
-            </div>
 
-            <div>
-              <label htmlFor="email" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
-                {t('auth.signup.emailLabel')}<span className="text-accent ml-1">*</span>
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  {...register('email')}
-                  type="email"
-                  id="email"
-                  aria-label={t('auth.signup.emailLabel')}
-                  aria-describedby={errors.email ? 'email-error' : undefined}
-                  autoComplete="email"
-                  className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 pl-10 pr-4 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                  placeholder={t('auth.signup.emailPlaceholder')}
-                />
+              <div>
+                <label htmlFor="confirmPassword" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
+                  {t('auth.signup.confirmPasswordLabel')}<span className="text-accent ml-1">*</span>
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    {...register('confirmPassword')}
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    id="confirmPassword"
+                    aria-label={t('auth.signup.confirmPasswordLabel')}
+                    aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
+                    autoComplete="new-password"
+                    className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.confirmPassword ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
+                      } rounded-lg py-3 pl-10 pr-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    placeholder={t('auth.signup.confirmPasswordPlaceholder')}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    aria-label={showConfirmPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                  >
+                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+                {errors.confirmPassword && (
+                  <p id="confirmPassword-error" role="alert" className="text-accent text-xs font-bold mt-1">{errors.confirmPassword.message}</p>
+                )}
               </div>
-              {errors.email?.message && (
-                <p id="email-error" role="alert" className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.email.message}</p>
-              )}
-            </div>
 
-            <div>
-              <label htmlFor="password" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
-                {t('auth.signup.passwordLabel')}<span className="text-accent ml-1">*</span>
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  {...register('password')}
-                  type={showPassword ? 'text' : 'password'}
-                  id="password"
-                  aria-label={t('auth.signup.passwordLabel')}
-                  aria-describedby={errors.password ? 'password-error' : undefined}
-                  autoComplete="new-password"
-                  className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 pl-10 pr-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                  placeholder={t('auth.signup.passwordPlaceholder')}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white"
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3 py-1">
+                  <input
+                    {...register('agreeToTerms')}
+                    id="agreeToTerms"
+                    type="checkbox"
+                    className={`mt-1 w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors ${errors.agreeToTerms ? 'border-accent ring-1 ring-accent' : ''}`}
+                  />
+                  <label htmlFor="agreeToTerms" className="text-sm text-gray-600 dark:text-gray-400 leading-tight cursor-pointer">
+                    {t('landing.contact.termsAgree')} <button type="button" onClick={() => setActiveModal('privacy')} className="text-paymint-green font-bold hover:underline inline-block">{t('landing.contact.privacyPolicy')}</button> {t('common.and')} <button type="button" onClick={() => setActiveModal('terms')} className="text-paymint-green font-bold hover:underline inline-block">{t('landing.contact.termsOfService')}</button>.
+                  </label>
+                </div>
+                {errors.agreeToTerms && (
+                  <p className="text-accent text-xs font-bold -mt-1">{errors.agreeToTerms.message}</p>
+                )}
               </div>
-              {errors.password?.message && (
-                <p id="password-error" role="alert" className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.password.message}</p>
-              )}
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-paymint-green text-black text-xs font-black tracking-widest hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-paymint-wait py-3 px-4 rounded-lg transition-colors shadow-lg shadow-paymint-green/20"
+              >
+                {isSubmitting ? t('auth.signup.creatingAccount') : t('auth.signup.signUpButton')}
+              </button>
+            </form>
+
+            {GOOGLE_CLIENT_ID && (
+              <>
+                <AuthDivider />
+
+                {/* Google Sign-Up Button */}
+                <div className="w-full">
+                  <GoogleAuthButton
+                    onSuccess={handleGoogleSuccess}
+                    onError={handleGoogleError}
+                    text="signup_with"
+                    disabled={isSubmitting}
+                  />
+                </div>
+              </>
+            )}
+
+            <div className="mt-6 text-center">
+              <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
+                {t('auth.signup.haveAccount')}{' '}
+                <Link to="/login" className="text-sm font-bold text-paymint-green hover:underline">
+                  {t('auth.signup.logIn')}
+                </Link>
+              </p>
             </div>
 
-            <div>
-              <label htmlFor="confirmPassword" className="block text-xs font-black text-gray-400 tracking-widest mb-2">
-                {t('auth.signup.confirmPasswordLabel')}<span className="text-accent ml-1">*</span>
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  {...register('confirmPassword')}
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  id="confirmPassword"
-                  aria-label={t('auth.signup.confirmPasswordLabel')}
-                  aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
-                  autoComplete="new-password"
-                  className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.confirmPassword ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 pl-10 pr-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                  placeholder={t('auth.signup.confirmPasswordPlaceholder')}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  aria-label={showConfirmPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white"
-                >
-                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
-              {errors.confirmPassword && (
-                <p id="confirmPassword-error" role="alert" className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.confirmPassword.message}</p>
-              )}
+            <div className="mt-8 pt-6 border-t border-gray-100 dark:border-white/5">
+              <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 text-center leading-relaxed uppercase tracking-wider">
+                {t('auth.signup.disclaimerPrefix')} <button type="button" onClick={() => setActiveModal('terms')} className="text-paymint-green hover:underline">{t('footer.termsOfService')}</button> {t('common.and')} <button type="button" onClick={() => setActiveModal('privacy')} className="text-paymint-green hover:underline">{t('footer.privacyPolicy')}</button>.
+              </p>
             </div>
-
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-paymint-green text-black text-xs font-black tracking-widest hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-paymint-wait py-3 px-4 rounded-lg transition-colors shadow-lg shadow-paymint-green/20"
-            >
-              {isSubmitting ? t('auth.signup.creatingAccount') : t('auth.signup.signUpButton')}
-            </button>
-          </form>
-
-          <p className="mt-6 text-center text-sm font-bold text-gray-600 dark:text-gray-300">
-            {t('auth.signup.haveAccount')}{' '}
-            <Link to="/login" className="text-sm font-bold text-paymint-green hover:underline">
-              {t('auth.signup.logIn')}
-            </Link>
-          </p>
+          </div>
         </motion.div>
       </div>
 
@@ -371,6 +428,51 @@ export function SignUpPage() {
           </div>
         </div>
       </div>
+
+      {/* Policy Modals */}
+      <AnimatePresence>
+        {activeModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setActiveModal(null)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-[2.5rem] max-w-2xl w-full max-h-[80vh] overflow-hidden shadow-2xl flex flex-col"
+            >
+              <div className="p-8 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
+                <h3 className="text-2xl font-black text-gray-900 dark:text-white capitalize">
+                  {activeModal === 'privacy' ? t('landing.contact.privacy') : t('landing.contact.terms')} {t('landing.contact.policy')}
+                </h3>
+                <button
+                  onClick={() => setActiveModal(null)}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors text-gray-400"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+              <div className="p-8 overflow-y-auto custom-scrollbar text-gray-600 dark:text-gray-400 space-y-6 font-medium leading-relaxed">
+                <p>{activeModal === 'privacy' ? t('legal.privacy.intro') : t('legal.terms.intro')}</p>
+                <p>{activeModal === 'privacy' ? t('legal.privacy.sections.s1_desc') : t('legal.terms.use.u1')}</p>
+              </div>
+              <div className="p-8 border-t border-gray-100 dark:border-white/10 flex justify-end">
+                <button
+                  onClick={() => setActiveModal(null)}
+                  className="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl transition-all"
+                >
+                  {t('common.gotIt')}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

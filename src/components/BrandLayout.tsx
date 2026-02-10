@@ -453,7 +453,7 @@ export function BrandLayout() {
                                             initial={{ opacity: 0, scale: 0.95, x: 20 }}
                                             animate={{ opacity: 1, scale: 1, x: 0 }}
                                             exit={{ opacity: 0, scale: 0.95, x: 20 }}
-                                            className="absolute left-full bottom-0 ml-4 w-64 bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl z-[70] p-2"
+                                            className="absolute left-full bottom-10 ml-4 w-64 bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl z-[70] p-2"
                                         >
                                             {/* Header */}
                                             <div className="flex items-center gap-3 p-3 mb-2 bg-gray-50 dark:bg-white/5 rounded-xl">

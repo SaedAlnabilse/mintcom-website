@@ -5,7 +5,12 @@
       "Bash(npm test:*)",
       "Bash(dir:*)",
       "Bash(findstr:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(node find-missing-keys.js:*)",
+      "Bash(node find-missing-keys.cjs:*)",
+      "Bash(node merge-en.cjs:*)",
+      "Bash(node -e:*)",
+      "Bash(node:*)"
     ]
   }
 }
