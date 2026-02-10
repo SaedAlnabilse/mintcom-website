@@ -102,7 +102,7 @@ export function EstablishmentsPage() {
   }, [searchQuery]);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-10 pb-16">
+    <div className="max-w-7xl mx-auto space-y-10 pb-16" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Header */}
       <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#1E293B] p-8 border border-gray-200 dark:border-white/5 shadow-sm">
         <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
@@ -159,7 +159,7 @@ export function EstablishmentsPage() {
               }`}
           >
             {/* Background Effects */}
-            <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${currentEstablishment?.id === est.id ? 'bg-paymint-green/10 opacity-100' : 'bg-paymint-green/5'
+            <div className={`absolute top-0 ${t('common.locale') === 'ar' ? 'left-0' : 'right-0'} w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${currentEstablishment?.id === est.id ? 'bg-paymint-green/10 opacity-100' : 'bg-paymint-green/5'
               }`} />
 
             {/* Card Header */}
@@ -190,7 +190,7 @@ export function EstablishmentsPage() {
                       initial={{ opacity: 0, scale: 0.95, y: 10 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                      className="absolute right-0 mt-3 w-56 bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/[0.1] rounded-2xl z-50 overflow-hidden py-2 shadow-2xl"
+                      className={`absolute ${t('common.locale') === 'ar' ? 'left-0' : 'right-0'} mt-3 w-56 bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/[0.1] rounded-2xl z-50 overflow-hidden py-2 shadow-2xl`}
                     >
                       <button onClick={() => { handleSelectEstablishment(est); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-paymint-green hover:text-black transition-all flex items-center gap-3 tracking-widest">
                         <CheckCircle size={14} /> {t('establishments.switch')}
@@ -215,7 +215,7 @@ export function EstablishmentsPage() {
                 <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center border border-gray-100 dark:border-white/10">
                   <ShieldCheck size={14} className="text-blue-500" />
                 </div>
-                <span className="truncate">{est.type.replace('_', ' ')}</span>
+                <span className="truncate">{t(`establishments.types.${est.type.toLowerCase()}`, { defaultValue: est.type.replace('_', ' ') })}</span>
               </div>
             </div>
 

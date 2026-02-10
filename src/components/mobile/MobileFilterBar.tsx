@@ -1,6 +1,7 @@
 import { useState, useEffect, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Filter, X, ChevronDown, Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface FilterOption {
   label: string;
@@ -24,6 +25,7 @@ interface MobileFilterBarProps {
 }
 
 export function MobileFilterBar({ filters, children, className = '' }: MobileFilterBarProps) {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeFilterSheet, setActiveFilterSheet] = useState<string | null>(null);
 
@@ -61,7 +63,7 @@ export function MobileFilterBar({ filters, children, className = '' }: MobileFil
         >
           <div className="flex items-center gap-2">
             <Filter size={18} />
-            <span className="text-sm font-bold">Filters</span>
+            <span className="text-sm font-bold">{t('common.filters')}</span>
             {activeCount > 0 && (
               <span className="px-2 py-0.5 rounded-full bg-paymint-green text-black text-xs font-black tracking-widest">
                 {activeCount}
@@ -115,7 +117,7 @@ export function MobileFilterBar({ filters, children, className = '' }: MobileFil
                     className="flex items-center gap-1.5 text-sm font-bold text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                   >
                     <X size={14} />
-                    Clear all filters
+                    {t('common.clearAll')}
                   </button>
                 )}
               </div>
@@ -170,7 +172,7 @@ export function MobileFilterBar({ filters, children, className = '' }: MobileFil
                   if (!filter) return null;
 
                   const options = filter.showAll !== false
-                    ? [{ label: filter.allLabel || 'All', value: '' }, ...filter.options]
+                    ? [{ label: filter.allLabel || t('common.all'), value: '' }, ...filter.options]
                     : filter.options;
 
                   return options.map((option) => {

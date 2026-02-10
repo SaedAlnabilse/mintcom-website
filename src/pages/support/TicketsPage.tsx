@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus,
@@ -80,25 +81,26 @@ const mockTickets: Ticket[] = [
   }
 ];
 
-const statusConfig: Record<TicketStatus, { label: string; color: string; bg: string; icon: React.ElementType }> = {
-  open: { label: 'Open', color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-500/20', icon: Inbox },
-  in_progress: { label: 'In Progress', color: 'text-yellow-600', bg: 'bg-yellow-100 dark:bg-yellow-500/20', icon: Loader2 },
-  resolved: { label: 'Resolved', color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-500/20', icon: CheckCircle2 },
-  closed: { label: 'Closed', color: 'text-gray-500', bg: 'bg-gray-100 dark:bg-gray-500/20', icon: CheckCircle2 }
-};
-
-const priorityConfig: Record<TicketPriority, { label: string; color: string; bg: string }> = {
-  low: { label: 'Low', color: 'text-gray-600', bg: 'bg-gray-100 dark:bg-gray-500/20' },
-  medium: { label: 'Medium', color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-500/20' },
-  high: { label: 'High', color: 'text-orange-600', bg: 'bg-orange-100 dark:bg-orange-500/20' },
-  urgent: { label: 'Urgent', color: 'text-red-600', bg: 'bg-red-100 dark:bg-red-500/20' }
-};
-
 export const TicketsPage = () => {
+  const { t } = useTranslation(['support', 'common']);
   const [tickets] = useState<Ticket[]>(mockTickets);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<TicketStatus | 'all'>('all');
   const [showFilters, setShowFilters] = useState(false);
+
+  const statusConfig: Record<TicketStatus, { label: string; color: string; bg: string; icon: React.ElementType }> = {
+    open: { label: t('support.tickets.status.open'), color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-500/20', icon: Inbox },
+    in_progress: { label: t('support.tickets.status.inProgress'), color: 'text-yellow-600', bg: 'bg-yellow-100 dark:bg-yellow-500/20', icon: Loader2 },
+    resolved: { label: t('support.tickets.status.resolved'), color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-500/20', icon: CheckCircle2 },
+    closed: { label: t('support.tickets.status.closed'), color: 'text-gray-500', bg: 'bg-gray-100 dark:bg-gray-500/20', icon: CheckCircle2 }
+  };
+
+  const priorityConfig: Record<TicketPriority, { label: string; color: string; bg: string }> = {
+    low: { label: t('support.tickets.priority.low'), color: 'text-gray-600', bg: 'bg-gray-100 dark:bg-gray-500/20' },
+    medium: { label: t('support.tickets.priority.medium'), color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-500/20' },
+    high: { label: t('support.tickets.priority.high'), color: 'text-orange-600', bg: 'bg-orange-100 dark:bg-orange-500/20' },
+    urgent: { label: t('support.tickets.priority.urgent'), color: 'text-red-600', bg: 'bg-red-100 dark:bg-red-500/20' }
+  };
 
   const filteredTickets = tickets.filter(ticket => {
     const matchesSearch = ticket.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -129,10 +131,10 @@ export const TicketsPage = () => {
                 >
                   <ArrowLeft size={20} />
                 </Link>
-                <h1 className="text-3xl font-black tracking-tight">My Tickets</h1>
+                <h1 className="text-3xl font-black tracking-tight">{t('support.tickets.myTickets')}</h1>
               </div>
               <p className="text-gray-500 dark:text-gray-400 font-medium ml-11">
-                Track and manage your support requests
+                {t('support.tickets.subtitle')}
               </p>
             </div>
 
@@ -141,7 +143,7 @@ export const TicketsPage = () => {
               className="inline-flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-paymint-green/20"
             >
               <Plus size={18} />
-              New Ticket
+              {t('support.tickets.new')}
             </Link>
           </div>
 
@@ -154,7 +156,7 @@ export const TicketsPage = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-black">{stats.open}</p>
-                  <p className="text-sm font-medium text-gray-500">Open Tickets</p>
+                  <p className="text-sm font-medium text-gray-500">{t('support.tickets.stats.open')}</p>
                 </div>
               </div>
             </div>
@@ -165,7 +167,7 @@ export const TicketsPage = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-black">{stats.inProgress}</p>
-                  <p className="text-sm font-medium text-gray-500">In Progress</p>
+                  <p className="text-sm font-medium text-gray-500">{t('support.tickets.stats.inProgress')}</p>
                 </div>
               </div>
             </div>
@@ -176,7 +178,7 @@ export const TicketsPage = () => {
                 </div>
                 <div>
                   <p className="text-2xl font-black">{stats.resolved}</p>
-                  <p className="text-sm font-medium text-gray-500">Resolved</p>
+                  <p className="text-sm font-medium text-gray-500">{t('support.tickets.stats.resolved')}</p>
                 </div>
               </div>
             </div>
@@ -191,7 +193,7 @@ export const TicketsPage = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search tickets..."
+                  placeholder={t('support.tickets.searchPlaceholder')}
                   className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
                 />
               </div>
@@ -205,7 +207,7 @@ export const TicketsPage = () => {
                 }`}
               >
                 <Filter size={18} />
-                Filters
+                {t('common.filters')}
               </button>
             </div>
 
@@ -219,7 +221,7 @@ export const TicketsPage = () => {
                   className="overflow-hidden"
                 >
                   <div className="pt-4 mt-4 border-t border-gray-100 dark:border-white/10">
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Status</p>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">{t('support.tickets.statusLabel')}</p>
                     <div className="flex flex-wrap gap-2">
                       {(['all', 'open', 'in_progress', 'resolved', 'closed'] as const).map((status) => (
                         <button
@@ -231,7 +233,7 @@ export const TicketsPage = () => {
                               : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20'
                           }`}
                         >
-                          {status === 'all' ? 'All' : statusConfig[status].label}
+                          {status === 'all' ? t('common.all') : statusConfig[status].label}
                         </button>
                       ))}
                     </div>
@@ -248,16 +250,16 @@ export const TicketsPage = () => {
                 <div className="w-16 h-16 bg-gray-100 dark:bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <Inbox size={32} className="text-gray-400" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">No tickets found</h3>
+                <h3 className="text-xl font-bold mb-2">{t('support.tickets.notFound')}</h3>
                 <p className="text-gray-500 dark:text-gray-400 mb-6">
-                  {searchQuery ? 'Try adjusting your search or filters' : "You haven't submitted any tickets yet"}
+                  {searchQuery ? t('support.tickets.notFoundSearch') : t('support.tickets.noTicketsYet')}
                 </p>
                 <Link
                   to="/support/tickets/new"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all"
                 >
                   <Plus size={18} />
-                  Create Your First Ticket
+                  {t('support.tickets.createFirst')}
                 </Link>
               </div>
             ) : (
@@ -290,7 +292,7 @@ export const TicketsPage = () => {
                             </span>
                             {ticket.unreadReplies > 0 && (
                               <span className="px-2 py-1 bg-paymint-green text-black rounded-md text-xs font-bold">
-                                {ticket.unreadReplies} new
+                                {ticket.unreadReplies} {t('support.tickets.newLabel')}
                               </span>
                             )}
                           </div>
@@ -312,7 +314,7 @@ export const TicketsPage = () => {
                             </div>
                             <div className="flex items-center gap-2 text-xs text-gray-400">
                               <Calendar size={12} />
-                              Updated {ticket.updatedAt}
+                              {t('support.tickets.updated')} {ticket.updatedAt}
                             </div>
                           </div>
                           <ChevronRight size={20} className="text-gray-400 group-hover:text-paymint-green group-hover:translate-x-1 transition-all" />

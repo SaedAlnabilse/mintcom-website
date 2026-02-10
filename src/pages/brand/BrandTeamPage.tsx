@@ -105,7 +105,7 @@ export function BrandTeamPage() {
     const fetchBrandInfo = async () => {
         try {
             const response = await api.get(`/api/brands/${brandId}`);
-            setBrandName(response.data?.name || 'Brand');
+            setBrandName(response.data?.name || t('brand.dashboard.title'));
         } catch (err) {
             console.error('Failed to fetch brand info:', err);
         }
@@ -454,26 +454,26 @@ export function BrandTeamPage() {
                 {/* Active Filters Display */}
                 {hasActiveFilters && (
                     <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
-                        <span className="text-xs font-black text-gray-400 tracking-widest">Active filters:</span>
+                        <span className="text-xs font-black text-gray-400 tracking-widest">{t('attributes.filters.activeFilters')}:</span>
                         <div className="flex items-center gap-2 flex-wrap">
                             {searchQuery && (
                                 <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
-                                    Search: "{searchQuery}"
+                                    {t('common.search')}: "{searchQuery}"
                                 </span>
                             )}
                             {roleFilter !== 'all' && (
                                 <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
-                                    Role: {roleFilter === 'CASHIER' ? 'User' : roleFilter === 'ADMIN' ? 'Admin' : 'All'}
+                                    {t('common.role')}: {roleFilter === 'CASHIER' ? t('staff.form.standardUsers') : roleFilter === 'ADMIN' ? t('onboarding.step4.adminUsernamePlaceholder') : t('common.all')}
                                 </span>
                             )}
                             {locationFilter !== 'all' && (
                                 <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
-                                    Location: {locations.find(l => l.id === locationFilter)?.name}
+                                    {t('common.location')}: {locations.find(l => l.id === locationFilter)?.name}
                                 </span>
                             )}
                         </div>
                         <span className="text-xs font-medium text-gray-400 ml-auto">
-                            {filteredEmployees.length} staff
+                            {filteredEmployees.length} {t('brand.dashboard.staff')}
                         </span>
                     </div>
                 )}
@@ -485,16 +485,16 @@ export function BrandTeamPage() {
             {filteredEmployees.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="text-xl font-bold text-gray-900 dark:text-white">No staff found</p>
+                    <p className="text-xl font-bold text-gray-900 dark:text-white">{t('owner.staff.noStaffFound')}</p>
                     <p className="text-sm font-bold text-gray-500 mt-1">
-                        {hasActiveFilters ? 'Try adjusting your filters' : 'Add staff to see them here'}
+                        {hasActiveFilters ? t('brand.dashboard.adjustFilters') : t('owner.staff.addStaffDesc')}
                     </p>
                     {hasActiveFilters && (
                         <button
                             onClick={clearFilters}
                             className="mt-4 px-6 py-2 rounded-xl bg-paymint-green text-black text-sm font-bold hover:bg-emerald-400 transition-all"
                         >
-                            Clear Filters
+                            {t('attributes.filters.reset')}
                         </button>
                     )}
                 </div>
@@ -550,14 +550,14 @@ export function BrandTeamPage() {
                                                     className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                                                 >
                                                     <Edit2 size={16} />
-                                                    Edit
+                                                    {t('common.edit')}
                                                 </button>
                                                 <button
                                                     onClick={() => openDeleteModal(emp)}
                                                     className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
                                                 >
                                                     <Trash2 size={16} />
-                                                    Remove
+                                                    {t('common.remove')}
                                                 </button>
                                         </div>
                                     )}
@@ -588,8 +588,8 @@ export function BrandTeamPage() {
                             {/* Access Rights */}
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <p className="text-xs font-black text-gray-400 tracking-widest uppercase">Access Rights</p>
-                                    <span className="text-sm font-bold text-gray-900 dark:text-white">{emp.establishments.length} Location{emp.establishments.length !== 1 ? 's' : ''}</span>
+                                    <p className="text-xs font-black text-gray-400 tracking-widest uppercase">{t('owner.staff.accessRights')}</p>
+                                    <span className="text-sm font-bold text-gray-900 dark:text-white">{emp.establishments.length} {emp.establishments.length !== 1 ? t('common.locations') : t('common.location')}</span>
                                 </div>
                                 <div className="space-y-2">
                                     {emp.establishments.slice(0, 2).map((est, eIdx) => (
@@ -618,11 +618,17 @@ export function BrandTeamPage() {
 
                             {/* Action Buttons */}
                             <div className="flex items-center gap-3 pt-6 mt-6 border-t border-gray-100 dark:border-white/5">
-                                <button className="flex-1 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-black tracking-widest hover:bg-gray-100 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-2 border border-gray-200 dark:border-white/5">
+                                <button
+                                    onClick={() => handleEditEmployee(emp)}
+                                    className="flex-1 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-black tracking-widest hover:bg-gray-100 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-2 border border-gray-200 dark:border-white/5"
+                                >
                                     <Edit2 size={14} />
-                                    Edit
+                                    {t('common.edit')}
                                 </button>
-                                <button className="p-2.5 rounded-xl text-red-500 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors border border-red-100 dark:border-red-500/20">
+                                <button
+                                    onClick={() => openDeleteModal(emp)}
+                                    className="p-2.5 rounded-xl text-red-500 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors border border-red-100 dark:border-red-500/20"
+                                >
                                     <Trash2 size={16} />
                                 </button>
                             </div>
@@ -672,15 +678,15 @@ export function BrandTeamPage() {
 
                                 <div className="grid grid-cols-2 gap-3 text-xs">
                                     <div className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-                                        <p className="text-gray-500 mb-1">Role</p>
+                                        <p className="text-gray-500 mb-1">{t('common.role')}</p>
                                         <span className={getRoleBadgeStyle(emp.establishments[0]?.role || 'USER')}>
                                             {getRoleDisplay(emp.establishments[0]?.role || 'USER')}
                                         </span>
                                     </div>
                                     <div className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-                                        <p className="text-gray-500 mb-1">Locations</p>
+                                        <p className="text-gray-500 mb-1">{t('brand.dashboard.locations')}</p>
                                         <span className="text-sm font-bold text-gray-900 dark:text-white">
-                                            {emp.establishments.length} Location{emp.establishments.length !== 1 ? 's' : ''}
+                                            {emp.establishments.length} {t('brand.dashboard.locations')}
                                         </span>
                                     </div>
                                 </div>
@@ -690,11 +696,11 @@ export function BrandTeamPage() {
 
                     {/* Desktop Table Header */}
                     <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest uppercase">
-                        <div className="col-span-4">Name</div>
-                        <div className="col-span-2">Status</div>
-                        <div className="col-span-2">Primary Role</div>
-                        <div className="col-span-2">Locations</div>
-                        <div className="col-span-2 text-center">Actions</div>
+                        <div className="col-span-4">{t('common.name')}</div>
+                        <div className="col-span-2">{t('common.status')}</div>
+                        <div className="col-span-2">{t('common.role')}</div>
+                        <div className="col-span-2">{t('common.locations')}</div>
+                        <div className="col-span-2 text-center">{t('common.actions')}</div>
                     </div>
 
                     {/* Table Body */}
@@ -747,7 +753,7 @@ export function BrandTeamPage() {
                                 {/* Locations Count */}
                                 <div className="col-span-2 flex items-center">
                                     <span className="font-bold text-gray-900 dark:text-white">
-                                        {emp.establishments.length} location{emp.establishments.length !== 1 ? 's' : ''}
+                                        {emp.establishments.length} {emp.establishments.length !== 1 ? t('common.locations') : t('common.location')}
                                     </span>
                                 </div>
 
@@ -758,7 +764,7 @@ export function BrandTeamPage() {
                                         className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all flex items-center gap-2 border border-gray-200 dark:border-white/5"
                                     >
                                         <Edit2 size={14} />
-                                        Edit
+                                        {t('common.edit')}
                                     </button>
                                     <button
                                         onClick={() => openDeleteModal(emp)}
@@ -807,23 +813,23 @@ export function BrandTeamPage() {
                                 <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-6">
                                     <AlertTriangle size={32} />
                                 </div>
-                                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Remove Staff</h3>
+                                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">{t('owner.staff.removeStaff')}</h3>
                                 <p className="text-gray-500 text-sm leading-relaxed">
-                                    Remove <span className="font-bold text-gray-900 dark:text-white">{employeeToDelete.firstName} {employeeToDelete.lastName}</span>? This cannot be undone.
+                                    {t('owner.staff.removeStaffConfirm')} <span className="font-bold text-gray-900 dark:text-white">{employeeToDelete.firstName} {employeeToDelete.lastName}</span>? {t('owner.staff.undoneWarning')}
                                 </p>
                             </div>
 
                             <div className="px-8 pb-6 space-y-4">
                                 <div>
                                     <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
-                                        Password
+                                        {t('common.password')}
                                     </label>
                                     <div className="relative">
                                         <input
                                             type={showDeletePassword ? 'text' : 'password'}
                                             value={deletePassword}
                                             onChange={(e) => { setDeletePassword(e.target.value); setDeleteError(''); }}
-                                            placeholder="Enter your account password"
+                                            placeholder={t('owner.staff.enterPasswordPlaceholder')}
                                             className={`w-full bg-gray-50 dark:bg-white/5 border ${deleteError ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-red-500 transition-colors`}
                                         />
                                         <button
@@ -843,7 +849,7 @@ export function BrandTeamPage() {
                                     onClick={closeDeleteModal}
                                     className="flex-1 py-3.5 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-bold text-xs tracking-wider hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                                 >
-                                    Cancel
+                                    {t('common.cancel')}
                                 </button>
                                 <button
                                     onClick={confirmDelete}
@@ -855,7 +861,7 @@ export function BrandTeamPage() {
                                     ) : (
                                         <>
                                             <Trash2 size={16} />
-                                            Confirm
+                                            {t('common.confirm')}
                                         </>
                                     )}
                                 </button>

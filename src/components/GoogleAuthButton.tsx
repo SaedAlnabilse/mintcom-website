@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 // Google Icon SVG Component
 const GoogleIcon = () => (
@@ -65,6 +66,7 @@ declare global {
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 
 export function GoogleAuthButton({ onSuccess, onError, text = 'continue_with', disabled = false }: GoogleAuthButtonProps) {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
 
@@ -96,7 +98,7 @@ export function GoogleAuthButton({ onSuccess, onError, text = 'continue_with', d
     script.onload = () => setIsScriptLoaded(true);
     script.onerror = () => {
       console.error('[GoogleAuth] Failed to load Google Identity Services');
-      onError?.('Failed to load Google Sign-In');
+      onError?.(t('auth.errors.googleLoadFailed'));
     };
     document.head.appendChild(script);
 
@@ -122,7 +124,7 @@ export function GoogleAuthButton({ onSuccess, onError, text = 'continue_with', d
       });
     } catch (error) {
       console.error('[GoogleAuth] Failed to initialize:', error);
-      onError?.('Failed to initialize Google Sign-In');
+      onError?.(t('auth.errors.googleInitFailed'));
     }
   }, [isScriptLoaded, onSuccess, onError]);
 
@@ -141,11 +143,11 @@ export function GoogleAuthButton({ onSuccess, onError, text = 'continue_with', d
           // If One Tap doesn't work, we could fall back to popup
           // For now, show an error
           if (reason === 'opt_out_or_no_session') {
-            onError?.('Please sign in to your Google account first');
+            onError?.(t('auth.errors.googleNoSession'));
           } else if (reason === 'suppressed_by_user') {
-            onError?.('Google Sign-In was cancelled');
+            onError?.(t('auth.errors.googleCancelled'));
           } else {
-            onError?.('Google Sign-In is not available');
+            onError?.(t('auth.errors.googleUnavailable'));
           }
         } else if (notification.isSkippedMoment()) {
           // User dismissed the prompt
@@ -155,7 +157,7 @@ export function GoogleAuthButton({ onSuccess, onError, text = 'continue_with', d
     } catch (error) {
       setIsLoading(false);
       console.error('[GoogleAuth] Error showing prompt:', error);
-      onError?.('Failed to open Google Sign-In');
+      onError?.(t('auth.errors.googlePromptFailed'));
     }
   }, [disabled, isLoading, onError]);
 
@@ -165,10 +167,10 @@ export function GoogleAuthButton({ onSuccess, onError, text = 'continue_with', d
   }
 
   const buttonText = {
-    signin_with: 'Sign in with Google',
-    signup_with: 'Sign up with Google',
-    continue_with: 'Continue with Google',
-    signin: 'Google',
+    signin_with: t('auth.google.signInWith'),
+    signup_with: t('auth.google.signUpWith'),
+    continue_with: t('auth.google.continueWith'),
+    signin: t('auth.google.signIn'),
   }[text];
 
   return (
@@ -185,13 +187,14 @@ export function GoogleAuthButton({ onSuccess, onError, text = 'continue_with', d
       ) : (
         <GoogleIcon />
       )}
-      <span>{isLoading ? 'Connecting...' : buttonText}</span>
+      <span>{isLoading ? t('common.connecting') : buttonText}</span>
     </motion.button>
   );
 }
 
 // Divider component for "or" separator
 export function AuthDivider() {
+  const { t } = useTranslation();
   return (
     <div className="relative my-6">
       <div className="absolute inset-0 flex items-center">
@@ -199,7 +202,7 @@ export function AuthDivider() {
       </div>
       <div className="relative flex justify-center text-xs">
         <span className="px-4 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">
-          or
+          {t('common.or')}
         </span>
       </div>
     </div>

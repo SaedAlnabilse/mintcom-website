@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useDragControls, type PanInfo } from 'framer-motion';
 import { X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface BottomSheetProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ export function BottomSheet({
   height = 'auto',
   showCloseButton = true,
 }: BottomSheetProps) {
+  const { t } = useTranslation();
   const sheetRef = useRef<HTMLDivElement>(null);
   const dragControls = useDragControls();
 
@@ -94,6 +96,7 @@ export function BottomSheet({
             dragConstraints={{ top: 0, bottom: 0 }}
             dragElastic={{ top: 0, bottom: 0.5 }}
             onDragEnd={handleDragEnd}
+            dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
             className={`fixed bottom-0 left-0 right-0 z-[101] bg-white dark:bg-paymint-surface rounded-t-3xl shadow-2xl flex flex-col ${getHeightClass()}`}
             style={{ touchAction: 'none' }}
           >
@@ -116,7 +119,7 @@ export function BottomSheet({
                 {showCloseButton && (
                   <button
                     onClick={onClose}
-                    aria-label="Close"
+                    aria-label={t('common.close')}
                     className="p-2.5 -mr-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                   >
                     <X size={20} />

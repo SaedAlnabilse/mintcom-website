@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft,
@@ -33,138 +34,136 @@ interface Idea {
   hasVoted: boolean;
 }
 
-const mockIdeas: Idea[] = [
-  {
-    id: 1,
-    title: 'Dark mode for POS tablet app',
-    description: 'Many users work in dim environments (bars, restaurants). A dark mode would reduce eye strain and look more professional.',
-    author: 'Alex Thompson',
-    votes: 234,
-    comments: 45,
-    status: 'planned',
-    category: 'UI/UX',
-    createdAt: '2 weeks ago',
-    hasVoted: true
-  },
-  {
-    id: 2,
-    title: 'Multiple receipt printers per station',
-    description: 'Allow connecting multiple printers to a single tablet - one for customer receipts, one for kitchen orders.',
-    author: 'Maria Garcia',
-    votes: 189,
-    comments: 32,
-    status: 'in_progress',
-    category: 'Hardware',
-    createdAt: '1 month ago',
-    hasVoted: false
-  },
-  {
-    id: 3,
-    title: 'Customer-facing display support',
-    description: 'Support for a secondary display showing order details and total to customers during checkout.',
-    author: 'John Smith',
-    votes: 156,
-    comments: 28,
-    status: 'under_review',
-    category: 'Hardware',
-    createdAt: '3 weeks ago',
-    hasVoted: false
-  },
-  {
-    id: 4,
-    title: 'Offline mode improvements',
-    description: 'Better offline functionality - sync orders automatically when connection is restored.',
-    author: 'Emily Chen',
-    votes: 142,
-    comments: 21,
-    status: 'planned',
-    category: 'Performance',
-    createdAt: '1 month ago',
-    hasVoted: true
-  },
-  {
-    id: 5,
-    title: 'Table management & reservations',
-    description: 'Built-in table layout editor and reservation system for restaurants.',
-    author: 'David Kim',
-    votes: 128,
-    comments: 38,
-    status: 'under_review',
-    category: 'Features',
-    createdAt: '2 months ago',
-    hasVoted: false
-  },
-  {
-    id: 6,
-    title: 'QR code ordering for customers',
-    description: 'Let customers scan a QR code at their table to view menu and place orders from their phone.',
-    author: 'Sarah Johnson',
-    votes: 115,
-    comments: 25,
-    status: 'completed',
-    category: 'Features',
-    createdAt: '3 months ago',
-    hasVoted: true
-  }
-];
-
-const statusConfig: Record<IdeaStatus, { label: string; color: string; bg: string; icon: React.ElementType }> = {
-  under_review: { label: 'Under Review', color: 'text-gray-600', bg: 'bg-gray-100 dark:bg-gray-500/20', icon: Eye },
-  planned: { label: 'Planned', color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-500/20', icon: Clock },
-  in_progress: { label: 'In Progress', color: 'text-yellow-600', bg: 'bg-yellow-100 dark:bg-yellow-500/20', icon: Zap },
-  completed: { label: 'Completed', color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-500/20', icon: CheckCircle2 },
-  declined: { label: 'Declined', color: 'text-red-600', bg: 'bg-red-100 dark:bg-red-500/20', icon: Lightbulb }
-};
-
-const categories = [
-  { id: 'all', label: 'All Ideas' },
-  { id: 'features', label: 'Features' },
-  { id: 'ui-ux', label: 'UI/UX' },
-  { id: 'hardware', label: 'Hardware' },
-  { id: 'performance', label: 'Performance' },
-  { id: 'integrations', label: 'Integrations' }
-];
-
-const statusFilters = [
-  { id: 'all', label: 'All Status' },
-  { id: 'under_review', label: 'Under Review' },
-  { id: 'planned', label: 'Planned' },
-  { id: 'in_progress', label: 'In Progress' },
-  { id: 'completed', label: 'Completed' }
-];
-
 export const IdeasPage = () => {
+  const { t } = useTranslation();
+
+  const statusConfig: Record<IdeaStatus, { label: string; color: string; bg: string; icon: React.ElementType }> = {
+    under_review: { label: t('community.status.under_review', 'Under Review'), color: 'text-gray-600', bg: 'bg-gray-100 dark:bg-gray-500/20', icon: Eye },
+    planned: { label: t('community.status.planned', 'Planned'), color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-500/20', icon: Clock },
+    in_progress: { label: t('community.status.in_progress', 'In Progress'), color: 'text-yellow-600', bg: 'bg-yellow-100 dark:bg-yellow-500/20', icon: Zap },
+    completed: { label: t('community.status.completed', 'Completed'), color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-500/20', icon: CheckCircle2 },
+    declined: { label: t('community.status.declined', 'Declined'), color: 'text-red-600', bg: 'bg-red-100 dark:bg-red-500/20', icon: Lightbulb }
+  };
+
+  const categories = [
+    { id: 'all', label: t('community.ideas.all', 'All Ideas') },
+    { id: 'features', label: t('community.categories.features', 'Features') },
+    { id: 'ui-ux', label: t('community.categories.ui_ux', 'UI/UX') },
+    { id: 'hardware', label: t('community.categories.hardware', 'Hardware') },
+    { id: 'performance', label: t('community.categories.performance', 'Performance') },
+    { id: 'integrations', label: t('community.categories.integrations', 'Integrations') }
+  ];
+
+  const statusFilters = [
+    { id: 'all', label: t('community.status.all', 'All Status') },
+    { id: 'under_review', label: t('community.status.under_review', 'Under Review') },
+    { id: 'planned', label: t('community.status.planned', 'Planned') },
+    { id: 'in_progress', label: t('community.status.in_progress', 'In Progress') },
+    { id: 'completed', label: t('community.status.completed', 'Completed') }
+  ];
+
+  const mockIdeas: Idea[] = [
+    {
+      id: 1,
+      title: t('community.ideas.item_1.title', 'Dark mode for POS tablet app'),
+      description: t('community.ideas.item_1.description', 'Many users work in dim environments (bars, restaurants). A dark mode would reduce eye strain and look more professional.'),
+      author: 'Alex Thompson',
+      votes: 234,
+      comments: 45,
+      status: 'planned',
+      category: 'UI/UX',
+      createdAt: t('community.times.weeks_ago', '2 weeks ago', { count: 2 }),
+      hasVoted: true
+    },
+    {
+      id: 2,
+      title: t('community.ideas.item_2.title', 'Multiple receipt printers per station'),
+      description: t('community.ideas.item_2.description', 'Allow connecting multiple printers to a single tablet - one for customer receipts, one for kitchen orders.'),
+      author: 'Maria Garcia',
+      votes: 189,
+      comments: 32,
+      status: 'in_progress',
+      category: 'Hardware',
+      createdAt: t('community.times.months_ago', '1 month ago', { count: 1 }),
+      hasVoted: false
+    },
+    {
+      id: 3,
+      title: t('community.ideas.item_3.title', 'Customer-facing display support'),
+      description: t('community.ideas.item_3.description', 'Support for a secondary display showing order details and total to customers during checkout.'),
+      author: 'John Smith',
+      votes: 156,
+      comments: 28,
+      status: 'under_review',
+      category: 'Hardware',
+      createdAt: t('community.times.weeks_ago', '3 weeks ago', { count: 3 }),
+      hasVoted: false
+    },
+    {
+      id: 4,
+      title: t('community.ideas.item_4.title', 'Offline mode improvements'),
+      description: t('community.ideas.item_4.description', 'Better offline functionality - sync orders automatically when connection is restored.'),
+      author: 'Emily Chen',
+      votes: 142,
+      comments: 21,
+      status: 'planned',
+      category: 'Performance',
+      createdAt: t('community.times.months_ago', '1 month ago', { count: 1 }),
+      hasVoted: true
+    },
+    {
+      id: 5,
+      title: t('community.ideas.item_5.title', 'Table management & reservations'),
+      description: t('community.ideas.item_5.description', 'Built-in table layout editor and reservation system for restaurants.'),
+      author: 'David Kim',
+      votes: 128,
+      comments: 38,
+      status: 'under_review',
+      category: 'Features',
+      createdAt: t('community.times.months_ago', '2 months ago', { count: 2 }),
+      hasVoted: false
+    },
+    {
+      id: 6,
+      title: t('community.ideas.item_6.title', 'QR code ordering for customers'),
+      description: t('community.ideas.item_6.description', 'Let customers scan a QR code at their table to view menu and place orders from their phone.'),
+      author: 'Sarah Johnson',
+      votes: 115,
+      comments: 25,
+      status: 'completed',
+      category: 'Features',
+      createdAt: t('community.times.months_ago', '3 months ago', { count: 3 }),
+      hasVoted: true
+    }
+  ];
+
   const [ideas, setIdeas] = useState<Idea[]>(mockIdeas);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
-  const [sortBy, setSortBy] = useState<'votes' | 'recent'>('votes');
+  const [sortBy, setSortBy] = useState('votes');
 
   const handleVote = (ideaId: number) => {
-    setIdeas(ideas.map(idea => {
-      if (idea.id === ideaId) {
-        return {
-          ...idea,
-          votes: idea.hasVoted ? idea.votes - 1 : idea.votes + 1,
-          hasVoted: !idea.hasVoted
-        };
-      }
-      return idea;
-    }));
+    setIdeas(ideas.map(idea =>
+      idea.id === ideaId
+        ? { ...idea, votes: idea.hasVoted ? idea.votes - 1 : idea.votes + 1, hasVoted: !idea.hasVoted }
+        : idea
+    ));
   };
 
-  const filteredIdeas = ideas
-    .filter(idea => {
-      const matchesSearch = idea.title.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = selectedCategory === 'all' ||
-        idea.category.toLowerCase().replace('/', '-') === selectedCategory;
-      const matchesStatus = selectedStatus === 'all' || idea.status === selectedStatus;
-      return matchesSearch && matchesCategory && matchesStatus;
-    })
-    .sort((a, b) => {
-      if (sortBy === 'votes') return b.votes - a.votes;
-      return 0; // Keep original order for recent
-    });
+  const filteredIdeas = ideas.filter(idea => {
+    const matchesSearch = idea.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      idea.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' ||
+      idea.category.toLowerCase().replace('/', '-') === selectedCategory;
+    const matchesStatus = selectedStatus === 'all' || idea.status === selectedStatus;
+    return matchesSearch && matchesCategory && matchesStatus;
+  }).sort((a, b) => {
+    if (sortBy === 'votes') {
+      return b.votes - a.votes;
+    }
+    return 0; // Keep original order for 'recent'
+  });
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
@@ -182,10 +181,12 @@ export const IdeasPage = () => {
                 >
                   <ArrowLeft size={20} />
                 </Link>
-                <h1 className="text-3xl font-black tracking-tight">Feature Ideas</h1>
+                <h1 className="text-3xl font-black tracking-tight">
+                  {t('community.ideas.title', 'Feature Ideas')}
+                </h1>
               </div>
               <p className="text-gray-500 dark:text-gray-400 font-medium ml-11">
-                Vote and help shape the future of Paymint
+                {t('community.ideas.subtitle', 'Vote and help shape the future of Paymint')}
               </p>
             </div>
 
@@ -194,7 +195,7 @@ export const IdeasPage = () => {
               className="inline-flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-paymint-green/20"
             >
               <Plus size={18} />
-              Submit Idea
+              {t('community.ideas.submit', 'Submit Idea')}
             </Link>
           </div>
 
@@ -207,7 +208,9 @@ export const IdeasPage = () => {
                 </div>
                 <div>
                   <p className="text-xl font-black">{ideas.length}</p>
-                  <p className="text-xs font-medium text-gray-500">Total Ideas</p>
+                  <p className="text-xs font-medium text-gray-500">
+                    {t('community.ideas.total', 'Total Ideas')}
+                  </p>
                 </div>
               </div>
             </div>
@@ -218,7 +221,9 @@ export const IdeasPage = () => {
                 </div>
                 <div>
                   <p className="text-xl font-black">{ideas.filter(i => i.status === 'planned').length}</p>
-                  <p className="text-xs font-medium text-gray-500">Planned</p>
+                  <p className="text-xs font-medium text-gray-500">
+                    {t('community.status.planned', 'Planned')}
+                  </p>
                 </div>
               </div>
             </div>
@@ -229,7 +234,9 @@ export const IdeasPage = () => {
                 </div>
                 <div>
                   <p className="text-xl font-black">{ideas.filter(i => i.status === 'in_progress').length}</p>
-                  <p className="text-xs font-medium text-gray-500">In Progress</p>
+                  <p className="text-xs font-medium text-gray-500">
+                    {t('community.status.in_progress', 'In Progress')}
+                  </p>
                 </div>
               </div>
             </div>
@@ -240,7 +247,9 @@ export const IdeasPage = () => {
                 </div>
                 <div>
                   <p className="text-xl font-black">{ideas.filter(i => i.status === 'completed').length}</p>
-                  <p className="text-xs font-medium text-gray-500">Completed</p>
+                  <p className="text-xs font-medium text-gray-500">
+                    {t('community.status.completed', 'Completed')}
+                  </p>
                 </div>
               </div>
             </div>
@@ -255,7 +264,7 @@ export const IdeasPage = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search ideas..."
+                  placeholder={t('community.ideas.search_placeholder', 'Search ideas...')}
                   className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
                 />
               </div>
@@ -286,7 +295,7 @@ export const IdeasPage = () => {
                   className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-white/10 rounded-lg text-sm font-bold hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
                 >
                   <TrendingUp size={16} />
-                  {sortBy === 'votes' ? 'Top Voted' : 'Recent'}
+                  {sortBy === 'votes' ? t('community.sort.top_voted', 'Top Voted') : t('community.sort.recent', 'Recent')}
                 </button>
               </div>
             </div>
@@ -343,10 +352,12 @@ export const IdeasPage = () => {
                       </p>
 
                       <div className="flex items-center gap-4 text-sm text-gray-400">
-                        <span className="font-medium">by {idea.author}</span>
+                        <span className="font-medium">
+                          {t('community.labels.by', 'by')} {idea.author}
+                        </span>
                         <span>{idea.createdAt}</span>
                         <span className="flex items-center gap-1">
-                          <MessageSquare size={14} /> {idea.comments} comments
+                          <MessageSquare size={14} /> {idea.comments} {t('community.labels.comments', 'comments')}
                         </span>
                       </div>
                     </div>
@@ -362,16 +373,18 @@ export const IdeasPage = () => {
               <div className="w-16 h-16 bg-gray-100 dark:bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Lightbulb size={32} className="text-gray-400" />
               </div>
-              <h3 className="text-xl font-bold mb-2">No ideas found</h3>
+              <h3 className="text-xl font-bold mb-2">
+                {t('community.ideas.empty_title', 'No ideas found')}
+              </h3>
               <p className="text-gray-500 dark:text-gray-400 mb-6">
-                Try adjusting your search or filters
+                {t('community.ideas.empty_subtitle', 'Try adjusting your search or filters')}
               </p>
               <Link
                 to="/community/ideas/new"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all"
               >
                 <Plus size={18} />
-                Submit the First Idea
+                {t('community.ideas.submit_first', 'Submit the First Idea')}
               </Link>
             </div>
           )}

@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion';
 import { Check, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export function LoginOverlay({ isSuccess = false }: { isSuccess?: boolean }) {
+  const { t } = useTranslation();
   const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
@@ -56,16 +58,16 @@ export function LoginOverlay({ isSuccess = false }: { isSuccess?: boolean }) {
           transition={{ delay: 0.2 }}
           className="text-2xl font-bold text-gray-900 dark:text-white mb-2"
         >
-          {showSuccess ? 'Welcome back!' : 'Signing you in...'}
+          {showSuccess ? t('auth.login.welcomeBack') : t('auth.login.signingIn')}
         </motion.h2>
-        
+
         <motion.p
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
           className="text-gray-500 dark:text-gray-400"
         >
-          {showSuccess ? 'Redirecting to your dashboard' : 'Checking your login info'}
+          {showSuccess ? t('auth.login.redirecting') : t('auth.login.checkingInfo')}
         </motion.p>
       </div>
     </div>

@@ -8,33 +8,33 @@ export const WorkflowSupport = () => {
 
   const workflowFeatures = [
     {
-      title: t('workflow.sales.title'),
-      description: t('workflow.sales.description'),
+      title: t('landing.workflow.sales.title'),
+      description: t('landing.workflow.sales.description'),
       icon: CreditCard,
     },
     {
-      title: t('workflow.inventory.title'),
-      description: t('workflow.inventory.description'),
+      title: t('landing.workflow.inventory.title'),
+      description: t('landing.workflow.inventory.description'),
       icon: Package,
     },
     {
-      title: t('workflow.staffRoles.title'),
-      description: t('workflow.staffRoles.description'),
+      title: t('landing.workflow.staffRoles.title'),
+      description: t('landing.workflow.staffRoles.description'),
       icon: Users,
     },
     {
-      title: t('workflow.dashboards.title'),
-      description: t('workflow.dashboards.description'),
+      title: t('landing.workflow.dashboards.title'),
+      description: t('landing.workflow.dashboards.description'),
       icon: BarChart3,
     },
     {
-      title: t('workflow.multiLocation.title'),
-      description: t('workflow.multiLocation.description'),
+      title: t('landing.workflow.multiLocation.title'),
+      description: t('landing.workflow.multiLocation.description'),
       icon: Building2,
     },
     {
-      title: t('workflow.cloudSync.title'),
-      description: t('workflow.cloudSync.description'),
+      title: t('landing.workflow.cloudSync.title'),
+      description: t('landing.workflow.cloudSync.description'),
       icon: Cloud,
     }
   ];
@@ -48,7 +48,7 @@ export const WorkflowSupport = () => {
 
   return (
     <>
-      <section className="py-24 lg:py-32 bg-white dark:bg-[#0f0f0f] overflow-hidden relative">
+      <section className="py-24 lg:py-32 bg-white dark:bg-[#0f0f0f] overflow-hidden relative" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
         {/* Background Decor */}
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-paymint-green/5 rounded-full blur-[120px] -z-10" />
         <div className="absolute top-20 right-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px] -z-10" />
@@ -72,10 +72,10 @@ export const WorkflowSupport = () => {
                 className="mb-12"
               >
                 <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-6 tracking-tight">
-                  {t('workflow.title')} <span className="text-paymint-green">{t('workflow.titleHighlight')}</span>
+                  {t('landing.workflow.title')} <span className="text-paymint-green">{t('landing.workflow.titleHighlight')}</span>
                 </h2>
                 <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-                  {t('workflow.subtitle')}
+                  {t('landing.workflow.subtitle')}
                 </p>
               </motion.div>
 
@@ -123,11 +123,11 @@ export const WorkflowSupport = () => {
                   <div className="flex items-center gap-2 text-xs text-gray-500">
                     <div className="flex items-center gap-1.5">
                       <div className="w-3 h-3 rounded bg-amber-500" />
-                      <span>{t('workflow.stats.visits')}</span>
+                      <span>{t('landing.workflow.stats.visits')}</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <div className="w-3 h-3 rounded bg-blue-500" />
-                      <span>{t('workflow.stats.sales')}</span>
+                      <span>{t('landing.workflow.stats.sales')}</span>
                     </div>
                   </div>
                 </div>
@@ -164,10 +164,10 @@ export const WorkflowSupport = () => {
                   </svg>
                   {/* X-axis labels */}
                   <div className="absolute bottom-0 left-0 right-0 flex justify-between text-xs text-gray-600 px-2">
-                    <span>We</span>
-                    <span>Th</span>
-                    <span>Fr</span>
-                    <span>Sa</span>
+                    <span>{t('landing.workflow.stats.days.wed')}</span>
+                    <span>{t('landing.workflow.stats.days.thu')}</span>
+                    <span>{t('landing.workflow.stats.days.fri')}</span>
+                    <span>{t('landing.workflow.stats.days.sat')}</span>
                   </div>
                 </div>
 
@@ -187,10 +187,10 @@ export const WorkflowSupport = () => {
                   <div className="flex-1 space-y-3">
                     <div className="bg-[#111] rounded-xl p-3 border border-white/5">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-gray-400">{t('workflow.stats.totalOrders')}</span>
+                        <span className="text-xs text-gray-400">{t('landing.workflow.stats.totalOrders')}</span>
                         <TrendingUp size={12} className="text-paymint-green" />
                       </div>
-                      <div className="text-xl font-bold text-white">8,052</div>
+                      <div className="text-xl font-bold text-white">{(1240).toLocaleString(t('common.locale'))}</div>
                       <div className="flex gap-1 mt-1">
                         {chartHeights[0].map((h, i) => (
                           <div key={i} className="flex-1 h-4 bg-gradient-to-t from-paymint-green/20 to-paymint-green rounded-sm" style={{ height: `${h}px` }} />
@@ -200,10 +200,10 @@ export const WorkflowSupport = () => {
 
                     <div className="bg-[#111] rounded-xl p-3 border border-white/5">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-gray-400">{t('workflow.stats.newUsers')}</span>
+                        <span className="text-xs text-gray-400">{t('landing.workflow.stats.newUsers')}</span>
                         <Users size={12} className="text-blue-500" />
                       </div>
-                      <div className="text-xl font-bold text-white">1.3K</div>
+                      <div className="text-xl font-bold text-white">{(89).toLocaleString(t('common.locale'))}</div>
                       <div className="flex gap-1 mt-1">
                         {chartHeights[1].map((h, i) => (
                           <div key={i} className="flex-1 bg-gradient-to-t from-blue-500/20 to-blue-500 rounded-sm" style={{ height: `${h}px` }} />
@@ -213,10 +213,10 @@ export const WorkflowSupport = () => {
 
                     <div className="bg-[#111] rounded-xl p-3 border border-white/5">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-gray-400">{t('workflow.stats.totalVisits')}</span>
+                        <span className="text-xs text-gray-400">{t('landing.workflow.stats.totalVisits')}</span>
                         <BarChart3 size={12} className="text-amber-500" />
                       </div>
-                      <div className="text-xl font-bold text-white">12M</div>
+                      <div className="text-xl font-bold text-white">{(2450).toLocaleString(t('common.locale'))}</div>
                       <div className="flex gap-1 mt-1">
                         {chartHeights[2].map((h, i) => (
                           <div key={i} className="flex-1 bg-gradient-to-t from-amber-500/20 to-amber-500 rounded-sm" style={{ height: `${h}px` }} />

@@ -3,15 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { Globe, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const languages = [
-  { code: 'en', name: 'English', nativeName: 'English', flag: '🇺🇸' },
-  { code: 'ar', name: 'Arabic', nativeName: 'العربية', flag: '🇸🇦' },
-];
-
 export const LanguageSwitcher = () => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const languages = [
+    { code: 'en', name: t('common.languages.en'), nativeName: 'English', flag: '🇺🇸' },
+    { code: 'ar', name: t('common.languages.ar'), nativeName: 'العربية', flag: '🇸🇦' },
+  ];
 
   const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
 
@@ -36,7 +36,7 @@ export const LanguageSwitcher = () => {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10 transition-all text-gray-700 dark:text-gray-300"
-        aria-label="Change language"
+        aria-label={t('common.aria.changeLanguage')}
       >
         <Globe size={16} className="text-paymint-green" />
         <span className="text-sm font-bold hidden sm:inline">{currentLanguage.nativeName}</span>
@@ -50,6 +50,7 @@ export const LanguageSwitcher = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.15 }}
+            dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
             className="absolute top-full mt-2 right-0 rtl:right-auto rtl:left-0 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden min-w-[160px] z-50"
           >
             {languages.map((lang) => (

@@ -2,6 +2,7 @@ import { useState, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronRight, ChevronLeft, HelpCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export interface TourStep {
   targetId: string;
@@ -18,6 +19,7 @@ interface TourGuideProps {
 }
 
 export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps) => {
+  const { t } = useTranslation();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
 
@@ -122,6 +124,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               key={currentStepIndex}
+              dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
               className="absolute z-[10000] w-80 bg-white dark:bg-[#1E293B] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 p-5"
               style={{
                 // Simple positioning logic - can be enhanced with Popper.js if needed
@@ -134,7 +137,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2 text-paymint-green">
                   <HelpCircle size={18} />
-                  <span className="text-xs font-black tracking-widest">Guide</span>
+                  <span className="text-xs font-black tracking-widest">{t('common.guide')}</span>
                 </div>
                 <button
                   onClick={onClose}
@@ -176,7 +179,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
                     onClick={handleNext}
                     className="flex items-center gap-2 px-4 py-2 bg-paymint-green text-black font-bold text-sm rounded-xl hover:bg-paymint-green/90 transition-all shadow-lg shadow-paymint-green/20"
                   >
-                    {isLastStep ? 'Finish' : 'Next'}
+                    {isLastStep ? t('common.finish') : t('common.next')}
                     {!isLastStep && <ChevronRight size={16} />}
                   </button>
                 </div>

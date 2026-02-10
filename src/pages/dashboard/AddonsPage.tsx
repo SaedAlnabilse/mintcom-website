@@ -303,9 +303,9 @@ export function AddonsPage() {
       targetGroup = stats.topGroup;
     } else {
       // Logic for Pricing: Find first group matching the priceType
-      targetGroup = attributes.find(attr => {
-        const hasPaid = attr.subAttributes?.some(sub => Number(sub.price) > 0);
-        const hasFree = attr.subAttributes?.some(sub => Number(sub.price) === 0);
+      targetGroup = (Array.isArray(attributes) ? attributes : []).find(attr => {
+        const hasPaid = (Array.isArray(attr.subAttributes) ? attr.subAttributes : []).some(sub => Number(sub.price) > 0);
+        const hasFree = (Array.isArray(attr.subAttributes) ? attr.subAttributes : []).some(sub => Number(sub.price) === 0);
 
         if (priceType === 'PAID') return hasPaid;
         if (priceType === 'FREE') return hasFree;
@@ -320,7 +320,6 @@ export function AddonsPage() {
         const element = document.getElementById(`group-${targetGroup.id}`);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          // Highlight effect?
         }
       }, 100);
     }
@@ -382,22 +381,23 @@ export function AddonsPage() {
             action: () => handleQuickFilter('PAID')
           },
         ].map((stat, i) => (
-          <div
+          <button
             key={i}
-            className="group relative p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm transition-all duration-300 overflow-hidden"
+            onClick={stat.action}
+            className="group relative p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm transition-all duration-300 overflow-hidden text-left hover:border-paymint-green/30"
           >
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
             <div className="relative z-10 flex items-center gap-4">
-              <div className={`p-3 rounded-xl ${stat.bg} ${stat.color} transition-transform duration-300`}>
+              <div className={`p-3 rounded-xl ${stat.bg} ${stat.color} transition-transform duration-300 group-hover:scale-110`}>
                 <stat.icon size={20} />
               </div>
               <div>
                 <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
-                <p className="text-xl font-black text-gray-900 dark:text-white">{stat.value}</p>
+                <p className="text-xl font-black text-gray-900 dark:text-white">{stat.value.toLocaleString(t('common.locale'))}</p>
                 {stat.sub && <p className="text-xs font-bold text-paymint-green tracking-wide mt-1">{stat.sub}</p>}
               </div>
             </div>
-          </div>
+          </button>
         ))}
       </div>
 

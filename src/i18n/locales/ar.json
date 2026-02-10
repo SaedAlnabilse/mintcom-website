@@ -4,7 +4,49 @@
     "tagline": "للمؤسسات",
     "version": "الإصدار 2.0",
     "copyright": "© 2025 بيمنت. جميع الحقوق محفوظة.",
-    "description": "نظام نقاط بيع بسيط وآمن للأعمال المتنامية."
+    "description": "نظام نقاط بيع بسيط وآمن للأعمال المتنامية.",
+    "dashboard": {
+      "title": "لوحة تحكم العلامة التجارية",
+      "failedToLoad": "فشل تحميل بيانات لوحة التحكم",
+      "loading": "جاري تحميل لوحة التحكم...",
+      "liveData": "بيانات مباشرة",
+      "locations": "المواقع",
+      "updatedNow": "تم التحديث الآن",
+      "totalRevenue": "إجمالي الإيرادات",
+      "totalOrders": "إجمالي الطلبات",
+      "avgOrderValue": "متوسط قيمة الطلب",
+      "teamSize": "حجم الفريق",
+      "locationPerformance": "أداء المواقع",
+      "rankedByRevenue": "مصنفة حسب الإيرادات",
+      "viewAll": "عرض الكل",
+      "noLocations": "لا توجد مواقع",
+      "addLocationsDesc": "ابدأ بإضافة موقعك الأول لرؤية بيانات الأداء.",
+      "staff": "الموظفين",
+      "orders": "الطلبات",
+      "ofTotal": "من الإجمالي",
+      "revenueTrend": "اتجاه الإيرادات",
+      "consolidatedPerformance": "الأداء الموحد",
+      "noRevenueData": "لا توجد بيانات إيرادات متاحة لهذه الفترة",
+      "salesByCategory": "المبيعات حسب التصنيف",
+      "revenueDistribution": "توزيع الإيرادات",
+      "viewAllLocations": "عرض جميع المواقع",
+      "manageLocationsDesc": "إدارة مواقع متجرك وإعداداتها.",
+      "manageTeam": "إدارة الفريق",
+      "manageTeamDesc": "عرض وإدارة أعضاء فريق علامتك التجارية.",
+      "goTo": "انتقل إلى {{name}}"
+    },
+    "menu": {
+      "locations": "المواقع",
+      "overview": "نظرة عامة",
+      "overviewDesc": "لوحة التحكم والتحليلات",
+      "locationsDesc": "إدارة المواقع",
+      "team": "الفريق",
+      "teamDesc": "إدارة الموظفين",
+      "activeBrand": "العلامة التجارية النشطة",
+      "switchBrand": "تبديل العلامة التجارية",
+      "backToBrands": "العودة للعلامات التجارية",
+      "brandAdmin": "مسؤول العلامة التجارية"
+    }
   },
   "nav": {
     "features": "المميزات",
@@ -44,6 +86,7 @@
     "thisMonth": "هذا الشهر"
   },
   "common": {
+    "locale": "ar",
     "loading": "جاري التحميل...",
     "error": "خطأ",
     "success": "نجاح",
@@ -53,6 +96,15 @@
     "submit": "إرسال",
     "back": "رجوع",
     "next": "التالي",
+    "previous": "السابق",
+    "page": "صفحة",
+    "app": "التطبيق",
+    "more": "المزيد",
+    "filters": "الفلاتر",
+    "clearAll": "مسح الكل",
+    "showing": "عرض",
+    "of": "من",
+    "currencyCode": "USD",
     "language": "اللغة",
     "english": "English",
     "arabic": "العربية",
@@ -65,6 +117,9 @@
     "delete": "حذف",
     "edit": "تعديل",
     "add": "إضافة",
+    "closeModal": "إغلاق النافذة",
+    "emailRequired": "البريد الإلكتروني مطلوب",
+    "passwordRequired": "كلمة المرور مطلوبة",
     "search": "بحث",
     "filter": "تصفية",
     "all": "الكل",
@@ -73,6 +128,11 @@
     "confirm": "تأكيد",
     "continue": "متابعة",
     "done": "تم",
+    "zero": "0",
+    "zeroDecimal": "0.00",
+    "percent": "%",
+    "allStaff": "كل الموظفين",
+    "selectShift": "اختر وردية",
     "view": "عرض",
     "download": "تحميل",
     "upload": "رفع",
@@ -80,12 +140,16 @@
     "retry": "إعادة المحاولة",
     "validationError": "يرجى تصحيح الأخطاء الموضحة أدناه",
     "active": "نشط",
+    "online": "متصل",
+    "offline": "غير متصل",
     "notice": "تنبيه",
     "gotIt": "حسناً",
     "notAvailable": "غير متوفر",
+    "unknown": "غير معروف",
     "to": "إلى",
     "others": "آخرون",
     "top": "الأعلى",
+    "pos": "نقطة البيع",
     "date": "التاريخ",
     "datePeriods": {
       "today": "اليوم",
@@ -101,13 +165,175 @@
       "this_year": "هذه السنة (يناير-اليوم)",
       "custom": "فترة مخصصة",
       "all": "كل الأوقات"
+    },
+    "currencies": {
+      "jod": "دينار أردني",
+      "usd": "دولار أمريكي",
+      "aed": "درهم إماراتي",
+      "sar": "ريال سعودي",
+      "kwd": "دينار كويتي",
+      "qar": "ريال قطري",
+      "bhd": "دينار بحريني",
+      "omr": "ريال عماني",
+      "egp": "جنيه مصري",
+      "gbp": "جنيه إسترليني",
+      "eur": "يورو",
+      "try": "ليرة تركية"
+    },
+    "daysShort": {
+      "monday": "إثنين",
+      "tuesday": "ثلاثاء",
+      "wednesday": "أربعاء",
+      "thursday": "خميس",
+      "friday": "جمعة",
+      "saturday": "سبت",
+      "sunday": "أحد"
+    },
+    "aria": {
+      "changeLanguage": "تغيير اللغة",
+      "openMenu": "فتح قائمة التنقل",
+      "closeMenu": "إغلاق قائمة التنقل",
+      "mobileNav": "التنقل عبر الجوال"
+    },
+    "selectDate": "اختر التاريخ",
+    "selectDateRange": "اختر نطاق التاريخ",
+    "clear": "مسح",
+    "time": {
+      "am": "ص",
+      "pm": "م"
+    },
+    "today": "اليوم",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "gotIt": "فهمت",
+    "select": "اختر...",
+    "noOptions": "لا توجد خيارات متاحة",
+    "reloadPage": "إعادة تحميل الصفحة",
+    "goBack": "الرجوع للخلف",
+    "home": "الرئيسية",
+    "showTechnicalDetails": "عرض التفاصيل التقنية",
+    "time": {
+      "hourAbbr": "ساعة",
+      "minuteAbbr": "دقيقة"
     }
+  },
+  "errors": {
+    "unexpected": {
+      "title": "خطأ غير متوقع",
+      "message": "حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقاً."
+    },
+    "notFound": {
+      "title": "الصفحة غير موجودة",
+      "message": "عذراً، لم نتمكن من العثور على الصفحة التي تبحث عنها.",
+      "hint": "ربما تم نقل الصفحة أو حذفها."
+    },
+    "serverError": {
+      "title": "خطأ في الخادم",
+      "message": "تواجه خوادمنا بعض المشاكل. يرجى المحاولة مرة أخرى لاحقاً."
+    },
+    "generic": {
+      "title": "خطأ {{status}}"
+    },
+    "updateAvailable": {
+      "title": "تحديث متاح",
+      "message": "يتوفر إصدار جديد من التطبيق.",
+      "hint": "يرجى إعادة تحميل الصفحة للحصول على أحدث التحديثات."
+    }
+  },
+  "chat": {
+    "launcher": {
+      "ask": "اسأل مينتو",
+      "help": "مساعدة"
+    },
+    "botName": "مينتو",
+    "assistantTitle": "مساعد بيمنت الخاص بك",
+    "inputPlaceholder": "اسألني أي شيء...",
+    "poweredBy": "مدعوم من ذكاء بيمنت الاصطناعي",
+    "actions": {
+      "products": "المنتجات",
+      "orders": "الطلبات",
+      "reports": "التقارير",
+      "tips": "نصائح"
+    },
+    "navigation": {
+      "takeMe": "خذني هناك"
+    },
+    "greetings": [
+      "أهلاً بك! 👋 أنا مينتو، مساعد بيمنت الخاص بك. كيف يمكنني مساعدتك اليوم؟",
+      "مرحباً! أنا مينتو، هنا لمساعدتك في تحقيق أقصى استفادة من بيمنت. ما الذي يدور في ذهنك؟",
+      "مرحباً بك في بيمنت! لا تتردد في سؤالي عن أي شيء يخص إدارة عملك!"
+    ],
+    "suggestions": [
+      "كيف أبدأ؟",
+      "أرني كيفية إضافة المنتجات",
+      "ما هي الميزات التي لديكم؟",
+      "مساعدة في التقارير"
+    ]
+  },
+  "support": {
+    "qa": {
+      "title": "مركز المساعدة",
+      "subtitle": "اعثر على الإجابات بسرعة",
+      "searchPlaceholder": "ابحث عن مساعدة...",
+      "categories": {
+        "all": "الكل",
+        "general": "البداية",
+        "products": "المنتجات",
+        "orders": "الطلبات",
+        "staff": "الموظفين",
+        "billing": "الفواتير",
+        "technical": "تقني",
+        "account": "الحساب"
+      },
+      "noResults": "لم يتم العثور على نتائج",
+      "tryDifferent": "جرب كلمة بحث مختلفة",
+      "needMoreHelp": "تحتاج لمزيد من المساعدة؟ تواصل معنا على"
+    }
+  },
+  "footer": {
+    "product": "المنتج",
+    "company": "الشركة",
+    "resources": "الموارد",
+    "getInTouch": "تواصل معنا",
+    "aboutUs": "من نحن",
+    "privacyPolicy": "سياسة الخصوصية",
+    "termsOfService": "شروط الخدمة",
+    "helpCenter": "مركز المساعدة",
+    "guides": "الأدلة والدروس",
+    "featureIdeas": "أفكار الميزات",
+    "discussions": "نقاشات المجتمع",
+    "hardwareSolutions": "حلول الأجهزة",
+    "professionalEquipment": "معدات احترافية لعملك",
+    "viewOnAmazon": "عرض على أمازون"
+  },
+  "theme": {
+    "switchTheme": "تغيير المظهر",
+    "toggle": "تغيير المظهر",
+    "light": "فاتح",
+    "dark": "داكن",
+    "system": "النظام"
+  },
+  "feedback": {
+    "tab": "الملاحظات",
+    "title": "إرسال ملاحظاتك",
+    "subtitle": "ساعدنا في تحسين بيمنت",
+    "rateExperience": "قيم تجربتك",
+    "comments": "تعليقات",
+    "placeholder": "أخبرنا برأيك...",
+    "send": "إرسال الملاحظات",
+    "sent": "تم إرسال الملاحظات",
+    "thanks": "شكراً لملاحظاتك!",
+    "sending": "جاري الإرسال..."
   },
   "dashboard": {
     "title": "لوحة التحكم",
     "noData": "لا توجد بيانات متاحة",
     "loading": "جاري تحميل لوحة التحكم...",
     "processing": "جاري معالجة البيانات...",
+    "messages": {
+      "loadFailed": "فشل تحميل بيانات التقرير",
+      "exporting": "جاري تحضير التصدير..."
+    },
     "refresh": "تحديث",
     "lastUpdated": "آخر تحديث",
     "trackingPerformance": "تتبع أداء العمل بالكامل",
@@ -115,6 +341,7 @@
     "activeNow": "نشط الآن",
     "menu": {
       "dashboard": "لوحة التحكم",
+      "orders": "الطلبات",
       "salesAndReporting": "المبيعات والتقارير",
       "salesSummary": "ملخص المبيعات",
       "salesByItems": "المبيعات حسب الأصناف",
@@ -142,7 +369,13 @@
       "system": "النظام",
       "settings": "الإعدادات",
       "systemLogs": "سجلات النظام",
-      "logout": "تسجيل الخروج"
+      "logout": "تسجيل الخروج",
+      "mainMenu": "القائمة الرئيسية",
+      "openSidebar": "فتح الشريط الجانبي",
+      "scanToDownload": "امسح لتحميل",
+      "getMobileApp": "تحميل تطبيق الجوال",
+      "switchLocation": "تبديل الموقع",
+      "activeLocation": "الموقع النشط"
     },
     "stats": {
       "totalSales": "إجمالي المبيعات",
@@ -217,6 +450,19 @@
       "started": "بدأت {{time}}",
       "lastCompleted": "آخر وردية مكتملة",
       "rolling24h": "نافذة 24 ساعة متجددة"
+    },
+    "viewMode": {
+      "currentShift": "الوردية الحالية",
+      "previousShift": "الوردية السابقة",
+      "last24Hours": "آخر 24 ساعة",
+      "showingSince": "عرض منذ {{date}}",
+      "showingLastShift": "عرض آخر وردية مكتملة",
+      "showingLast24h": "عرض النشاط خلال آخر 24 ساعة"
+    },
+    "greetings": {
+      "morning": "صباح الخير",
+      "afternoon": "طاب يومك",
+      "evening": "مساء الخير"
     }
   },
   "orders": {
@@ -283,7 +529,16 @@
         "noRevenueDesc": "لا توجد مبيعات مسجلة للفترة المختارة.",
         "paymentMethods": "طرق الدفع",
         "breakdown": "مخطط تفصيلي",
-        "viewAll": "عرض الكل"
+        "viewAll": "عرض الكل",
+        "cashManagementLog": "سجل إدارة النقد",
+        "transactionHistory": "سجل المعاملات"
+      },
+      "receipts": {
+        "revenueSelected": "الإيرادات (للفترة المختارة)",
+        "receiptsCount": "عدد الإيصالات",
+        "refundsHeld": "المرتجعات / المعلقة",
+        "searchReceiptPlaceholder": "بحث برقم الإيصال...",
+        "heldOrders": "الطلبات المعلقة"
       },
       "items": {
         "searchPlaceholder": "البحث في {{type}}...",
@@ -571,10 +826,33 @@
       "rewardUpdated": "تم تحديث المكافأة",
       "rewardAdded": "تم إضافة المكافأة",
       "deleteTitle": "حذف المكافأة",
-      "deleteMsg": "هل أنت متأكد أنك تريد إزالة هذه المكافأة نهائياً من كتالوج الولاء؟ لا يمكن التراجع عن هذا الإجراء."
+      "deleteMsg": "هل أنت متأكد أنك تريد إزالة هذه المكافأة نهائياً من كتالوج الولاء؟ لا يمكن التراجع عن هذا الإجراء.",
+      "rewardDeleted": "تم حذف المكافأة",
+      "rewardUpdated": "تم تحديث المكافأة",
+      "rewardAdded": "تم إضافة المكافأة"
+    },
+    "items": {
+      "discount": "خصم {{percentage}}%",
+      "freeItem": "صنف مجاني",
+      "freeFrom": "مجاني من {{category}}"
     }
   },
   "owner": {
+    "menu": {
+      "overview": "نظرة عامة",
+      "locations": "المواقع",
+      "brands": "العلامات التجارية",
+      "employees": "الموظفين",
+      "globalRoles": "الأدوار العامة",
+      "billing": "الفواتير",
+      "accountManagement": "إدارة الحساب",
+      "openSidebar": "فتح القائمة الجانبية",
+      "mainMenu": "القائمة الرئيسية",
+      "getMobileApp": "تحميل تطبيق الجوال",
+      "scanToDownload": "امسح لتحميل",
+      "enterpriseOwner": "مالك المؤسسة",
+      "signOut": "تسجيل الخروج"
+    },
     "overview": {
       "badge": "نظرة عامة على المؤسسة",
       "online": "النظام متصل",
@@ -593,6 +871,7 @@
       "salesTrends": "اتجاهات المبيعات",
       "period": "الفترة",
       "totalRevenue": "إجمالي الإيرادات",
+      "revenue": "الإيرادات",
       "noRevenueData": "لا توجد بيانات إيرادات",
       "noSalesRecorded": "لم يتم تسجيل مبيعات لهذه الفترة.",
       "growBusiness": "نمِّ عملك",
@@ -619,8 +898,9 @@
       "addFirstLocation": "ابدأ بإضافة أول موقع لعملك.",
       "new": "جديد",
       "standard": "قياسي",
-      "enter": "دخول لوحة التحكم",
-      "settings": "إعدادات الموقع",
+      "enter": "دخول",
+      "settings": "الإعدادات",
+      "view": "عرض",
       "currency": "العملة",
       "status": "الحالة",
       "online": "متصل",
@@ -644,22 +924,17 @@
       "searchPlaceholder": "تصفية حسب الاسم أو البريد الإلكتروني أو الموقع...",
       "allRoles": "جميع الأدوار",
       "allStatus": "جميع الحالات",
-      "noStaff": "لم يتم العثور على موظفين",
-      "adjustFilters": "اضبط الفلاتر أو أضف موظفين جدد",
       "loading": "جاري تحميل الموظفين...",
-      "removeStaff": "إزالة موظف",
-      "removeConfirm": "هل أنت متأكد أنك تريد إزالة {{name}}؟ هذا الإجراء غير قابل للتراجع.",
-      "verifyPassword": "التحقق من كلمة المرور",
-      "passwordPlaceholder": "أدخل كلمة مرور حسابك",
-      "enterPassword": "يرجى إدخال كلمة المرور",
-      "staffRemoved": "تمت إزالة الموظف",
+      "noStaff": "لم يتم العثور على موظفين",
       "editDetails": "تعديل التفاصيل",
       "remove": "إزالة",
       "accessLocations": "مواقع الوصول",
       "noLocationsAssigned": "لم يتم تعيين مواقع",
-      "moreLocations": "+{{count}} إضافي",
-      "syncError": "فشل مزامنة بيانات القوى العاملة",
+      "removeStaffTitle": "إزالة موظف",
+      "removeConfirm": "هل أنت متأكد أنك تريد إزالة {{name}}؟ هذا الإجراء غير قابل للتراجع.",
+      "enterPassword": "يرجى إدخال كلمة المرور",
       "incorrectPassword": "كلمة مرور غير صحيحة أو فشل في الحذف",
+      "moreLocations": "+{{count}} إضافي",
       "noEmail": "لا يوجد بريد",
       "noPhone": "لا يوجد هاتف"
     },
@@ -667,14 +942,48 @@
       "title": "أدوار الشركة",
       "subtitle": "إنشاء أدوار تنطبق على جميع المواقع",
       "createNew": "إنشاء دور",
+      "newRole": "دور جديد",
+      "editRole": "تعديل الدور",
       "searchPlaceholder": "بحث عن الأدوار...",
       "loading": "جاري تحميل الأدوار...",
       "noRoles": "لم يتم العثور على أدوار",
       "noRolesDesc": "أنشئ دوراً هنا لمشاركته عبر جميع مواقعك.",
-      "editRole": "تعديل الدور",
       "deleteRole": "حذف الدور",
       "deleteConfirm": "هل أنت متأكد أنك تريد حذف دور \"{{name}}\"؟ سيتم إزالته من جميع المواقع.",
       "permissions": "الصلاحيات",
+      "posAccess": "الوصول إلى نقاط البيع",
+      "backofficeAccess": "الوصول إلى المكتب الخلفي",
+      "pos": {
+        "acceptPayments": "قبول المدفوعات",
+        "acceptPaymentsDesc": "السماح للموظف بمعالجة مدفوعات العملاء",
+        "processRefunds": "معالجة الاسترداد",
+        "processRefundsDesc": "السماح للموظف بإصدار عمليات استرداد الأموال",
+        "applyDiscounts": "تطبيق الخصومات",
+        "applyDiscountsDesc": "السماح للموظف بتطبيق الخصومات على الطلبات",
+        "viewTransactions": "عرض المعاملات",
+        "viewTransactionsDesc": "السماح للموظف برؤية سجل المعاملات",
+        "openRegister": "فتح الصندوق",
+        "openRegisterDesc": "السماح للموظف ببدء ورديات جديدة",
+        "closeRegister": "إغلاق الصندوق",
+        "closeRegisterDesc": "السماح للموظف بإنهاء الورديات وتسوية النقد",
+        "manageItems": "إدارة العناصر",
+        "manageItemsDesc": "السماح للموظف بإضافة أو تعديل العناصر في POS",
+        "manageCustomers": "إدارة العملاء",
+        "manageCustomersDesc": "السماح للموظف بإدارة بيانات العملاء"
+      },
+      "backoffice": {
+        "reports": "التقارير",
+        "reportsDesc": "الوصول إلى تقارير المبيعات والأداء",
+        "staff": "الموظفين",
+        "staffDesc": "إدارة أعضاء الفريق والأدوار",
+        "inventory": "المخزون",
+        "inventoryDesc": "إدارة مستويات المخزون والموردين",
+        "settings": "الإعدادات",
+        "settingsDesc": "تعديل إعدادات المتجر والمنشأة",
+        "customers": "العملاء",
+        "customersDesc": "إدارة قاعدة بيانات العملاء والولاء"
+      },
+      "actions": "إجراءات",
       "scope": "النطاق",
       "global": "عام",
       "createdOn": "تم الإنشاء في {{date}}",
@@ -683,12 +992,10 @@
       "failedToDelete": "فشل حذف الدور",
       "roleUpdated": "تم تحديث الدور",
       "roleCreated": "تم إنشاء الدور",
-      "failedToSave": "فشل حفظ الدور"
+      "failedToSave": "فشل حفظ الدور",
+      "deleteConfirm": "هل أنت متأكد أنك تريد حذف دور \"{{name}}\"؟ سيتم إزالته من جميع المواقع."
     },
     "brands": {
-      "title": "العلامات التجارية",
-      "subtitle": "إدارة مواقع متعددة تحت علامة تجارية واحدة",
-      "badge": "العلامات التجارية",
       "createBrand": "إنشاء علامة تجارية",
       "activeBrands": "العلامات التجارية النشطة",
       "linkedLocations": "المواقع المرتبطة",
@@ -703,7 +1010,16 @@
       "created": "تم الإنشاء",
       "locations": "المواقع",
       "openDashboard": "فتح لوحة التحكم",
+      "failedToLoad": "فشل تحميل العلامات التجارية",
+      "loading": "جاري التحميل...",
+      "badge": "العلامات التجارية",
+      "title": "العلامات التجارية",
+      "subtitle": "إدارة مواقع متعددة تحت علامة تجارية واحدة",
       "wizard": {
+        "messages": {
+          "createSuccess": "تم إنشاء العلامة التجارية!",
+          "createFailed": "فشل إنشاء العلامة التجارية"
+        },
         "title": "إنشاء علامة تجارية",
         "desc": "تجميع مواقع متعددة تحت علامة تجارية واحدة",
         "step1": "تفاصيل العلامة التجارية",
@@ -727,9 +1043,100 @@
         "createFailed": "فشل إنشاء العلامة التجارية"
       }
     },
+    "merge": {
+      "selectMinToast": "اختر موقعين على الأقل للدمج",
+      "brandNameToast": "يرجى إدخال اسم العلامة التجارية",
+      "success": "تم بنجاح",
+      "fail": "فشل",
+      "newBrand": "علامة تجارية جديدة",
+      "title": "دمج المواقع",
+      "subtitle": "دمج مواقع متعددة تحت علامة تجارية واحدة",
+      "cancel": "إلغاء",
+      "steps": "خطوات",
+      "available": "متاح",
+      "whyMerge": "لماذا الدمج؟",
+      "status": "الحالة",
+      "ready": "جاهز",
+      "selectMore": "اختر المزيد",
+      "nextStep": "الخطوة التالية",
+      "brandDetails": "تفاصيل العلامة التجارية",
+      "nameLabel": "اسم العلامة التجارية",
+      "namePlaceholder": "أدخل اسم العلامة التجارية...",
+      "securityTitle": "الأمان",
+      "securityDesc": "إعداد بيانات اعتماد المسؤول لهذه العلامة التجارية",
+      "back": "رجوع",
+      "create": "إنشاء",
+      "creating": "جاري الإنشاء...",
+      "selected": "تم الاختيار",
+      "deselectAll": "إلغاء اختيار الكل",
+      "selectAll": "اختيار الكل",
+      "globalAccess": "الوصول العام",
+      "scanEmployees": "جاري فحص الموظفين"
+    },
+    "account": {
+      "profileUpdated": "تم تحديث الملف الشخصي بنجاح",
+      "verifyEmail": "التحقق من البريد الإلكتروني",
+      "updateFailed": "فشل تحديث الملف الشخصي",
+      "deleteInitiated": "بدأت عملية حذف الحساب",
+      "deleteFailed": "فشل بدء الحذف",
+      "restored": "تم استعادة الحساب",
+      "restoreFailed": "فشل استعادة الحساب",
+      "deletionScheduled": "من المقرر حذف حسابك خلال {{count}} أيام.",
+      "restoring": "جاري الاستعادة...",
+      "restoreAction": "استعادة الحساب",
+      "restored": "تم استعادة الحساب بنجاح!",
+      "copied": "تم النسخ إلى الحافظة",
+      "copyFailed": "فشل النسخ",
+      "badge": "الحساب",
+      "title": "إدارة الحساب",
+      "subtitle": "إدارة ملفك الشخصي والأمان",
+      "locations": "المواقع",
+      "brands": "العلامات التجارية",
+      "admins": "المسؤولون",
+      "editProfile": "تعديل الملف الشخصي",
+      "resetPassword": "إعادة تعيين كلمة المرور",
+      "cancel": "إلغاء",
+      "save": "حفظ",
+      "saving": "جاري الحفظ...",
+      "fullName": "الاسم الكامل",
+      "firstName": "الاسم الأول",
+      "lastName": "اسم العائلة",
+      "email": "البريد الإلكتروني",
+      "verified": "تم التحقق",
+      "joined": "تاريخ الانضمام",
+      "completion": "الاكتمال",
+      "completeProfile": "أكمل ملفك الشخصي",
+      "locationLogins": "عمليات دخول المواقع",
+      "brandLogins": "عمليات دخول العلامات التجارية",
+      "loginId": "معرف الدخول",
+      "resources": "الموارد",
+      "guides": "الأدلة",
+      "userManual": "دليل المستخدم",
+      "setupManual": "دليل الإعداد",
+      "videoTutorial": "دروس الفيديو",
+      "qaCenter": "مركز الأسئلة والأجوبة",
+      "privacy": "الخصوصية",
+      "terms": "الشروط",
+      "about": "حول",
+      "securityTips": "نصائح الأمان",
+      "tips": "نصائح",
+      "dangerZone": "منطقة الخطر",
+      "restore": "استعادة",
+      "delete": "حذف",
+      "deleteWarning": "سيؤدي هذا إلى حذف حسابك نهائياً",
+      "restoreWarning": "سيؤدي هذا إلى استعادة حسابك المحذوف",
+      "restoreButton": "استعادة الحساب",
+      "deleteButton": "حذف الحساب",
+      "emptyState": "لا توجد بيانات متاحة",
+      "createFirst": "أنشئ أول مورد لك",
+      "deleteModal": "تأكيد الحذف",
+      "activeBlock": "الكتلة النشطة"
+    },
     "billing": {
-      "title": "الفواتير",
-      "subtitle": "إدارة المدفوعات والاشتراكات",
+      "failedToLoad": "فشل تحميل معلومات الفواتير",
+      "cardUpdated": "تم تحديث البطاقة بنجاح",
+      "cardUpdateFailed": "فشل تحديث البطاقة",
+      "resumeFailed": "فشل استئناف الاشتراك",
       "monthlyCost": "التكلفة الشهرية",
       "addPaymentMethod": "إضافة طريقة دفع",
       "cards": "البطاقات",
@@ -749,20 +1156,16 @@
       "noSubscriptions": "لا توجد اشتراكات نشطة",
       "standardPlan": "الخطة القياسية",
       "cancelsSoon": "سيتم الإلغاء قريباً",
-      "active": "نشط",
-      "canceled": "ملغي",
+      "noCard": "لا توجد بطاقة",
       "stopTrial": "إيقاف الفترة التجريبية",
       "cancelSub": "إلغاء الاشتراك",
-      "reactivate": "إعادة التفعيل ($20)",
       "resume": "استئناف",
+      "reactivate": "إعادة تفعيل",
       "viewDashboard": "عرض لوحة التحكم",
       "endingSoon": "تنتهي قريباً",
-      "endingSoonDesc": "ستنتهي بعض الاشتراكات بعد دورة الفوترة الحالية.",
-      "failedToLoad": "فشل تحميل معلومات الفواتير",
-      "cardUpdated": "تم تحديث البطاقة الافتراضية",
-      "cardUpdateFailed": "فشل تحديث البطاقة الافتراضية",
-      "resumeFailed": "فشل استئناف الاشتراك",
-      "noCard": "لا توجد بطاقة",
+      "endingSoonDesc": "سينتهي اشتراكك قريباً",
+      "active": "نشط",
+      "canceled": "ملغي",
       "managePayments": "إدارة مدفوعات {{name}}",
       "plan": "الخطة",
       "enterprise": "المؤسسة",
@@ -781,7 +1184,25 @@
         "paid": "مدفوعة",
         "pending": "معلقة",
         "failed": "فاشلة"
-      }
+      },
+      "plan": "الخطة",
+      "enterprise": "المؤسسة",
+      "cost": "التكلفة",
+      "location": "الموقع",
+      "main": "رئيسي",
+      "upgrade": "ترقية",
+      "cancel": "إلغاء",
+      "invoices": "الفواتير",
+      "payment": "الدفع",
+      "expires": "تنتهي في",
+      "addCard": "إضافة بطاقة",
+      "needHelp": "تحتاج مساعدة؟",
+      "billingQuestions": "أسئلة حول الفواتير؟",
+      "contactSupport": "اتصل بالدعم",
+      "cancelsSoon": "سيتم الإلغاء قريباً",
+      "active": "نشط",
+      "canceled": "ملغي",
+      "managePayments": "إدارة مدفوعات {{name}}"
     }
   },
   "settings": {
@@ -805,12 +1226,22 @@
       "taxId": "الرقم الضريبي",
       "openingHours": "ساعات العمل",
       "setServiceTimes": "تحديد أوقات الخدمة",
-      "comingSoon": "قريباً"
+      "comingSoon": "قريباً",
+      "namePlaceholder": "مثال: مقهى القهوة",
+      "aboutPlaceholder": "صف عملك التجاري...",
+      "taxIdPlaceholder": "أدخل الرقم الضريبي...",
+      "selectDay": "اختر يوماً للتعديل",
+      "chooseDays": "اختر أيام العمل الخاصة بك"
     },
     "sales": {
       "title": "إعداد المبيعات",
       "subtitle": "تعيين الضريبة والعملة",
       "taxRate": "معدل الضريبة (%)",
+      "taxLabel": "الضرائب",
+      "currencyLabel": "المنطقة",
+      "enterValidTax": "يرجى إدخال معدل ضريبة عددي صالح للمتابعة في التحديث.",
+      "invalidTaxTitle": "معدل ضريبة غير صالح",
+      "invalidTaxMessage": "يجب أن يكون معدل الضريبة بين 0 و 100%",
       "update": "تحديث",
       "invalidInput": "إدخال غير صالح",
       "taxWarning": "تعديل هذا سيؤثر على المعاملات المستقبلية وحسابات صافي الإيرادات.",
@@ -833,7 +1264,8 @@
       "showTaxId": "الرقم الضريبي",
       "showTaxIdDesc": "إظهار الرقم الضريبي في التذييل",
       "footerMessage": "رسالة التذييل",
-      "footerMessageDesc": "إظهار رسالة مخصصة"
+      "footerMessageDesc": "إظهار رسالة مخصصة",
+      "footerPlaceholder": "شكراً لزيارتكم!"
     },
     "danger": {
       "title": "حذف الموقع",
@@ -841,7 +1273,8 @@
       "warning": "تحذير",
       "description": "سيؤدي هذا إلى حذف \"{{name}}\" نهائياً. سيتم حذف جميع البيانات بما في ذلك الطلبات والمنتجات ومعلومات العملاء.",
       "undoWarning": "لا يمكنك التراجع عن هذا بعد 30 يوماً.",
-      "startDeletion": "بدء الحذف"
+      "startDeletion": "بدء الحذف",
+      "thisLocation": "هذا الموقع"
     }
   },
   "adminUsers": {
@@ -862,6 +1295,7 @@
       "firstName": "الاسم الأول",
       "lastName": "اسم العائلة",
       "email": "البريد الإلكتروني / معرف الدخول",
+      "emailPlaceholder": "email@enterprise.com",
       "password": "كلمة المرور",
       "passwordHint": "8 أحرف كحد أدنى",
       "locationAccess": "الوصول للمواقع"
@@ -896,6 +1330,169 @@
       "currency": "العملة",
       "type": "النوع",
       "create": "إنشاء موقع جديد"
+    },
+    "types": {
+      "restaurant": "مطعم",
+      "cafe": "مقهى",
+      "retail": "تجارة تجزئة",
+      "other": "أخرى"
+    },
+    "activeToast": "نشط: {{name}}",
+    "switch": "تبديل",
+    "opening": "جاري الفتح...",
+    "currentLocation": "الموقع الحالي"
+  },
+  "onboarding": {
+    "step": "خطوة",
+    "of": "من",
+    "nextStep": "الخطوة التالية",
+    "back": "رجوع",
+    "completeLaunch": "إكمال وإطلاق",
+    "step1": {
+      "title": "تفاصيل الموقع",
+      "subtitle": "أخبرنا عن موقع عملك.",
+      "locationName": "اسم الموقع",
+      "locationNamePlaceholder": "مثال: مقهى القهوة",
+      "locationNameTip": "اسم عملك التجاري.",
+      "businessType": "نوع العمل",
+      "businessTypeTip": "اختر نوع عملك.",
+      "currency": "العملة",
+      "currencyTip": "العملة الأساسية للمبيعات.",
+      "address": "العنوان",
+      "addressTip": "عنوان الموقع.",
+      "addressPlaceholder": "المدينة، المنطقة، البناء",
+      "quickSetup": "إعداد سريع",
+      "copySettings": "نسخ الإعدادات",
+      "copySettingsTip": "نسخ القائمة من موقع آخر.",
+      "startFresh": "عدم الاستيراد (ابدأ من الصفر)",
+      "selectData": "اختر البيانات المراد تكرارها:",
+      "menu": "القائمة",
+      "menuDesc": "الأصناف والفئات",
+      "discounts": "الخصومات",
+      "discountsDesc": "أكواد الخصم وقواعد الخصم",
+      "paymentMethods": "طرق الدفع",
+      "paymentMethodsDesc": "أنواع البطاقات وخيارات الدفع المخصصة",
+      "businessTypes": {
+        "restaurant": "مطعم",
+        "cafe": "مقهى",
+        "retail": "تجزئة",
+        "other": "أخرى"
+      },
+      "errors": {
+        "nameRequired": "اسم الموقع مطلوب",
+        "typeRequired": "نوع العمل مطلوب",
+        "addressRequired": "العنوان مطلوب",
+        "currencyRequired": "العملة مطلوبة"
+      }
+    },
+    "step2": {
+      "trialTitle": "ابدأ التجربة المجانية",
+      "activateTitle": "تفعيل الاشتراك",
+      "freeDays": "7 أيام مجانية",
+      "priceMonth": "20$/شهرياً",
+      "trialDesc": "لن يتم تحصيل أي رسوم منك اليوم. يمكنك الإلغاء في أي وقت قبل انتهاء الفترة التجريبية.",
+      "activateDesc": "سيتم خصم 20.00 دولار من بطاقتك لهذا الموقع الجديد.",
+      "totalDue": "الإجمالي المستحق اليوم",
+      "afterTrial": "بعد 7 أيام",
+      "monthly": "شهرياً",
+      "useSaved": "استخدام بطاقة محفوظة",
+      "addNew": "إضافة بطاقة جديدة",
+      "differentMethod": "استخدام طريقة دفع مختلفة",
+      "cardNumber": "رقم البطاقة",
+      "expiry": "تاريخ الانتهاء",
+      "cvc": "CVC",
+      "cardName": "الاسم على البطاقة",
+      "activateButton": "تفعيل ودفع 20$",
+      "startTrialButton": "ابدأ التجربة المجانية",
+      "errors": {
+        "cardNumberMin": "يجب أن يتكون رقم البطاقة من 16 رقماً",
+        "expiryRequired": "تاريخ الانتهاء مطلوب (الشهر/السنة)",
+        "cvcRequired": "كود التحقق (CVC) مطلوب",
+        "cardNameRequired": "الاسم على البطاقة مطلوب"
+      }
+    },
+    "step3": {
+      "title": "إنشاء دخول الموقع",
+      "subtitle": "هذا المعرف مخصص لتطبيق نقاط البيع.",
+      "uniqueAccess": "وصول فريد:",
+      "uniqueAccessDesc": "يحتاج كل موقع إلى معرف وكلمة مرور خاصين به.",
+      "locationId": "معرف الموقع",
+      "locationIdTip": "معرف فريد لتسجيل الدخول إلى POS.",
+      "locationIdPlaceholder": "مثال: mycompany-downtown",
+      "locationIdDesc": "معرف فريد لهذا الموقع.",
+      "password": "كلمة مرور الموقع",
+      "passwordTip": "كلمة المرور لهذا الموقع.",
+      "passwordPlaceholder": "••••••••",
+      "errors": {
+        "idMin": "يجب أن يتكون معرف الموقع من 4 أحرف على الأقل",
+        "idRegex": "يمكن أن يحتوي معرف الموقع فقط على أحرف وأرقام وشرطات سفلية وشرطات",
+        "passwordMin": "يجب أن تتكون كلمة مرور الموقع من 6 أحرف على الأقل"
+      }
+    },
+    "step4": {
+      "title": "إنشاء حسابك",
+      "subtitle": "أنشئ حسابك الشخصي.",
+      "step2Note": "هذه هي الخطوة الثانية من دخول POS.",
+      "firstName": "الاسم الأول",
+      "firstNamePlaceholder": "أحمد",
+      "lastName": "اسم العائلة",
+      "lastNamePlaceholder": "محمد",
+      "username": "اسم مستخدم المدير",
+      "usernameTip": "اسم المستخدم الخاص بك.",
+      "usernamePlaceholder": "admin",
+      "password": "كلمة المرور الشخصية",
+      "passwordTip": "كلمة المرور الفريدة الخاصة بك.",
+      "passwordPlaceholder": "••••••••",
+      "errors": {
+        "usernameMin": "يجب أن يتكون اسم المستخدم من 3 أحرف على الأقل",
+        "usernameRegex": "يمكن أن يحتوي اسم المستخدم فقط على أحرف وأرقام وشرطات سفلية وشرطات",
+        "passwordMin": "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل",
+        "firstNameMin": "يجب أن يتكون الاسم الأول من حرفين على الأقل",
+        "lastNameMin": "يجب أن يتكون اسم العائلة من حرفين على الأقل"
+      }
+    },
+    "step5": {
+      "welcomeTitle": "مرحباً بك في بيمنت!",
+      "isReadyToGo": "جاهز للانطلاق",
+      "openOwnerPortal": "فتح بوابة المالك",
+      "posApp": "تطبيق POS",
+      "posAppDesc": "قم بتحميل تطبيق نقاط البيع لموظفيك.",
+      "playStore": "Play Store",
+      "appStore": "App Store",
+      "ownerApp": "تطبيق المالك",
+      "ownerAppDesc": "تتبع المبيعات المباشرة والتحليلات أثناء التنقل.",
+      "locationReady": "الموقع جاهز",
+      "setupComplete": "اكتمل الإعداد",
+      "locationId": "معرف الموقع",
+      "currency": "العملة",
+      "resourcesAndHelp": "الموارد والمساعدة",
+      "userManual": "دليل المستخدم",
+      "completeGuide": "دليل كامل",
+      "setupManual": "دليل الإعداد",
+      "hardwareSetup": "إعداد الأجهزة",
+      "videoGuide": "دليل الفيديو",
+      "quickStart": "بداية سريعة",
+      "qaCenter": "مركز الأسئلة والأجوبة",
+      "faqs": "الأسئلة الشائعة",
+      "privacy": "الخصوصية",
+      "dataProtection": "حماية البيانات",
+      "terms": "الشروط",
+      "agreement": "الاتفاقية",
+      "aboutUs": "من نحن",
+      "ourStory": "قصتنا",
+      "needHelp": "هل تحتاج لمساعدة؟ تواصل مع فريق الدعم لدينا على"
+    },
+    "tour": {
+      "openPortalTitle": "فتح بوابة المالك",
+      "openPortalDesc": "هذه هي لوحة التحكم الرئيسية لإدارة جميع المواقع.",
+      "posAppTitle": "تطبيق POS",
+      "posAppDesc": "قم بتحميل التطبيق على أجهزتك اللوحية لبدء البيع.",
+      "ownerAppTitle": "تطبيق المالك",
+      "ownerAppDesc": "تتبع عملك من هاتفك.",
+      "locationStatsTitle": "تفاصيل الموقع",
+      "locationStatsDesc": "معرف الموقع الفريد وإعداداتك.",
+      "resourcesTitle": "مركز المساعدة",
+      "resourcesDesc": "الأدلة والكتيبات لمساعدتك في البدء."
     }
   },
   "security": {
@@ -1041,7 +1638,21 @@
       "deleteDiscount": "الخصم: حذف",
       "addPayment": "الدفع: إضافة",
       "updatePayment": "الدفع: تحديث",
-      "deletePayment": "الدفع: حذف"
+      "deletePayment": "الدفع: حذف",
+      "deleted_all_products": "المنتج: حذف الكل",
+      "updated_restaurant_name": "تحديث: اسم المطعم",
+      "updated_working_hours": "تحديث: ساعات العمل",
+      "updated_farewell_message": "تحديث: رسالة الوداع",
+      "updated_restaurant_logo": "تحديث: شعار المطعم",
+      "updated_tax_rate": "تحديث: معدل الضريبة",
+      "updated_loyalty_program": "تحديث: برنامج الولاء",
+      "added_discount": "الخصم: إضافة",
+      "updated_discount": "الخصم: تحديث",
+      "deleted_discount": "الخصم: حذف",
+      "added_payment_method": "الدفع: إضافة",
+      "updated_payment_method": "الدفع: تحديث",
+      "deleted_payment_method": "الدفع: حذف",
+      "logout": "تسجيل الخروج"
     }
   },
   "customers": {
@@ -1064,12 +1675,20 @@
       "updated": "تم تحديث العميل",
       "created": "تم إنشاء العميل",
       "removed": "تمت إزالة العميل",
+      "removedPrompt": "هل أنت متأكد أنك تريد إزالة {{name}}؟",
       "errorSaving": "خطأ في حفظ العميل",
       "insufficientPoints": "نقاط غير كافية. العميل لديه {{points}} نقطة فقط.",
       "pointsAdjusted": "تم تعديل نقاط الولاء",
       "exporting": "جاري التصدير...",
       "exportComplete": "اكتمل التصدير",
-      "exportFailed": "فشل تصدير العملاء"
+      "exportFailed": "فشل تصدير العملاء",
+      "loadFailed": "فشل تحميل العملاء",
+      "viewProfile": "عرض الملف الشخصي",
+      "deleteCustomer": "حذف العميل"
+    },
+    "errors": {
+      "nameRequired": "الاسم مطلوب",
+      "invalidEmail": "عنوان بريد إلكتروني غير صالح"
     },
     "form": {
       "name": "الاسم الكامل",
@@ -1078,7 +1697,11 @@
       "address": "العنوان",
       "notes": "ملاحظات داخلية",
       "updateCustomer": "تحديث العميل",
-      "saveCustomer": "حفظ العميل"
+      "saveCustomer": "حفظ العميل",
+      "namePlaceholder": "مثال: أحمد محمد",
+      "phonePlaceholder": "+000 000 000",
+      "emailPlaceholder": "client@example.com",
+      "addressPlaceholder": "أدخل العنوان..."
     },
     "details": {
       "points": "نقاط الولاء",
@@ -1094,7 +1717,8 @@
       "pointsAllocation": "تخصيص النقاط",
       "add": "إضافة",
       "deduct": "خصم",
-      "partner": "شريك"
+      "partner": "شريك",
+      "orders": "طلبات"
     }
   },
   "products": {
@@ -1183,6 +1807,8 @@
       "nameRequired": "يرجى إدخال اسم المنتج أولاً",
       "imageGenerated": "تم توليد الصورة بنجاح!",
       "aiOverloaded": "خدمات الذكاء الاصطناعي مثقلة حالياً. يرجى المحاولة مرة أخرى بعد ثوانٍ.",
+      "imageRemovalFailed": "فشل في إزالة الصورة",
+      "invalidAiResponse": "استجابة غير صالحة من خدمة الذكاء الاصطناعي",
       "noMatches": "لم يتم العثور على نتائج",
       "noneSelected": "لم يتم الاختيار",
       "noAddons": "لا توجد إضافات.",
@@ -1248,7 +1874,8 @@
       "noResults": "لم يتم العثور على نتائج",
       "noResultsDesc": "لا توجد فئات تطابق \"{{query}}\"",
       "noCategories": "لم يتم العثور على فئات",
-      "noCategoriesDesc": "أنشئ فئة لتنظيم قائمتك."
+      "noCategoriesDesc": "أنشئ فئة لتنظيم قائمتك.",
+      "deleteBlocked": "لا يمكن حذف هذه الفئة لأنها تحتوي على منتجات نشطة. يرجى نقل أو حذف المنتجات أولاً."
     },
     "form": {
       "nameLabel": "الاسم",
@@ -1259,6 +1886,1045 @@
     },
     "errors": {
       "nameRequired": "الاسم مطلوب"
+    }
+  },
+  "paymentMethods": {
+    "title": "طرق الدفع",
+    "subtitle": "إدارة كيفية قبول المدفوعات",
+    "brands": {
+      "visa": "فيزا",
+      "mastercard": "ماستركارد",
+      "amex": "أمريكان إكسبريس",
+      "discover": "ديسكفر"
+    },
+    "cardBrands": "علامات البطاقات",
+    "cardBrandsSubtitle": "إدارة شعارات البطاقات المقبولة.",
+    "noCardBrands": "لم يتم إضافة علامات بطاقات بعد.",
+    "addBrand": "إضافة علامة تجارية",
+    "editBrand": "تعديل العلامة التجارية",
+    "showLogo": "إظهار الشعار",
+    "paymentTypes": "أنواع الدفع",
+    "addPayment": "إضافة دفع",
+    "editPayment": "تعديل الدفع",
+    "newType": "نوع جديد",
+    "system": "النظام",
+    "form": {
+      "nameLabel": "الاسم",
+      "nameTip": "الاسم المستخدم للتقارير.",
+      "namePlaceholder": "مثال: محفظة رقمية",
+      "brandPlaceholder": "مثال: ماستركارد",
+      "brandTip": "اسم العلامة التجارية (مثال: فيزا).",
+      "iconLabel": "الأيقونة (اختياري)",
+      "iconTip": "الأيقونة المعروضة لطريقة الدفع هذه.",
+      "logoLabel": "الشعار",
+      "logoTip": "الشعار المعروض للعملاء."
+    },
+    "messages": {
+      "updated": "تم تحديث طريقة الدفع",
+      "created": "تم إنشاء طريقة الدفع",
+      "removed": "تمت إزالة طريقة الدفع",
+      "added": "تم إضافة طريقة الدفع",
+      "failedToSave": "فشل حفظ طريقة الدفع",
+      "failedToRemove": "فشل إزالة الطريقة",
+      "failedToAdd": "فشل إضافة البطاقة",
+      "brandUpdated": "تم تحديث العلامة التجارية",
+      "brandAdded": "تم إضافة العلامة التجارية",
+      "failedToSaveBrand": "فشل حفظ العلامة التجارية",
+      "cardTypeRemoved": "تم إزالة نوع البطاقة",
+      "failedToDelete": "فشل الحذف",
+      "failedToLoad": "فشل تحميل الطرق"
+    },
+    "confirm": {
+      "removeTitle": "إزالة طريقة الدفع",
+      "removeMessage": "هل أنت متأكد أنك تريد حذف \"{{name}}\"؟ قد يؤثر ذلك على التقارير التاريخية.",
+      "deleteCardTitle": "حذف نوع البطاقة",
+      "deleteCardMessage": "إزالة \"{{name}}\" من أنواع البطاقات المقبولة؟"
+    },
+    "modal": {
+      "title": "بطاقة جديدة",
+      "subtitle": "خزنة دفع آمنة",
+      "cardNumber": "رقم البطاقة",
+      "expiry": "تاريخ الانتهاء",
+      "cvc": "رمز التحقق",
+      "cardholder": "اسم صاحب البطاقة",
+      "secureVault": "خزنة آمنة",
+      "encrypted": "تشفير SSL 256 بت",
+      "errors": {
+        "invalidExpiry": "تاريخ انتهاء غير صالح",
+        "correctErrors": "يرجى تصحيح الأخطاء أدناه"
+      }
+    }
+  },
+  "discounts": {
+    "title": "الخصومات",
+    "editDiscount": "تعديل الخصم",
+    "newDiscount": "خصم جديد",
+    "messages": {
+      "loadFailed": "فشل تحميل الخصومات",
+      "updated": "تم تحديث الخصم بنجاح",
+      "created": "تم إنشاء الخصم بنجاح",
+      "deleted": "تم حذف الخصم بنجاح",
+      "deleteConfirm": "هل أنت متأكد أنك تريد حذف \"{{name}}\"؟"
+    },
+    "form": {
+      "nameLabel": "الاسم",
+      "namePlaceholder": "مثال: خصم موظف",
+      "nameTip": "الاسم على الإيصال.",
+      "percentageLabel": "النسبة المئوية (%)",
+      "percentageTip": "القيمة المراد خصمها.",
+      "managerOnly": "للمدير فقط",
+      "managerOnlyTip": "يتطلب موافقة المدير."
+    },
+    "errors": {
+      "nameRequired": "مطلوب",
+      "percentageRequired": "مطلوب",
+      "percentageMax": "لا يمكن أن تتجاوز 100%",
+      "percentageNegative": "لا يمكن أن تكون سالبة"
+    }
+  },
+  "staff": {
+    "title": "الموظفين",
+    "editEmployee": "تعديل الموظف",
+    "newEmployee": "موظف جديد",
+    "addMember": "إضافة عضو فريق",
+    "badge": "الإدارة",
+    "subtitle": "التحكم في الوصول ومراقبة أداء الموظفين",
+    "searchPlaceholder": "البحث بالاسم أو اسم المستخدم...",
+    "table": {
+      "name": "الموظف",
+      "role": "المنصب",
+      "contact": "الاتصال",
+      "status": "حالة الحساب",
+      "joined": "تاريخ الانضمام"
+    },
+    "roles": {
+      "manager": "مدير",
+      "admin": "مسؤول",
+      "staff": "موظف",
+      "owner": "مالك المؤسسة",
+      "user": "مستخدم"
+    },
+    "status": {
+      "online": "متصل",
+      "offline": "غير متصل",
+      "suspended": "موقوف"
+    },
+    "messages": {
+      "loading": "جاري تحميل دليل الفريق...",
+      "noStaff": "لم يتم العثور على موظفين",
+      "noStaffDesc": "ابدأ ببناء فريقك عن طريق إضافة موظفك الأول.",
+      "resetSuccess": "تم إعادة تعيين كلمة المرور بنجاح"
+    },
+    "actions": {
+      "resetPassword": "إعادة تعيين كلمة المرور"
+    },
+    "form": {
+      "nameLabel": "الاسم",
+      "namePlaceholder": "مثال: أحمد محمد",
+      "usernameLabel": "اسم المستخدم",
+      "usernamePlaceholder": "مثال: ahmed123",
+      "emailLabel": "البريد الإلكتروني",
+      "emailOptional": "(اختياري)",
+      "emailPlaceholder": "مثال: name@email.com",
+      "phoneLabel": "الهاتف",
+      "phoneOptional": "(اختياري)",
+      "phonePlaceholder": "مثال: +962 700 000 000",
+      "defaultFirstName": "موظف",
+      "accessLabel": "الوصول",
+      "selectLocation": "اختر موقعاً...",
+      "allLocations": "جميع المواقع",
+      "roleLabel": "الدور",
+      "modified": "(معدل)",
+      "selectRole": "اختر دوراً...",
+      "adminRole": "مسؤول (وصول كامل)",
+      "adminDesc": "جميع الصلاحيات مفعلة",
+      "globalRoles": "أدوار عامة",
+      "noRoles": "لا توجد أدوار",
+      "createRolesInSettings": "أنشئ أدواراً في الإعدادات",
+      "passwordLabel": "كلمة المرور",
+      "newPasswordOptional": "كلمة مرور جديدة (اختياري)",
+      "passwordPlaceholder": "5 أحرف كحد أدنى",
+      "leaveBlank": "اتركه فارغاً للاحتفاظ بالحالية",
+      "confirmPasswordLabel": "تأكيد كلمة المرور",
+      "confirmPasswordPlaceholder": "تأكيد كلمة المرور",
+      "posPermissions": "صلاحيات POS",
+      "backofficePermissions": "صلاحيات المكتب الخلفي",
+      "location": "الموقع",
+      "locationsCount_zero": "{{count}} موقع",
+      "locationsCount_one": "موقع واحد",
+      "locationsCount_two": "موقعين",
+      "locationsCount_few": "{{count}} مواقع",
+      "locationsCount_many": "{{count}} موقع",
+      "locationsCount_other": "{{count}} موقع",
+      "permissionsCount_zero": "{{count}} صلاحية",
+      "permissionsCount_one": "صلاحية واحدة",
+      "permissionsCount_two": "صلاحيتين",
+      "permissionsCount_few": "{{count}} صلاحيات",
+      "permissionsCount_many": "{{count}} صلاحية",
+      "permissionsCount_other": "{{count}} صلاحية",
+      "defaultFirstName": "موظف"
+    },
+    "errors": {
+      "nameRequired": "مطلوب",
+      "usernameRequired": "مطلوب",
+      "emailRequired": "مطلوب",
+      "roleRequired": "يرجى اختيار دور",
+      "passwordRequired": "مطلوب",
+      "passwordMin": "5 أحرف كحد أدنى",
+      "passwordsNotMatch": "كلمات المرور غير متطابقة",
+      "selectLocation": "اختر موقعاً واحداً على الأقل"
+    },
+    "permissions": {
+      "pos": "صلاحيات POS",
+      "backoffice": "صلاحيات المكتب الخلفي",
+      "pos_list": {
+        "accept_payments": "قبول المدفوعات",
+        "apply_discounts": "تطبيق الخصومات",
+        "change_taxes": "تغيير الضريبة",
+        "open_cash_drawer": "فتح درج النقد",
+        "view_all_receipts": "عرض الإيصالات",
+        "refunds": "المرتجعات",
+        "reprint_receipts": "إعادة الطباعة",
+        "inventory": "إدارة الأصناف",
+        "view_item_cost": "عرض التكاليف",
+        "settings": "الإعدادات",
+        "live_chat": "الدعم"
+      },
+      "backoffice_list": {
+        "view_reports": "عرض التقارير",
+        "manage_items": "إدارة الأصناف",
+        "view_cost": "عرض التكاليف",
+        "manage_employees": "إدارة الفريق",
+        "manage_customers": "إدارة العملاء",
+        "manage_settings": "الإعدادات",
+        "manage_billing": "الفواتير",
+        "manage_payment_types": "المدفوعات",
+        "manage_loyalty": "الولاء",
+        "manage_taxes": "الضرائب",
+        "manage_devices": "الأجهزة"
+      },
+      "descriptions": {
+        "accept_payments": "معالجة المدفوعات",
+        "apply_discounts": "تطبيق الخصومات على الطلبات",
+        "change_taxes": "تغيير معدل الضريبة عند الدفع",
+        "open_cash_drawer": "فتح درج النقد يدوياً",
+        "view_all_receipts": "عرض جميع الإيصالات السابقة",
+        "refunds": "معالجة المرتجعات",
+        "reprint_receipts": "إعادة طباعة الإيصالات",
+        "inventory": "تعديل أصناف القائمة",
+        "view_item_cost": "رؤية تكاليف الأصناف",
+        "settings": "تغيير إعدادات التطبيق",
+        "live_chat": "الدردشة مع الدعم",
+        "view_reports": "رؤية المبيعات والبيانات",
+        "manage_items": "تعديل المنتجات والمخزون",
+        "view_cost": "رؤية التكاليف والأرباح",
+        "manage_employees": "إضافة/تعديل الموظفين",
+        "manage_customers": "تعديل معلومات العملاء",
+        "manage_settings": "إعدادات المتجر",
+        "manage_billing": "المدفوعات والخطط",
+        "manage_payment_types": "تعديل طرق الدفع",
+        "manage_loyalty": "تعديل برنامج الولاء",
+        "manage_taxes": "تعديل معدلات الضريبة",
+        "manage_devices": "إدارة أجهزة الكاشير"
+      }
+    }
+  },
+  "inventory": {
+    "title": "المخزون",
+    "materials": "المكونات",
+    "prepared": "المحضرة",
+    "stock": "المخزون",
+    "cost": "التكلفة",
+    "quantity": "الكمية",
+    "unitCost": "تكلفة الوحدة",
+    "lowStock": "مخزون منخفض",
+    "optimal": "مثالي",
+    "manage": "إدارة المخزون والتكاليف",
+    "addIngredient": "إضافة مكون",
+    "editIngredient": "تعديل مكون",
+    "addPrep": "إضافة تحضير",
+    "search": "البحث عن الأصناف...",
+    "noIngredients": "لا توجد مكونات",
+    "noIngredientsDesc": "أضف مكونات لتتبع المخزون.",
+    "units": {
+      "kg": "كجم",
+      "g": "جم",
+      "l": "لتر",
+      "ml": "مل",
+      "pcs": "قطع",
+      "units": "وحدات",
+      "oz": "أونصة",
+      "lb": "رطل",
+      "cups": "كوب",
+      "portions": "حصص",
+      "servings": "وجبات"
+    },
+    "form": {
+      "name": "الاسم",
+      "namePlaceholder": "مثال: طحين نوع 00",
+      "unit": "الوحدة",
+      "lowStockThreshold": "تنبيه انخفاض المخزون",
+      "inStock": "في المخزون"
+    },
+    "messages": {
+      "syncFailed": "فشل مزامنة المخزون",
+      "created": "تم إنشاء المادة",
+      "updated": "تم تحديث المادة",
+      "removed": "تم إزالة المادة",
+      "saveError": "خطأ في حفظ المادة",
+      "deleteConfirm": "حذف \"{{name}}\" من المخزون؟ هذا الإجراء نهائي."
+    }
+  },
+  "manufacturing": {
+    "title": "الوصفات",
+    "subtitle": "إدارة الوصفات والتحضير",
+    "kitchen": "المطبخ",
+    "products": "المنتجات",
+    "prep": "التحضير",
+    "linkProduct": "ربط منتج",
+    "newPrep": "تحضير جديد",
+    "search": "البحث عن الوصفات...",
+    "noRecipes": "لم يتم العور على وصفات",
+    "noRecipesDesc": "أنشئ وصفة للبدء.",
+    "ingredients": "المكونات",
+    "additionalElements": "عناصر إضافية",
+    "produceBatch": "إنتاج دفعة",
+    "runBatch": "تشغيل دفعة",
+    "numBatches": "عدد الدفعات",
+    "totalOutput": "إجمالي الإنتاج",
+    "materialCost": "تكلفة المواد",
+    "confirmProduction": "تأكيد الإنتاج",
+    "manufactured": "تم التصنيع",
+    "formula": {
+      "title": "وصفة",
+      "edit": "تعديل الوصفة",
+      "new": "وصفة جديدة",
+      "map": "ربط منتج",
+      "editMap": "تعديل وصفة المنتج",
+      "name": "الاسم",
+      "namePlaceholder": "مثال: خل منزلي",
+      "yield": "الإنتاج",
+      "unit": "الوحدة",
+      "targetItem": "صنف القائمة المستهدف",
+      "selectItem": "اختر صنفاً...",
+      "addMaterial": "إضافة مادة",
+      "addPrep": "إضافة صيغة فرعية",
+      "noIngredients": "لا توجد مكونات بعد",
+      "saveFormula": "حفظ الوصفة",
+      "registerRecipe": "تسجيل الوصفة"
+    },
+    "messages": {
+      "syncFailed": "فشل مزامنة البيانات",
+      "saveSuccess": "تم حفظ الصيغة",
+      "saveError": "خطأ في الحفظ",
+      "removed": "تم الإزالة",
+      "deleteConfirm": "حذف هذه الصيغة؟",
+      "noProducts": "لم يتم العثور على منتجات",
+      "noProductsDesc": "تحتاج إلى إنشاء أصناف قائمة قبل أن تتمكن من تحديد وصفاتها. هل تريد إضافة منتج الآن؟",
+      "noMaterials": "لم يتم العور على مواد",
+      "noMaterialsDesc": "تحتاج إلى إنشاء مواد خام (مكونات) قبل إضافتها إلى الصيغة. هل تريد إنشاء واحدة الآن؟",
+      "noSubFormulas": "لم يتم العثور على صيغ فرعية",
+      "noSubFormulasDesc": "تحتاج إلى إنشاء صيغ فرعية قبل إضافتها إلى وصفة. هل تريد إنشاء واحدة الآن؟"
+    }
+  },
+  "community": {
+    "hub": {
+      "title": "مركز المجتمع",
+      "hero": {
+        "title_part1": "تعلم، شارك،",
+        "title_part2": "انمو",
+        "title_part3": "معاً",
+        "subtitle": "انضم إلى آلاف أصحاب الأعمال الذين يشاركون النصائح، ويطلبون الميزات، ويساعدون بعضهم البعض على النجاح.",
+        "search_placeholder": "ابحث في المناقشات أو الأفكار أو الأدلة..."
+      }
+    },
+    "stats": {
+      "members": "أعضاء",
+      "discussions": "مناقشات",
+      "ideas": "أفكار مقدمة",
+      "guides": "أدلة"
+    },
+    "discussions": {
+      "title": "المناقشات",
+      "subtitle": "اطرح الأسئلة وشارك المعرفة مع المجتمع",
+      "description": "اطرح الأسئلة وشارك الخبرات وتواصل مع مستخدمي Paymint الآخرين.",
+      "browse": "تصفح المناقشات",
+      "trending": "المناقشات الشائعة",
+      "trending_subtitle": "المحادثات الشائعة في المجتمع",
+      "new": "بدء مناقشة",
+      "search_placeholder": "البحث في المناقشات..."
+    },
+    "ideas": {
+      "title": "أفكار الميزات",
+      "subtitle": "صوّت وساعد في تشكيل مستقبل Paymint",
+      "description": "صوّت على طلبات الميزات وساعد في تشكيل مستقبل Paymint.",
+      "explore": "استكشف الأفكار",
+      "top": "أهم أفكار الميزات",
+      "top_subtitle": "صوّت للمساعدة في تحديد أولويات ما نبنيه بعد ذلك",
+      "see_all": "مشاهدة جميع الأفكار",
+      "total": "إجمالي الأفكار",
+      "submit": "شارك فكرة",
+      "search_placeholder": "البحث عن أفكار...",
+      "empty_title": "لم يتم العثور على أفكار",
+      "empty_subtitle": "حاول ضبط البحث أو الفلاتر",
+      "submit_first": "قدم الفكرة الأولى"
+    },
+    "guides": {
+      "title": "الأدلة والدروس",
+      "subtitle": "تعلم كل شيء عن Paymint من خلال أدلتنا الشاملة",
+      "description": "تعلم أفضل الممارسات وأتقن كل ميزة من خلال أدلتنا.",
+      "start": "ابدأ التعلم",
+      "popular": "الأدلة الشائعة",
+      "popular_subtitle": "الدروس الأكثر قراءة من المجتمع",
+      "browse_all": "تصفح الكل",
+      "featured": "الأدلة المختارة",
+      "search_placeholder": "البحث في الأدلة...",
+      "empty_title": "لم يتم العثور على أدلة",
+      "empty_subtitle": "حاول ضبط البحث أو الفلاتر"
+    },
+    "categories": {
+      "tips": "نصائح وحيل",
+      "success": "قصص النجاح",
+      "integrations": "التكاملات",
+      "questions": "أسئلة",
+      "announcements": "إعلانات",
+      "features": "الميزات",
+      "ui_ux": "واجهة المستخدم/تجربة المستخدم",
+      "hardware": "الأجهزة",
+      "performance": "الأداء",
+      "getting_started": "البدء",
+      "best_practices": "أفضل الممارسات",
+      "reports": "التقارير",
+      "team": "الفريق",
+      "security": "الأمان",
+      "tips_tricks": "نصائح وحيل",
+      "success_stories": "قصص النجاح"
+    },
+    "status": {
+      "planned": "مخطط له",
+      "in_progress": "قيد التنفيذ",
+      "under_review": "قيد المراجعة",
+      "completed": "مكتمل",
+      "declined": "مرفوض",
+      "all": "جميع الحالات"
+    },
+    "labels": {
+      "hot": "رائج",
+      "by": "بواسطة",
+      "reads": "قراءات",
+      "categories": "الفئات",
+      "pinned": "مثبت",
+      "solved": "تم الحل",
+      "load_more": "تحميل المزيد من المناقشات",
+      "comments": "تعليقات",
+      "difficulty": "الصعوبة"
+    },
+    "sort": {
+      "latest": "الأحدث",
+      "popular": "الأكثر شهرة",
+      "trending": "الرائجة",
+      "top_voted": "الأكثر تصويتاً",
+      "recent": "الأحدث"
+    },
+    "cta": {
+      "title": "كن بطلاً في المجتمع",
+      "subtitle": "ساعد الآخرين، واحصل على أوسمة، واحصل على وصول مبكر للميزات الجديدة. انضم إلى مجتمع Paymint اليوم!"
+    },
+    "difficulty": {
+      "beginner": "مبتدئ",
+      "intermediate": "متوسط",
+      "advanced": "متقدم",
+      "all": "جميع المستويات"
+    },
+    "types": {
+      "article": "مقالة",
+      "video": "فيديو",
+      "tutorial": "درس تعليمي"
+    },
+    "badges": {
+      "champion": "بطل",
+      "pro_user": "مستخدم محترف"
+    }
+  },
+  "support": {
+    "qa": {
+      "title": "كيف يمكننا مساعدتك؟",
+      "search_placeholder": "البحث عن أسئلة...",
+      "empty_title": "لم يتم العثور على نتائج",
+      "empty_subtitle": "حاول ضبط البحث أو فلتر الفئات.",
+      "categories": {
+        "all": "جميع الأسئلة",
+        "general": "عام",
+        "payments": "المدفوعات",
+        "security": "الأمان",
+        "account": "الحساب"
+      },
+      "q1": {
+        "question": "ما هو Paymint؟",
+        "answer": "Paymint هو حل دفع رقمي شامل مصمم لمساعدة الشركات من جميع الأحجام على قبول المدفوعات وإدارة الشؤون المالية والنمو. نحن نقدم مجموعة من الأدوات بما في ذلك بوابة الدفع وأنظمة نقاط البيع والتحليلات التفصيلية."
+      },
+      "q2": {
+        "question": "هل Paymint متاح في بلدي؟",
+        "answer": "يتوفر Paymint حالياً في أكثر من 30 دولة عبر أمريكا الشمالية وأوروبا وآسيا. نحن نتوسع بسرعة إلى مناطق جديدة. يرجى مراجعة قائمة البلدان المدعومة لدينا على صفحة الأسعار الخاصة بنا للحصول على أحدث المعلومات."
+      },
+      "q3": {
+        "question": "ما هي طرق الدفع التي يمكنني قبولها؟",
+        "answer": "مع Paymint، يمكنك قبول جميع بطاقات الائتمان والخصم الرئيسية (Visa و Mastercard و Amex)، والمحافظ الرقمية (Apple Pay و Google Pay)، وطرق الدفع المحلية الخاصة بمنطقتك."
+      },
+      "q4": {
+        "question": "كم من الوقت تستغرق عمليات الدفع؟",
+        "answer": "تتم معالجة عمليات الدفع القياسية يومياً وتصل عادةً إلى حسابك البنكي في غضون يومي عمل. كما نقدم ميزة الدفع الفوري للتجار المؤهلين، مما يتيح لك الوصول إلى أموالك في دقائق مقابل رسوم بسيطة."
+      },
+      "q5": {
+        "question": "هل Paymint آمن؟",
+        "answer": "نعم، الأمان هو أولويتنا القصوى. نحن متوافقون مع معيار PCI DSS Level 1، وهو أعلى معيار لأمان الدفع. يتم تشفير جميع البيانات باستخدام معايير تشفير متقدمة (AES-256)، ونحن نستخدم مراقبة الاحتيال على مدار الساعة طوال أيام الأسبوع."
+      },
+      "q6": {
+        "question": "كيف يمكنني إعادة تعيين كلمة المرور الخاصة بي؟",
+        "answer": "يمكنك إعادة تعيين كلمة المرور الخاصة بك بالنقر فوق رابط \"نسيت كلمة المرور\" في صفحة تسجيل الدخول. اتبع التعليمات المرسلة إلى عنوان بريدك الإلكتروني المسجل لإنشاء كلمة مرور جديدة. إذا قمت بتسجيل الدخول، يمكنك تغييرها من إعدادات حسابك."
+      },
+      "q7": {
+        "question": "هل يمكنني إضافة مستخدمين متعددين إلى حسابي؟",
+        "answer": "نعم! تتيح لك ميزة إدارة الفريق إضافة مستخدمين متعددين بأدوار وأذونات مختلفة (على سبيل المثال، مدير، مسؤول، كاشير). يمكنك إدارة هذه الإعدادات من قسم \"الفريق\" في لوحة التحكم الخاصة بك."
+      },
+      "q8": {
+        "question": "هل هناك أي رسوم خفية؟",
+        "answer": "لا، نحن نؤمن بالشفافية الكاملة. نموذج التسعير لدينا بسيط: نسبة مئوية صغيرة لكل عملية بالإضافة إلى رسوم ثابتة. لا توجد رسوم إعداد أو رسوم شهرية أو رسوم خفية لخطة العمل القياسية الخاصة بنا."
+      }
+    }
+  },
+  "chat": {
+    "botName": "مينتو",
+    "assistantTitle": "مساعد بيمنت الخاص بك",
+    "inputPlaceholder": "اسألني أي شيء...",
+    "poweredBy": "مدعوم بذكاء بيمنت الاصطناعي",
+    "actions": {
+      "products": "المنتجات",
+      "orders": "الطلبات",
+      "reports": "التقارير",
+      "tips": "نصائح"
+    },
+    "queries": {
+      "howToAddProduct": "كيف أقوم بإضافة منتج؟",
+      "whereAreReports": "أين أجد تقاريري؟",
+      "howToStartShift": "كيف أبدأ وردية جديدة؟",
+      "manageTeam": "كيف أدير فريقي؟"
+    },
+    "navigation": {
+      "takeMe": "خذني إلى هناك"
+    },
+    "faq": {
+      "title": "الأسئلة الشائعة",
+      "subtitle": "ابحث عن إجابات للأسئلة الشائعة حول بيمنت",
+      "searchPlaceholder": "البحث في الأسئلة الشائعة...",
+      "noResults": "لم يتم العثور على نتائج",
+      "tryDifferent": "حاول استخدام كلمات رئيسية مختلفة أو تصفح الفئات",
+      "needHelp": "هل ما زلت بحاجة للمساعدة؟",
+      "categories": {
+        "gettingStarted": "البدء",
+        "products": "المنتجات",
+        "orders": "الطلبات",
+        "staff": "الموظفين",
+        "billing": "الفواتير",
+        "technical": "الدعم الفني",
+        "account": "الحساب"
+      }
+    },
+    "launcher": {
+      "ask": "اسأل",
+      "help": "مساعدة"
+    },
+    "greetings": [
+      "أهلاً! كيف يمكنني مساعدتك اليوم؟",
+      "مرحباً! أنا مينتو، مساعد بيمنت الخاص بك. كيف يمكنني خدمتك؟",
+      "مرحباً بك في بيمنت! لا تتردد في سؤالي عن أي شيء يخص إدارة عملك."
+    ],
+    "fallback": [
+      "عذراً، لم أفهم ذلك جيداً. هل يمكنك إعادة صياغة سؤالك؟",
+      "أنا ما زلت أتعلم ولست متأكداً من كيفية الإجابة على ذلك بعد. هل ترغب في مراجعة الأسئلة الشائعة؟",
+      "لم أتمكن من العثور على إجابة لهذا السؤال. يمكنك محاولة اختيار أحد الاقتراحات أدناه."
+    ],
+    "suggestions": [
+      "كيف أقوم بإضافة منتج؟",
+      "كيف أبدأ وردية جديدة؟",
+      "أين أجد تقارير المبيعات؟",
+      "كيف أدير نقاط الولاء؟"
+    ]
+  },
+  "landing": {
+    "hero": {
+      "title1": "اربح أكثر.",
+      "title2": "أدِر بشكل أفضل.",
+      "title3": "اعمل بذكاء.",
+      "subtitle": "حل نقاط البيع المتكامل المصمم للنمو والكفاءة والعمليات السلسة.",
+      "getStarted": "ابدأ الآن",
+      "watchVideo": "شاهد الفيديو",
+      "noCreditCard": "لا يتطلب بطاقة ائتمان",
+      "stats": {
+        "revenue": "الإيرادات",
+        "orders": "الطلبات",
+        "table": "طاولة",
+        "items": "عناصر",
+        "activeNow": "نشط الآن"
+      }
+    },
+    "features": {
+      "title": "مميزات قوية",
+      "subtitle": "كل ما تحتاجه لإدارة عملك بفعالية.",
+      "cards": {
+        "smartPos": {
+          "title": "نظام POS ذكي",
+          "description": "واجهة سهلة الاستخدام مصممة للسرعة والموثوقية."
+        },
+        "inventory": {
+          "title": "إدارة المخزون",
+          "description": "تتبع فوري وتنبيهات تلقائية عند انخفاض المخزون."
+        },
+        "analytics": {
+          "title": "تحليلات فورية",
+          "description": "رؤى عميقة حول مبيعاتك وموظفيك وسلوك عملائك."
+        },
+        "payments": {
+          "title": "مدفوعات آمنة",
+          "description": "اقبل جميع البطاقات الرئيسية والمحافظ الرقمية بكل سهولة."
+        },
+        "crm": {
+          "title": "نظام إدارة العملاء",
+          "description": "ابنِ علاقات دائمة مع برامج الولاء المدمجة."
+        },
+        "offline": {
+          "title": "العمل بدون إنترنت",
+          "description": "استمر في البيع حتى عند انقطاع الاتصال بالإنترنت."
+        }
+      }
+    },
+    "workflow": {
+      "title": "سير عمل محسن",
+      "titleHighlight": "للنمو",
+      "subtitle": "بسط عملياتك اليومية من الافتتاح حتى الإغلاق باستخدام أدوات مؤتمتة ورؤى فورية.",
+      "sales": {
+        "title": "دفع سريع",
+        "description": "قم بمعالجة المعاملات في ثوانٍ مع واجهة نقاط البيع المحسنة لدينا."
+      },
+      "inventory": {
+        "title": "التحكم في المخزون",
+        "description": "تتبع مستويات المخزون تلقائياً وإدارة الموردين بكفاءة."
+      },
+      "staffRoles": {
+        "title": "إدارة الموظفين",
+        "description": "قم بتعيين الأدوار والأذونات للحفاظ على تنظيم فريقك."
+      },
+      "dashboards": {
+        "title": "لوحات تحكم مباشرة",
+        "description": "راقب أداء عملك من خلال تقارير بصرية جميلة."
+      },
+      "multiLocation": {
+        "title": "مواقع متعددة",
+        "description": "قم بإدارة جميع فروعك من لوحة تحكم واحدة موحدة."
+      },
+      "cloudSync": {
+        "title": "مزامنة سحابية",
+        "description": "بياناتك دائماً آمنة ومزامنة عبر جميع أجهزتك."
+      },
+      "stats": {
+        "visits": "زيارات",
+        "sales": "مبيعات",
+        "totalOrders": "إجمالي الطلبات",
+        "avgTime": "متوسط الوقت",
+        "retention": "الاحتفاظ بالعملاء",
+        "newUsers": "مستخدمين جدد",
+        "totalVisits": "إجمالي الزيارات",
+        "days": {
+          "wed": "الأربعاء",
+          "thu": "الخميس",
+          "fri": "الجمعة",
+          "sat": "السبت"
+        },
+        "mock": {
+          "totalOrders": "٨,٠٥٢",
+          "newUsers": "١.٣ ألف",
+          "totalVisits": "١٢ مليون"
+        }
+      }
+    },
+    "admin": {
+      "title": "لوحة تحكم إدارية قوية",
+      "title1": "أدِر كل شيء",
+      "title2": "من جيبك",
+      "title3": "مع تطبيق مدير بيمنت",
+      "badge": "تطبيق المالك",
+      "adminApp": "تطبيق مدير بيمنت",
+      "description": "ابقَ متحكماً في عملك حتى وأنت بعيد. يمنحك تطبيق المدير للجوال رؤية فورية لكل جانب من جوانب عملياتك.",
+      "shiftAlerts": "تنبيهات نشاط الوردية في الوقت الفعلي",
+      "stockAlerts": "إخطارات انخفاض المخزون التلقائية",
+      "liveReports": "وصول فوري لتقارير المبيعات المباشرة",
+      "videoTitle": "معاينة تطبيق المدير",
+      "dailyRevenue": "الإيرادات اليومية",
+      "subtitle": "تحكم كامل في عملك من أي مكان في العالم.",
+      "controlCenter": "مركز التحكم",
+      "liveAlerts": "تنبيهات مباشرة",
+      "multiLocationManagement": "إدارة مواقع متعددة",
+      "realTime": "مزامنة فورية",
+      "alerts": {
+        "lowStock": "تنبيه انخفاض المخزون لـ {{item}}",
+        "newOrder": "تم استلام طلب جديد #{{id}}",
+        "shiftStarted": "بدأت وردية في {{location}}",
+        "voidItem": "تم إلغاء عنصر بواسطة {{name}}"
+      }
+    },
+    "hardware": {
+      "title": "أجهزة",
+      "titleHighlight": "متوافقة",
+      "subtitle": "يعمل بيمنت مع معظم الأجهزة اللوحية والطابعات الحرارية القياسية. إليك بعض الموديلات التي نوصي بها.",
+      "viewAllOptions": "عرض جميع الخيارات",
+      "alreadyHave": "لديك أجهزة بالفعل؟",
+      "alreadyHaveDesc": "بساطة قم بتحميل التطبيق ووصل أجهزتك في ثوانٍ.",
+      "tablets": {
+        "name": "الأجهزة اللوحية والمحطات",
+        "description": "أجهزة محمولة قوية لموظفيك",
+        "note": "نوصي بنظام Android 10+ أو iOS 15+ للحصول على أداء مثالي."
+      },
+      "printers": {
+        "name": "طابعات الإيصالات",
+        "description": "طابعات إيصالات حرارية سريعة وموثوقة",
+        "note": "ورق حراري 80 مم مطلوب لجميع الموديلات المدرجة."
+      },
+      "products": {
+        "samsungTab": {
+          "name": "Samsung Galaxy Tab A8",
+          "specs": "شاشة 10.5 بوصة، 4 جيجابايت رام، 64 جيجابايت تخزين"
+        },
+        "ipad": {
+          "name": "iPad 10th Generation",
+          "specs": "شاشة Liquid Retina 10.9 بوصة، شريحة A14 Bionic"
+        },
+        "lenovo": {
+          "name": "Lenovo Tab M10 Plus",
+          "specs": "شاشة 10.6 بوصة 2K، 4 جيجابايت رام"
+        },
+        "munbyn": {
+          "name": "MUNBYN Thermal Receipt Printer",
+          "specs": "80 مم USB/Ethernet/Bluetooth"
+        },
+        "epson": {
+          "name": "Epson TM-T20III",
+          "specs": "طابعة نقاط بيع قياسية 80 مم"
+        },
+        "star": {
+          "name": "Star Micronics TSP143",
+          "specs": "طابعة ممتازة عالية السرعة 80 مم"
+        }
+      },
+      "terminals": "أجهزة دفع",
+      "tip": "نصيحة: معظم الأجهزة اللوحية الحديثة وطابعات البلوتوث مدعومة."
+    },
+    "pricing": {
+      "title": "أسعار بسيطة وشفافة",
+      "subtitle": "اختر الخطة التي تناسب احتياجات عملك.",
+      "monthly": "شهرياً",
+      "standardPrice": "20$",
+      "yearly": "سنوياً",
+      "save20": "وفر 20%",
+      "popular": "الأكثر شيوعاً",
+      "plans": {
+        "starter": {
+          "name": "البداية",
+          "price": "20",
+          "description": "مثالي للأعمال ذات الموقع الواحد.",
+          "features": [
+            "موقع واحد",
+            "تحليلات أساسية",
+            "منتجات غير محدودة",
+            "دعم عبر البريد الإلكتروني"
+          ]
+        },
+        "pro": {
+          "name": "احترافي",
+          "price": "45",
+          "description": "مصمم للمؤسسات المتنامية.",
+          "features": [
+            "حتى 3 مواقع",
+            "تقارير متقدمة",
+            "إدارة المخزون",
+            "دعم ذو أولوية"
+          ]
+        },
+        "enterprise": {
+          "name": "مؤسسات",
+          "price": "مخصص",
+          "description": "حلول مخصصة للعمليات واسعة النطاق.",
+          "features": [
+            "مواقع غير محدودة",
+            "مدير حساب مخصص",
+            "تكاملات مخصصة",
+            "دعم عبر الهاتف على مدار الساعة"
+          ]
+        }
+      }
+    },
+    "download": {
+      "title": "ابدأ اليوم",
+      "subtitle": "قم بتحميل التطبيق وحول عملك.",
+      "appStore": "App Store",
+      "playStore": "Play Store",
+      "requirements": "يتطلب نظام iOS 13+ أو Android 8+",
+      "version": "الإصدار 2.0"
+    },
+    "contact": {
+      "title": "تواصل معنا",
+      "subtitle": "لديك أسئلة؟ فريقنا هنا للمساعدة.",
+      "fullName": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "message": "الرسالة",
+      "sendMessage": "إرسال الرسالة",
+      "sending": "جاري الإرسال...",
+      "success": "تم إرسال الرسالة بنجاح!",
+      "error": "فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى.",
+      "privacy": "الخصوصية",
+      "policy": "السياسة"
+    }
+  },
+  "about": {
+    "title": "حول بيمنت",
+    "values": {
+      "title": "قيمنا",
+      "transparency": "الشفافية",
+      "simplicity": "البساطة",
+      "performance": "الأداء"
+    },
+    "story": {
+      "title": "قصتنا",
+      "description": "تأسست بيمنت بمهمة تبسيط العمليات التجارية للتجار في كل مكان. نحن نؤمن بأن التكنولوجيا يجب أن تمكن الشركات، لا أن تعقدها."
+    }
+  },
+  "auth": {
+    "validation": {
+      "emailInvalid": "يرجى إدخال عنوان بريد إلكتروني صالح",
+      "passwordRequired": "كلمة المرور مطلوبة",
+      "passwordMin": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل",
+      "passwordLetter": "يجب أن تحتوي كلمة المرور على حرف واحد على الأقل",
+      "passwordUppercase": "يجب أن تحتوي على حرف كبير واحد على الأقل",
+      "passwordLowercase": "يجب أن تحتوي على حرف صغير واحد على الأقل",
+      "passwordNumber": "يجب أن تحتوي على رقم واحد على الأقل",
+      "passwordsDoNotMatch": "كلمات المرور غير متطابقة",
+      "firstNameMin": "يجب أن يتكون الاسم الأول من حرفين على الأقل",
+      "lastNameMin": "يجب أن يتكون اسم العائلة من حرفين على الأقل"
+    },
+    "google": {
+      "signInWith": "تسجيل الدخول باستخدام Google"
+    },
+    "login": {
+      "title": "مرحباً بعودتك",
+      "welcomeBack": "مرحباً بعودتك",
+      "redirecting": "جاري إعادة التوجيه...",
+      "subtitle": "قم بتسجيل الدخول إلى حسابك للمتابعة",
+      "emailLabel": "البريد الإلكتروني",
+      "passwordLabel": "كلمة المرور",
+      "keepLoggedIn": "بقائي مسجلاً للدخول",
+      "forgotPassword": "نسيت كلمة المرور؟",
+      "loginButton": "تسجيل الدخول",
+      "noAccount": "ليس لديك حساب؟",
+      "signUp": "إنشاء حساب",
+      "backToHome": "العودة للرئيسية",
+      "loggingIn": "جاري تسجيل الدخول...",
+      "emailPlaceholder": "you@example.com",
+      "passwordPlaceholder": "أدخل كلمة المرور",
+      "showPassword": "عرض كلمة المرور",
+      "hidePassword": "إخفاء كلمة المرور",
+      "ariaEmail": "عنوان البريد الإلكتروني",
+      "ariaPassword": "كلمة المرور",
+      "ariaKeepLoggedIn": "بقائي مسجلاً للدخول",
+      "ariaCloseModal": "إغلاق النافذة"
+    },
+    "signup": {
+      "title": "إنشاء حسابك",
+      "subtitle": "انضم إلى بيمنت وابدأ في تنمية عملك",
+      "firstNameLabel": "الاسم الأول",
+      "lastNameLabel": "اسم العائلة",
+      "emailLabel": "البريد الإلكتروني",
+      "passwordLabel": "كلمة المرور",
+      "confirmPasswordLabel": "تأكيد كلمة المرور",
+      "signUpButton": "إنشاء الحساب",
+      "haveAccount": "لديك حساب بالفعل؟",
+      "logIn": "تسجيل الدخول",
+      "creatingAccount": "جاري إنشاء الحساب...",
+      "pleaseWait": "يرجى الانتظار",
+      "checkEmail": "تحقق من بريدك الإلكتروني",
+      "verificationSent": "تم إرسال رابط التحقق",
+      "clickToVerify": "انقر فوق الرابط الموجود في بريدك الإلكتروني للتحقق من حسابك",
+      "didntReceive": "لم تستلم البريد الإلكتروني؟",
+      "resendVerification": "إعادة إرسال التحقق",
+      "goToLogin": "الذهاب لتسجيل الدخول",
+      "backButton": "رجوع",
+      "creatingYourAccount": "جاري إنشاء حسابك",
+      "firstNamePlaceholder": "جون",
+      "lastNamePlaceholder": "دو",
+      "emailPlaceholder": "john@example.com",
+      "passwordPlaceholder": "أنشئ كلمة مرور قوية",
+      "confirmPasswordPlaceholder": "أكد كلمة المرور",
+      "allFeaturesIncluded": "جميع الميزات متضمنة",
+      "feature1Title": "لوحة تحكم موحدة",
+      "feature1Desc": "إدارة جميع مواقعك وعلاماتك التجارية من واجهة واحدة.",
+      "feature2Title": "تحليلات فورية",
+      "feature2Desc": "مراقبة المبيعات والمخزون وأداء الموظفين فور حدوثها.",
+      "feature3Title": "مدفوعات آمنة",
+      "feature3Desc": "أمان قياسي لجميع معاملاتك وبياناتك.",
+      "feature4Title": "إدارة الموظفين",
+      "feature4Desc": "التحكم في مستويات الوصول وتتبع إنتاجية الموظفين بسهولة.",
+      "feature5Title": "التحكم في المخزون",
+      "feature5Desc": "لا تنفد الكمية أبداً مع التنبيهات والتتبع التلقائي."
+    },
+    "forgotPassword": {
+      "title": "نسيت كلمة المرور",
+      "subtitle": "أدخل بريدك الإلكتروني لاستلام رابط إعادة التعيين",
+      "emailLabel": "البريد الإلكتروني",
+      "sendLink": "إرسال رابط إعادة التعيين",
+      "emailSent": "تم إرسال البريد الإلكتروني",
+      "linkSentTo": "تم إرسال رابط إعادة التعيين إلى",
+      "didntReceive": "لم تستلم الرابط؟",
+      "tryAnotherEmail": "جرب بريداً إلكترونياً آخر",
+      "backToLogin": "العودة لتسجيل الدخول",
+      "resetLinkSent": "تم إرسال رابط إعادة التعيين!"
+    },
+    "resetPassword": {
+      "title": "إعادة تعيين كلمة المرور",
+      "subtitle": "أدخل كلمة المرور الجديدة أدناه",
+      "passwordLabel": "كلمة المرور الجديدة",
+      "confirmPasswordLabel": "تأكيد كلمة المرور الجديدة",
+      "reset": "إعادة تعيين كلمة المرور",
+      "success": "تم إعادة تعيين كلمة المرور بنجاح",
+      "passwordUpdated": "تم تحديث كلمة المرور الخاصة بك",
+      "invalidLink": "رابط إعادة التعيين غير صالح أو منتهي الصلاحية",
+      "invalidLinkTitle": "رابط غير صالح",
+      "invalidLinkSubtitle": "هذا الرابط غير صالح أو منتهي الصلاحية.",
+      "getNewLink": "الحصول على رابط جديد",
+      "successTitle": "تم بنجاح",
+      "passwordUpdatedShort": "تم تحديث كلمة المرور.",
+      "goToLogin": "الذهاب لتسجيل الدخول",
+      "resetTitle": "إعادة تعيين",
+      "passwordHighlight": "كلمة المرور",
+      "enterNewPassword": "أدخل كلمة المرور الجديدة."
+    },
+    "verifyEmail": {
+      "verifying": "جاري التحقق من بريدك الإلكتروني...",
+      "success": "تم التحقق من البريد الإلكتروني",
+      "verified": "تم التحقق من بريدك الإلكتروني بنجاح",
+      "error": "فشل التحقق",
+      "linkExpired": "انتهت صلاحية رابط التحقق",
+      "continueLogin": "المتابعة لتسجيل الدخول",
+      "verifyingTitle": "التحقق من البريد الإلكتروني",
+      "verifyingSubtitle": "جاري التحقق من حسابك...",
+      "successTitle": "تم التحقق من البريد الإلكتروني!",
+      "linkExpiredTitle": "انتهت صلاحية الرابط",
+      "linkInvalidOrExpired": "الرابط غير صالح أو منتهي الصلاحية.",
+      "goToLogin": "الذهاب لتسجيل الدخول",
+      "backToHome": "العودة للرئيسية",
+      "sending": "جاري الإرسال..."
+    },
+    "passwordReset": {
+      "title": {
+        "account": "إعادة تعيين كلمة مرور الحساب",
+        "establishment": "إعادة تعيين كلمة المرور لـ {{name}}",
+        "brand": "إعادة تعيين كلمة المرور لـ {{name}}",
+        "default": "إعادة تعيين كلمة المرور"
+      },
+      "steps": {
+        "verifyTitle": "تحقق من هويتك",
+        "verifyDesc": "سنرسل رمزاً مكوناً من 6 أرقام إلى بريدك الإلكتروني المسجل.",
+        "enterCodeTitle": "أدخل رمز التحقق",
+        "enterCodeDesc": "لقد أرسلنا رمزاً إلى {{email}}",
+        "newPasswordTitle": "إنشاء كلمة مرور جديدة",
+        "newPasswordDesc": "أدخل كلمة مرور قوية تتكون من 8 أحرف على الأقل",
+        "successTitle": "تمت إعادة تعيين كلمة المرور بنجاح!",
+        "successDesc": "تم تحديث كلمة المرور الخاصة بك. يمكنك الآن استخدام كلمة المرور الجديدة."
+      },
+      "form": {
+        "sendCode": "إرسال رمز التحقق",
+        "sending": "جاري الإرسال...",
+        "verifyCode": "تحقق من الرمز",
+        "verifying": "جاري التحقق...",
+        "resend": "لم تستلم الرمز؟ إعادة إرسال",
+        "newPassword": "كلمة المرور الجديدة",
+        "confirmPassword": "تأكيد كلمة المرور",
+        "passwordPlaceholder": "أدخل كلمة المرور الجديدة",
+        "confirmPlaceholder": "أكد كلمة المرور الجديدة",
+        "resetButton": "إعادة تعيين كلمة المرور",
+        "resetting": "جاري إعادة التعيين..."
+      },
+      "messages": {
+        "codeSent": "تم إرسال رمز التحقق إلى بريدك الإلكتروني",
+        "codeVerified": "تم التحقق من الرمز",
+        "passwordReset": "تمت إعادة تعيين كلمة المرور",
+        "failedToSend": "فشل إرسال الرمز",
+        "invalidCode": "رمز غير صالح",
+        "enterFullCode": "أدخل الرمز كاملاً",
+        "failedToReset": "فشل إعادة تعيين كلمة المرور"
+      }
+    }
+  },
+  "portal": {
+    "welcome": "مرحباً بعودتك",
+    "overview": {
+      "title": "نظرة عامة على الحساب",
+      "plan": "الخطة الحالية",
+      "establishments": "المواقع",
+      "teamMembers": "أعضاء الفريق",
+      "memberSince": "عضو منذ"
+    },
+    "recentTickets": {
+      "title": "تذاكر الدعم الأخيرة",
+      "noTickets": "لا توجد تذاكر حديثة",
+      "newTicket": "تذكرة جديدة"
+    },
+    "announcements": "الإعلانات",
+    "plan": {
+      "title": "خطتك",
+      "nextBilling": "تاريخ الفاتورة القادمة",
+      "amount": "المبلغ",
+      "manage": "إدارة الخطة",
+      "upgrade": "ترقية الخطة"
+    },
+    "resources": "الموارد",
+    "mobileApp": "تطبيق الجوال"
+  },
+  "legal": {
+    "privacy": {
+      "title": "سياسة الخصوصية",
+      "lastUpdated": "آخر تحديث"
+    },
+    "terms": {
+      "title": "شروط الخدمة",
+      "lastUpdated": "آخر تحديث"
+    },
+    "cookies": {
+      "banner": {
+        "title": "نحن نستخدم ملفات الارتباط",
+        "description": "نحن نستخدم ملفات الارتباط لتحسين تجربتك وتحليل حركة المرور لدينا.",
+        "acceptAll": "قبول الكل",
+        "preferences": "تفضيلات ملفات الارتباط"
+      },
+      "preferences": {
+        "title": "تفضيلات ملفات الارتباط",
+        "subtitle": "إدارة كيفية استخدام ملفات الارتباط على هذا الموقع.",
+        "save": "حفظ التفضيلات"
+      },
+      "types": {
+        "essential": {
+          "title": "ملفات الارتباط الأساسية",
+          "description": "مطلوبة ليعمل الموقع بشكل صحيح."
+        },
+        "analytics": {
+          "title": "ملفات ارتباط التحليلات",
+          "description": "تساعدنا في فهم كيفية تفاعل الزوار مع الموقع."
+        },
+        "marketing": {
+          "title": "ملفات ارتباط التسويق",
+          "description": "تستخدم لتتبع الزوار عبر المواقع الإلكترونية لعرض إعلانات ذات صلة."
+        }
+      },
+      "title": "سياسة ملفات الارتباط",
+      "lastUpdated": "آخر تحديث",
+      "preferenceCenter": "مركز تفضيلات ملفات الارتباط"
     }
   }
 }

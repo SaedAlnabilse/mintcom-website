@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   ArrowLeft,
   Send,
@@ -19,22 +20,6 @@ import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import toast from 'react-hot-toast';
 
-const categories = [
-  { id: 'technical', label: 'Technical Issue', icon: Settings, description: 'Hardware, software, or connectivity problems' },
-  { id: 'billing', label: 'Billing & Payments', icon: CreditCard, description: 'Invoices, subscriptions, or payment issues' },
-  { id: 'getting-started', label: 'Getting Started', icon: Zap, description: 'Setup, onboarding, or configuration help' },
-  { id: 'bug', label: 'Bug Report', icon: Bug, description: 'Report a bug or unexpected behavior' },
-  { id: 'feature', label: 'Feature Request', icon: Lightbulb, description: 'Suggest a new feature or improvement' },
-  { id: 'other', label: 'General Question', icon: HelpCircle, description: 'Other questions or inquiries' }
-];
-
-const priorities = [
-  { id: 'low', label: 'Low', description: 'General question, no urgency', color: 'bg-gray-100 dark:bg-gray-500/20 border-gray-200 dark:border-gray-500/30' },
-  { id: 'medium', label: 'Medium', description: 'Affecting workflow but have workaround', color: 'bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/30' },
-  { id: 'high', label: 'High', description: 'Significantly impacting operations', color: 'bg-orange-50 dark:bg-orange-500/10 border-orange-200 dark:border-orange-500/30' },
-  { id: 'urgent', label: 'Urgent', description: 'Critical - business is blocked', color: 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/30' }
-];
-
 interface Attachment {
   name: string;
   size: string;
@@ -42,8 +27,26 @@ interface Attachment {
 }
 
 export const NewTicketPage = () => {
+  const { t } = useTranslation(['support', 'common']);
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const categories = [
+    { id: 'technical', label: t('support.categories.technical'), icon: Settings, description: t('support.categories.technicalDescShort') },
+    { id: 'billing', label: t('support.categories.billing'), icon: CreditCard, description: t('support.categories.billingDescShort') },
+    { id: 'getting-started', label: t('support.categories.gettingStarted'), icon: Zap, description: t('support.categories.gettingStartedDescShort') },
+    { id: 'bug', label: t('support.categories.bug'), icon: Bug, description: t('support.categories.bugDescShort') },
+    { id: 'feature', label: t('support.categories.feature'), icon: Lightbulb, description: t('support.categories.featureDescShort') },
+    { id: 'other', label: t('support.categories.other'), icon: HelpCircle, description: t('support.categories.otherDescShort') }
+  ];
+
+  const priorities = [
+    { id: 'low', label: t('support.tickets.priority.low'), description: t('support.tickets.priority.lowDesc'), color: 'bg-gray-100 dark:bg-gray-500/20 border-gray-200 dark:border-gray-500/30' },
+    { id: 'medium', label: t('support.tickets.priority.medium'), description: t('support.tickets.priority.mediumDesc'), color: 'bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/30' },
+    { id: 'high', label: t('support.tickets.priority.high'), description: t('support.tickets.priority.highDesc'), color: 'bg-orange-50 dark:bg-orange-500/10 border-orange-200 dark:border-orange-500/30' },
+    { id: 'urgent', label: t('support.tickets.priority.urgent'), description: t('support.tickets.priority.urgentDesc'), color: 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/30' }
+  ];
+
   const [formData, setFormData] = useState({
     category: '',
     priority: 'medium',
@@ -74,11 +77,11 @@ export const NewTicketPage = () => {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.category) newErrors.category = 'Please select a category';
-    if (!formData.subject.trim()) newErrors.subject = 'Please enter a subject';
-    if (formData.subject.length > 100) newErrors.subject = 'Subject must be less than 100 characters';
-    if (!formData.description.trim()) newErrors.description = 'Please describe your issue';
-    if (formData.description.length < 20) newErrors.description = 'Please provide more details (at least 20 characters)';
+    if (!formData.category) newErrors.category = t('support.newTicket.errors.category');
+    if (!formData.subject.trim()) newErrors.subject = t('support.newTicket.errors.subject');
+    if (formData.subject.length > 100) newErrors.subject = t('support.newTicket.errors.subjectLength');
+    if (!formData.description.trim()) newErrors.description = t('support.newTicket.errors.description');
+    if (formData.description.length < 20) newErrors.description = t('support.newTicket.errors.descriptionLength');
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -95,10 +98,10 @@ export const NewTicketPage = () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      toast.success('Ticket submitted successfully!');
+      toast.success(t('support.newTicket.success'));
       navigate('/support/tickets');
     } catch (error) {
-      toast.error('Failed to submit ticket. Please try again.');
+      toast.error(t('support.newTicket.error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -120,10 +123,10 @@ export const NewTicketPage = () => {
                 >
                   <ArrowLeft size={20} />
                 </Link>
-                <h1 className="text-3xl font-black tracking-tight">Submit a Ticket</h1>
+                <h1 className="text-3xl font-black tracking-tight">{t('support.newTicket.title')}</h1>
               </div>
               <p className="text-gray-500 dark:text-gray-400 font-medium ml-11">
-                Describe your issue and we'll get back to you as soon as possible
+                {t('support.newTicket.subtitle')}
               </p>
             </div>
 
@@ -131,7 +134,7 @@ export const NewTicketPage = () => {
               {/* Category Selection */}
               <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-6">
                 <label className="block text-sm font-bold mb-4">
-                  What do you need help with? <span className="text-red-500">*</span>
+                  {t('support.newTicket.categoryLabel')} <span className="text-red-500">*</span>
                 </label>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -175,7 +178,7 @@ export const NewTicketPage = () => {
               {/* Priority Selection */}
               <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-6">
                 <label className="block text-sm font-bold mb-4">
-                  How urgent is this issue?
+                  {t('support.newTicket.priorityLabel')}
                 </label>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -200,7 +203,7 @@ export const NewTicketPage = () => {
               {/* Subject */}
               <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-6">
                 <label className="block text-sm font-bold mb-3">
-                  Subject <span className="text-red-500">*</span>
+                  {t('support.newTicket.subjectLabel')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -209,7 +212,7 @@ export const NewTicketPage = () => {
                     setFormData({ ...formData, subject: e.target.value });
                     setErrors({ ...errors, subject: '' });
                   }}
-                  placeholder="Brief summary of your issue"
+                  placeholder={t('support.newTicket.subjectPlaceholder')}
                   className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all ${
                     errors.subject ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
                   }`}
@@ -231,7 +234,7 @@ export const NewTicketPage = () => {
               {/* Description */}
               <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-6">
                 <label className="block text-sm font-bold mb-3">
-                  Describe your issue <span className="text-red-500">*</span>
+                  {t('support.newTicket.descriptionLabel')} <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   value={formData.description}
@@ -239,7 +242,7 @@ export const NewTicketPage = () => {
                     setFormData({ ...formData, description: e.target.value });
                     setErrors({ ...errors, description: '' });
                   }}
-                  placeholder="Please provide as much detail as possible. Include steps to reproduce the issue, error messages, and any troubleshooting you've already tried."
+                  placeholder={t('support.newTicket.descriptionPlaceholder')}
                   rows={6}
                   className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none ${
                     errors.description ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
@@ -255,10 +258,10 @@ export const NewTicketPage = () => {
                 {/* Attachments */}
                 <div className="mt-4 pt-4 border-t border-gray-100 dark:border-white/10">
                   <div className="flex items-center justify-between mb-3">
-                    <p className="text-sm font-bold text-gray-500">Attachments</p>
+                    <p className="text-sm font-bold text-gray-500">{t('support.tickets.attachments')}</p>
                     <label className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-white/10 rounded-lg text-sm font-bold cursor-pointer hover:bg-gray-200 dark:hover:bg-white/20 transition-colors">
                       <Upload size={16} />
-                      Add Files
+                      {t('support.newTicket.addFiles')}
                       <input
                         type="file"
                         multiple
@@ -292,7 +295,7 @@ export const NewTicketPage = () => {
                   )}
 
                   <p className="text-xs text-gray-400 mt-2">
-                    Max 5 files, 10MB each. Accepted: images, PDF, DOC, TXT
+                    {t('support.newTicket.attachmentLimit')}
                   </p>
                 </div>
               </div>
@@ -300,8 +303,8 @@ export const NewTicketPage = () => {
               {/* Submit Button */}
               <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                 <p className="text-sm text-gray-500">
-                  By submitting, you agree to our{' '}
-                  <a href="/legal/privacy" className="text-paymint-green hover:underline">Privacy Policy</a>
+                  {t('support.newTicket.privacyAgreement')}{' '}
+                  <a href="/legal/privacy" className="text-paymint-green hover:underline">{t('common.privacyPolicy')}</a>
                 </p>
 
                 <div className="flex gap-3">
@@ -309,7 +312,7 @@ export const NewTicketPage = () => {
                     to="/support"
                     className="px-6 py-3 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </Link>
                   <button
                     type="submit"
@@ -319,12 +322,12 @@ export const NewTicketPage = () => {
                     {isSubmitting ? (
                       <>
                         <Loader2 size={18} className="animate-spin" />
-                        Submitting...
+                        {t('common.submitting')}
                       </>
                     ) : (
                       <>
                         <Send size={18} />
-                        Submit Ticket
+                        {t('support.newTicket.submit')}
                       </>
                     )}
                   </button>

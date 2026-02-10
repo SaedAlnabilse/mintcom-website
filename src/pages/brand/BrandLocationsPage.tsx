@@ -442,14 +442,14 @@ export function BrandLocationsPage() {
                     <Store size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
                     <p className="text-lg font-medium text-gray-900 dark:text-white">{t('owner.locations.noLocations')}</p>
                     <p className="text-sm text-gray-500 mt-1">
-                        {hasActiveFilters ? 'Try adjusting your filters' : t('brand.dashboard.addLocationsDesc')}
+                        {hasActiveFilters ? t('brand.dashboard.adjustFilters') : t('brand.dashboard.addLocationsDesc')}
                     </p>
                     {hasActiveFilters && (
                         <button
                             onClick={clearFilters}
                             className="mt-4 px-6 py-2 rounded-xl bg-paymint-green text-black text-sm font-bold hover:bg-emerald-400 transition-all"
                         >
-                            Clear Filters
+                            {t('attributes.filters.reset')}
                         </button>
                     )}
                 </div>
@@ -506,7 +506,7 @@ export function BrandLocationsPage() {
                                                     className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                                                 >
                                                     <Eye size={16} />
-                                                    View Dashboard
+                                                    {t('brand.dashboard.viewDashboard')}
                                                 </button>
                                                 <button
                                                     onClick={(e) => {
@@ -521,7 +521,7 @@ export function BrandLocationsPage() {
                                                     className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
                                                 >
                                                     <Trash2 size={16} />
-                                                    Dissolve Location
+                                                    {t('brand.dashboard.dissolveLocation')}
                                                 </button>
                                             </div>
                                         )}
@@ -532,14 +532,17 @@ export function BrandLocationsPage() {
                                 <div className="mb-6">
                                     <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${getStatusColor(loc.subscriptionStatus)}`}>
                                         <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
-                                        {loc.subscriptionStatus ? loc.subscriptionStatus.charAt(0).toUpperCase() + loc.subscriptionStatus.slice(1).toLowerCase() : ''}
+                                        {loc.subscriptionStatus === 'ACTIVE' ? t('common.active') :
+                                         loc.subscriptionStatus === 'INACTIVE' ? t('paymentMethods.messages.notActive') :
+                                         loc.subscriptionStatus === 'TRIAL' ? t('owner.locations.trial') :
+                                         loc.subscriptionStatus}
                                     </span>
                                 </div>
 
                                 {/* Stats Grid */}
                                 <div className="grid grid-cols-2 gap-3 mb-6">
                                     <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">Revenue</p>
+                                        <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">{t('brand.dashboard.revenue')}</p>
                                         <p className="text-base font-bold text-gray-900 dark:text-white">{formatCurrency(loc.totalRevenue || 0)}</p>
                                     </div>
                                     <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
@@ -561,7 +564,7 @@ export function BrandLocationsPage() {
                                     onClick={() => handleLocationClick(loc)}
                                     className="w-full py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-paymint-green hover:text-black transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-paymint-green"
                                 >
-                                    <span>Open Dashboard</span>
+                                    <span>{t('brand.dashboard.openDashboard')}</span>
                                     <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
                                 </button>
                             </div>
@@ -573,12 +576,12 @@ export function BrandLocationsPage() {
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-visible shadow-sm">
                     {/* Table Header */}
                     <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
-                        <div className="col-span-4">Location</div>
-                        <div className="col-span-2">Status</div>
-                        <div className="col-span-2 text-right">Revenue</div>
-                        <div className="col-span-1 text-right">Orders</div>
-                        <div className="col-span-1 text-right">Staff</div>
-                        <div className="col-span-2 text-right">Actions</div>
+                        <div className="col-span-4">{t('common.location')}</div>
+                        <div className="col-span-2">{t('common.status')}</div>
+                        <div className="col-span-2 text-right">{t('brand.dashboard.revenue')}</div>
+                        <div className="col-span-1 text-right">{t('brand.dashboard.orders')}</div>
+                        <div className="col-span-1 text-right">{t('brand.dashboard.staff')}</div>
+                        <div className="col-span-2 text-right">{t('common.actions')}</div>
                     </div>
 
                     {/* Table Body */}
@@ -600,7 +603,7 @@ export function BrandLocationsPage() {
                                             <h3 className="font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
                                                 {loc.name}
                                             </h3>
-                                            <p className="text-xs text-gray-500 mt-0.5">{loc.type ? loc.type.charAt(0).toUpperCase() + loc.type.slice(1).toLowerCase() : 'Restaurant'} - {loc.currency ? loc.currency.toUpperCase() : 'USD'}</p>
+                                            <p className="text-xs text-gray-500 mt-0.5">{loc.type ? loc.type.charAt(0).toUpperCase() + loc.type.slice(1).toLowerCase() : t('onboarding.step1.businessTypes.restaurant')} - {loc.currency ? loc.currency.toUpperCase() : 'USD'}</p>
                                         </div>
                                     </div>
 
@@ -608,7 +611,10 @@ export function BrandLocationsPage() {
                                     <div className="col-span-2 flex items-center">
                                         <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold tracking-wide border ${getStatusColor(loc.subscriptionStatus)}`}>
                                             <span className={`w-1.5 h-1.5 rounded-full ${loc.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' : loc.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
-                                            {loc.subscriptionStatus ? loc.subscriptionStatus.charAt(0).toUpperCase() + loc.subscriptionStatus.slice(1).toLowerCase() : ''}
+                                            {loc.subscriptionStatus === 'ACTIVE' ? t('common.active') :
+                                             loc.subscriptionStatus === 'INACTIVE' ? t('paymentMethods.messages.notActive') :
+                                             loc.subscriptionStatus === 'TRIAL' ? t('owner.locations.trial') :
+                                             loc.subscriptionStatus}
                                         </span>
                                     </div>
 
@@ -653,7 +659,7 @@ export function BrandLocationsPage() {
                                                     className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                                                 >
                                                     <Eye size={16} />
-                                                    View Dashboard
+                                                    {t('brand.dashboard.viewDashboard')}
                                                 </button>
                                                 <button
                                                     onClick={(e) => {
@@ -668,7 +674,7 @@ export function BrandLocationsPage() {
                                                     className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
                                                 >
                                                     <Trash2 size={16} />
-                                                    Dissolve Location
+                                                    {t('brand.dashboard.dissolveLocation')}
                                                 </button>
                                             </div>
                                         )}

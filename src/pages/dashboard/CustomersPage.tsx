@@ -112,7 +112,7 @@ export function CustomersPage() {
       setCustomers(response.data.customers || []);
       setTotalPages(response.data.totalPages || 1);
     } catch {
-      toast.error('Failed to load customers');
+      toast.error(t('customers.messages.loadFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -220,13 +220,13 @@ export function CustomersPage() {
       }));
 
       exportToCSV(exportData, 'customers_registry', {
-        name: 'Full Name',
-        phone: 'Phone',
-        email: 'Email',
-        tier: 'Tier level',
-        points: 'Loyalty Points',
-        totalSpent: `Total Spent (${currencySymbol})`,
-        visits: 'Total Visits'
+        name: t('customers.form.name'),
+        phone: t('customers.form.phone'),
+        email: t('customers.form.email'),
+        tier: t('rewards.items.tier', { defaultValue: 'Tier' }),
+        points: t('customers.details.points'),
+        totalSpent: `${t('customers.details.spent')} (${currencySymbol})`,
+        visits: t('customers.details.visits')
       });
       toast.success('Export complete', { id: 'export' });
     } catch {
@@ -240,7 +240,7 @@ export function CustomersPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-24 sm:pb-10">
+    <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-24 sm:pb-10" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
@@ -253,7 +253,7 @@ export function CustomersPage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
               </div>
-              <span className="text-xs font-bold text-paymint-green tracking-widest">Live</span>
+              <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
             </div>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('customers.title')}</h1>
@@ -292,7 +292,7 @@ export function CustomersPage() {
             </div>
             <div>
               <p className="text-xs font-black text-gray-400 tracking-widest">{t('customers.stats.total')}</p>
-              <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mt-0.5">{(Array.isArray(customers) ? customers : []).length}</p>
+              <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mt-0.5">{(Array.isArray(customers) ? customers : []).length.toLocaleString(t('common.locale'))}</p>
             </div>
           </div>
         </motion.div>
@@ -311,7 +311,7 @@ export function CustomersPage() {
             <div>
               <p className="text-xs font-black text-gray-400 tracking-widest">{t('customers.stats.points')}</p>
               <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mt-0.5">
-                {(Array.isArray(customers) ? customers : []).reduce((acc, curr) => acc + (curr.points || 0), 0).toLocaleString()}
+                {(Array.isArray(customers) ? customers : []).reduce((acc, curr) => acc + (curr.points || 0), 0).toLocaleString(t('common.locale'))}
               </p>
             </div>
           </div>
@@ -408,7 +408,7 @@ export function CustomersPage() {
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('customers.details.spent')}</p>
-                      <p className="text-sm font-bold text-gray-900 dark:text-white">{formatCurrency(customer.totalSpent)}</p>
+                      <p className="text-sm font-bold text-gray-900 dark:text-white">{customer.totalSpent.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}</p>
                     </div>
                   </div>
 
@@ -492,7 +492,7 @@ export function CustomersPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <p className="font-black text-gray-900 dark:text-white text-sm">{formatCurrency(customer.totalSpent)}</p>
+                        <p className="font-black text-gray-900 dark:text-white text-sm">{customer.totalSpent.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}</p>
                         <p className="text-xs text-paymint-green font-black tracking-widest">{t('common.active')}</p>
                       </td>
                       <td className="px-6 py-4 text-center" onClick={(e) => e.stopPropagation()}>
@@ -536,7 +536,7 @@ export function CustomersPage() {
                                   className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
                                 >
                                   <Eye size={14} className="text-paymint-green" />
-                                  View Profile
+                                  {t('customers.messages.viewProfile')}
                                 </button>
                                 <button
                                   onClick={() => {
@@ -546,7 +546,7 @@ export function CustomersPage() {
                                   className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-paymint-red hover:bg-paymint-red/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
                                 >
                                   <Trash2 size={14} />
-                                  Delete Customer
+                                  {t('customers.messages.deleteCustomer')}
                                 </button>
                               </div>
                             )}
@@ -576,11 +576,11 @@ export function CustomersPage() {
             >
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                  {editingCustomer ? 'Edit Customer' : 'New Customer'}
+                  {editingCustomer ? t('customers.editCustomer') : t('customers.newCustomer')}
                 </h2>
                 <button
                   onClick={() => setShowModal(false)}
-                  aria-label="Close modal"
+                  aria-label={t('common.close')}
                   className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl border border-gray-200 dark:border-white/5 shadow-sm active:scale-90"
                 >
                   <X size={20} />
@@ -589,14 +589,14 @@ export function CustomersPage() {
               <form onSubmit={handleSubmit(handleSaveCustomer)} className="p-8 space-y-8">
                 <div className="space-y-3">
                   <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1 flex items-center">
-                    Name <span className="text-paymint-red mx-1">*</span>
+                    {t('customers.form.name')} <span className="text-paymint-red mx-1">*</span>
                   </label>
                   <div className="relative group">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-paymint-green transition-colors" />
                     <input
                       type="text"
                       {...register('name')}
-                      placeholder="e.g. Alexander Hamilton"
+                      placeholder={t('customers.form.namePlaceholder')}
                       className={`w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                     />
                   </div>
@@ -606,22 +606,22 @@ export function CustomersPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-3">
                     <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">
-                      Phone
+                      {t('customers.form.phone')}
                     </label>
                     <input
                       type="tel"
                       {...register('phone')}
-                      placeholder="+000 000 000"
+                      placeholder={t('customers.form.phonePlaceholder')}
                       className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.phone ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                     />
                     {errors.phone && <p className="text-paymint-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.phone.message}</p>}
                   </div>
                   <div className="space-y-3">
-                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">Email</label>
+                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">{t('customers.form.email')}</label>
                     <input
                       type="email"
                       {...register('email')}
-                      placeholder="client@example.com"
+                      placeholder={t('customers.form.emailPlaceholder')}
                       className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                     />
                     {errors.email && <p className="text-paymint-red text-xs px-1 font-black tracking-widest mt-1.5">{errors.email.message}</p>}
@@ -629,11 +629,11 @@ export function CustomersPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">Address</label>
+                  <label className="block text-xs font-black text-gray-400 tracking-[0.2em] px-1">{t('customers.form.address')}</label>
                   <input
                     type="text"
                     {...register('address')}
-                    placeholder="Enter address..."
+                    placeholder={t('customers.form.addressPlaceholder')}
                     className="w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white font-bold focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm"
                   />
                 </div>
@@ -644,14 +644,14 @@ export function CustomersPage() {
                     onClick={() => setShowModal(false)}
                     className="flex-1 py-4 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black tracking-[0.2em] text-xs rounded-2xl hover:text-gray-900 dark:hover:text-white transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm"
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
                     className="flex-[2] py-4 bg-paymint-green text-black font-black rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 tracking-[0.2em] text-xs shadow-lg shadow-paymint-green/20"
                   >
-                    {editingCustomer ? 'Update Customer' : 'Save Customer'}
+                    {editingCustomer ? t('customers.form.updateCustomer') : t('customers.form.saveCustomer')}
                   </button>
                 </div>
               </form>
@@ -685,8 +685,8 @@ export function CustomersPage() {
                 <div className="w-20 h-20 bg-paymint-green/10 text-paymint-green rounded-[2rem] flex items-center justify-center mx-auto mb-6">
                   <Award size={40} />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Adjust Loyalty</h2>
-                <p className="text-gray-500 font-bold mt-1 text-xs tracking-widest">Partner: {selectedCustomer.name}</p>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('customers.details.adjustLoyalty')}</h2>
+                <p className="text-gray-500 font-bold mt-1 text-xs tracking-widest">{t('customers.details.partner')}: {selectedCustomer.name}</p>
               </div>
               <div className="p-8 space-y-8">
                 <div className="flex gap-2 p-1 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
@@ -702,7 +702,7 @@ export function CustomersPage() {
                         : 'text-gray-400'
                         }`}
                     >
-                      {action}
+                      {t(`customers.details.${action}`)}
                     </button>
                   ))}
                 </div>
@@ -736,14 +736,14 @@ export function CustomersPage() {
                           animate={{ opacity: 1 }}
                           className="text-center text-xs font-black text-gray-400 tracking-widest"
                         >
-                          Points Allocation
+                          {t('customers.details.pointsAllocation')}
                         </motion.p>
                       )}
                     </AnimatePresence>
                   </div>
                 </div>
                 <button onClick={handlePointsUpdate} disabled={isSubmitting || pointsAmount <= 0} className={`w-full py-4 font-black rounded-2xl hover:scale-[1.02] tracking-widest text-xs transition-all shadow-lg ${pointsAction === 'deduct' ? 'bg-paymint-red text-white shadow-paymint-red/20' : 'bg-paymint-green text-black shadow-paymint-green/20'}`}>
-                  Confirm Adjustment
+                  {t('customers.details.confirmAdjustment')}
                 </button>
               </div>
             </motion.div>
@@ -766,7 +766,7 @@ export function CustomersPage() {
                       <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{selectedCustomer.name}</h2>
                       <div className="mt-2 flex items-center gap-2 text-paymint-green">
                         <Award size={14} className="animate-pulse" />
-                        <p className="text-lg font-black tracking-tight">{selectedCustomer.points} Points</p>
+                        <p className="text-lg font-black tracking-tight">{selectedCustomer.points} {t('rewards.points')}</p>
                       </div>
                     </div>
                   </div>
@@ -777,9 +777,9 @@ export function CustomersPage() {
 
                 <div className="grid grid-cols-3 gap-6">
                   {[
-                    { label: 'Total Spent', value: formatCurrency(selectedCustomer.totalSpent), icon: ShoppingBag },
-                    { label: 'Visits', value: `${selectedCustomer.totalVisits} Orders`, icon: Calendar },
-                    { label: 'Points', value: `${selectedCustomer.points} Pts`, icon: Award },
+                    { label: t('customers.details.spent'), value: selectedCustomer.totalSpent.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + currencySymbol, icon: ShoppingBag },
+                    { label: t('customers.details.visits'), value: `${selectedCustomer.totalVisits.toLocaleString(t('common.locale'))} ${t('customers.details.orders')}`, icon: Calendar },
+                    { label: t('customers.details.points'), value: `${selectedCustomer.points.toLocaleString(t('common.locale'))} ${t('rewards.points')}`, icon: Award },
                   ].map((stat, i) => (
                     <div key={i} className="p-5 bg-white dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
                       <p className="text-xs font-black text-gray-400 tracking-widest mb-3">{stat.label}</p>
@@ -793,28 +793,28 @@ export function CustomersPage() {
                 <div className="grid grid-cols-2 gap-10">
                   <div className="space-y-6">
                     <h3 className="text-xs font-black text-gray-400 tracking-[0.2em] flex items-center gap-2">
-                      <Mail size={12} className="text-paymint-green" /> Contact Info
+                      <Mail size={12} className="text-paymint-green" /> {t('customers.details.contactInfo')}
                     </h3>
                     <div className="space-y-4">
                       <div className="flex items-center gap-3 text-sm font-bold text-gray-700 dark:text-gray-300">
                         <Phone size={14} className="opacity-30" /> {selectedCustomer.phone}
                       </div>
                       <div className="flex items-center gap-3 text-sm font-bold text-gray-700 dark:text-gray-300">
-                        <Mail size={14} className="opacity-30" /> {selectedCustomer.email || 'No email'}
+                        <Mail size={14} className="opacity-30" /> {selectedCustomer.email || t('owner.staff.noEmail')}
                       </div>
                       <div className="flex items-center gap-3 text-sm font-bold text-gray-700 dark:text-gray-300">
-                        <MapPin size={14} className="opacity-30" /> {selectedCustomer.address || 'No address'}
+                        <MapPin size={14} className="opacity-30" /> {selectedCustomer.address || t('activity.internal')}
                       </div>
                     </div>
                   </div>
                   <div className="space-y-6">
                     <h3 className="text-xs font-black text-gray-400 tracking-[0.2em] flex items-center gap-2">
-                      <History size={12} className="text-paymint-green" /> Insights
+                      <History size={12} className="text-paymint-green" /> {t('customers.details.insights')}
                     </h3>
                     <div className="p-6 bg-paymint-green/5 border border-paymint-green/10 rounded-2xl">
-                      <p className="text-xs font-black text-paymint-green tracking-widest mb-2">Notes</p>
+                      <p className="text-xs font-black text-paymint-green tracking-widest mb-2">{t('customers.details.notes')}</p>
                       <p className="text-sm font-medium text-gray-600 dark:text-gray-400 leading-relaxed">
-                        {selectedCustomer.notes || "No notes."}
+                        {selectedCustomer.notes || t('customers.details.noNotes')}
                       </p>
                     </div>
                   </div>
@@ -825,10 +825,10 @@ export function CustomersPage() {
                     <Trash2 size={18} />
                   </button>
                   <button onClick={() => { setShowDetailModal(false); openEditModal(selectedCustomer); }} className="flex-1 py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-2xl text-xs tracking-[0.2em] transition-all hover:scale-[1.02] shadow-lg active:scale-95">
-                    Edit
+                    {t('common.edit')}
                   </button>
                   <button onClick={() => { setShowDetailModal(false); setShowPointsModal(true); setPointsAmount(0); }} className="flex-1 py-4 bg-paymint-green text-black font-black rounded-2xl text-xs tracking-[0.2em] transition-all hover:scale-[1.02] shadow-lg shadow-paymint-green/20 active:scale-95">
-                    Points
+                    {t('customers.details.points')}
                   </button>
                 </div>
               </div>

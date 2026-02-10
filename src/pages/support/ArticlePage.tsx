@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft,
@@ -17,276 +18,277 @@ import {
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 
-// All articles data
-const allArticles: Record<string, {
-  id: string;
-  title: string;
-  category: string;
-  categoryId: string;
-  readTime: string;
-  views: string;
-  lastUpdated: string;
-  content: string[];
-  relatedArticles: string[];
-}> = {
-  'gs-1': {
-    id: 'gs-1',
-    title: 'Creating your Paymint account',
-    category: 'Getting Started',
-    categoryId: 'getting-started',
-    readTime: '5 min',
-    views: '8.2k',
-    lastUpdated: 'January 15, 2025',
-    content: [
-      '## Getting Started with Paymint',
-      'Welcome to Paymint! This guide will walk you through creating your business account and getting set up for success.',
-      '### Step 1: Sign Up',
-      'Visit paymint.com and click "Get Started" or "Sign Up". You can create an account using your email address or sign up with Google for faster access.',
-      '### Step 2: Verify Your Email',
-      'After signing up, you\'ll receive a verification email. Click the link in the email to verify your account. If you don\'t see the email, check your spam folder.',
-      '### Step 3: Complete Your Business Profile',
-      'Once verified, you\'ll be prompted to enter your business details:',
-      '- **Business Name**: Your official business name',
-      '- **Business Type**: Restaurant, Retail, Cafe, etc.',
-      '- **Currency**: Your primary operating currency',
-      '- **Timezone**: For accurate reporting',
-      '### Step 4: Create Your First Establishment',
-      'An establishment represents a physical location. You can add multiple establishments later if you have multiple locations.',
-      '### Step 5: Download the POS App',
-      'Download the Paymint POS app from the App Store or Google Play Store on your tablet device.',
-      '### What\'s Next?',
-      'After completing setup, you\'re ready to add products, invite team members, and start taking orders!'
-    ],
-    relatedArticles: ['gs-2', 'gs-3', 'gs-4']
-  },
-  'gs-2': {
-    id: 'gs-2',
-    title: 'Setting up your first establishment',
-    category: 'Getting Started',
-    categoryId: 'getting-started',
-    readTime: '8 min',
-    views: '6.5k',
-    lastUpdated: 'January 20, 2025',
-    content: [
-      '## Setting Up Your Establishment',
-      'An establishment in Paymint represents a physical business location. This guide covers all the settings you need to configure.',
-      '### Basic Information',
-      'Navigate to Settings > Establishment to configure:',
-      '- **Name**: The location name (e.g., "Downtown Branch")',
-      '- **Address**: Physical address for receipts',
-      '- **Phone**: Contact number',
-      '- **Email**: Location-specific email',
-      '### Business Hours',
-      'Set your operating hours for each day of the week. This helps with:',
-      '- Shift scheduling',
-      '- Report filtering',
-      '- Customer expectations',
-      '### Tax Configuration',
-      'Configure your tax settings:',
-      '- **Tax Rate**: Your local sales tax percentage',
-      '- **Tax Name**: What appears on receipts (e.g., "VAT", "Sales Tax")',
-      '- **Tax Inclusive**: Whether prices include tax',
-      '### Receipt Settings',
-      'Customize your receipts with:',
-      '- Business logo',
-      '- Header message',
-      '- Footer message',
-      '- Social media handles',
-      '### Payment Methods',
-      'Enable the payment methods you accept:',
-      '- Cash',
-      '- Credit/Debit Cards',
-      '- Mobile Payments',
-      '- Custom payment types'
-    ],
-    relatedArticles: ['gs-1', 'gs-5', 'ft-8']
-  },
-  'tc-1': {
-    id: 'tc-1',
-    title: 'Connecting a Bluetooth receipt printer',
-    category: 'Technical Support',
-    categoryId: 'technical',
-    readTime: '8 min',
-    views: '5.6k',
-    lastUpdated: 'February 1, 2025',
-    content: [
-      '## Bluetooth Printer Setup Guide',
-      'This guide covers connecting thermal receipt printers to your Paymint POS tablet via Bluetooth.',
-      '### Supported Printers',
-      'Paymint supports most ESC/POS compatible thermal printers, including:',
-      '- Munbyn ITPP047, ITPP068',
-      '- Epson TM-T20III, TM-T88VI',
-      '- Star Micronics TSP143, TSP654',
-      '- Generic 80mm/58mm thermal printers',
-      '### Before You Begin',
-      'Ensure your printer:',
-      '- Is fully charged or plugged in',
-      '- Has paper loaded correctly',
-      '- Is in Bluetooth pairing mode (check manufacturer instructions)',
-      '### Step-by-Step Connection',
-      '**Step 1: Enable Bluetooth**',
-      'On your tablet, go to Settings > Bluetooth and ensure it\'s turned on.',
-      '**Step 2: Put Printer in Pairing Mode**',
-      'Most printers enter pairing mode by holding the power button for 5 seconds until the LED flashes.',
-      '**Step 3: Pair from Tablet Settings**',
-      'In your tablet\'s Bluetooth settings, find and tap your printer name to pair.',
-      '**Step 4: Connect in Paymint**',
-      'Open Paymint > Settings > Printers > Add Printer > Select your paired printer.',
-      '**Step 5: Test Print**',
-      'Tap "Test Print" to verify the connection.',
-      '### Troubleshooting',
-      '**Printer not appearing?**',
-      '- Turn off both devices, wait 30 seconds, turn printer on first, then tablet',
-      '- Ensure printer is not connected to another device',
-      '- Check printer is in pairing mode',
-      '**Pairing fails?**',
-      '- Remove printer from tablet\'s Bluetooth list and try again',
-      '- Some printers require a PIN (try 0000 or 1234)',
-      '**Connected but not printing?**',
-      '- Ensure correct printer model is selected in Paymint',
-      '- Check paper is loaded correctly',
-      '- Try a test print from printer\'s own menu'
-    ],
-    relatedArticles: ['tc-5', 'tc-6', 'gs-5']
-  },
-  'ft-1': {
-    id: 'ft-1',
-    title: 'Understanding sales reports',
-    category: 'Features & How-To',
-    categoryId: 'features',
-    readTime: '12 min',
-    views: '6.2k',
-    lastUpdated: 'January 28, 2025',
-    content: [
-      '## Mastering Paymint Reports',
-      'Paymint provides comprehensive reporting to help you understand your business performance.',
-      '### Accessing Reports',
-      'Navigate to Reports from the main dashboard or sidebar. Reports are available on both the web dashboard and mobile app.',
-      '### Sales Summary Report',
-      'The main dashboard shows:',
-      '- **Total Revenue**: Gross sales for the period',
-      '- **Net Sales**: Revenue minus refunds and discounts',
-      '- **Orders Count**: Number of transactions',
-      '- **Average Order Value**: Net sales divided by orders',
-      '### Date Range Selection',
-      'Filter reports by:',
-      '- Today / Yesterday',
-      '- This Week / Last Week',
-      '- This Month / Last Month',
-      '- Custom date range',
-      '### Report Types',
-      '**Sales Report**',
-      'Detailed breakdown of all sales with payment methods, discounts, and taxes.',
-      '**Items Report**',
-      'See your best and worst selling items, quantities sold, and revenue per item.',
-      '**Staff Report**',
-      'Track sales performance by employee, including order counts and totals.',
-      '**Payments Report**',
-      'Breakdown by payment method (cash, card, etc.) with totals.',
-      '**Discounts Report**',
-      'Track discount usage, amounts, and frequency.',
-      '**Shifts Report**',
-      'View cash drawer activity, pay-ins, pay-outs, and discrepancies.',
-      '### Exporting Data',
-      'All reports can be exported to:',
-      '- Excel (.xlsx)',
-      '- CSV',
-      '- PDF',
-      'Click the Export button in the top right of any report.',
-      '### Tips for Analysis',
-      '- Compare periods to identify trends',
-      '- Use the Items report to optimize your menu',
-      '- Monitor the Shifts report for cash handling issues',
-      '- Track Peak Hours to optimize staffing'
-    ],
-    relatedArticles: ['ft-10', 'ft-4', 'ft-5']
-  },
-  'bl-2': {
-    id: 'bl-2',
-    title: 'Updating your payment method',
-    category: 'Billing & Payments',
-    categoryId: 'billing',
-    readTime: '3 min',
-    views: '3.8k',
-    lastUpdated: 'February 5, 2025',
-    content: [
-      '## Managing Your Payment Method',
-      'Keep your billing information up to date to ensure uninterrupted service.',
-      '### Accessing Billing Settings',
-      '1. Log in to the Paymint web dashboard',
-      '2. Click on your profile icon in the top right',
-      '3. Select "Billing" or navigate to Owner Portal > Billing',
-      '### Adding a New Card',
-      '1. Click "Add Payment Method"',
-      '2. Enter your card details:',
-      '   - Card number',
-      '   - Expiration date',
-      '   - CVV/CVC',
-      '   - Billing address',
-      '3. Click "Save Card"',
-      '### Setting a Default Card',
-      'If you have multiple cards on file:',
-      '1. Find the card you want as default',
-      '2. Click "Set as Default"',
-      '3. This card will be used for future charges',
-      '### Removing a Card',
-      '1. Find the card you want to remove',
-      '2. Click the delete icon or "Remove"',
-      '3. Confirm the removal',
-      '**Note**: You cannot remove your only payment method while on an active subscription.',
-      '### Troubleshooting Failed Payments',
-      'If your payment fails:',
-      '1. Verify card details are correct',
-      '2. Ensure sufficient funds are available',
-      '3. Check if your bank is blocking the transaction',
-      '4. Try a different payment method',
-      '5. Contact your bank if issues persist'
-    ],
-    relatedArticles: ['bl-1', 'bl-3', 'bl-7']
-  }
-};
-
-// Add more basic article stubs for all the article IDs we reference
-const articleStubs = [
-  'gs-3', 'gs-4', 'gs-5', 'gs-6', 'gs-7', 'gs-8',
-  'bl-1', 'bl-3', 'bl-4', 'bl-5', 'bl-6', 'bl-7', 'bl-8',
-  'tc-2', 'tc-3', 'tc-4', 'tc-5', 'tc-6', 'tc-7', 'tc-8', 'tc-9', 'tc-10',
-  'ft-2', 'ft-3', 'ft-4', 'ft-5', 'ft-6', 'ft-7', 'ft-8', 'ft-9', 'ft-10'
-];
-
-// Generate stub articles for any not fully defined
-articleStubs.forEach(id => {
-  if (!allArticles[id]) {
-    const prefix = id.split('-')[0];
-    const categoryMap: Record<string, { name: string; id: string }> = {
-      'gs': { name: 'Getting Started', id: 'getting-started' },
-      'bl': { name: 'Billing & Payments', id: 'billing' },
-      'tc': { name: 'Technical Support', id: 'technical' },
-      'ft': { name: 'Features & How-To', id: 'features' }
-    };
-    const cat = categoryMap[prefix];
-    allArticles[id] = {
-      id,
-      title: `Article ${id}`,
-      category: cat.name,
-      categoryId: cat.id,
-      readTime: '5 min',
-      views: '1.0k',
-      lastUpdated: 'February 2025',
-      content: [
-        '## Article Content',
-        'This article is coming soon. Please check back later or contact support if you need immediate assistance.',
-        '### Need Help Now?',
-        'If you need help with this topic, please submit a support ticket and our team will assist you.'
-      ],
-      relatedArticles: []
-    };
-  }
-});
-
 export const ArticlePage = () => {
+  const { t } = useTranslation(['support', 'common']);
   const { articleId } = useParams<{ articleId: string }>();
   const [helpful, setHelpful] = useState<'yes' | 'no' | null>(null);
+
+  // All articles data
+  const allArticles: Record<string, {
+    id: string;
+    title: string;
+    category: string;
+    categoryId: string;
+    readTime: string;
+    views: string;
+    lastUpdated: string;
+    content: string[];
+    relatedArticles: string[];
+  }> = {
+    'gs-1': {
+      id: 'gs-1',
+      title: t('support.popularArticles.account'),
+      category: t('support.categories.gettingStarted'),
+      categoryId: 'getting-started',
+      readTime: '5 min',
+      views: '8.2k',
+      lastUpdated: 'January 15, 2025',
+      content: [
+        `## ${t('support.articles.gs1.h1')}`,
+        t('support.articles.gs1.p1'),
+        `### ${t('support.articles.gs1.h2')}`,
+        t('support.articles.gs1.p2'),
+        `### ${t('support.articles.gs1.h3')}`,
+        t('support.articles.gs1.p3'),
+        `### ${t('support.articles.gs1.h4')}`,
+        t('support.articles.gs1.p4'),
+        `- **${t('support.articles.gs1.li1_label')}**: ${t('support.articles.gs1.li1_desc')}`,
+        `- **${t('support.articles.gs1.li2_label')}**: ${t('support.articles.gs1.li2_desc')}`,
+        `- **${t('support.articles.gs1.li3_label')}**: ${t('support.articles.gs1.li3_desc')}`,
+        `- **${t('support.articles.gs1.li4_label')}**: ${t('support.articles.gs1.li4_desc')}`,
+        `### ${t('support.articles.gs1.h5')}`,
+        t('support.articles.gs1.p5'),
+        `### ${t('support.articles.gs1.h6')}`,
+        t('support.articles.gs1.p6'),
+        `### ${t('support.articles.gs1.h7')}`,
+        t('support.articles.gs1.p7')
+      ],
+      relatedArticles: ['gs-2', 'gs-3', 'gs-4']
+    },
+    'gs-2': {
+      id: 'gs-2',
+      title: t('support.popularArticles.establishment'),
+      category: t('support.categories.gettingStarted'),
+      categoryId: 'getting-started',
+      readTime: '8 min',
+      views: '6.5k',
+      lastUpdated: 'January 20, 2025',
+      content: [
+        `## ${t('support.articles.gs2.h1')}`,
+        t('support.articles.gs2.p1'),
+        `### ${t('support.articles.gs2.h2')}`,
+        t('support.articles.gs2.p2'),
+        `- **${t('support.articles.gs2.li1_label')}**: ${t('support.articles.gs2.li1_desc')}`,
+        `- **${t('support.articles.gs2.li2_label')}**: ${t('support.articles.gs2.li2_desc')}`,
+        `- **${t('support.articles.gs2.li3_label')}**: ${t('support.articles.gs2.li3_desc')}`,
+        `- **${t('support.articles.gs2.li4_label')}**: ${t('support.articles.gs2.li4_desc')}`,
+        `### ${t('support.articles.gs2.h3')}`,
+        t('support.articles.gs2.p3'),
+        `- ${t('support.articles.gs2.li5')}`,
+        `- ${t('support.articles.gs2.li6')}`,
+        `- ${t('support.articles.gs2.li7')}`,
+        `### ${t('support.articles.gs2.h4')}`,
+        t('support.articles.gs2.p4'),
+        `- **${t('support.articles.gs2.li8_label')}**: ${t('support.articles.gs2.li8_desc')}`,
+        `- **${t('support.articles.gs2.li9_label')}**: ${t('support.articles.gs2.li9_desc')}`,
+        `- **${t('support.articles.gs2.li10_label')}**: ${t('support.articles.gs2.li10_desc')}`,
+        `### ${t('support.articles.gs2.h5')}`,
+        t('support.articles.gs2.p5'),
+        `- ${t('support.articles.gs2.li11')}`,
+        `- ${t('support.articles.gs2.li12')}`,
+        `- ${t('support.articles.gs2.li13')}`,
+        `- ${t('support.articles.gs2.li14')}`,
+        `### ${t('support.articles.gs2.h6')}`,
+        t('support.articles.gs2.p6'),
+        `- ${t('support.articles.gs2.li15')}`,
+        `- ${t('support.articles.gs2.li16')}`,
+        `- ${t('support.articles.gs2.li17')}`,
+        `- ${t('support.articles.gs2.li18')}`
+      ],
+      relatedArticles: ['gs-1', 'gs-5', 'ft-8']
+    },
+    'tc-1': {
+      id: 'tc-1',
+      title: t('support.popularArticles.printer'),
+      category: t('support.categories.technical'),
+      categoryId: 'technical',
+      readTime: '8 min',
+      views: '5.6k',
+      lastUpdated: 'February 1, 2025',
+      content: [
+        `## ${t('support.articles.tc1.h1')}`,
+        t('support.articles.tc1.p1'),
+        `### ${t('support.articles.tc1.h2')}`,
+        t('support.articles.tc1.p2'),
+        `- ${t('support.articles.tc1.li1')}`,
+        `- ${t('support.articles.tc1.li2')}`,
+        `- ${t('support.articles.tc1.li3')}`,
+        `- ${t('support.articles.tc1.li4')}`,
+        `### ${t('support.articles.tc1.h3')}`,
+        t('support.articles.tc1.p3'),
+        `- ${t('support.articles.tc1.li5')}`,
+        `- ${t('support.articles.tc1.li6')}`,
+        `- ${t('support.articles.tc1.li7')}`,
+        `### ${t('support.articles.tc1.h4')}`,
+        `**${t('support.articles.tc1.step1_label')}**`,
+        t('support.articles.tc1.step1_desc'),
+        `**${t('support.articles.tc1.step2_label')}**`,
+        t('support.articles.tc1.step2_desc'),
+        `**${t('support.articles.tc1.step3_label')}**`,
+        t('support.articles.tc1.step3_desc'),
+        `**${t('support.articles.tc1.step4_label')}**`,
+        t('support.articles.tc1.step4_desc'),
+        `**${t('support.articles.tc1.step5_label')}**`,
+        t('support.articles.tc1.step5_desc'),
+        `### ${t('support.articles.tc1.h5')}`,
+        `**${t('support.articles.tc1.q1')}**`,
+        `- ${t('support.articles.tc1.a1_1')}`,
+        `- ${t('support.articles.tc1.a1_2')}`,
+        `- ${t('support.articles.tc1.a1_3')}`,
+        `**${t('support.articles.tc1.q2')}**`,
+        `- ${t('support.articles.tc1.a2_1')}`,
+        `- ${t('support.articles.tc1.a2_2')}`,
+        `**${t('support.articles.tc1.q3')}**`,
+        `- ${t('support.articles.tc1.a3_1')}`,
+        `- ${t('support.articles.tc1.a3_2')}`,
+        `- ${t('support.articles.tc1.a3_3')}`
+      ],
+      relatedArticles: ['tc-5', 'tc-6', 'gs-5']
+    },
+    'ft-1': {
+      id: 'ft-1',
+      title: t('support.popularArticles.reports'),
+      category: t('support.categories.features'),
+      categoryId: 'features',
+      readTime: '12 min',
+      views: '6.2k',
+      lastUpdated: 'January 28, 2025',
+      content: [
+        `## ${t('support.articles.ft1.h1')}`,
+        t('support.articles.ft1.p1'),
+        `### ${t('support.articles.ft1.h2')}`,
+        t('support.articles.ft1.p2'),
+        `### ${t('support.articles.ft1.h3')}`,
+        t('support.articles.ft1.p3'),
+        `- **${t('support.articles.ft1.li1_label')}**: ${t('support.articles.ft1.li1_desc')}`,
+        `- **${t('support.articles.ft1.li2_label')}**: ${t('support.articles.ft1.li2_desc')}`,
+        `- **${t('support.articles.ft1.li3_label')}**: ${t('support.articles.ft1.li3_desc')}`,
+        `- **${t('support.articles.ft1.li4_label')}**: ${t('support.articles.ft1.li4_desc')}`,
+        `### ${t('support.articles.ft1.h4')}`,
+        t('support.articles.ft1.p4'),
+        `- ${t('support.articles.ft1.li5')}`,
+        `- ${t('support.articles.ft1.li6')}`,
+        `- ${t('support.articles.ft1.li7')}`,
+        `- ${t('support.articles.ft1.li8')}`,
+        `### ${t('support.articles.ft1.h5')}`,
+        `**${t('support.articles.ft1.type1_label')}**`,
+        t('support.articles.ft1.type1_desc'),
+        `**${t('support.articles.ft1.type2_label')}**`,
+        t('support.articles.ft1.type2_desc'),
+        `**${t('support.articles.ft1.type3_label')}**`,
+        t('support.articles.ft1.type3_desc'),
+        `**${t('support.articles.ft1.type4_label')}**`,
+        t('support.articles.ft1.type4_desc'),
+        `**${t('support.articles.ft1.type5_label')}**`,
+        t('support.articles.ft1.type5_desc'),
+        `**${t('support.articles.ft1.type6_label')}**`,
+        t('support.articles.ft1.type6_desc'),
+        `### ${t('support.articles.ft1.h6')}`,
+        t('support.articles.ft1.p5'),
+        `- ${t('support.articles.ft1.li9')}`,
+        `- ${t('support.articles.ft1.li10')}`,
+        `- ${t('support.articles.ft1.li11')}`,
+        t('support.articles.ft1.p6'),
+        `### ${t('support.articles.ft1.h7')}`,
+        `- ${t('support.articles.ft1.li12')}`,
+        `- ${t('support.articles.ft1.li13')}`,
+        `- ${t('support.articles.ft1.li14')}`,
+        `- ${t('support.articles.ft1.li15')}`
+      ],
+      relatedArticles: ['ft-10', 'ft-4', 'ft-5']
+    },
+    'bl-2': {
+      id: 'bl-2',
+      title: t('support.popularArticles.payment'),
+      category: t('support.categories.billing'),
+      categoryId: 'billing',
+      readTime: '3 min',
+      views: '3.8k',
+      lastUpdated: 'February 5, 2025',
+      content: [
+        `## ${t('support.articles.bl2.h1')}`,
+        t('support.articles.bl2.p1'),
+        `### ${t('support.articles.bl2.h2')}`,
+        `1. ${t('support.articles.bl2.li1')}`,
+        `2. ${t('support.articles.bl2.li2')}`,
+        `3. ${t('support.articles.bl2.li3')}`,
+        `### ${t('support.articles.bl2.h3')}`,
+        `1. ${t('support.articles.bl2.li4')}`,
+        `2. ${t('support.articles.bl2.li5')}`,
+        `- ${t('support.articles.bl2.li6')}`,
+        `- ${t('support.articles.bl2.li7')}`,
+        `- ${t('support.articles.bl2.li8')}`,
+        `- ${t('support.articles.bl2.li9')}`,
+        `3. ${t('support.articles.bl2.li10')}`,
+        `### ${t('support.articles.bl2.h4')}`,
+        t('support.articles.bl2.p2'),
+        `1. ${t('support.articles.bl2.li11')}`,
+        `2. ${t('support.articles.bl2.li12')}`,
+        `3. ${t('support.articles.bl2.li13')}`,
+        `### ${t('support.articles.bl2.h5')}`,
+        `1. ${t('support.articles.bl2.li14')}`,
+        `2. ${t('support.articles.bl2.li15')}`,
+        `3. ${t('support.articles.bl2.li16')}`,
+        `**${t('support.articles.bl2.note_label')}**: ${t('support.articles.bl2.note_desc')}`,
+        `### ${t('support.articles.bl2.h6')}`,
+        t('support.articles.bl2.p3'),
+        `1. ${t('support.articles.bl2.li17')}`,
+        `2. ${t('support.articles.bl2.li18')}`,
+        `3. ${t('support.articles.bl2.li19')}`,
+        `4. ${t('support.articles.bl2.li20')}`,
+        `5. ${t('support.articles.bl2.li21')}`
+      ],
+      relatedArticles: ['bl-1', 'bl-3', 'bl-7']
+    }
+  };
+
+  // Add more basic article stubs for all the article IDs we reference
+  const articleStubs = [
+    'gs-3', 'gs-4', 'gs-5', 'gs-6', 'gs-7', 'gs-8',
+    'bl-1', 'bl-3', 'bl-4', 'bl-5', 'bl-6', 'bl-7', 'bl-8',
+    'tc-2', 'tc-3', 'tc-4', 'tc-5', 'tc-6', 'tc-7', 'tc-8', 'tc-9', 'tc-10',
+    'ft-2', 'ft-3', 'ft-4', 'ft-5', 'ft-6', 'ft-7', 'ft-8', 'ft-9', 'ft-10'
+  ];
+
+  // Generate stub articles for any not fully defined
+  articleStubs.forEach(id => {
+    if (!allArticles[id]) {
+      const prefix = id.split('-')[0];
+      const categoryMap: Record<string, { name: string; id: string }> = {
+        'gs': { name: t('support.categories.gettingStarted'), id: 'getting-started' },
+        'bl': { name: t('support.categories.billing'), id: 'billing' },
+        'tc': { name: t('support.categories.technical'), id: 'technical' },
+        'ft': { name: t('support.categories.features'), id: 'features' }
+      };
+      const cat = categoryMap[prefix];
+      allArticles[id] = {
+        id,
+        title: `${t('support.articles.stubTitle')} ${id}`,
+        category: cat.name,
+        categoryId: cat.id,
+        readTime: '5 min',
+        views: '1.0k',
+        lastUpdated: 'February 2025',
+        content: [
+          `## ${t('support.articles.stubContentH1')}`,
+          t('support.articles.stubContentP1'),
+          `### ${t('support.articles.stubContentH2')}`,
+          t('support.articles.stubContentP2')
+        ],
+        relatedArticles: []
+      };
+    }
+  });
 
   const article = articleId ? allArticles[articleId] : null;
 
@@ -296,10 +298,10 @@ export const ArticlePage = () => {
         <Navbar />
         <main className="pt-28 pb-20">
           <div className="container mx-auto px-8 md:px-16 lg:px-24 text-center">
-            <h1 className="text-3xl font-black mb-4">Article Not Found</h1>
-            <p className="text-gray-500 mb-8">The article you're looking for doesn't exist.</p>
+            <h1 className="text-3xl font-black mb-4">{t('support.articles.notFound')}</h1>
+            <p className="text-gray-500 mb-8">{t('support.articles.notFoundDescDetail')}</p>
             <Link to="/support" className="text-paymint-green font-bold hover:underline">
-              ← Back to Help Center
+              ← {t('support.articles.backToHelp')}
             </Link>
           </div>
         </main>
@@ -322,7 +324,7 @@ export const ArticlePage = () => {
             {/* Breadcrumb */}
             <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
               <Link to="/support" className="hover:text-paymint-green transition-colors">
-                Help Center
+                {t('support.hero.badge')}
               </Link>
               <ChevronRight size={14} />
               <Link to={`/support/category/${article.categoryId}`} className="hover:text-paymint-green transition-colors">
@@ -343,7 +345,7 @@ export const ArticlePage = () => {
                 className="inline-flex items-center gap-2 text-sm font-bold text-paymint-green hover:underline mb-4"
               >
                 <ArrowLeft size={16} />
-                Back to {article.category}
+                {t('support.articles.backTo')} {article.category}
               </Link>
 
               <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-4">
@@ -353,14 +355,14 @@ export const ArticlePage = () => {
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                 <span className="flex items-center gap-1">
                   <Clock size={14} />
-                  {article.readTime} read
+                  {article.readTime} {t('support.articles.read')}
                 </span>
                 <span className="flex items-center gap-1">
                   <Eye size={14} />
-                  {article.views} views
+                  {article.views} {t('support.articles.views')}
                 </span>
                 <span>
-                  Updated {article.lastUpdated}
+                  {t('support.articles.updated')} {article.lastUpdated}
                 </span>
               </div>
             </motion.div>
@@ -420,21 +422,21 @@ export const ArticlePage = () => {
             >
               {helpful === null ? (
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <p className="font-bold">Was this article helpful?</p>
+                  <p className="font-bold">{t('support.articles.helpfulQuestion')}</p>
                   <div className="flex gap-3">
                     <button
                       onClick={() => setHelpful('yes')}
                       className="inline-flex items-center gap-2 px-6 py-2 bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-400 rounded-lg font-bold hover:bg-green-200 dark:hover:bg-green-500/30 transition-colors"
                     >
                       <ThumbsUp size={16} />
-                      Yes, it helped
+                      {t('support.articles.helpfulYes')}
                     </button>
                     <button
                       onClick={() => setHelpful('no')}
                       className="inline-flex items-center gap-2 px-6 py-2 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-lg font-bold hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
                     >
                       <ThumbsDown size={16} />
-                      Not really
+                      {t('support.articles.helpfulNo')}
                     </button>
                   </div>
                 </div>
@@ -443,8 +445,8 @@ export const ArticlePage = () => {
                   <CheckCircle2 size={20} />
                   <p className="font-bold">
                     {helpful === 'yes'
-                      ? 'Thanks for your feedback!'
-                      : 'Sorry this wasn\'t helpful. Consider submitting a ticket for personalized help.'}
+                      ? t('support.articles.feedbackThanks')
+                      : t('support.articles.feedbackSorry')}
                   </p>
                 </div>
               )}
@@ -454,28 +456,28 @@ export const ArticlePage = () => {
             <div className="flex flex-wrap gap-3 mb-12">
               <button className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-white/10 rounded-lg text-sm font-bold hover:bg-gray-200 dark:hover:bg-white/20 transition-colors">
                 <Share2 size={16} />
-                Share
+                {t('common.share')}
               </button>
               <button
                 onClick={() => window.print()}
                 className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-white/10 rounded-lg text-sm font-bold hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
               >
                 <Printer size={16} />
-                Print
+                {t('common.print')}
               </button>
               <Link
                 to="/support/tickets/new"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-white/10 rounded-lg text-sm font-bold hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
               >
                 <MessageSquare size={16} />
-                Contact Support
+                {t('support.quickLinks.submitTicket')}
               </Link>
             </div>
 
             {/* Related Articles */}
             {relatedArticleData.length > 0 && (
               <div>
-                <h2 className="text-xl font-bold mb-4">Related Articles</h2>
+                <h2 className="text-xl font-bold mb-4">{t('support.articles.related')}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {relatedArticleData.map((related, index) => (
                     <motion.div

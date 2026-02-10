@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { getDateLocale } from '../../../../utils/dateLocale';
 
 interface ShiftsViewProps {
   shifts: Shift[];
@@ -35,7 +36,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
   const activeShifts = shifts.filter((s: any) => s.status === 'OPEN').length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Audit Oversight Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
@@ -44,7 +45,8 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
             <h4 className="text-xs font-black tracking-widest text-gray-400">{t('orders.reports.shifts.cashVariance')}</h4>
           </div>
           <p className={`text-3xl font-black ${totalVariance < -0.01 ? 'text-red-500' : 'text-paymint-green'}`}>
-            {totalVariance > 0 ? '+' : ''}{formatCurrency(totalVariance)}
+            {totalVariance > 0 ? '+' : ''}{totalVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            <span className="text-sm mx-1 text-gray-400 font-black">{currencySymbol}</span>
           </p>
           <p className="text-xs font-bold text-gray-500 mt-2">{t('orders.reports.shifts.totalOverShort')}</p>
         </div>
@@ -53,7 +55,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
             <Clock size={20} />
             <h4 className="text-xs font-black tracking-widest text-gray-400">{t('dashboard.menu.shiftsReports')}</h4>
           </div>
-          <p className="text-3xl font-black text-gray-900 dark:text-white">{shifts.length}</p>
+          <p className="text-3xl font-black text-gray-900 dark:text-white">{shifts.length.toLocaleString(t('common.locale'))}</p>
           <p className="text-xs font-bold text-gray-500 mt-2">{t('orders.reports.shifts.activeShifts', { count: activeShifts })}</p>
         </div>
         <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
@@ -61,7 +63,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
             <Wallet size={20} />
             <h4 className="text-xs font-black tracking-widest text-gray-400">{t('orders.reports.shifts.audited')}</h4>
           </div>
-          <p className="text-3xl font-black text-paymint-green">100%</p>
+          <p className="text-3xl font-black text-paymint-green">{(1).toLocaleString(t('common.locale'), { style: 'percent' })}</p>
           <p className="text-xs font-bold text-gray-500 mt-2">{t('orders.reports.shifts.shiftsClosed')}</p>
         </div>
       </div>
@@ -72,11 +74,11 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-white/[0.02]">
               <tr className="border-b border-gray-200 dark:border-white/5">
-                <th className="px-5 py-5 text-left text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.staff')}</th>
-                <th className="px-5 py-5 text-left text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.time')}</th>
-                <th className="px-5 py-5 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.opening')}</th>
-                <th className="px-5 py-5 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.stats.totalSales')}</th>
-                <th className="px-5 py-5 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.closing')}</th>
+                <th className="px-5 py-5 text-start text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.staff')}</th>
+                <th className="px-5 py-5 text-start text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.time')}</th>
+                <th className="px-5 py-5 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.opening')}</th>
+                <th className="px-5 py-5 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.stats.totalSales')}</th>
+                <th className="px-5 py-5 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.closing')}</th>
                 <th className="px-5 py-5 text-center text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.variance')}</th>
                 <th className="px-5 py-5 text-center text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.shifts.status')}</th>
               </tr>
@@ -95,26 +97,26 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                       <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center font-black text-xs">
                         {shift.user?.username?.charAt(0).toUpperCase()}
                       </div>
-                      <span className="font-bold text-gray-900 dark:text-white text-sm">{shift.user?.username || 'Unknown'}</span>
+                      <span className="font-bold text-gray-900 dark:text-white text-sm">{shift.user?.username || t('common.unknown')}</span>
                     </div>
                   </td>
                   <td className="px-5 py-5">
                     <div className="flex flex-col">
                       <span className="text-xs font-bold text-gray-900 dark:text-white">
-                        {format(new Date(shift.startTime), 'MMM d, HH:mm')}
+                        {format(new Date(shift.startTime), 'MMM d, HH:mm', { locale: getDateLocale(t('common.locale')) })}
                       </span>
                       <span className="text-xs font-medium text-gray-500">
-                        {t('common.to', 'to')} {shift.endTime ? format(new Date(shift.endTime), 'HH:mm') : t('orders.reports.shifts.present')}
+                        {t('common.to')} {shift.endTime ? format(new Date(shift.endTime), 'HH:mm', { locale: getDateLocale(t('common.locale')) }) : t('orders.reports.shifts.present')}
                       </span>
                     </div>
                   </td>
-                  <td className="px-5 py-5 text-right font-medium text-gray-500">
+                  <td className="px-5 py-5 text-end font-medium text-gray-500">
                     {formatCurrency(shift.openingBalance)}
                   </td>
-                  <td className="px-5 py-5 text-right font-bold text-paymint-green">
+                  <td className="px-5 py-5 text-end font-bold text-paymint-green">
                     {formatCurrency(shift.totalSales)}
                   </td>
-                  <td className="px-5 py-5 text-right">
+                  <td className="px-5 py-5 text-end">
                     {shift.status === 'CLOSED' ? (
                       <span className="font-bold text-blue-500">
                         {shift.closingBalance !== null && shift.closingBalance !== undefined
@@ -135,10 +137,10 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                             : 'bg-gray-100 dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10'
                           }`}>
                           {shift.discrepancy > 0.001
-                            ? `+${formatAmount(shift.discrepancy).replace(currencySymbol, '').trim()} ${t('orders.reports.shifts.over')}`
+                            ? `+${shift.discrepancy.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${t('orders.reports.shifts.over')}`
                             : shift.discrepancy < -0.001
-                              ? `${formatAmount(shift.discrepancy).replace(currencySymbol, '').trim()} ${t('orders.reports.shifts.short')}`
-                              : '0'}
+                              ? `${shift.discrepancy.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${t('orders.reports.shifts.short')}`
+                              : (0).toLocaleString(t('common.locale'))}
                         </span>
                       </div>
                     ) : (

@@ -14,26 +14,27 @@ import { useTranslation } from 'react-i18next';
 import PaymintLogoGreen from '../assets/green-full-logo.svg';
 import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
 
-const signUpSchema = z.object({
-  firstName: z.string().min(2, 'First name must be at least 2 characters'),
-  lastName: z.string().min(2, 'Last name must be at least 2 characters'),
-  email: z.string().email('Please enter a valid email'),
-  password: z
-    .string()
-    .min(8, 'Password must be at least 8 characters')
-    .regex(/[A-Z]/, 'Password must contain at least one letter')
-    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
-    .regex(/[0-9]/, 'Password must contain at least one number'),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: 'Passwords do not match',
-  path: ['confirmPassword'],
-});
-
-type SignUpFormData = z.infer<typeof signUpSchema>;
-
 export function SignUpPage() {
   const { t } = useTranslation();
+
+  const signUpSchema = z.object({
+    firstName: z.string().min(2, t('validation.firstNameMin')),
+    lastName: z.string().min(2, t('validation.lastNameMin')),
+    email: z.string().email(t('validation.emailInvalid')),
+    password: z
+      .string()
+      .min(8, t('validation.passwordMin'))
+      .regex(/[A-Z]/, t('validation.passwordUppercase'))
+      .regex(/[a-z]/, t('validation.passwordLowercase'))
+      .regex(/[0-9]/, t('validation.passwordNumber')),
+    confirmPassword: z.string(),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: t('validation.passwordsDoNotMatch'),
+    path: ['confirmPassword'],
+  });
+
+  type SignUpFormData = z.infer<typeof signUpSchema>;
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,17 +48,17 @@ export function SignUpPage() {
       const result = await loginWithGoogle(credential);
 
       if (result.success) {
-        toast.success(result.message || 'Account created successfully!');
+        toast.success(result.message || t('auth.signup.success'));
         if (result.isSecondaryAdmin) {
           navigate('/dashboard');
         } else {
           navigate('/owner');
         }
       } else {
-        toast.error(result.error || 'Google sign up failed');
+        toast.error(result.error || t('auth.signup.failed'));
       }
     } catch {
-      toast.error('Something went wrong. Please try again.');
+      toast.error(t('common.error'));
     }
   };
 
@@ -86,12 +87,12 @@ export function SignUpPage() {
       if (result.success) {
         setRegisteredEmail(data.email);
         setRegistrationSuccess(true);
-        toast.success('Account created!');
+        toast.success(t('auth.signup.success'));
       } else {
-        toast.error(result.error || 'Registration failed');
+        toast.error(result.error || t('auth.signup.failed'));
       }
     } catch {
-      toast.error('Something went wrong. Please try again.');
+      toast.error(t('common.error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -131,7 +132,7 @@ export function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex transition-colors duration-300 relative">
+    <div className="min-h-screen bg-gray-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex transition-colors duration-300 relative" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Full-screen Loading Overlay */}
       <AnimatePresence>
         {isSubmitting && (
@@ -209,12 +210,12 @@ export function SignUpPage() {
                     {...register('firstName')}
                     type="text"
                     id="firstName"
-                    aria-label="First name"
+                    aria-label={t('auth.signup.firstNameLabel')}
                     aria-describedby={errors.firstName ? 'firstName-error' : undefined}
                     autoComplete="given-name"
                     className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.firstName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
                       } rounded-lg py-3 pl-10 pr-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                    placeholder="John"
+                    placeholder={t('auth.signup.firstNamePlaceholder')}
                   />
                 </div>
                 {errors.firstName?.message && (
@@ -229,12 +230,12 @@ export function SignUpPage() {
                   {...register('lastName')}
                   type="text"
                   id="lastName"
-                  aria-label="Last name"
+                  aria-label={t('auth.signup.lastNameLabel')}
                   aria-describedby={errors.lastName ? 'lastName-error' : undefined}
                   autoComplete="family-name"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.lastName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
                     } rounded-lg py-3 px-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                  placeholder="Doe"
+                  placeholder={t('auth.signup.lastNamePlaceholder')}
                 />
                 {errors.lastName?.message && (
                   <p id="lastName-error" role="alert" className="text-accent dark:text-accent text-xs font-bold text-gray-500 mt-1">{errors.lastName.message}</p>
@@ -252,12 +253,12 @@ export function SignUpPage() {
                   {...register('email')}
                   type="email"
                   id="email"
-                  aria-label="Email address"
+                  aria-label={t('auth.signup.emailLabel')}
                   aria-describedby={errors.email ? 'email-error' : undefined}
                   autoComplete="email"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
                     } rounded-lg py-3 pl-10 pr-4 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                  placeholder="john@example.com"
+                  placeholder={t('auth.signup.emailPlaceholder')}
                 />
               </div>
               {errors.email?.message && (
@@ -275,17 +276,17 @@ export function SignUpPage() {
                   {...register('password')}
                   type={showPassword ? 'text' : 'password'}
                   id="password"
-                  aria-label="Password"
+                  aria-label={t('auth.signup.passwordLabel')}
                   aria-describedby={errors.password ? 'password-error' : undefined}
                   autoComplete="new-password"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
                     } rounded-lg py-3 pl-10 pr-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                  placeholder="Create a strong password"
+                  placeholder={t('auth.signup.passwordPlaceholder')}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
                   className="absolute right-2 top-1/2 -translate-y-1/2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -306,17 +307,17 @@ export function SignUpPage() {
                   {...register('confirmPassword')}
                   type={showConfirmPassword ? 'text' : 'password'}
                   id="confirmPassword"
-                  aria-label="Confirm password"
+                  aria-label={t('auth.signup.confirmPasswordLabel')}
                   aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
                   autoComplete="new-password"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.confirmPassword ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
                     } rounded-lg py-3 pl-10 pr-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                  placeholder="Confirm your password"
+                  placeholder={t('auth.signup.confirmPasswordPlaceholder')}
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showConfirmPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
                   className="absolute right-2 top-1/2 -translate-y-1/2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white"
                 >
                   {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}

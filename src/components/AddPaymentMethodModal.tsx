@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CreditCard, Lock, ShieldCheck } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import api from '../config/api';
 import toast from 'react-hot-toast';
 import { useScrollLock } from '../hooks/useScrollLock';
@@ -21,6 +22,7 @@ interface AddPaymentMethodModalProps {
 }
 
 export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPaymentMethodModalProps) {
+    const { t } = useTranslation();
     const [cardNumber, setCardNumber] = useState('');
     const [expiry, setExpiry] = useState('');
     const [cvc, setCvc] = useState('');
@@ -56,27 +58,27 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
 
     const getCardBrand = (number: string) => {
         const clean = number.replace(/\D/g, '');
-        if (clean.match(/^4/)) return 'Visa';
-        if (clean.match(/^5[1-5]/)) return 'Mastercard';
-        if (clean.match(/^3[47]/)) return 'Amex';
-        if (clean.match(/^6/)) return 'Discover';
-        return 'Unknown';
+        if (clean.match(/^4/)) return t('paymentMethods.brands.visa');
+        if (clean.match(/^5[1-5]/)) return t('paymentMethods.brands.mastercard');
+        if (clean.match(/^3[47]/)) return t('paymentMethods.brands.amex');
+        if (clean.match(/^6/)) return t('paymentMethods.brands.discover');
+        return t('common.unknown');
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const newErrors: Record<string, string> = {};
 
-        if (!cardNumber) newErrors.cardNumber = 'Required';
-        if (!expiry) newErrors.expiry = 'Required';
-        if (!cvc) newErrors.cvc = 'Required';
-        if (!name) newErrors.name = 'Required';
+        if (!cardNumber) newErrors.cardNumber = t('common.required');
+        if (!expiry) newErrors.expiry = t('common.required');
+        if (!cvc) newErrors.cvc = t('common.required');
+        if (!name) newErrors.name = t('common.required');
 
         const cleanNumber = cardNumber.replace(/\D/g, '');
         const [expMonth, expYear] = expiry.split('/').map(p => parseInt(p, 10));
 
         if (expiry && (!expMonth || !expYear || expMonth < 1 || expMonth > 12)) {
-            newErrors.expiry = 'Invalid expiry date';
+            newErrors.expiry = t('paymentMethods.modal.errors.invalidExpiry');
         }
 
         if (Object.keys(newErrors).length > 0) {
@@ -102,7 +104,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                 setAsDefault: true,
             });
 
-            toast.success('Payment method added');
+            toast.success(t('paymentMethods.messages.added'));
             onSuccess();
             onClose();
 
@@ -113,7 +115,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
             setName('');
             setErrors({});
         } catch (err) {
-            const msg = (err as ApiError).response?.data?.message || 'Failed to add card';
+            const msg = (err as ApiError).response?.data?.message || t('paymentMethods.messages.failedToAdd');
             setErrors({ general: msg });
             setTimeout(() => {
                 errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -128,7 +130,10 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
     return createPortal(
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans">
+                <div
+                    dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+                    className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans"
+                >
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -154,8 +159,8 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                         <div className="p-4 sm:p-8 overflow-y-auto custom-scrollbar pb-safe">
                             <div className="flex items-center justify-between mb-8">
                                 <div>
-                                    <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">New Card</h2>
-                                    <p className="text-sm font-bold text-gray-500 mt-1">Secure Payment Vault</p>
+                                    <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.modal.title')}</h2>
+                                    <p className="text-sm font-bold text-gray-500 mt-1">{t('paymentMethods.modal.subtitle')}</p>
                                 </div>
                                 <button
                                     onClick={onClose}
@@ -169,13 +174,13 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                 {/* Error Banner */}
                                 {Object.keys(errors).length > 0 && (
                                     <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold animate-pulse">
-                                        {errors.general || errors.expiry || errors.cardNumber || errors.cvc || errors.name || "Please correct the errors below"}
+                                        {errors.general || errors.expiry || errors.cardNumber || errors.cvc || errors.name || t('paymentMethods.modal.errors.correctErrors')}
                                     </div>
                                 )}
 
                                 {/* Card Number */}
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-gray-400 tracking-widest block pl-1">Card Number</label>
+                                    <label className="text-xs font-black text-gray-400 tracking-widest block pl-1">{t('paymentMethods.modal.cardNumber')}</label>
                                     <div className="relative group">
                                         <input
                                             type="text"
@@ -186,7 +191,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                         />
                                         <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
                                         <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                                            {getCardBrand(cardNumber) !== 'Unknown' && (
+                                            {getCardBrand(cardNumber) !== t('common.unknown') && (
                                                 <span className="text-xs font-black text-paymint-green tracking-wider bg-paymint-green/10 px-2 py-1 rounded-md border border-paymint-green/20">
                                                     {getCardBrand(cardNumber)}
                                                 </span>
@@ -199,19 +204,19 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                 {/* Expiry & Cvc */}
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-gray-400 tracking-widest block pl-1">Expiry</label>
+                                        <label className="text-xs font-black text-gray-400 tracking-widest block pl-1">{t('paymentMethods.modal.expiry')}</label>
                                         <input
                                             type="text"
                                             value={expiry}
                                             onChange={handleExpiryChange}
-                                            placeholder="Mm/Yy"
+                                            placeholder={t('paymentMethods.modal.expiryPlaceholder') || "MM/YY"}
                                             maxLength={5}
                                             className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.expiry ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all text-center font-mono`}
                                         />
                                         {errors.expiry && <p className="text-xs font-bold text-red-500 pl-1">{errors.expiry}</p>}
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-gray-400 tracking-widest block pl-1">Cvc</label>
+                                        <label className="text-xs font-black text-gray-400 tracking-widest block pl-1">{t('paymentMethods.modal.cvc')}</label>
                                         <div className="relative group">
                                             <input
                                                 type="password"
@@ -229,12 +234,12 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
 
                                 {/* Cardholder Name */}
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-gray-400 tracking-widest block pl-1">Cardholder Name</label>
+                                    <label className="text-xs font-black text-gray-400 tracking-widest block pl-1">{t('paymentMethods.modal.cardholder')}</label>
                                     <input
                                         type="text"
                                         value={name}
                                         onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
-                                        placeholder="John Doe"
+                                        placeholder={t('onboarding.step2.cardName')}
                                         className={`w-full h-14 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-red-500' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-paymint-green focus:ring-1 focus:ring-paymint-green transition-all`}
                                     />
                                     {errors.name && <p className="text-xs font-bold text-red-500 pl-1">{errors.name}</p>}
@@ -250,14 +255,14 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
                                     ) : (
                                         <>
                                             <ShieldCheck size={18} />
-                                            Secure Vault
+                                            {t('paymentMethods.modal.secureVault')}
                                         </>
                                     )}
                                 </button>
 
                                 <div className="flex items-center justify-center gap-2 text-xs font-bold text-gray-400 tracking-wider">
                                     <Lock size={10} />
-                                    <span>256-Bit Ssl Encrypted</span>
+                                    <span>{t('paymentMethods.modal.encrypted')}</span>
                                 </div>
                             </form>
                         </div>

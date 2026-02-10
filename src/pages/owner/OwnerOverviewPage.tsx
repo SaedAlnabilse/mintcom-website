@@ -134,16 +134,16 @@ export function OwnerOverviewPage() {
         : getDatePeriodLabel(selectedDateRange);
 
     const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat(t('common.language') === 'Arabic' ? 'ar-SA' : 'en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }).format(amount);
+        const locale = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
+        const formatted = amount.toLocaleString(locale, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        });
+        return `${formatted} ${useAuth().establishments?.[0]?.currency || 'JOD'}`;
     };
 
     return (
-        <div className="space-y-8 pb-8">
+        <div className="space-y-8 pb-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
@@ -372,7 +372,7 @@ export function OwnerOverviewPage() {
                                             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                                         }}
                                         itemStyle={{ color: '#111827' }}
-                                        formatter={(value) => [formatCurrency(value as number), 'Revenue']}
+                                        formatter={(value) => [formatCurrency(value as number), t('owner.overview.revenue')]}
                                     />
                                     <Area
                                         type="monotone"

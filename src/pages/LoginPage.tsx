@@ -14,15 +14,16 @@ import { useTranslation } from 'react-i18next';
 import PaymintLogoGreen from '../assets/green-full-logo.svg';
 import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
 
-const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email'),
-  password: z.string().min(1, 'Password is required'),
-});
-
-type LoginFormData = z.infer<typeof loginSchema>;
-
 export function LoginPage() {
   const { t } = useTranslation();
+
+  const loginSchema = z.object({
+    email: z.string().email(t('validation.emailInvalid')),
+    password: z.string().min(1, t('validation.passwordRequired')),
+  });
+
+  type LoginFormData = z.infer<typeof loginSchema>;
+
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showVerifyModal, setShowVerifyModal] = useState(false);
@@ -36,17 +37,17 @@ export function LoginPage() {
       const result = await loginWithGoogle(credential);
 
       if (result.success) {
-        toast.success(result.message || 'Welcome!');
+        toast.success(result.message || t('common.welcome'));
         if (result.isSecondaryAdmin) {
           navigate('/dashboard');
         } else {
           navigate('/owner');
         }
       } else {
-        toast.error(result.error || 'Google login failed');
+        toast.error(result.error || t('auth.login.failed'));
       }
     } catch {
-      toast.error('Something went wrong. Please try again.');
+      toast.error(t('common.error'));
     }
   };
 
@@ -69,7 +70,7 @@ export function LoginPage() {
       const result = await login(data.email, data.password);
 
       if (result.success) {
-        toast.success('Welcome back!');
+        toast.success(t('common.welcomeBack'));
         // Redirect based on user type
         if (result.isSecondaryAdmin) {
           navigate('/dashboard');
@@ -81,13 +82,13 @@ export function LoginPage() {
           setUnverifiedEmail(data.email);
           setShowVerifyModal(true);
         } else {
-          toast.error(result.error || 'Login failed');
+          toast.error(result.error || t('auth.login.failed'));
           setError('email', { type: 'manual' });
           setError('password', { type: 'manual' });
         }
       }
     } catch {
-      toast.error('Something went wrong. Please try again.');
+      toast.error(t('common.error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -98,20 +99,20 @@ export function LoginPage() {
     try {
       const result = await resendVerification(unverifiedEmail);
       if (result.success) {
-        toast.success('Verification email sent! Please check your inbox.');
+        toast.success(t('auth.signup.verificationSent'));
         setShowVerifyModal(false);
       } else {
-        toast.error(result.error || 'Failed to resend email');
+        toast.error(result.error || t('auth.verifyEmail.failed'));
       }
     } catch {
-      toast.error('Something went wrong. Please try again.');
+      toast.error(t('common.error'));
     } finally {
       setIsResending(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4 transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-gradient-to-br dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4 transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -164,12 +165,12 @@ export function LoginPage() {
                   {...register('email')}
                   type="email"
                   id="login-email"
-                  aria-label="Email address"
+                  aria-label={t('auth.login.ariaEmail')}
                   aria-describedby={errors.email ? 'email-error' : undefined}
                   autoComplete="email"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
                     } rounded-lg py-3 pl-10 pr-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                  placeholder="you@example.com"
+                  placeholder={t('auth.login.emailPlaceholder')}
                 />
               </div>
               {errors.email?.message && (
@@ -187,17 +188,17 @@ export function LoginPage() {
                   {...register('password')}
                   type={showPassword ? 'text' : 'password'}
                   id="login-password"
-                  aria-label="Password"
+                  aria-label={t('auth.login.ariaPassword')}
                   aria-describedby={errors.password ? 'password-error' : undefined}
                   autoComplete="current-password"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
                     } rounded-lg py-3 pl-10 pr-12 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
-                  placeholder="Enter your password"
+                  placeholder={t('auth.login.passwordPlaceholder')}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
                   className="absolute right-2 top-1/2 -translate-y-1/2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white touch-target"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -212,7 +213,7 @@ export function LoginPage() {
               <label className="flex items-center cursor-pointer min-h-[44px]">
                 <input
                   type="checkbox"
-                  aria-label="Keep me logged in"
+                  aria-label={t('auth.login.ariaKeepLoggedIn')}
                   className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green bg-gray-50 dark:bg-gray-700"
                 />
                 <span className="ml-2 text-sm font-bold text-gray-600 dark:text-gray-300">{t('auth.login.keepLoggedIn')}</span>
@@ -254,7 +255,7 @@ export function LoginPage() {
             >
               <button
                 onClick={() => setShowVerifyModal(false)}
-                aria-label="Close modal"
+                aria-label={t('auth.login.ariaCloseModal')}
                 className="absolute right-2 top-2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <X className="w-5 h-5" />
@@ -265,10 +266,10 @@ export function LoginPage() {
                   <AlertTriangle className="w-8 h-8 text-yellow-600 dark:text-yellow-500" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                  {t('auth.verifyEmail.title')}
+                  {t('auth.verifyEmail.verifyingTitle')}
                 </h3>
                 <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
-                  {t('auth.verifyEmail.subtitle')}
+                  {t('auth.verifyEmail.verifyingSubtitle')}
                 </p>
                 <p className="text-sm font-bold text-gray-900 dark:text-white mt-2">
                   {unverifiedEmail}

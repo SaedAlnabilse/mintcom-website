@@ -1,4 +1,3 @@
-import { AppStrings } from '../../constants/AppStrings';
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -215,9 +214,9 @@ export function StaffPage() {
       username: s.username,
       name: s.name,
       role: s.role,
-      email: s.email || 'N/a',
-      phone: s.phone || 'N/a',
-      status: s.isActive ? AppStrings.STATUS.ACTIVE : AppStrings.STATUS.INACTIVE,
+      email: s.email || t('common.notAvailable'),
+      phone: s.phone || t('common.notAvailable'),
+      status: s.isActive ? t('common.active') : t('common.notAvailable'),
       joined: new Date(s.createdAt).toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US')
     }));
 
@@ -271,7 +270,7 @@ export function StaffPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-24 sm:pb-10">
+    <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-24 sm:pb-10" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
@@ -330,7 +329,7 @@ export function StaffPage() {
               </div>
               <div>
                 <p className="text-xs sm:text-base font-bold text-gray-500 dark:text-gray-400 mb-1">{stat.label}</p>
-                <p className="text-2xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight leading-none mb-1 sm:mb-2">{stat.value}</p>
+                <p className="text-2xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight leading-none mb-1 sm:mb-2">{stat.value.toLocaleString(t('common.locale'))}</p>
                 <p className="hidden sm:block text-xs font-medium text-gray-500 dark:text-gray-400">{stat.info}</p>
               </div>
             </div>
@@ -405,7 +404,7 @@ export function StaffPage() {
                       </div>
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getRoleStyle(member.role)}`}>
                         <Shield size={10} />
-                        {member.role}
+                        {t(`staff.roles.${member.role.toLowerCase()}`)}
                       </span>
                     </div>
 
@@ -415,7 +414,7 @@ export function StaffPage() {
                         <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('staff.form.emailLabel')}</p>
                         <div className="flex items-center gap-1.5 text-sm font-bold text-gray-900 dark:text-white truncate">
                           <Mail size={12} className="text-gray-400 flex-shrink-0" />
-                          <span className="truncate">{member.email || t('common.na')}</span>
+                          <span className="truncate">{member.email || t('common.notAvailable')}</span>
                         </div>
                       </div>
                       <div>
@@ -527,7 +526,7 @@ export function StaffPage() {
                         <td className="px-6 py-4">
                           <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getRoleStyle(member.role)}`}>
                             <Shield size={10} />
-                            {member.role}
+                            {t(`staff.roles.${member.role.toLowerCase()}`)}
                           </span>
                         </td>
                         <td className="px-6 py-4">

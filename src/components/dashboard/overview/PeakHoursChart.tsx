@@ -2,7 +2,6 @@ import React from 'react';
 import { Clock } from 'lucide-react';
 import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip, CartesianGrid } from 'recharts';
 import { useTheme } from '../../../context/ThemeContext';
-import { useCurrency } from '../../../context/CurrencyContext';
 import { useTranslation } from 'react-i18next';
 
 interface PeakHour {
@@ -18,12 +17,11 @@ interface PeakHoursChartProps {
 export const PeakHoursChart = React.memo(function PeakHoursChart({ peakHours }: PeakHoursChartProps) {
   const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
-  const { formatAmount, currencySymbol } = useCurrency();
   const isDark = resolvedTheme === 'dark';
 
   return (
     <div className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm transition-all duration-300">
-      <div className="absolute top-0 right-0 w-40 h-40 bg-orange-500/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
+      <div className="absolute top-0 end-0 w-40 h-40 bg-orange-500/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
       <div className="relative z-10">
         <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -38,7 +36,7 @@ export const PeakHoursChart = React.memo(function PeakHoursChart({ peakHours }: 
         </div>
         <div className="p-6">
           {peakHours.length > 0 && peakHours.some((h: any) => Number(h.total) > 0) ? (
-            <div className="h-[250px]">
+            <div className="h-[250px]" dir="ltr">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={peakHours.map(h => ({ ...h, hour: `${h.hour}:00` }))}>
                   <defs>
@@ -48,13 +46,27 @@ export const PeakHoursChart = React.memo(function PeakHoursChart({ peakHours }: 
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#ffffff05" : "#00000005"} vertical={false} />
-                  <XAxis dataKey="hour" stroke="#94a3b8" fontSize={10} tickLine={false} axisLine={false} dy={10} />
+                  <XAxis
+                    dataKey="hour"
+                    stroke="#94a3b8"
+                    fontSize={10}
+                    tickLine={false}
+                    axisLine={false}
+                    dy={10}
+                    tickFormatter={(val) => {
+                      if (t('common.locale') === 'ar') {
+                        const [h] = val.split(':');
+                        return `${Number(h).toLocaleString('ar-EG')}:٠٠`;
+                      }
+                      return val;
+                    }}
+                  />
                   <Tooltip
                     cursor={{ fill: 'transparent' }}
                     contentStyle={{ backgroundColor: isDark ? '#111' : '#fff', borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}
                     itemStyle={{ fontWeight: 'bold', fontSize: '10px' }}
                     labelStyle={{ color: '#7CC39F', fontWeight: 'bold', marginBottom: '4px', fontSize: '10px' }}
-                    formatter={(val: any) => formatAmount(val).replace(currencySymbol, '').trim()}
+                    formatter={(val: any) => [Number(val).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }), t('dashboard.peakHours.revenue')]}
                   />
                   <Bar dataKey="total" name={t('dashboard.peakHours.revenue')} fill="url(#barGradientDash)" radius={[4, 4, 0, 0]} barSize={20} animationDuration={1500} />
                 </BarChart>

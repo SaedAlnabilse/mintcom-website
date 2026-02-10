@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon, Monitor } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { useState, useRef, useEffect } from 'react';
 
@@ -23,10 +24,11 @@ export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSi
     }
   }, [isOpen]);
 
+  const { t } = useTranslation();
   const options = [
-    { id: 'light', label: 'Light', icon: Sun },
-    { id: 'dark', label: 'Dark', icon: Moon },
-    { id: 'system', label: 'System', icon: Monitor },
+    { id: 'light', label: t('theme.light'), icon: Sun },
+    { id: 'dark', label: t('theme.dark'), icon: Moon },
+    { id: 'system', label: t('theme.system'), icon: Monitor },
   ] as const;
 
   const getDropdownClasses = () => {
@@ -58,7 +60,7 @@ export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSi
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`flex items-center transition-all active:scale-90 ${!showLabel && !className.includes('justify-') ? 'justify-center' : ''} ${className || 'w-9 h-9 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green dark:hover:text-paymint-green'}`}
-        title="Toggle theme"
+        title={t('theme.toggle')}
       >
         <div className="relative flex items-center justify-center" style={{ width: iconSize, height: iconSize }}>
           <AnimatePresence mode="wait">
@@ -79,7 +81,7 @@ export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSi
             )}
           </AnimatePresence>
         </div>
-        {showLabel && <span>Switch Theme</span>}
+        {showLabel && <span>{t('theme.switchTheme')}</span>}
       </button>
 
       <AnimatePresence>

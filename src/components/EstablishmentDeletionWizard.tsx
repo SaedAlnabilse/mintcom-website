@@ -115,7 +115,7 @@ export function EstablishmentDeletionWizard({
                 const response = await api.get(`/api/establishments/${establishmentId}/stats`);
                 setStats(response.data);
             } catch (err) {
-                toast.error((err as ApiError).response?.data?.message || t('security.deletion.loadFailed') || 'Failed to load establishment data');
+                toast.error((err as ApiError).response?.data?.message || t('security.deletion.loadFailed'));
                 onClose();
             } finally {
                 setIsLoading(false);
@@ -126,22 +126,22 @@ export function EstablishmentDeletionWizard({
 
     const handleRequestDeletion = async () => {
         if (!establishmentLoginId) {
-            toast.error(t('owner.brands.wizard.adminLoginId') || 'Please enter Location ID');
+            toast.error(t('owner.brands.wizard.adminLoginId'));
             return;
         }
 
         if (establishmentPassword.length < 6) {
-            toast.error(t('security.deletion.confirm.locationPassword') || 'Please enter Location Password');
+            toast.error(t('security.deletion.confirm.locationPassword'));
             return;
         }
 
         if (!accountEmail || !accountEmail.includes('@')) {
-            toast.error(t('security.deletion.confirm.yourEmail') || 'Please enter a valid Account Email');
+            toast.error(t('security.deletion.confirm.yourEmail'));
             return;
         }
 
         if (password.length < 6) {
-            toast.error(t('security.deletion.confirm.yourPassword') || 'Please enter your account password');
+            toast.error(t('security.deletion.confirm.yourPassword'));
             return;
         }
 
@@ -158,7 +158,7 @@ export function EstablishmentDeletionWizard({
             onDeletionRequested();
             onClose();
         } catch (err) {
-            toast.error((err as ApiError).response?.data?.message || t('security.deletion.confirm.fail') || 'Failed to request deletion');
+            toast.error((err as ApiError).response?.data?.message || t('security.deletion.confirm.fail'));
         } finally {
             setIsSubmitting(false);
         }
@@ -183,7 +183,7 @@ export function EstablishmentDeletionWizard({
             window.URL.revokeObjectURL(url);
             toast.success(t('security.deletion.export.downloaded', { type: t(`security.deletion.export.${exportType}`) }));
         } catch {
-            toast.error(t('security.deletion.export.fail') || 'Failed to download export');
+            toast.error(t('security.deletion.export.fail'));
         }
     };
 
@@ -199,7 +199,10 @@ export function EstablishmentDeletionWizard({
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div
+            dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+        >
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -306,7 +309,7 @@ export function EstablishmentDeletionWizard({
                                     </div>
                                 </div>
 
-                                {stats?.dataRange.age && stats.dataRange.age !== 'No data' && (
+                                {stats?.dataRange.age && stats.dataRange.age !== t('common.noData') && (
                                     <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-2xl p-4">
                                         <div className="flex items-center gap-3">
                                             <Clock className="text-amber-500" size={20} />
@@ -468,7 +471,7 @@ export function EstablishmentDeletionWizard({
                                         <button
                                             type="button"
                                             onClick={() => setShowEstablishmentPassword(!showEstablishmentPassword)}
-                                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                            className="absolute right-3 rtl:right-auto rtl:left-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                                         >
                                             {showEstablishmentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                         </button>
@@ -516,7 +519,7 @@ export function EstablishmentDeletionWizard({
                                         <button
                                             type="button"
                                             onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                            className="absolute right-3 rtl:right-auto rtl:left-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                                         >
                                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                         </button>
@@ -685,7 +688,7 @@ export function PendingDeletionBanner({
             month: 'long',
             day: 'numeric',
         })
-        : 'Unknown';
+        : t('common.unknown');
 
     return (
         <motion.div
@@ -707,7 +710,7 @@ export function PendingDeletionBanner({
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="text-center">
-                        <div className="text-2xl sm:text-3xl font-bold">{deletionStatus.daysRemaining?.toLocaleString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US')}</div>
+                        <div className="text-2xl sm:text-3xl font-bold">{(deletionStatus.daysRemaining || 0).toLocaleString(t('common.locale'))}</div>
                         <div className="text-xs text-white/80">{t('security.deletion.banner.daysLeft')}</div>
                     </div>
                     <button

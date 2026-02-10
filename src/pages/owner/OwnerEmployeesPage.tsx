@@ -255,11 +255,11 @@ export function OwnerEmployeesPage() {
         const base = "px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border";
         switch (role?.toUpperCase()) {
             case 'ADMIN':
-                return <span className={`${base} bg-paymint-green/10 text-paymint-green border-paymint-green/20`}>{t('onboarding.step4.adminUsernamePlaceholder')}</span>;
+                return <span className={`${base} bg-paymint-green/10 text-paymint-green border-paymint-green/20`}>{t('staff.roles.admin')}</span>;
             case 'MANAGER':
-                return <span className={`${base} bg-purple-500/10 text-purple-500 border-purple-500/20`}>{t('attributes.filters.mandatory')}</span>;
+                return <span className={`${base} bg-purple-500/10 text-purple-500 border-purple-500/20`}>{t('staff.roles.manager')}</span>;
             case 'USER':
-                return <span className={`${base} bg-blue-500/10 text-blue-500 border-blue-500/20`}>{t('staff.form.standardUsers')}</span>;
+                return <span className={`${base} bg-blue-500/10 text-blue-500 border-blue-500/20`}>{t('staff.roles.user')}</span>;
             default:
                 return <span className={`${base} bg-gray-500/10 text-gray-500 border-gray-500/20`}>{role ? role.charAt(0).toUpperCase() + role.slice(1).toLowerCase() : ''}</span>;
         }
@@ -417,13 +417,13 @@ export function OwnerEmployeesPage() {
             {isLoading ? (
                 <div className="flex flex-col items-center justify-center py-20 space-y-4">
                     <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin" />
-                    <p className="text-sm font-bold text-gray-400 tracking-widest">Loading staff...</p>
+                    <p className="text-sm font-bold text-gray-400 tracking-widest">{t('owner.staff.loading')}</p>
                 </div>
             ) : filteredEmployees.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="text-xl font-bold text-gray-900 dark:text-white">No staff found</p>
-                    <p className="text-sm font-bold text-gray-500 mt-1">Adjust filters or add new staff</p>
+                    <p className="text-xl font-bold text-gray-900 dark:text-white">{t('owner.staff.noStaffFound')}</p>
+                    <p className="text-sm font-bold text-gray-500 mt-1">{t('owner.staff.noStaffDesc')}</p>
                 </div>
             ) : viewMode === 'grid' ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -477,7 +477,7 @@ export function OwnerEmployeesPage() {
                                                         className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                                                     >
                                                         <Edit2 size={16} />
-                                                        Edit Details
+                                                        {t('owner.staff.editDetails')}
                                                     </button>
                                                     <button
                                                         onClick={() => {
@@ -487,7 +487,7 @@ export function OwnerEmployeesPage() {
                                                         className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
                                                     >
                                                         <Trash2 size={16} />
-                                                        Remove
+                                                        {t('owner.staff.remove')}
                                                     </button>
                                             </div>
                                         )}
@@ -501,7 +501,7 @@ export function OwnerEmployeesPage() {
                                 <div className="space-y-3 pt-4 border-t border-gray-100 dark:border-white/5">
                                     <div className="flex items-center gap-2 text-xs font-black text-gray-400 tracking-widest uppercase">
                                         <MapPin size={12} />
-                                        Access Locations
+                                        {t('owner.staff.accessLocations')}
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {emp.assignments?.length > 0 ? (
@@ -511,11 +511,11 @@ export function OwnerEmployeesPage() {
                                                 </span>
                                             ))
                                         ) : (
-                                            <span className="text-xs font-bold text-gray-500 italic">No locations assigned</span>
+                                            <span className="text-xs font-bold text-gray-500 italic">{t('owner.staff.noLocationsAssigned')}</span>
                                         )}
                                         {emp.assignments?.length > 3 && (
                                             <span className="px-2 py-1 bg-gray-50 dark:bg-white/5 rounded text-xs font-medium text-gray-500">
-                                                +{emp.assignments.length - 3} more
+                                                +{emp.assignments.length - 3} {t('common.more')}
                                             </span>
                                         )}
                                     </div>
@@ -527,35 +527,35 @@ export function OwnerEmployeesPage() {
             ) : (
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
                     <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest">
-                        <div 
+                        <div
                             className="col-span-4 cursor-pointer hover:text-paymint-green transition-colors flex items-center gap-1"
                             onClick={() => handleSort('name')}
                         >
-                            Name
+                            {t('common.name')}
                             {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
-                        <div 
+                        <div
                             className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
                             onClick={() => handleSort('role')}
                         >
-                            Role
+                            {t('common.role')}
                             {sortConfig?.key === 'role' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
-                        <div 
+                        <div
                             className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
                             onClick={() => handleSort('status')}
                         >
-                            Status
+                            {t('common.status')}
                             {sortConfig?.key === 'status' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
-                        <div 
+                        <div
                             className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
                             onClick={() => handleSort('access')}
                         >
-                            Access
+                            {t('owner.staff.access')}
                             {sortConfig?.key === 'access' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
-                        <div className="col-span-2 text-center">Actions</div>
+                        <div className="col-span-2 text-center">{t('common.actions')}</div>
                     </div>
                     <div className="divide-y divide-gray-100 dark:divide-white/5">
                         {paginatedEmployees.map((emp) => (
@@ -579,14 +579,14 @@ export function OwnerEmployeesPage() {
                                     {getStatusBadge(emp.hasActiveShift)}
                                 </div>
                                 <div className="col-span-2 text-sm font-bold text-gray-900 dark:text-white text-center">
-                                    {emp.assignments?.length || 0} Locations
+                                    {t('owner.staff.locationsCount', { count: emp.assignments?.length || 0 })}
                                 </div>
                                 <div className="col-span-2 flex items-center justify-center gap-2">
                                     <button
                                         onClick={() => { setEditingEmployee(emp); setIsFormModalOpen(true); }}
                                         className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-gray-200 dark:border-white/5"
                                     >
-                                        Edit
+                                        {t('common.edit')}
                                     </button>
                                     <button
                                         onClick={() => handleDeleteEmployee(emp.id)}
@@ -641,23 +641,23 @@ export function OwnerEmployeesPage() {
                                 <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-6">
                                     <AlertTriangle size={32} />
                                 </div>
-                                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Remove Staff</h3>
+                                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">{t('owner.staff.removeStaffTitle')}</h3>
                                 <p className="text-gray-500 text-sm leading-relaxed">
-                                    Are you sure you want to remove <span className="font-bold text-gray-900 dark:text-white">{employeeToDelete.firstName} {employeeToDelete.lastName}</span>? This action is irreversible.
+                                    {t('owner.staff.removeConfirm', { name: `${employeeToDelete.firstName} ${employeeToDelete.lastName}` })}
                                 </p>
                             </div>
 
                             <div className="px-8 pb-6 space-y-4">
                                 <div>
                                     <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
-                                        Verify Password
+                                        {t('owner.staff.verifyPassword')}
                                     </label>
                                     <div className="relative">
                                         <input
                                             type={showDeletePassword ? 'text' : 'password'}
                                             value={deletePassword}
                                             onChange={(e) => { setDeletePassword(e.target.value); setDeleteError(''); }}
-                                            placeholder="Enter your account password"
+                                            placeholder={t('owner.staff.passwordPlaceholder')}
                                             className={`w-full bg-gray-50 dark:bg-white/5 border ${deleteError ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-red-500 transition-colors`}
                                         />
                                         <button
@@ -677,7 +677,7 @@ export function OwnerEmployeesPage() {
                                     onClick={closeDeleteModal}
                                     className="flex-1 py-3.5 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-bold text-xs tracking-wider hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                                 >
-                                    Cancel
+                                    {t('common.cancel')}
                                 </button>
                                 <button
                                     onClick={confirmDelete}
@@ -689,7 +689,7 @@ export function OwnerEmployeesPage() {
                                     ) : (
                                         <>
                                             <Trash2 size={16} />
-                                            Confirm
+                                            {t('common.confirm')}
                                         </>
                                     )}
                                 </button>

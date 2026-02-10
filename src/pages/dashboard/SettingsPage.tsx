@@ -93,6 +93,7 @@ export function SettingsPage() {
     onClose?: () => void;
     type?: 'danger' | 'success' | 'warning' | 'info';
     confirmText?: string;
+    cancelText?: string;
     showCancel?: boolean;
   }>({
     isOpen: false,
@@ -235,7 +236,7 @@ export function SettingsPage() {
       setInitialSettings(formData);
       setSettings(data);
     } catch (err) {
-      toast.error((err as ApiError).response?.data?.message || 'Failed to load settings');
+      toast.error((err as ApiError).response?.data?.message || t('settings.messages.loadFailed'));
     } finally {
       if (showLoading) setIsLoading(false);
     }
@@ -274,8 +275,8 @@ export function SettingsPage() {
 
     if (isCurrencyChanged) {
       triggerTwoStepConfirm(
-        'Change System Currency',
-        `You are changing the system currency from ${initialSettings?.currency} to ${data.currency}. This affects all future transactions and financial reports.`,
+        t('settings.confirm.changeCurrencyTitle'),
+        t('settings.confirm.changeCurrencyMessage', { from: initialSettings?.currency, to: data.currency }),
         () => saveSettings(data)
       );
       return;
@@ -329,10 +330,10 @@ export function SettingsPage() {
 
       setConfirmConfig({
         isOpen: true,
-        title: 'Settings Saved',
-        message: 'Settings saved',
+        title: t('settings.confirm.taxUpdatedTitle'),
+        message: t('settings.confirm.taxUpdatedMessage'),
         type: 'success',
-        confirmText: 'OK',
+        confirmText: t('common.yes'),
         showCancel: false,
         onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
       });
@@ -346,7 +347,7 @@ export function SettingsPage() {
         refreshCurrency()
       ]);
     } catch (err) {
-      toast.error((err as ApiError).response?.data?.message || 'Failed to save settings');
+      toast.error((err as ApiError).response?.data?.message || t('settings.messages.saveFailed'));
     } finally {
       setIsSaving(false);
     }
@@ -362,8 +363,8 @@ export function SettingsPage() {
         setTimeout(() => {
           setConfirmConfig({
             isOpen: true,
-            title: 'Final Confirmation',
-            message: 'Are you absolutely sure? This is a critical system change that affects your financial data.',
+            title: t('common.finalConfirmation'),
+            message: t('settings.confirm.criticalChange'),
             type: 'danger',
             onConfirm,
           });
@@ -379,8 +380,8 @@ export function SettingsPage() {
     if (isNaN(rateNum) || rawValue === undefined || rawValue === null || String(rawValue).trim() === '') {
       setConfirmConfig({
         isOpen: true,
-        title: 'Entry Error',
-        message: 'Please enter a valid numeric tax rate to proceed with the update.',
+        title: t('common.entryError'),
+        message: t('settings.sales.enterValidTax'),
         type: 'warning',
         onConfirm: () => { },
         onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
@@ -391,10 +392,10 @@ export function SettingsPage() {
     if (rateNum < 0 || rateNum > 100) {
       setConfirmConfig({
         isOpen: true,
-        title: 'Invalid Tax Rate',
-        message: 'Tax rate must be between 0 and 100%',
+        title: t('settings.sales.invalidTaxTitle'),
+        message: t('settings.sales.invalidTaxMessage'),
         type: 'danger',
-        confirmText: 'Got it',
+        confirmText: t('common.gotIt'),
         showCancel: false,
         onConfirm: () => { },
         onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
@@ -406,30 +407,30 @@ export function SettingsPage() {
 
     if (isChanged) {
       triggerTwoStepConfirm(
-        'Update Tax Rate',
-        `You are changing the tax rate from ${initialSettings?.taxRate}% to ${rateNum}%. This action will trigger a recalculation of all historical data.`,
+        t('settings.confirm.updateTaxTitle'),
+        t('settings.confirm.updateTaxMessage', { from: initialSettings.taxRate, to: rateNum }),
         async () => {
           try {
             await api.put('/app-settings/tax-rate', { taxRate: rateNum / 100 });
             setConfirmConfig({
               isOpen: true,
-              title: 'Tax Rate Updated',
-              message: 'Tax rate updated',
+              title: t('settings.confirm.taxUpdatedTitle'),
+              message: t('settings.confirm.taxUpdatedMessage'),
               type: 'success',
-              confirmText: 'OK',
+              confirmText: t('common.yes'),
               showCancel: false,
               onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
             });
             fetchSettings(false);
           } catch (err) {
-            toast.error((err as ApiError).response?.data?.message || 'Failed to update tax rate');
+            toast.error((err as ApiError).response?.data?.message || t('settings.messages.saveFailed'));
           }
         }
       );
       return;
     }
 
-    toast.error('Tax rate has not changed');
+    toast.error(t('settings.messages.taxRateNoChange'));
   };
 
   // Deletion state
@@ -463,16 +464,16 @@ export function SettingsPage() {
       await api.post(`/api/establishments/${establishmentInfo.id}/cancel-deletion`);
       setConfirmConfig({
         isOpen: true,
-        title: 'Action Cancelled',
-        message: 'Deletion cancelled!',
+        title: t('settings.confirm.actionCancelledTitle'),
+        message: t('settings.confirm.actionCancelledMessage'),
         type: 'success',
-        confirmText: 'OK',
+        confirmText: t('common.gotIt'),
         showCancel: false,
         onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
       });
       fetchEstablishmentInfo();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to cancel deletion');
+      toast.error(err.response?.data?.message || t('settings.danger.cancelFailed'));
     } finally {
       setIsCancellingDeletion(false);
     }
@@ -490,8 +491,6 @@ export function SettingsPage() {
         onConfirm: () => {
           // Reset form data to initial state
           if (initialSettings) reset(initialSettings);
-
-
 
           // Reset image preview if it was changed
           if (initialSettings?.logo) {
@@ -511,6 +510,8 @@ export function SettingsPage() {
           setActiveTab(newTab);
         },
         showCancel: true,
+        confirmText: t('common.continue'),
+        cancelText: t('common.cancel'),
         onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
       });
       return;
@@ -534,7 +535,7 @@ export function SettingsPage() {
           <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
           <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
         </div>
-        <p className="text-xs font-black text-gray-400 tracking-widest">Loading settings...</p>
+        <p className="text-xs font-black text-gray-400 tracking-widest">{t('settings.messages.loading')}</p>
       </div>
     );
   }
@@ -552,7 +553,7 @@ export function SettingsPage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
               </span>
-              <span className="text-xs font-bold text-gray-400 tracking-widest">Live</span>
+              <span className="text-xs font-bold text-gray-400 tracking-widest">{t('common.live')}</span>
             </div>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('settings.title')}</h1>
@@ -567,16 +568,16 @@ export function SettingsPage() {
             if (errs.taxRate) {
               setConfirmConfig({
                 isOpen: true,
-                title: 'Validation Error',
-                message: errs.taxRate.message as string || 'Tax rate must be between 0 and 100%',
+                title: t('common.error'),
+                message: errs.taxRate.message as string || t('settings.confirm.invalidTaxMessage'),
                 type: 'danger',
-                confirmText: 'Got it',
+                confirmText: t('common.gotIt'),
                 showCancel: false,
                 onConfirm: () => { },
                 onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
               });
             } else {
-              toast.error('Please check the form for errors');
+              toast.error(t('settings.messages.formErrors'));
             }
           })}
           disabled={isSaving || !hasUnsavedChanges}
@@ -621,10 +622,10 @@ export function SettingsPage() {
         if (errs.taxRate) {
           setConfirmConfig({
             isOpen: true,
-            title: 'Validation Error',
-            message: errs.taxRate.message as string || 'Tax rate must be between 0 and 100%',
+            title: t('settings.confirm.entryErrorTitle'),
+            message: errs.taxRate.message as string || t('settings.confirm.invalidTaxMessage'),
             type: 'danger',
-            confirmText: 'Got it',
+            confirmText: t('common.gotIt'),
             showCancel: false,
             onConfirm: () => { },
             onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
@@ -693,7 +694,7 @@ export function SettingsPage() {
                   const isOpen = dayConfig ? dayConfig.isOpen : !!watch('openingTime');
                   return (
                     <button key={day} type="button" disabled className={`relative flex-1 min-w-[3.5rem] h-14 rounded-xl flex flex-col items-center justify-center gap-1 border bg-white dark:bg-white/5 text-gray-400 border-gray-200 dark:border-white/10 cursor-not-allowed`}>
-                      <span className="text-xs font-black tracking-widest">{day.slice(0, 3)}</span>
+                      <span className="text-xs font-black tracking-widest uppercase">{t(`common.daysShort.${day}`)}</span>
                       <div className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-paymint-green/50' : 'bg-gray-300 dark:bg-white/20'}`} />
                     </button>
                   );
@@ -703,8 +704,8 @@ export function SettingsPage() {
                 <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-gray-400 shadow-sm">
                   <Plus size={24} />
                 </div>
-                <p className="text-xs font-black text-gray-400 tracking-widest">Select a day</p>
-                <p className="text-xs font-black text-gray-400 mt-1 tracking-widest">Choose days to edit hours</p>
+                <p className="text-xs font-black text-gray-400 tracking-widest">{t('settings.profile.selectDay')}</p>
+                <p className="text-xs font-black text-gray-400 mt-1 tracking-widest">{t('settings.profile.chooseDays')}</p>
               </div>
             </div>
           </motion.div>
@@ -727,7 +728,7 @@ export function SettingsPage() {
                 <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all hover:border-paymint-green/20 group/card">
                   <div className="flex items-center justify-between mb-6">
                     <div>
-                      <p className="text-xs font-black text-paymint-green tracking-[0.2em] mb-1">Tax</p>
+                      <p className="text-xs font-black text-paymint-green tracking-[0.2em] mb-1">{t('settings.sales.taxLabel')}</p>
                       <h4 className="text-lg font-bold text-gray-900 dark:text-white">{t('settings.sales.taxRate')}</h4>
                     </div>
                     <button type="button" onClick={updateTaxRate} className="px-4 py-2 bg-paymint-green text-black text-xs font-black tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md shadow-paymint-green/10">{t('settings.sales.update')}</button>
@@ -758,20 +759,20 @@ export function SettingsPage() {
                       {...register('taxRate', {
                         required: true,
                         valueAsNumber: true,
-                        max: { value: 100, message: 'Tax rate must be between 0 and 100%' },
-                        min: { value: 0, message: 'Tax rate must be between 0 and 100%' },
+                        max: { value: 100, message: t('settings.sales.taxErrorRange') },
+                        min: { value: 0, message: t('settings.sales.taxErrorRange') },
                         onBlur: (e) => {
                           const val = parseFloat(e.target.value);
                           if (val > 0 && val < 1) {
-                            setValue('taxRate', parseFloat((val * 100).toFixed(5)), { shouldDirty: true });
+                            setValue('taxRate', parseFloat((val * 100).toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 5 })), { shouldDirty: true });
                           } else if (!isNaN(val)) {
-                            setValue('taxRate', parseFloat(val.toFixed(5)), { shouldDirty: true });
+                            setValue('taxRate', parseFloat(val.toLocaleString('en-US', { useGrouping: false, maximumFractionDigits: 5 })), { shouldDirty: true });
                           }
                         }
                       })}
                       className={`w-full h-16 bg-white dark:bg-white/[0.03] border ${errors.taxRate ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl px-6 font-bold text-3xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${errors.taxRate ? 'focus:ring-red-500/20' : 'focus:ring-paymint-green/20'} transition-all pr-16 group-hover:border-paymint-green/50 shadow-sm`}
                     />
-                    <div className={`absolute right-6 top-1/2 -translate-y-1/2 font-bold text-xl transition-colors ${errors.taxRate ? 'text-red-500' : 'text-gray-400 group-focus-within:text-paymint-green'}`}>%</div>
+                    <div className={`absolute ${t('common.locale') === 'ar' ? 'left-6' : 'right-6'} top-1/2 -translate-y-1/2 font-bold text-xl transition-colors ${errors.taxRate ? 'text-red-500' : 'text-gray-400 group-focus-within:text-paymint-green'}`}>%</div>
                   </div>
                   {errors.taxRate && (
                     <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3">
@@ -780,7 +781,7 @@ export function SettingsPage() {
                       </div>
                       <div>
                         <p className="text-xs font-black text-red-500 tracking-widest leading-none mb-1">{t('settings.sales.invalidInput')}</p>
-                        <p className="text-xs font-bold text-red-500/80 tracking-tight">{errors.taxRate.message as string || 'Tax rate error'}</p>
+                        <p className="text-xs font-bold text-red-500/80 tracking-tight">{errors.taxRate.message as string || t('settings.sales.taxErrorGeneric')}</p>
                       </div>
                     </motion.div>
                   )}
@@ -792,7 +793,7 @@ export function SettingsPage() {
 
                 <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] flex flex-col justify-between shadow-lg backdrop-blur-sm transition-all hover:border-paymint-green/20 group/card">
                   <div className="mb-6">
-                    <p className="text-xs font-black text-blue-500 tracking-[0.2em] mb-1">Currency</p>
+                    <p className="text-xs font-black text-blue-500 tracking-[0.2em] mb-1">{t('settings.sales.currencyLabel')}</p>
                     <h4 className="text-sm font-bold text-gray-900 dark:text-white">{t('settings.sales.currency')}</h4>
                   </div>
                   <div className="relative">
@@ -861,7 +862,7 @@ export function SettingsPage() {
                           {...register('restaurantName')}
                           disabled={!showRestaurantName}
                           className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                          placeholder="Enter Location Name"
+                          placeholder={t('settings.profile.namePlaceholder')}
                         />
                       </div>
                       {/* Description / Tagline */}
@@ -881,7 +882,7 @@ export function SettingsPage() {
                           {...register('restaurantDescription')}
                           disabled={!showDescription}
                           className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                          placeholder="Enter Description"
+                          placeholder={t('settings.profile.aboutPlaceholder')}
                         />
                       </div>
                     </div>
@@ -929,7 +930,7 @@ export function SettingsPage() {
                       {...register('restaurantAddress')}
                       disabled={!showAddress}
                       className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                      placeholder="Enter Address"
+                      placeholder={t('settings.profile.addressPlaceholder')}
                     />
                   </div>
 
@@ -950,7 +951,7 @@ export function SettingsPage() {
                       {...register('taxIdNumber')}
                       disabled={!showTaxId}
                       className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                      placeholder="Enter Tax ID"
+                      placeholder={t('settings.profile.taxIdPlaceholder')}
                     />
                   </div>
 
@@ -971,7 +972,7 @@ export function SettingsPage() {
                       rows={2}
                       disabled={!showFarewellMessage}
                       className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
-                      placeholder="Enter Custom Footer Message"
+                      placeholder={t('settings.receipts.footerPlaceholder')}
                     />
                   </div>
                 </div>
@@ -993,12 +994,12 @@ export function SettingsPage() {
                   <Trash2 className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">Delete Location</h3>
-                  <p className="text-xs text-red-600/80 dark:text-red-400/80 font-black tracking-widest px-1">Danger Zone</p>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('settings.danger.title')}</h3>
+                  <p className="text-xs text-red-600/80 dark:text-red-400/80 font-black tracking-widest px-1">{t('settings.danger.subtitle')}</p>
                 </div>
               </div>
               <span className="px-3 py-1 rounded-lg bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-xs font-black tracking-widest border border-red-200 dark:border-red-900/30">
-                Warning
+                {t('settings.danger.warning')}
               </span>
             </div>
 
@@ -1010,13 +1011,12 @@ export function SettingsPage() {
               <div className="space-y-6">
                 <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-red-200/50 dark:border-red-900/20 shadow-sm">
                   <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
-                    This will permanently delete <span className="font-bold text-gray-900 dark:text-white">"{establishmentInfo?.name || 'this location'}"</span>.
-                    All data including orders, products, and customer info will be deleted.
+                    {t('settings.danger.description', { name: establishmentInfo?.name || t('settings.danger.thisLocation') })}
                   </p>
                   <div className="mt-6 flex flex-col gap-3">
                     <div className="flex items-center gap-2 text-xs font-black text-red-500 tracking-tight">
                       <AlertTriangle size={14} />
-                      You cannot undo this after 30 days.
+                      {t('settings.danger.undoWarning')}
                     </div>
                   </div>
                 </div>
@@ -1025,7 +1025,7 @@ export function SettingsPage() {
                   onClick={() => setShowDeletionWizard(true)}
                   className="w-full md:w-auto px-8 py-4 bg-red-600 text-white font-black tracking-widest text-xs rounded-xl hover:bg-red-700 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-red-600/20"
                 >
-                  Start Deletion
+                  {t('settings.danger.startDeletion')}
                 </button>
               </div>
             )}

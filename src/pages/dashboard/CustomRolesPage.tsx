@@ -300,7 +300,7 @@ export function CustomRolesPage() {
                         <h3 className="font-bold text-gray-900 dark:text-white text-sm">{role.name}</h3>
                         <span className={`inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                           <UserCheck size={10} />
-                          {role.baseRole ? role.baseRole.charAt(0).toUpperCase() + role.baseRole.slice(1).toLowerCase() : ''}
+                          {role.baseRole ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : ''}
                         </span>
                       </div>
                     </div>
@@ -340,7 +340,7 @@ export function CustomRolesPage() {
                   {/* Date */}
                   <div className="pt-4 border-t border-gray-100 dark:border-white/5 relative z-10">
                     <span className="text-xs text-gray-400 font-medium">
-                      {t('dashboard.roles.created')} {new Date(role.createdAt).toLocaleDateString()}
+                      {t('dashboard.roles.created')} {new Date(role.createdAt).toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US')}
                     </span>
                   </div>
                 </div>
@@ -365,7 +365,7 @@ export function CustomRolesPage() {
                           <h3 className="font-bold text-gray-900 dark:text-white text-sm">{role.name}</h3>
                           <span className={`inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                             <UserCheck size={10} />
-                            {role.baseRole ? role.baseRole.charAt(0).toUpperCase() + role.baseRole.slice(1).toLowerCase() : ''}
+                            {role.baseRole ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : ''}
                           </span>
                         </div>
                       </div>
@@ -389,14 +389,14 @@ export function CustomRolesPage() {
                       <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-lg">
                         <span className="text-gray-500 block mb-1">{t('dashboard.roles.permissions')}</span>
                         <div className="flex gap-2">
-                          <span className="font-bold text-paymint-green">{t('dashboard.roles.pos')}: {role.permissions?.length || 0}</span>
-                          <span className="font-bold text-blue-500">{t('dashboard.roles.office')}: {role.backofficePermissions?.length || 0}</span>
+                          <span className="font-bold text-paymint-green">{t('dashboard.roles.pos')}: {(role.permissions?.length || 0).toLocaleString(t('common.locale'))}</span>
+                          <span className="font-bold text-blue-500">{t('dashboard.roles.office')}: {(role.backofficePermissions?.length || 0).toLocaleString(t('common.locale'))}</span>
                         </div>
                       </div>
                       <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-lg">
                         <span className="text-gray-500 block mb-1">{t('dashboard.roles.date')}</span>
                         <span className="font-bold text-gray-900 dark:text-white">
-                          {new Date(role.createdAt).toLocaleDateString()}
+                          {new Date(role.createdAt).toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US')}
                         </span>
                       </div>
                     </div>
@@ -459,24 +459,24 @@ export function CustomRolesPage() {
                         <td className="px-6 py-4">
                           <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                             <UserCheck size={10} />
-                            {role.baseRole ? role.baseRole.charAt(0).toUpperCase() + role.baseRole.slice(1).toLowerCase() : ''}
+                            {role.baseRole ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : ''}
                           </span>
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2">
                               <span className="w-1.5 h-1.5 rounded-full bg-paymint-green"></span>
-                              <span className="text-xs text-gray-500 font-medium">{t('dashboard.roles.pos')}: {role.permissions?.length || 0}</span>
+                              <span className="text-xs text-gray-500 font-medium">{t('dashboard.roles.pos')}: {(role.permissions?.length || 0).toLocaleString(t('common.locale'))}</span>
                             </div>
                             <div className="flex items-center gap-2">
                               <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                              <span className="text-xs text-gray-500 font-medium">{t('dashboard.roles.office')}: {role.backofficePermissions?.length || 0}</span>
+                              <span className="text-xs text-gray-500 font-medium">{t('dashboard.roles.office')}: {(role.backofficePermissions?.length || 0).toLocaleString(t('common.locale'))}</span>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
                           <p className="text-xs text-gray-500 font-medium">
-                            {new Date(role.createdAt).toLocaleDateString()}
+                            {new Date(role.createdAt).toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US')}
                           </p>
                         </td>
                         <td className="px-8 py-5 text-center">

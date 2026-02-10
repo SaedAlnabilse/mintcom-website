@@ -11,57 +11,57 @@ export const Footer = () => {
   const hardwareItems = [
     {
       id: 'tablets',
-      name: t('hardware.tablets.name'),
+      name: t('landing.hardware.tablets.name'),
       icon: Tablet,
-      description: t('hardware.tablets.description'),
+      description: t('landing.hardware.tablets.description'),
       products: [
         {
-          name: t('hardware.products.samsungTab.name'),
-          specs: t('hardware.products.samsungTab.specs'),
+          name: t('landing.hardware.products.samsungTab.name'),
+          specs: t('landing.hardware.products.samsungTab.specs'),
           price: '~$180',
           link: 'https://www.amazon.com/s?k=samsung+galaxy+tab+a8'
         },
         {
-          name: t('hardware.products.ipad.name'),
-          specs: t('hardware.products.ipad.specs'),
+          name: t('landing.hardware.products.ipad.name'),
+          specs: t('landing.hardware.products.ipad.specs'),
           price: '~$350',
           link: 'https://www.amazon.com/s?k=ipad+10th+generation'
         },
         {
-          name: t('hardware.products.lenovo.name'),
-          specs: t('hardware.products.lenovo.specs'),
+          name: t('landing.hardware.products.lenovo.name'),
+          specs: t('landing.hardware.products.lenovo.specs'),
           price: '~$150',
           link: 'https://www.amazon.com/s?k=lenovo+tab+m10+plus'
         }
       ],
-      note: t('hardware.tablets.note')
+      note: t('landing.hardware.tablets.note')
     },
     {
       id: 'printers',
-      name: t('hardware.printers.name'),
+      name: t('landing.hardware.printers.name'),
       icon: Printer,
-      description: t('hardware.printers.description'),
+      description: t('landing.hardware.printers.description'),
       products: [
         {
-          name: t('hardware.products.munbyn.name'),
-          specs: t('hardware.products.munbyn.specs'),
+          name: t('landing.hardware.products.munbyn.name'),
+          specs: t('landing.hardware.products.munbyn.specs'),
           price: '~$100',
           link: 'https://www.amazon.com/s?k=munbyn+thermal+receipt+printer+80mm'
         },
         {
-          name: t('hardware.products.epson.name'),
-          specs: t('hardware.products.epson.specs'),
+          name: t('landing.hardware.products.epson.name'),
+          specs: t('landing.hardware.products.epson.specs'),
           price: '~$180',
           link: 'https://www.amazon.com/s?k=epson+tm-t20iii'
         },
         {
-          name: t('hardware.products.star.name'),
-          specs: t('hardware.products.star.specs'),
+          name: t('landing.hardware.products.star.name'),
+          specs: t('landing.hardware.products.star.specs'),
           price: '~$250',
           link: 'https://www.amazon.com/s?k=star+micronics+tsp143'
         }
       ],
-      note: t('hardware.printers.note')
+      note: t('landing.hardware.printers.note')
     }
   ];
 
@@ -95,12 +95,12 @@ export const Footer = () => {
 
   return (
     <>
-      <footer className="bg-gray-50 dark:bg-[#050505] border-t border-gray-200 dark:border-white/10 pt-20 pb-10 transition-colors duration-300">
+      <footer className="bg-gray-50 dark:bg-[#050505] border-t border-gray-200 dark:border-white/10 pt-20 pb-10 transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
         <div className="container mx-auto px-8 md:px-16 lg:px-24">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-20">
             {/* Brand */}
-            <div className="space-y-8">
-              <Logo size="lg" />
+            <div className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+              <Logo size="lg" className={t('common.locale') === 'ar' ? 'scale-x-[-1]' : ''} />
               <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed max-w-xs">
                 {t('brand.description')}
               </p>
@@ -208,13 +208,13 @@ export const Footer = () => {
                   <div className="w-8 h-8 rounded-lg bg-gray-200/50 dark:bg-white/5 flex items-center justify-center">
                     <Mail size={14} className="text-paymint-green" />
                   </div>
-                  <span>hello@paymint.com</span>
+                  <span dir="ltr">hello@paymint.com</span>
                 </li>
                 <li className="flex items-center gap-3 text-gray-600 dark:text-gray-400 font-medium">
                   <div className="w-8 h-8 rounded-lg bg-gray-200/50 dark:bg-white/5 flex items-center justify-center">
                     <Phone size={14} className="text-paymint-green" />
                   </div>
-                  <span>+962 790 000 000</span>
+                  <span dir="ltr">+962 790 000 000</span>
                 </li>
               </ul>
             </div>
@@ -266,7 +266,7 @@ export const Footer = () => {
               <div className="flex flex-col md:flex-row h-[calc(90vh-100px)] max-h-[600px]">
                 {/* Sidebar - Hardware Categories */}
                 <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-gray-100 dark:border-white/5 p-4 overflow-x-auto md:overflow-y-auto">
-                  <div className="flex md:flex-col gap-2">
+                  <div className="flex md:flex-col gap-2" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                     {hardwareItems.map((item) => (
                       <button
                         key={item.id}
@@ -275,6 +275,7 @@ export const Footer = () => {
                           ? 'bg-paymint-green text-black'
                           : 'bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'
                           }`}
+                        dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
                       >
                         <item.icon size={20} />
                         <span className="text-sm font-bold">{item.name}</span>

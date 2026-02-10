@@ -1,8 +1,8 @@
-import { AppStrings } from '../constants/AppStrings';
 import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronDown, Check, X, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface Option {
     label: string;
@@ -23,15 +23,18 @@ export function MultiSelect({
     value = [], // Default to empty array
     onChange,
     options = [],
-    placeholder = 'Select...',
+    placeholder,
     className = ''
 }: MultiSelectProps) {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const containerRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const searchInputRef = useRef<HTMLInputElement>(null);
+
+    const effectivePlaceholder = placeholder || t('common.select');
 
     const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
 
@@ -109,11 +112,11 @@ export function MultiSelect({
     };
 
     const getDisplayValue = () => {
-        if (value.length === 0) return placeholder;
+        if (value.length === 0) return effectivePlaceholder;
         if (value.length === 1) {
-            return options.find(o => o.value === value[0])?.label || placeholder;
+            return options.find(o => o.value === value[0])?.label || effectivePlaceholder;
         }
-        return `${value.length} Selected`;
+        return `${value.length.toLocaleString(t('common.locale'))} ${t('common.selected')}`;
     };
 
     const filteredOptions = options.filter(opt =>
@@ -141,7 +144,7 @@ export function MultiSelect({
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search..."
+                                placeholder={t('common.searchPlaceholder')}
                                 className="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-white/5 border-none rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 placeholder-gray-400 outline-none focus:ring-1 focus:ring-paymint-green/30 transition-all"
                             />
                             {searchQuery && (
@@ -158,7 +161,7 @@ export function MultiSelect({
                     <div className="flex-1 overflow-y-auto custom-scrollbar">
                         {filteredOptions.length === 0 ? (
                             <div className="px-5 py-8 text-sm font-bold text-gray-500 italic text-center">
-                                {searchQuery ? AppStrings.COMMON.NO_RESULTS : 'No options available'}
+                                {searchQuery ? t('common.noResults') : t('common.noOptions')}
                             </div>
                         ) : (
                             filteredOptions.map((opt) => {
@@ -168,7 +171,7 @@ export function MultiSelect({
                                         key={opt.value}
                                         type="button"
                                         onClick={() => handleSelect(opt.value)}
-                                        className={`w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${isSelected ? 'bg-paymint-green/5' : ''
+                                        className={`w-full px-4 py-3 text-start flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${isSelected ? 'bg-paymint-green/5' : ''
                                             }`}
                                     >
                                         <span className={`text-xs ${isSelected ? 'font-black text-paymint-green' : 'font-bold text-gray-700 dark:text-gray-300'}`}>{opt.label}</span>
@@ -184,7 +187,7 @@ export function MultiSelect({
     );
 
     return (
-        <div className={`relative ${className}`} ref={containerRef}>
+        <div className={`relative ${className}`} ref={containerRef} dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
             {label && (
                 <label className="block text-xs font-black text-gray-400 tracking-widest mb-2 px-1">
                     {label}
@@ -195,7 +198,7 @@ export function MultiSelect({
                 ref={buttonRef}
                 type="button"
                 onClick={toggleOpen}
-                className={`w-full px-4 py-3 bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 rounded-xl text-left flex items-center justify-between transition-all outline-none ${isOpen ? 'ring-2 ring-paymint-green/20 border-paymint-green/50' : ''
+                className={`w-full px-4 py-3 bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 rounded-xl text-start flex items-center justify-between transition-all outline-none ${isOpen ? 'ring-2 ring-paymint-green/20 border-paymint-green/50' : ''
                     }`}
             >
                 <div className="flex items-center gap-2 overflow-hidden">

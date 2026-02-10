@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft,
@@ -33,95 +34,97 @@ interface Discussion {
   isSolved: boolean;
 }
 
-const mockDiscussions: Discussion[] = [
-  {
-    id: 1,
-    title: 'Best practices for managing multiple locations',
-    excerpt: 'I recently expanded to 3 locations and looking for tips on how to manage inventory and staff across all of them efficiently...',
-    author: { name: 'Michael Chen', badge: 'Champion' },
-    category: 'Tips & Tricks',
-    replies: 24,
-    likes: 56,
-    views: 1240,
-    createdAt: '2 hours ago',
-    isHot: true,
-    isPinned: true,
-    isSolved: false
-  },
-  {
-    id: 2,
-    title: 'How we reduced checkout time by 40%',
-    excerpt: 'After optimizing our menu layout and training staff on quick keys, we managed to significantly speed up our service...',
-    author: { name: 'Sarah Johnson', badge: 'Pro User' },
-    category: 'Success Stories',
-    replies: 18,
-    likes: 42,
-    views: 890,
-    createdAt: '5 hours ago',
-    isHot: true,
-    isPinned: false,
-    isSolved: true
-  },
-  {
-    id: 3,
-    title: 'Integrating Paymint with our inventory system',
-    excerpt: 'Has anyone successfully integrated Paymint with a third-party inventory management system? Looking for recommendations...',
-    author: { name: 'David Kim' },
-    category: 'Integrations',
-    replies: 12,
-    likes: 28,
-    views: 456,
-    createdAt: '1 day ago',
-    isHot: false,
-    isPinned: false,
-    isSolved: false
-  },
-  {
-    id: 4,
-    title: 'Custom receipt templates - is it possible?',
-    excerpt: 'I want to add our logo and customize the footer of our receipts. Is this possible with the current version?',
-    author: { name: 'Emma Wilson' },
-    category: 'Questions',
-    replies: 8,
-    likes: 15,
-    views: 234,
-    createdAt: '2 days ago',
-    isHot: false,
-    isPinned: false,
-    isSolved: true
-  },
-  {
-    id: 5,
-    title: 'Setting up loyalty points for coffee shop',
-    excerpt: 'Looking for advice on the best loyalty program setup for a coffee shop. Should I use points or stamps?',
-    author: { name: 'James Brown' },
-    category: 'Questions',
-    replies: 15,
-    likes: 22,
-    views: 567,
-    createdAt: '3 days ago',
-    isHot: false,
-    isPinned: false,
-    isSolved: false
-  }
-];
-
-const categories = [
-  { id: 'all', label: 'All Topics', count: 156 },
-  { id: 'questions', label: 'Questions', count: 78 },
-  { id: 'tips', label: 'Tips & Tricks', count: 34 },
-  { id: 'success', label: 'Success Stories', count: 22 },
-  { id: 'integrations', label: 'Integrations', count: 12 },
-  { id: 'announcements', label: 'Announcements', count: 10 }
-];
-
-const sortOptions = [
-  { id: 'latest', label: 'Latest', icon: Clock },
-  { id: 'popular', label: 'Most Popular', icon: TrendingUp },
-  { id: 'trending', label: 'Trending', icon: Flame }
-];
-
 export const DiscussionsPage = () => {
+  const { t } = useTranslation();
+
+  const mockDiscussions: Discussion[] = [
+    {
+      id: 1,
+      title: t('community.discussions.item_1.title', 'Best practices for managing multiple locations'),
+      excerpt: t('community.discussions.item_1.excerpt', 'I recently expanded to 3 locations and looking for tips on how to manage inventory and staff across all of them efficiently...'),
+      author: { name: 'Michael Chen', badge: 'Champion' },
+      category: 'Tips & Tricks',
+      replies: 24,
+      likes: 56,
+      views: 1240,
+      createdAt: t('community.times.hours_ago', '2 hours ago', { count: 2 }),
+      isHot: true,
+      isPinned: true,
+      isSolved: false
+    },
+    {
+      id: 2,
+      title: t('community.discussions.item_2.title', 'How we reduced checkout time by 40%'),
+      excerpt: t('community.discussions.item_2.excerpt', 'After optimizing our menu layout and training staff on quick keys, we managed to significantly speed up our service...'),
+      author: { name: 'Sarah Johnson', badge: 'Pro User' },
+      category: 'Success Stories',
+      replies: 18,
+      likes: 42,
+      views: 890,
+      createdAt: t('community.times.hours_ago', '5 hours ago', { count: 5 }),
+      isHot: true,
+      isPinned: false,
+      isSolved: true
+    },
+    {
+      id: 3,
+      title: t('community.discussions.item_3.title', 'Integrating Paymint with our inventory system'),
+      excerpt: t('community.discussions.item_3.excerpt', 'Has anyone successfully integrated Paymint with a third-party inventory management system? Looking for recommendations...'),
+      author: { name: 'David Kim' },
+      category: 'Integrations',
+      replies: 12,
+      likes: 28,
+      views: 456,
+      createdAt: t('community.times.days_ago', '1 day ago', { count: 1 }),
+      isHot: false,
+      isPinned: false,
+      isSolved: false
+    },
+    {
+      id: 4,
+      title: t('community.discussions.item_4.title', 'Custom receipt templates - is it possible?'),
+      excerpt: t('community.discussions.item_4.excerpt', 'I want to add our logo and customize the footer of our receipts. Is this possible with the current version?'),
+      author: { name: 'Emma Wilson' },
+      category: 'Questions',
+      replies: 8,
+      likes: 15,
+      views: 234,
+      createdAt: t('community.times.days_ago', '2 days ago', { count: 2 }),
+      isHot: false,
+      isPinned: false,
+      isSolved: true
+    },
+    {
+      id: 5,
+      title: t('community.discussions.item_5.title', 'Setting up loyalty points for coffee shop'),
+      excerpt: t('community.discussions.item_5.excerpt', 'Looking for advice on the best loyalty program setup for a coffee shop. Should I use points or stamps?'),
+      author: { name: 'James Brown' },
+      category: 'Questions',
+      replies: 15,
+      likes: 22,
+      views: 567,
+      createdAt: t('community.times.days_ago', '3 days ago', { count: 3 }),
+      isHot: false,
+      isPinned: false,
+      isSolved: false
+    }
+  ];
+
+  const categories = [
+    { id: 'all', label: t('common.all', 'All Topics'), count: 156 },
+    { id: 'questions', label: t('community.categories.questions', 'Questions'), count: 78 },
+    { id: 'tips', label: t('community.categories.tips', 'Tips & Tricks'), count: 34 },
+    { id: 'success', label: t('community.categories.success', 'Success Stories'), count: 22 },
+    { id: 'integrations', label: t('community.categories.integrations', 'Integrations'), count: 12 },
+    { id: 'announcements', label: t('community.categories.announcements', 'Announcements'), count: 10 }
+  ];
+
+  const sortOptions = [
+    { id: 'latest', label: t('community.sort.latest', 'Latest'), icon: Clock },
+    { id: 'popular', label: t('community.sort.popular', 'Most Popular'), icon: TrendingUp },
+    { id: 'trending', label: t('community.sort.trending', 'Trending'), icon: Flame }
+  ];
+
   const [discussions] = useState<Discussion[]>(mockDiscussions);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -150,10 +153,12 @@ export const DiscussionsPage = () => {
                 >
                   <ArrowLeft size={20} />
                 </Link>
-                <h1 className="text-3xl font-black tracking-tight">Discussions</h1>
+                <h1 className="text-3xl font-black tracking-tight">
+                  {t('community.discussions.title', 'Discussions')}
+                </h1>
               </div>
               <p className="text-gray-500 dark:text-gray-400 font-medium ml-11">
-                Ask questions and share knowledge with the community
+                {t('community.discussions.subtitle', 'Ask questions and share knowledge with the community')}
               </p>
             </div>
 
@@ -162,7 +167,7 @@ export const DiscussionsPage = () => {
               className="inline-flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-paymint-green/20"
             >
               <Plus size={18} />
-              New Discussion
+              {t('community.discussions.new', 'New Discussion')}
             </Link>
           </div>
 
@@ -170,7 +175,9 @@ export const DiscussionsPage = () => {
             {/* Sidebar */}
             <div className="lg:w-64 flex-shrink-0">
               <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-4 sticky top-28">
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 px-2">Categories</h3>
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 px-2">
+                  {t('community.labels.categories', 'Categories')}
+                </h3>
                 <div className="space-y-1">
                   {categories.map((category) => (
                     <button
@@ -203,7 +210,7 @@ export const DiscussionsPage = () => {
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search discussions..."
+                      placeholder={t('community.discussions.search_placeholder', 'Search discussions...')}
                       className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
                     />
                   </div>
@@ -253,17 +260,17 @@ export const DiscussionsPage = () => {
                           <div className="flex flex-wrap items-center gap-2 mb-2">
                             {discussion.isPinned && (
                               <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-500/20 text-purple-600 rounded text-xs font-bold">
-                                Pinned
+                                {t('community.labels.pinned', 'Pinned')}
                               </span>
                             )}
                             {discussion.isHot && (
                               <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-orange-100 dark:bg-orange-500/20 text-orange-600 rounded text-xs font-bold">
-                                <Flame size={10} /> Hot
+                                <Flame size={10} /> {t('community.labels.hot', 'Hot')}
                               </span>
                             )}
                             {discussion.isSolved && (
                               <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 dark:bg-green-500/20 text-green-600 rounded text-xs font-bold">
-                                <CheckCircle2 size={10} /> Solved
+                                <CheckCircle2 size={10} /> {t('community.labels.solved', 'Solved')}
                               </span>
                             )}
                             <span className="px-2 py-0.5 bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 rounded text-xs font-bold">
@@ -316,7 +323,7 @@ export const DiscussionsPage = () => {
               {/* Load More */}
               <div className="mt-8 text-center">
                 <button className="px-8 py-3 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-white/20 transition-all">
-                  Load More Discussions
+                  {t('community.labels.load_more', 'Load More Discussions')}
                 </button>
               </div>
             </div>

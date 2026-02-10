@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface CustomTimePickerProps {
     value: string;
@@ -11,6 +12,7 @@ interface CustomTimePickerProps {
 }
 
 export function CustomTimePicker({ value, onChange, className = '', showIcon = false, align = 'left' }: CustomTimePickerProps) {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -47,7 +49,7 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
     const minutes = Array.from({ length: 60 }, (_, i) => i);
 
     return (
-        <div className={`relative ${className}`} ref={containerRef}>
+        <div className={`relative ${className}`} ref={containerRef} dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
@@ -58,7 +60,7 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
             >
                 {showIcon && <Clock size={14} className={isOpen ? 'text-[#7CC39F]' : 'text-gray-400'} />}
                 <span>
-                    {hour.toString().padStart(2, '0')}:{minute.toString().padStart(2, '0')} <span className="text-xs ml-0.5">{period}</span>
+                    {hour.toLocaleString(t('common.locale'), { minimumIntegerDigits: 2 })}:{minute.toLocaleString(t('common.locale'), { minimumIntegerDigits: 2 })} <span className="text-xs ml-0.5">{period === 'AM' ? t('common.time.am') : t('common.time.pm')}</span>
                 </span>
             </button>
 
@@ -74,7 +76,7 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                     >
                         {/* Hours */}
                         <div className="flex-1 overflow-y-auto scrollbar-none hover:scrollbar-thin">
-                            <div className="text-[10px] !bg-gray-50 dark:!bg-[#0F172A] !bg-opacity-100 text-center py-1 font-bold sticky top-0 z-10 text-gray-500 border-b border-gray-100 dark:border-white/5">Hr</div>
+                            <div className="text-[10px] !bg-gray-50 dark:!bg-[#0F172A] !bg-opacity-100 text-center py-1 font-bold sticky top-0 z-10 text-gray-500 border-b border-gray-100 dark:border-white/5">{t('common.time.hourAbbr')}</div>
                             {hours.map(h => (
                                 <div
                                     key={h}
@@ -84,14 +86,14 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                     ${h === hour ? 'bg-[#7CC39F] text-white font-bold' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200'}
                   `}
                                 >
-                                    {h}
+                                    {h.toLocaleString(t('common.locale'))}
                                 </div>
                             ))}
                         </div>
 
                         {/* Minutes */}
                         <div className="flex-1 overflow-y-auto scrollbar-none hover:scrollbar-thin border-l border-r border-gray-100 dark:border-white/5">
-                            <div className="text-[10px] !bg-gray-50 dark:!bg-[#0F172A] !bg-opacity-100 text-center py-1 font-bold sticky top-0 z-10 text-gray-500 border-b border-gray-100 dark:border-white/5">Min</div>
+                            <div className="text-[10px] !bg-gray-50 dark:!bg-[#0F172A] !bg-opacity-100 text-center py-1 font-bold sticky top-0 z-10 text-gray-500 border-b border-gray-100 dark:border-white/5">{t('common.time.minuteAbbr')}</div>
                             {minutes.map(m => (
                                 <div
                                     key={m}
@@ -101,7 +103,7 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                     ${m === minute ? 'bg-[#7CC39F] text-white font-bold' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200'}
                   `}
                                 >
-                                    {m.toString().padStart(2, '0')}
+                                    {m.toLocaleString(t('common.locale'), { minimumIntegerDigits: 2 })}
                                 </div>
                             ))}
                         </div>
@@ -117,7 +119,7 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                      ${p === period ? 'bg-[#7CC39F] text-white' : 'bg-gray-50 dark:bg-white/5 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10'}
                    `}
                                 >
-                                    {p}
+                                    {p === 'AM' ? t('common.time.am') : t('common.time.pm')}
                                 </div>
                             ))}
                         </div>

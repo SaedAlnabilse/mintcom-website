@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
   MessageCircle,
@@ -20,61 +21,62 @@ import {
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 
-const featuredDiscussions = [
-  {
-    id: 1,
-    title: 'Best practices for managing multiple locations',
-    author: 'Michael Chen',
-    avatar: null,
-    replies: 24,
-    likes: 56,
-    category: 'Tips & Tricks',
-    isHot: true
-  },
-  {
-    id: 2,
-    title: 'How we reduced checkout time by 40%',
-    author: 'Sarah Johnson',
-    avatar: null,
-    replies: 18,
-    likes: 42,
-    category: 'Success Stories',
-    isHot: true
-  },
-  {
-    id: 3,
-    title: 'Integrating Paymint with our inventory system',
-    author: 'David Kim',
-    avatar: null,
-    replies: 12,
-    likes: 28,
-    category: 'Integrations',
-    isHot: false
-  }
-];
-
-const topIdeas = [
-  { id: 1, title: 'Dark mode for POS tablet app', votes: 234, status: 'planned' },
-  { id: 2, title: 'Multiple receipt printers per station', votes: 189, status: 'in_progress' },
-  { id: 3, title: 'Customer-facing display support', votes: 156, status: 'under_review' }
-];
-
-const popularGuides = [
-  { id: 1, title: 'Complete Setup Guide for New Users', reads: '12.4k', time: '15 min' },
-  { id: 2, title: 'Optimizing Your Menu Layout', reads: '8.2k', time: '10 min' },
-  { id: 3, title: 'Understanding Sales Reports', reads: '6.8k', time: '12 min' },
-  { id: 4, title: 'Employee Management Best Practices', reads: '5.1k', time: '8 min' }
-];
-
-const communityStats = [
-  { label: 'Members', value: '12.5k+', icon: Users },
-  { label: 'Discussions', value: '3.2k', icon: MessageCircle },
-  { label: 'Ideas Submitted', value: '890', icon: Lightbulb },
-  { label: 'Guides', value: '120+', icon: BookOpen }
-];
-
 export const CommunityPage = () => {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
+
+  const featuredDiscussions = [
+    {
+      id: 1,
+      title: t('community.discussions.featured_1.title', 'Best practices for managing multiple locations'),
+      author: 'Michael Chen',
+      avatar: null,
+      replies: 24,
+      likes: 56,
+      category: t('community.categories.tips', 'Tips & Tricks'),
+      isHot: true
+    },
+    {
+      id: 2,
+      title: t('community.discussions.featured_2.title', 'How we reduced checkout time by 40%'),
+      author: 'Sarah Johnson',
+      avatar: null,
+      replies: 18,
+      likes: 42,
+      category: t('community.categories.success', 'Success Stories'),
+      isHot: true
+    },
+    {
+      id: 3,
+      title: t('community.discussions.featured_3.title', 'Integrating Paymint with our inventory system'),
+      author: 'David Kim',
+      avatar: null,
+      replies: 12,
+      likes: 28,
+      category: t('community.categories.integrations', 'Integrations'),
+      isHot: false
+    }
+  ];
+
+  const topIdeas = [
+    { id: 1, title: t('community.ideas.item_1.title', 'Dark mode for POS tablet app'), votes: 234, status: 'planned' },
+    { id: 2, title: t('community.ideas.item_2.title', 'Multiple receipt printers per station'), votes: 189, status: 'in_progress' },
+    { id: 3, title: t('community.ideas.item_3.title', 'Customer-facing display support'), votes: 156, status: 'under_review' }
+  ];
+
+  const popularGuides = [
+    { id: 1, title: t('community.guides.item_1.title', 'Complete Setup Guide for New Users'), reads: '12.4k', time: '15 min' },
+    { id: 2, title: t('community.guides.item_2.title', 'Optimizing Your Menu Layout'), reads: '8.2k', time: '10 min' },
+    { id: 3, title: t('community.guides.item_3.title', 'Understanding Sales Reports'), reads: '6.8k', time: '12 min' },
+    { id: 4, title: t('community.guides.item_4.title', 'Employee Management Best Practices'), reads: '5.1k', time: '8 min' }
+  ];
+
+  const communityStats = [
+    { label: t('community.stats.members', 'Members'), value: '12.5k+', icon: Users },
+    { label: t('community.stats.discussions', 'Discussions'), value: '3.2k', icon: MessageCircle },
+    { label: t('community.stats.ideas', 'Ideas Submitted'), value: '890', icon: Lightbulb },
+    { label: t('community.stats.guides', 'Guides'), value: '120+', icon: BookOpen }
+  ];
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
@@ -96,15 +98,17 @@ export const CommunityPage = () => {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full text-purple-500 text-sm font-bold mb-6">
               <Users size={16} />
-              Community Hub
+              {t('community.hub.title', 'Community Hub')}
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-6">
-              Learn, Share, <span className="text-paymint-green">Grow</span> Together
+              {t('community.hub.hero.title_part1', 'Learn, Share,')}{' '}
+              <span className="text-paymint-green">{t('community.hub.hero.title_part2', 'Grow')}</span>{' '}
+              {t('community.hub.hero.title_part3', 'Together')}
             </h1>
 
             <p className="text-lg text-gray-500 dark:text-gray-400 font-medium mb-10 max-w-xl mx-auto">
-              Join thousands of business owners sharing tips, requesting features, and helping each other succeed.
+              {t('community.hub.hero.subtitle', 'Join thousands of business owners sharing tips, requesting features, and helping each other succeed.')}
             </p>
 
             {/* Search Bar */}
@@ -114,7 +118,7 @@ export const CommunityPage = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search discussions, ideas, or guides..."
+                placeholder={t('community.hub.search_placeholder', 'Search discussions, ideas, or guides...')}
                 className="w-full pl-16 pr-6 py-5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-lg font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 shadow-xl shadow-gray-200/50 dark:shadow-none transition-all"
               />
             </div>
@@ -157,12 +161,15 @@ export const CommunityPage = () => {
               <div className="w-14 h-14 bg-blue-500 rounded-2xl flex items-center justify-center text-white mb-6 group-hover:scale-110 transition-transform">
                 <MessageCircle size={28} />
               </div>
-              <h3 className="text-2xl font-black mb-3 group-hover:text-blue-500 transition-colors">Discussions</h3>
+              <h3 className="text-2xl font-black mb-3 group-hover:text-blue-500 transition-colors">
+                {t('community.discussions.title', 'Discussions')}
+              </h3>
               <p className="text-gray-500 dark:text-gray-400 mb-6">
-                Ask questions, share experiences, and connect with other Paymint users.
+                {t('community.discussions.description', 'Ask questions, share experiences, and connect with other Paymint users.')}
               </p>
               <div className="flex items-center gap-2 text-blue-500 font-bold">
-                Browse Discussions <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                {t('community.discussions.browse', 'Browse Discussions')}{' '}
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
 
@@ -174,12 +181,15 @@ export const CommunityPage = () => {
               <div className="w-14 h-14 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center text-white mb-6 group-hover:scale-110 transition-transform">
                 <Lightbulb size={28} />
               </div>
-              <h3 className="text-2xl font-black mb-3 group-hover:text-yellow-500 transition-colors">Feature Ideas</h3>
+              <h3 className="text-2xl font-black mb-3 group-hover:text-yellow-500 transition-colors">
+                {t('community.ideas.title', 'Feature Ideas')}
+              </h3>
               <p className="text-gray-500 dark:text-gray-400 mb-6">
-                Vote on feature requests and help shape the future of Paymint.
+                {t('community.ideas.description', 'Vote on feature requests and help shape the future of Paymint.')}
               </p>
               <div className="flex items-center gap-2 text-yellow-600 font-bold">
-                Explore Ideas <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                {t('community.ideas.explore', 'Explore Ideas')}{' '}
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
 
@@ -191,12 +201,15 @@ export const CommunityPage = () => {
               <div className="w-14 h-14 bg-paymint-green rounded-2xl flex items-center justify-center text-black mb-6 group-hover:scale-110 transition-transform">
                 <BookOpen size={28} />
               </div>
-              <h3 className="text-2xl font-black mb-3 group-hover:text-paymint-green transition-colors">Guides & Tutorials</h3>
+              <h3 className="text-2xl font-black mb-3 group-hover:text-paymint-green transition-colors">
+                {t('community.guides.title', 'Guides & Tutorials')}
+              </h3>
               <p className="text-gray-500 dark:text-gray-400 mb-6">
-                Learn best practices and master every feature with our guides.
+                {t('community.guides.description', 'Learn best practices and master every feature with our guides.')}
               </p>
               <div className="flex items-center gap-2 text-paymint-green font-bold">
-                Start Learning <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                {t('community.guides.start', 'Start Learning')}{' '}
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
           </div>
@@ -208,14 +221,16 @@ export const CommunityPage = () => {
         <div className="container mx-auto px-8 md:px-16 lg:px-24">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-2">Trending Discussions</h2>
-              <p className="text-gray-500">Popular conversations in the community</p>
+              <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-2">
+                {t('community.discussions.trending', 'Trending Discussions')}
+              </h2>
+              <p className="text-gray-500">{t('community.discussions.trending_subtitle', 'Popular conversations in the community')}</p>
             </div>
             <Link
               to="/community/discussions"
               className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-black rounded-xl text-sm font-bold hover:opacity-90 transition-all"
             >
-              View All <ArrowRight size={14} />
+              {t('common.viewAll', 'View All')} <ArrowRight size={14} />
             </Link>
           </div>
 
@@ -234,7 +249,7 @@ export const CommunityPage = () => {
                   {discussion.isHot && (
                     <div className="inline-flex items-center gap-1 px-2 py-1 bg-orange-100 dark:bg-orange-500/20 text-orange-600 rounded-md text-xs font-bold mb-3">
                       <Flame size={12} />
-                      Hot
+                      {t('community.labels.hot', 'Hot')}
                     </div>
                   )}
                   <h3 className="font-bold text-lg mb-3 group-hover:text-paymint-green transition-colors">
@@ -250,7 +265,9 @@ export const CommunityPage = () => {
                         <Heart size={14} /> {discussion.likes}
                       </span>
                     </div>
-                    <span className="text-sm font-medium text-gray-500">by {discussion.author}</span>
+                    <span className="text-sm font-medium text-gray-500">
+                      {t('community.labels.by', 'by')} {discussion.author}
+                    </span>
                   </div>
                 </Link>
               </motion.div>
@@ -265,14 +282,16 @@ export const CommunityPage = () => {
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-2">Top Feature Ideas</h2>
-                <p className="text-gray-500">Vote to help prioritize what we build next</p>
+                <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-2">
+                  {t('community.ideas.top', 'Top Feature Ideas')}
+                </h2>
+                <p className="text-gray-500">{t('community.ideas.top_subtitle', 'Vote to help prioritize what we build next')}</p>
               </div>
               <Link
                 to="/community/ideas"
                 className="text-sm font-bold text-paymint-green hover:underline flex items-center gap-1"
               >
-                See all ideas <ArrowRight size={14} />
+                {t('community.ideas.see_all', 'See all ideas')} <ArrowRight size={14} />
               </Link>
             </div>
 
@@ -300,8 +319,8 @@ export const CommunityPage = () => {
                       idea.status === 'in_progress' ? 'bg-yellow-100 dark:bg-yellow-500/20 text-yellow-600' :
                       'bg-gray-100 dark:bg-gray-500/20 text-gray-600'
                     }`}>
-                      {idea.status === 'planned' ? 'Planned' :
-                       idea.status === 'in_progress' ? 'In Progress' : 'Under Review'}
+                      {idea.status === 'planned' ? t('community.status.planned', 'Planned') :
+                       idea.status === 'in_progress' ? t('community.status.in_progress', 'In Progress') : t('community.status.under_review', 'Under Review')}
                     </span>
                   </div>
                   <ChevronRight size={20} className="text-gray-400" />
@@ -318,14 +337,16 @@ export const CommunityPage = () => {
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-2">Popular Guides</h2>
-                <p className="text-gray-500">Most-read tutorials from the community</p>
+                <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-2">
+                  {t('community.guides.popular', 'Popular Guides')}
+                </h2>
+                <p className="text-gray-500">{t('community.guides.popular_subtitle', 'Most-read tutorials from the community')}</p>
               </div>
               <Link
                 to="/community/guides"
                 className="text-sm font-bold text-paymint-green hover:underline flex items-center gap-1"
               >
-                Browse all <ArrowRight size={14} />
+                {t('community.guides.browse_all', 'Browse all')} <ArrowRight size={14} />
               </Link>
             </div>
 
@@ -348,7 +369,7 @@ export const CommunityPage = () => {
                     </h4>
                     <div className="flex items-center gap-4 text-sm text-gray-400 mt-1">
                       <span className="flex items-center gap-1">
-                        <Star size={12} /> {guide.reads} reads
+                        <Star size={12} /> {guide.reads} {t('community.labels.reads', 'reads')}
                       </span>
                       <span className="flex items-center gap-1">
                         <Clock size={12} /> {guide.time}
@@ -376,10 +397,10 @@ export const CommunityPage = () => {
                   <Award size={32} />
                 </div>
                 <h2 className="text-3xl md:text-4xl font-black mb-4">
-                  Become a Community Champion
+                  {t('community.cta.title', 'Become a Community Champion')}
                 </h2>
                 <p className="text-white/80 font-medium mb-8 max-w-lg mx-auto">
-                  Help others, earn badges, and get early access to new features. Join the Paymint community today!
+                  {t('community.cta.subtitle', 'Help others, earn badges, and get early access to new features. Join the Paymint community today!')}
                 </p>
                 <div className="flex flex-wrap justify-center gap-4">
                   <Link
@@ -387,14 +408,14 @@ export const CommunityPage = () => {
                     className="inline-flex items-center gap-2 px-8 py-4 bg-white text-purple-600 rounded-xl font-bold hover:opacity-90 transition-all"
                   >
                     <MessageCircle size={18} />
-                    Start a Discussion
+                    {t('community.discussions.new', 'Start a Discussion')}
                   </Link>
                   <Link
                     to="/community/ideas"
                     className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-all border border-white/20"
                   >
                     <Lightbulb size={18} />
-                    Share an Idea
+                    {t('community.ideas.submit', 'Share an Idea')}
                   </Link>
                 </div>
               </div>

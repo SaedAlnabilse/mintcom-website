@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft,
@@ -123,44 +124,49 @@ const mockGuides: Guide[] = [
   }
 ];
 
-const categories = [
-  { id: 'all', label: 'All Guides', icon: BookOpen, count: mockGuides.length },
-  { id: 'getting-started', label: 'Getting Started', icon: Zap, count: 1 },
-  { id: 'best-practices', label: 'Best Practices', icon: Star, count: 1 },
-  { id: 'reports', label: 'Reports', icon: BarChart3, count: 1 },
-  { id: 'team', label: 'Team', icon: Users, count: 1 },
-  { id: 'hardware', label: 'Hardware', icon: Settings, count: 1 },
-  { id: 'security', label: 'Security', icon: Shield, count: 1 }
-];
-
-const difficultyConfig = {
-  beginner: { label: 'Beginner', color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-500/20' },
-  intermediate: { label: 'Intermediate', color: 'text-yellow-600', bg: 'bg-yellow-100 dark:bg-yellow-500/20' },
-  advanced: { label: 'Advanced', color: 'text-red-600', bg: 'bg-red-100 dark:bg-red-500/20' }
-};
-
-const typeConfig = {
-  article: { icon: FileText, label: 'Article' },
-  video: { icon: Video, label: 'Video' },
-  tutorial: { icon: Play, label: 'Tutorial' }
-};
-
 export const GuidesPage = () => {
+  const { t } = useTranslation();
+
+  const categories = [
+    { id: 'all', label: t('community.guides.all', 'All Guides'), icon: BookOpen, count: mockGuides.length },
+    { id: 'getting-started', label: t('community.categories.getting_started', 'Getting Started'), icon: Zap, count: 1 },
+    { id: 'best-practices', label: t('community.categories.best_practices', 'Best Practices'), icon: Star, count: 1 },
+    { id: 'reports', label: t('community.categories.reports', 'Reports'), icon: BarChart3, count: 1 },
+    { id: 'team', label: t('community.categories.team', 'Team'), icon: Users, count: 1 },
+    { id: 'hardware', label: t('community.categories.hardware', 'Hardware'), icon: Settings, count: 1 },
+    { id: 'security', label: t('community.categories.security', 'Security'), icon: Shield, count: 1 }
+  ];
+
+  const difficultyConfig = {
+    beginner: { label: t('community.difficulty.beginner', 'Beginner'), color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-500/20' },
+    intermediate: { label: t('community.difficulty.intermediate', 'Intermediate'), color: 'text-yellow-600', bg: 'bg-yellow-100 dark:bg-yellow-500/20' },
+    advanced: { label: t('community.difficulty.advanced', 'Advanced'), color: 'text-red-600', bg: 'bg-red-100 dark:bg-red-500/20' }
+  };
+
+  const typeConfig = {
+    article: { icon: FileText, label: t('community.types.article', 'Article') },
+    video: { icon: Video, label: t('community.types.video', 'Video') },
+    tutorial: { icon: Play, label: t('community.types.tutorial', 'Tutorial') }
+  };
+
   const [guides] = useState<Guide[]>(mockGuides);
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all');
+  const [selectedDifficulty, setSelectedDifficulty] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const featuredGuides = guides.filter(g => g.featured);
-
+  // Filter guides based on search and filters
   const filteredGuides = guides.filter(guide => {
     const matchesSearch = guide.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      guide.description.toLowerCase().includes(searchQuery.toLowerCase());
+                         guide.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'all' ||
-      guide.category.toLowerCase().replace(' ', '-') === selectedCategory;
+                           guide.category.toLowerCase().replace(/\s+/g, '-') === selectedCategory;
     const matchesDifficulty = selectedDifficulty === 'all' || guide.difficulty === selectedDifficulty;
+
     return matchesSearch && matchesCategory && matchesDifficulty;
   });
+
+  // Get featured guides
+  const featuredGuides = guides.filter(guide => guide.featured);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
@@ -177,16 +183,20 @@ export const GuidesPage = () => {
               >
                 <ArrowLeft size={20} />
               </Link>
-              <h1 className="text-3xl font-black tracking-tight">Guides & Tutorials</h1>
+              <h1 className="text-3xl font-black tracking-tight">
+                {t('community.guides.title', 'Guides & Tutorials')}
+              </h1>
             </div>
             <p className="text-gray-500 dark:text-gray-400 font-medium ml-11">
-              Learn everything about Paymint with our comprehensive guides
+              {t('community.guides.subtitle', 'Learn everything about Paymint with our comprehensive guides')}
             </p>
           </div>
 
           {/* Featured Guides */}
           <div className="mb-12">
-            <h2 className="text-xl font-bold mb-6">Featured Guides</h2>
+            <h2 className="text-xl font-bold mb-6">
+              {t('community.guides.featured', 'Featured Guides')}
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {featuredGuides.map((guide, index) => {
                 const TypeIcon = typeConfig[guide.type].icon;
@@ -249,7 +259,9 @@ export const GuidesPage = () => {
             {/* Sidebar */}
             <div className="lg:w-64 flex-shrink-0">
               <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-4 sticky top-28">
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 px-2">Categories</h3>
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 px-2">
+                  {t('community.labels.categories', 'Categories')}
+                </h3>
                 <div className="space-y-1">
                   {categories.map((category) => (
                     <button
@@ -271,7 +283,9 @@ export const GuidesPage = () => {
                 </div>
 
                 <div className="mt-6 pt-6 border-t border-gray-100 dark:border-white/10">
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 px-2">Difficulty</h3>
+                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 px-2">
+                    {t('community.labels.difficulty', 'Difficulty')}
+                  </h3>
                   <div className="space-y-1">
                     {['all', 'beginner', 'intermediate', 'advanced'].map((level) => (
                       <button
@@ -283,7 +297,7 @@ export const GuidesPage = () => {
                             : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'
                         }`}
                       >
-                        {level === 'all' ? 'All Levels' : level.charAt(0).toUpperCase() + level.slice(1)}
+                        {level === 'all' ? t('community.difficulty.all', 'All Levels') : t(`community.difficulty.${level}`)}
                       </button>
                     ))}
                   </div>
@@ -300,7 +314,7 @@ export const GuidesPage = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search guides..."
+                  placeholder={t('community.guides.search_placeholder', 'Search guides...')}
                   className="w-full pl-12 pr-4 py-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
                 />
               </div>
@@ -362,9 +376,11 @@ export const GuidesPage = () => {
                   <div className="w-16 h-16 bg-gray-100 dark:bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <BookOpen size={32} className="text-gray-400" />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">No guides found</h3>
+                  <h3 className="text-xl font-bold mb-2">
+                    {t('community.guides.empty_title', 'No guides found')}
+                  </h3>
                   <p className="text-gray-500 dark:text-gray-400">
-                    Try adjusting your search or filters
+                    {t('community.guides.empty_subtitle', 'Try adjusting your search or filters')}
                   </p>
                 </div>
               )}

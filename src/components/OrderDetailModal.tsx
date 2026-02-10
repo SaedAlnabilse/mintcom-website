@@ -35,6 +35,8 @@ export interface Order {
     status: string;
     paymentStatus?: string;
     paymentMethod: string;
+    cardType?: string;
+    otherPaymentMethod?: string;
     user?: { username: string };
     employeeName?: string;
     refundedByName?: string;
@@ -77,7 +79,13 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
     const formatCurrency = (value: number) => formatAmount(value);
 
     const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleString();
+        return new Date(dateString).toLocaleString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
     };
 
     const getStatusColor = (status: string) => {
@@ -103,7 +111,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
             onConfirm: async () => {
                 try {
                     await api.post(`/api/orders/${order.id}/refund`, {
-                        reason: 'Refunded via web dashboard',
+                        reason: t('orders.messages.refundReasonWeb'),
                     });
                     toast.success(t('orders.messages.refundSuccess'));
                     if (onRefundSuccess) onRefundSuccess();
@@ -117,7 +125,10 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
 
     return createPortal(
         <AnimatePresence>
-            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[9999] transition-colors duration-300 font-sans">
+            <div
+                dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+                className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[9999] transition-colors duration-300 font-sans"
+            >
                 <motion.div
                     initial={{ opacity: 0, y: 100 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -168,7 +179,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                                         order.paymentStatus || order.status,
                                     )}`}
                                 >
-                                    {order.paymentStatus ? order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1).toLowerCase() : order.status.charAt(0).toUpperCase() + order.status.slice(1).toLowerCase()}
+                                    {t(`orders.status.${(order.paymentStatus || order.status || 'PENDING').toLowerCase() === 'pending' || (order.paymentStatus || order.status || 'PENDING').toLowerCase() === 'held' ? 'onHold' : (order.paymentStatus || order.status || 'PENDING').toLowerCase()}` as any)}
                                 </span>
                             </div>
                             <div>
@@ -176,14 +187,20 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                                     {t('orders.details.payment')}
                                     <QuickInfo text={t('orders.details.paymentTip')} />
                                 </p>
-                                <p className="text-sm font-bold text-gray-900 dark:text-white">{order.paymentMethod}</p>
+                                <p className="text-sm font-bold text-gray-900 dark:text-white">
+                                    {order.paymentMethod === 'CARD' && order.cardType
+                                        ? t('orders.payment.cardWithBrand', { brand: order.cardType })
+                                        : order.paymentMethod === 'CASH'
+                                            ? t('orders.payment.cash')
+                                            : order.otherPaymentMethod || order.paymentMethod}
+                                </p>
                             </div>
                             <div>
                                 <p className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center gap-1">
                                     {t('orders.details.staff')}
                                     <QuickInfo text={t('orders.details.staffTip')} />
                                 </p>
-                                <p className="text-sm font-bold text-gray-900 dark:text-white">{order.employeeName || order.user?.username || 'System'}</p>
+                                <p className="text-sm font-bold text-gray-900 dark:text-white">{order.employeeName || order.user?.username || t('common.pos')}</p>
                             </div>
                             {order.refundedByName && (
                                 <div>
@@ -226,7 +243,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                                             <div>
                                                 <p className="text-gray-900 dark:text-white font-bold text-sm">{item.name}</p>
                                                 <p className="text-xs font-black text-gray-400 tracking-widest mt-0.5">
-                                                    {t('orders.details.qty')}: {item.quantity} × {formatCurrency(item.price || item.basePrice || 0)}
+                                                    {t('orders.details.qty')}: {item.quantity.toLocaleString(t('common.locale'))} × {formatCurrency(item.price || item.basePrice || 0)}
                                                 </p>
                                             </div>
                                             <p className="text-sm font-bold text-gray-900 dark:text-white">{formatCurrency(item.total || item.finalPrice || 0)}</p>

@@ -30,7 +30,7 @@ export const PeakHoursView = React.memo(function PeakHoursView({ peakHours }: Pe
         </div>
       </div>
 
-      <div className="h-[400px]">
+      <div className="h-[400px]" dir="ltr">
         {peakHours.length > 0 && peakHours.some((h: any) => Number(h.total) > 0) ? (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={peakHours.map(h => ({ ...h, hourFormatted: `${h.hour}:00` }))} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
@@ -48,6 +48,13 @@ export const PeakHoursView = React.memo(function PeakHoursView({ peakHours }: Pe
                 tickLine={false}
                 axisLine={false}
                 dy={10}
+                tickFormatter={(val) => {
+                  if (t('common.locale') === 'ar') {
+                    const [h] = val.split(':');
+                    return `${Number(h).toLocaleString('ar-EG')}:00`;
+                  }
+                  return val;
+                }}
               />
               <Tooltip
                 cursor={{ fill: 'transparent' }}

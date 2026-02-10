@@ -17,7 +17,7 @@ interface PaymentsViewProps {
 
 export const PaymentsView = React.memo(function PaymentsView({ salesData, effectiveDateRange, selectedDateRange }: PaymentsViewProps) {
   const { t } = useTranslation();
-  const { formatAmount } = useCurrency();
+  const { formatAmount, currencySymbol } = useCurrency();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
   const navigate = useNavigate();
@@ -34,14 +34,15 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Summary Cards for Payments */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
           <div className="relative z-10">
             <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('orders.reports.payments.totalCollected')}</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-              {formatCurrency(salesData.totalRevenue || 0)}
+              {(salesData.totalRevenue || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              <span className="text-sm mx-1 text-gray-400 font-black">{currencySymbol}</span>
             </p>
             <p className="text-xs text-gray-500 mt-2">{t('orders.reports.payments.totalCollectedDesc')}</p>
           </div>
@@ -63,7 +64,8 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
           <div className="relative z-10">
             <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('orders.reports.payments.txnCount')}</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-              {salesData.totalOrders || 0}
+              {(salesData.totalOrders || 0).toLocaleString(t('common.locale'))}
+              <span className="text-sm mx-1 text-gray-400 font-black">{t('dashboard.stats.orders')}</span>
             </p>
             <p className="text-xs text-gray-500 mt-2">{t('orders.reports.payments.txnCountDesc')}</p>
           </div>
@@ -123,9 +125,9 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
             )}
             {/* Center Stats */}
             {salesData.paymentMethodBreakdown && salesData.paymentMethodBreakdown.length > 0 && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none" dir="ltr">
                 <span className="text-3xl font-black text-gray-900 dark:text-white">
-                  {salesData.paymentMethodBreakdown.length}
+                  {salesData.paymentMethodBreakdown.length.toLocaleString(t('common.locale'))}
                 </span>
                 <span className="text-xs font-bold text-gray-500 tracking-widest">{t('orders.reports.payments.methods')}</span>
               </div>
@@ -154,22 +156,22 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
               className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-all text-xs font-black tracking-widest border border-gray-200 dark:border-white/10"
             >
               <span>{t('orders.reports.payments.viewAllOrders')}</span>
-              <ChevronRight size={14} className="text-paymint-green" />
+              <ChevronRight size={14} className={`text-paymint-green transition-transform ${t('common.locale') === 'ar' ? 'rotate-180' : ''}`} />
             </button>
           </div>
           <div className="flex-1 overflow-auto custom-scrollbar">
             <table className="w-full relative">
               <thead className="bg-gray-50 dark:bg-white/[0.02] sticky top-0 z-10">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-[#0B1120] border-b border-gray-100 dark:border-white/5">{t('orders.reports.payments.method')}</th>
-                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-[#0B1120] border-b border-gray-100 dark:border-white/5">{t('orders.reports.payments.revenue')}</th>
-                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-[#0B1120] border-b border-gray-100 dark:border-white/5">{t('orders.reports.payments.share')}</th>
+                  <th className="px-6 py-4 text-start text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-[#0B1120] border-b border-gray-100 dark:border-white/5">{t('orders.reports.payments.method')}</th>
+                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-[#0B1120] border-b border-gray-100 dark:border-white/5">{t('orders.reports.payments.revenue')}</th>
+                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-[#0B1120] border-b border-gray-100 dark:border-white/5">{t('orders.reports.payments.share')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                 {salesData.paymentMethodBreakdown?.map((item: any, i: number) => {
                   const total = salesData.totalRevenue || 1;
-                  const percentage = ((item.value / total) * 100).toFixed(1);
+                  const percentage = (item.value / total);
 
                   // Check if this method has breakdown details
                   const isCard = item.name === 'CARD';
@@ -198,20 +200,20 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                             <div className="flex items-center gap-2">
                               <span className="font-bold text-sm text-gray-900 dark:text-white">{getMethodName(item.name)}</span>
                               {hasDetails && (
-                                <ChevronRight size={16} className={`text-gray-400 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                                <ChevronRight size={16} className={`text-gray-400 transition-transform ${isExpanded ? (t('common.locale') === 'ar' ? '-rotate-90' : 'rotate-90') : (t('common.locale') === 'ar' ? 'rotate-180' : '')}`} />
                               )}
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-right font-black text-gray-900 dark:text-white">
+                        <td className="px-6 py-4 text-end font-black text-gray-900 dark:text-white">
                           {formatCurrency(item.value)}
                         </td>
-                        <td className="px-6 py-4 text-right">
+                        <td className="px-6 py-4 text-end">
                           <div className="flex items-center justify-end gap-2">
                             <div className="w-16 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
-                              <div className="h-full rounded-full" style={{ width: `${percentage}%`, backgroundColor: COLORS[i % COLORS.length] }} />
+                              <div className="h-full rounded-full" style={{ width: `${(percentage * 100)}%`, backgroundColor: COLORS[i % COLORS.length] }} />
                             </div>
-                            <span className="text-xs font-bold text-gray-500">{percentage}%</span>
+                            <span className="text-xs font-bold text-gray-500">{percentage.toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span>
                           </div>
                         </td>
                       </tr>
@@ -219,14 +221,14 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                       {/* Card Breakdown */}
                       {isExpanded && isCard && salesData.cardTypeBreakdown?.map((card: any, ci: number) => (
                         <tr key={`card-${ci}`} className="bg-gray-50/50 dark:bg-white/[0.01]">
-                          <td className="px-6 py-3 pl-16">
+                          <td className="px-6 py-3 ps-16">
                             <span className="text-xs font-bold text-gray-500">{card.name}</span>
                           </td>
-                          <td className="px-6 py-3 text-right text-xs font-bold text-gray-700 dark:text-gray-300">
+                          <td className="px-6 py-3 text-end text-xs font-bold text-gray-700 dark:text-gray-300">
                             {formatCurrency(card.value)}
                           </td>
-                          <td className="px-6 py-3 text-right text-xs font-medium text-gray-400">
-                            {((card.value / item.value) * 100).toFixed(1)}%
+                          <td className="px-6 py-3 text-end text-xs font-medium text-gray-400">
+                            {(card.value / item.value).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
                           </td>
                         </tr>
                       ))}
@@ -234,14 +236,14 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                       {/* Other Payment Breakdown */}
                       {isExpanded && isOther && salesData.otherPaymentBreakdown?.map((op: any, oi: number) => (
                         <tr key={`other-${oi}`} className="bg-gray-50/50 dark:bg-white/[0.01]">
-                          <td className="px-6 py-3 pl-16">
+                          <td className="px-6 py-3 ps-16">
                             <span className="text-xs font-bold text-gray-500">{op.name}</span>
                           </td>
-                          <td className="px-6 py-3 text-right text-xs font-bold text-gray-700 dark:text-gray-300">
+                          <td className="px-6 py-3 text-end text-xs font-bold text-gray-700 dark:text-gray-300">
                             {formatCurrency(op.value)}
                           </td>
-                          <td className="px-6 py-3 text-right text-xs font-medium text-gray-400">
-                            {((op.value / item.value) * 100).toFixed(1)}%
+                          <td className="px-6 py-3 text-end text-xs font-medium text-gray-400">
+                            {(op.value / item.value).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
                           </td>
                         </tr>
                       ))}

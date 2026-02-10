@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
   Search,
@@ -18,51 +19,52 @@ import {
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 
-const categories = [
-  {
-    id: 'getting-started',
-    icon: Zap,
-    title: 'Getting Started',
-    description: 'New to Paymint? Learn the basics and set up your account.',
-    articles: 8,
-    color: 'bg-blue-500'
-  },
-  {
-    id: 'billing',
-    icon: CreditCard,
-    title: 'Billing & Payments',
-    description: 'Manage subscriptions, invoices, and payment methods.',
-    articles: 8,
-    color: 'bg-purple-500'
-  },
-  {
-    id: 'technical',
-    icon: Settings,
-    title: 'Technical Support',
-    description: 'Troubleshoot issues with hardware, software, and integrations.',
-    articles: 10,
-    color: 'bg-orange-500'
-  },
-  {
-    id: 'features',
-    icon: BookOpen,
-    title: 'Features & How-To',
-    description: 'Deep dive into features, tips, and best practices.',
-    articles: 10,
-    color: 'bg-paymint-green'
-  }
-];
-
-const popularArticles = [
-  { id: 'tc-1', title: 'Connecting a Bluetooth receipt printer', category: 'Technical', categoryId: 'technical', views: '5.6k', readTime: '8 min' },
-  { id: 'gs-1', title: 'Creating your Paymint account', category: 'Getting Started', categoryId: 'getting-started', views: '8.2k', readTime: '5 min' },
-  { id: 'ft-1', title: 'Understanding sales reports', category: 'Features', categoryId: 'features', views: '6.2k', readTime: '12 min' },
-  { id: 'gs-2', title: 'Setting up your first establishment', category: 'Getting Started', categoryId: 'getting-started', views: '6.5k', readTime: '8 min' },
-  { id: 'bl-2', title: 'Updating your payment method', category: 'Billing', categoryId: 'billing', views: '3.8k', readTime: '3 min' },
-];
-
 export const SupportPage = () => {
+  const { t } = useTranslation(['support', 'common']);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const categories = [
+    {
+      id: 'getting-started',
+      icon: Zap,
+      title: t('support.categories.gettingStarted'),
+      description: t('support.categories.gettingStartedDesc'),
+      articles: 8,
+      color: 'bg-blue-500'
+    },
+    {
+      id: 'billing',
+      icon: CreditCard,
+      title: t('support.categories.billing'),
+      description: t('support.categories.billingDesc'),
+      articles: 8,
+      color: 'bg-purple-500'
+    },
+    {
+      id: 'technical',
+      icon: Settings,
+      title: t('support.categories.technical'),
+      description: t('support.categories.technicalDesc'),
+      articles: 10,
+      color: 'bg-orange-500'
+    },
+    {
+      id: 'features',
+      icon: BookOpen,
+      title: t('support.categories.features'),
+      description: t('support.categories.featuresDesc'),
+      articles: 10,
+      color: 'bg-paymint-green'
+    }
+  ];
+
+  const popularArticles = [
+    { id: 'tc-1', title: t('support.popularArticles.printer'), category: t('support.categories.technical'), categoryId: 'technical', views: '5.6k', readTime: '8 min' },
+    { id: 'gs-1', title: t('support.popularArticles.account'), category: t('support.categories.gettingStarted'), categoryId: 'getting-started', views: '8.2k', readTime: '5 min' },
+    { id: 'ft-1', title: t('support.popularArticles.reports'), category: t('support.categories.features'), categoryId: 'features', views: '6.2k', readTime: '12 min' },
+    { id: 'gs-2', title: t('support.popularArticles.establishment'), category: t('support.categories.gettingStarted'), categoryId: 'getting-started', views: '6.5k', readTime: '8 min' },
+    { id: 'bl-2', title: t('support.popularArticles.payment'), category: t('support.categories.billing'), categoryId: 'billing', views: '3.8k', readTime: '3 min' },
+  ];
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
@@ -84,15 +86,15 @@ export const SupportPage = () => {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-paymint-green/10 border border-paymint-green/20 rounded-full text-paymint-green text-sm font-bold mb-6">
               <HelpCircle size={16} />
-              Help Center
+              {t('support.hero.badge')}
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-6">
-              How can we <span className="text-paymint-green">help</span> you?
+              {t('support.hero.titlePart1')} <span className="text-paymint-green">{t('support.hero.titleHighlight')}</span> {t('support.hero.titlePart2')}
             </h1>
 
             <p className="text-lg text-gray-500 dark:text-gray-400 font-medium mb-10 max-w-xl mx-auto">
-              Search our knowledge base or browse categories to find answers to your questions.
+              {t('support.hero.subtitle')}
             </p>
 
             {/* Search Bar */}
@@ -102,7 +104,7 @@ export const SupportPage = () => {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search for articles, guides, or topics..."
+                placeholder={t('support.hero.searchPlaceholder')}
                 className="w-full pl-16 pr-6 py-5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-lg font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 shadow-xl shadow-gray-200/50 dark:shadow-none transition-all"
               />
             </div>
@@ -114,14 +116,14 @@ export const SupportPage = () => {
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-black rounded-xl text-sm font-bold hover:opacity-90 transition-all"
               >
                 <Ticket size={16} />
-                Submit a Ticket
+                {t('support.quickLinks.submitTicket')}
               </Link>
               <Link
                 to="/community"
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-bold hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
               >
                 <MessageCircle size={16} />
-                Ask the Community
+                {t('support.quickLinks.community')}
               </Link>
             </div>
           </motion.div>
@@ -132,8 +134,8 @@ export const SupportPage = () => {
       <section className="py-20">
         <div className="container mx-auto px-8 md:px-16 lg:px-24">
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-3">Browse by Category</h2>
-            <p className="text-gray-500 dark:text-gray-400 font-medium">Find help organized by topic</p>
+            <h2 className="text-2xl md:text-3xl font-black tracking-tight mb-3">{t('support.categories.title')}</h2>
+            <p className="text-gray-500 dark:text-gray-400 font-medium">{t('support.categories.subtitle')}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -158,7 +160,7 @@ export const SupportPage = () => {
                     {category.description}
                   </p>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-gray-400">{category.articles} articles</span>
+                    <span className="text-xs font-bold text-gray-400">{category.articles} {t('support.articles.count')}</span>
                     <ChevronRight size={16} className="text-gray-400 group-hover:text-paymint-green group-hover:translate-x-1 transition-all" />
                   </div>
                 </Link>
@@ -173,12 +175,12 @@ export const SupportPage = () => {
         <div className="container mx-auto px-8 md:px-16 lg:px-24">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-black tracking-tight">Popular Articles</h2>
+              <h2 className="text-2xl font-black tracking-tight">{t('support.articles.popular')}</h2>
               <Link
                 to="/support/articles"
                 className="text-sm font-bold text-paymint-green hover:underline flex items-center gap-1"
               >
-                View all <ArrowRight size={14} />
+                {t('support.articles.viewAll')} <ArrowRight size={14} />
               </Link>
             </div>
 
@@ -235,10 +237,10 @@ export const SupportPage = () => {
 
               <div className="relative z-10">
                 <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-                  Can't find what you're looking for?
+                  {t('support.cta.title')}
                 </h2>
                 <p className="text-gray-400 font-medium mb-8 max-w-lg mx-auto">
-                  Our support team is here to help. Submit a ticket and we'll get back to you within 24 hours.
+                  {t('support.cta.subtitle')}
                 </p>
                 <div className="flex flex-wrap justify-center gap-4">
                   <Link
@@ -246,13 +248,13 @@ export const SupportPage = () => {
                     className="inline-flex items-center gap-2 px-8 py-4 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-paymint-green/20"
                   >
                     <Ticket size={18} />
-                    Submit a Ticket
+                    {t('support.quickLinks.submitTicket')}
                   </Link>
                   <Link
                     to="/support/tickets"
                     className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-all border border-white/10"
                   >
-                    View My Tickets
+                    {t('support.tickets.myTickets')}
                   </Link>
                 </div>
               </div>

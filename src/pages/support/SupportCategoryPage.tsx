@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft,
@@ -17,326 +18,327 @@ import {
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 
-// Category configuration
-const categoryConfig: Record<string, {
-  title: string;
-  description: string;
-  icon: React.ElementType;
-  color: string;
-  bgColor: string;
-}> = {
-  'getting-started': {
-    title: 'Getting Started',
-    description: 'New to Paymint? Learn the basics and set up your account.',
-    icon: Zap,
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-500'
-  },
-  'billing': {
-    title: 'Billing & Payments',
-    description: 'Manage subscriptions, invoices, and payment methods.',
-    icon: CreditCard,
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-500'
-  },
-  'technical': {
-    title: 'Technical Support',
-    description: 'Troubleshoot issues with hardware, software, and integrations.',
-    icon: Settings,
-    color: 'text-orange-600',
-    bgColor: 'bg-orange-500'
-  },
-  'features': {
-    title: 'Features & How-To',
-    description: 'Deep dive into features, tips, and best practices.',
-    icon: BookOpen,
-    color: 'text-green-600',
-    bgColor: 'bg-paymint-green'
-  }
-};
-
-// Articles data by category
-const articlesByCategory: Record<string, Array<{
-  id: string;
-  title: string;
-  excerpt: string;
-  readTime: string;
-  views: string;
-  featured?: boolean;
-}>> = {
-  'getting-started': [
-    {
-      id: 'gs-1',
-      title: 'Creating your Paymint account',
-      excerpt: 'Step-by-step guide to creating and verifying your Paymint business account.',
-      readTime: '5 min',
-      views: '8.2k',
-      featured: true
-    },
-    {
-      id: 'gs-2',
-      title: 'Setting up your first establishment',
-      excerpt: 'Learn how to configure your business location, hours, and basic settings.',
-      readTime: '8 min',
-      views: '6.5k',
-      featured: true
-    },
-    {
-      id: 'gs-3',
-      title: 'Adding products and categories',
-      excerpt: 'Organize your menu with categories and add your first products.',
-      readTime: '10 min',
-      views: '5.8k'
-    },
-    {
-      id: 'gs-4',
-      title: 'Inviting team members',
-      excerpt: 'Add employees and assign roles with appropriate permissions.',
-      readTime: '6 min',
-      views: '4.2k'
-    },
-    {
-      id: 'gs-5',
-      title: 'Connecting your first printer',
-      excerpt: 'How to set up and connect a receipt printer to your tablet.',
-      readTime: '7 min',
-      views: '3.9k'
-    },
-    {
-      id: 'gs-6',
-      title: 'Processing your first order',
-      excerpt: 'Walk through taking an order, applying discounts, and completing payment.',
-      readTime: '5 min',
-      views: '3.5k'
-    },
-    {
-      id: 'gs-7',
-      title: 'Understanding the dashboard',
-      excerpt: 'Navigate the web dashboard and find key metrics and reports.',
-      readTime: '8 min',
-      views: '3.1k'
-    },
-    {
-      id: 'gs-8',
-      title: 'Mobile app vs web dashboard',
-      excerpt: 'Learn when to use the mobile app versus the web dashboard.',
-      readTime: '4 min',
-      views: '2.8k'
-    }
-  ],
-  'billing': [
-    {
-      id: 'bl-1',
-      title: 'Understanding your subscription plan',
-      excerpt: 'Compare plan features and understand what\'s included in each tier.',
-      readTime: '6 min',
-      views: '4.5k',
-      featured: true
-    },
-    {
-      id: 'bl-2',
-      title: 'Updating your payment method',
-      excerpt: 'How to add, remove, or change your payment card on file.',
-      readTime: '3 min',
-      views: '3.8k',
-      featured: true
-    },
-    {
-      id: 'bl-3',
-      title: 'Downloading invoices and receipts',
-      excerpt: 'Access and download your billing history and invoices.',
-      readTime: '4 min',
-      views: '3.2k'
-    },
-    {
-      id: 'bl-4',
-      title: 'Upgrading or downgrading your plan',
-      excerpt: 'Step-by-step guide to changing your subscription tier.',
-      readTime: '5 min',
-      views: '2.9k'
-    },
-    {
-      id: 'bl-5',
-      title: 'Canceling your subscription',
-      excerpt: 'How to cancel and what happens to your data.',
-      readTime: '4 min',
-      views: '2.1k'
-    },
-    {
-      id: 'bl-6',
-      title: 'Understanding pro-rated charges',
-      excerpt: 'How billing works when you upgrade mid-cycle.',
-      readTime: '3 min',
-      views: '1.8k'
-    },
-    {
-      id: 'bl-7',
-      title: 'Failed payment troubleshooting',
-      excerpt: 'What to do if your payment fails and how to resolve it.',
-      readTime: '5 min',
-      views: '1.5k'
-    },
-    {
-      id: 'bl-8',
-      title: 'Requesting a refund',
-      excerpt: 'Our refund policy and how to request one if eligible.',
-      readTime: '4 min',
-      views: '1.2k'
-    }
-  ],
-  'technical': [
-    {
-      id: 'tc-1',
-      title: 'Connecting a Bluetooth receipt printer',
-      excerpt: 'Troubleshoot Bluetooth pairing issues with thermal printers.',
-      readTime: '8 min',
-      views: '5.6k',
-      featured: true
-    },
-    {
-      id: 'tc-2',
-      title: 'App crashes and freezes',
-      excerpt: 'Common causes and solutions for app stability issues.',
-      readTime: '6 min',
-      views: '4.8k',
-      featured: true
-    },
-    {
-      id: 'tc-3',
-      title: 'Sync issues between devices',
-      excerpt: 'Resolve data synchronization problems across multiple tablets.',
-      readTime: '7 min',
-      views: '4.2k'
-    },
-    {
-      id: 'tc-4',
-      title: 'Offline mode not working',
-      excerpt: 'Ensure offline mode is properly configured and functioning.',
-      readTime: '5 min',
-      views: '3.8k'
-    },
-    {
-      id: 'tc-5',
-      title: 'Cash drawer not opening',
-      excerpt: 'Troubleshoot cash drawer connectivity and trigger issues.',
-      readTime: '6 min',
-      views: '3.2k'
-    },
-    {
-      id: 'tc-6',
-      title: 'Barcode scanner setup',
-      excerpt: 'Configure USB and Bluetooth barcode scanners.',
-      readTime: '7 min',
-      views: '2.9k'
-    },
-    {
-      id: 'tc-7',
-      title: 'Network and connectivity issues',
-      excerpt: 'Diagnose Wi-Fi and internet connection problems.',
-      readTime: '8 min',
-      views: '2.5k'
-    },
-    {
-      id: 'tc-8',
-      title: 'Updating the Paymint app',
-      excerpt: 'How to update and what to do if updates fail.',
-      readTime: '4 min',
-      views: '2.1k'
-    },
-    {
-      id: 'tc-9',
-      title: 'Clearing cache and data',
-      excerpt: 'When and how to clear app cache to resolve issues.',
-      readTime: '5 min',
-      views: '1.9k'
-    },
-    {
-      id: 'tc-10',
-      title: 'Kitchen display system setup',
-      excerpt: 'Configure a secondary display for kitchen orders.',
-      readTime: '10 min',
-      views: '1.6k'
-    }
-  ],
-  'features': [
-    {
-      id: 'ft-1',
-      title: 'Understanding sales reports',
-      excerpt: 'Deep dive into all available reports and what they tell you.',
-      readTime: '12 min',
-      views: '6.2k',
-      featured: true
-    },
-    {
-      id: 'ft-2',
-      title: 'Setting up loyalty programs',
-      excerpt: 'Create points-based or stamp-based customer loyalty programs.',
-      readTime: '10 min',
-      views: '5.4k',
-      featured: true
-    },
-    {
-      id: 'ft-3',
-      title: 'Creating and managing discounts',
-      excerpt: 'Set up percentage, fixed amount, and conditional discounts.',
-      readTime: '8 min',
-      views: '4.8k'
-    },
-    {
-      id: 'ft-4',
-      title: 'Inventory management basics',
-      excerpt: 'Track stock levels and set up low-stock alerts.',
-      readTime: '15 min',
-      views: '4.2k'
-    },
-    {
-      id: 'ft-5',
-      title: 'Employee scheduling and shifts',
-      excerpt: 'Manage work schedules and track shift hours.',
-      readTime: '10 min',
-      views: '3.8k'
-    },
-    {
-      id: 'ft-6',
-      title: 'Customer database management',
-      excerpt: 'Store customer information and purchase history.',
-      readTime: '7 min',
-      views: '3.2k'
-    },
-    {
-      id: 'ft-7',
-      title: 'Multi-location management',
-      excerpt: 'Manage multiple establishments from one account.',
-      readTime: '12 min',
-      views: '2.9k'
-    },
-    {
-      id: 'ft-8',
-      title: 'Custom receipt templates',
-      excerpt: 'Personalize receipts with your logo and messages.',
-      readTime: '6 min',
-      views: '2.5k'
-    },
-    {
-      id: 'ft-9',
-      title: 'Product modifiers and add-ons',
-      excerpt: 'Set up customization options for menu items.',
-      readTime: '8 min',
-      views: '2.2k'
-    },
-    {
-      id: 'ft-10',
-      title: 'Exporting data to Excel',
-      excerpt: 'Export reports and data for external analysis.',
-      readTime: '5 min',
-      views: '1.9k'
-    }
-  ]
-};
-
 export const SupportCategoryPage = () => {
+  const { t } = useTranslation(['support', 'common']);
   const { categoryId } = useParams<{ categoryId: string }>();
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Category configuration
+  const categoryConfig: Record<string, {
+    title: string;
+    description: string;
+    icon: React.ElementType;
+    color: string;
+    bgColor: string;
+  }> = {
+    'getting-started': {
+      title: t('support.categories.gettingStarted'),
+      description: t('support.categories.gettingStartedDesc'),
+      icon: Zap,
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-500'
+    },
+    'billing': {
+      title: t('support.categories.billing'),
+      description: t('support.categories.billingDesc'),
+      icon: CreditCard,
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-500'
+    },
+    'technical': {
+      title: t('support.categories.technical'),
+      description: t('support.categories.technicalDesc'),
+      icon: Settings,
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-500'
+    },
+    'features': {
+      title: t('support.categories.features'),
+      description: t('support.categories.featuresDesc'),
+      icon: BookOpen,
+      color: 'text-green-600',
+      bgColor: 'bg-paymint-green'
+    }
+  };
+
+  // Articles data by category
+  const articlesByCategory: Record<string, Array<{
+    id: string;
+    title: string;
+    excerpt: string;
+    readTime: string;
+    views: string;
+    featured?: boolean;
+  }>> = {
+    'getting-started': [
+      {
+        id: 'gs-1',
+        title: t('support.popularArticles.account'),
+        excerpt: t('support.articles.gs1_excerpt'),
+        readTime: '5 min',
+        views: '8.2k',
+        featured: true
+      },
+      {
+        id: 'gs-2',
+        title: t('support.popularArticles.establishment'),
+        excerpt: t('support.articles.gs2_excerpt'),
+        readTime: '8 min',
+        views: '6.5k',
+        featured: true
+      },
+      {
+        id: 'gs-3',
+        title: t('support.articles.gs3'),
+        excerpt: t('support.articles.gs3_excerpt'),
+        readTime: '10 min',
+        views: '5.8k'
+      },
+      {
+        id: 'gs-4',
+        title: t('support.articles.gs4'),
+        excerpt: t('support.articles.gs4_excerpt'),
+        readTime: '6 min',
+        views: '4.2k'
+      },
+      {
+        id: 'gs-5',
+        title: t('support.articles.gs5'),
+        excerpt: t('support.articles.gs5_excerpt'),
+        readTime: '7 min',
+        views: '3.9k'
+      },
+      {
+        id: 'gs-6',
+        title: t('support.articles.gs6'),
+        excerpt: t('support.articles.gs6_excerpt'),
+        readTime: '5 min',
+        views: '3.5k'
+      },
+      {
+        id: 'gs-7',
+        title: t('support.articles.gs7'),
+        excerpt: t('support.articles.gs7_excerpt'),
+        readTime: '8 min',
+        views: '3.1k'
+      },
+      {
+        id: 'gs-8',
+        title: t('support.articles.gs8'),
+        excerpt: t('support.articles.gs8_excerpt'),
+        readTime: '4 min',
+        views: '2.8k'
+      }
+    ],
+    'billing': [
+      {
+        id: 'bl-1',
+        title: t('support.articles.bl1'),
+        excerpt: t('support.articles.bl1_excerpt'),
+        readTime: '6 min',
+        views: '4.5k',
+        featured: true
+      },
+      {
+        id: 'bl-2',
+        title: t('support.popularArticles.payment'),
+        excerpt: t('support.articles.bl2_excerpt'),
+        readTime: '3 min',
+        views: '3.8k',
+        featured: true
+      },
+      {
+        id: 'bl-3',
+        title: t('support.articles.bl3'),
+        excerpt: t('support.articles.bl3_excerpt'),
+        readTime: '4 min',
+        views: '3.2k'
+      },
+      {
+        id: 'bl-4',
+        title: t('support.articles.bl4'),
+        excerpt: t('support.articles.bl4_excerpt'),
+        readTime: '5 min',
+        views: '2.9k'
+      },
+      {
+        id: 'bl-5',
+        title: t('support.articles.bl5'),
+        excerpt: t('support.articles.bl5_excerpt'),
+        readTime: '4 min',
+        views: '2.1k'
+      },
+      {
+        id: 'bl-6',
+        title: t('support.articles.bl6'),
+        excerpt: t('support.articles.bl6_excerpt'),
+        readTime: '3 min',
+        views: '1.8k'
+      },
+      {
+        id: 'bl-7',
+        title: t('support.articles.bl7'),
+        excerpt: t('support.articles.bl7_excerpt'),
+        readTime: '5 min',
+        views: '1.5k'
+      },
+      {
+        id: 'bl-8',
+        title: t('support.articles.bl8'),
+        excerpt: t('support.articles.bl8_excerpt'),
+        readTime: '4 min',
+        views: '1.2k'
+      }
+    ],
+    'technical': [
+      {
+        id: 'tc-1',
+        title: t('support.popularArticles.printer'),
+        excerpt: t('support.articles.tc1_excerpt'),
+        readTime: '8 min',
+        views: '5.6k',
+        featured: true
+      },
+      {
+        id: 'tc-2',
+        title: t('support.articles.tc2'),
+        excerpt: t('support.articles.tc2_excerpt'),
+        readTime: '6 min',
+        views: '4.8k',
+        featured: true
+      },
+      {
+        id: 'tc-3',
+        title: t('support.articles.tc3'),
+        excerpt: t('support.articles.tc3_excerpt'),
+        readTime: '7 min',
+        views: '4.2k'
+      },
+      {
+        id: 'tc-4',
+        title: t('support.articles.tc4'),
+        excerpt: t('support.articles.tc4_excerpt'),
+        readTime: '5 min',
+        views: '3.8k'
+      },
+      {
+        id: 'tc-5',
+        title: t('support.articles.tc5'),
+        excerpt: t('support.articles.tc5_excerpt'),
+        readTime: '6 min',
+        views: '3.2k'
+      },
+      {
+        id: 'tc-6',
+        title: t('support.articles.tc6'),
+        excerpt: t('support.articles.tc6_excerpt'),
+        readTime: '7 min',
+        views: '2.9k'
+      },
+      {
+        id: 'tc-7',
+        title: t('support.articles.tc7'),
+        excerpt: t('support.articles.tc7_excerpt'),
+        readTime: '8 min',
+        views: '2.5k'
+      },
+      {
+        id: 'tc-8',
+        title: t('support.articles.tc8'),
+        excerpt: t('support.articles.tc8_excerpt'),
+        readTime: '4 min',
+        views: '2.1k'
+      },
+      {
+        id: 'tc-9',
+        title: t('support.articles.tc9'),
+        excerpt: t('support.articles.tc9_excerpt'),
+        readTime: '5 min',
+        views: '1.9k'
+      },
+      {
+        id: 'tc-10',
+        title: t('support.articles.tc10'),
+        excerpt: t('support.articles.tc10_excerpt'),
+        readTime: '10 min',
+        views: '1.6k'
+      }
+    ],
+    'features': [
+      {
+        id: 'ft-1',
+        title: t('support.popularArticles.reports'),
+        excerpt: t('support.articles.ft1_excerpt'),
+        readTime: '12 min',
+        views: '6.2k',
+        featured: true
+      },
+      {
+        id: 'ft-2',
+        title: t('support.articles.ft2'),
+        excerpt: t('support.articles.ft2_excerpt'),
+        readTime: '10 min',
+        views: '5.4k',
+        featured: true
+      },
+      {
+        id: 'ft-3',
+        title: t('support.articles.ft3'),
+        excerpt: t('support.articles.ft3_excerpt'),
+        readTime: '8 min',
+        views: '4.8k'
+      },
+      {
+        id: 'ft-4',
+        title: t('support.articles.ft4'),
+        excerpt: t('support.articles.ft4_excerpt'),
+        readTime: '15 min',
+        views: '4.2k'
+      },
+      {
+        id: 'ft-5',
+        title: t('support.articles.ft5'),
+        excerpt: t('support.articles.ft5_excerpt'),
+        readTime: '10 min',
+        views: '3.8k'
+      },
+      {
+        id: 'ft-6',
+        title: t('support.articles.ft6'),
+        excerpt: t('support.articles.ft6_excerpt'),
+        readTime: '7 min',
+        views: '3.2k'
+      },
+      {
+        id: 'ft-7',
+        title: t('support.articles.ft7'),
+        excerpt: t('support.articles.ft7_excerpt'),
+        readTime: '12 min',
+        views: '2.9k'
+      },
+      {
+        id: 'ft-8',
+        title: t('support.articles.ft8'),
+        excerpt: t('support.articles.ft8_excerpt'),
+        readTime: '6 min',
+        views: '2.5k'
+      },
+      {
+        id: 'ft-9',
+        title: t('support.articles.ft9'),
+        excerpt: t('support.articles.ft9_excerpt'),
+        readTime: '8 min',
+        views: '2.2k'
+      },
+      {
+        id: 'ft-10',
+        title: t('support.articles.ft10'),
+        excerpt: t('support.articles.ft10_excerpt'),
+        readTime: '5 min',
+        views: '1.9k'
+      }
+    ]
+  };
 
   const category = categoryId ? categoryConfig[categoryId] : null;
   const articles = categoryId ? articlesByCategory[categoryId] || [] : [];
@@ -355,10 +357,10 @@ export const SupportCategoryPage = () => {
         <Navbar />
         <main className="pt-28 pb-20">
           <div className="container mx-auto px-8 md:px-16 lg:px-24 text-center">
-            <h1 className="text-3xl font-black mb-4">Category Not Found</h1>
-            <p className="text-gray-500 mb-8">The category you're looking for doesn't exist.</p>
+            <h1 className="text-3xl font-black mb-4">{t('support.categories.notFound')}</h1>
+            <p className="text-gray-500 mb-8">{t('support.categories.notFoundDesc')}</p>
             <Link to="/support" className="text-paymint-green font-bold hover:underline">
-              ← Back to Help Center
+              ← {t('support.articles.backToHelp')}
             </Link>
           </div>
         </main>
@@ -401,7 +403,7 @@ export const SupportCategoryPage = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={`Search in ${category.title}...`}
+              placeholder={t('support.categories.searchInCategory', { category: category.title })}
               className="w-full pl-12 pr-4 py-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
             />
           </div>
@@ -411,7 +413,7 @@ export const SupportCategoryPage = () => {
             <div className="mb-10">
               <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <Star size={18} className="text-yellow-500" />
-                Featured Articles
+                {t('support.articles.featuredTitle')}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {featuredArticles.map((article, index) => (
@@ -441,7 +443,7 @@ export const SupportCategoryPage = () => {
                               <Clock size={12} /> {article.readTime}
                             </span>
                             <span className="flex items-center gap-1">
-                              <Eye size={12} /> {article.views} views
+                              <Eye size={12} /> {article.views} {t('support.articles.views')}
                             </span>
                           </div>
                         </div>
@@ -456,7 +458,7 @@ export const SupportCategoryPage = () => {
           {/* All Articles */}
           <div>
             <h2 className="text-lg font-bold mb-4">
-              {searchQuery ? `Search Results (${filteredArticles.length})` : 'All Articles'}
+              {searchQuery ? t('support.articles.searchResultCount', { count: filteredArticles.length }) : t('support.articles.allTitle')}
             </h2>
             <div className="space-y-3">
               {regularArticles.map((article, index) => (
@@ -504,15 +506,15 @@ export const SupportCategoryPage = () => {
                 <div className="w-16 h-16 bg-gray-100 dark:bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <HelpCircle size={32} className="text-gray-400" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">No articles found</h3>
+                <h3 className="text-xl font-bold mb-2">{t('support.articles.notFound')}</h3>
                 <p className="text-gray-500 dark:text-gray-400 mb-6">
-                  Try adjusting your search terms
+                  {t('support.articles.notFoundDesc')}
                 </p>
                 <button
                   onClick={() => setSearchQuery('')}
                   className="text-paymint-green font-bold hover:underline"
                 >
-                  Clear search
+                  {t('support.articles.clearSearch')}
                 </button>
               </div>
             )}
@@ -522,14 +524,14 @@ export const SupportCategoryPage = () => {
           <div className="mt-12 p-6 bg-gradient-to-r from-gray-900 to-gray-800 dark:from-white/10 dark:to-white/5 rounded-2xl">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="text-white">
-                <h3 className="text-xl font-bold mb-1">Still need help?</h3>
-                <p className="text-gray-400">Can't find what you're looking for? Contact our support team.</p>
+                <h3 className="text-xl font-bold mb-1">{t('support.cta.stillNeedHelp')}</h3>
+                <p className="text-gray-400">{t('support.cta.stillNeedHelpDesc')}</p>
               </div>
               <Link
                 to="/support/tickets/new"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all whitespace-nowrap"
               >
-                Submit a Ticket
+                {t('support.quickLinks.submitTicket')}
               </Link>
             </div>
           </div>

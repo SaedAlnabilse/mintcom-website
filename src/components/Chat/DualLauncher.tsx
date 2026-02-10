@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, HelpCircle, X, Sparkles } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface DualLauncherProps {
   onOpenChat: () => void;
@@ -11,6 +12,7 @@ interface DualLauncherProps {
 }
 
 export function DualLauncher({ onOpenChat, onOpenFAQ, isChatOpen, isFAQOpen, onCloseAll }: DualLauncherProps) {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -91,7 +93,7 @@ export function DualLauncher({ onOpenChat, onOpenFAQ, isChatOpen, isFAQOpen, onC
                 className="relative z-10 flex items-center gap-2 px-4 py-2.5 rounded-full bg-gradient-to-r from-[#7CC39F] to-[#5BA882] text-white font-bold text-sm shadow-lg shadow-[#7CC39F]/30 transition-all hover:shadow-[#7CC39F]/50"
               >
                 <Bot size={18} />
-                <span>Ask Minto</span>
+                <span>{t('chat.launcher.ask')}</span>
               </motion.button>
 
               <div className="w-px h-6 bg-gray-200 dark:bg-white/10 mx-1" />
@@ -108,7 +110,7 @@ export function DualLauncher({ onOpenChat, onOpenFAQ, isChatOpen, isFAQOpen, onC
                 className="flex items-center gap-2 px-3 py-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 font-bold text-sm transition-all"
               >
                 <HelpCircle size={18} />
-                <span>Help</span>
+                <span>{t('chat.launcher.help')}</span>
               </motion.button>
 
               <motion.button

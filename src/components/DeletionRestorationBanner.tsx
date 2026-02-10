@@ -3,6 +3,7 @@ import { AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../config/api';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 interface ApiError {
   response?: {
@@ -13,6 +14,7 @@ interface ApiError {
 }
 
 export function DeletionRestorationBanner() {
+  const { t } = useTranslation();
   const { account, updateAccount } = useAuth();
   const [isRestoring, setIsRestoring] = useState(false);
   const [daysRemaining, setDaysRemaining] = useState<number | null>(null);
@@ -36,12 +38,12 @@ export function DeletionRestorationBanner() {
       const response = await api.post('/api/accounts/me/restore');
       
       if (response.data.success) {
-        toast.success('Account restored!');
+        toast.success(t('account.restored'));
         updateAccount({ deletionRequestedAt: undefined });
       }
     } catch (error) {
       console.error('Failed to restore account:', error);
-      toast.error((error as ApiError).response?.data?.message || 'Failed to restore account. Please contact support.');
+      toast.error((error as ApiError).response?.data?.message || t('account.restoreFailed'));
     } finally {
       setIsRestoring(false);
     }
@@ -52,7 +54,7 @@ export function DeletionRestorationBanner() {
       <div className="flex items-center gap-2">
         <AlertTriangle size={18} className="animate-pulse" />
         <p className="text-sm font-bold tracking-tight">
-          Your account is scheduled for deletion in <span className="underline decoration-2 underline-offset-2">{daysRemaining} days</span>.
+          {t('account.deletionScheduled', { count: daysRemaining ?? 0 })}
         </p>
       </div>
       <button
@@ -63,10 +65,10 @@ export function DeletionRestorationBanner() {
         {isRestoring ? (
           <>
             <div className="w-3.5 h-3.5 border-2 border-red-600/20 border-t-red-600 rounded-full animate-spin" />
-            Restoring...
+            {t('account.restoring')}
           </>
         ) : (
-          'Restore Account'
+          t('account.restoreAction')
         )}
       </button>
     </div>

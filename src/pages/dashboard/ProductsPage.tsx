@@ -54,7 +54,7 @@ interface Product {
 
 export function ProductsPage() {
     const { t } = useTranslation();
-    const { formatAmount } = useCurrency();
+    const { currencySymbol } = useCurrency();
     const location = useLocation();
     const navigate = useNavigate();
     const [products, setProducts] = useState<Product[]>([]);
@@ -399,10 +399,10 @@ export function ProductsPage() {
         };
     }, [products, categories]);
 
-    if (isLoading) return <LoadingFallback message="Loading Inventory..." />;
+    if (isLoading) return <LoadingFallback message={t('products.messages.loading')} />;
 
     return (
-        <div className="max-w-7xl mx-auto space-y-8 pb-10 font-sans">
+        <div className="max-w-7xl mx-auto space-y-8 pb-10 font-sans" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
@@ -566,11 +566,11 @@ export function ProductsPage() {
                         </div>
                         <div className="flex items-center gap-1">
                             <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">{t('products.stats.total')}</span>
-                            <QuickInfo text={t('products.stats.totalDesc') || "Total count of unique products. Click to show all."} />
+                            <QuickInfo text={t('products.stats.totalDesc')} />
                         </div>
                     </div>
                     <p className={`text-2xl sm:text-3xl font-black ${stockFilter === 'all' ? 'text-blue-500' : 'text-gray-900 dark:text-white'}`}>
-                        {stats.total}
+                        {stats.total.toLocaleString(t('common.locale'))}
                     </p>
                 </button>
 
@@ -588,11 +588,11 @@ export function ProductsPage() {
                         </div>
                         <div className="flex items-center gap-1">
                             <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">{t('products.stats.low')}</span>
-                            <QuickInfo text={t('products.stats.lowDesc') || "Products with stock at yellow warning level. Click to filter."} />
+                            <QuickInfo text={t('products.stats.lowDesc')} />
                         </div>
                     </div>
                     <p className="text-2xl sm:text-3xl font-black text-[#ffc107]">
-                        {stats.yellowThreshold}
+                        {stats.yellowThreshold.toLocaleString(t('common.locale'))}
                     </p>
                 </button>
 
@@ -610,11 +610,11 @@ export function ProductsPage() {
                         </div>
                         <div className="flex items-center gap-1">
                             <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">{t('products.stats.critical')}</span>
-                            <QuickInfo text={t('products.stats.criticalDesc') || "Products with stock at critical red level. Click to filter."} />
+                            <QuickInfo text={t('products.stats.criticalDesc')} />
                         </div>
                     </div>
                     <p className="text-2xl sm:text-3xl font-black text-[#D55263]">
-                        {stats.redThreshold}
+                        {stats.redThreshold.toLocaleString(t('common.locale'))}
                     </p>
                 </button>
 
@@ -632,11 +632,11 @@ export function ProductsPage() {
                         </div>
                         <div className="flex items-center gap-1">
                             <span className="text-xs sm:text-sm font-bold text-gray-500 dark:text-gray-400">{t('products.stats.outOfStock')}</span>
-                            <QuickInfo text={t('products.stats.outOfStockDesc') || "Products with zero or negative stock. Click to filter."} />
+                            <QuickInfo text={t('products.stats.outOfStockDesc')} />
                         </div>
                     </div>
                     <p className="text-2xl sm:text-3xl font-black text-slate-500">
-                        {stats.outOfStock}
+                        {stats.outOfStock.toLocaleString(t('common.locale'))}
                     </p>
                 </button>
             </div>
@@ -677,8 +677,8 @@ export function ProductsPage() {
                                                 </div>
                                             )}
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 flex items-end justify-between p-3">
-                                                <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label="Edit product" className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-gray-900 hover:bg-paymint-green hover:text-black transition-colors"><Edit2 size={18} /></button>
-                                                <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label="Delete product" className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors"><Trash2 size={18} /></button>
+                                                <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-gray-900 hover:bg-paymint-green hover:text-black transition-colors"><Edit2 size={18} /></button>
+                                                <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors"><Trash2 size={18} /></button>
                                             </div>
                                         </div>
                                         <div className="p-3 flex-1 flex flex-col">
@@ -693,7 +693,7 @@ export function ProductsPage() {
                                                 <div>
                                                     <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">{t('products.table.price')}</p>
                                                     <p className="text-sm font-black text-paymint-green">
-                                                        {formatAmount(p.price)}
+                                                        {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
                                                     </p>
                                                 </div>
                                                 <div className="text-right">
@@ -701,7 +701,7 @@ export function ProductsPage() {
                                                     {p.trackStock ? (
                                                         <div className={`text-xs font-bold flex items-center justify-end gap-1 ${getStockColor(p.availableStock || 0, p.lowStockThresholdRed, p.lowStockThresholdYellow)}`}>
                                                             {(p.availableStock || 0) <= (p.lowStockThresholdYellow || 5) && <AlertCircle size={10} />}
-                                                            {p.availableStock}
+                                                            {(p.availableStock || 0).toLocaleString(t('common.locale'))}
                                                         </div>
                                                     ) : (
                                                         <div className="text-xs font-bold text-gray-400 dark:text-gray-500 flex items-center justify-end">
@@ -793,13 +793,13 @@ export function ProductsPage() {
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
                                                     <span className="font-bold text-gray-900 dark:text-white">
-                                                        {formatAmount(p.price)}
+                                                        {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
                                                     <div className="flex items-center justify-center gap-1 sm:gap-2">
-                                                        <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label="Edit product" className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"><Edit2 size={18} /></button>
-                                                        <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label="Delete product" className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"><Trash2 size={18} /></button>
+                                                        <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 rounded-lg transition-colors"><Edit2 size={18} /></button>
+                                                        <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"><Trash2 size={18} /></button>
                                                     </div>
                                                 </td>
                                             </tr>

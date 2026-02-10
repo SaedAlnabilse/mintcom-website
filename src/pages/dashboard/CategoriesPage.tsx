@@ -48,7 +48,7 @@ interface Product {
 
 export function CategoriesPage() {
   const { t } = useTranslation();
-  const { formatAmount } = useCurrency();
+  const { currencySymbol } = useCurrency();
   const { locationSlug } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -235,17 +235,16 @@ export function CategoriesPage() {
     return products.filter(p => p.categoryId === targetId);
   }, [viewingCategory, deleteBlockedCategory, products]);
 
-
   const ViewingIcon = viewingCategory ? (ICON_MAP[viewingCategory.icon || 'tag'] || Tag) : Tag;
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-10 font-sans">
+    <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-10 font-sans" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              {t('categories.title')}
+              {t('dashboard.menu.categories')}
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('categories.title')}</h1>
@@ -288,7 +287,9 @@ export function CategoriesPage() {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
-                <p className="text-xl font-black text-gray-900 dark:text-white truncate">{stat.value}</p>
+                <p className="text-xl font-black text-gray-900 dark:text-white truncate">
+                  {typeof stat.value === 'number' ? stat.value.toLocaleString(t('common.locale')) : stat.value}
+                </p>
                 {stat.sub && (
                   <p className="text-xs font-bold text-paymint-green tracking-wide mt-1">{stat.sub}</p>
                 )}
@@ -546,7 +547,7 @@ export function CategoriesPage() {
                           <div className="min-w-0">
                             <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
                             <p className="text-xs font-black text-paymint-green mt-0.5">
-                              {formatAmount(p.price)}
+                              {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
                             </p>
                           </div>
                         </div>
@@ -648,7 +649,7 @@ export function CategoriesPage() {
                         <div className="min-w-0 flex-1">
                           <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
                           <p className="text-xs font-black text-paymint-green mt-0.5">
-                            {formatAmount(p.price)}
+                            {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
                           </p>
                         </div>
                       </div>

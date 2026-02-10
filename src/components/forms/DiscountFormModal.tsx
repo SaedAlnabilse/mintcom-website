@@ -43,7 +43,7 @@ export function DiscountFormModal({
       setErrors({});
       if (initialData) {
         setName(initialData.name);
-        setPercentage(String(initialData.percentage * 100));
+        setPercentage((initialData.percentage * 100).toLocaleString(t('common.locale'), { useGrouping: false }));
         setAdminOnly(initialData.adminOnly);
       } else {
         setName('');
@@ -86,7 +86,10 @@ export function DiscountFormModal({
 
   return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans">
+      <div
+        dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+        className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
+      >
         <motion.div
           initial={{ opacity: 0, y: 100 }}
           animate={{ opacity: 1, y: 0 }}
@@ -154,14 +157,14 @@ export function DiscountFormModal({
                       setPercentage(val);
                       if (errors.percentage) setErrors({ ...errors, percentage: '' });
                     }}
-                    placeholder="0"
+                    placeholder={t('common.zeroDecimal')}
                     step="0.01"
                     min="0"
                     max="100"
                     className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.percentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                   />
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg shadow-sm">
-                    <span className="text-paymint-green text-xs font-black">%</span>
+                    <span className="text-paymint-green text-xs font-black">{t('common.percent')}</span>
                   </div>
                 </div>
                 {errors.percentage && <p className="mt-1.5 px-1 text-xs font-bold text-paymint-red">{errors.percentage}</p>}

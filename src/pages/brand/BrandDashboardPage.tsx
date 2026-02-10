@@ -77,7 +77,7 @@ export function BrandDashboardPage() {
     const brandId = brand?.id || paramBrandId;
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
-    const [brandName, setBrandName] = useState('Brand Overview');
+    const [brandName, setBrandName] = useState(t('brand.dashboard.title'));
     const [stats, setStats] = useState<BrandStats | null>(null);
     const [locations, setLocations] = useState<LocationPerformance[]>([]);
     const [selectedDateRange, setSelectedDateRange] = useState<DateRangePreset>('this_week');
@@ -248,21 +248,25 @@ export function BrandDashboardPage() {
     }, [t]);
 
     const formatCurrency = (value: number) => {
+        const symbol = t('common.currencySymbol') || '$';
+        const locale = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
+
         if (value >= 1000000) {
-            return `$${(value / 1000000).toFixed(1)}M`;
+            return `${symbol}${(value / 1000000).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`;
         } else if (value >= 1000) {
-            return `$${(value / 1000).toFixed(1)}K`;
+            return `${symbol}${(value / 1000).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}K`;
         }
-        return `$${value.toFixed(0)}`;
+        return `${symbol}${value.toLocaleString(locale, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
     };
 
     const formatNumber = (value: number) => {
+        const locale = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
         if (value >= 1000000) {
-            return `${(value / 1000000).toFixed(1)}M`;
+            return `${(value / 1000000).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}M`;
         } else if (value >= 1000) {
-            return `${(value / 1000).toFixed(1)}K`;
+            return `${(value / 1000).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}K`;
         }
-        return value.toLocaleString();
+        return value.toLocaleString(locale);
     };
 
     const isTopBrand = brandId === 'cmkek5eme0001vjjqvfm3wjwa';
@@ -410,7 +414,7 @@ export function BrandDashboardPage() {
                     },
                     {
                         label: t('brand.dashboard.avgOrderValue'),
-                        value: `$${(stats?.avgOrderValue || 0).toFixed(2)}`,
+                        value: `${t('common.currencySymbol') || '$'}${(stats?.avgOrderValue || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
                         change: null,
                         icon: Target,
                         color: 'text-purple-500',
@@ -529,7 +533,7 @@ export function BrandDashboardPage() {
                                         {formatCurrency(loc.revenue)}
                                     </p>
                                     <p className="text-xs text-gray-500">
-                                        {((loc.revenue / (stats?.totalRevenue || 1)) * 100).toFixed(1)}% {t('brand.dashboard.ofTotal')}
+                                        {(loc.revenue / (stats?.totalRevenue || 1)).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })} {t('brand.dashboard.ofTotal')}
                                     </p>
                                 </div>
 
@@ -569,11 +573,11 @@ export function BrandDashboardPage() {
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-2">
                                 <div className="w-3 h-3 rounded-full bg-paymint-green" />
-                                <span className="text-xs font-black tracking-wider text-gray-500">Revenue</span>
+                                <span className="text-xs font-black tracking-wider text-gray-500">{t('brand.dashboard.revenue')}</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <div className="w-3 h-3 rounded-full bg-blue-500" />
-                                <span className="text-xs font-black tracking-wider text-gray-500">Orders</span>
+                                <span className="text-xs font-black tracking-wider text-gray-500">{t('brand.dashboard.orders')}</span>
                             </div>
                         </div>
                     </div>
@@ -618,7 +622,7 @@ export function BrandDashboardPage() {
                                         }}
                                         formatter={(value, name) => [
                                             name === 'value' ? formatCurrency(value as number) : String(value),
-                                            name === 'value' ? 'Revenue' : 'Orders'
+                                            name === 'value' ? t('brand.dashboard.revenue') : t('brand.dashboard.orders')
                                         ]}
                                     />
                                     <Area
@@ -690,7 +694,7 @@ export function BrandDashboardPage() {
                                         borderRadius: '12px',
                                         fontSize: '12px',
                                     }}
-                                    formatter={(value) => [`${value}%`, 'Share']}
+                                    formatter={(value) => [`${value}%`, t('brand.dashboard.share')]}
                                 />
                             </RechartsPieChart>
                         </ResponsiveContainer>
@@ -745,7 +749,7 @@ export function BrandDashboardPage() {
                         </h4>
                         <p className="text-sm font-bold text-gray-500">{action.description}</p>
                         <div className="flex items-center gap-1 mt-4 text-xs font-bold text-paymint-green opacity-0 group-hover:opacity-100 transition-opacity">
-                            <span>{t('brand.dashboard.goTo')} {action.title.split(' ')[0]}</span>
+                            <span>{t('brand.dashboard.goTo')}</span>
                             <ArrowRight size={14} />
                         </div>
                     </motion.button>

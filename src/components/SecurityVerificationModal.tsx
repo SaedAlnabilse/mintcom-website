@@ -145,8 +145,8 @@ export function SecurityVerificationModal({
         e.preventDefault();
 
         const newErrors: Record<string, string> = {};
-        if (!email) newErrors.email = 'Email is required';
-        if (!password) newErrors.password = 'Password is required';
+        if (!email) newErrors.email = t('common.emailRequired');
+        if (!password) newErrors.password = t('common.passwordRequired');
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
@@ -163,13 +163,13 @@ export function SecurityVerificationModal({
                 ? api.post(config.endpoint, { email, password })
                 : api.delete(config.endpoint, { data: { email, password } }));
 
-            toast.success(res.data.message || t('common.done') || 'Done');
+            toast.success(res.data.message || t('common.done'));
             onSuccess();
             onClose();
             setEmail('');
             setPassword('');
         } catch (err) {
-            const msg = (err as ApiError).response?.data?.message || t('security.verificationFailed') || 'Verification failed';
+            const msg = (err as ApiError).response?.data?.message || t('security.verificationFailed');
             setErrors({ general: msg });
             setTimeout(() => {
                 errorBannerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -184,7 +184,10 @@ export function SecurityVerificationModal({
     return createPortal(
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 font-sans">
+                <div
+                    dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+                    className="fixed inset-0 z-[9999] flex items-center justify-center p-4 font-sans"
+                >
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -253,7 +256,7 @@ export function SecurityVerificationModal({
                                                 setEmail(e.target.value);
                                                 if (errors.email) setErrors({ ...errors, email: '' });
                                             }}
-                                            placeholder="your@email.com"
+                                            placeholder={t('auth.login.emailPlaceholder')}
                                             className={`w-full bg-gray-50 dark:bg-white/[0.03] border ${errors.email ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl py-3 pl-12 pr-4 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-paymint-green/10 transition-all placeholder-gray-300 dark:placeholder-gray-700`}
                                             disabled={isSubmitting}
                                         />

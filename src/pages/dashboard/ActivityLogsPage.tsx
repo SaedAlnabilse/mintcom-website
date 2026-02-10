@@ -137,20 +137,50 @@ export function ActivityLogsPage() {
       setTotalPages(response.data.totalPages || 1);
       setTotalLogs(response.data.total || validLogs.length);
     } catch {
-      toast.error(t('activity.syncError') || 'Failed to sync logs');
+      toast.error(t('activity.syncError'));
     } finally {
       setIsLoading(false);
     }
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString([], {
+    const locale = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
+    return new Date(dateString).toLocaleString(locale, {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit'
     });
+  };
+
+  const getActionKey = (action: string) => {
+    // Maps "Added product" -> "addProduct", "Updated restaurant name" -> "updateName"
+    const map: Record<string, string> = {
+      'Added product': 'addProduct',
+      'Updated product': 'updateProduct',
+      'Deleted product': 'deleteProduct',
+      'Removed product image': 'removeProductImage',
+      'Deleted all products': 'deleteProduct', // fallback
+      'Added category': 'addCategory',
+      'Updated category': 'updateCategory',
+      'Deleted category': 'deleteCategory',
+      'Added employee': 'addEmployee',
+      'Deleted employee': 'deleteEmployee',
+      'Updated restaurant name': 'updateName',
+      'Updated working hours': 'updateHours',
+      'Updated farewell message': 'updateMessage',
+      'Updated restaurant logo': 'updateLogo',
+      'Updated tax rate': 'updateTax',
+      'Updated loyalty program': 'updateLoyalty',
+      'Added discount': 'addDiscount',
+      'Updated discount': 'updateDiscount',
+      'Deleted discount': 'deleteDiscount',
+      'Added payment method': 'addPayment',
+      'Updated payment method': 'updatePayment',
+      'Deleted payment method': 'deletePayment'
+    };
+    return map[action] || action.toLowerCase().replace(/ /g, '_');
   };
 
   const getActionColor = (action: string) => {
@@ -172,12 +202,12 @@ export function ActivityLogsPage() {
       user: t('activity.user'),
       action: t('activity.action'),
       desc: t('activity.details'),
-      ip: t('activity.ip') || 'IP Address'
+      ip: t('activity.ip')
     });
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-10">
+    <div className="max-w-7xl mx-auto space-y-8 pb-10" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
@@ -324,7 +354,7 @@ export function ActivityLogsPage() {
                       </div>
                     </div>
                     <span className={`inline-flex px-2 py-0.5 rounded-lg text-[10px] font-black tracking-widest border ${getActionColor(log.action)}`}>
-                      {t(`activity.actions.${log.action.toLowerCase().replace(/ /g, '_').replace(/:/g, '')}`) || log.action?.replace(/_/g, ' ')}
+                      {t(`activity.actions.${getActionKey(log.action)}`) || log.action}
                     </span>
                   </div>
 
@@ -334,8 +364,12 @@ export function ActivityLogsPage() {
 
                   <div className="flex items-center justify-between">
                     <div className="flex flex-col">
-                      <span className="text-xs font-bold text-gray-900 dark:text-white">{formatDate(log.timestamp).split(',')[1]}</span>
-                      <span className="text-[10px] font-bold text-gray-400">{formatDate(log.timestamp).split(',')[0]}</span>
+                      <span className="text-xs font-bold text-gray-900 dark:text-white">
+                        {new Date(log.timestamp).toLocaleTimeString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                      </span>
+                      <span className="text-[10px] font-bold text-gray-400">
+                        {new Date(log.timestamp).toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { month: 'short', day: 'numeric' })}
+                      </span>
                     </div>
                     {log.metadata && (
                       <button
@@ -392,8 +426,12 @@ export function ActivityLogsPage() {
                     >
                       <td className="px-8 py-4">
                         <div className="flex flex-col">
-                          <span className="text-sm font-bold text-gray-900 dark:text-white whitespace-nowrap">{formatDate(log.timestamp).split(',')[1]}</span>
-                          <span className="text-xs font-bold text-gray-400">{formatDate(log.timestamp).split(',')[0]}</span>
+                          <span className="text-sm font-bold text-gray-900 dark:text-white whitespace-nowrap">
+                            {new Date(log.timestamp).toLocaleTimeString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                          </span>
+                          <span className="text-xs font-bold text-gray-400">
+                            {new Date(log.timestamp).toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { month: 'short', day: 'numeric' })}
+                          </span>
                         </div>
                       </td>
                       <td className="px-8 py-4">

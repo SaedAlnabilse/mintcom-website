@@ -19,7 +19,7 @@ const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899'
 
 export const StaffView = React.memo(function StaffView({ shifts, selectedEmployeeId, employees, employeeShifts }: StaffViewProps) {
   const { t } = useTranslation();
-  const { formatAmount, currencySymbol } = useCurrency();
+  const { formatAmount } = useCurrency();
   const [staffPage, setStaffPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -73,7 +73,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
 
   // Leaderboard Calculation
   const employeeStats = shifts.reduce((acc: any, shift: any) => {
-    const username = shift.user?.username || 'Unknown';
+    const username = shift.user?.username || t('common.unknown');
     if (!acc[username]) {
       acc[username] = {
         username,
@@ -106,7 +106,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
   }));
   if (sortedEmployees.length > 4) {
     pieData.push({
-      name: t('common.others', 'Others'),
+      name: t('common.others'),
       value: sortedEmployees.slice(4).reduce((acc: number, curr: any) => acc + curr.totalSales, 0),
       color: '#94A3B8'
     });
@@ -114,11 +114,11 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
 
   // Assign colors
   pieData.forEach((entry: any, index: number) => {
-    if (entry.name !== 'Others' && entry.name !== 'أخرى') entry.color = COLORS[index % COLORS.length];
+    if (entry.name !== t('common.others')) entry.color = COLORS[index % COLORS.length];
   });
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Overview Cards */}
       <div className="bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-6 shadow-sm">
         <div className="flex items-center gap-3 mb-6">
@@ -136,35 +136,35 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
             <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('orders.reports.staff.totalHours')}</p>
-            <p className="text-xl font-bold text-gray-900 dark:text-white">{totalHours.toFixed(1)}</p>
+            <p className="text-xl font-bold text-gray-900 dark:text-white">{totalHours.toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</p>
             <p className="text-xs text-gray-500">{t('orders.reports.staff.byStaff')} {empName}</p>
           </div>
           <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
             <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('orders.reports.staff.totalOrders')}</p>
-            <p className="text-xl font-bold text-gray-900 dark:text-white">{totalOrders}</p>
+            <p className="text-xl font-bold text-gray-900 dark:text-white">{totalOrders.toLocaleString(t('common.locale'))}</p>
             <p className="text-xs text-gray-500">{t('orders.reports.staff.byStaff')} {empName}</p>
           </div>
           <div className="p-4 rounded-xl bg-paymint-green/10 border border-paymint-green/20">
             <p className="text-xs font-black text-paymint-green tracking-widest mb-1">{t('orders.reports.staff.totalSales')}</p>
-            <p className="text-xl font-bold text-paymint-green">{totalSales.toFixed(3)} {currencySymbol}</p>
+            <p className="text-xl font-bold text-paymint-green">{formatCurrency(totalSales)}</p>
             <p className="text-xs text-paymint-green/70">{t('orders.reports.staff.byStaff')} {empName}</p>
           </div>
           <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
             <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('orders.reports.staff.totalDiscounts')}</p>
-            <p className="text-xl font-bold text-orange-500">{totalDiscounts.toFixed(3)} {currencySymbol}</p>
+            <p className="text-xl font-bold text-orange-500">{formatCurrency(totalDiscounts)}</p>
             <p className="text-xs text-gray-500">{t('orders.reports.staff.issuedBy', { name: empName })}</p>
           </div>
           <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
             <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('orders.reports.staff.totalRefunds')}</p>
-            <p className="text-xl font-bold text-red-500">{totalRefunds.toFixed(3)} {currencySymbol}</p>
+            <p className="text-xl font-bold text-red-500">{formatCurrency(totalRefunds)}</p>
             <p className="text-xs text-gray-500">{t('orders.reports.staff.byStaff')} {empName}</p>
           </div>
           <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
             <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('orders.reports.staff.totalVariances')}</p>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-emerald-500">+{positiveVariance.toFixed(2)}</span>
+              <span className="text-sm font-bold text-emerald-500">+{positiveVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               <span className="text-gray-300">/</span>
-              <span className="text-sm font-bold text-red-500">-{negativeVariance.toFixed(2)}</span>
+              <span className="text-sm font-bold text-red-500">-{negativeVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
             <p className="text-xs text-gray-500">{t('orders.reports.staff.byStaff')} {empName}</p>
           </div>
@@ -182,7 +182,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                 <h3 className="text-lg font-black text-gray-900 dark:text-white">{t('orders.reports.staff.salesShare')}</h3>
                 <p className="text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.byStaff')}</p>
               </div>
-              <div className="flex-1 min-h-[200px] relative">
+              <div className="flex-1 min-h-[200px] relative" dir="ltr">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
@@ -209,7 +209,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="text-center">
                     <p className="text-xs font-black text-gray-400">{t('owner.overview.total')}</p>
-                    <p className="text-sm font-black text-gray-900 dark:text-white">{formatAmount(totalStoreSales).replace(currencySymbol, '').trim()}</p>
+                    <p className="text-sm font-black text-gray-900 dark:text-white">{totalStoreSales.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                   </div>
                 </div>
               </div>
@@ -242,7 +242,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                         {emp.username.charAt(0).toUpperCase()}
                       </div>
                       <div className={`px-3 py-1 rounded-full text-xs font-black tracking-widest ${idx === 0 ? 'bg-black/10 text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
-                        {idx === 0 ? `#1 ${t('common.top', 'Top')}` : `#${idx + 1}`}
+                        {idx === 0 ? `#${(1).toLocaleString(t('common.locale'))} ${t('common.top')}` : `#${(idx + 1).toLocaleString(t('common.locale'))}`}
                       </div>
                     </div>
 
@@ -251,18 +251,18 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                       <div className="flex gap-4 mt-4">
                         <div>
                           <p className={`text-xs font-black tracking-widest mb-1 ${idx === 0 ? 'text-black/60' : 'text-gray-400'}`}>{t('orders.reports.staff.revenue')}</p>
-                          <p className={`text-2xl font-black ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>{formatAmount(emp.totalSales).replace(currencySymbol, '').trim()}</p>
+                          <p className={`text-2xl font-black ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>{emp.totalSales.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                         </div>
                         <div>
                           <p className={`text-xs font-black tracking-widest mb-1 ${idx === 0 ? 'text-black/60' : 'text-gray-400'}`}>{t('orders.reports.staff.avgTicket')}</p>
                           <p className={`text-2xl font-black ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>
-                            {formatAmount(emp.totalSales / (emp.transactionCount || 1)).replace(currencySymbol, '').trim()}
+                            {(emp.totalSales / (emp.transactionCount || 1)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </p>
                         </div>
                       </div>
                     </div>
                   </div>
-                  {idx === 0 && <Activity className="absolute -right-6 -bottom-6 w-40 h-40 text-black/5 rotate-12" />}
+                  {idx === 0 && <Activity className="absolute -end-6 -bottom-6 w-40 h-40 text-black/5 rotate-12" />}
                 </motion.div>
               ))}
             </div>
@@ -281,49 +281,52 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
             <table className="w-full">
               <thead className="bg-gray-50/50 dark:bg-white/[0.01]">
                 <tr className="border-b border-gray-100 dark:border-white/[0.05]">
-                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.rank')}</th>
-                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.staff')}</th>
-                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.sales')}</th>
-                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.share')}</th>
-                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.avgOrder')}</th>
-                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.salesPerHour')}</th>
+                  <th className="px-6 py-4 text-start text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.rank')}</th>
+                  <th className="px-6 py-4 text-start text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.staff')}</th>
+                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.sales')}</th>
+                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.share')}</th>
+                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.avgOrder')}</th>
+                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.salesPerHour')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/[0.03]">
                 {sortedEmployees
                   .slice((staffPage - 1) * itemsPerPage, staffPage * itemsPerPage)
                   .map((emp: any, idx: number) => {
-                    const share = totalStoreSales > 0 ? ((emp.totalSales / totalStoreSales) * 100).toFixed(1) : '0';
+                    const shareRatio = totalStoreSales > 0 ? (emp.totalSales / totalStoreSales) : 0;
+                    const sharePercent = shareRatio * 100;
                     const avgTicket = emp.totalSales / (emp.transactionCount || 1);
                     const efficiency = emp.totalSales / (emp.totalHours || 1);
 
                     return (
                       <tr key={emp.username} className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
-                        <td className="px-6 py-4 text-left">
+                        <td className="px-6 py-4 text-start">
                           <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs ${idx === 0 ? 'bg-[#7CC39F]/20 text-[#7CC39F]' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
-                            {idx + 1}
+                            {((staffPage - 1) * itemsPerPage + idx + 1).toLocaleString(t('common.locale'))}
                           </div>
                         </td>
                         <td className="px-6 py-4">
                           <span className="font-bold text-gray-900 dark:text-white text-sm">{emp.username}</span>
                         </td>
-                        <td className="px-6 py-4 text-right font-black text-gray-900 dark:text-white">
+                        <td className="px-6 py-4 text-end font-black text-gray-900 dark:text-white">
                           {formatCurrency(emp.totalSales)}
                         </td>
-                        <td className="px-6 py-4 text-right">
+                        <td className="px-6 py-4 text-end">
                           <div className="flex items-center justify-end gap-2">
                             <div className="w-16 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
-                              <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${share}%` }} />
+                              <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${sharePercent}%` }} />
                             </div>
-                            <span className="text-xs font-bold text-gray-500">{share}%</span>
+                            <span className="text-xs font-bold text-gray-500">
+                              {shareRatio.toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                            </span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-right font-bold text-gray-900 dark:text-white">
-                          {formatAmount(avgTicket).replace(currencySymbol, '').trim()}
+                        <td className="px-6 py-4 text-end font-bold text-gray-900 dark:text-white">
+                          {avgTicket.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </td>
-                        <td className="px-6 py-4 text-right">
+                        <td className="px-6 py-4 text-end">
                           <span className="text-xs font-bold text-gray-500">
-                            {formatAmount(efficiency).replace(currencySymbol, '').trim()} / {t('orders.reports.staff.perHour')}
+                            {efficiency.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / {t('orders.reports.staff.perHour')}
                           </span>
                         </td>
                       </tr>

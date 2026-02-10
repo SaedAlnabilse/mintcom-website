@@ -15,7 +15,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
   const formatCurrency = (value: number) => formatAmount(value);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Summary Cards for Taxes */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
@@ -26,7 +26,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
             </p>
             <p className="text-xs text-gray-500 mt-2">{t('orders.reports.taxes.totalTaxDesc')}</p>
           </div>
-          <div className="absolute right-0 top-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl -mr-10 -mt-10" />
+          <div className="absolute end-0 top-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl -me-10 -mt-10" />
         </div>
 
         <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
@@ -37,7 +37,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
             </p>
             <p className="text-xs text-gray-500 mt-2">{t('orders.reports.taxes.taxableSalesDesc')}</p>
           </div>
-          <div className="absolute right-0 top-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -mr-10 -mt-10" />
+          <div className="absolute end-0 top-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -me-10 -mt-10" />
         </div>
 
         <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
@@ -45,12 +45,12 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
             <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('orders.reports.taxes.avgRate')}</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
               {salesData.totalRevenue > 0
-                ? ((salesData.taxCollected / salesData.totalRevenue) * 100).toFixed(1)
-                : '0.0'}%
+                ? ((salesData.taxCollected / salesData.totalRevenue)).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })
+                : (0).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
             </p>
             <p className="text-xs text-gray-500 mt-2">{t('orders.reports.taxes.avgRateDesc')}</p>
           </div>
-          <div className="absolute right-0 top-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl -mr-10 -mt-10" />
+          <div className="absolute end-0 top-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl -me-10 -mt-10" />
         </div>
       </div>
 
@@ -67,10 +67,10 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-white/[0.02]">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.taxes.type')}</th>
-                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.taxes.rate')}</th>
-                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.taxes.taxable')}</th>
-                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.taxes.tax')}</th>
+                  <th className="px-6 py-4 text-start text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.taxes.type')}</th>
+                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.taxes.rate')}</th>
+                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.taxes.taxable')}</th>
+                  <th className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.taxes.tax')}</th>
                   <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.taxes.share')}</th>
                 </tr>
               </thead>
@@ -81,24 +81,24 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                     const contribution = salesData.taxCollected > 0 ? (tax.collected / salesData.taxCollected) * 100 : 0;
                     return (
                       <tr key={i} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 text-start">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-white/5 text-gray-500 font-bold">
                               {tax.name.charAt(0)}
                             </div>
                             <div className="flex flex-col">
                               <span className="font-bold text-sm text-gray-900 dark:text-white">{tax.name}</span>
-                              <span className="text-xs text-gray-400 font-bold">{tax.transactions || 0} {t('orders.reports.taxes.txns')}</span>
+                              <span className="text-xs text-gray-400 font-bold">{tax.transactions.toLocaleString(t('common.locale'))} {t('orders.reports.taxes.txns')}</span>
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-right font-bold text-gray-500">
-                          {(tax.rate * 100).toFixed(1)}%
+                        <td className="px-6 py-4 text-end font-bold text-gray-500">
+                          {tax.rate.toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
                         </td>
-                        <td className="px-6 py-4 text-right font-bold text-gray-900 dark:text-white">
+                        <td className="px-6 py-4 text-end font-bold text-gray-900 dark:text-white">
                           {formatCurrency(tax.taxableAmount)}
                         </td>
-                        <td className="px-6 py-4 text-right font-bold text-orange-500">
+                        <td className="px-6 py-4 text-end font-bold text-orange-500">
                           {formatCurrency(tax.collected)}
                         </td>
                         <td className="px-6 py-4">
@@ -114,24 +114,24 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                 ) : (
                   // Default Fallback Row if no granular data
                   <tr className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 text-start">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-white/5 text-gray-500 font-bold">
-                          S
+                          {t('orders.reports.taxes.standardTax').charAt(0)}
                         </div>
                         <div className="flex flex-col">
                           <span className="font-bold text-sm text-gray-900 dark:text-white">{t('orders.reports.taxes.standardTax')}</span>
-                          <span className="text-xs text-gray-400 font-bold">{salesData.totalOrders || 0} {t('orders.reports.taxes.txns')}</span>
+                          <span className="text-xs text-gray-400 font-bold">{(salesData.totalOrders || 0).toLocaleString(t('common.locale'))} {t('orders.reports.taxes.txns')}</span>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-right font-bold text-gray-500">
-                      {(salesData.totalRevenue > 0 ? (salesData.taxCollected / salesData.totalRevenue) * 100 : 16).toFixed(1)}%
+                    <td className="px-6 py-4 text-end font-bold text-gray-500">
+                      {(salesData.totalRevenue > 0 ? (salesData.taxCollected / salesData.totalRevenue) : 0.16).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
                     </td>
-                    <td className="px-6 py-4 text-right font-bold text-gray-900 dark:text-white">
+                    <td className="px-6 py-4 text-end font-bold text-gray-900 dark:text-white">
                       {formatCurrency(salesData.totalRevenue || 0)}
                     </td>
-                    <td className="px-6 py-4 text-right font-bold text-orange-500">
+                    <td className="px-6 py-4 text-end font-bold text-orange-500">
                       {formatCurrency(salesData.taxCollected || 0)}
                     </td>
                     <td className="px-6 py-4">

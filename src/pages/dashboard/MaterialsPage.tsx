@@ -11,6 +11,7 @@ import {
 import { useNavigate, useLocation , useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import api from '../../config/api';
 import { useCurrency } from '../../context/CurrencyContext';
 import { ConfirmModal } from '../../components/ConfirmModal';
@@ -37,6 +38,7 @@ interface SubRecipe {
 }
 
 export function MaterialsPage() {
+  const { t } = useTranslation();
   const { locationSlug } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -105,7 +107,7 @@ export function MaterialsPage() {
       setRawMaterials(materialsRes.data || []);
       setSubRecipes(recipesRes.data || []);
     } catch {
-      toast.error('Failed to sync inventory');
+      toast.error(t('inventory.messages.syncFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -135,22 +137,22 @@ export function MaterialsPage() {
     e.preventDefault();
     setErrors({});
     if (!materialForm.name.trim()) {
-      setErrors({ name: 'Required' });
+      setErrors({ name: t('common.required') });
       return;
     }
     setIsSubmitting(true);
     try {
       if (editingMaterial) {
         await api.put(`/api/manufacturing/raw-materials/${editingMaterial.id}`, materialForm);
-        toast.success('Material updated');
+        toast.success(t('inventory.messages.updated'));
       } else {
         await api.post('/api/manufacturing/raw-materials', materialForm);
-        toast.success('Material created');
+        toast.success(t('inventory.messages.created'));
       }
       setShowMaterialModal(false);
       fetchData();
     } catch {
-      toast.error('Error saving material');
+      toast.error(t('inventory.messages.saveError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -161,16 +163,16 @@ export function MaterialsPage() {
   const handleDeleteMaterial = async (id: string, name: string) => {
     setConfirmConfig({
       isOpen: true,
-      title: 'Remove Item',
-      message: `Delete "${name}" from inventory? This action is permanent.`,
+      title: t('inventory.messages.removeTitle'),
+      message: t('inventory.messages.deleteConfirm', { name }),
       type: 'danger',
       onConfirm: async () => {
         try {
           await api.delete(`/api/manufacturing/raw-materials/${id}`);
-          toast.success('Material removed');
+          toast.success(t('inventory.messages.removed'));
           fetchData();
         } catch {
-          toast.error('Deletion failed');
+          toast.error(t('inventory.messages.deleteFailed'));
         }
       }
     });
@@ -187,12 +189,12 @@ export function MaterialsPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              Inventory
+              {t('inventory.title')}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Ingredients</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('inventory.materials')}</h1>
           <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
-            Manage stock and costs
+            {t('inventory.manage')}
           </p>
         </div>
 
@@ -210,23 +212,20 @@ export function MaterialsPage() {
             className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-xs sm:text-sm hover:bg-emerald-400 transition-all shadow-sm"
           >
             <Plus size={18} />
-            <span className="hidden xs:inline">{activeTab === 'materials' ? 'Add Ingredient' : 'Add Prep'}</span>
-            <span className="xs:hidden">Add</span>
+            <span className="hidden xs:inline">{activeTab === 'materials' ? t('inventory.addIngredient') : t('inventory.addPrep')}</span>
+            <span className="xs:hidden">{t('common.add')}</span>
           </button>
         </div>
       </div>
 
       {/* Control Panel */}
-
-
-
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm flex flex-col md:flex-row gap-4 items-center">
         <div className="flex-1 w-full">
           <SearchInput
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
             onClear={() => { setSearchQuery(''); setPage(1); }}
-            placeholder="Search items..."
+            placeholder={t('inventory.search')}
             className="w-full"
           />
         </div>
@@ -235,13 +234,13 @@ export function MaterialsPage() {
             onClick={() => { setActiveTab('materials'); setPage(1); }}
             className={`px-3 sm:px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'materials' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
           >
-            Ingredients
+            {t('inventory.materials')}
           </button>
           <button
             onClick={() => { setActiveTab('prepared'); setPage(1); }}
             className={`px-3 sm:px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'prepared' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}
           >
-            Prepped
+            {t('inventory.prepared')}
           </button>
         </div>
       </div>
@@ -281,7 +280,7 @@ export function MaterialsPage() {
                               <p className="font-bold text-gray-900 dark:text-white text-sm truncate">{m.name}</p>
                               <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold mt-1 ${isLow ? 'bg-red-500/10 text-red-500' : 'bg-paymint-green/10 text-paymint-green'}`}>
                                 {isLow ? <AlertTriangle size={10} /> : <TrendingUp size={10} />}
-                                {isLow ? 'Low Stock' : 'Optimal'}
+                                {isLow ? t('inventory.lowStock') : t('inventory.optimal')}
                               </div>
                             </div>
                           </div>
@@ -296,11 +295,11 @@ export function MaterialsPage() {
                         </div>
                         <div className="grid grid-cols-2 gap-3 text-sm">
                           <div className="bg-gray-50 dark:bg-white/5 rounded-lg p-2">
-                            <p className="text-xs font-bold text-gray-400 mb-0.5">Quantity</p>
-                            <p className="font-bold text-gray-900 dark:text-white">{Number(m.quantity || 0).toFixed(2)} <span className="text-xs text-gray-500">{m.unit}</span></p>
+                            <p className="text-xs font-bold text-gray-400 mb-0.5">{t('inventory.quantity')}</p>
+                            <p className="font-bold text-gray-900 dark:text-white">{(Number(m.quantity || 0)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-gray-500">{m.unit}</span></p>
                           </div>
                           <div className="bg-gray-50 dark:bg-white/5 rounded-lg p-2">
-                            <p className="text-xs font-bold text-gray-400 mb-0.5">Cost/Unit</p>
+                            <p className="text-xs font-bold text-gray-400 mb-0.5">{t('inventory.unitCost')}</p>
                             <p className="font-bold text-gray-900 dark:text-white">{formatCurrency(m.costPerUnit)}</p>
                           </div>
                         </div>
@@ -314,11 +313,11 @@ export function MaterialsPage() {
                   <table className="w-full">
                     <thead className="bg-gray-50 dark:bg-white/[0.02]">
                       <tr className="border-b border-gray-200 dark:border-white/5">
-                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Name</th>
-                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Qty</th>
-                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Cost</th>
-                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">Status</th>
-                        <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">Actions</th>
+                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('inventory.form.name')}</th>
+                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('inventory.quantity')}</th>
+                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('inventory.cost')}</th>
+                        <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('owner.locations.status')}</th>
+                        <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.table.actions')}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -336,7 +335,7 @@ export function MaterialsPage() {
                               </div>
                             </td>
                             <td className="px-6 py-4">
-                              <span className="font-bold text-gray-900 dark:text-white">{Number(m.quantity || 0).toFixed(2)}</span>
+                              <span className="font-bold text-gray-900 dark:text-white">{(Number(m.quantity || 0)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                               <span className="ml-1 text-xs font-medium text-gray-500">{m.unit}</span>
                             </td>
                             <td className="px-6 py-4 font-bold text-gray-900 dark:text-white text-sm">{formatCurrency(m.costPerUnit)}</td>
@@ -387,16 +386,16 @@ export function MaterialsPage() {
                         </div>
 
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate group-hover:text-paymint-green transition-colors">{r.name}</h3>
-                        <p className="text-xs text-gray-500 mt-1 line-clamp-1">{r.description || 'Custom preparation formula.'}</p>
+                        <p className="text-xs text-gray-500 mt-1 line-clamp-1">{r.description || t('manufacturing.noRecipesDesc')}</p>
 
                         <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 grid grid-cols-2 gap-4">
                           <div>
-                            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Yield</p>
+                            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('manufacturing.formula.yield')}</p>
                             <p className="font-bold text-gray-900 dark:text-white text-sm">{(r as any)['yield']} <span className="text-xs text-gray-500">{r.yieldUnit}</span></p>
                           </div>
                           <div className="text-right">
-                            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">Stock</p>
-                            <p className="font-bold text-paymint-green text-sm">{Number(r.quantity || 0).toFixed(2)} <span className="text-xs">{r.yieldUnit}</span></p>
+                            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('inventory.stock')}</p>
+                            <p className="font-bold text-paymint-green text-sm">{(Number(r.quantity || 0)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs">{r.yieldUnit}</span></p>
                           </div>
                         </div>
                       </div>
@@ -422,7 +421,7 @@ export function MaterialsPage() {
               </div>
 
               <div className="p-4 sm:p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingMaterial ? 'Edit Ingredient' : 'Add Ingredient'}</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingMaterial ? t('inventory.editIngredient') : t('inventory.addIngredient')}</h2>
                 <button onClick={() => setShowMaterialModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
                   <X size={20} />
                 </button>
@@ -430,8 +429,8 @@ export function MaterialsPage() {
               <form onSubmit={handleMaterialSubmit} className="p-8 space-y-6">
                 <div>
                   <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
-                    Name <span className="text-paymint-red mx-1">*</span>
-                    <QuickInfo text="Name (e.g., 'Flour Type 00')." />
+                    {t('inventory.form.name')} <span className="text-paymint-red mx-1">*</span>
+                    <QuickInfo text={t('inventory.form.namePlaceholder')} />
                   </label>
                   <input
                     type="text"
@@ -441,22 +440,23 @@ export function MaterialsPage() {
                       if (errors.name) setErrors({ ...errors, name: '' });
                     }}
                     className={`w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
+                    placeholder={t('inventory.form.namePlaceholder')}
                   />
                   {errors.name && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <CustomSelect
-                      label="Unit"
+                      label={t('inventory.form.unit')}
                       value={materialForm.unit}
                       onChange={(val) => setMaterialForm({ ...materialForm, unit: String(val) })}
-                      options={units}
+                      options={units.map(u => ({ label: t(`inventory.units.${u.toLowerCase()}`, { defaultValue: u }), value: u }))}
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
-                      Unit Cost
-                      <QuickInfo text="Cost for one unit." />
+                      {t('inventory.unitCost')}
+                      <QuickInfo text={t('inventory.unitCost')} />
                     </label>
                     <div className="relative group">
                       <div className="absolute left-3 top-1/2 -translate-y-1/2 px-2 py-0.5 bg-gray-200 dark:bg-white/10 rounded-md">
@@ -465,7 +465,7 @@ export function MaterialsPage() {
                       <input
                         type="text"
                         inputMode="numeric"
-                        value={materialForm.costPerUnit === 0 ? '' : Number(materialForm.costPerUnit || 0).toFixed(2)}
+                        value={materialForm.costPerUnit === 0 ? '' : (Number(materialForm.costPerUnit || 0)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         placeholder="0.00"
                         onChange={(e) => {
                           const val = e.target.value.replace(/\D/g, '');
@@ -481,8 +481,8 @@ export function MaterialsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
-                      In Stock
-                      <QuickInfo text="Quantity available." />
+                      {t('inventory.form.inStock')}
+                      <QuickInfo text={t('inventory.form.inStock')} />
                     </label>
                     <input
                       type="number"
@@ -495,8 +495,8 @@ export function MaterialsPage() {
                   </div>
                   <div>
                     <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-2 flex items-center">
-                      Low Stock
-                      <QuickInfo text="Alert threshold." />
+                      {t('inventory.form.lowStockThreshold')}
+                      <QuickInfo text={t('inventory.form.lowStockThreshold')} />
                     </label>
                     <input
                       type="number"
@@ -509,7 +509,7 @@ export function MaterialsPage() {
                   </div>
                 </div>
                 <button type="submit" disabled={isSubmitting} className="w-full py-3.5 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 transition-all shadow-sm text-sm flex items-center justify-center gap-2">
-                  Save
+                  {t('common.save')}
                 </button>
               </form>
             </motion.div>

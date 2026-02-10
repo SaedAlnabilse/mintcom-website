@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, parseISO, isWithinInterval, isBefore } from 'date-fns';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { getDateLocale } from '../utils/dateLocale';
 
 interface DateRangePickerProps {
     startDate: string;
@@ -25,11 +27,12 @@ export function DateRangePicker({
     onClear,
     isActive = false,
     className = '',
-    placeholder = 'Select Date Range',
+    placeholder,
     minDate,
     maxDate,
     align = 'center'
 }: DateRangePickerProps) {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const [currentMonth, setCurrentMonth] = useState(() => startDate ? parseISO(startDate) : new Date());
     const [selectionState, setSelectionState] = useState<SelectionState>('start');
@@ -131,20 +134,20 @@ export function DateRangePicker({
             <div className="flex items-center justify-between mb-4 px-1">
                 <button
                     onClick={prevMonth}
-                    aria-label="Previous month"
+                    aria-label={t('common.aria.previousMonth')}
                     className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center bg-paymint-green text-white rounded-lg hover:bg-paymint-green/90 transition-colors"
                 >
-                    <ChevronLeft size={18} />
+                    <ChevronLeft size={18} className={t('common.locale') === 'ar' ? 'rotate-180' : ''} />
                 </button>
                 <span className="text-base font-bold text-gray-800 dark:text-white">
-                    {format(currentMonth, 'MMMM yyyy')}
+                    {format(currentMonth, 'MMMM yyyy', { locale: getDateLocale(t('common.locale')) })}
                 </span>
                 <button
                     onClick={nextMonth}
-                    aria-label="Next month"
+                    aria-label={t('common.aria.nextMonth')}
                     className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center bg-paymint-green text-white rounded-lg hover:bg-paymint-green/90 transition-colors"
                 >
-                    <ChevronRight size={18} />
+                    <ChevronRight size={18} className={t('common.locale') === 'ar' ? 'rotate-180' : ''} />
                 </button>
             </div>
         );
@@ -152,7 +155,15 @@ export function DateRangePicker({
 
     const renderDays = () => {
         const days = [];
-        const dayNames = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+        const dayNames = [
+            t('common.days.mon'),
+            t('common.days.tue'),
+            t('common.days.wed'),
+            t('common.days.thu'),
+            t('common.days.fri'),
+            t('common.days.sat'),
+            t('common.days.sun')
+        ];
 
         for (let i = 0; i < 7; i++) {
             days.push(
@@ -234,7 +245,7 @@ export function DateRangePicker({
                         onMouseLeave={() => setHoveredDate(null)}
                     >
                         <span className={`relative z-10 ${rangeStart || rangeEnd ? 'inline-flex items-center justify-center w-8 h-8 rounded-lg' : ''}`}>
-                            {format(day, 'd')}
+                            {Number(format(day, 'd')).toLocaleString(t('common.locale'))}
                         </span>
                         {isToday && !rangeStart && !rangeEnd && (
                             <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-paymint-green rounded-full" />
@@ -263,12 +274,14 @@ export function DateRangePicker({
 
     const displayValue = () => {
         if (startDate && endDate) {
-            return `${format(parseISO(startDate), 'MMM d')} - ${format(parseISO(endDate), 'MMM d, yyyy')}`;
+            const locale = getDateLocale(t('common.locale'));
+            return `${format(parseISO(startDate), 'MMM d', { locale })} - ${format(parseISO(endDate), 'MMM d, yyyy', { locale })}`;
         }
         if (startDate) {
-            return format(parseISO(startDate), 'MMM d, yyyy');
+            const locale = getDateLocale(t('common.locale'));
+            return format(parseISO(startDate), 'MMM d, yyyy', { locale });
         }
-        return placeholder;
+        return placeholder || t('common.selectDateRange');
     };
 
     return (
@@ -276,7 +289,7 @@ export function DateRangePicker({
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                aria-label="Select date range"
+                aria-label={t('common.aria.selectDateRange')}
                 aria-expanded={isOpen}
                 className={`
                     flex items-center gap-3 w-full h-12 px-4 text-sm font-bold rounded-xl border transition-all shadow-sm
@@ -321,7 +334,7 @@ export function DateRangePicker({
                                 }}
                                 className="px-6 py-2 text-[10px] font-black tracking-widest uppercase text-gray-400 hover:text-paymint-green bg-gray-100 dark:bg-white/5 hover:bg-paymint-green/10 rounded-xl transition-all"
                             >
-                                Clear
+                                {t('common.clear')}
                             </button>
                         </div>
                     </motion.div>

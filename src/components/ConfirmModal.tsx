@@ -83,7 +83,10 @@ export function ConfirmModal({
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans">
+        <div
+          dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+          className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans selection:bg-paymint-green selection:text-black"
+        >
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -113,7 +116,7 @@ export function ConfirmModal({
             {/* Close Button */}
             <button
               onClick={onClose}
-              aria-label="Close modal"
+              aria-label={t('common.closeModal')}
               className="absolute top-4 sm:top-6 right-4 sm:right-6 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all z-10 active:scale-90"
             >
               <X size={20} />

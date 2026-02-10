@@ -9,14 +9,15 @@ import api from '../config/api';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
-const forgotPasswordSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-});
-
-type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
-
 export function ForgotPasswordPage() {
   const { t } = useTranslation();
+
+  const forgotPasswordSchema = z.object({
+    email: z.string().email(t('validation.emailInvalid')),
+  });
+
+  type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -32,29 +33,29 @@ export function ForgotPasswordPage() {
       await api.post('/api/accounts/forgot-password', data);
       setSentEmail(data.email);
       setIsSuccess(true);
-      toast.success('Reset link sent!');
+      toast.success(t('auth.forgotPassword.resetLinkSent'));
     } catch (err: any) {
       // Always show success to prevent email enumeration
       // The backend returns success even for non-existent emails
       setSentEmail(data.email);
       setIsSuccess(true);
-      toast.success('Reset link sent!');
+      toast.success(t('auth.forgotPassword.resetLinkSent'));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex items-center justify-center p-4 transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex items-center justify-center p-4 transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       <div className="w-full max-w-md">
         {/* Back to Login */}
         {!isSuccess && (
-          <button 
+          <button
             onClick={() => navigate('/login')}
             className="flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors mb-8 group"
           >
             <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-            <span className="text-xs font-black tracking-widest">{t('auth.login.loginButton')}</span>
+            <span className="text-xs font-black tracking-widest">{t('auth.forgotPassword.backToLogin').toUpperCase()}</span>
           </button>
         )}
 
@@ -84,7 +85,7 @@ export function ForgotPasswordPage() {
                       type="email"
                       {...register('email')}
                       className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                      placeholder="you@example.com"
+                      placeholder={t('auth.login.emailPlaceholder')}
                     />
                   </div>
                   {errors.email && (

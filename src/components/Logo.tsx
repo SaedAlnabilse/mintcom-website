@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 // Import SVG logos (vector graphics - infinitely scalable, tiny file size)
 import PaymintLogoGreen from '../assets/green-full-logo.svg';
@@ -31,6 +32,7 @@ export const Logo: React.FC<LogoProps> = ({
   theme = 'auto',
   size = 'md'
 }) => {
+  const { t } = useTranslation();
   const dimensions = sizeConfig[size];
   const iconDimensions = iconSizeConfig[size];
 
@@ -40,7 +42,7 @@ export const Logo: React.FC<LogoProps> = ({
       <div className={`flex items-center justify-center ${className}`}>
         <img
           src={PaymintLeafIcon}
-          alt="PayMint"
+          alt={t('brand.name')}
           width={iconDimensions.width}
           height={iconDimensions.height}
           loading="lazy"
@@ -58,7 +60,7 @@ export const Logo: React.FC<LogoProps> = ({
       <div className={`flex items-center ${className}`}>
         <img
           src={PaymintLogoGreen}
-          alt="PayMint"
+          alt={t('brand.name')}
           width={dimensions.width}
           height={dimensions.height}
           loading="lazy"
@@ -75,7 +77,7 @@ export const Logo: React.FC<LogoProps> = ({
       <div className={`flex items-center ${className}`}>
         <img
           src={PaymintLogoWhite}
-          alt="PayMint"
+          alt={t('brand.name')}
           width={dimensions.width}
           height={dimensions.height}
           loading="lazy"
@@ -93,7 +95,7 @@ export const Logo: React.FC<LogoProps> = ({
       {/* Light mode logo */}
       <img
         src={PaymintLogoGreen}
-        alt="PayMint"
+        alt={t('brand.name')}
         width={dimensions.width}
         height={dimensions.height}
         loading="lazy"
@@ -104,7 +106,7 @@ export const Logo: React.FC<LogoProps> = ({
       {/* Dark mode logo */}
       <img
         src={PaymintLogoWhite}
-        alt="PayMint"
+        alt={t('brand.name')}
         width={dimensions.width}
         height={dimensions.height}
         loading="lazy"

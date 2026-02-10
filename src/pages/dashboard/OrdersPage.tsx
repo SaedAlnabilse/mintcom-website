@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useRealtime } from '../../hooks/useRealtime';
 import { DataChangeEventTypes } from '../../services/realtimeService';
 import { useTranslation } from 'react-i18next';
+import { getDateLocale } from '../../utils/dateLocale';
 
 import {
   ShoppingCart,
@@ -213,7 +214,8 @@ export function OrdersPage() {
 
       if (showToast) {
         if (res.data?.shiftStatus === 'ACTIVE') {
-          const time = res.data.activeShift?.startTime ? format(new Date(res.data.activeShift.startTime), 'h:mm a') : '';
+          const dateLocale = getDateLocale(t('common.locale'));
+          const time = res.data.activeShift?.startTime ? format(new Date(res.data.activeShift.startTime), 'h:mm a', { locale: dateLocale }) : '';
           toast.success(t('orders.messages.shiftFound', { time: time ? ` (${time})` : '' }));
         } else {
           toast.error(t('orders.messages.noShiftFound'));
@@ -631,9 +633,11 @@ export function OrdersPage() {
 
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString([], {
-      month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
-    });
+    const date = new Date(dateString);
+    if (t('common.locale') === 'ar') {
+      return format(date, 'MMM d, HH:mm', { locale: getDateLocale(t('common.locale')) });
+    }
+    return format(date, 'MMM d, HH:mm');
   };
 
   const setQuickDate = (range: string) => {
@@ -642,6 +646,13 @@ export function OrdersPage() {
 
     // For shift-based ranges, don't update the date inputs
     if (range === 'current_shift' || range === 'previous_shift') {
+      if (range === 'current_shift' && shiftStatus?.activeShift) {
+        setStartDate(formatDateForInput(new Date(shiftStatus.activeShift.startTime)));
+        setEndDate(formatDateForInput(new Date()));
+      } else if (range === 'previous_shift' && lastShiftSnapshot) {
+        setStartDate(formatDateForInput(new Date(lastShiftSnapshot.startTime)));
+        setEndDate(formatDateForInput(new Date(lastShiftSnapshot.timestamp)));
+      }
       return;
     }
 
@@ -908,7 +919,7 @@ export function OrdersPage() {
           },
           {
             label: t('orders.kpi.totalOrders'),
-            value: overallTotalCount,
+            value: overallTotalCount.toLocaleString(t('common.locale')),
             icon: ShoppingCart,
             color: 'text-blue-500',
             bg: 'bg-blue-500/10',
@@ -917,7 +928,7 @@ export function OrdersPage() {
           },
           {
             label: t('orders.kpi.onHold'),
-            value: totalHeldCount,
+            value: totalHeldCount.toLocaleString(t('common.locale')),
             icon: Clock,
             color: 'text-orange-500',
             bg: 'bg-orange-500/10',
@@ -1013,7 +1024,7 @@ export function OrdersPage() {
                         {order.customer?.name || t('orders.table.walkIn')}
                       </p>
                       <p className="text-xs text-gray-500">
-                        {order.user?.username ? `${t('orders.table.staff')}: ${order.user.username}` : 'Pos'} • {formatPaymentMethod(order)}
+                        {order.user?.username ? `${t('orders.table.staff')}: ${order.user.username}` : t('common.pos')} • {formatPaymentMethod(order)}
                       </p>
                     </div>
                     <div className="text-right ml-4 flex-shrink-0">
@@ -1120,7 +1131,7 @@ export function OrdersPage() {
                       </td>
                       <td className="px-6 py-4">
                         <p className="font-bold text-gray-800 dark:text-gray-300 text-sm">{order.customer?.name || t('orders.table.walkIn')}</p>
-                        <p className="text-xs text-gray-500">{order.user?.username ? `${t('orders.table.staff')}: ${order.user.username}` : 'Pos'}</p>
+                        <p className="text-xs text-gray-500">{order.user?.username ? `${t('orders.table.staff')}: ${order.user.username}` : t('common.pos')}</p>
                       </td>
                       <td className="px-6 py-4">
                         <p className="font-bold text-gray-900 dark:text-white">{formatAmount(order.total)}</p>

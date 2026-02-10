@@ -155,7 +155,7 @@ export const ItemsView = React.memo(function ItemsView({
             <thead className="bg-gray-50 dark:bg-white/[0.02]">
               <tr className="border-b border-gray-200 dark:border-white/5">
                 <th
-                  className={`px-8 py-5 text-left text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'name' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                  className={`px-8 py-5 text-start text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'name' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                   onClick={() => requestSort('name')}
                 >
                   <div className="flex items-center gap-2">
@@ -164,7 +164,7 @@ export const ItemsView = React.memo(function ItemsView({
                   </div>
                 </th>
                 <th
-                  className={`px-8 py-5 text-right text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'quantity' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                  className={`px-8 py-5 text-end text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'quantity' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                   onClick={() => requestSort('quantity')}
                 >
                   <div className="flex items-center justify-end gap-2">
@@ -173,7 +173,7 @@ export const ItemsView = React.memo(function ItemsView({
                   </div>
                 </th>
                 <th
-                  className={`px-8 py-5 text-right text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'revenue' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                  className={`px-8 py-5 text-end text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'revenue' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                   onClick={() => requestSort('revenue')}
                 >
                   <div className="flex items-center justify-end gap-2">
@@ -198,15 +198,15 @@ export const ItemsView = React.memo(function ItemsView({
                       <td className="px-8 py-5">
                         <div className="flex items-center gap-4">
                           <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center font-black text-xs text-gray-500 border border-gray-200 dark:border-white/5 shadow-sm">
-                            {(currentPage - 1) * itemsPerPage + idx + 1}
+                            {((currentPage - 1) * itemsPerPage + idx + 1).toLocaleString(t('common.locale'))}
                           </div>
-                          <span className="font-bold text-gray-900 dark:text-white text-sm">{item.itemName || item.name}</span>
+                          <span className="font-bold text-gray-900 dark:text-white text-sm">{item.itemName || item.name || t('common.unknown')}</span>
                         </div>
                       </td>
-                      <td className="px-8 py-5 text-right font-bold text-gray-700 dark:text-gray-300">
-                        {item.quantity}
+                      <td className="px-8 py-5 text-end font-bold text-gray-700 dark:text-gray-300">
+                        {item.quantity.toLocaleString(t('common.locale'))}
                       </td>
-                      <td className="px-8 py-5 text-right font-bold text-paymint-green">
+                      <td className="px-8 py-5 text-end font-bold text-paymint-green">
                         {formatCurrency((item.totalSales || item.revenue) || 0)}
                       </td>
                     </motion.tr>

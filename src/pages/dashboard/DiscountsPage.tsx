@@ -32,7 +32,7 @@ type SortKey = 'name' | 'value' | 'type' | 'adminOnly';
 
 export function DiscountsPage() {
   const { t } = useTranslation();
-  const { formatAmount } = useCurrency();
+  const { currencySymbol } = useCurrency();
   const [discounts, setDiscounts] = useState<Discount[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -81,7 +81,7 @@ export function DiscountsPage() {
       }));
       setDiscounts(mappedDiscounts);
     } catch {
-      toast.error(t('common.error'));
+      toast.error(t('discounts.messages.loadFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -201,9 +201,9 @@ export function DiscountsPage() {
 
   const formatValue = (discount: Discount) => {
     if (discount.type === 'percentage') {
-      return `${discount.value}%`;
+      return `${discount.value.toLocaleString(t('common.locale'))}%`;
     }
-    return formatAmount(discount.value);
+    return discount.value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + currencySymbol;
   };
 
   const stats = useMemo(() => {
@@ -215,7 +215,7 @@ export function DiscountsPage() {
   }, [discounts]);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 pb-10">
+    <div className="max-w-7xl mx-auto space-y-8 pb-10" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
@@ -278,7 +278,7 @@ export function DiscountsPage() {
             <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
             <div className="relative z-10">
               <p className="text-xs font-black text-gray-400 tracking-widest">{t('common.all')}</p>
-              <p className="text-3xl font-black text-gray-900 dark:text-white mt-1">{stats.total}</p>
+              <p className="text-3xl font-black text-gray-900 dark:text-white mt-1">{stats.total.toLocaleString(t('common.locale'))}</p>
             </div>
             <div className="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center relative z-10 transition-transform">
               <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" />
@@ -289,7 +289,7 @@ export function DiscountsPage() {
             <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
             <div className="relative z-10">
               <p className="text-xs font-black text-gray-400 tracking-widest">{t('discounts.form.managerOnly')}</p>
-              <p className="text-3xl font-black text-amber-600 dark:text-yellow-400 mt-1">{stats.adminOnly}</p>
+              <p className="text-3xl font-black text-amber-600 dark:text-yellow-400 mt-1">{stats.adminOnly.toLocaleString(t('common.locale'))}</p>
             </div>
             <div className="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center relative z-10 transition-transform">
               <ShieldAlert className="w-6 h-6 text-amber-600 dark:text-yellow-400" />

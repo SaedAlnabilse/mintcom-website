@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   User,
   Building2,
@@ -76,30 +77,31 @@ const mockTickets = [
   }
 ];
 
-const quickActions = [
-  { label: 'Download Invoice', icon: Download, href: '#' },
-  { label: 'Update Payment Method', icon: CreditCard, href: '#' },
-  { label: 'Manage Team', icon: User, href: '/owner/employees' },
-  { label: 'Security Settings', icon: Shield, href: '#' }
-];
-
-const resources = [
-  { label: 'Help Center', icon: HelpCircle, href: '/support', description: 'Browse knowledge base' },
-  { label: 'Community', icon: MessageSquare, href: '/community', description: 'Join discussions' },
-  { label: 'Feature Ideas', icon: Lightbulb, href: '/community/ideas', description: 'Vote on features' },
-  { label: 'Guides', icon: BookOpen, href: '/community/guides', description: 'Learn best practices' }
-];
-
-const statusConfig = {
-  open: { label: 'Open', color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-500/20', icon: AlertCircle },
-  in_progress: { label: 'In Progress', color: 'text-yellow-600', bg: 'bg-yellow-100 dark:bg-yellow-500/20', icon: Loader2 },
-  resolved: { label: 'Resolved', color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-500/20', icon: CheckCircle2 }
-};
-
 export const PortalPage = () => {
+  const { t } = useTranslation();
   const [user] = useState(mockUser);
   const [announcements] = useState(mockAnnouncements);
   const [tickets] = useState(mockTickets);
+
+  const quickActions = [
+    { label: t('portal.quickActions.downloadInvoice'), icon: Download, href: '#' },
+    { label: t('portal.quickActions.updatePayment'), icon: CreditCard, href: '#' },
+    { label: t('portal.quickActions.manageTeam'), icon: User, href: '/owner/employees' },
+    { label: t('portal.quickActions.securitySettings'), icon: Shield, href: '#' }
+  ];
+
+  const resources = [
+    { label: t('portal.resources.helpCenter'), icon: HelpCircle, href: '/support', description: t('portal.resources.helpCenterDesc') },
+    { label: t('portal.resources.community'), icon: MessageSquare, href: '/community', description: t('portal.resources.communityDesc') },
+    { label: t('portal.resources.featureIdeas'), icon: Lightbulb, href: '/community/ideas', description: t('portal.resources.featureIdeasDesc') },
+    { label: t('portal.resources.guides'), icon: BookOpen, href: '/community/guides', description: t('portal.resources.guidesDesc') }
+  ];
+
+  const statusConfig = {
+    open: { label: t('portal.status.open'), color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-500/20', icon: AlertCircle },
+    in_progress: { label: t('portal.status.inProgress'), color: 'text-yellow-600', bg: 'bg-yellow-100 dark:bg-yellow-500/20', icon: Loader2 },
+    resolved: { label: t('portal.status.resolved'), color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-500/20', icon: CheckCircle2 }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
@@ -119,9 +121,9 @@ export const PortalPage = () => {
                   <User size={32} className="text-paymint-green" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-black tracking-tight">Welcome back, {user.name.split(' ')[0]}!</h1>
+                  <h1 className="text-3xl font-black tracking-tight">{t('portal.welcomeUser', { name: user.name.split(' ')[0] })}</h1>
                   <p className="text-gray-500 dark:text-gray-400 font-medium">
-                    {user.email} · {user.plan} Plan
+                    {user.email} · {user.plan} {t('portal.overview.plan')}
                   </p>
                 </div>
               </div>
@@ -131,7 +133,7 @@ export const PortalPage = () => {
                 className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-black rounded-xl font-bold hover:opacity-90 transition-all"
               >
                 <Building2 size={18} />
-                Go to Dashboard
+                {t('portal.goToDashboard')}
               </Link>
             </motion.div>
           </div>
@@ -147,27 +149,27 @@ export const PortalPage = () => {
                 className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl overflow-hidden"
               >
                 <div className="p-6 border-b border-gray-100 dark:border-white/10">
-                  <h2 className="text-lg font-bold">Account Overview</h2>
+                  <h2 className="text-lg font-bold">{t('portal.overview.title')}</h2>
                 </div>
                 <div className="p-6">
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                     <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Plan</p>
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('portal.overview.plan')}</p>
                       <div className="flex items-center gap-2">
                         <span className="text-xl font-black">{user.plan}</span>
-                        <span className="px-2 py-0.5 bg-green-100 dark:bg-green-500/20 text-green-600 rounded text-xs font-bold">Active</span>
+                        <span className="px-2 py-0.5 bg-green-100 dark:bg-green-500/20 text-green-600 rounded text-xs font-bold">{t('common.active')}</span>
                       </div>
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Establishments</p>
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('portal.overview.establishments')}</p>
                       <p className="text-xl font-black">{user.establishments}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Team Members</p>
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('portal.overview.teamMembers')}</p>
                       <p className="text-xl font-black">{user.employees}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Member Since</p>
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('portal.overview.memberSince')}</p>
                       <p className="text-xl font-black">{user.memberSince}</p>
                     </div>
                   </div>
@@ -197,12 +199,12 @@ export const PortalPage = () => {
                 className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl overflow-hidden"
               >
                 <div className="p-6 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
-                  <h2 className="text-lg font-bold">Recent Support Tickets</h2>
+                  <h2 className="text-lg font-bold">{t('portal.recentTickets.title')}</h2>
                   <Link
                     to="/support/tickets"
                     className="text-sm font-bold text-paymint-green hover:underline flex items-center gap-1"
                   >
-                    View all <ArrowRight size={14} />
+                    {t('portal.recentTickets.viewAll')} <ArrowRight size={14} />
                   </Link>
                 </div>
                 <div className="divide-y divide-gray-100 dark:divide-white/10">
@@ -211,7 +213,7 @@ export const PortalPage = () => {
                       <div className="w-12 h-12 bg-gray-100 dark:bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-3">
                         <Ticket size={24} className="text-gray-400" />
                       </div>
-                      <p className="text-gray-500">No open tickets</p>
+                      <p className="text-gray-500">{t('portal.recentTickets.noTickets')}</p>
                     </div>
                   ) : (
                     tickets.map((ticket) => {
@@ -257,7 +259,7 @@ export const PortalPage = () => {
                     className="inline-flex items-center gap-2 text-sm font-bold text-paymint-green hover:underline"
                   >
                     <Ticket size={16} />
-                    Submit a new ticket
+                    {t('portal.recentTickets.submitNew')}
                   </Link>
                 </div>
               </motion.div>
@@ -272,7 +274,7 @@ export const PortalPage = () => {
                 <div className="p-6 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Bell size={20} className="text-paymint-green" />
-                    <h2 className="text-lg font-bold">Announcements</h2>
+                    <h2 className="text-lg font-bold">{t('portal.announcements.title')}</h2>
                   </div>
                 </div>
                 <div className="divide-y divide-gray-100 dark:divide-white/10">
@@ -312,7 +314,7 @@ export const PortalPage = () => {
                 className="bg-gradient-to-br from-gray-900 to-gray-800 dark:from-white/10 dark:to-white/5 rounded-2xl p-6 text-white"
               >
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-bold">Your Plan</h3>
+                  <h3 className="font-bold">{t('portal.plan.title')}</h3>
                   <span className="px-2 py-1 bg-paymint-green text-black rounded-md text-xs font-bold">
                     {user.plan}
                   </span>
@@ -320,11 +322,11 @@ export const PortalPage = () => {
 
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">Next billing</span>
+                    <span className="text-gray-400">{t('portal.plan.nextBilling')}</span>
                     <span className="font-bold">Mar 1, 2025</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">Amount</span>
+                    <span className="text-gray-400">{t('portal.plan.amount')}</span>
                     <span className="font-bold">$49/month</span>
                   </div>
                 </div>
@@ -334,10 +336,10 @@ export const PortalPage = () => {
                     to="/owner/billing"
                     className="block w-full py-3 bg-white text-black rounded-xl font-bold text-center text-sm hover:opacity-90 transition-all"
                   >
-                    Manage Subscription
+                    {t('portal.plan.manage')}
                   </Link>
                   <button className="w-full py-3 bg-white/10 text-white rounded-xl font-bold text-sm hover:bg-white/20 transition-all">
-                    Upgrade Plan
+                    {t('portal.plan.upgrade')}
                   </button>
                 </div>
               </motion.div>
@@ -349,7 +351,7 @@ export const PortalPage = () => {
                 transition={{ delay: 0.5 }}
                 className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6"
               >
-                <h3 className="font-bold mb-4">Resources</h3>
+                <h3 className="font-bold mb-4">{t('portal.resources.title')}</h3>
                 <div className="space-y-3">
                   {resources.map((resource) => (
                     <Link
@@ -381,17 +383,17 @@ export const PortalPage = () => {
               >
                 <div className="flex items-center gap-3 mb-4">
                   <Smartphone size={24} className="text-paymint-green" />
-                  <h3 className="font-bold">Mobile App</h3>
+                  <h3 className="font-bold">{t('portal.mobileApp.title')}</h3>
                 </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                  Manage your business on the go with our mobile app.
+                  {t('portal.mobileApp.description')}
                 </p>
                 <div className="flex gap-2">
                   <a href="#" className="flex-1 py-2 bg-black text-white rounded-lg text-xs font-bold text-center hover:opacity-90 transition-all">
-                    App Store
+                    {t('portal.mobileApp.appStore')}
                   </a>
                   <a href="#" className="flex-1 py-2 bg-black text-white rounded-lg text-xs font-bold text-center hover:opacity-90 transition-all">
-                    Play Store
+                    {t('portal.mobileApp.playStore')}
                   </a>
                 </div>
               </motion.div>
@@ -404,3 +406,4 @@ export const PortalPage = () => {
     </div>
   );
 };
+

@@ -49,8 +49,8 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
         setTimeout(() => setType(initialData.type as 'DISCOUNT' | 'FREE_ITEM'), 0);
       }
       setTimeout(() => {
-        setPointsRequired(initialData.pointsRequired !== undefined ? String(initialData.pointsRequired) : '');
-        setDiscountPercentage(initialData.discountPercentage !== undefined ? String(initialData.discountPercentage) : '');
+        setPointsRequired(initialData.pointsRequired !== undefined ? initialData.pointsRequired.toLocaleString(t('common.locale'), { useGrouping: false }) : '');
+        setDiscountPercentage(initialData.discountPercentage !== undefined ? initialData.discountPercentage.toLocaleString(t('common.locale'), { useGrouping: false }) : '');
         setFreeCategoryId(initialData.freeCategoryId || '');
         setFreeCategoryName(initialData.freeCategoryName || '');
       }, 0);
@@ -103,7 +103,10 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
 
   return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm font-sans">
+      <div
+        dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+        className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm font-sans"
+      >
         <motion.div
           initial={{ opacity: 0, y: 100 }}
           animate={{ opacity: 1, y: 0 }}
@@ -206,9 +209,9 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                         if (errors.discountPercentage) setErrors({ ...errors, discountPercentage: '' });
                       }}
                       className={`w-full px-5 py-3.5 bg-gray-50 dark:bg-black/20 border ${errors.discountPercentage ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all pr-12 group-hover:border-paymint-green/50 shadow-sm`}
-                      placeholder="0"
+                      placeholder={t('common.zero')}
                     />
-                    <div className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg group-focus-within:text-paymint-green transition-colors">%</div>
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg group-focus-within:text-paymint-green transition-colors">{t('common.percent')}</div>
                   </div>
                   {errors.discountPercentage && <p className="mt-1 px-1 text-xs font-bold text-paymint-red">{errors.discountPercentage}</p>}
                 </motion.div>

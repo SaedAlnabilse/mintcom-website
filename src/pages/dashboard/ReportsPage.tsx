@@ -11,6 +11,7 @@ import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useTranslation } from 'react-i18next';
+import { getDateLocale } from '../../utils/dateLocale';
 
 import { ReceiptsReport } from '../../components/dashboard/reports/ReceiptsReport';
 import { SingleSelect } from '../../components/SingleSelect';
@@ -83,6 +84,12 @@ export function ReportsPage() {
 
   // Current Establishment context
   const [currentEstablishment, setCurrentEstablishment] = useState<any>(null);
+
+  const localizedDateOptions = useMemo(() =>
+    DATE_PERIOD_OPTIONS.map(opt => ({
+      ...opt,
+      label: t(`common.datePeriods.${opt.value}`)
+    })), [t]);
 
   useEffect(() => {
     try {
@@ -175,7 +182,7 @@ export function ReportsPage() {
           }
         });
         setEmployeeShifts(res.data?.map((s: any) => ({
-          label: `${format(new Date(s.startTime), 'MMM d, HH:mm')} - ${s.endTime ? format(new Date(s.endTime), 'HH:mm') : 'Active'}`,
+          label: `${format(new Date(s.startTime), 'MMM d, HH:mm', { locale: getDateLocale(t('common.locale')) })} - ${s.endTime ? format(new Date(s.endTime), 'HH:mm', { locale: getDateLocale(t('common.locale')) }) : t('dashboard.shiftStatus.active')}`,
           value: s.id,
           startTime: s.startTime,
           endTime: s.endTime,
@@ -297,7 +304,7 @@ export function ReportsPage() {
         }
       }
     } catch {
-      toast.error('Failed to load report data');
+      toast.error(t('dashboard.messages.loadFailed'));
     } finally {
       setIsLoading(false);
       setIsFetching(false);
@@ -351,9 +358,9 @@ export function ReportsPage() {
         dataToExport = shifts.map(s => {
           const start = new Date(s.startTime);
           const end = s.endTime ? new Date(s.endTime) : new Date();
-          const hoursWorked = ((end.getTime() - start.getTime()) / (1000 * 60 * 60)).toFixed(1);
+          const hoursWorked = ((end.getTime() - start.getTime()) / (1000 * 60 * 60)).toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 });
           const cashOverShort = s.discrepancy !== null && s.discrepancy !== undefined
-            ? (s.discrepancy > 0.001 ? `+${s.discrepancy.toFixed(3)} ${t('dashboard.stats.over')}` : s.discrepancy < -0.001 ? `${s.discrepancy.toFixed(3)} ${t('dashboard.stats.short')}` : '0')
+            ? (s.discrepancy > 0.001 ? `+${s.discrepancy.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${t('dashboard.stats.over')}` : s.discrepancy < -0.001 ? `${s.discrepancy.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${t('dashboard.stats.short')}` : '0')
             : t('dashboard.shiftStatus.live');
           return {
             username: s.user?.username,
@@ -396,7 +403,7 @@ export function ReportsPage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
               </span>
-              <span className="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wide">Live</span>
+              <span className="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wide">{t('dashboard.stats.live')}</span>
             </div>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('dashboard.menu.salesAndReporting')}</h1>
@@ -520,9 +527,9 @@ export function ReportsPage() {
               <SingleSelect
                 value={selectedDateRange === 'custom' ? null : selectedDateRange}
                 onChange={(val) => setQuickDate(val || 'today')}
-                options={DATE_PERIOD_OPTIONS}
+                options={localizedDateOptions}
                 showAllOption={false}
-                placeholder="Period"
+                placeholder={t('owner.overview.period')}
                 className="w-full h-full"
                 buttonClassName={`!h-12 !rounded-xl !px-4 !text-xs sm:!text-sm !font-bold border transition-all ${selectedDateRange !== 'custom'
                   ? '!bg-paymint-green/5 !border-paymint-green !text-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10'
@@ -589,7 +596,7 @@ export function ReportsPage() {
                   setSelectedShiftId(null);
                 }}
                 options={employees}
-                placeholder={t('common.all') + ' ' + t('dashboard.menu.team')}
+                placeholder={t('common.allStaff')}
                 className="w-full h-full"
                 buttonClassName="!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !px-3 !py-2 !h-full !text-xs sm:!text-sm !font-bold"
               />
@@ -601,7 +608,7 @@ export function ReportsPage() {
                 value={selectedShiftId}
                 onChange={setSelectedShiftId}
                 options={employeeShifts}
-                placeholder={t('common.select') + ' ' + t('dashboard.shiftStatus.lastCompleted')}
+                placeholder={t('common.selectShift')}
                 className="w-full h-full"
                 buttonClassName="!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !px-3 !py-2 !h-full !text-xs sm:!text-sm !font-bold"
               />

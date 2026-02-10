@@ -51,42 +51,43 @@ import { QuickInfo } from '../components/QuickInfo';
 import PaymintLogoGreen from '../assets/green-full-logo.svg';
 import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
 
-// Step 1: Location Details
-const step1Schema = z.object({
-  name: z.string().min(1, 'Location name is required'),
-  type: z.string().min(1, 'Business type is required'),
-  address: z.string().min(1, 'Address is required'),
-  currency: z.string().min(1, 'Currency is required'),
-});
-
-// Step 2: Payment Method (Mock)
-const step2Schema = z.object({
-  cardNumber: z.string().min(16, 'Card number must be 16 digits').max(19),
-  expiryDate: z.string().min(5, 'Mm/Yy required'),
-  cvc: z.string().min(3, 'Cvc required'),
-  cardName: z.string().min(1, 'Name on card is required'),
-});
-
-// Step 3: Location Login
-const step3Schema = z.object({
-  establishmentLoginId: z.string()
-    .min(4, 'Location ID must be at least 4 characters')
-    .regex(/^[a-zA-Z0-9_-]+$/, 'Location ID can only contain letters, numbers, underscores, and hyphens'),
-  establishmentPassword: z.string().min(6, 'Location Password must be at least 6 characters'),
-});
-
-// Step 4: Admin Access
-const step4Schema = z.object({
-  username: z.string()
-    .min(3, 'Username must be at least 3 characters')
-    .regex(/^[a-zA-Z0-9_-]+$/, 'Username can only contain letters, numbers, underscores, and hyphens'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  firstName: z.string().min(2, 'First name must be at least 2 characters'),
-  lastName: z.string().min(2, 'Last name must be at least 2 characters'),
-});
-
 export function OnboardingPage() {
   const { t } = useTranslation();
+
+  // Step 1: Location Details
+  const step1Schema = z.object({
+    name: z.string().min(1, t('onboarding.step1.errors.nameRequired')),
+    type: z.string().min(1, t('onboarding.step1.errors.typeRequired')),
+    address: z.string().min(1, t('onboarding.step1.errors.addressRequired')),
+    currency: z.string().min(1, t('onboarding.step1.errors.currencyRequired')),
+  });
+
+  // Step 2: Payment Method (Mock)
+  const step2Schema = z.object({
+    cardNumber: z.string().min(16, t('onboarding.step2.errors.cardNumberMin')).max(19),
+    expiryDate: z.string().min(5, t('onboarding.step2.errors.expiryRequired')),
+    cvc: z.string().min(3, t('onboarding.step2.errors.cvcRequired')),
+    cardName: z.string().min(1, t('onboarding.step2.errors.cardNameRequired')),
+  });
+
+  // Step 3: Location Login
+  const step3Schema = z.object({
+    establishmentLoginId: z.string()
+      .min(4, t('onboarding.step3.errors.idMin'))
+      .regex(/^[a-zA-Z0-9_-]+$/, t('onboarding.step3.errors.idRegex')),
+    establishmentPassword: z.string().min(6, t('onboarding.step3.errors.passwordMin')),
+  });
+
+  // Step 4: Admin Access
+  const step4Schema = z.object({
+    username: z.string()
+      .min(3, t('onboarding.step4.errors.usernameMin'))
+      .regex(/^[a-zA-Z0-9_-]+$/, t('onboarding.step4.errors.usernameRegex')),
+    password: z.string().min(6, t('onboarding.step4.errors.passwordMin')),
+    firstName: z.string().min(2, t('onboarding.step4.errors.firstNameMin')),
+    lastName: z.string().min(2, t('onboarding.step4.errors.lastNameMin')),
+  });
+
   const { refreshEstablishments, account, needsOnboarding, setCurrentEstablishment, establishments, updateAccount } = useAuth();
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -329,10 +330,10 @@ export function OnboardingPage() {
       });
 
       setStep(5); // Success Step
-      toast.success('Onboarding complete!');
+      toast.success(t('onboarding.messages.complete'));
       await refreshEstablishments();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to complete onboarding');
+      toast.error(err.response?.data?.message || t('onboarding.errors.failedToComplete'));
     } finally {
       setIsLoading(false);
     }
@@ -358,7 +359,7 @@ export function OnboardingPage() {
   }, [step]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex flex-col transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex flex-col transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Navbar - Hidden on Step 5 (Launch Center) */}
       {step !== 5 && (
         <div className="sticky top-0 z-50 p-6 flex justify-between items-center border-b border-gray-200 dark:border-white/5 bg-white dark:bg-[#050505] shadow-sm">
@@ -410,12 +411,12 @@ export function OnboardingPage() {
                   <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('onboarding.step1.subtitle')}</p>
                 </div>
 
-                <form onSubmit={form1.handleSubmit(onStep1Submit)} className="space-y-8">
+                <form onSubmit={form1.handleSubmit(onStep1Submit)} className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                   <div className="space-y-6">
                     <div className="space-y-2">
                       <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
-                        Location Name <span className="text-paymint-red mx-1">*</span>
-                        <QuickInfo text="The name of your business." />
+                        {t('onboarding.step1.locationName')} <span className="text-paymint-red mx-1">*</span>
+                        <QuickInfo text={t('onboarding.step1.locationNameTip')} />
                       </label>
                       <div className="relative group">
                         <Store className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
@@ -423,7 +424,7 @@ export function OnboardingPage() {
                           type="text"
                           {...form1.register('name')}
                           className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                          placeholder="e.g. The Coffee House"
+                          placeholder={t('onboarding.step1.locationNamePlaceholder')}
                         />
                       </div>
                       {form1.formState.errors.name && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form1.formState.errors.name.message as string}</p>}
@@ -431,8 +432,8 @@ export function OnboardingPage() {
 
                     <div className="space-y-3">
                       <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
-                        Business Type
-                        <QuickInfo text="Select your business type." />
+                        {t('onboarding.step1.businessType')}
+                        <QuickInfo text={t('onboarding.step1.businessTypeTip')} />
                       </label>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         {businessTypes.map((type) => (
@@ -453,8 +454,8 @@ export function OnboardingPage() {
                     {/* Base Currency Row */}
                     <div className="space-y-2">
                       <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
-                        CURRENCY <span className="text-paymint-red mx-1">*</span>
-                        <QuickInfo text="Primary currency for sales." />
+                        {t('onboarding.step1.currency')} <span className="text-paymint-red mx-1">*</span>
+                        <QuickInfo text={t('onboarding.step1.currencyTip')} />
                       </label>
                       <div className="relative">
                         <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -462,18 +463,18 @@ export function OnboardingPage() {
                           {...form1.register('currency')}
                           className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.currency ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all appearance-none`}
                         >
-                          <option value="JOD">JOD - Jordanian Dinar</option>
-                          <option value="USD">USD - US Dollar</option>
-                          <option value="AED">AED - UAE Dirham</option>
-                          <option value="SAR">SAR - Saudi Riyal</option>
-                          <option value="KWD">KWD - Kuwaiti Dinar</option>
-                          <option value="QAR">QAR - Qatari Riyal</option>
-                          <option value="BHD">BHD - Bahraini Dinar</option>
-                          <option value="OMR">OMR - Omani Rial</option>
-                          <option value="EGP">EGP - Egyptian Pound</option>
-                          <option value="GBP">GBP - British Pound</option>
-                          <option value="EUR">EUR - Euro</option>
-                          <option value="TRY">TRY - Turkish Lira</option>
+                          <option value="JOD">JOD - {t('common.currencies.jod', { defaultValue: 'Jordanian Dinar' })}</option>
+                          <option value="USD">USD - {t('common.currencies.usd', { defaultValue: 'US Dollar' })}</option>
+                          <option value="AED">AED - {t('common.currencies.aed', { defaultValue: 'UAE Dirham' })}</option>
+                          <option value="SAR">SAR - {t('common.currencies.sar', { defaultValue: 'Saudi Riyal' })}</option>
+                          <option value="KWD">KWD - {t('common.currencies.kwd', { defaultValue: 'Kuwaiti Dinar' })}</option>
+                          <option value="QAR">QAR - {t('common.currencies.qar', { defaultValue: 'Qatari Riyal' })}</option>
+                          <option value="BHD">BHD - {t('common.currencies.bhd', { defaultValue: 'Bahraini Dinar' })}</option>
+                          <option value="OMR">OMR - {t('common.currencies.omr', { defaultValue: 'Omani Rial' })}</option>
+                          <option value="EGP">EGP - {t('common.currencies.egp', { defaultValue: 'Egyptian Pound' })}</option>
+                          <option value="GBP">GBP - {t('common.currencies.gbp', { defaultValue: 'British Pound' })}</option>
+                          <option value="EUR">EUR - {t('common.currencies.eur', { defaultValue: 'Euro' })}</option>
+                          <option value="TRY">TRY - {t('common.currencies.try', { defaultValue: 'Turkish Lira' })}</option>
                         </select>
                       </div>
                       {form1.formState.errors.currency && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form1.formState.errors.currency.message as string}</p>}
@@ -481,8 +482,8 @@ export function OnboardingPage() {
 
                     <div className="space-y-2">
                       <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
-                        ADDRESS <span className="text-paymint-red mx-1">*</span>
-                        <QuickInfo text="Location address." />
+                        {t('onboarding.step1.address')} <span className="text-paymint-red mx-1">*</span>
+                        <QuickInfo text={t('onboarding.step1.addressTip')} />
                       </label>
                       <div className="relative">
                         <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -490,7 +491,7 @@ export function OnboardingPage() {
                           type="text"
                           {...form1.register('address')}
                           className={`w-full bg-gray-50 dark:bg-black/20 border ${form1.formState.errors.address ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                          placeholder="City, Area, Building"
+                          placeholder={t('onboarding.step1.addressPlaceholder')}
                         />
                       </div>
                       {form1.formState.errors.address && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form1.formState.errors.address.message as string}</p>}
@@ -501,13 +502,13 @@ export function OnboardingPage() {
                       <div className="pt-4 border-t border-gray-100 dark:border-white/5">
                         <div className="flex items-center gap-2 mb-4">
                           <Copy className="text-paymint-green" size={20} />
-                          <h3 className="text-base font-bold text-gray-900 dark:text-white">Quick Setup</h3>
+                          <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('onboarding.step1.quickSetup')}</h3>
                         </div>
 
                         <div className="bg-gray-50 dark:bg-black/20 rounded-2xl p-5 border border-gray-100 dark:border-white/5">
                           <label className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center">
-                            COPY SETTINGS
-                            <QuickInfo text="Copy menu from another location." />
+                            {t('onboarding.step1.copySettings')}
+                            <QuickInfo text={t('onboarding.step1.copySettingsTip')} />
                           </label>
                           <div className="relative mb-4">
                             <select
@@ -515,10 +516,10 @@ export function OnboardingPage() {
                               onChange={(e) => setDuplicateFromId(e.target.value)}
                               className="w-full bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 appearance-none"
                             >
-                              <option value="">Do not import (Start fresh)</option>
+                              <option value="">{t('onboarding.step1.startFresh')}</option>
                               {establishments.map((est) => (
                                 <option key={est.id} value={est.id}>
-                                  {est.name} ({est.type})
+                                  {est.name} ({t(`establishments.types.${est.type.toLowerCase()}`, { defaultValue: est.type.replace('_', ' ') })})
                                 </option>
                               ))}
                             </select>
@@ -534,7 +535,7 @@ export function OnboardingPage() {
                                 exit={{ opacity: 0, height: 0 }}
                                 className="space-y-3 overflow-hidden"
                               >
-                                <p className="text-xs font-black text-gray-400 tracking-widest mb-2">Select Data To Duplicate:</p>
+                                <p className="text-xs font-black text-gray-400 tracking-widest mb-2">{t('onboarding.step1.selectData')}</p>
 
                                 {/* Inventory Checkbox */}
                                 <label className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${duplicateInventory ? 'border-paymint-green bg-paymint-green/5' : 'border-gray-200 dark:border-white/10 hover:border-gray-300'}`}>
@@ -550,8 +551,8 @@ export function OnboardingPage() {
                                   <div className="flex-1 flex items-center gap-2">
                                     <Box size={16} className={duplicateInventory ? 'text-paymint-green' : 'text-gray-400'} />
                                     <div>
-                                      <p className="text-sm font-bold text-gray-900 dark:text-white">Menu</p>
-                                      <p className="text-xs font-bold text-gray-500">Items & categories</p>
+                                      <p className="text-sm font-bold text-gray-900 dark:text-white">{t('onboarding.step1.menu')}</p>
+                                      <p className="text-xs font-bold text-gray-500">{t('onboarding.step1.menuDesc')}</p>
                                     </div>
                                   </div>
                                 </label>
@@ -570,8 +571,8 @@ export function OnboardingPage() {
                                   <div className="flex-1 flex items-center gap-2">
                                     <Tags size={16} className={duplicateDiscounts ? 'text-paymint-green' : 'text-gray-400'} />
                                     <div>
-                                      <p className="text-sm font-bold text-gray-900 dark:text-white">Discounts</p>
-                                      <p className="text-xs font-bold text-gray-500">Promo codes and discount rules</p>
+                                      <p className="text-sm font-bold text-gray-900 dark:text-white">{t('onboarding.step1.discounts')}</p>
+                                      <p className="text-xs font-bold text-gray-500">{t('onboarding.step1.discountsDesc')}</p>
                                     </div>
                                   </div>
                                 </label>
@@ -590,8 +591,8 @@ export function OnboardingPage() {
                                   <div className="flex-1 flex items-center gap-2">
                                     <CreditCard size={16} className={duplicatePaymentMethods ? 'text-paymint-green' : 'text-gray-400'} />
                                     <div>
-                                      <p className="text-sm font-bold text-gray-900 dark:text-white">Payment Methods</p>
-                                      <p className="text-xs font-bold text-gray-500">Card types and custom payment options</p>
+                                      <p className="text-sm font-bold text-gray-900 dark:text-white">{t('onboarding.step1.paymentMethods')}</p>
+                                      <p className="text-xs font-bold text-gray-500">{t('onboarding.step1.paymentMethodsDesc')}</p>
                                     </div>
                                   </div>
                                 </label>
@@ -609,7 +610,7 @@ export function OnboardingPage() {
                       type="submit"
                       className="w-full py-5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
-                      NEXT STEP
+                      {t('onboarding.nextStep')}
                       <ArrowRight size={24} />
                     </button>
                   </div>
@@ -630,7 +631,7 @@ export function OnboardingPage() {
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-8">
                   <button onClick={() => setStep(1)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-black tracking-widest">
-                    <ArrowLeft size={14} /> Back
+                    <ArrowLeft size={14} /> {t('onboarding.back')}
                   </button>
                   <div className="flex items-center gap-3 mb-4">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center ${isTrialFlow ? 'bg-yellow-400/10' : 'bg-paymint-green/10'}`}>
@@ -638,32 +639,32 @@ export function OnboardingPage() {
                     </div>
                     <div>
                       <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                        {isTrialFlow ? 'Start Free Trial' : 'Activate Subscription'}
+                        {isTrialFlow ? t('onboarding.step2.trialTitle') : t('onboarding.step2.activateTitle')}
                       </h2>
                       {isTrialFlow ? (
-                        <span className="bg-yellow-400 text-black text-xs font-black tracking-widest px-2 py-0.5 rounded">7 DAYS FREE</span>
+                        <span className="bg-yellow-400 text-black text-xs font-black tracking-widest px-2 py-0.5 rounded">{t('onboarding.step2.freeDays')}</span>
                       ) : (
-                        <span className="bg-paymint-green text-black text-xs font-black tracking-widest px-2 py-0.5 rounded">$20/MONTH</span>
+                        <span className="bg-paymint-green text-black text-xs font-black tracking-widest px-2 py-0.5 rounded">{t('onboarding.step2.priceMonth')}</span>
                       )}
                     </div>
                   </div>
                   <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
                     {isTrialFlow
-                      ? "You won't be charged today. Cancel anytime before your trial ends."
-                      : "Your card will be charged $20.00 for this new location."
+                      ? t('onboarding.step2.trialDesc')
+                      : t('onboarding.step2.activateDesc')
                     }
                   </p>
                 </div>
 
-                <form onSubmit={form2.handleSubmit(onStep2Submit)} className="space-y-6">
+                <form onSubmit={form2.handleSubmit(onStep2Submit)} className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                   <div className="p-4 bg-gray-50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-300 dark:border-white/10">
                     <div className="flex justify-between items-center mb-4">
-                      <span className="text-xs font-black text-gray-400 tracking-widest">Total Due Today</span>
-                      <span className="text-xl font-bold text-gray-900 dark:text-white">{isTrialFlow ? '$0.00' : '$20.00'}</span>
+                      <span className="text-xs font-black text-gray-400 tracking-widest">{t('onboarding.step2.totalDue')}</span>
+                      <span className="text-xl font-bold text-gray-900 dark:text-white">{isTrialFlow ? (0).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD' }) : (20).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD' })}</span>
                     </div>
                     <div className="flex justify-between items-center text-xs font-bold text-gray-500">
-                      <span>{isTrialFlow ? 'After 7 days' : 'Monthly'}</span>
-                      <span>$20.00/mo</span>
+                      <span>{isTrialFlow ? t('onboarding.step2.afterTrial') : t('onboarding.step2.monthly')}</span>
+                      <span>{(20).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD' })}/{t('common.month')}</span>
                     </div>
                   </div>
 
@@ -682,7 +683,7 @@ export function OnboardingPage() {
                             <CreditCard size={24} className={useSavedCard ? 'text-black' : 'text-gray-400'} />
                           </div>
                           <div className="flex-1">
-                            <p className="text-sm font-bold text-gray-900 dark:text-white">Use Saved Card</p>
+                            <p className="text-sm font-bold text-gray-900 dark:text-white">{t('onboarding.step2.useSaved')}</p>
                             <p className="text-xs font-bold text-gray-500">•••• •••• •••• {savedCardLast4}</p>
                           </div>
                           <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${useSavedCard ? 'border-paymint-green bg-paymint-green' : 'border-gray-300'
@@ -704,8 +705,8 @@ export function OnboardingPage() {
                             <Plus size={24} className={!useSavedCard ? 'text-black' : 'text-gray-400'} />
                           </div>
                           <div className="flex-1">
-                            <p className="text-sm font-bold text-gray-900 dark:text-white">Add New Card</p>
-                            <p className="text-xs font-bold text-gray-500">Use a different payment method</p>
+                            <p className="text-sm font-bold text-gray-900 dark:text-white">{t('onboarding.step2.addNew')}</p>
+                            <p className="text-xs font-bold text-gray-500">{t('onboarding.step2.differentMethod')}</p>
                           </div>
                           <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${!useSavedCard ? 'border-paymint-green bg-paymint-green' : 'border-gray-300'
                             }`}>
@@ -720,7 +721,7 @@ export function OnboardingPage() {
                   {(!hasSavedCard || !useSavedCard) && (
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-400 tracking-widest ml-1">Card Number</label>
+                        <label className="text-xs font-black text-gray-400 tracking-widest ml-1">{t('onboarding.step2.cardNumber')}</label>
                         <div className="relative group">
                           <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                           <input
@@ -740,7 +741,7 @@ export function OnboardingPage() {
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label className="text-xs font-black text-gray-400 tracking-widest ml-1">Expiry</label>
+                          <label className="text-xs font-black text-gray-400 tracking-widest ml-1">{t('onboarding.step2.expiry')}</label>
                           <input
                             type="text"
                             {...form2.register('expiryDate')}
@@ -754,7 +755,7 @@ export function OnboardingPage() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="text-xs font-black text-gray-400 tracking-widest ml-1">CVC</label>
+                          <label className="text-xs font-black text-gray-400 tracking-widest ml-1">{t('onboarding.step2.cvc')}</label>
                           <input
                             type="text"
                             {...form2.register('cvc')}
@@ -770,7 +771,7 @@ export function OnboardingPage() {
                       </div>
 
                       <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-400 tracking-widest ml-1">Cardholder Name</label>
+                        <label className="text-xs font-black text-gray-400 tracking-widest ml-1">{t('onboarding.step2.cardName')}</label>
                         <input
                           type="text"
                           {...form2.register('cardName')}
@@ -787,7 +788,7 @@ export function OnboardingPage() {
                       onClick={hasSavedCard && useSavedCard ? () => onStep2Submit({}) : undefined}
                       className="w-full py-5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
-                      {isTrialFlow ? 'Start Free Trial' : 'Activate & Pay $20'}
+                      {isTrialFlow ? t('onboarding.step2.startTrialButton') : t('onboarding.step2.activateButton')}
                       <ArrowRight size={24} />
                     </button>
                   </div>
@@ -808,20 +809,20 @@ export function OnboardingPage() {
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
                   <button onClick={() => setStep(2)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-black tracking-widest">
-                    <ArrowLeft size={14} /> Back
+                    <ArrowLeft size={14} /> {t('onboarding.back')}
                   </button>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">Create Location Login</h2>
-                  <p className="text-sm font-bold text-gray-600 dark:text-gray-300">This ID is for the POS app.</p>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step3.title')}</h2>
+                  <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('onboarding.step3.subtitle')}</p>
                   <div className="mt-4 p-3 bg-paymint-green/10 text-paymint-green text-sm rounded-xl font-bold border border-paymint-green/20">
-                    <p>✨ <strong>Unique access:</strong> Each location needs its own Id and password.</p>
+                    <p>✨ <strong>{t('onboarding.step3.uniqueAccess')}</strong> {t('onboarding.step3.uniqueAccessDesc')}</p>
                   </div>
                 </div>
 
-                <form onSubmit={form3.handleSubmit(onStep3Submit)} className="space-y-6">
+                <form onSubmit={form3.handleSubmit(onStep3Submit)} className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                   <div className="space-y-2">
                     <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
-                      LOCATION ID <span className="text-paymint-red mx-1">*</span>
-                      <QuickInfo text="Unique ID for POS login." />
+                      {t('onboarding.step3.locationId')} <span className="text-paymint-red mx-1">*</span>
+                      <QuickInfo text={t('onboarding.step3.locationIdTip')} />
                     </label>
                     <div className="relative group">
                       <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
@@ -829,16 +830,16 @@ export function OnboardingPage() {
                         type="text"
                         {...form3.register('establishmentLoginId')}
                         className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.establishmentLoginId ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                        placeholder="e.g. mycompany-downtown"
+                        placeholder={t('onboarding.step3.locationIdPlaceholder')}
                       />
                     </div>
                     {form3.formState.errors.establishmentLoginId && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form3.formState.errors.establishmentLoginId.message as string}</p>}
-                    <p className="text-xs font-bold text-gray-500 ml-1">Unique ID for this location.</p>
+                    <p className="text-xs font-bold text-gray-500 ml-1">{t('onboarding.step3.locationIdDesc')}</p>
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
-                      Location Password <span className="text-paymint-red mx-1">*</span>
-                      <QuickInfo text="Password for this location." />
+                      {t('onboarding.step3.password')} <span className="text-paymint-red mx-1">*</span>
+                      <QuickInfo text={t('onboarding.step3.passwordTip')} />
                     </label>
                     <div className="relative group">
                       <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
@@ -846,7 +847,7 @@ export function OnboardingPage() {
                         type={showEstablishmentPassword ? "text" : "password"}
                         {...form3.register('establishmentPassword')}
                         className={`w-full bg-gray-50 dark:bg-black/20 border ${form3.formState.errors.establishmentPassword ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                        placeholder="••••••••"
+                        placeholder={t('onboarding.step3.passwordPlaceholder')}
                       />
                       <button
                         type="button"
@@ -864,7 +865,7 @@ export function OnboardingPage() {
                       type="submit"
                       className="w-full py-5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
-                      NEXT STEP
+                      {t('onboarding.nextStep')}
                       <ArrowRight size={24} />
                     </button>
                   </div>
@@ -885,20 +886,20 @@ export function OnboardingPage() {
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
                   <button onClick={() => setStep(3)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-black tracking-widest">
-                    <ArrowLeft size={14} /> Back
+                    <ArrowLeft size={14} /> {t('onboarding.back')}
                   </button>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">Create Your Login</h2>
-                  <p className="text-sm font-bold text-gray-600 dark:text-gray-300">Create your personal account.</p>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step4.title')}</h2>
+                  <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('onboarding.step4.subtitle')}</p>
                   <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 text-xs rounded-xl font-bold border border-blue-100 dark:border-blue-900/30">
-                    <p>This is Step 2 of the POS Login.</p>
+                    <p>{t('onboarding.step4.step2Note')}</p>
                   </div>
                 </div>
 
-                <form onSubmit={form4.handleSubmit(onStep4Submit)} className="space-y-6">
+                <form onSubmit={form4.handleSubmit(onStep4Submit)} className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-xs font-black text-gray-400 tracking-widest ml-1">
-                        FIRST NAME <span className="text-paymint-red">*</span>
+                        {t('onboarding.step4.firstName')} <span className="text-paymint-red">*</span>
                       </label>
                       <div className="relative group">
                         <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
@@ -906,14 +907,14 @@ export function OnboardingPage() {
                           type="text"
                           {...form4.register('firstName')}
                           className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.firstName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                          placeholder="John"
+                          placeholder={t('onboarding.step4.firstNamePlaceholder')}
                         />
                       </div>
                       {form4.formState.errors.firstName && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.firstName.message as string}</p>}
                     </div>
                     <div className="space-y-2">
                       <label className="text-xs font-black text-gray-400 tracking-widest ml-1">
-                        LAST NAME <span className="text-paymint-red">*</span>
+                        {t('onboarding.step4.lastName')} <span className="text-paymint-red">*</span>
                       </label>
                       <div className="relative group">
                         <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
@@ -921,7 +922,7 @@ export function OnboardingPage() {
                           type="text"
                           {...form4.register('lastName')}
                           className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.lastName ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                          placeholder="Doe"
+                          placeholder={t('onboarding.step4.lastNamePlaceholder')}
                         />
                       </div>
                       {form4.formState.errors.lastName && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.lastName.message as string}</p>}
@@ -930,8 +931,8 @@ export function OnboardingPage() {
 
                   <div className="space-y-2">
                     <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
-                      Admin Username <span className="text-paymint-red mx-1">*</span>
-                      <QuickInfo text="Your username." />
+                      {t('onboarding.step4.username')} <span className="text-paymint-red mx-1">*</span>
+                      <QuickInfo text={t('onboarding.step4.usernameTip')} />
                     </label>
                     <div className="relative group">
                       <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
@@ -939,7 +940,7 @@ export function OnboardingPage() {
                         type="text"
                         {...form4.register('username')}
                         className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.username ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                        placeholder="admin"
+                        placeholder={t('onboarding.step4.usernamePlaceholder')}
                       />
                     </div>
                     {form4.formState.errors.username && <p className="text-paymint-red text-xs font-bold text-gray-500 mt-1 ml-1">{form4.formState.errors.username.message as string}</p>}
@@ -947,8 +948,8 @@ export function OnboardingPage() {
 
                   <div className="space-y-2">
                     <label className="text-xs font-black text-gray-400 tracking-widest ml-1 flex items-center">
-                      Personal Password <span className="text-paymint-red mx-1">*</span>
-                      <QuickInfo text="Your unique password." />
+                      {t('onboarding.step4.password')} <span className="text-paymint-red mx-1">*</span>
+                      <QuickInfo text={t('onboarding.step4.passwordTip')} />
                     </label>
                     <div className="relative group">
                       <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-paymint-green transition-colors" size={20} />
@@ -956,7 +957,7 @@ export function OnboardingPage() {
                         type={showAdminPassword ? "text" : "password"}
                         {...form4.register('password')}
                         className={`w-full bg-gray-50 dark:bg-black/20 border ${form4.formState.errors.password ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
-                        placeholder="••••••••"
+                        placeholder={t('onboarding.step4.passwordPlaceholder')}
                       />
                       <button
                         type="button"
@@ -976,7 +977,7 @@ export function OnboardingPage() {
                       className="w-full py-5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3"
                     >
                       {isLoading ? <Loader2 className="animate-spin" size={24} /> : null}
-                      COMPLETE & LAUNCH
+                      {t('onboarding.completeLaunch')}
                     </button>
                   </div>
                 </form>
@@ -1111,8 +1112,7 @@ export function OnboardingPage() {
                     </div>
                   </motion.div>
 
-                  {/* Owner App */}
-                  <motion.div 
+                  <motion.div
                     id="tour-owner-app"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -1138,7 +1138,7 @@ export function OnboardingPage() {
                         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92z" />
                         </svg>
-                        Play Store
+                        {t('onboarding.step5.playStore')}
                       </a>
                       <a
                         href="https://apps.apple.com/app/paymint-owner/id0000000001"
@@ -1149,7 +1149,7 @@ export function OnboardingPage() {
                         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
                         </svg>
-                        App Store
+                        {t('onboarding.step5.appStore')}
                       </a>
                     </div>
                   </motion.div>

@@ -1,10 +1,11 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Shield, Key, CheckCircle2, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
 import { useScrollLock } from '../hooks/useScrollLock';
+import { useTranslation } from 'react-i18next';
 
 interface ApiError {
     response?: {
@@ -33,6 +34,7 @@ export function PasswordResetOtpModal({
     targetId,
     targetName,
 }: PasswordResetOtpModalProps) {
+    const { t } = useTranslation();
     const [step, setStep] = useState<Step>('request');
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const [newPassword, setNewPassword] = useState('');
@@ -64,18 +66,18 @@ export function PasswordResetOtpModal({
         }
     }, [error]);
 
-    const getTitle = () => {
+    const title = useMemo(() => {
         switch (type) {
             case 'account':
-                return 'Reset Account Password';
+                return t('passwordReset.title.account');
             case 'establishment':
-                return `Reset Password for ${targetName}`;
+                return t('passwordReset.title.establishment', { name: targetName });
             case 'brand':
-                return `Reset Password for ${targetName}`;
+                return t('passwordReset.title.brand', { name: targetName });
             default:
-                return 'Reset Password';
+                return t('passwordReset.title.default');
         }
-    };
+    }, [type, targetName, t]);
 
     const handleRequestOtp = async () => {
         setIsLoading(true);
@@ -85,11 +87,12 @@ export function PasswordResetOtpModal({
             const response = await api.post('/api/accounts/request-password-otp');
             setMaskedEmail(response.data.email);
             setStep('verify');
-            toast.success('Verification code sent to your email');
+            toast.success(t('passwordReset.messages.codeSent'));
         } catch (err) {
             const error = err as ApiError;
-            setError(error.response?.data?.message || 'Failed to send code');
-            toast.error(error.response?.data?.message || 'Failed to send code');
+            const msg = error.response?.data?.message || t('passwordReset.messages.failedToSend');
+            setError(msg);
+            toast.error(msg);
         } finally {
             setIsLoading(false);
         }
@@ -119,7 +122,7 @@ export function PasswordResetOtpModal({
     const handleVerifyOtp = async () => {
         const otpString = otp.join('');
         if (otpString.length !== 6) {
-            setError('Enter the full code');
+            setError(t('passwordReset.messages.enterFullCode'));
             return;
         }
 
@@ -129,10 +132,10 @@ export function PasswordResetOtpModal({
         try {
             await api.post('/api/accounts/verify-password-otp', { otp: otpString });
             setStep('newPassword');
-            toast.success('Code verified');
+            toast.success(t('passwordReset.messages.codeVerified'));
         } catch (err) {
             const error = err as ApiError;
-            setError(error.response?.data?.message || 'Invalid code');
+            setError(error.response?.data?.message || t('passwordReset.messages.invalidCode'));
         } finally {
             setIsLoading(false);
         }
@@ -140,17 +143,17 @@ export function PasswordResetOtpModal({
 
     const handleResetPassword = async () => {
         if (newPassword !== confirmPassword) {
-            setError('Passwords do not match');
+            setError(t('auth.validation.passwordsDoNotMatch'));
             return;
         }
 
         if (newPassword.length < 8) {
-            setError('Password must be at least 8 characters');
+            setError(t('auth.validation.passwordMin'));
             return;
         }
 
         if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(newPassword)) {
-            setError('Password must contain, lowercase, and a number');
+            setError(t('auth.validation.passwordNumber'));
             return;
         }
 
@@ -176,10 +179,10 @@ export function PasswordResetOtpModal({
             }
 
             setStep('success');
-            toast.success('Password reset');
+            toast.success(t('passwordReset.messages.passwordReset'));
         } catch (err) {
             const error = err as ApiError;
-            setError(error.response?.data?.message || 'Failed to reset password');
+            setError(error.response?.data?.message || t('passwordReset.messages.failedToReset'));
         } finally {
             setIsLoading(false);
         }
@@ -200,6 +203,7 @@ export function PasswordResetOtpModal({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
+                dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
                 className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 font-sans"
                 onClick={handleClose}
             >
@@ -217,7 +221,7 @@ export function PasswordResetOtpModal({
                                 <Shield className="w-5 h-5 text-paymint-green" />
                             </div>
                             <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
-                                {getTitle()}
+                                {title}
                             </h2>
                         </div>
                         <button
@@ -238,10 +242,10 @@ export function PasswordResetOtpModal({
                                         <Mail className="w-8 h-8 text-blue-500" />
                                     </div>
                                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                                        Verify Your Identity
+                                        {t('passwordReset.steps.verifyTitle')}
                                     </h3>
                                     <p className="text-sm font-bold text-gray-500">
-                                        We'll send a 6-digit code to your registered email address.
+                                        {t('passwordReset.steps.verifyDesc')}
                                     </p>
                                 </div>
 
@@ -260,12 +264,12 @@ export function PasswordResetOtpModal({
                                     {isLoading ? (
                                         <>
                                             <Loader2 className="w-5 h-5 animate-spin" />
-                                            Sending...
+                                            {t('passwordReset.form.sending')}
                                         </>
                                     ) : (
                                         <>
                                             <Mail size={18} />
-                                            Send Verification Code
+                                            {t('passwordReset.form.sendCode')}
                                         </>
                                     )}
                                 </button>
@@ -280,10 +284,10 @@ export function PasswordResetOtpModal({
                                         <Shield className="w-8 h-8 text-paymint-green" />
                                     </div>
                                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                                        Enter Verification Code
+                                        {t('passwordReset.steps.enterCodeTitle')}
                                     </h3>
                                     <p className="text-sm font-bold text-gray-500">
-                                        We sent a code to <span className="font-semibold text-gray-900 dark:text-white">{maskedEmail}</span>
+                                        {t('passwordReset.steps.enterCodeDesc', { email: maskedEmail })}
                                     </p>
                                 </div>
 
@@ -320,10 +324,10 @@ export function PasswordResetOtpModal({
                                     {isLoading ? (
                                         <>
                                             <Loader2 className="w-5 h-5 animate-spin" />
-                                            Verifying...
+                                            {t('passwordReset.form.verifying')}
                                         </>
                                     ) : (
-                                        'Verify Code'
+                                        t('passwordReset.form.verifyCode')
                                     )}
                                 </button>
 
@@ -332,7 +336,7 @@ export function PasswordResetOtpModal({
                                     disabled={isLoading}
                                     className="w-full py-2 text-sm text-gray-500 hover:text-paymint-green transition-colors"
                                 >
-                                    Didn't receive the code? Resend
+                                    {t('passwordReset.form.resend')}
                                 </button>
                             </div>
                         )}
@@ -345,24 +349,24 @@ export function PasswordResetOtpModal({
                                         <Key className="w-8 h-8 text-purple-500" />
                                     </div>
                                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                                        Create New Password
+                                        {t('passwordReset.steps.newPasswordTitle')}
                                     </h3>
                                     <p className="text-sm font-bold text-gray-500">
-                                        Enter a strong password with at least 8 characters
+                                        {t('passwordReset.steps.newPasswordDesc')}
                                     </p>
                                 </div>
 
                                 <div className="space-y-4">
                                     <div className="relative">
                                         <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
-                                            New Password
+                                            {t('passwordReset.form.newPassword')}
                                         </label>
                                         <input
                                             type={showPassword ? 'text' : 'password'}
                                             value={newPassword}
                                             onChange={(e) => setNewPassword(e.target.value)}
                                             className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 dark:border-white/[0.1] bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
-                                            placeholder="Enter new password"
+                                            placeholder={t('passwordReset.form.passwordPlaceholder')}
                                         />
                                         <button
                                             type="button"
@@ -375,14 +379,14 @@ export function PasswordResetOtpModal({
 
                                     <div className="relative">
                                         <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
-                                            Confirm Password
+                                            {t('passwordReset.form.confirmPassword')}
                                         </label>
                                         <input
                                             type={showConfirmPassword ? 'text' : 'password'}
                                             value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
                                             className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 dark:border-white/[0.1] bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
-                                            placeholder="Confirm new password"
+                                            placeholder={t('passwordReset.form.confirmPlaceholder')}
                                         />
                                         <button
                                             type="button"
@@ -409,10 +413,10 @@ export function PasswordResetOtpModal({
                                     {isLoading ? (
                                         <>
                                             <Loader2 className="w-5 h-5 animate-spin" />
-                                            Resetting...
+                                            {t('passwordReset.form.resetting')}
                                         </>
                                     ) : (
-                                        'Reset Password'
+                                        t('passwordReset.form.resetButton')
                                     )}
                                 </button>
                             </div>
@@ -426,10 +430,10 @@ export function PasswordResetOtpModal({
                                 </div>
                                 <div>
                                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                                        Password Reset Successfully!
+                                        {t('passwordReset.steps.successTitle')}
                                     </h3>
                                     <p className="text-sm font-bold text-gray-500">
-                                        Your password has been updated. You can now use your new password.
+                                        {t('passwordReset.steps.successDesc')}
                                     </p>
                                 </div>
 
@@ -437,7 +441,7 @@ export function PasswordResetOtpModal({
                                     onClick={handleClose}
                                     className="w-full py-3 px-4 bg-paymint-green hover:bg-paymint-green/90 text-black font-bold rounded-xl transition-all"
                                 >
-                                    Done
+                                    {t('common.done')}
                                 </button>
                             </div>
                         )}

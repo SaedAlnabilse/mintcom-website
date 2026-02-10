@@ -1,4 +1,5 @@
 import { ArrowUpRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface PaginationProps {
     currentPage: number;
@@ -17,6 +18,7 @@ export function Pagination({
     totalItems,
     itemsPerPage = 10
 }: PaginationProps) {
+    const { t } = useTranslation();
     if (totalPages <= 1) return null;
 
     // Calculate which page numbers to show
@@ -76,11 +78,11 @@ export function Pagination({
         <div className={`bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm ${className}`}>
             <div className="flex items-center gap-3">
                 <p className="text-xs font-black text-gray-400 tracking-widest">
-                    Page <span className="text-gray-900 dark:text-white">{currentPage}</span> of {totalPages}
+                    {t('common.page')} <span className="text-gray-900 dark:text-white">{currentPage.toLocaleString(t('common.locale'))}</span> {t('common.of')} {totalPages.toLocaleString(t('common.locale'))}
                 </p>
                 {totalItems !== undefined && (
                     <p className="text-xs font-medium text-gray-400">
-                        (Showing {startItem}-{endItem} of {totalItems})
+                        ({t('common.showing')} {startItem.toLocaleString(t('common.locale'))}-{endItem.toLocaleString(t('common.locale'))} {t('common.of')} {totalItems.toLocaleString(t('common.locale'))})
                     </p>
                 )}
             </div>
@@ -89,7 +91,7 @@ export function Pagination({
                     onClick={() => onPageChange(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
                     className="p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 hover:text-paymint-green disabled:opacity-30 transition-all"
-                    title="Previous Page"
+                    title={t('common.previous')}
                 >
                     <ArrowUpRight size={18} className="rotate-[225deg]" />
                 </button>
@@ -111,7 +113,7 @@ export function Pagination({
                                     : 'bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-400 hover:text-gray-900 dark:hover:text-white'
                                     }`}
                             >
-                                {pageNum}
+                                {pageNum.toLocaleString(t('common.locale'))}
                             </button>
                         )
                     ))}
@@ -120,7 +122,7 @@ export function Pagination({
                     onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
                     disabled={currentPage === totalPages}
                     className="p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 hover:text-paymint-green disabled:opacity-30 transition-all"
-                    title="Next Page"
+                    title={t('common.next')}
                 >
                     <ArrowUpRight size={18} className="rotate-45" />
                 </button>

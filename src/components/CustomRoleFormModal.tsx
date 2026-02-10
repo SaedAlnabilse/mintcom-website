@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown, Check, Smartphone, Monitor } from 'lucide-react';
 import api from '../config/api';
 import { useScrollLock } from '../hooks/useScrollLock';
+import { useTranslation } from 'react-i18next';
 
 interface CustomRole {
   id: string;
@@ -33,31 +34,31 @@ interface CustomRoleFormModalProps {
 }
 
 const POS_PERMISSIONS = [
-  { id: 'accept_payments', label: 'Accept Payments', description: 'Process payments' },
-  { id: 'apply_discounts', label: 'Apply Discounts', description: 'Apply discounts' },
-  { id: 'change_taxes', label: 'Change Taxes', description: 'Modify tax rate' },
-  { id: 'open_cash_drawer', label: 'Open Drawer', description: 'Open drawer manually' },
-  { id: 'view_all_receipts', label: 'View Receipts', description: 'See all receipts' },
-  { id: 'refunds', label: 'Refunds', description: 'Process refunds' },
-  { id: 'reprint_receipts', label: 'Reprint', description: 'Reprint receipts' },
-  { id: 'manage_items', label: 'Manage Items', description: 'Edit menu' },
-  { id: 'view_item_cost', label: 'View Costs', description: 'See costs' },
-  { id: 'settings', label: 'Settings', description: 'App settings' },
-  { id: 'live_chat', label: 'Support', description: 'Chat support' },
+  { id: 'accept_payments', label: 'roles.pos.acceptPayments', description: 'roles.pos.acceptPaymentsDesc' },
+  { id: 'apply_discounts', label: 'roles.pos.applyDiscounts', description: 'roles.pos.applyDiscountsDesc' },
+  { id: 'change_taxes', label: 'roles.pos.changeTaxes', description: 'roles.pos.changeTaxesDesc' },
+  { id: 'open_cash_drawer', label: 'roles.pos.openDrawer', description: 'roles.pos.openDrawerDesc' },
+  { id: 'view_all_receipts', label: 'roles.pos.viewReceipts', description: 'roles.pos.viewReceiptsDesc' },
+  { id: 'refunds', label: 'roles.pos.refunds', description: 'roles.pos.refundsDesc' },
+  { id: 'reprint_receipts', label: 'roles.pos.reprint', description: 'roles.pos.reprintDesc' },
+  { id: 'manage_items', label: 'roles.pos.manageItems', description: 'roles.pos.manageItemsDesc' },
+  { id: 'view_item_cost', label: 'roles.pos.viewCosts', description: 'roles.pos.viewCostsDesc' },
+  { id: 'settings', label: 'roles.pos.settings', description: 'roles.pos.settingsDesc' },
+  { id: 'live_chat', label: 'roles.pos.support', description: 'roles.pos.supportDesc' },
 ];
 
 const BACKOFFICE_PERMISSIONS = [
-  { id: 'view_reports', label: 'Reports', description: 'Sales reports' },
-  { id: 'view_orders', label: 'Orders', description: 'Transaction history' },
-  { id: 'manage_inventory', label: 'Inventory', description: 'Manage stock' },
-  { id: 'view_costs', label: 'Costs', description: 'See costs' },
-  { id: 'manage_employees', label: 'Staff', description: 'Manage team' },
-  { id: 'manage_customers', label: 'Customers', description: 'Manage customers' },
-  { id: 'manage_discounts', label: 'Discounts', description: 'Manage offers' },
-  { id: 'manage_payment_methods', label: 'Payments', description: 'Payment types' },
-  { id: 'manage_settings', label: 'Settings', description: 'Store settings' },
-  { id: 'view_activity_logs', label: 'Logs', description: 'System logs' },
-  { id: 'manage_billing', label: 'Billing', description: 'Subscription' },
+  { id: 'view_reports', label: 'roles.backoffice.reports', description: 'roles.backoffice.reportsDesc' },
+  { id: 'view_orders', label: 'roles.backoffice.orders', description: 'roles.backoffice.ordersDesc' },
+  { id: 'manage_inventory', label: 'roles.backoffice.inventory', description: 'roles.backoffice.inventoryDesc' },
+  { id: 'view_costs', label: 'roles.backoffice.costs', description: 'roles.backoffice.costsDesc' },
+  { id: 'manage_employees', label: 'roles.backoffice.staff', description: 'roles.backoffice.staffDesc' },
+  { id: 'manage_customers', label: 'roles.backoffice.customers', description: 'roles.backoffice.customersDesc' },
+  { id: 'manage_discounts', label: 'roles.backoffice.discounts', description: 'roles.backoffice.discountsDesc' },
+  { id: 'manage_payment_methods', label: 'roles.backoffice.payments', description: 'roles.backoffice.paymentsDesc' },
+  { id: 'manage_settings', label: 'roles.backoffice.settings', description: 'roles.backoffice.settingsDesc' },
+  { id: 'view_activity_logs', label: 'roles.backoffice.logs', description: 'roles.backoffice.logsDesc' },
+  { id: 'manage_billing', label: 'roles.backoffice.billing', description: 'roles.backoffice.billingDesc' },
 ];
 
 export function CustomRoleFormModal({
@@ -67,6 +68,7 @@ export function CustomRoleFormModal({
   initialData,
   isSubmitting = false,
 }: CustomRoleFormModalProps) {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -174,14 +176,14 @@ export function CustomRoleFormModal({
     e.preventDefault();
 
     const newErrors: Record<string, string> = {};
-    if (!name.trim()) newErrors.name = 'Required';
+    if (!name.trim()) newErrors.name = t('common.required');
 
     // Validation: At least one permission must be enabled
     const finalPermissions = posAccess ? permissions : [];
     const finalBackofficePermissions = backofficeAccess ? backofficePermissions : [];
 
     if (finalPermissions.length === 0 && finalBackofficePermissions.length === 0) {
-      newErrors.general = 'Role must have at least one permission enabled';
+      newErrors.general = t('roles.validation.atLeastOnePermission');
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -207,7 +209,10 @@ export function CustomRoleFormModal({
 
   return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans">
+      <div
+        dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+        className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
+      >
         <motion.div
           initial={{ opacity: 0, y: 100 }}
           animate={{ opacity: 1, y: 0 }}
@@ -224,9 +229,9 @@ export function CustomRoleFormModal({
           <div className="flex items-center justify-between p-4 sm:p-8 pb-4 border-b border-gray-100 dark:border-white/5">
             <div>
               <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
-                {initialData ? 'Edit Role' : 'New Custom Role'}
+                {initialData ? t('roles.editRole') : t('roles.newRole')}
               </h2>
-              <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">Permissions</p>
+              <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">{t('roles.permissions')}</p>
             </div>
             <button
               onClick={onClose}
@@ -250,7 +255,7 @@ export function CustomRoleFormModal({
                   type="text"
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
-                  placeholder="Role Name"
+                  placeholder={t('roles.form.roleNamePlaceholder')}
                   className={`w-full bg-transparent border-b-2 ${errors.name ? 'border-paymint-red' : 'border-gray-200 dark:border-gray-700'} py-3 text-xl font-bold text-gray-900 dark:text-white placeholder-gray-300 focus:outline-none focus:border-paymint-green transition-colors`}
                 />
                 {errors.name && <p className="absolute -bottom-5 left-0 text-xs font-bold text-paymint-red">{errors.name}</p>}
@@ -267,8 +272,8 @@ export function CustomRoleFormModal({
                       <Smartphone size={24} />
                     </div>
                     <div>
-                      <h3 className="text-base font-bold text-gray-900 dark:text-white">Pos App</h3>
-                      <p className="text-xs text-gray-500 max-w-[250px] leading-relaxed">Employees can log in to the app using personal Pin code</p>
+                      <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('roles.pos.title')}</h3>
+                      <p className="text-xs text-gray-500 max-w-[250px] leading-relaxed">{t('roles.pos.description')}</p>
                     </div>
                   </div>
                   <button
@@ -303,8 +308,8 @@ export function CustomRoleFormModal({
                                 {permissions.includes(perm.id) && <Check size={14} className="text-white" />}
                               </div>
                               <div>
-                                <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{perm.label}</p>
-                                {perm.description && <p className="text-xs text-gray-400 mt-1 font-medium">{perm.description}</p>}
+                                <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{t(perm.label)}</p>
+                                {perm.description && <p className="text-xs text-gray-400 mt-1 font-medium">{t(perm.description)}</p>}
                               </div>
                             </div>
                           ))}
@@ -316,12 +321,12 @@ export function CustomRoleFormModal({
                             className="flex items-center justify-between py-2 cursor-pointer group"
                             onClick={() => setShowDiscountsDropdown(!showDiscountsDropdown)}
                           >
-                            <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">Allowed Discounts</p>
+                            <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">{t('roles.form.allowedDiscounts')}</p>
                             <div className="flex items-center gap-2">
                               <span className="text-xs font-medium text-gray-500 bg-white dark:bg-white/5 px-2 py-1 rounded-md border border-gray-200 dark:border-white/10">
-                                {allDiscountsSelected ? 'All Allowed' : `${allowedDiscounts.length} Selected`}
+                                {allDiscountsSelected ? t('roles.form.allAllowed') : t('roles.form.selectedCount', { count: allowedDiscounts.length })}
                               </span>
-                              <ChevronDown size={14} className={`text-gray-400 transition-transform duration-300 ${showDiscountsDropdown ? 'rotate-180' : ''}`} />
+                              <ChevronDown size={14} className={`text-gray-400 transition-transform duration-300 ${showDiscountsDropdown ? 'rotate-180' : ''} ${t('common.locale') === 'ar' ? 'mr-auto' : ''}`} />
                             </div>
                           </div>
 
@@ -346,7 +351,7 @@ export function CustomRoleFormModal({
                                     }`}>
                                     {allDiscountsSelected && <Check size={14} className="text-white" />}
                                   </div>
-                                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Allow all discounts</p>
+                                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('roles.form.allowAllDiscounts')}</p>
                                 </div>
 
                                 {!allDiscountsSelected && availableDiscounts.map(discount => (
@@ -362,7 +367,7 @@ export function CustomRoleFormModal({
                                       {allowedDiscounts.includes(discount.id) && <Check size={14} className="text-white" />}
                                     </div>
                                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                                      {discount.name} ({discount.percentage * 100}%)
+                                      {discount.name} ({ (discount.percentage * 100).toLocaleString(t('common.locale')) }%)
                                     </p>
                                   </div>
                                 ))}
@@ -387,8 +392,8 @@ export function CustomRoleFormModal({
                       <Monitor size={24} />
                     </div>
                     <div>
-                      <h3 className="text-base font-bold text-gray-900 dark:text-white">Back Office</h3>
-                      <p className="text-xs text-gray-500 max-w-[250px] leading-relaxed">Employees can log in to the back office using their email and password</p>
+                      <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('roles.backoffice.title')}</h3>
+                      <p className="text-xs text-gray-500 max-w-[250px] leading-relaxed">{t('roles.backoffice.description')}</p>
                     </div>
                   </div>
                   <button
@@ -421,8 +426,8 @@ export function CustomRoleFormModal({
                               {backofficePermissions.includes(perm.id) && <Check size={14} className="text-white" />}
                             </div>
                             <div>
-                              <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{perm.label}</p>
-                              {perm.description && <p className="text-xs text-gray-400 mt-1 font-medium">{perm.description}</p>}
+                              <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{t(perm.label)}</p>
+                              {perm.description && <p className="text-xs text-gray-400 mt-1 font-medium">{t(perm.description)}</p>}
                             </div>
                           </div>
                         ))}
@@ -442,7 +447,7 @@ export function CustomRoleFormModal({
               onClick={onClose}
               className="flex-1 h-12 sm:h-14 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-black text-xs tracking-widest hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
             >
-              Cancel
+              {t('common.cancel')}
             </button>
             <button
               type="submit"
@@ -453,7 +458,7 @@ export function CustomRoleFormModal({
               {isSubmitting ? (
                 <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
               ) : (
-                initialData ? 'Save Changes' : 'Create Role'
+                initialData ? t('common.saveChanges') : t('roles.createRole')
               )}
             </button>
           </div>

@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Wallet, CreditCard } from 'lucide-react';
 import { PieChart as RechartsPie, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { useCurrency } from '../../../context/CurrencyContext';
 import { useTheme } from '../../../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
 
@@ -17,17 +16,12 @@ export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdo
   const { t } = useTranslation();
   const { locationSlug } = useParams();
   const navigate = useNavigate();
-  const { formatAmount } = useCurrency();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === 'dark';
 
-  const formatCurrency = (value: number) => {
-    return formatAmount(value);
-  };
-
   return (
     <div id="tour-capital-sources" className="group relative p-4 sm:p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col transition-all duration-300 overflow-hidden">
-      <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
+      <div className="absolute top-0 end-0 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -52,7 +46,7 @@ export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdo
         <div className="flex-1 flex flex-col justify-center">
           {paymentMethodBreakdown && paymentMethodBreakdown.length > 0 ? (
             <>
-              <div className="h-[160px] w-full">
+              <div className="h-[160px] w-full" dir="ltr">
                 <ResponsiveContainer width="100%" height="100%">
                   <RechartsPie>
                     <Pie
@@ -87,7 +81,7 @@ export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdo
                       <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
                       <span className="text-xs font-bold text-gray-700 dark:text-gray-300">{item.name}</span>
                     </div>
-                    <span className="text-xs font-bold text-gray-900 dark:text-white">{formatCurrency(item.value)}</span>
+                    <span className="text-xs font-bold text-gray-900 dark:text-white">{item.value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
                 ))}
               </div>

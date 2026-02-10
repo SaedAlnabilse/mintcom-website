@@ -8,27 +8,27 @@ export const Pricing = () => {
 
   const plans = [
     {
-      name: t('pricing.monthlyPlan'),
-      price: "20$",
-      period: t('pricing.perMonth'),
-      description: t('pricing.planDescription'),
+      name: t('landing.pricing.monthlyPlan'),
+      price: (20).toLocaleString(t('common.locale'), { style: 'currency', currency: 'JOD', minimumFractionDigits: 0 }),
+      period: t('landing.pricing.perMonth'),
+      description: t('landing.pricing.planDescription'),
       features: [
-        t('pricing.features.pos'),
-        t('pricing.features.dashboard'),
-        t('pricing.features.unlimitedStaff'),
-        t('pricing.features.adminApp'),
-        t('pricing.features.support'),
-        t('pricing.features.reports')
+        t('landing.pricing.features.pos'),
+        t('landing.pricing.features.dashboard'),
+        t('landing.pricing.features.unlimitedStaff'),
+        t('landing.pricing.features.adminApp'),
+        t('landing.pricing.features.support'),
+        t('landing.pricing.features.reports')
       ],
       detailedFeatures: [
-        t('pricing.features.pointOfSale'),
-        t('pricing.features.inventory'),
-        t('pricing.features.staffManagement'),
-        t('pricing.features.advancedReporting'),
-        t('pricing.features.production')
+        t('landing.pricing.features.pointOfSale'),
+        t('landing.pricing.features.inventory'),
+        t('landing.pricing.features.staffManagement'),
+        t('landing.pricing.features.advancedReporting'),
+        t('landing.pricing.features.production')
       ],
       notIncluded: null,
-      cta: t('pricing.startFreeTrial'),
+      cta: t('landing.pricing.startFreeTrial'),
       highlight: true,
       type: "standard"
     }
@@ -54,7 +54,7 @@ export const Pricing = () => {
       {/* Background Decor */}
       <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-paymint-green/5 rounded-full blur-[150px] -z-10" />
 
-      <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl">
+      <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -62,10 +62,10 @@ export const Pricing = () => {
           className="text-center mb-20"
         >
           <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-6 tracking-tight">
-            {t('pricing.title')}
+            {t('landing.pricing.title')}
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            {t('pricing.subtitle')}
+            {t('landing.pricing.subtitle')}
           </p>
         </motion.div>
 
@@ -86,7 +86,7 @@ export const Pricing = () => {
             >
               {plan.highlight && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-paymint-green text-black px-6 py-1.5 rounded-full text-sm font-bold shadow-lg shadow-paymint-green/20">
-                  {t('pricing.mostPopular')}
+                  {t('landing.pricing.popular')}
                 </div>
               )}
 
@@ -119,7 +119,7 @@ export const Pricing = () => {
                   }`}
               >
                 {plan.cta}
-                <ArrowRight size={18} className="group-hover:translate-x-1 rtl:group-hover:-translate-x-1 rtl:rotate-180 transition-transform" />
+                <ArrowRight size={18} className={`transition-transform ${t('common.locale') === 'ar' ? 'rotate-180 group-hover:-translate-x-1' : 'group-hover:translate-x-1'}`} />
               </button>
 
               <button
@@ -165,7 +165,7 @@ export const Pricing = () => {
                 <div className="text-center mb-8">
                   <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">{selectedPlan.name}</h2>
                   <div className="flex items-baseline justify-center gap-1 mb-4">
-                    <span className="text-4xl font-bold text-paymint-green dark:text-paymint-green">{selectedPlan.price}</span>
+                    <span className="text-4xl font-bold text-paymint-green dark:text-paymint-green">{(20).toLocaleString(t('common.locale'), { style: 'currency', currency: 'JOD', minimumFractionDigits: 0 })}</span>
                     <span className="text-gray-500 dark:text-gray-400">{selectedPlan.period}</span>
                   </div>
                   <p className="text-gray-600 dark:text-gray-400">{selectedPlan.description}</p>

@@ -190,7 +190,7 @@ export function BillingPage() {
                 <p className="text-xs font-black text-gray-400 tracking-widest mb-2">{t('owner.billing.cost')}</p>
                 <div className="flex items-baseline gap-2">
                   <span className="text-sm font-bold text-paymint-green">{currencySymbol}</span>
-                  <span className="text-4xl font-black text-white">{totalMonthly.toLocaleString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</span>
+                  <span className="text-4xl font-black text-white">{(totalMonthly || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</span>
                 </div>
               </div>
               <div className="p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-colors">

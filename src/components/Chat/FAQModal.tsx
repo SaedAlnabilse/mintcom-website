@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Search, ChevronDown, ChevronRight, HelpCircle, Package, CreditCard, Wrench, UserCircle, ClipboardList, Users } from 'lucide-react';
 import { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FAQ_DATA } from '../../data/faq';
 import type { FAQItem } from '../../data/faq';
 
@@ -9,20 +10,21 @@ interface FAQModalProps {
   onClose: () => void;
 }
 
-const CATEGORY_CONFIG: Record<FAQItem['category'], { label: string; icon: React.ReactNode; color: string }> = {
-  general: { label: 'Getting Started', icon: <HelpCircle size={14} />, color: 'text-blue-500 bg-blue-500/10' },
-  products: { label: 'Products', icon: <Package size={14} />, color: 'text-purple-500 bg-purple-500/10' },
-  orders: { label: 'Orders', icon: <ClipboardList size={14} />, color: 'text-orange-500 bg-orange-500/10' },
-  staff: { label: 'Staff', icon: <Users size={14} />, color: 'text-cyan-500 bg-cyan-500/10' },
-  billing: { label: 'Billing', icon: <CreditCard size={14} />, color: 'text-green-500 bg-green-500/10' },
-  technical: { label: 'Technical', icon: <Wrench size={14} />, color: 'text-yellow-500 bg-yellow-500/10' },
-  account: { label: 'Account', icon: <UserCircle size={14} />, color: 'text-pink-500 bg-pink-500/10' },
-};
-
 export function FAQModal({ isOpen, onClose }: FAQModalProps) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<FAQItem['category'] | 'all'>('all');
+
+  const CATEGORY_CONFIG: Record<FAQItem['category'], { label: string; icon: React.ReactNode; color: string }> = useMemo(() => ({
+    general: { label: t('support.qa.categories.general'), icon: <HelpCircle size={14} />, color: 'text-blue-500 bg-blue-500/10' },
+    products: { label: t('support.qa.categories.products'), icon: <Package size={14} />, color: 'text-purple-500 bg-purple-500/10' },
+    orders: { label: t('support.qa.categories.orders'), icon: <ClipboardList size={14} />, color: 'text-orange-500 bg-orange-500/10' },
+    staff: { label: t('support.qa.categories.staff'), icon: <Users size={14} />, color: 'text-cyan-500 bg-cyan-500/10' },
+    billing: { label: t('support.qa.categories.billing'), icon: <CreditCard size={14} />, color: 'text-green-500 bg-green-500/10' },
+    technical: { label: t('support.qa.categories.technical'), icon: <Wrench size={14} />, color: 'text-yellow-500 bg-yellow-500/10' },
+    account: { label: t('support.qa.categories.account'), icon: <UserCircle size={14} />, color: 'text-pink-500 bg-pink-500/10' },
+  }), [t]);
 
   const filteredItems = useMemo(() => {
     return FAQ_DATA.filter(item => {
@@ -46,6 +48,7 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
           initial={{ opacity: 0, y: 20, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.95 }}
+          dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
           className="fixed bottom-[100px] right-[30px] z-[999999] w-[400px] max-w-[calc(100vw-60px)] h-[600px] max-h-[calc(100vh-150px)] bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl border border-gray-200/50 dark:border-white/10 flex flex-col overflow-hidden"
         >
           {/* Header */}
@@ -55,8 +58,8 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
                 <HelpCircle size={20} className="text-white" />
               </div>
               <div>
-                <h3 className="font-bold text-white text-lg">Help Center</h3>
-                <p className="text-white/80 text-xs font-medium">Find answers quickly</p>
+                <h3 className="font-bold text-white text-lg">{t('support.qa.title')}</h3>
+                <p className="text-white/80 text-xs font-medium">{t('support.qa.subtitle')}</p>
               </div>
             </div>
             <button
@@ -73,7 +76,7 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search for help..."
+                placeholder={t('support.qa.searchPlaceholder')}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
@@ -92,7 +95,7 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
                     : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10'
                 }`}
               >
-                All
+                {t('support.qa.categories.all')}
               </button>
               {categories.map((category) => {
                 const config = CATEGORY_CONFIG[category];
@@ -121,8 +124,8 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
                 <div className="w-16 h-16 bg-gray-100 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4">
                   <Search size={24} className="text-gray-400" />
                 </div>
-                <p className="text-gray-600 dark:text-gray-400 font-medium">No results found</p>
-                <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">Try a different search term</p>
+                <p className="text-gray-600 dark:text-gray-400 font-medium">{t('support.qa.noResults')}</p>
+                <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">{t('support.qa.tryDifferent')}</p>
               </div>
             ) : (
               <div className="space-y-2">
@@ -156,7 +159,7 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
                         <div className="flex-shrink-0 mt-0.5">
                           {expandedIndex === index
                             ? <ChevronDown size={16} className="text-gray-400" />
-                            : <ChevronRight size={16} className="text-gray-400" />
+                            : <ChevronRight size={16} className={`text-gray-400 ${t('common.locale') === 'ar' ? 'rotate-180' : ''}`} />
                           }
                         </div>
                       </button>
@@ -189,7 +192,7 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
           {/* Footer */}
           <div className="p-3 bg-gray-50 dark:bg-white/[0.02] border-t border-gray-100 dark:border-white/5">
             <p className="text-center text-xs text-gray-400">
-              Need more help? Contact us at{' '}
+              {t('support.qa.needMoreHelp')}{' '}
               <a href="mailto:support@paymint.io" className="text-indigo-500 font-medium hover:underline">
                 support@paymint.io
               </a>

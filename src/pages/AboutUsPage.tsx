@@ -1,29 +1,31 @@
 import { motion } from 'framer-motion';
 import { Target, Shield, Zap } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 
 export const AboutUsPage = () => {
+    const { t } = useTranslation();
     const values = [
         {
             icon: Target,
-            title: 'Affordable. Transparent. Complete.',
-            description: 'PayMint offers one of the most competitive POS solutions in the market when considering the full range of included services. Our pricing is transparent, with no hidden fees or unexpected costs—just a complete, all-in-one system at an accessible monthly rate.'
+            title: t('about.values.v1.title'),
+            description: t('about.values.v1.description')
         },
         {
             icon: Zap,
-            title: 'Built for Simplicity',
-            description: 'We developed PayMint in close collaboration with business owners and frontline staff. The result is an intuitive system that can be learned in minutes, not days. Guided in-app tours and clear workflows ensure users always know what to do and how to do it.'
+            title: t('about.values.v2.title'),
+            description: t('about.values.v2.description')
         },
         {
             icon: Shield,
-            title: 'Performance-Driven Design',
-            description: 'Speed, reliability, and usability are central to everything we build. PayMint is engineered for fast transactions and smooth daily operations. Our UI and workflows are designed using behavioral insights and user interaction analysis, ensuring that critical actions are easy to access and setup is quick and effortless.'
+            title: t('about.values.v3.title'),
+            description: t('about.values.v3.description')
         }
     ];
 
     return (
-        <div className="min-h-screen bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white overflow-x-hidden font-sans">
+        <div className="min-h-screen bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white overflow-x-hidden font-sans" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
             <Navbar />
 
             {/* About PayMint - Main Introduction */}
@@ -38,20 +40,20 @@ export const AboutUsPage = () => {
                         transition={{ duration: 0.6 }}
                     >
                         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-8">
-                            About PayMint
+                            {t('about.title')}
                         </h1>
                         <div className="prose prose-lg dark:prose-invert mx-auto">
                             <p className="text-sm font-medium text-gray-600 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto mb-4">
-                                PayMint LLC is a technology solutions company specializing in Point of Sale (POS) systems and digital business management platforms. Our products are designed to simplify daily operations—from fast, reliable sales processing on digital devices to automated management tools that give businesses full operational visibility.
+                                {t('about.intro.p1')}
                             </p>
                             <p className="text-sm font-medium text-gray-600 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto mb-4">
-                                At the core of PayMint is one clear goal: to give business owners accurate, real-time access to their data while enabling faster, smoother checkout experiences for their customers.
+                                {t('about.intro.p2')}
                             </p>
                             <p className="text-sm font-medium text-gray-600 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto mb-4">
-                                The PayMint app is available on both iOS and Android and can be downloaded for free. Businesses can create a PayMint account and complete setup directly through the POS app or via the online management dashboard.
+                                {t('about.intro.p3')}
                             </p>
                             <p className="text-sm font-medium text-gray-600 dark:text-gray-300 leading-relaxed max-w-3xl mx-auto">
-                                PayMint also supports multi-branch operations. Owners and account managers can add, merge, or separate establishments as needed, all from a single universal dashboard. This allows centralized control over sales, staff, products, and performance across multiple locations, with discounted pricing for additional branches.
+                                {t('about.intro.p4')}
                             </p>
                         </div>
                     </motion.div>
@@ -62,7 +64,7 @@ export const AboutUsPage = () => {
             <div className="py-24 bg-gray-50 dark:bg-[#1E293B]/50 px-6">
                 <div className="max-w-6xl mx-auto">
                     <div className="text-center mb-16">
-                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Our Value Proposition</h2>
+                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{t('about.values.title')}</h2>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -98,13 +100,13 @@ export const AboutUsPage = () => {
                         transition={{ duration: 0.6 }}
                     >
                         <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center">
-                            Our Story
+                            {t('about.story.title')}
                         </h2>
                         <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-6 leading-relaxed text-center max-w-3xl mx-auto">
-                            PayMint LLC is a Jordanian company operating globally. The platform officially launched in 2025, built on insights gathered from years of research into the POS and retail technology space.
+                            {t('about.story.p1')}
                         </p>
                         <p className="text-sm font-medium text-gray-600 dark:text-gray-300 leading-relaxed text-center max-w-3xl mx-auto">
-                            Development spanned more than three years, with a strong focus on security, performance, and scalability. Every feature was designed to meet real-world business needs and compete confidently with leading global POS solutions. Today, PayMint stands as a modern, secure, and scalable system built to support businesses of all sizes—anywhere in the world.
+                            {t('about.story.p2')}
                         </p>
                     </motion.div>
                 </div>

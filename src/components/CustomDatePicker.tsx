@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, parseISO } from 'date-fns';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { getDateLocale } from '../utils/dateLocale';
 
 interface CustomDatePickerProps {
     value: string;
@@ -18,12 +20,13 @@ export function CustomDatePicker({
     value,
     onChange,
     className = '',
-    placeholder = 'Select Date',
+    placeholder = 'Select date',
     minDate,
     maxDate,
     showIcon = false,
     align = 'left'
 }: CustomDatePickerProps) {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const [currentMonth, setCurrentMonth] = useState(() => value ? parseISO(value) : new Date());
     const containerRef = useRef<HTMLDivElement>(null);
@@ -59,13 +62,13 @@ export function CustomDatePicker({
         return (
             <div className="flex items-center justify-between mb-4 px-1">
                 <button onClick={prevMonth} className="p-1 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">
-                    <ChevronLeft size={16} className="text-gray-600 dark:text-gray-300" />
+                    <ChevronLeft size={16} className={`text-gray-600 dark:text-gray-300 ${t('common.locale') === 'ar' ? 'rotate-180' : ''}`} />
                 </button>
                 <span className="text-sm font-bold text-gray-800 dark:text-white">
-                    {format(currentMonth, 'MMMM yyyy')}
+                    {format(currentMonth, 'MMMM yyyy', { locale: getDateLocale(t('common.locale')) })}
                 </span>
                 <button onClick={nextMonth} className="p-1 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors">
-                    <ChevronRight size={16} className="text-gray-600 dark:text-gray-300" />
+                    <ChevronRight size={16} className={`text-gray-600 dark:text-gray-300 ${t('common.locale') === 'ar' ? 'rotate-180' : ''}`} />
                 </button>
             </div>
         );
@@ -118,7 +121,7 @@ export function CustomDatePicker({
             `}
                         onClick={() => !isDisabled && handleDateClick(cloneDay)}
                     >
-                        {formattedDate}
+                        {Number(formattedDate).toLocaleString(t('common.locale'))}
                     </div>
                 );
                 day = addDays(day, 1);
@@ -144,7 +147,7 @@ export function CustomDatePicker({
         `}
             >
                 {showIcon && <CalendarIcon size={14} className={isOpen ? 'text-[#7CC39F]' : 'text-gray-400'} />}
-                <span>{value ? format(parseISO(value), 'MM/dd/yyyy') : placeholder}</span>
+                <span>{value ? format(parseISO(value), t('common.locale') === 'ar' ? 'yyyy/MM/dd' : 'MM/dd/yyyy') : placeholder}</span>
             </button>
 
             <AnimatePresence>
@@ -166,13 +169,13 @@ export function CustomDatePicker({
                                 onClick={() => { onChange(''); setIsOpen(false); }}
                                 className="text-xs font-medium text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
                             >
-                                Clear
+                                {t('common.clear')}
                             </button>
                             <button
                                 onClick={() => { onChange(format(new Date(), 'yyyy-MM-dd')); setIsOpen(false); }}
                                 className="text-xs font-bold text-[#7CC39F] hover:text-[#6ab38b]"
                             >
-                                Today
+                                {t('common.today')}
                             </button>
                         </div>
                     </motion.div>

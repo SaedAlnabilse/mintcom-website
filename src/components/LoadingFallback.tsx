@@ -1,6 +1,6 @@
-import { AppStrings } from '../constants/AppStrings';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { startGlobalLoading, stopGlobalLoading } from '../config/api';
 
 interface LoadingFallbackProps {
@@ -15,9 +15,12 @@ interface LoadingFallbackProps {
  * Provides a smooth, branded loading experience during code-splitting chunk loads.
  */
 export function LoadingFallback({
-  message = AppStrings.COMMON.LOADING,
+  message,
   fullScreen = true
 }: LoadingFallbackProps) {
+  const { t } = useTranslation();
+  const displayMessage = message || t('common.loading');
+
   useEffect(() => {
     startGlobalLoading();
     return () => stopGlobalLoading();
@@ -41,7 +44,7 @@ export function LoadingFallback({
 
       {/* Loading text */}
       <p className="text-sm font-bold text-gray-500 tracking-widest">
-        {message}
+        {displayMessage}
       </p>
     </motion.div>
   );
@@ -64,6 +67,6 @@ export function LoadingFallback({
 /**
  * Minimal loading fallback for smaller sections (modals, panels, etc.)
  */
-export function InlineLoader({ message = AppStrings.COMMON.LOADING }: { message?: string }) {
+export function InlineLoader({ message }: { message?: string }) {
   return <LoadingFallback message={message} fullScreen={false} />;
 }

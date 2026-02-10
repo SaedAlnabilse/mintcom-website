@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Package, PieChart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { useCurrency } from '../../../context/CurrencyContext';
 
 interface TopProduct {
   name: string;
@@ -21,15 +20,10 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({ topPr
   const { t } = useTranslation();
   const { locationSlug } = useParams();
   const navigate = useNavigate();
-  const { formatAmount } = useCurrency();
-
-  const formatCurrency = (value: number) => {
-    return formatAmount(value);
-  };
 
   return (
     <div id="tour-top-products" className="group relative bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm transition-all duration-300">
-      <div className="absolute top-0 right-0 w-40 h-40 bg-paymint-green/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
+      <div className="absolute top-0 end-0 w-40 h-40 bg-paymint-green/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
       <div className="relative z-10">
         <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -68,11 +62,11 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({ topPr
                   </div>
                   <div className="min-w-0">
                     <p className="font-bold text-xs text-gray-900 dark:text-white group-hover/item:text-paymint-green transition-colors truncate max-w-[120px]">{item.name}</p>
-                    <p className="text-xs text-gray-500 font-medium">{item.orders} {t('dashboard.stats.sold')}</p>
+                    <p className="text-xs text-gray-500 font-medium">{item.orders.toLocaleString(t('common.locale'))} {t('dashboard.stats.sold')}</p>
                   </div>
                 </div>
                 <p className="text-xs font-bold text-gray-900 dark:text-white">
-                  {formatCurrency(item.revenue)}
+                  {item.revenue.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
               </motion.div>
             )) : (
@@ -100,11 +94,11 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({ topPr
                   </div>
                   <div className="min-w-0">
                     <p className="font-bold text-xs text-gray-900 dark:text-white group-hover/cat:text-purple-500 transition-colors truncate max-w-[120px]">{cat.name}</p>
-                    <p className="text-xs text-gray-500 font-medium">{cat.count || 0} {t('dashboard.stats.orders')}</p>
+                    <p className="text-xs text-gray-500 font-medium">{(cat.count || 0).toLocaleString(t('common.locale'))} {t('dashboard.stats.orders')}</p>
                   </div>
                 </div>
                 <p className="text-xs font-bold text-gray-900 dark:text-white">
-                  {formatCurrency(cat.value)}
+                  {cat.value.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
               </motion.div>
             )) : (

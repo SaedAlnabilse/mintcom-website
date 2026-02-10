@@ -28,6 +28,7 @@ export const Navbar = () => {
 
   return (
     <nav
+      dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
       className={`fixed w-full z-50 transition-all duration-500 ease-in-out ${isScrolled
         ? 'bg-white/80 dark:bg-[#050505]/80 backdrop-blur-xl py-4 border-b border-gray-200 dark:border-white/5 shadow-sm'
         : 'bg-transparent py-6'
@@ -36,7 +37,7 @@ export const Navbar = () => {
       <div className="container mx-auto px-8 md:px-16 lg:px-24 flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="flex items-center group">
-          <Logo size="lg" className="transition-transform duration-500" />
+          <Logo size="lg" className={`transition-transform duration-500 ${t('common.locale') === 'ar' ? 'scale-x-[-1]' : ''}`} />
         </Link>
 
         {/* Desktop Navigation */}
@@ -82,7 +83,7 @@ export const Navbar = () => {
           <ThemeToggle />
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-label={isMobileMenuOpen ? t('common.aria.closeMenu') : t('common.aria.openMenu')}
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-menu"
             className="text-gray-900 dark:text-white p-2 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-colors"
@@ -101,7 +102,7 @@ export const Navbar = () => {
             exit={{ opacity: 0, y: -20 }}
             id="mobile-menu"
             role="navigation"
-            aria-label="Mobile navigation"
+            aria-label={t('common.aria.mobileNav')}
             className="fixed inset-0 z-[40] bg-white dark:bg-[#050505] pt-32 px-6 sm:px-10 lg:hidden flex flex-col items-center overflow-y-auto"
           >
             <div className="w-full max-w-sm space-y-10">
@@ -147,7 +148,7 @@ export const Navbar = () => {
                   <LanguageSwitcher />
                   <Laptop size={20} className="text-gray-900 dark:text-white" />
                 </div>
-                <p className="text-xs font-bold tracking-widest text-gray-500">Paymint Enterprise v2.0</p>
+                <p className="text-xs font-bold tracking-widest text-gray-500">{t('brand.name')} {t('brand.tagline')} {t('brand.version')}</p>
               </div>
             </div>
           </motion.div>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft,
@@ -27,69 +28,70 @@ interface Message {
   attachments?: { name: string; size: string; type: string }[];
 }
 
-// Mock ticket data
-const mockTicket = {
-  id: 'TKT-001',
-  subject: 'Receipt printer not connecting via Bluetooth',
-  category: 'Technical',
-  status: 'in_progress' as 'open' | 'in_progress' | 'resolved' | 'closed',
-  priority: 'high' as const,
-  createdAt: '2025-02-08 at 10:30 AM',
-  updatedAt: '2025-02-09 at 2:15 PM',
-  description: 'I recently purchased a Munbyn thermal printer and I\'m having trouble connecting it to my Samsung tablet via Bluetooth. The printer shows up in my Bluetooth settings but when I try to pair it, it fails after a few seconds. I\'ve tried restarting both devices multiple times.',
-  messages: [
-    {
-      id: '1',
-      sender: 'user' as const,
-      senderName: 'You',
-      content: 'I recently purchased a Munbyn thermal printer and I\'m having trouble connecting it to my Samsung tablet via Bluetooth. The printer shows up in my Bluetooth settings but when I try to pair it, it fails after a few seconds. I\'ve tried restarting both devices multiple times.',
-      timestamp: 'Feb 8, 2025 at 10:30 AM',
-      attachments: [
-        { name: 'bluetooth_error.png', size: '245 KB', type: 'image' }
-      ]
-    },
-    {
-      id: '2',
-      sender: 'support' as const,
-      senderName: 'Sarah from Support',
-      content: 'Hi there! Thank you for reaching out. I understand how frustrating connection issues can be. Let me help you troubleshoot this.\n\nFirst, could you try the following:\n1. Turn off Bluetooth on your tablet\n2. Power off the printer completely\n3. Wait 30 seconds\n4. Turn on the printer first, then enable Bluetooth on your tablet\n5. Try pairing again\n\nAlso, can you confirm which Paymint app version you\'re using? You can find this in Settings > About.',
-      timestamp: 'Feb 8, 2025 at 11:45 AM'
-    },
-    {
-      id: '3',
-      sender: 'user' as const,
-      senderName: 'You',
-      content: 'I tried those steps but still getting the same error. I\'m using Paymint version 2.4.1. The printer model is Munbyn ITPP047.',
-      timestamp: 'Feb 8, 2025 at 3:20 PM'
-    },
-    {
-      id: '4',
-      sender: 'support' as const,
-      senderName: 'Sarah from Support',
-      content: 'Thank you for that information! The ITPP047 model sometimes requires a specific pairing sequence. Our team is looking into this and we\'ll get back to you with a solution shortly. In the meantime, could you check if there\'s a firmware update available for your printer?',
-      timestamp: 'Feb 9, 2025 at 2:15 PM'
-    }
-  ] as Message[]
-};
-
-const statusConfig = {
-  open: { label: 'Open', color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-500/20', icon: AlertCircle },
-  in_progress: { label: 'In Progress', color: 'text-yellow-600', bg: 'bg-yellow-100 dark:bg-yellow-500/20', icon: Loader2 },
-  resolved: { label: 'Resolved', color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-500/20', icon: CheckCircle2 },
-  closed: { label: 'Closed', color: 'text-gray-500', bg: 'bg-gray-100 dark:bg-gray-500/20', icon: CheckCircle2 }
-};
-
-const priorityConfig = {
-  low: { label: 'Low', color: 'text-gray-600', bg: 'bg-gray-100 dark:bg-gray-500/20' },
-  medium: { label: 'Medium', color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-500/20' },
-  high: { label: 'High', color: 'text-orange-600', bg: 'bg-orange-100 dark:bg-orange-500/20' },
-  urgent: { label: 'Urgent', color: 'text-red-600', bg: 'bg-red-100 dark:bg-red-500/20' }
-};
-
 export const TicketDetailPage = () => {
+  const { t } = useTranslation(['support', 'common']);
   const { ticketId: _ticketId } = useParams();
   const [newMessage, setNewMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
+
+  // Mock ticket data
+  const mockTicket = {
+    id: 'TKT-001',
+    subject: t('support.tickets.mock.subject1'),
+    category: t('support.categories.technical'),
+    status: 'in_progress' as 'open' | 'in_progress' | 'resolved' | 'closed',
+    priority: 'high' as const,
+    createdAt: '2025-02-08 at 10:30 AM',
+    updatedAt: '2025-02-09 at 2:15 PM',
+    description: t('support.tickets.mock.desc1'),
+    messages: [
+      {
+        id: '1',
+        sender: 'user' as const,
+        senderName: t('support.tickets.you'),
+        content: t('support.tickets.mock.desc1'),
+        timestamp: 'Feb 8, 2025 at 10:30 AM',
+        attachments: [
+          { name: 'bluetooth_error.png', size: '245 KB', type: 'image' }
+        ]
+      },
+      {
+        id: '2',
+        sender: 'support' as const,
+        senderName: t('support.tickets.sarah'),
+        content: t('support.tickets.mock.reply1'),
+        timestamp: 'Feb 8, 2025 at 11:45 AM'
+      },
+      {
+        id: '3',
+        sender: 'user' as const,
+        senderName: t('support.tickets.you'),
+        content: t('support.tickets.mock.reply2'),
+        timestamp: 'Feb 8, 2025 at 3:20 PM'
+      },
+      {
+        id: '4',
+        sender: 'support' as const,
+        senderName: t('support.tickets.sarah'),
+        content: t('support.tickets.mock.reply3'),
+        timestamp: 'Feb 9, 2025 at 2:15 PM'
+      }
+    ] as Message[]
+  };
+
+  const statusConfig = {
+    open: { label: t('support.tickets.status.open'), color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-500/20', icon: AlertCircle },
+    in_progress: { label: t('support.tickets.status.inProgress'), color: 'text-yellow-600', bg: 'bg-yellow-100 dark:bg-yellow-500/20', icon: Loader2 },
+    resolved: { label: t('support.tickets.status.resolved'), color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-500/20', icon: CheckCircle2 },
+    closed: { label: t('support.tickets.status.closed'), color: 'text-gray-500', bg: 'bg-gray-100 dark:bg-gray-500/20', icon: CheckCircle2 }
+  };
+
+  const priorityConfig = {
+    low: { label: t('support.tickets.priority.low'), color: 'text-gray-600', bg: 'bg-gray-100 dark:bg-gray-500/20' },
+    medium: { label: t('support.tickets.priority.medium'), color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-500/20' },
+    high: { label: t('support.tickets.priority.high'), color: 'text-orange-600', bg: 'bg-orange-100 dark:bg-orange-500/20' },
+    urgent: { label: t('support.tickets.priority.urgent'), color: 'text-red-600', bg: 'bg-red-100 dark:bg-red-500/20' }
+  };
 
   const ticket = mockTicket; // In real app, fetch based on ticketId
   const status = statusConfig[ticket.status];
@@ -138,7 +140,7 @@ export const TicketDetailPage = () => {
                       {status.label}
                     </span>
                     <span className={`px-3 py-1.5 rounded-lg text-sm font-bold ${priority.bg} ${priority.color}`}>
-                      {priority.label} Priority
+                      {priority.label} {t('support.tickets.priorityLabel')}
                     </span>
                     <span className="flex items-center gap-1 text-sm font-medium text-gray-500">
                       <Tag size={14} />
@@ -157,19 +159,19 @@ export const TicketDetailPage = () => {
             <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6 mb-6">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Created</p>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('support.tickets.created')}</p>
                   <p className="font-bold text-sm">{ticket.createdAt}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Last Updated</p>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('support.tickets.lastUpdated')}</p>
                   <p className="font-bold text-sm">{ticket.updatedAt}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Category</p>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('common.category')}</p>
                   <p className="font-bold text-sm">{ticket.category}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Ticket ID</p>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('support.tickets.id')}</p>
                   <p className="font-bold text-sm font-mono">{ticket.id}</p>
                 </div>
               </div>
@@ -179,7 +181,7 @@ export const TicketDetailPage = () => {
             <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl overflow-hidden">
               {/* Messages Header */}
               <div className="px-6 py-4 border-b border-gray-100 dark:border-white/10">
-                <h2 className="font-bold">Conversation</h2>
+                <h2 className="font-bold">{t('support.tickets.conversation')}</h2>
               </div>
 
               {/* Messages List */}
@@ -219,7 +221,7 @@ export const TicketDetailPage = () => {
 
                         {message.attachments && message.attachments.length > 0 && (
                           <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/10">
-                            <p className="text-xs font-bold text-gray-400 mb-2">Attachments</p>
+                            <p className="text-xs font-bold text-gray-400 mb-2">{t('support.tickets.attachments')}</p>
                             <div className="flex flex-wrap gap-2">
                               {message.attachments.map((attachment, i) => (
                                 <a
@@ -248,7 +250,7 @@ export const TicketDetailPage = () => {
                     <textarea
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder="Type your reply..."
+                      placeholder={t('support.tickets.replyPlaceholder')}
                       rows={4}
                       className="w-full p-4 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none"
                     />
@@ -260,7 +262,7 @@ export const TicketDetailPage = () => {
                       className="inline-flex items-center gap-2 px-4 py-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 font-medium transition-colors"
                     >
                       <Paperclip size={18} />
-                      Attach file
+                      {t('support.tickets.attachFile')}
                     </button>
 
                     <button
@@ -273,7 +275,7 @@ export const TicketDetailPage = () => {
                       ) : (
                         <Send size={18} />
                       )}
-                      Send Reply
+                      {t('support.tickets.sendReply')}
                     </button>
                   </div>
                 </form>
@@ -284,8 +286,8 @@ export const TicketDetailPage = () => {
             {ticket.status !== 'resolved' && ticket.status !== 'closed' && (
               <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 rounded-xl">
                 <p className="text-sm text-blue-700 dark:text-blue-400">
-                  <span className="font-bold">Issue resolved?</span>{' '}
-                  <button className="underline hover:no-underline">Mark this ticket as resolved</button> to close it.
+                  <span className="font-bold">{t('support.tickets.resolvedQuestion')}</span>{' '}
+                  <button className="underline hover:no-underline">{t('support.tickets.markResolved')}</button> {t('support.tickets.toClose')}
                 </p>
               </div>
             )}

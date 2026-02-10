@@ -1,10 +1,10 @@
-import { AppStrings } from '../constants/AppStrings';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Store, Plus, LogOut, ChevronRight, CheckCircle2, Loader2, Crown, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 // Paymint Logo imports
 import PaymintLogoGreen from '../assets/green-full-logo.svg';
@@ -15,6 +15,7 @@ import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
 import { ConfirmModal } from '../components/ConfirmModal';
 
 export function SelectEstablishmentPage() {
+  const { t } = useTranslation();
   const { establishments, setCurrentEstablishment, logout, account } = useAuth();
   const navigate = useNavigate();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -29,10 +30,10 @@ export function SelectEstablishmentPage() {
     // Simulate a "Real" backend switch transition
     setTimeout(() => {
       setCurrentEstablishment(est);
-      toast.success(`Active Location: ${est.name}`);
+      toast.success(t('establishments.activeToast', { name: est.name }));
       // Use establishmentLoginId if available for pretty URL, ensuring it's not null/undefined/empty
-      const slug = est.establishmentLoginId && est.establishmentLoginId.trim().length > 0 
-        ? est.establishmentLoginId 
+      const slug = est.establishmentLoginId && est.establishmentLoginId.trim().length > 0
+        ? est.establishmentLoginId
         : est.id;
       navigate(`/dashboard/${slug}`);
     }, 800);
@@ -48,7 +49,7 @@ export function SelectEstablishmentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex flex-col transition-colors duration-500 relative overflow-hidden">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex flex-col transition-colors duration-500 relative overflow-hidden" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Remove glass glows, use solid background colors */}
 
       {/* Header */}
@@ -63,10 +64,10 @@ export function SelectEstablishmentPage() {
               <Crown size={18} className="text-white" />
             </div>
             <div className="hidden sm:block text-left">
-              <p className="text-xs font-black text-gray-400 tracking-widest">Owner Portal</p>
+              <p className="text-xs font-black text-gray-400 tracking-widest">{t('onboarding.step5.ownerPortal')}</p>
               <p className="text-sm font-bold text-gray-900 dark:text-white truncate max-w-[120px]">{account?.firstName} {account?.lastName}</p>
             </div>
-            <ArrowLeft size={16} className="text-amber-500 group-hover:-translate-x-1 transition-transform hidden sm:block" />
+            <ArrowLeft size={16} className={`text-amber-500 group-hover:${t('common.locale') === 'ar' ? 'translate-x-1' : '-translate-x-1'} transition-transform hidden sm:block`} />
           </button>
 
           {/* Logo */}
@@ -88,7 +89,7 @@ export function SelectEstablishmentPage() {
           className="flex items-center gap-2 text-gray-400 hover:text-paymint-red transition-all font-black text-xs tracking-widest px-4 py-2 rounded-xl hover:bg-paymint-red/5"
         >
           <LogOut size={16} />
-          Sign Out
+          {t('common.logout')}
         </button>
       </div>
 
@@ -99,9 +100,9 @@ export function SelectEstablishmentPage() {
             animate={{ opacity: 1, y: 0 }}
           >
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
-              Select <span className="text-paymint-green underline decoration-paymint-green/30">Location</span>
+              {t('onboarding.select')} <span className="text-paymint-green underline decoration-paymint-green/30">{t('onboarding.location')}</span>
             </h1>
-            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">Choose a location to manage</p>
+            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('establishments.subtitle')}</p>
           </motion.div>
         </div>
 
@@ -125,16 +126,16 @@ export function SelectEstablishmentPage() {
 
               <div className="flex items-center gap-2.5 mb-8">
                 <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-[10px] font-black tracking-widest text-gray-500">
-                  {est.currency.charAt(0).toUpperCase() + est.currency.slice(1).toLowerCase()}
+                  {est.currency?.toUpperCase()}
                 </span>
                 <span className="px-2.5 py-1 rounded-lg bg-paymint-green/10 text-[10px] font-black tracking-widest text-paymint-green border border-paymint-green/20">
-                  {est.subscriptionStatus.charAt(0).toUpperCase() + est.subscriptionStatus.slice(1).toLowerCase()}
+                  {t(`owner.billing.${est.subscriptionStatus.toLowerCase()}`, { defaultValue: est.subscriptionStatus })}
                 </span>
               </div>
 
               <div className={`flex items-center gap-2 text-xs font-black tracking-widest transition-all ${hoveredId === est.id ? 'text-paymint-green' : 'text-gray-400'}`}>
-                OPEN DASHBOARD
-                <ChevronRight size={14} />
+                {t('dashboard.menu.overview').toUpperCase()}
+                <ChevronRight size={14} className={t('common.locale') === 'ar' ? 'rotate-180' : ''} />
               </div>
             </motion.div>
           ))}
@@ -150,8 +151,8 @@ export function SelectEstablishmentPage() {
             <div className="w-16 h-16 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all">
               <Plus size={28} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
             </div>
-            <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2">Add Location</h3>
-            <p className="text-xs font-black text-gray-500 tracking-widest">New Business</p>
+            <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2">{t('establishments.addLocation')}</h3>
+            <p className="text-xs font-black text-gray-500 tracking-widest">{t('onboarding.step1.businessTypes.other')}</p>
           </motion.div>
         </div>
       </div>
@@ -182,7 +183,7 @@ export function SelectEstablishmentPage() {
                 <Loader2 size={40} className="text-paymint-green animate-spin" />
                 <div className="absolute inset-0 bg-paymint-green/20 rounded-[2.5rem] animate-ping" />
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Loading...</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('common.loading')}</h2>
               <p className="text-xs font-black text-paymint-green tracking-widest mt-2">{selectedName}</p>
 
               <div className="mt-12 w-48 h-1 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
@@ -202,10 +203,10 @@ export function SelectEstablishmentPage() {
         isOpen={isLogoutModalOpen}
         onClose={() => setIsLogoutModalOpen(false)}
         onConfirm={confirmLogout}
-        title="Sign Out"
-        message="Are you sure you want to sign out?"
-        confirmText="Sign Out"
-        cancelText={AppStrings.COMMON.CANCEL}
+        title={t('common.logout')}
+        message={t('common.confirmLogout')}
+        confirmText={t('common.logout')}
+        cancelText={t('common.cancel')}
         type="danger"
       />
     </div>

@@ -284,7 +284,7 @@ export function OwnerRolesPage() {
                         <h3 className="font-bold text-gray-900 dark:text-white text-sm">{role.name}</h3>
                         <span className={`inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                           <UserCheck size={10} />
-                          {role.baseRole ? role.baseRole.charAt(0).toUpperCase() + role.baseRole.slice(1).toLowerCase() : ''}
+                          {role.baseRole ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : ''}
                         </span>
                       </div>
                     </div>
@@ -313,11 +313,11 @@ export function OwnerRolesPage() {
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-paymint-green"></span>
-                          <span className="text-xs font-bold text-paymint-green">POS: {role.permissions?.length || 0}</span>
+                          <span className="text-xs font-bold text-paymint-green">{t('owner.roles.posAccess')}: {role.permissions?.length || 0}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                          <span className="text-xs font-bold text-blue-500">Office: {role.backofficePermissions?.length || 0}</span>
+                          <span className="text-xs font-bold text-blue-500">{t('owner.roles.backofficeAccess')}: {role.backofficePermissions?.length || 0}</span>
                         </div>
                       </div>
                     </div>
@@ -358,7 +358,7 @@ export function OwnerRolesPage() {
                           <h3 className="font-bold text-gray-900 dark:text-white text-sm">{role.name}</h3>
                           <span className={`inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                             <UserCheck size={10} />
-                            {role.baseRole ? role.baseRole.charAt(0).toUpperCase() + role.baseRole.slice(1).toLowerCase() : ''}
+                            {role.baseRole ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : ''}
                           </span>
                         </div>
                       </div>
@@ -382,8 +382,8 @@ export function OwnerRolesPage() {
                       <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-lg">
                         <span className="text-gray-500 block mb-1">{t('owner.roles.permissions')}</span>
                         <div className="flex gap-2">
-                          <span className="font-bold text-paymint-green">POS: {role.permissions?.length || 0}</span>
-                          <span className="font-bold text-blue-500">Office: {role.backofficePermissions?.length || 0}</span>
+                          <span className="font-bold text-paymint-green">{t('owner.roles.posAccess')}: {role.permissions?.length || 0}</span>
+                          <span className="font-bold text-blue-500">{t('owner.roles.backofficeAccess')}: {role.backofficePermissions?.length || 0}</span>
                         </div>
                       </div>
                       <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-lg">
@@ -430,7 +430,7 @@ export function OwnerRolesPage() {
                         {sortConfig?.key === 'createdAt' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('owner.locations.actions')}</th>
+                    <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('common.actions')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -452,18 +452,18 @@ export function OwnerRolesPage() {
                         <td className="px-6 py-4">
                           <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                             <UserCheck size={10} />
-                            {role.baseRole ? role.baseRole.charAt(0).toUpperCase() + role.baseRole.slice(1).toLowerCase() : ''}
+                            {role.baseRole ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : ''}
                           </span>
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2">
                               <span className="w-1.5 h-1.5 rounded-full bg-paymint-green"></span>
-                              <span className="text-xs text-gray-500 font-medium">POS: {role.permissions?.length || 0}</span>
+                              <span className="text-xs text-gray-500 font-medium">{t('owner.roles.posAccess')}: {role.permissions?.length || 0}</span>
                             </div>
                             <div className="flex items-center gap-2">
                               <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                              <span className="text-xs text-gray-500 font-medium">Office: {role.backofficePermissions?.length || 0}</span>
+                              <span className="text-xs text-gray-500 font-medium">{t('owner.roles.backofficeAccess')}: {role.backofficePermissions?.length || 0}</span>
                             </div>
                           </div>
                         </td>

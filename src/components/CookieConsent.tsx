@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown, ChevronRight, Check, Shield, BarChart3, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { updateConsentState } from '../utils/analytics';
 
 interface CookiePreferences {
@@ -19,6 +20,7 @@ const defaultPreferences: CookiePreferences = {
 };
 
 export function CookieConsent() {
+  const { t } = useTranslation();
   const [showBanner, setShowBanner] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
   const [expandedSection, setExpandedSection] = useState<keyof CookiePreferences | null>(null);
@@ -103,23 +105,24 @@ export function CookieConsent() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: 'spring', damping: 20, stiffness: 100 }}
+            dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
             className="fixed bottom-0 left-0 right-0 z-[100] p-4 md:p-6"
           >
             <div className="max-w-7xl mx-auto bg-white dark:bg-[#0F172A] rounded-2xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] border border-gray-200 dark:border-white/10 p-6 md:flex md:items-center md:justify-between gap-8 ring-1 ring-black/5">
               <div className="flex-1 space-y-2">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                  🍪 We value your privacy
+                  🍪 {t('cookies.banner.title')}
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed max-w-3xl">
-                  We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic.
-                  For more information, please read our{' '}
+                  {t('cookies.banner.description')}
+                  {' '}
                   <Link
                     to="/legal/cookie-policy"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-paymint-green hover:underline font-bold inline-flex items-center gap-0.5"
                   >
-                    Cookie Policy
+                    {t('cookies.banner.policyLink')}
                   </Link>.
                 </p>
               </div>
@@ -128,19 +131,19 @@ export function CookieConsent() {
                   onClick={() => setShowPreferences(true)}
                   className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-white/10 text-gray-700 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
                 >
-                  Preferences
+                  {t('cookies.banner.preferences')}
                 </button>
                 <button
                   onClick={handleRejectAll}
                   className="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-white/10 text-gray-700 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
                 >
-                  Reject All
+                  {t('cookies.banner.rejectAll')}
                 </button>
                 <button
                   onClick={handleAcceptAll}
                   className="px-6 py-2.5 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 shadow-lg shadow-paymint-green/20 transition-all hover:scale-105"
                 >
-                  Accept All
+                  {t('cookies.banner.acceptAll')}
                 </button>
               </div>
             </div>
@@ -156,13 +159,14 @@ export function CookieConsent() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
+              dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
               className="bg-white dark:bg-[#0B1120] w-full max-w-2xl max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-gray-200 dark:border-white/10"
             >
               {/* Header */}
               <div className="p-6 md:p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
                 <div>
-                  <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Cookie Policy & Settings</h2>
-                  <p className="text-sm text-gray-500 font-medium mt-1">Read our policy and manage your consent</p>
+                  <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{t('cookies.preferences.title')}</h2>
+                  <p className="text-sm text-gray-500 font-medium mt-1">{t('cookies.preferences.subtitle')}</p>
                 </div>
                 <button
                   onClick={() => setShowPreferences(false)}
@@ -176,19 +180,17 @@ export function CookieConsent() {
               <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-8 custom-scrollbar">
                 {/* Policy Text Section */}
                 <div className="prose prose-sm dark:prose-invert max-w-none">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Cookie Declaration</h3>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('cookies.policy.declaration')}</h3>
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                    This website uses cookies to improve user experience. By using our website you consent to all cookies in accordance with our Cookie Policy.
-                    Cookies are small text files that can be used by websites to make a user's experience more efficient.
+                    {t('cookies.policy.p1')}
                   </p>
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed mt-2">
-                    The law states that we can store cookies on your device if they are strictly necessary for the operation of this site. For all other types of cookies we need your permission.
-                    This site uses different types of cookies. Some cookies are placed by third party services that appear on our pages.
+                    {t('cookies.policy.p2')}
                   </p>
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">Manage Consent</h3>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('cookies.preferences.manage')}</h3>
 
                   {/* Section: Essential */}
                   <div className="border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden">
@@ -200,10 +202,10 @@ export function CookieConsent() {
                         <div className="p-2 rounded-lg bg-paymint-green/10 text-paymint-green">
                           <Shield size={20} />
                         </div>
-                        <span className="font-bold text-gray-900 dark:text-white text-sm">Strictly Essential Cookies</span>
+                        <span className="font-bold text-gray-900 dark:text-white text-sm">{t('cookies.types.essential.title')}</span>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-xs font-bold text-paymint-green uppercase tracking-wider">Always Active</span>
+                        <span className="text-xs font-bold text-paymint-green uppercase tracking-wider">{t('cookies.preferences.alwaysActive')}</span>
                         {expandedSection === 'essential' ? <ChevronDown size={18} className="text-gray-400" /> : <ChevronRight size={18} className="text-gray-400" />}
                       </div>
                     </button>
@@ -216,9 +218,7 @@ export function CookieConsent() {
                           className="overflow-hidden"
                         >
                           <div className="p-4 bg-white dark:bg-[#0B1120] text-sm text-gray-500 border-t border-gray-100 dark:border-white/5 leading-relaxed">
-                            These cookies are necessary for the website to function and cannot be switched off in our systems.
-                            They are usually only set in response to actions made by you which amount to a request for services,
-                            such as setting your privacy preferences, logging in or filling in forms.
+                            {t('cookies.types.essential.description')}
                           </div>
                         </motion.div>
                       )}
@@ -235,7 +235,7 @@ export function CookieConsent() {
                         <div className="p-2 rounded-lg bg-blue-500/10 text-blue-500">
                           <BarChart3 size={20} />
                         </div>
-                        <span className="font-bold text-gray-900 dark:text-white text-sm">Analytics Cookies</span>
+                        <span className="font-bold text-gray-900 dark:text-white text-sm">{t('cookies.types.analytics.title')}</span>
                         {expandedSection === 'analytics' ? <ChevronDown size={18} className="text-gray-400" /> : <ChevronRight size={18} className="text-gray-400" />}
                       </button>
 
@@ -258,8 +258,7 @@ export function CookieConsent() {
                           className="overflow-hidden"
                         >
                           <div className="p-4 bg-white dark:bg-[#0B1120] text-sm text-gray-500 border-t border-gray-100 dark:border-white/5 leading-relaxed">
-                            These cookies allow us to count visits and traffic sources so we can measure and improve the performance of our site.
-                            They help us to know which pages are the most and least popular and see how visitors move around the site.
+                            {t('cookies.types.analytics.description')}
                           </div>
                         </motion.div>
                       )}
@@ -276,7 +275,7 @@ export function CookieConsent() {
                         <div className="p-2 rounded-lg bg-purple-500/10 text-purple-500">
                           <Globe size={20} />
                         </div>
-                        <span className="font-bold text-gray-900 dark:text-white text-sm">Marketing Cookies</span>
+                        <span className="font-bold text-gray-900 dark:text-white text-sm">{t('cookies.types.marketing.title')}</span>
                         {expandedSection === 'marketing' ? <ChevronDown size={18} className="text-gray-400" /> : <ChevronRight size={18} className="text-gray-400" />}
                       </button>
 
@@ -299,8 +298,7 @@ export function CookieConsent() {
                           className="overflow-hidden"
                         >
                           <div className="p-4 bg-white dark:bg-[#0B1120] text-sm text-gray-500 border-t border-gray-100 dark:border-white/5 leading-relaxed">
-                            These cookies may be set through our site by our advertising partners.
-                            They may be used by those companies to build a profile of your interests and show you relevant adverts on other sites.
+                            {t('cookies.types.marketing.description')}
                           </div>
                         </motion.div>
                       )}
@@ -315,14 +313,14 @@ export function CookieConsent() {
                   onClick={handleRejectAll}
                   className="px-6 py-3 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-bold text-sm hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
                 >
-                  Reject All
+                  {t('cookies.banner.rejectAll')}
                 </button>
                 <button
                   onClick={handleSavePreferences}
                   className="px-8 py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-black font-bold text-sm hover:opacity-90 transition-all shadow-lg flex items-center gap-2"
                 >
                   <Check size={16} />
-                  Save Preferences
+                  {t('cookies.preferences.save')}
                 </button>
               </div>
             </motion.div>

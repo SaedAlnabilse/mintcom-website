@@ -62,63 +62,6 @@ const isMenuGroup = (item: MenuItemOrGroup): item is MenuGroup => {
 
 // ... (keep generic interface definitions)
 
-// Relative paths (no leading slash, except for sub-routes which are just 'path/to')
-const menuStructure: MenuItemOrGroup[] = [
-  { path: '.', label: 'Dashboard', icon: LayoutDashboard }, // . for index
-  {
-    label: 'Sales and Reporting',
-    icon: FileBarChart,
-    items: [
-      { path: 'reports/sales', label: 'Sales Summary', icon: FileBarChart },
-      { path: 'reports/items', label: 'Sales by Items', icon: Package },
-      { path: 'reports/modifiers', label: 'Sales by Add-Ons', icon: Package },
-      { path: 'reports/staff-sales', label: 'Sales by Staff', icon: Users },
-      { path: 'reports/shifts', label: 'Shifts Reports', icon: FileBarChart },
-      { path: 'reports/cash-discrepancy', label: 'Cash Gap Reports', icon: Scale },
-      { path: 'reports/payments', label: 'Payments Reports', icon: CreditCard },
-      { path: 'reports/discounts', label: 'Discount Reports', icon: Percent },
-    ],
-  },
-  { path: 'orders', label: 'View Customer Orders', icon: ShoppingCart },
-  {
-    label: "Item's Menu",
-    icon: Package,
-    items: [
-      { path: 'categories', label: 'Categories', icon: LayoutDashboard },
-      { path: 'products', label: 'Products', icon: Package },
-      { path: 'addons', label: 'Add-Ons', icon: Package },
-      { path: 'materials', label: 'Ingredients', icon: Package },
-      { path: 'recipes', label: 'Recipes', icon: FileBarChart },
-    ],
-  },
-  { path: 'payment-methods', label: 'Payment Methods', icon: CreditCard },
-  {
-    label: 'Team Management',
-    icon: Users,
-    items: [
-      { path: 'staff', label: 'Team', icon: Users },
-      { path: 'roles', label: 'Roles', icon: Shield },
-    ],
-  },
-  {
-    label: 'Discounts and Loyalty',
-    icon: Heart,
-    items: [
-      { path: 'discounts', label: 'Discounts', icon: Percent },
-      { path: 'loyalty', label: 'Loyalty', icon: Award },
-      { path: 'customers', label: 'Customers', icon: Users },
-    ],
-  },
-  {
-    label: 'System',
-    icon: Sliders,
-    items: [
-      { path: 'settings', label: 'Settings', icon: Sliders },
-      { path: 'activity-logs', label: 'System Logs', icon: History },
-    ],
-  },
-];
-
 import { REQUIRED_PERMISSIONS } from '../config/permissions';
 
 const SIDEBAR_STATE_KEY = 'dashboard_sidebar_expanded';
@@ -318,7 +261,10 @@ export function DashboardLayout() {
   };
 
   return (
-    <div className="h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden transition-colors duration-500">
+    <div
+      dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+      className="h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden transition-colors duration-500"
+    >
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {mobileMenuOpen && (
@@ -358,7 +304,7 @@ export function DashboardLayout() {
               >
                 <img
                   src={PaymintLogoGreen}
-                  alt="PayMint"
+                  alt={t('brand.name')}
                   width={160}
                   height={40}
                   loading="eager"
@@ -367,7 +313,7 @@ export function DashboardLayout() {
                 />
                 <img
                   src={PaymintLogoWhite}
-                  alt="PayMint"
+                  alt={t('brand.name')}
                   width={160}
                   height={40}
                   loading="eager"
@@ -387,13 +333,13 @@ export function DashboardLayout() {
                   className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 hover:border-paymint-green/40 text-paymint-green transition-all group relative"
                   onClick={() => setSidebarOpen(true)}
                 >
-                  <img src={PaymintLeafIcon} width={24} height={24} className="w-6 h-6 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt="P" loading="eager" decoding="async" />
+                  <img src={PaymintLeafIcon} width={24} height={24} className="w-6 h-6 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt={t('brand.name').charAt(0)} loading="eager" decoding="async" />
                   <PanelLeft
                     size={24}
                     className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
                   />
                   <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
-                    Open sidebar
+                    {t('dashboard.menu.openSidebar')}
                   </div>
                 </button>
               </motion.div>
@@ -427,9 +373,9 @@ export function DashboardLayout() {
                     })()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-black text-paymint-green tracking-widest mb-0.5">{AppStrings.STATUS.ACTIVE} Location</p>
+                    <p className="text-xs font-black text-paymint-green tracking-widest mb-0.5">{t('dashboard.menu.activeLocation')}</p>
                     <h2 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight leading-[1.2] font-sans truncate">
-                      {currentEstablishment?.name || AppStrings.COMMON.LOADING}
+                      {currentEstablishment?.name || t('common.loading')}
                     </h2>
                   </div>
                 </div>
@@ -439,7 +385,7 @@ export function DashboardLayout() {
                     <span className="text-xs font-black text-gray-400 tracking-widest">{AppStrings.STATUS.ONLINE}</span>
                   </div>
                   <div className="flex items-center gap-1 text-xs font-black text-gray-400 tracking-widest group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
-                    Switch Location <ChevronRight size={10} className="mt-0.5" />
+                    {t('dashboard.menu.switchLocation')} <ChevronRight size={10} className={`mt-0.5 ${t('common.locale') === 'ar' ? 'rotate-180' : ''}`} />
                   </div>
                 </div>
               </div>
@@ -454,7 +400,7 @@ export function DashboardLayout() {
             >
               <MapPin size={24} />
               <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
-                Switch Location
+                {t('dashboard.menu.switchLocation')}
               </div>
             </button>
           </div>
@@ -466,7 +412,7 @@ export function DashboardLayout() {
           className={`flex-1 px-3 space-y-1.5 scrollbar-none pb-4 ${sidebarOpen ? 'overflow-y-auto' : 'overflow-visible'}`}
         >
           {sidebarOpen && (
-            <p className="px-3 py-2 text-xs font-black text-gray-400 tracking-widest">Main Menu</p>
+            <p className="px-3 py-2 text-xs font-black text-gray-400 tracking-widest">{t('dashboard.menu.mainMenu')}</p>
           )}
 
           {filteredMenu.map((item, index) => {
@@ -474,7 +420,9 @@ export function DashboardLayout() {
               const isExpanded = expandedGroup === item.label;
               const isActive = isGroupActive(item.items);
               const Icon = item.icon;
-              const isBottomItem = ['Team Management', 'Discounts and Loyalty', 'System'].includes(item.label);
+              const isBottomItem = isMenuGroup(item) && item.items.some(subItem =>
+                ['staff', 'roles', 'discounts', 'loyalty', 'customers', 'settings', 'activity-logs'].includes(subItem.path)
+              );
 
               return (
                 <div key={index} className="mb-1">
@@ -495,7 +443,7 @@ export function DashboardLayout() {
                     {sidebarOpen && (
                       <>
                         <span className="flex-1 text-left text-sm font-bold">{item.label}</span>
-                        <ChevronRight size={16} className={`text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`} />
+                        <ChevronRight size={16} className={`text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-90' : (t('common.locale') === 'ar' ? 'rotate-180' : '')}`} />
                       </>
                     )}
 
@@ -615,7 +563,7 @@ export function DashboardLayout() {
             <div className="relative group">
               <button className="w-full flex items-center gap-3 px-3 py-2.5 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
                 <Smartphone size={16} className="text-gray-400" />
-                <span className="text-sm font-bold">Mobile App</span>
+                <span className="text-sm font-bold">{t('dashboard.menu.getMobileApp')}</span>
               </button>
 
               {/* QR Code Popup */}
@@ -689,7 +637,7 @@ export function DashboardLayout() {
                     {/* Center logo placeholder */}
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                        <img src={PaymintLeafIcon} alt="P" className="w-5 h-5 object-contain" />
+                        <img src={PaymintLeafIcon} alt={t('brand.name').charAt(0)} className="w-5 h-5 object-contain" />
                       </div>
                     </div>
                   </div>
@@ -697,8 +645,8 @@ export function DashboardLayout() {
 
                 {/* Text */}
                 <p className="text-center text-sm font-bold text-gray-900 dark:text-white leading-tight">
-                  Scan to download<br />
-                  <span className="text-paymint-green">Paymint App</span>
+                  {t('dashboard.menu.scanToDownload')}<br />
+                  <span className="text-paymint-green">{t('brand.name')} {t('common.app')}</span>
                 </p>
               </div>
             </div>
@@ -720,7 +668,7 @@ export function DashboardLayout() {
                 <p className="text-xs font-bold text-gray-900 dark:text-white truncate">
                   {account?.firstName} {account?.lastName}
                 </p>
-                <p className="text-xs text-gray-500 truncate">Manager</p>
+                <p className="text-xs text-gray-500 truncate">{t('staff.roles.manager')}</p>
               </div>
 
               {/* Actions: Theme & Logout */}
@@ -729,7 +677,7 @@ export function DashboardLayout() {
                 <button
                   onClick={handleLogout}
                   className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all"
-                  title="Sign Out"
+                  title={t('dashboard.menu.logout')}
                 >
                   <LogOut size={20} />
                 </button>
@@ -748,7 +696,7 @@ export function DashboardLayout() {
                 <Settings size={24} />
                 {/* Tooltip */}
                 <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
-                  Settings
+                  {t('dashboard.menu.settings')}
                 </div>
               </button>
 
@@ -787,7 +735,7 @@ export function DashboardLayout() {
                             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left"
                           >
                             <Smartphone size={18} />
-                            <span>Get Mobile App</span>
+                            <span>{t('dashboard.menu.getMobileApp')}</span>
                           </button>
                           {/* QR Code Popup */}
                           <div className="absolute left-full bottom-0 ml-2 bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[80] translate-x-2 group-hover:translate-x-0 w-[200px]">
@@ -850,7 +798,6 @@ export function DashboardLayout() {
                                 {/* Center logo placeholder */}
                                 <div className="absolute inset-0 flex items-center justify-center">
                                   <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                                    {/* Note: I need to ensure PaymintLeafIcon is available or imported. It is used elsewhere I presume. */}
                                     <img src={PaymintLeafIcon} alt="P" className="w-5 h-5 object-contain" />
                                   </div>
                                 </div>
@@ -858,8 +805,8 @@ export function DashboardLayout() {
                             </div>
                             {/* Text */}
                             <p className="text-center text-sm font-bold text-gray-900 dark:text-white leading-tight">
-                              Scan to download<br />
-                              <span className="text-paymint-green">Paymint App</span>
+                              {t('dashboard.menu.scanToDownload')}<br />
+                              <span className="text-paymint-green">{t('brand.name')} {t('common.app')}</span>
                             </p>
                           </div>
                         </div>
@@ -879,7 +826,7 @@ export function DashboardLayout() {
                           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all text-left"
                         >
                           <LogOut size={18} />
-                          <span>Sign Out</span>
+                          <span>{t('dashboard.menu.logout')}</span>
                         </button>
                       </div>
                     </motion.div>
@@ -907,8 +854,8 @@ export function DashboardLayout() {
           </button>
 
           <div className="flex items-center gap-2">
-            <img src={PaymintLeafIcon} className="w-8 h-8 object-contain" alt="P" />
-            <span className="font-bold text-gray-900 dark:text-white">Dashboard</span>
+            <img src={PaymintLeafIcon} className="w-8 h-8 object-contain" alt={t('brand.name').charAt(0)} />
+            <span className="font-bold text-gray-900 dark:text-white">{t('dashboard.title')}</span>
           </div>
 
           <ThemeToggle />
@@ -937,8 +884,8 @@ export function DashboardLayout() {
             {/* Close Button */}
             <div className="flex items-center justify-between h-16 px-4 border-b border-gray-100 dark:border-white/5">
               <div className="flex items-center gap-3">
-                <img src={PaymintLeafIcon} className="w-8 h-8 object-contain" alt="P" />
-                <span className="font-bold text-gray-900 dark:text-white">Paymint</span>
+                <img src={PaymintLeafIcon} className="w-8 h-8 object-contain" alt={t('brand.name').charAt(0)} />
+                <span className="font-bold text-gray-900 dark:text-white">{t('brand.name')}</span>
               </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}
@@ -950,7 +897,7 @@ export function DashboardLayout() {
 
             {/* Navigation */}
             <nav className="flex-1 px-3 space-y-1 overflow-y-auto mt-4">
-              {menuStructure.map((item, index) => {
+              {filteredMenu.map((item, index) => {
                 if (isMenuGroup(item)) {
                   // Simplified mobile menu for groups: just list items
                   return (
@@ -1010,7 +957,7 @@ export function DashboardLayout() {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-bold text-gray-900 dark:text-white">{account?.firstName}</p>
-                  <p className="text-xs text-gray-500">Manager</p>
+                  <p className="text-xs text-gray-500">{t('owner.staff.standardUsers')}</p>
                 </div>
                 <button
                   onClick={handleLogout}
@@ -1027,14 +974,14 @@ export function DashboardLayout() {
       {/* Bottom Navigation - Mobile Only */}
       <BottomNavigation onMenuClick={() => setMobileMenuOpen(true)} />
 
-      <ConfirmModal
+        <ConfirmModal
         isOpen={isLogoutModalOpen}
         onClose={() => setIsLogoutModalOpen(false)}
         onConfirm={confirmLogout}
-        title={AppStrings.AUTH.LOGOUT.TITLE}
-        message={AppStrings.AUTH.LOGOUT.MESSAGE}
-        confirmText={AppStrings.NAVIGATION.LOGOUT}
-        cancelText={AppStrings.COMMON.CANCEL}
+        title={t('dashboard.menu.logout')}
+        message={t('activity.actions.logout')}
+        confirmText={t('dashboard.menu.logout')}
+        cancelText={t('common.cancel')}
         type="danger"
       />
     </div>

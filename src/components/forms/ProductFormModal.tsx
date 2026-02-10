@@ -237,7 +237,7 @@ export function ProductFormModal({
         setIsImageDeleted(false);
         toast.success(t('products.messages.imageGenerated'));
       } else {
-        throw new Error('Invalid response from AI service');
+        throw new Error(t('products.messages.invalidAiResponse'));
       }
     } catch (error: any) {
       console.error('Failed to generate image:', error);
@@ -410,7 +410,7 @@ export function ProductFormModal({
         await api.delete(`/api/items/${initialData.id}/image`);
       } catch (error) {
         console.error('Failed to delete image:', error);
-        toast.error('Failed to remove image');
+        toast.error(t('products.messages.imageRemovalFailed'));
       }
     }
 
@@ -492,7 +492,11 @@ export function ProductFormModal({
   return createPortal(
     <>
       <AnimatePresence>
-        <div key="product-form-modal-overlay" className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans">
+        <div
+          key="product-form-modal-overlay"
+          dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+          className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
+        >
           <motion.div
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
@@ -546,7 +550,7 @@ export function ProductFormModal({
                       {imagePreview ? (
                         <img
                           src={imagePreview}
-                          alt="Preview"
+                          alt={t('products.form.imagePreview')}
                           className="w-full h-full object-cover"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
@@ -652,7 +656,7 @@ export function ProductFormModal({
                             type="text"
                             value={costPrice}
                             onChange={handleCostPriceChange}
-                            placeholder="0.00"
+                            placeholder={t('common.zero')}
                             className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl pl-16 pr-4 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm group-hover:border-paymint-green/50"
                           />
                         </div>
@@ -673,7 +677,7 @@ export function ProductFormModal({
                           type="text"
                           value={price}
                           onChange={handlePriceChange}
-                          placeholder="0.00"
+                          placeholder={t('common.zero')}
                           className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.price ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl pl-16 pr-4 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm group-hover:border-paymint-green/50`}
                         />
                       </div>
@@ -689,22 +693,22 @@ export function ProductFormModal({
                       </div>
                       <div className="flex items-baseline gap-1">
                         <p className="text-gray-900 dark:text-white font-bold text-lg">
-                          {taxRate < 1 ? parseFloat((taxRate * 100).toFixed(2)) : taxRate}
+                          {(taxRate < 1 ? taxRate * 100 : taxRate).toLocaleString(t('common.locale'), { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
                         </p>
-                        <p className="text-xs text-gray-400 font-black">%</p>
+                        <p className="text-xs text-gray-400 font-black">{t('common.percent')}</p>
                       </div>
                     </div>
                     <div className="bg-paymint-green/5 rounded-2xl p-4 border border-paymint-green/20 shadow-sm">
                       <p className="text-xs font-bold text-paymint-green tracking-widest mb-1.5 leading-tight">{t('products.stats.tax')}</p>
                       <div className="flex items-baseline gap-1">
-                        <p className="text-paymint-green font-bold text-lg">{taxAmount.toFixed(3)}</p>
+                        <p className="text-paymint-green font-bold text-lg">{taxAmount.toLocaleString(t('common.locale'), { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</p>
                         <p className="text-[8px] text-paymint-green/60 font-black">{currencySymbol}</p>
                       </div>
                     </div>
                     <div className="bg-paymint-green/10 rounded-2xl p-4 border border-paymint-green/30 shadow-sm">
                       <p className="text-xs font-bold text-paymint-green tracking-widest mb-1.5 leading-tight">{t('products.stats.net')}</p>
                       <div className="flex items-baseline gap-1">
-                        <p className="text-paymint-green font-bold text-lg">{netPrice.toFixed(3)}</p>
+                        <p className="text-paymint-green font-bold text-lg">{netPrice.toLocaleString(t('common.locale'), { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</p>
                         <p className="text-[8px] text-paymint-green/60 font-black">{currencySymbol}</p>
                       </div>
                     </div>
@@ -716,7 +720,7 @@ export function ProductFormModal({
                       {(() => {
                         const cost = parseFloat(costPrice) || 0;
                         const profit = netPrice - cost;
-                        const margin = netPrice > 0 ? (profit / netPrice) * 100 : 0;
+                        const margin = netPrice > 0 ? (profit / netPrice) : 0;
                         const isProfit = profit >= 0;
                         const colorClass = isProfit ? 'text-paymint-green' : 'text-paymint-red';
                         const bgClass = isProfit ? 'bg-paymint-green/5 border-paymint-green/20' : 'bg-red-500/5 border-red-500/20';
@@ -726,15 +730,14 @@ export function ProductFormModal({
                             <div className={`${bgClass} rounded-2xl p-4 border shadow-sm transition-colors`}>
                               <p className={`text-xs font-black tracking-widest mb-1.5 leading-tight ${colorClass}`}>{t('products.stats.profit')}</p>
                               <div className="flex items-baseline gap-1">
-                                <p className={`${colorClass} font-bold text-lg`}>{profit.toFixed(3)}</p>
+                                <p className={`${colorClass} font-bold text-lg`}>{profit.toLocaleString(t('common.locale'), { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</p>
                                 <p className={`text-[8px] font-black ${colorClass} opacity-60`}>{currencySymbol}</p>
                               </div>
                             </div>
                             <div className={`${bgClass} rounded-2xl p-4 border shadow-sm transition-colors`}>
                               <p className={`text-xs font-black tracking-widest mb-1.5 leading-tight ${colorClass}`}>{t('products.stats.margin')}</p>
                               <div className="flex items-baseline gap-1">
-                                <p className={`${colorClass} font-bold text-lg`}>{margin.toFixed(1)}</p>
-                                <p className={`text-xs font-black ${colorClass} opacity-60`}>%</p>
+                                <p className={`${colorClass} font-bold text-lg`}>{margin.toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}</p>
                               </div>
                             </div>
                           </>
@@ -748,17 +751,17 @@ export function ProductFormModal({
                 <div className="space-y-3">
                   <div className="flex items-center justify-between px-1">
                     <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                      Description
-                      <QuickInfo text="Details." />
+                      {t('products.form.descriptionLabel')}
+                      <QuickInfo text={t('products.form.descriptionTip')} />
                     </label>
                     <span className={`text-xs font-black tracking-widest ${description.length >= 30 ? 'text-paymint-red' : 'text-gray-400'}`}>
-                      {description.length} / 30
+                      {description.length.toLocaleString(t('common.locale'))} / {(30).toLocaleString(t('common.locale'))}
                     </span>
                   </div>
                   <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value.slice(0, 30))}
-                    placeholder="Summarize product characteristics..."
+                    placeholder={t('products.form.descriptionPlaceholder')}
                     rows={2}
                     className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all resize-none shadow-sm group-hover:border-paymint-green/50"
                   />
@@ -767,8 +770,8 @@ export function ProductFormModal({
                 {/* Category */}
                 <div className="relative space-y-3" ref={categoryRef}>
                   <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                    Category <span className="text-paymint-red">*</span>
-                    <QuickInfo text="Group." />
+                    {t('products.form.categoryLabel')} <span className="text-paymint-red">*</span>
+                    <QuickInfo text={t('products.form.categoryTip')} />
                   </label>
                   <button
                     ref={categoryTriggerRef}
@@ -780,7 +783,7 @@ export function ProductFormModal({
                     className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.category ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all shadow-sm group-hover:border-paymint-green/50`}
                   >
                     <span className={categoryId ? 'text-sm font-bold text-gray-900 dark:text-white' : 'text-sm font-bold text-gray-400'}>
-                      {localCategories.find(c => c.id === categoryId)?.name || 'Select Category'}
+                      {localCategories.find(c => c.id === categoryId)?.name || t('products.form.selectCategory')}
                     </span>
                     <ChevronDown size={20} className={`text-gray-400 transition-transform duration-300 ${showCategoryDropdown ? 'rotate-180 text-paymint-green' : ''}`} />
                   </button>
@@ -803,7 +806,7 @@ export function ProductFormModal({
                               type="text"
                               value={categorySearchQuery}
                               onChange={(e) => setCategorySearchQuery(e.target.value)}
-                              placeholder="Filter Categories..."
+                              placeholder={t('products.form.filterCategories')}
                               className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
                               onClick={(e) => e.stopPropagation()}
                             />
@@ -822,14 +825,14 @@ export function ProductFormModal({
                             className="w-full px-5 py-4 text-left hover:bg-gray-50 dark:hover:bg-white/[0.02] flex items-center justify-between group transition-colors border-b border-gray-100 dark:border-white/5"
                           >
                             <span className={`text-xs font-bold ${!categoryId ? 'text-paymint-green' : 'text-gray-400'}`}>
-                              None Selected
+                              {t('products.messages.noneSelected')}
                             </span>
                             {!categoryId && <Check size={18} className="text-paymint-green" strokeWidth={3} />}
                           </button>
 
                           {filteredCategories.length === 0 && (
                             <div className="p-8 text-center border-b border-gray-100 dark:border-white/5">
-                              <p className="text-xs font-bold text-gray-400">No Matches Found</p>
+                              <p className="text-xs font-bold text-gray-400">{t('products.messages.noMatches')}</p>
                             </div>
                           )}
 
@@ -854,15 +857,15 @@ export function ProductFormModal({
                         {/* Sticky Bottom Create Button */}
                         <button
                           type="button"
-                          onClick={() => { 
+                          onClick={() => {
                             setCategoryError(null);
-                            setShowCategoryModal(true); 
-                            setShowCategoryDropdown(false); 
+                            setShowCategoryModal(true);
+                            setShowCategoryDropdown(false);
                           }}
                           className="w-full px-5 py-4 text-left bg-gray-50 dark:bg-white/[0.02] hover:bg-paymint-green/10 flex items-center gap-3 transition-colors text-paymint-green border-t border-gray-100 dark:border-white/10 shrink-0"
                         >
                           <Plus size={16} />
-                          <span className="text-xs font-bold tracking-widest">Create Category</span>
+                          <span className="text-xs font-bold tracking-widest">{t('categories.newCategory')}</span>
                         </button>
                       </motion.div>
                     )}
@@ -872,8 +875,8 @@ export function ProductFormModal({
                 {/* Add-ons (Attributes) */}
                 <div className="relative space-y-3" ref={addonsRef}>
                   <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                    Add-ons
-                    <QuickInfo text="Extras." />
+                    {t('products.form.addonsLabel')}
+                    <QuickInfo text={t('products.form.addonsTip')} />
                   </label>
 
                   {attributes.length === 0 && (
@@ -883,8 +886,8 @@ export function ProductFormModal({
                           <AlertCircle size={16} className="text-red-600 dark:text-red-500" strokeWidth={2.5} />
                         </div>
                         <div>
-                          <p className="text-xs font-black tracking-widest text-red-600 dark:text-red-500">Notice</p>
-                          <p className="text-[11px] font-bold text-red-500/90 dark:text-red-400/70 leading-snug">No add-ons. <span className="underline cursor-pointer hover:text-red-600" onClick={() => setShowAddonsWarning(true)}>Create here</span>.</p>
+                          <p className="text-xs font-black tracking-widest text-red-600 dark:text-red-500">{t('common.notice')}</p>
+                          <p className="text-[11px] font-bold text-red-500/90 dark:text-red-400/70 leading-snug">{t('products.messages.noAddons')} <span className="underline cursor-pointer hover:text-red-600" onClick={() => setShowAddonsWarning(true)}>{t('products.messages.createHere')}</span>.</p>
                         </div>
                       </div>
                     </div>
@@ -905,10 +908,10 @@ export function ProductFormModal({
                       </div>
                       <span className={selectedAttributeIds.length > 0 ? 'text-sm font-bold text-gray-900 dark:text-white' : 'text-sm font-bold text-gray-400'}>
                         {selectedAttributeIds.length === 0
-                          ? (attributes.length === 0 ? 'No Add-ons' : 'Add Add-ons')
+                          ? (attributes.length === 0 ? t('products.messages.noAddons') : t('products.form.searchAddons'))
                           : selectedAttributeIds.length === 1
-                            ? attributes.find(a => a.id === selectedAttributeIds[0])?.name || '1 Active'
-                            : `${selectedAttributeIds.length} Linked`}
+                            ? attributes.find(a => a.id === selectedAttributeIds[0])?.name || t('products.messages.active')
+                            : t('products.messages.linked', { count: selectedAttributeIds.length })}
                       </span>
                     </div>
                     <ChevronDown size={20} className={`text-gray-400 transition-transform duration-300 ${showAddonsDropdown ? 'rotate-180 text-paymint-green' : ''}`} />
@@ -929,7 +932,7 @@ export function ProductFormModal({
                               type="text"
                               value={addonsSearchQuery}
                               onChange={(e) => setAddonsSearchQuery(e.target.value)}
-                              placeholder="Search Add-ons..."
+                              placeholder={t('products.form.searchAddons')}
                               className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
                               onClick={(e) => e.stopPropagation()}
                             />
@@ -941,7 +944,7 @@ export function ProductFormModal({
                         <div className="overflow-y-auto custom-scrollbar flex-1">
                           {filteredAttributes.length === 0 ? (
                             <div className="p-8 text-center border-b border-gray-100 dark:border-white/5">
-                              <p className="text-xs font-bold text-gray-400">No Matches Found</p>
+                              <p className="text-xs font-bold text-gray-400">{t('products.messages.noMatches')}</p>
                             </div>
                           ) : (
                             filteredAttributes.map(attr => (
@@ -964,8 +967,8 @@ export function ProductFormModal({
                                   </span>
                                   <span className="text-xs text-gray-400 tracking-widest font-black mt-0.5">
                                     {attr.subAttributes?.length === 0
-                                      ? 'No Sub-Items'
-                                      : `${attr.subAttributes?.length || 0} Option${attr.subAttributes?.length !== 1 ? 's' : ''}`}
+                                      ? t('products.messages.noSubItems')
+                                      : t('products.messages.options', { count: attr.subAttributes?.length || 0 })}
                                   </span>
                                 </div>
                                 <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${selectedAttributeIds.includes(attr.id) ? 'bg-paymint-green border-paymint-green shadow-sm' : 'border-gray-300 dark:border-white/10'}`}>
@@ -983,7 +986,7 @@ export function ProductFormModal({
                           className="w-full px-5 py-4 text-left bg-gray-50 dark:bg-white/[0.02] hover:bg-paymint-green/10 flex items-center gap-3 transition-colors text-paymint-green border-t border-gray-100 dark:border-white/10 shrink-0"
                         >
                           <Plus size={16} />
-                          <span className="text-xs font-bold tracking-widest">Create Add-on</span>
+                          <span className="text-xs font-bold tracking-widest">{t('products.form.createAddon')}</span>
                         </button>
                       </motion.div>
                     )}
@@ -1017,10 +1020,10 @@ export function ProductFormModal({
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="text-gray-900 dark:text-white font-bold text-sm tracking-tight flex items-center gap-2">
-                        Track Inventory
-                        <QuickInfo text="Inventory." />
+                        {t('products.form.inventory.title')}
+                        <QuickInfo text={t('products.form.inventory.tip')} />
                       </h4>
-                      <p className="text-xs font-bold text-gray-500 tracking-widest mt-1">Stock Control</p>
+                      <p className="text-xs font-bold text-gray-500 tracking-widest mt-1">{t('products.form.inventory.subtitle')}</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input
@@ -1038,10 +1041,10 @@ export function ProductFormModal({
                       <div className="flex items-center justify-between bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
                         <div>
                           <h4 className="text-gray-900 dark:text-white font-bold text-xs tracking-tight flex items-center gap-1">
-                            Allow Overselling
-                            <QuickInfo text="Sell if empty." />
+                            {t('products.form.inventory.overselling')}
+                            <QuickInfo text={t('products.form.inventory.oversellingTip')} />
                           </h4>
-                          <p className="text-gray-400 text-xs font-bold mt-0.5">Continue selling when out of stock</p>
+                          <p className="text-gray-400 text-xs font-bold mt-0.5">{t('products.form.inventory.oversellingDesc')}</p>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
                           <input
@@ -1056,14 +1059,14 @@ export function ProductFormModal({
 
                       <div className="space-y-3">
                         <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                          Quantity
-                          <QuickInfo text="Qty." />
+                          {t('products.form.inventory.quantity')}
+                          <QuickInfo text={t('products.form.inventory.quantityTip')} />
                         </label>
                         <input
                           type="number"
                           value={stock}
                           onChange={(e) => setStock(e.target.value)}
-                          placeholder="0"
+                          placeholder={(0).toLocaleString(t('common.locale'))}
                           className={`w-full bg-white dark:bg-black/20 border ${errors.stock ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                         />
                         {errors.stock && (
@@ -1074,25 +1077,25 @@ export function ProductFormModal({
                       <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-3">
                           <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                            <span className="text-yellow-500 text-lg">●</span> Low
+                            <span className="text-yellow-500 text-lg">●</span> {t('products.form.inventory.low')}
                           </label>
                           <input
                             type="number"
                             value={lowStockYellow}
                             onChange={(e) => setLowStockYellow(e.target.value)}
-                            placeholder="5"
+                            placeholder={(5).toLocaleString(t('common.locale'))}
                             className={`w-full bg-white dark:bg-black/20 border ${errors.lowStockYellow ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                           />
                         </div>
                         <div className="space-y-3">
                           <label className="block text-xs font-black text-gray-400 tracking-widest px-1 flex items-center">
-                            <span className="text-paymint-red mr-2 text-lg">●</span> Very Low
+                            <span className="text-paymint-red mr-2 text-lg">●</span> {t('products.form.inventory.veryLow')}
                           </label>
                           <input
                             type="number"
                             value={lowStockRed}
                             onChange={(e) => setLowStockRed(e.target.value)}
-                            placeholder="2"
+                            placeholder={(2).toLocaleString(t('common.locale'))}
                             className={`w-full bg-white dark:bg-black/20 border ${errors.lowStockRed ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                           />
                         </div>

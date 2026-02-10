@@ -1,4 +1,3 @@
-import { AppStrings } from '../constants/AppStrings';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -62,9 +61,9 @@ export function BrandLayout() {
     const mainContentRef = useRef<HTMLDivElement>(null);
 
     const menuItems = useMemo(() => brandId ? [
-        { path: `/brand/${brandId}`, label: t('brand.menu.overview'), icon: LayoutDashboard, description: 'Dashboard & Analytics' },
-        { path: `/brand/${brandId}/locations`, label: t('brand.menu.locations'), icon: Store, description: 'Manage Locations' },
-        { path: `/brand/${brandId}/team`, label: t('brand.menu.team'), icon: Users, description: 'Staff Management' },
+        { path: `/brand/${brandId}`, label: t('brand.menu.overview'), icon: LayoutDashboard, description: t('brand.menu.overviewDesc') },
+        { path: `/brand/${brandId}/locations`, label: t('brand.menu.locations'), icon: Store, description: t('brand.menu.locationsDesc') },
+        { path: `/brand/${brandId}/team`, label: t('brand.menu.team'), icon: Users, description: t('brand.menu.teamDesc') },
     ] : [], [brandId, t]);
 
     // Scroll to top on route change
@@ -125,14 +124,17 @@ export function BrandLayout() {
                         <div className="w-14 h-14 border-4 border-paymint-green/20 rounded-full" />
                         <div className="w-14 h-14 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
                     </div>
-                    <p className="text-sm font-bold text-gray-400 tracking-widest">Loading brand...</p>
+                    <p className="text-sm font-bold text-gray-400 tracking-widest">{t('brand.dashboard.loading')}</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden transition-colors duration-500">
+        <div
+            dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+            className="h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden transition-colors duration-500"
+        >
             {/* Mobile Menu Overlay */}
             <AnimatePresence>
                 {mobileMenuOpen && (
@@ -173,7 +175,7 @@ export function BrandLayout() {
                             >
                                 <img
                                     src={PaymintLogoGreen}
-                                    alt="PayMint"
+                                    alt={t('brand.name')}
                                     width={160}
                                     height={40}
                                     loading="eager"
@@ -182,7 +184,7 @@ export function BrandLayout() {
                                 />
                                 <img
                                     src={PaymintLogoWhite}
-                                    alt="PayMint"
+                                    alt={t('brand.name')}
                                     width={160}
                                     height={40}
                                     loading="eager"
@@ -202,7 +204,7 @@ export function BrandLayout() {
                                     className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 hover:border-paymint-green/40 text-paymint-green transition-all group relative"
                                     onClick={() => setSidebarOpen(true)}
                                 >
-                                    <img src={PaymintLeafIcon} width={24} height={24} loading="eager" decoding="async" className="w-6 h-6 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt="P" />
+                                    <img src={PaymintLeafIcon} width={24} height={24} loading="eager" decoding="async" className="w-6 h-6 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt={t('brand.name').charAt(0)} />
                                     <PanelLeft
                                         size={24}
                                         className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
@@ -240,10 +242,10 @@ export function BrandLayout() {
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-xs font-black text-paymint-green tracking-widest mb-0.5">
-                                            {brand?.id === 'cmkek5eme0001vjjqvfm3wjwa' ? 'Top Performance' : t('brand.menu.activeBrand')}
+                                            {brand?.id === 'cmkek5eme0001vjjqvfm3wjwa' ? t('brand.dashboard.liveData') : t('brand.menu.activeBrand')}
                                         </p>
                                         <h2 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight leading-[1.2] font-sans truncate">
-                                            {brand?.name || AppStrings.COMMON.LOADING}
+                                            {brand?.name || t('common.loading')}
                                         </h2>
                                     </div>
                                 </div>
@@ -253,7 +255,7 @@ export function BrandLayout() {
                                         <span className="text-xs font-black text-gray-400 tracking-widest">{t('owner.overview.online')}</span>
                                     </div>
                                     <div className="flex items-center gap-1 text-xs font-bold text-gray-500 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
-                                        {t('brand.menu.switchBrand')} <ChevronRight size={10} className="mt-0.5" />
+                                        {t('brand.menu.switchBrand')} <ChevronRight size={10} className={`mt-0.5 ${t('common.locale') === 'ar' ? 'rotate-180' : ''}`} />
                                     </div>
                                 </div>
                             </div>
@@ -378,7 +380,7 @@ export function BrandLayout() {
                                         {/* Center logo placeholder */}
                                         <div className="absolute inset-0 flex items-center justify-center">
                                             <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                                                <img src={PaymintLeafIcon} alt="P" className="w-5 h-5 object-contain" />
+                                                <img src={PaymintLeafIcon} alt={t('brand.name').charAt(0)} className="w-5 h-5 object-contain" />
                                             </div>
                                         </div>
                                     </div>
@@ -386,7 +388,7 @@ export function BrandLayout() {
                                 {/* Text */}
                                 <p className="text-center text-sm font-bold text-gray-900 dark:text-white leading-tight">
                                     {t('owner.menu.scanToDownload')}<br />
-                                    <span className="text-paymint-green">Paymint App</span>
+                                    <span className="text-paymint-green">{t('brand.name')} {t('common.app')}</span>
                                 </p>
                             </div>
                         </div>
@@ -415,7 +417,7 @@ export function BrandLayout() {
                                 <button
                                     onClick={handleLogout}
                                     className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all"
-                                    title="Sign Out"
+                                    title={t('dashboard.menu.logout')}
                                 >
                                     <LogOut size={20} />
                                 </button>
@@ -536,7 +538,7 @@ export function BrandLayout() {
                                                                 {/* Center logo placeholder */}
                                                                 <div className="absolute inset-0 flex items-center justify-center">
                                                                     <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                                                                        <img src={PaymintLeafIcon} alt="P" className="w-5 h-5 object-contain" />
+                                                                        <img src={PaymintLeafIcon} alt={t('brand.name').charAt(0)} className="w-5 h-5 object-contain" />
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -544,7 +546,7 @@ export function BrandLayout() {
                                                         {/* Text */}
                                                         <p className="text-center text-sm font-bold text-gray-900 dark:text-white leading-tight">
                                                             {t('owner.menu.scanToDownload')}<br />
-                                                            <span className="text-paymint-green">Paymint App</span>
+                                                            <span className="text-paymint-green">{t('brand.name')} {t('common.app')}</span>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -591,7 +593,7 @@ export function BrandLayout() {
                     </button>
 
                     <div className="flex items-center gap-2">
-                        <img src={PaymintLeafIcon} className="w-8 h-8 object-contain" alt="P" />
+                        <img src={PaymintLeafIcon} className="w-8 h-8 object-contain" alt={t('brand.name').charAt(0)} />
                         <span className="text-lg font-bold text-gray-900 dark:text-white">{brand?.name}</span>
                     </div>
 
@@ -621,8 +623,8 @@ export function BrandLayout() {
                         {/* Close Button */}
                         <div className="flex items-center justify-between h-16 px-4 border-b border-gray-100 dark:border-white/5">
                             <div className="flex items-center gap-3">
-                                <img src={PaymintLeafIcon} className="w-8 h-8 object-contain" alt="P" />
-                                <span className="font-bold text-gray-900 dark:text-white">Paymint</span>
+                                <img src={PaymintLeafIcon} className="w-8 h-8 object-contain" alt={t('brand.name').charAt(0)} />
+                                <span className="font-bold text-gray-900 dark:text-white">{t('brand.name')}</span>
                             </div>
                             <button
                                 onClick={() => setMobileMenuOpen(false)}
@@ -653,7 +655,7 @@ export function BrandLayout() {
                                 onClick={goBackToOwner}
                                 className="w-full flex items-center gap-3 p-3 rounded-xl text-gray-500 hover:text-paymint-green hover:bg-paymint-green/5 transition-all group mb-4"
                             >
-                                <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                                <ArrowLeft size={18} className={`transition-transform ${t('common.locale') === 'ar' ? 'rotate-180 group-hover:translate-x-1' : 'group-hover:-translate-x-1'}`} />
                                 <span className="text-sm font-bold">{t('brand.menu.backToBrands')}</span>
                             </button>
 
@@ -706,9 +708,9 @@ export function BrandLayout() {
                 isOpen={isLogoutModalOpen}
                 onClose={() => setIsLogoutModalOpen(false)}
                 onConfirm={confirmLogout}
-                title={t('auth.login.loginButton')} // Reusing login button text as "Sign Out" or similar if available, otherwise fallback
-                message="Are you sure you want to sign out of the brand dashboard?"
-                confirmText={t('owner.menu.signOut')}
+                title={t('dashboard.menu.logout')}
+                message={t('activity.actions.logout') || t('auth.logout.message')}
+                confirmText={t('dashboard.menu.logout')}
                 cancelText={t('common.cancel')}
                 type="danger"
             />

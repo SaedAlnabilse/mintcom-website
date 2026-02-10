@@ -15,6 +15,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useRealtime } from '../../hooks/useRealtime';
 import { DataChangeEventTypes } from '../../services/realtimeService';
 import { useTranslation } from 'react-i18next';
+import { getDateLocale } from '../../utils/dateLocale';
 
 import type { 
   PeakHour, 
@@ -168,7 +169,7 @@ export const DashboardPage = () => {
       
       // Process categories specifically from the robust report endpoint
       const processedCategories = categoryData.map((cat: any) => ({
-          name: cat.name || cat.itemName || 'Unknown',
+          name: cat.name || cat.itemName || t('common.unknown'),
           value: cat.value || cat.revenue || cat.totalSales || 0,
           count: cat.count || cat.quantity || cat.orders || 0
       })).sort((a: any, b: any) => b.value - a.value);
@@ -193,7 +194,7 @@ export const DashboardPage = () => {
       // Process top products
       const topItems = (Array.isArray(topItemsRes.data) ? topItemsRes.data : []) as TopSellingItem[];
       setTopProducts(topItems.map((item: any) => ({
-        name: item.itemName || item.name || 'Unknown',
+        name: item.itemName || item.name || t('common.unknown'),
         orders: item.quantity || item.orders || item.count || 0,
         revenue: item.revenue || item.totalSales || item.value || 0,
       })));
@@ -293,7 +294,7 @@ export const DashboardPage = () => {
         mode: 'current_shift',
         label: t('dashboard.viewMode.currentShift'),
         icon: <PlayCircle size={16} />,
-        description: t('dashboard.shiftStatus.started', { time: shiftStatus.activeShift ? format(new Date(shiftStatus.activeShift.startTime), 'h:mm a') : '' })
+        description: t('dashboard.shiftStatus.started', { time: shiftStatus.activeShift ? format(new Date(shiftStatus.activeShift.startTime), 'h:mm a', { locale: getDateLocale(t('common.locale')) }) : '' })
       });
     }
 
@@ -337,7 +338,7 @@ export const DashboardPage = () => {
 
   // Format shift employee name
   const getShiftEmployeeName = () => {
-    if (!shiftStatus?.activeShift?.employee) return '';
+    if (!shiftStatus?.activeShift?.employee) return t('common.pos');
     const emp = shiftStatus.activeShift.employee;
     return `${emp.firstName || ''} ${emp.lastName || ''}`.trim() || emp.username;
   };
@@ -365,6 +366,7 @@ export const DashboardPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
           className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-24 sm:pb-10 font-sans"
+          dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
         >
           {/* Header */}
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
@@ -469,7 +471,7 @@ export const DashboardPage = () => {
               <div>
                 <span className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white">
                   {viewMode === 'current_shift' && shiftStatus?.activeShift && (
-                    <>{t('dashboard.viewMode.showingSince', { date: format(new Date(shiftStatus.activeShift.startTime), 'MMM d, h:mm a') })}</>
+                    <>{t('dashboard.viewMode.showingSince', { date: format(new Date(shiftStatus.activeShift.startTime), 'MMM d, h:mm a', { locale: getDateLocale(t('common.locale')) }) })}</>
                   )}
                   {viewMode === 'previous_shift' && t('dashboard.viewMode.showingLastShift')}
                   {viewMode === 'last_24_hours' && t('dashboard.viewMode.showingLast24h')}
@@ -477,7 +479,7 @@ export const DashboardPage = () => {
               </div>
             </div>
             <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">
-              {t('dashboard.lastUpdated')} {format(lastRefresh, 'h:mm a')}
+              {t('dashboard.lastUpdated')} {format(lastRefresh, 'h:mm a', { locale: getDateLocale(t('common.locale')) })}
             </span>
           </div>
 

@@ -34,7 +34,7 @@ export const AdminControl = () => {
   }, [isVideoLoaded]);
 
   return (
-    <section id="admin" className="py-24 lg:py-32 bg-white dark:bg-[#0f0f0f] overflow-hidden relative">
+    <section id="admin" className="py-24 lg:py-32 bg-white dark:bg-[#0f0f0f] overflow-hidden relative" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Background Decor */}
       <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] -z-10" />
 
@@ -61,7 +61,7 @@ export const AdminControl = () => {
                     allow="autoplay; fullscreen; picture-in-picture"
                     style={{ pointerEvents: 'none' }}
                     loading="lazy"
-                    title="PayMint Admin App Demo"
+                    title={t('landing.admin.videoTitle')}
                   />
                 ) : (
                   // Placeholder while video loads
@@ -70,7 +70,7 @@ export const AdminControl = () => {
                       <div className="w-12 h-12 rounded-full bg-paymint-green/20 flex items-center justify-center mx-auto mb-3">
                         <Play className="w-6 h-6 text-paymint-green" fill="currentColor" />
                       </div>
-                      <p className="text-white/40 text-xs">Loading...</p>
+                      <p className="text-white/40 text-xs">{t('common.loading')}</p>
                     </div>
                   </div>
                 )}
@@ -88,8 +88,8 @@ export const AdminControl = () => {
                     <BarChart2 size={20} className="text-black" />
                   </div>
                   <div>
-                    <p className="text-white text-xs font-medium">{t('admin.dailyRevenue')}</p>
-                    <p className="text-white font-bold text-lg">$2,450.00</p>
+                    <p className="text-white text-xs font-medium">{t('landing.admin.dailyRevenue')}</p>
+                    <p className="text-white font-bold text-lg">{(2450).toLocaleString(t('common.locale'), { style: 'currency', currency: 'JOD' })}</p>
                   </div>
                 </div>
               </motion.div>
@@ -111,32 +111,36 @@ export const AdminControl = () => {
               <span className="p-2 bg-paymint-green/10 rounded-lg">
                 <Laptop size={20} className="text-paymint-green" />
               </span>
-              <span className="text-paymint-green font-bold tracking-wide text-sm">{t('admin.badge')}</span>
+              <span className="text-paymint-green font-bold tracking-wide text-sm">{t('landing.admin.badge')}</span>
             </div>
 
             <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-8 tracking-tight leading-tight">
-              {t('admin.title1')} <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-blue-500">{t('admin.title2')}</span> <br />
-              {t('admin.title3')}
+              {t('landing.admin.title1')} <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-blue-500">{t('landing.admin.title2')}</span> <br />
+              {t('landing.admin.title3')}
             </h2>
 
             {/* Logo Lockup */}
             <div className="flex items-center gap-6 mb-8 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 w-fit">
-              <img src={WhiteLogo} alt="PayMint Logo" width={128} height={32} className="h-8 w-auto object-contain hidden dark:block" loading="lazy" decoding="async" />
-              <img src={GreenLogo} alt="PayMint Logo" width={128} height={32} className="h-8 w-auto object-contain block dark:hidden" loading="lazy" decoding="async" />
+              <img src={WhiteLogo} alt={t('common.logoAlt')} width={128} height={32} className="h-8 w-auto object-contain hidden dark:block" loading="lazy" decoding="async" />
+              <img src={GreenLogo} alt={t('common.logoAlt')} width={128} height={32} className="h-8 w-auto object-contain block dark:hidden" loading="lazy" decoding="async" />
               <div className="h-8 w-px bg-gray-300 dark:bg-white/20"></div>
               <div className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
                 <Smartphone size={16} />
-                <span>{t('admin.adminApp')}</span>
+                <span>{t('landing.admin.adminApp')}</span>
               </div>
             </div>
 
             <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
-              {t('admin.description')}
+              {t('landing.admin.description')}
             </p>
 
             <ul className="space-y-4">
-              {[t('admin.shiftAlerts'), t('admin.stockAlerts'), t('admin.liveReports')].map((item, i) => (
+              {[
+                t('landing.admin.shiftAlerts'),
+                t('landing.admin.stockAlerts'),
+                t('landing.admin.liveReports')
+              ].map((item, i) => (
                 <motion.li
                   key={i}
                   initial={{ opacity: 0, x: -20 }}

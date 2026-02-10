@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Plus, Minus, MessageCircle, CreditCard, Shield, Settings, HelpCircle, ChevronRight } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
@@ -12,66 +13,67 @@ interface QAItem {
 }
 
 export const QAPage = () => {
+    const { t } = useTranslation();
     const [searchQuery, setSearchQuery] = useState('');
     const [activeCategory, setActiveCategory] = useState('All');
     const [expandedId, setExpandedId] = useState<string | null>(null);
 
     const categories = [
-        { id: 'All', label: 'All Questions', icon: HelpCircle },
-        { id: 'General', label: 'General', icon: MessageCircle },
-        { id: 'Payments', label: 'Payments', icon: CreditCard },
-        { id: 'Security', label: 'Security', icon: Shield },
-        { id: 'Account', label: 'Account', icon: Settings },
+        { id: 'All', label: t('support.qa.categories.all', 'All Questions'), icon: HelpCircle },
+        { id: 'General', label: t('support.qa.categories.general', 'General'), icon: MessageCircle },
+        { id: 'Payments', label: t('support.qa.categories.payments', 'Payments'), icon: CreditCard },
+        { id: 'Security', label: t('support.qa.categories.security', 'Security'), icon: Shield },
+        { id: 'Account', label: t('support.qa.categories.account', 'Account'), icon: Settings },
     ];
 
     const qaData: QAItem[] = [
         {
             id: '1',
             category: 'General',
-            question: 'What is Paymint?',
-            answer: 'Paymint is a comprehensive digital payment solution designed to help businesses of all sizes accept payments, manage finances, and grow. We offer a suite of tools including a payment gateway, point-of-sale systems, and detailed analytics.'
+            question: t('support.qa.q1.question', 'What is Paymint?'),
+            answer: t('support.qa.q1.answer', 'Paymint is a comprehensive digital payment solution designed to help businesses of all sizes accept payments, manage finances, and grow. We offer a suite of tools including a payment gateway, point-of-sale systems, and detailed analytics.')
         },
         {
             id: '2',
             category: 'General',
-            question: 'Is Paymint available in my country?',
-            answer: 'Paymint is currently available in over 30 countries across North America, Europe, and Asia. We are rapidly expanding to new regions. Please check our supported countries list on our pricing page for the most up-to-date information.'
+            question: t('support.qa.q2.question', 'Is Paymint available in my country?'),
+            answer: t('support.qa.q2.answer', 'Paymint is currently available in over 30 countries across North America, Europe, and Asia. We are rapidly expanding to new regions. Please check our supported countries list on our pricing page for the most up-to-date information.')
         },
         {
             id: '3',
             category: 'Payments',
-            question: 'What payment methods can I accept?',
-            answer: 'With Paymint, you can accept all major credit and debit cards (Visa, Mastercard, Amex), digital wallets (Apple Pay, Google Pay), and local payment methods specific to your region.'
+            question: t('support.qa.q3.question', 'What payment methods can I accept?'),
+            answer: t('support.qa.q3.answer', 'With Paymint, you can accept all major credit and debit cards (Visa, Mastercard, Amex), digital wallets (Apple Pay, Google Pay), and local payment methods specific to your region.')
         },
         {
             id: '4',
             category: 'Payments',
-            question: 'How long do payouts take?',
-            answer: 'Standard payouts are processed daily and typically arrive in your bank account within 2 business days. We also offer an Instant Payout feature for eligible merchants, allowing you to access your funds in minutes for a small fee.'
+            question: t('support.qa.q4.question', 'How long do payouts take?'),
+            answer: t('support.qa.q4.answer', 'Standard payouts are processed daily and typically arrive in your bank account within 2 business days. We also offer an Instant Payout feature for eligible merchants, allowing you to access your funds in minutes for a small fee.')
         },
         {
             id: '5',
             category: 'Security',
-            question: 'Is Paymint secure?',
-            answer: 'Yes, security is our top priority. We are PCI DSS Level 1 compliant, which is the highest standard of payment security. All data is encrypted using advanced encryption standards (AES-256), and we employ 24/7 fraud monitoring.'
+            question: t('support.qa.q5.question', 'Is Paymint secure?'),
+            answer: t('support.qa.q5.answer', 'Yes, security is our top priority. We are PCI DSS Level 1 compliant, which is the highest standard of payment security. All data is encrypted using advanced encryption standards (AES-256), and we employ 24/7 fraud monitoring.')
         },
         {
             id: '6',
             category: 'Account',
-            question: 'How do I reset my password?',
-            answer: 'You can reset your password by clicking on the "Forgot Password" link on the login page. Follow the instructions sent to your registered email address to create a new password. If you are logged in, you can change it from your Account Settings.'
+            question: t('support.qa.q6.question', 'How do I reset my password?'),
+            answer: t('support.qa.q6.answer', 'You can reset your password by clicking on the "Forgot Password" link on the login page. Follow the instructions sent to your registered email address to create a new password. If you are logged in, you can change it from your Account Settings.')
         },
         {
             id: '7',
             category: 'Account',
-            question: 'Can I add multiple users to my account?',
-            answer: 'Yes! Our Team Management feature allows you to add multiple users with different roles and permissions (e.g., Admin, Manager, Cashier). You can manage these settings from the "Team" section in your dashboard.'
+            question: t('support.qa.q7.question', 'Can I add multiple users to my account?'),
+            answer: t('support.qa.q7.answer', 'Yes! Our Team Management feature allows you to add multiple users with different roles and permissions (e.g., Admin, Manager, Cashier). You can manage these settings from the "Team" section in your dashboard.')
         },
         {
             id: '8',
             category: 'Payments',
-            question: 'Are there any hidden fees?',
-            answer: 'No, we believe in complete transparency. Our pricing model is simple: a small percentage per transaction plus a fixed fee. There are no setup fees, monthly fees, or hidden charges for our standard plan.'
+            question: t('support.qa.q8.question', 'Are there any hidden fees?'),
+            answer: t('support.qa.q8.answer', 'No, we believe in complete transparency. Our pricing model is simple: a small percentage per transaction plus a fixed fee. There are no setup fees, monthly fees, or hidden charges for our standard plan.')
         }
     ];
 
@@ -83,22 +85,22 @@ export const QAPage = () => {
     });
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-[#0F172A] text-gray-900 dark:text-white font-sans">
+        <div className="min-h-screen bg-gray-50 dark:bg-[#0F172A] text-gray-900 dark:text-white font-sans" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
             <Navbar />
 
             {/* Header Section */}
             <div className="bg-white dark:bg-[#1E293B] pt-32 pb-16 px-6 border-b border-gray-200 dark:border-white/5">
                 <div className="max-w-4xl mx-auto text-center">
-                    <motion.h1 
+                    <motion.h1
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight"
                     >
-                        How can we help you?
+                        {t('support.qa.title', 'How can we help you?')}
                     </motion.h1>
-                    
+
                     {/* Search Bar */}
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
@@ -106,7 +108,7 @@ export const QAPage = () => {
                     >
                         <input
                             type="text"
-                            placeholder="Search for questions..."
+                            placeholder={t('support.qa.search_placeholder', 'Search for questions...')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-4 py-4 bg-gray-100 dark:bg-black/20 border border-transparent focus:bg-white dark:focus:bg-[#0F172A] border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all shadow-sm"
@@ -121,7 +123,9 @@ export const QAPage = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     {/* Sidebar Categories */}
                     <div className="lg:col-span-1 space-y-2">
-                        <p className="text-xs font-black text-gray-400 tracking-widest mb-4 px-2">Categories</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest mb-4 px-2">
+                            {t('community.labels.categories', 'Categories')}
+                        </p>
                         {categories.map((cat) => (
                             <button
                                 key={cat.id}
@@ -134,7 +138,7 @@ export const QAPage = () => {
                             >
                                 <cat.icon size={18} />
                                 {cat.label}
-                                {activeCategory === cat.id && <ChevronRight size={16} className="ml-auto" />}
+                                {activeCategory === cat.id && <ChevronRight size={16} className={t('common.locale') === 'ar' ? 'mr-auto rotate-180' : 'ml-auto'} />}
                             </button>
                         ))}
                     </div>
@@ -209,9 +213,11 @@ export const QAPage = () => {
                                     <div className="w-16 h-16 bg-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
                                         <Search className="w-8 h-8 text-gray-400" />
                                     </div>
-                                    <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2">No results found</h3>
+                                    <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2">
+                                        {t('support.qa.empty_title', 'No results found')}
+                                    </h3>
                                     <p className="text-xs font-bold text-gray-500">
-                                        Try adjusting your search or category filter.
+                                        {t('support.qa.empty_subtitle', 'Try adjusting your search or category filter.')}
                                     </p>
                                 </motion.div>
                             )}

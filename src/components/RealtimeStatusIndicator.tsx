@@ -2,19 +2,21 @@ import { useEffect, useState } from 'react';
 import { realtimeService } from '../services/realtimeService';
 import type { ConnectionStatus } from '../services/realtimeService';
 import { Activity, Wifi, WifiOff, AlertCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Real-time Connection Status Indicator
- * 
+ *
  * Displays the current WebSocket connection status as a small indicator.
  * Can be placed in the header or sidebar.
- * 
+ *
  * Usage:
  * ```tsx
  * <RealtimeStatusIndicator />
  * ```
  */
 export const RealtimeStatusIndicator: React.FC = () => {
+  const { t } = useTranslation();
   const [status, setStatus] = useState<ConnectionStatus>('disconnected');
 
   useEffect(() => {
@@ -34,7 +36,7 @@ export const RealtimeStatusIndicator: React.FC = () => {
       case 'connected':
         return {
           icon: <Wifi size={14} />,
-          text: 'Live',
+          text: t('common.status.live'),
           color: 'text-green-500',
           bgColor: 'bg-green-500/10',
           borderColor: 'border-green-500/20',
@@ -42,7 +44,7 @@ export const RealtimeStatusIndicator: React.FC = () => {
       case 'connecting':
         return {
           icon: <Activity size={14} className="animate-pulse" />,
-          text: 'Connecting...',
+          text: t('common.status.connecting'),
           color: 'text-yellow-500',
           bgColor: 'bg-yellow-500/10',
           borderColor: 'border-yellow-500/20',
@@ -50,7 +52,7 @@ export const RealtimeStatusIndicator: React.FC = () => {
       case 'error':
         return {
           icon: <AlertCircle size={14} />,
-          text: 'Error',
+          text: t('common.status.error'),
           color: 'text-red-500',
           bgColor: 'bg-red-500/10',
           borderColor: 'border-red-500/20',
@@ -59,9 +61,9 @@ export const RealtimeStatusIndicator: React.FC = () => {
       default:
         return {
           icon: <WifiOff size={14} />,
-          text: 'Offline',
+          text: t('common.status.offline'),
           color: 'text-gray-400',
-          bgColor: 'bg-gray-500/10',
+          bgColor: 'bg-gray-50/10',
           borderColor: 'border-gray-500/20',
         };
     }
@@ -84,7 +86,7 @@ export const RealtimeStatusIndicator: React.FC = () => {
         border transition-all duration-200 hover:opacity-80
         ${(status === 'disconnected' || status === 'error') ? 'cursor-pointer' : 'cursor-default'}
       `}
-      title={status === 'disconnected' || status === 'error' ? 'Click to reconnect' : `Status: ${status}`}
+      title={status === 'disconnected' || status === 'error' ? t('common.status.reconnect') : `${t('common.status.label')}: ${t(`common.status.${status}`)}`}
     >
       {config.icon}
       <span className="hidden sm:inline">{config.text}</span>

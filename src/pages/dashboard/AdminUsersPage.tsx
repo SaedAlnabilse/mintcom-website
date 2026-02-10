@@ -185,7 +185,7 @@ export function AdminUsersPage() {
     };
 
     return (
-        <div className="space-y-8 pb-12">
+        <div className="space-y-8 pb-12" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
             {/* Header */}
             <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-[#1E293B] p-8 border border-gray-200 dark:border-white/5 shadow-sm">
                 <div className="absolute top-0 right-0 w-96 h-96 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
@@ -271,51 +271,51 @@ export function AdminUsersPage() {
                                     key={admin.id}
                                     className="p-4 bg-white dark:bg-[#1E293B]"
                                 >
-                                        <div className="flex items-start justify-between mb-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 border border-purple-500/20 flex items-center justify-center font-black text-sm shadow-sm">
-                                                    {admin.firstName.charAt(0)}{admin.lastName.charAt(0)}
-                                                </div>
-                                                <div>
-                                                    <h3 className="font-bold text-gray-900 dark:text-white text-sm">{admin.firstName} {admin.lastName}</h3>
-                                                    <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
-                                                        <Mail size={10} /> {admin.email}
-                                                    </p>
-                                                </div>
+                                    <div className="flex items-start justify-between mb-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 border border-purple-500/20 flex items-center justify-center font-black text-sm shadow-sm">
+                                                {admin.firstName.charAt(0)}{admin.lastName.charAt(0)}
                                             </div>
-                                            <div className="flex gap-2">
-                                                <button
-                                                    onClick={() => openEditModal(admin)}
-                                                    className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400"
-                                                >
-                                                    <Edit2 size={16} />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(admin)}
-                                                    className="p-2 rounded-lg bg-red-500/10 text-red-500"
-                                                >
-                                                    <Trash2 size={16} />
-                                                </button>
+                                            <div>
+                                                <h3 className="font-bold text-gray-900 dark:text-white text-sm">{admin.firstName} {admin.lastName}</h3>
+                                                <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
+                                                    <Mail size={10} /> {admin.email}
+                                                </p>
                                             </div>
                                         </div>
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => openEditModal(admin)}
+                                                className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400"
+                                                title={t('common.edit')}
+                                            >
+                                                <Edit2 size={16} />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(admin)}
+                                                className="p-2 rounded-lg bg-red-500/10 text-red-500"
+                                                title={t('common.delete')}
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </div>
+                                    </div>
 
-                                        <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl border border-gray-100 dark:border-white/5">
-                                            <p className="text-xs font-black text-gray-400 tracking-widest mb-2 uppercase">{t('adminUsers.accessLocations')}</p>
-                                            <div className="flex flex-wrap gap-2">
-                                                {admin.establishments.length > 0 ? (
-                                                    admin.establishments.map((est) => (
-                                                        <span
-                                                            key={est.id}
-                                                            className="px-2 py-1 bg-white dark:bg-white/10 text-gray-700 dark:text-gray-300 text-[10px] font-bold tracking-wide rounded-md border border-gray-200 dark:border-white/10"
-                                                        >
-                                                            {est.name}
-                                                        </span>
-                                                    ))
-                                                ) : (
-                                                    <span className="text-xs text-gray-400 italic">{t('adminUsers.noLocations')}</span>
-                                                )}
-                                            </div>
-                                        </div>
+                                    <p className="text-xs font-black text-gray-400 tracking-widest mb-2 uppercase">{t('adminUsers.accessLocations')}</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {admin.establishments.length > 0 ? (
+                                            admin.establishments.map((est) => (
+                                                <span
+                                                    key={est.id}
+                                                    className="px-2 py-1 bg-white dark:bg-white/10 text-gray-700 dark:text-gray-300 text-[10px] font-bold tracking-wide rounded-md border border-gray-200 dark:border-white/10"
+                                                >
+                                                    {est.name}
+                                                </span>
+                                            ))
+                                        ) : (
+                                            <span className="text-xs text-gray-400 italic">{t('adminUsers.noLocations')}</span>
+                                        )}
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -334,7 +334,7 @@ export function AdminUsersPage() {
                                             <div className="w-14 h-14 rounded-2xl bg-purple-500/10 text-purple-500 border border-purple-500/20 flex items-center justify-center font-black text-xl shadow-sm group-hover:scale-110 transition-transform duration-300">
                                                 {admin.firstName.charAt(0)}{admin.lastName.charAt(0)}
                                             </div>
-                                            <div>
+                                            <div className={t('common.locale') === 'ar' ? 'mr-4' : 'ml-4'}>
                                                 <p className="font-bold text-gray-900 dark:text-white text-lg tracking-tight group-hover:text-paymint-green transition-colors">
                                                     {admin.firstName} {admin.lastName}
                                                 </p>
@@ -350,12 +350,14 @@ export function AdminUsersPage() {
                                             <button
                                                 onClick={() => openEditModal(admin)}
                                                 className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-all border border-gray-200 dark:border-white/10 shadow-sm"
+                                                title={t('common.edit')}
                                             >
                                                 <Edit2 size={16} />
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(admin)}
                                                 className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 transition-all border border-gray-200 dark:border-white/10 shadow-sm"
+                                                title={t('common.delete')}
                                             >
                                                 <Trash2 size={16} />
                                             </button>
@@ -443,20 +445,20 @@ export function AdminUsersPage() {
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="block text-xs font-black text-gray-400 tracking-widest px-1">
-                                        {t('adminUsers.form.email')} <span className="text-paymint-red">*</span>
-                                    </label>
-                                    <input
-                                        type="email"
-                                        value={formData.email}
-                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                        className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50"
-                                        placeholder="email@enterprise.com"
-                                        required
-                                        disabled={!!editingAdmin}
-                                    />
-                                </div>
+                                    <div className="space-y-2">
+                                        <label className="block text-xs font-black text-gray-400 tracking-widest px-1">
+                                            {t('adminUsers.form.email')} <span className="text-paymint-red">*</span>
+                                        </label>
+                                        <input
+                                            type="email"
+                                            value={formData.email}
+                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                            className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all disabled:opacity-50"
+                                            placeholder={t('adminUsers.form.emailPlaceholder')}
+                                            required
+                                            disabled={!!editingAdmin}
+                                        />
+                                    </div>
 
                                 {!editingAdmin && (
                                     <div className="space-y-2">

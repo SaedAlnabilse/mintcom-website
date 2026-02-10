@@ -61,9 +61,20 @@ export function OwnerBillingPage() {
     });
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
-
-
     const { refreshEstablishments } = useAuth();
+
+    const fetchBillingInfo = async (silent = false) => {
+        try {
+            if (!silent) setIsLoading(true);
+            const response = await api.get('/api/accounts/billing');
+            setBillingData(response.data);
+        } catch (err) {
+            console.error('Failed to fetch billing info:', err);
+            toast.error(t('owner.billing.fetchFailed'));
+        } finally {
+            if (!silent) setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
         fetchBillingInfo();
@@ -84,19 +95,6 @@ export function OwnerBillingPage() {
             window.removeEventListener('scroll', handleScroll, true);
         };
     }, [activeMenu]);
-
-    const fetchBillingInfo = async (silent = false) => {
-        try {
-            if (!silent) setIsLoading(true);
-            const response = await api.get('/api/accounts/billing');
-            setBillingData(response.data);
-        } catch (err) {
-            console.error('Failed to fetch billing info:', err);
-            if (!silent) toast.error(t('owner.billing.failedToLoad'));
-        } finally {
-            if (!silent) setIsLoading(false);
-        }
-    };
 
     const handleSecuritySuccess = async () => {
         const targetId = securityModal.targetId;
@@ -259,7 +257,7 @@ export function OwnerBillingPage() {
                         <p className="text-xs font-black text-gray-400 tracking-widestst mb-1">{t('owner.billing.monthlyCost')}</p>
                         <div className="flex items-baseline justify-end gap-1">
                             <span className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">${totalMonthlyCost.toFixed(2)}</span>
-                            <span className="text-xs font-bold text-gray-400">/mo</span>
+                            <span className="text-xs font-bold text-gray-400">/{t('common.mo')}</span>
                         </div>
                     </div>
                     <div className="w-px h-10 bg-gray-200 dark:bg-white/10 hidden sm:block" />
@@ -468,7 +466,7 @@ export function OwnerBillingPage() {
                                         {/* Cost */}
                                         <div className="col-span-2">
                                             <p className="font-bold text-gray-900 dark:text-white text-sm">${est.monthlyPrice}</p>
-                                            <p className="text-xs text-gray-400">/month</p>
+                                            <p className="text-xs text-gray-400">/{t('common.month')}</p>
                                         </div>
 
                                         {/* Payment & Actions */}

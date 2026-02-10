@@ -123,7 +123,15 @@ export function OwnerBrandsPage() {
         }
     };
 
-    const { register, handleSubmit, formState: { errors }, reset, trigger } = useForm<BrandFormData>({
+    const createBrandSchema = useMemo(() => z.object({
+        name: z.string().min(2, t('owner.brands.validation.nameMin')),
+        establishmentLoginId: z.string()
+            .min(4, t('owner.brands.validation.loginIdMin'))
+            .regex(/^[a-zA-Z0-9_-]+$/, t('owner.brands.validation.loginIdRegex')),
+        establishmentPassword: z.string().min(6, t('owner.brands.validation.passwordMin')),
+    }), [t]);
+
+    const { register, handleSubmit, formState: { errors }, reset, trigger } = useForm<z.infer<typeof createBrandSchema>>({
         resolver: zodResolver(createBrandSchema)
     });
 
@@ -489,12 +497,12 @@ export function OwnerBrandsPage() {
 
                 {hasActiveFilters && (
                     <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
-                        <span className="text-xs font-black text-gray-400 tracking-widest uppercase">Active filters:</span>
+                        <span className="text-xs font-black text-gray-400 tracking-widest uppercase">{t('owner.brands.activeFilters')}</span>
                         <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
-                            Search: "{searchQuery}"
+                            {t('owner.brands.searchFilter', { query: searchQuery })}
                         </span>
                         <span className="text-xs font-medium text-gray-400 ml-auto">
-                            {filteredBrands.length} of {brands.length} brands
+                            {t('owner.brands.countSummary', { filtered: filteredBrands.length, total: brands.length })}
                         </span>
                     </div>
                 )}
@@ -505,10 +513,10 @@ export function OwnerBrandsPage() {
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Building2 size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
                     <p className="text-lg font-medium text-gray-900 dark:text-white">
-                        {hasActiveFilters ? 'No brands found' : 'No brands'}
+                        {hasActiveFilters ? t('owner.brands.noBrandsFound') : t('owner.brands.noBrands')}
                     </p>
                     <p className="text-sm text-gray-500 mt-1">
-                        {hasActiveFilters ? 'Try adjusting your search' : 'Create a brand to group locations'}
+                        {hasActiveFilters ? t('owner.brands.tryAdjustingSearch') : t('owner.brands.createBrandHint')}
                     </p>
                     {!hasActiveFilters && availableEstablishments.length >= 2 && (
                         <button
@@ -516,7 +524,7 @@ export function OwnerBrandsPage() {
                             className="mt-6 px-6 py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20 flex items-center gap-2 mx-auto"
                         >
                             <Link2 size={18} />
-                            Create Your First Brand
+                            {t('owner.brands.createFirstBrand')}
                         </button>
                     )}
                 </div>
@@ -549,10 +557,10 @@ export function OwnerBrandsPage() {
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest">
-                                                    Active
+                                                    {t('common.status.active')}
                                                 </span>
                                                 <span className="text-xs font-black text-gray-400 tracking-widest uppercase">
-                                                    {brand.establishmentCount} Locations
+                                                    {t('owner.brands.locationsCount', { count: brand.establishmentCount })}
                                                 </span>
                                             </div>
                                         </div>
@@ -579,7 +587,7 @@ export function OwnerBrandsPage() {
                                                     className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                                                 >
                                                     <Eye size={16} />
-                                                    View Dashboard
+                                                    {t('owner.brands.viewDashboard')}
                                                 </button>
 
                                                 <button
@@ -596,7 +604,7 @@ export function OwnerBrandsPage() {
                                                     className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
                                                 >
                                                     <Trash2 size={16} />
-                                                    Delete Brand
+                                                    {t('owner.brands.deleteBrand')}
                                                 </button>
                                             </div>
                                         )}
@@ -608,7 +616,7 @@ export function OwnerBrandsPage() {
                                     <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
                                         <div className="flex items-center gap-2 mb-2">
                                             <Hash size={14} className="text-purple-500" />
-                                            <span className="text-xs font-black text-gray-400 tracking-widest uppercase">Login ID</span>
+                                            <span className="text-xs font-black text-gray-400 tracking-widest uppercase">{t('owner.brands.loginId')}</span>
                                         </div>
                                         <p className="text-sm font-mono font-bold text-gray-900 dark:text-white truncate">
                                             {brand.establishmentLoginId}
@@ -617,7 +625,7 @@ export function OwnerBrandsPage() {
                                     <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
                                         <div className="flex items-center gap-2 mb-2">
                                             <Calendar size={14} className="text-blue-500" />
-                                            <span className="text-xs font-black text-gray-400 tracking-widest uppercase">Created</span>
+                                            <span className="text-xs font-black text-gray-400 tracking-widest uppercase">{t('owner.brands.created')}</span>
                                         </div>
                                         <p className="text-sm font-bold text-gray-900 dark:text-white">
                                             {formatDate(brand.createdAt)}
@@ -628,7 +636,7 @@ export function OwnerBrandsPage() {
                                 {/* Locations */}
                                 <div className="space-y-3 relative z-10">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-xs font-black text-gray-400 tracking-widest uppercase">Locations</span>
+                                        <span className="text-xs font-black text-gray-400 tracking-widest uppercase">{t('owner.brands.locations')}</span>
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {brand.establishments.slice(0, 4).map((est) => {
@@ -643,7 +651,7 @@ export function OwnerBrandsPage() {
                                         {brand.establishments.length > 4 && (
                                             <div className="px-3 py-2 bg-gray-100 dark:bg-white/5 rounded-lg">
                                                 <span className="text-xs font-bold text-gray-500">
-                                                    +{brand.establishments.length - 4} more
+                                                    +{brand.establishments.length - 4} {t('common.more')}
                                                 </span>
                                             </div>
                                         )}
@@ -656,7 +664,7 @@ export function OwnerBrandsPage() {
                                         onClick={() => window.open(`/brand/${brand.establishmentLoginId}`, '_blank')}
                                         className="flex-1 py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-black tracking-widest uppercase hover:bg-purple-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-purple-500 shadow-sm"
                                     >
-                                        <span>Open Dashboard</span>
+                                        <span>{t('owner.brands.openDashboard')}</span>
                                         <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
                                     </button>
                                 </div>
@@ -685,7 +693,7 @@ export function OwnerBrandsPage() {
                                                 {brand.name}
                                             </h3>
                                             <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest mt-1 inline-block">
-                                                Active
+                                                {t('common.status.active')}
                                             </span>
                                         </div>
                                     </div>
@@ -709,7 +717,7 @@ export function OwnerBrandsPage() {
                                                     className="w-full px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                                                 >
                                                     <Eye size={14} />
-                                                    View
+                                                    {t('common.view')}
                                                 </button>
                                                 <button
                                                     onClick={(e) => {
@@ -724,7 +732,7 @@ export function OwnerBrandsPage() {
                                                     className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors border-t border-gray-100 dark:border-white/5"
                                                 >
                                                     <Trash2 size={14} />
-                                                    Delete
+                                                    {t('common.delete')}
                                                 </button>
                                             </div>
                                         )}
@@ -732,12 +740,12 @@ export function OwnerBrandsPage() {
                                 </div>
                                 <div className="grid grid-cols-2 gap-4 text-xs">
                                     <div>
-                                        <span className="text-gray-500 block mb-0.5">Login ID</span>
+                                        <span className="text-gray-500 block mb-0.5">{t('owner.brands.loginId')}</span>
                                         <span className="font-mono font-bold text-gray-900 dark:text-white">{brand.establishmentLoginId}</span>
                                     </div>
                                     <div>
-                                        <span className="text-gray-500 block mb-0.5">Locations</span>
-                                        <span className="font-bold text-gray-900 dark:text-white">{brand.establishmentCount} locations</span>
+                                        <span className="text-gray-500 block mb-0.5">{t('owner.brands.locations')}</span>
+                                        <span className="font-bold text-gray-900 dark:text-white">{t('owner.brands.locationsCount', { count: brand.establishmentCount })}</span>
                                     </div>
                                 </div>
                             </div>
@@ -746,29 +754,29 @@ export function OwnerBrandsPage() {
 
                     {/* Table Header */}
                     <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest">
-                        <div 
+                        <div
                             className="col-span-4 cursor-pointer hover:text-paymint-green transition-colors flex items-center gap-1"
                             onClick={() => handleSort('name')}
                         >
-                            Brand
+                            {t('owner.brands.brand')}
                             {sortBy === 'name' && <ArrowUpDown size={12} className={sortOrder === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
-                        <div className="col-span-2">Login ID</div>
-                        <div 
+                        <div className="col-span-2">{t('owner.brands.loginId')}</div>
+                        <div
                             className="col-span-2 cursor-pointer hover:text-paymint-green transition-colors flex items-center gap-1"
                             onClick={() => handleSort('locations')}
                         >
-                            Locations
+                            {t('owner.brands.locations')}
                             {sortBy === 'locations' && <ArrowUpDown size={12} className={sortOrder === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
-                        <div 
+                        <div
                             className="col-span-2 cursor-pointer hover:text-paymint-green transition-colors flex items-center gap-1"
                             onClick={() => handleSort('date')}
                         >
-                            Created
+                            {t('owner.brands.created')}
                             {sortBy === 'date' && <ArrowUpDown size={12} className={sortOrder === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
-                        <div className="col-span-2 text-right">Actions</div>
+                        <div className="col-span-2 text-right">{t('common.actions')}</div>
                     </div>
 
                     {/* Table Body */}
@@ -795,7 +803,7 @@ export function OwnerBrandsPage() {
 
                                         </div>
                                         <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest">
-                                            Active
+                                            {t('common.status.active')}
                                         </span>
                                     </div>
                                 </div>
@@ -810,7 +818,7 @@ export function OwnerBrandsPage() {
                                 {/* Locations */}
                                 <div className="col-span-2 flex items-center">
                                     <span className="font-bold text-gray-900 dark:text-white">
-                                        {brand.establishmentCount} locations
+                                        {t('owner.brands.locationsCount', { count: brand.establishmentCount })}
                                     </span>
                                 </div>
 
@@ -831,7 +839,7 @@ export function OwnerBrandsPage() {
                                         className="px-4 py-2 rounded-lg bg-paymint-green text-black text-xs font-black tracking-widest uppercase hover:bg-emerald-400 transition-all flex items-center gap-2"
                                     >
                                         <Eye size={14} />
-                                        View
+                                        {t('common.view')}
                                     </button>
                                     <button
                                         onClick={(e) => {
@@ -901,8 +909,8 @@ export function OwnerBrandsPage() {
                                             <Building2 size={20} />
                                         </div>
                                         <div>
-                                            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Create Brand</h2>
-                                            <p className="text-xs text-gray-500">Group multiple locations into one brand</p>
+                                            <h2 className="text-lg font-bold text-gray-900 dark:text-white">{t('owner.brands.createBrandTitle')}</h2>
+                                            <p className="text-xs text-gray-500">{t('owner.brands.createBrandSubtitle')}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-4">
@@ -929,34 +937,34 @@ export function OwnerBrandsPage() {
                                         <div className="space-y-6 max-w-lg mx-auto py-4">
                                             <div className="space-y-4">
                                                 <div>
-                                                    <label className="block text-xs font-black text-gray-400 tracking-widest uppercase mb-2">Brand Name</label>
+                                                    <label className="block text-xs font-black text-gray-400 tracking-widest uppercase mb-2">{t('owner.brands.brandName')}</label>
                                                     <div className="relative">
                                                         <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                                                         <input
                                                             {...register('name')}
                                                             className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
-                                                            placeholder="e.g. Burger House Global"
+                                                            placeholder={t('owner.brands.brandNamePlaceholder')}
                                                         />
                                                     </div>
                                                     {errors.name && <p className="text-red-500 text-xs mt-1 font-bold">{errors.name.message}</p>}
                                                 </div>
 
                                                 <div>
-                                                    <label className="block text-xs font-black text-gray-400 tracking-widest uppercase mb-2">Admin Login ID</label>
+                                                    <label className="block text-xs font-black text-gray-400 tracking-widest uppercase mb-2">{t('owner.brands.adminLoginId')}</label>
                                                     <div className="relative">
                                                         <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                                                         <input
                                                             {...register('establishmentLoginId')}
                                                             className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
-                                                            placeholder="e.g. burger_house_admin"
+                                                            placeholder={t('owner.brands.adminLoginIdPlaceholder')}
                                                         />
                                                     </div>
-                                                    <p className="text-xs font-bold text-gray-500 mt-1">This ID will be used to log into the brand dashboard</p>
+                                                    <p className="text-xs font-bold text-gray-500 mt-1">{t('owner.brands.adminLoginIdHint')}</p>
                                                     {errors.establishmentLoginId && <p className="text-red-500 text-xs mt-1 font-bold">{errors.establishmentLoginId.message}</p>}
                                                 </div>
 
                                                 <div>
-                                                    <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">Admin Password</label>
+                                                    <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">{t('owner.brands.adminPassword')}</label>
                                                     <div className="relative">
                                                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                                                         <input
@@ -975,9 +983,9 @@ export function OwnerBrandsPage() {
                                     {wizardStep === 2 && (
                                         <div className="space-y-6">
                                             <div className="flex items-center justify-between">
-                                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Select Locations to Link</h3>
+                                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('owner.brands.selectLocationsToLink')}</h3>
                                                 <span className="text-xs font-bold text-paymint-green bg-paymint-green/10 px-3 py-1 rounded-full">
-                                                    {selectedEstablishments.length} selected
+                                                    {t('owner.brands.selectedCount', { count: selectedEstablishments.length })}
                                                 </span>
                                             </div>
 
@@ -1000,7 +1008,7 @@ export function OwnerBrandsPage() {
                                                             </div>
                                                             <div className="flex-1 min-w-0">
                                                                 <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{est.name || est.establishmentName}</p>
-                                                                <p className="text-xs font-bold text-gray-500 truncate">{est.type || 'Location'}</p>
+                                                                <p className="text-xs font-bold text-gray-500 truncate">{est.type || t('owner.brands.location')}</p>
                                                             </div>
                                                             <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-paymint-green border-paymint-green' : 'border-gray-300 dark:border-white/10'}`}>
                                                                 {isSelected && <UserCheck size={14} className="text-black" />}
@@ -1017,14 +1025,14 @@ export function OwnerBrandsPage() {
                                             <div className="bg-paymint-green/5 border border-paymint-green/20 rounded-2xl p-4 flex gap-3">
                                                 <Shield className="text-paymint-green shrink-0" size={20} />
                                                 <p className="text-xs font-bold text-gray-500">
-                                                    Final Step: Select which employees should have <span className="text-paymint-green font-bold text-xs">Global Access</span> to all linked locations via the brand dashboard.
+                                                    {t('owner.brands.wizard.finalStepDesc')}
                                                 </p>
                                             </div>
 
                                             {loadingEmployees ? (
                                                 <div className="flex flex-col items-center justify-center py-12">
                                                     <Loader2 className="animate-spin text-paymint-green mb-4" size={32} />
-                                                    <p className="text-sm font-bold text-gray-500">Scanning local employees...</p>
+                                                    <p className="text-sm font-bold text-gray-500">{t('owner.brands.wizard.scanningEmployees')}</p>
                                                 </div>
                                             ) : (
                                                 <div className="space-y-8">
@@ -1043,7 +1051,7 @@ export function OwnerBrandsPage() {
                                                                     }}
                                                                     className="text-xs font-bold text-paymint-green hover:underline"
                                                                 >
-                                                                    {group.employees.every(e => selectedEmployees.includes(e.employeeId)) ? 'Deselect All' : 'Select All'}
+                                                                    {group.employees.every(e => selectedEmployees.includes(e.employeeId)) ? t('owner.brands.wizard.deselectAll') : t('owner.brands.wizard.selectAll')}
                                                                 </button>
                                                             </div>
 
@@ -1097,7 +1105,7 @@ export function OwnerBrandsPage() {
                                             onClick={wizardStep === 1 ? handleCloseModal : handlePrevStep}
                                             className="px-6 py-3 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
                                         >
-                                            {wizardStep === 1 ? 'Cancel' : 'Back'}
+                                            {wizardStep === 1 ? t('common.cancel') : t('common.back')}
                                         </button>
                                         <button
                                             type="button"
@@ -1108,11 +1116,11 @@ export function OwnerBrandsPage() {
                                             {isCreating ? (
                                                 <>
                                                     <Loader2 size={16} className="animate-spin" />
-                                                    Creating...
+                                                    {t('common.creating')}
                                                 </>
                                             ) : (
                                                 <>
-                                                    {wizardStep === 3 ? 'Create Brand' : 'Continue'}
+                                                    {wizardStep === 3 ? t('owner.brands.createBrand') : t('common.continue')}
                                                     <ChevronRight size={16} />
                                                 </>
                                             )}

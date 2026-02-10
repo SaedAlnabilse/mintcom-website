@@ -15,6 +15,7 @@ import { motion } from 'framer-motion';
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell } from 'recharts';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { getDateLocale } from '../../../../utils/dateLocale';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import { useTheme } from '../../../../context/ThemeContext';
 import type { SalesSummary } from '../../../../types';
@@ -32,7 +33,7 @@ interface SalesViewProps {
 export const SalesView = React.memo(function SalesView({ salesData, selectedDateRange, setShowPayInOutModal }: SalesViewProps) {
   const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
-  const { formatAmount, currencySymbol } = useCurrency();
+  const { formatAmount } = useCurrency();
   const isDark = resolvedTheme === 'dark';
   const navigate = useNavigate();
   const { locationSlug } = useParams();
@@ -40,73 +41,73 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
   const formatCurrency = (value: number) => formatAmount(value);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {[
           {
-            label: t('reports.sales.totalSales'),
-            value: ((salesData.totalRevenue || 0) + (salesData.taxCollected || 0)).toFixed(3),
+            label: t('orders.reports.sales.totalSales'),
+            value: ((salesData.totalRevenue || 0) + (salesData.taxCollected || 0)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
             icon: Wallet,
             color: 'text-blue-500',
             bg: 'bg-blue-500/10',
-            sub: t('reports.sales.totalIncTax')
+            sub: t('orders.reports.sales.totalIncTax')
           },
           {
-            label: t('reports.sales.netSales'),
-            value: (salesData.totalRevenue || 0).toFixed(3),
+            label: t('orders.reports.sales.netSales'),
+            value: (salesData.totalRevenue || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
             icon: TrendingUp,
             color: 'text-paymint-green',
             bg: 'bg-paymint-green/10',
-            sub: t('reports.sales.exclTax')
+            sub: t('orders.reports.sales.exclTax')
           },
           {
-            label: t('reports.sales.profit'),
-            value: (salesData.grossProfit || 0).toFixed(3),
+            label: t('orders.reports.sales.profit'),
+            value: (salesData.grossProfit || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
             icon: DollarSign,
             color: (salesData.grossProfit || 0) >= 0 ? 'text-emerald-500' : 'text-red-500',
             bg: (salesData.grossProfit || 0) >= 0 ? 'bg-emerald-500/10' : 'bg-red-500/10',
-            sub: t('reports.sales.netSalesCost')
+            sub: t('orders.reports.sales.netSalesCost')
           },
           {
-            label: t('reports.sales.totalTax'),
-            value: (salesData.taxCollected || 0).toFixed(3),
+            label: t('orders.reports.sales.totalTax'),
+            value: (salesData.taxCollected || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
             icon: Percent,
             color: 'text-orange-500',
             bg: 'bg-orange-500/10',
-            sub: t('reports.sales.taxAmount')
+            sub: t('orders.reports.sales.taxAmount')
           },
           {
-            label: t('reports.sales.numOrders'),
-            value: (salesData.totalOrders || 0).toString(),
+            label: t('orders.reports.sales.numOrders'),
+            value: (salesData.totalOrders || 0).toLocaleString(t('common.locale')),
             suffix: t('dashboard.stats.orders'),
             icon: ShoppingBag,
             color: 'text-indigo-500',
             bg: 'bg-indigo-500/10',
-            sub: t('reports.sales.completed')
+            sub: t('orders.reports.sales.completed')
           },
           {
-            label: t('reports.sales.refunds'),
-            value: (salesData.totalRefunds || 0).toFixed(3),
+            label: t('orders.reports.sales.refunds'),
+            value: (salesData.totalRefunds || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
             icon: ArrowDownRight,
             color: 'text-red-500',
             bg: 'bg-red-500/10',
-            sub: t('reports.sales.returns')
+            sub: t('orders.reports.sales.returns')
           },
           {
-            label: t('reports.sales.hours'),
-            value: (salesData.totalHoursWorked || 0).toFixed(1),
-            suffix: t('reports.sales.hours'),
+            label: t('orders.reports.sales.hours'),
+            value: (salesData.totalHoursWorked || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+            suffix: t('orders.reports.sales.hours'),
             icon: Clock,
             color: 'text-orange-500',
             bg: 'bg-orange-500/10',
-            sub: t('reports.sales.staffHours'),
+            sub: t('orders.reports.sales.staffHours'),
             onClick: () => {
               window.scrollTo({ top: 0, behavior: 'smooth' });
               setTimeout(() => navigate(`/dashboard/${locationSlug}/reports/shifts`), 700);
             }
           },
           {
-            label: t('reports.sales.nonSales'),
+            label: t('orders.reports.sales.nonSales'),
             value: null,
             icon: ArrowUpRight,
             color: 'text-cyan-500',
@@ -115,13 +116,13 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             customContent: (
               <div className="w-full mt-6 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-gray-400">{t('reports.sales.payIn')}</span>
-                  <span className="text-sm font-bold text-paymint-green tracking-tight">+{formatAmount(salesData.totalPayIn || 0).replace(currencySymbol, '').trim()}</span>
+                  <span className="text-xs font-bold text-gray-400">{t('orders.reports.sales.payIn')}</span>
+                  <span className="text-sm font-bold text-paymint-green tracking-tight">+{ (salesData.totalPayIn || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }</span>
                 </div>
                 <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-gray-400">{t('reports.sales.payOut')}</span>
-                  <span className="text-sm font-bold text-red-500 tracking-tight">-{formatAmount(salesData.totalPayOut || 0).replace(currencySymbol, '').trim()}</span>
+                  <span className="text-xs font-bold text-gray-400">{t('orders.reports.sales.payOut')}</span>
+                  <span className="text-sm font-bold text-red-500 tracking-tight">-{ (salesData.totalPayOut || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }</span>
                 </div>
               </div>
             ),
@@ -136,7 +137,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             onClick={stat.onClick}
             className={`group relative p-5 rounded-2xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col transition-all duration-300 overflow-hidden ${stat.onClick ? 'cursor-pointer' : ''}`}
           >
-            <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
+            <div className={`absolute top-0 end-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-4">
                 <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300`}>
@@ -174,17 +175,17 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             <div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                 <TrendingUp className="text-paymint-green" size={20} />
-                {t('reports.sales.revenueStats')}
+                {t('orders.reports.sales.revenueStats')}
               </h3>
-              <p className="text-xs text-gray-500 mt-1">{t('reports.sales.performance')}</p>
+              <p className="text-xs text-gray-500 mt-1">{t('orders.reports.sales.performance')}</p>
             </div>
             <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
               <Activity size={12} className="text-paymint-green" />
-              <span className="text-xs font-bold text-gray-500 tracking-wide">{t('reports.sales.realtime')}</span>
+              <span className="text-xs font-bold text-gray-500 tracking-wide">{t('orders.reports.sales.realtime')}</span>
             </div>
           </div>
           <div className="h-[400px]">
-            <div className="flex h-full relative">
+            <div className="flex h-full relative" dir="ltr">
               {(() => {
                 const isHourly = salesData.dailyBreakdown?.some((d: any) => d.date.includes(':'));
                 let chartData = salesData.dailyBreakdown || [];
@@ -217,8 +218,9 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                     const dateObj = new Date(d.date);
                     if (!isNaN(dateObj.getTime())) {
                       const dayKey = dateObj.toISOString().split('T')[0];
-                      const dayName = format(dateObj, 'EEE');
-                      const fullDate = format(dateObj, 'MMM d');
+                      const dateLocale = getDateLocale(t('common.locale'));
+                      const dayName = format(dateObj, 'EEE', { locale: dateLocale });
+                      const fullDate = format(dateObj, 'MMM d', { locale: dateLocale });
                       if (!dailyMap[dayKey]) {
                         dailyMap[dayKey] = {
                           date: dayKey,
@@ -249,8 +251,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                         <Activity size={36} className="text-gray-400 dark:text-gray-600" />
                       </div>
                       <div className="text-center">
-                        <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('reports.sales.noRevenue')}</p>
-                        <p className="text-xs text-gray-500 mt-1">{t('reports.sales.noRevenueDesc')}</p>
+                        <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('orders.reports.sales.noRevenue')}</p>
+                        <p className="text-xs text-gray-500 mt-1">{t('orders.reports.sales.noRevenueDesc')}</p>
                       </div>
                     </div>
                   );
@@ -258,7 +260,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
 
                 return (
                   <>
-                    <div className="absolute left-0 top-0 bottom-0 w-[50px] z-20 pointer-events-none" style={{ background: 'linear-gradient(to right, ' + (isDark ? '#0B1120 80%, transparent' : '#FFFFFF 80%, transparent') + ')' }}>
+                    <div className="absolute start-0 top-0 bottom-0 w-[50px] z-20 pointer-events-none" style={{ background: 'linear-gradient(to ' + (t('common.locale') === 'ar' ? 'left' : 'right') + ', ' + (isDark ? '#0B1120 80%, transparent' : '#FFFFFF 80%, transparent') + ')' }}>
                       <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={chartData} margin={{ top: 10, right: 0, left: 0, bottom: 20 }}>
                           <YAxis
@@ -266,7 +268,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                             fontSize={10}
                             tickLine={false}
                             axisLine={false}
-                            tickFormatter={(val) => Math.round(val) === val ? val.toString() : val.toFixed(1)}
+                            tickFormatter={(val) => val.toLocaleString(t('common.locale'), { maximumFractionDigits: 1 })}
                             domain={[0, maxY]}
                             ticks={[0, maxY / 2, maxY]}
                             width={40}
@@ -275,7 +277,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                         </AreaChart>
                       </ResponsiveContainer>
                     </div>
-                    <div className="flex-1 overflow-x-auto overflow-y-hidden pl-[50px] scrollbar-none scroll-smooth">
+                    <div className="flex-1 overflow-x-auto overflow-y-hidden ps-[50px] scrollbar-none scroll-smooth">
                       <div style={{ width: isHourly && !needsDailyAggregation ? `${Math.max(800, chartData.length * 85)}px` : '100%', height: '100%' }}>
                         <ResponsiveContainer width="100%" height="100%">
                           <AreaChart
@@ -298,10 +300,11 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                               axisLine={{ stroke: isDark ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.2)", strokeWidth: 1 }}
                               tick={{ fill: isDark ? "#94a3b8" : "#64748b", fontWeight: '700' }}
                               tickFormatter={(val) => {
+                                const dateLocale = getDateLocale(t('common.locale'));
                                 if (needsDailyAggregation) return val;
                                 if (val.length === 5 && val.includes(':')) return val;
                                 const date = new Date(val);
-                                return !isNaN(date.getTime()) ? (val.includes(':') ? format(date, 'HH:00') : format(date, 'MMM d')) : val;
+                                return !isNaN(date.getTime()) ? (val.includes(':') ? format(date, 'HH:00', { locale: dateLocale }) : format(date, 'MMM d', { locale: dateLocale })) : val;
                               }}
                               dy={15}
                               interval={isHourly && !needsDailyAggregation ? 0 : "preserveStartEnd"}
@@ -309,7 +312,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                             <YAxis hide domain={[0, maxY]} />
                             <Tooltip
                               cursor={{ stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' }}
-                              formatter={(val: any) => [Number(val).toFixed(3), t('dashboard.revenueChart.revenue')]}
+                              formatter={(val: any) => [Number(val).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }), t('dashboard.revenueChart.revenue')]}
                               contentStyle={{
                                 backgroundColor: isDark ? '#0B1120' : '#fff',
                                 borderRadius: '16px',
@@ -320,13 +323,14 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                               itemStyle={{ color: '#7CC39F', fontWeight: '900', fontSize: '12px', textTransform: 'capitalize' }}
                               labelStyle={{ fontWeight: '900', color: isDark ? '#fff' : '#000', marginBottom: '8px', fontSize: '10px' }}
                               labelFormatter={(val, payload) => {
+                                const dateLocale = getDateLocale(t('common.locale'));
                                 if (needsDailyAggregation && payload && payload[0]?.payload?.date) {
                                   const dateStr = payload[0].payload.date;
-                                  return !isNaN(new Date(dateStr).getTime()) ? format(new Date(dateStr), 'EEEE, MMM d, yyyy') : val;
+                                  return !isNaN(new Date(dateStr).getTime()) ? format(new Date(dateStr), 'EEEE, MMM d, yyyy', { locale: dateLocale }) : val;
                                 }
                                 if (val.length === 5 && val.includes(':')) return val;
                                 const date = new Date(val);
-                                return !isNaN(date.getTime()) ? format(date, 'MMM d, yyyy HH:mm') : val;
+                                return !isNaN(date.getTime()) ? format(date, 'MMM d, yyyy HH:mm', { locale: dateLocale }) : val;
                               }}
                             />
                             <Area
@@ -358,15 +362,15 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                 <Wallet size={20} />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('reports.sales.paymentMethods')}</h3>
-                <p className="text-xs font-bold text-gray-500 tracking-wide">{t('reports.sales.breakdown')}</p>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('orders.reports.sales.paymentMethods')}</h3>
+                <p className="text-xs font-bold text-gray-500 tracking-wide">{t('orders.reports.sales.breakdown')}</p>
               </div>
             </div>
             <button
               onClick={() => navigate(`/dashboard/${locationSlug}/reports/payments`)}
               className="text-xs font-bold text-blue-500 hover:underline tracking-wide"
             >
-              {t('reports.sales.viewAll')}
+              {t('orders.reports.sales.viewAll')}
             </button>
           </div>
           <div className="flex-1 flex flex-col justify-center">

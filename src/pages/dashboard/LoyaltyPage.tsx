@@ -77,8 +77,8 @@ export function LoyaltyPage() {
     const lastSyncedPointsPerCurrency = useRef<number | null>(null);
 
     // Display values
-    const currencyPerPointDisplay = (currencyPerPointCents / 100).toFixed(2);
-    const pointsPerCurrencyDisplay = String(pointsPerCurrency);
+    const currencyPerPointDisplay = (currencyPerPointCents / 100).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const pointsPerCurrencyDisplay = pointsPerCurrency.toLocaleString(t('common.locale'));
 
     const [categories, setCategories] = useState<Category[]>([]);
     const { currency } = useCurrency();
@@ -116,7 +116,6 @@ export function LoyaltyPage() {
                 setRewards([]);
             }
         } catch {
-            console.error('Failed to load loyalty config');
             toast.error(t('rewards.errors.failedToLoad'));
         } finally {
             setIsLoading(false);
@@ -237,8 +236,8 @@ export function LoyaltyPage() {
             id: editingReward?.id || `reward_${Date.now()}`,
             type: rewardData.type,
             name: rewardData.type === 'DISCOUNT'
-                ? `Discount ${rewardData.discountPercentage}%`
-                : 'Free Item',
+                ? `${t('dashboard.menu.discounts')} ${rewardData.discountPercentage}%`
+                : t('rewards.form.freeItem'),
             pointsRequired: parseInt(rewardData.pointsRequired, 10),
             discountPercentage: rewardData.type === 'DISCOUNT' ? parseFloat(rewardData.discountPercentage) : undefined,
             freeCategoryId: rewardData.type === 'FREE_ITEM' ? rewardData.freeCategoryId : undefined,
@@ -312,7 +311,7 @@ export function LoyaltyPage() {
     }
 
     return (
-        <div className="max-w-7xl mx-auto space-y-8 pb-10">
+        <div className="max-w-7xl mx-auto space-y-8 pb-10" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
 
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
@@ -453,11 +452,11 @@ export function LoyaltyPage() {
                                                     <div>
                                                         <p className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-paymint-green transition-colors">{reward.name.includes('Discount') ? reward.name.replace('Discount', t('discounts.title')) : reward.name.includes('Free Item') ? reward.name.replace('Free Item', t('rewards.form.freeItem')) : reward.name}</p>
                                                         <div className="flex items-center gap-1.5 mt-0.5">
-                                                            <span className="text-xs text-gray-400 font-black tracking-widest">{reward.pointsRequired} {t('rewards.pointsUnit')}</span>
+                                                            <span className="text-xs text-gray-400 font-black tracking-widest">{reward.pointsRequired.toLocaleString(t('common.locale'))} {t('rewards.pointsUnit')}</span>
                                                             <span className="text-xs text-gray-300 dark:text-gray-600">•</span>
                                                             <span className="text-xs text-paymint-green font-black tracking-widest">
                                                                 {reward.type === 'DISCOUNT'
-                                                                    ? `${reward.discountPercentage}% ${t('rewards.off')}`
+                                                                    ? `${(reward.discountPercentage || 0).toLocaleString(t('common.locale'))}% ${t('rewards.off')}`
                                                                     : reward.freeCategoryName ? t('rewards.freeFrom', { category: reward.freeCategoryName }) : t('rewards.freeProduct')}
                                                             </span>
                                                         </div>

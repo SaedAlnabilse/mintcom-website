@@ -2,16 +2,18 @@ import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Clock, Globe, BarChart3, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export function CookiePolicyPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0B1120] font-sans text-gray-900 dark:text-white pb-20">
+    <div className="min-h-screen bg-white dark:bg-[#0B1120] font-sans text-gray-900 dark:text-white pb-20" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Header / Hero */}
       <div className="bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-6">
@@ -22,18 +24,18 @@ export function CookiePolicyPage() {
           >
             <div className="flex items-center gap-3 text-paymint-green mb-4">
               <Shield size={24} />
-              <span className="text-xs font-black tracking-widest uppercase">Legal Center</span>
+              <span className="text-xs font-black tracking-widest uppercase">{t('legal.cookies.legalCenter')}</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
-              Cookie Statement
+              {t('legal.cookies.title')}
             </h1>
             <p className="text-sm font-bold text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed">
-              We believe in being transparent about how we use your data. This policy explains how we use cookies and similar technologies to recognize you when you visit our website.
+              {t('legal.cookies.subtitle')}
             </p>
             <div className="flex items-center gap-4 text-xs font-bold text-gray-500 pt-4">
               <span className="flex items-center gap-2">
                 <Clock size={16} />
-                Last Updated: February 2, 2026
+                {t('legal.cookies.lastUpdated')}: {new Date('2026-02-02').toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
               </span>
             </div>
           </motion.div>
@@ -46,12 +48,12 @@ export function CookiePolicyPage() {
         <aside className="hidden md:block">
           <div className="sticky top-24 space-y-1">
             {[
-              { id: 'what-are-cookies', label: 'What are cookies?' },
-              { id: 'why-use', label: 'Why do we use them?' },
-              { id: 'types-of-cookies', label: 'Types of Cookies' },
-              { id: 'third-party', label: 'Third-Party Cookies' },
-              { id: 'control', label: 'How to control cookies' },
-              { id: 'updates', label: 'Updates to this policy' },
+              { id: 'what-are-cookies', label: t('legal.cookies.sections.whatAre') },
+              { id: 'why-use', label: t('legal.cookies.sections.whyUse') },
+              { id: 'types-of-cookies', label: t('legal.cookies.sections.types') },
+              { id: 'third-party', label: t('legal.cookies.sections.thirdParty') },
+              { id: 'control', label: t('legal.cookies.sections.control') },
+              { id: 'updates', label: t('legal.cookies.sections.updates') },
             ].map((link) => (
               <a
                 key={link.id}
@@ -66,7 +68,7 @@ export function CookiePolicyPage() {
                 onClick={() => navigate('/')}
                 className="w-full py-3 px-4 bg-gray-900 dark:bg-white text-white dark:text-black rounded-xl text-xs font-black tracking-widest shadow-lg hover:opacity-90 transition-all"
               >
-                Back to Home
+                {t('legal.cookies.backToHome')}
               </button>
             </div>
           </div>
@@ -74,37 +76,37 @@ export function CookiePolicyPage() {
 
         {/* Article Content */}
         <article className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-paymint-green">
-          
+
           <section id="what-are-cookies" className="scroll-mt-28">
-            <h2>What are cookies?</h2>
+            <h2>{t('legal.cookies.sections.whatAre')}</h2>
             <p>
-              Cookies are small data files that are placed on your computer or mobile device when you visit a website. Cookies are widely used by website owners in order to make their websites work, or to work more efficiently, as well as to provide reporting information.
+              {t('legal.cookies.content.whatAre_1')}
             </p>
             <p>
-              Cookies set by the website owner (in this case, Paymint) are called "first-party cookies". Cookies set by parties other than the website owner are called "third-party cookies". Third-party cookies enable third-party features or functionality to be provided on or through the website (e.g. like advertising, interactive content and analytics). The parties that set these third-party cookies can recognize your computer both when it visits the website in question and also when it visits certain other websites.
+              {t('legal.cookies.content.whatAre_2')}
             </p>
           </section>
 
           <section id="why-use" className="scroll-mt-28 pt-8">
-            <h2>Why do we use cookies?</h2>
+            <h2>{t('legal.cookies.sections.whyUse')}</h2>
             <p>
-              We use first-party and third-party cookies for several reasons. Some cookies are required for technical reasons in order for our Websites to operate, and we refer to these as "essential" or "strictly necessary" cookies. Other cookies also enable us to track and target the interests of our users to enhance the experience on our Online Properties. Third parties serve cookies through our Websites for advertising, analytics and other purposes.
+              {t('legal.cookies.content.whyUse_1')}
             </p>
           </section>
 
           <section id="types-of-cookies" className="scroll-mt-28 pt-8">
-            <h2>Types of Cookies We Use</h2>
-            
+            <h2>{t('legal.cookies.sections.types')}</h2>
+
             <div className="not-prose grid gap-6 mt-6 mb-8">
               <div className="p-6 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5">
                 <div className="flex items-center gap-3 mb-3 text-gray-900 dark:text-white">
                   <div className="p-2 bg-green-100 dark:bg-green-900/20 text-green-600 rounded-lg">
                     <Lock size={20} />
                   </div>
-                  <h3 className="text-base font-bold text-gray-900 dark:text-white m-0">Essential Cookies</h3>
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white m-0">{t('legal.cookies.cards.essential')}</h3>
                 </div>
                 <p className="text-xs font-bold text-gray-500 leading-relaxed">
-                  These cookies are strictly necessary to provide you with services available through our Websites and to use some of its features, such as access to secure areas.
+                  {t('legal.cookies.cards.essentialDesc')}
                 </p>
               </div>
 
@@ -113,10 +115,10 @@ export function CookiePolicyPage() {
                   <div className="p-2 bg-blue-100 dark:bg-blue-900/20 text-blue-600 rounded-lg">
                     <BarChart3 size={20} />
                   </div>
-                  <h3 className="text-base font-bold text-gray-900 dark:text-white m-0">Analytics & Customization</h3>
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white m-0">{t('legal.cookies.cards.analytics')}</h3>
                 </div>
                 <p className="text-xs font-bold text-gray-500 leading-relaxed">
-                  These cookies collect information that is used either in aggregate form to help us understand how our Websites are being used or how effective our marketing campaigns are, or to help us customize our Websites for you.
+                  {t('legal.cookies.cards.analyticsDesc')}
                 </p>
               </div>
 
@@ -125,64 +127,64 @@ export function CookiePolicyPage() {
                   <div className="p-2 bg-purple-100 dark:bg-purple-900/20 text-purple-600 rounded-lg">
                     <Globe size={20} />
                   </div>
-                  <h3 className="text-base font-bold text-gray-900 dark:text-white m-0">Advertising (Targeting)</h3>
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white m-0">{t('legal.cookies.cards.advertising')}</h3>
                 </div>
                 <p className="text-xs font-bold text-gray-500 leading-relaxed">
-                  These cookies are used to make advertising messages more relevant to you. They perform functions like preventing the same ad from continuously reappearing, ensuring that ads are properly displayed for advertisers, and in some cases selecting advertisements that are based on your interests.
+                  {t('legal.cookies.cards.advertisingDesc')}
                 </p>
               </div>
             </div>
           </section>
 
           <section id="third-party" className="scroll-mt-28 pt-8">
-            <h2>Third-Party Cookies</h2>
+            <h2>{t('legal.cookies.sections.thirdParty')}</h2>
             <p>
-              In addition to our own cookies, we may also use various third-parties cookies to report usage statistics of the Service, deliver advertisements on and through the Service, and so on.
+              {t('legal.cookies.content.thirdParty_1')}
             </p>
-            <ul>
-              <li><strong>Google Analytics:</strong> We use Google Analytics to understand how our website is being used in order to improve the user experience. User data is all anonymous.</li>
-              <li><strong>Facebook Pixel:</strong> We use Facebook Pixel to measure, optimize and build audiences for our advertising campaigns.</li>
+            <ul className="list-disc pr-5 pl-5 space-y-2">
+              <li><strong>{t('legal.cookies.content.ga')}</strong> {t('legal.cookies.content.gaDesc')}</li>
+              <li><strong>{t('legal.cookies.content.fb')}</strong> {t('legal.cookies.content.fbDesc')}</li>
             </ul>
           </section>
 
           <section id="control" className="scroll-mt-28 pt-8">
-            <h2>How can I control cookies?</h2>
+            <h2>{t('legal.cookies.sections.control')}</h2>
             <p>
-              You have the right to decide whether to accept or reject cookies. You can exercise your cookie rights by setting your preferences in the Cookie Consent Manager. The Cookie Consent Manager allows you to select which categories of cookies you accept or reject. Essential cookies cannot be rejected as they are strictly necessary to provide you with services.
+              {t('legal.cookies.content.control_1')}
             </p>
             <div className="bg-paymint-green/10 border border-paymint-green/20 rounded-xl p-6 my-6">
-              <h4 className="text-paymint-green font-bold text-base mb-2 not-prose">Preference Center</h4>
+              <h4 className="text-paymint-green font-bold text-base mb-2 not-prose">{t('legal.cookies.preferenceCenterTitle')}</h4>
               <p className="text-gray-700 dark:text-gray-300 text-xs font-bold mb-4">
-                You can change your settings at any time by clicking the button below.
+                {t('legal.cookies.preferenceCenterSubtitle')}
               </p>
-              <button 
+              <button
                 onClick={() => {
                    window.dispatchEvent(new Event('open-cookie-preferences'));
                 }}
                 className="px-6 py-2.5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-lg hover:bg-emerald-400 transition-colors shadow-sm"
               >
-                OPEN COOKIE SETTINGS
+                {t('legal.cookies.openSettings')}
               </button>
             </div>
             <p>
-              In addition to the Cookie Consent Manager, most advertising networks offer you a way to opt out of targeted advertising. If you would like to find out more information, please visit <a href="http://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer">http://www.aboutads.info/choices/</a> or <a href="http://www.youronlinechoices.com" target="_blank" rel="noopener noreferrer">http://www.youronlinechoices.com</a>.
+              {t('legal.cookies.content.control_2')}
             </p>
           </section>
 
           <section id="updates" className="scroll-mt-28 pt-8">
-            <h2>Updates to this Policy</h2>
+            <h2>{t('legal.cookies.sections.updates')}</h2>
             <p>
-              We may update this Cookie Statement from time to time in order to reflect, for example, changes to the cookies we use or for other operational, legal or regulatory reasons. Please therefore re-visit this Cookie Statement regularly to stay informed about our use of cookies and related technologies.
+              {t('legal.cookies.content.updates_1')}
             </p>
             <p>
-              The date at the top of this Cookie Statement indicates when it was last updated.
+              {t('legal.cookies.content.updates_2')}
             </p>
           </section>
 
           <section className="scroll-mt-28 pt-8 border-t border-gray-200 dark:border-white/10 mt-12">
-            <h3>Questions?</h3>
+            <h3>{t('legal.cookies.questions')}</h3>
             <p>
-              If you have any questions about our use of cookies or other technologies, please email us at <a href="mailto:privacy@paymint.com">privacy@paymint.com</a>.
+              {t('legal.cookies.content.questionsDesc')} <a href="mailto:privacy@paymint.com" className="text-paymint-green hover:underline">privacy@paymint.com</a>.
             </p>
           </section>
 

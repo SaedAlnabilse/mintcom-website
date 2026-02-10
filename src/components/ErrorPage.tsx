@@ -2,34 +2,36 @@
 import { useRouteError, isRouteErrorResponse, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { AlertTriangle, Home, ArrowLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export function ErrorPage() {
+    const { t } = useTranslation();
     const error = useRouteError();
     const navigate = useNavigate();
 
-    let title = "Unexpected Error";
-    let message = "Something went wrong. Please try again later.";
+    let title = t('errors.unexpected.title');
+    let message = t('errors.unexpected.message');
     let helpfulHint = "";
 
     if (isRouteErrorResponse(error)) {
         if (error.status === 404) {
-            title = "Page Not Found";
-            message = "Sorry, we couldn't find the page you're looking for.";
-            helpfulHint = "The page might have been moved or deleted.";
+            title = t('errors.notFound.title');
+            message = t('errors.notFound.message');
+            helpfulHint = t('errors.notFound.hint');
         } else if (error.status === 500) {
-            title = "Server Error";
-            message = "Our servers are having some trouble. Please try again later.";
+            title = t('errors.serverError.title');
+            message = t('errors.serverError.message');
         } else {
-            title = `${error.status} Error`;
+            title = t('errors.generic.title', { status: error.status });
             message = error.statusText || message;
         }
     } else if (error instanceof Error) {
         // Check for the dynamic import error specifically to give a better message
         // "Failed to fetch dynamically imported module" is the standard Vite error for chunk load failures
         if (error.message.includes('Failed to fetch dynamically imported module') || error.message.includes('Importing a module script failed')) {
-            title = "Update Available";
-            message = "A new version of the app is available.";
-            helpfulHint = "Please reload the page to get the latest updates.";
+            title = t('errors.updateAvailable.title');
+            message = t('errors.updateAvailable.message');
+            helpfulHint = t('errors.updateAvailable.hint');
         } else {
             message = error.message;
         }
@@ -78,7 +80,7 @@ export function ErrorPage() {
                         onClick={() => window.location.reload()}
                         className="w-full flex items-center justify-center space-x-2 bg-paymint-green hover:bg-paymint-green/90 text-black text-xs font-black tracking-widest py-3 px-4 rounded-xl transition-all shadow-sm active:scale-[0.98]"
                     >
-                        <span>Reload Page</span>
+                        <span>{t('common.reloadPage')}</span>
                     </button>
 
                     <div className="grid grid-cols-2 gap-3">
@@ -87,7 +89,7 @@ export function ErrorPage() {
                             className="flex items-center justify-center space-x-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400 text-xs font-black tracking-widest py-3 px-4 rounded-xl transition-colors"
                         >
                             <ArrowLeft className="w-4 h-4" />
-                            <span>Go Back</span>
+                            <span>{t('common.goBack')}</span>
                         </button>
 
                         <Link
@@ -95,7 +97,7 @@ export function ErrorPage() {
                             className="flex items-center justify-center space-x-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 dark:text-gray-400 text-xs font-black tracking-widest py-3 px-4 rounded-xl transition-colors"
                         >
                             <Home className="w-4 h-4" />
-                            <span>Home</span>
+                            <span>{t('common.home')}</span>
                         </Link>
                     </div>
                 </div>
@@ -105,7 +107,7 @@ export function ErrorPage() {
                     <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
                         <details className="group">
                             <summary className="flex items-center justify-center text-xs text-gray-400 dark:text-gray-600 cursor-pointer hover:text-gray-600 dark:hover:text-gray-400 transition-colors list-none">
-                                <span>Show Technical Details</span>
+                                <span>{t('common.showTechnicalDetails')}</span>
                                 <span className="group-open:rotate-180 transition-transform ml-1">▼</span>
                             </summary>
                             <div className="mt-3 text-left bg-gray-50 dark:bg-paymint-dark/50 p-3 rounded-lg border border-gray-100 dark:border-gray-800 overflow-hidden">

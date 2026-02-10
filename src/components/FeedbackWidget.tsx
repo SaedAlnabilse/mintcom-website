@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Star, CheckCircle2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export const FeedbackWidget = () => {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
@@ -46,7 +48,7 @@ export const FeedbackWidget = () => {
                         className="fixed right-0 top-[40%] -translate-y-1/2 z-[9999] !bg-white dark:!bg-[#0F172A] !bg-opacity-100 !opacity-100 border-y border-l border-gray-200 dark:border-white/10 py-4 px-2 rounded-l-2xl shadow-2xl hover:bg-gray-50 dark:hover:!bg-[#334155] transition-all flex flex-col items-center gap-3 group ring-1 ring-black/5"
                     >
                         <MessageSquare size={18} className="text-paymint-green group-hover:scale-110 transition-transform" />
-                        <span className="text-[10px] font-black text-gray-800 dark:text-gray-100 tracking-widest uppercase [writing-mode:vertical-rl] rotate-180">Feedback</span>
+                        <span className="text-[10px] font-black text-gray-800 dark:text-gray-100 tracking-widest uppercase [writing-mode:vertical-rl] rotate-180">{t('feedback.tab')}</span>
                     </motion.button>
                 )}
             </AnimatePresence>
@@ -67,18 +69,19 @@ export const FeedbackWidget = () => {
                             animate={{ x: 0, opacity: 1 }}
                             exit={{ x: '100%', opacity: 0 }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                            dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
                             className="fixed right-0 top-0 h-full w-[350px] bg-white dark:bg-[#0F172A] shadow-[-10px_0_30px_rgba(0,0,0,0.1)] border-l border-gray-200 dark:border-white/10 z-[10000] flex flex-col"
                             onClick={(e) => e.stopPropagation()} // Prevent click from closing when clicking inside drawer
                         >
                             {/* Drawer Header */}
                             <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
                                 <div>
-                                    <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Feedback</h3>
-                                    <p className="text-xs font-bold text-gray-500 mt-1">Help us improve</p>
+                                    <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">{t('feedback.title')}</h3>
+                                    <p className="text-xs font-bold text-gray-500 mt-1">{t('feedback.subtitle')}</p>
                                 </div>
-                                <button 
-                                    onClick={() => setIsOpen(false)} 
-                                    className="p-2 !bg-gray-100 dark:!bg-[#1E293B] rounded-xl text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                                <button
+                                    onClick={() => setIsOpen(false)}
+                                    className="p-2 bg-gray-100 dark:bg-[#1E293B] rounded-xl text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                                 >
                                     <X size={18} />
                                 </button>
@@ -91,16 +94,16 @@ export const FeedbackWidget = () => {
                                             <CheckCircle2 size={32} strokeWidth={2.5} />
                                         </div>
                                         <div>
-                                            <h4 className="text-lg font-black text-gray-900 dark:text-white">Sent!</h4>
+                                            <h4 className="text-lg font-black text-gray-900 dark:text-white">{t('feedback.sent')}</h4>
                                             <p className="text-xs font-medium text-gray-500 mt-2 leading-relaxed max-w-[200px] mx-auto">
-                                                Thanks for helping us build a better product.
+                                                {t('feedback.thanks')}
                                             </p>
                                         </div>
                                     </div>
                                 ) : (
                                     <form onSubmit={handleSubmit} className="space-y-6">
                                         <div>
-                                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Rate Experience</label>
+                                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">{t('feedback.rateExperience')}</label>
                                             <div className="flex justify-between gap-2">
                                                 {[1, 2, 3, 4, 5].map((s) => (
                                                     <button
@@ -108,9 +111,9 @@ export const FeedbackWidget = () => {
                                                         type="button"
                                                         onClick={() => setRating(s)}
                                                         className={`flex-1 aspect-square rounded-xl flex items-center justify-center transition-all duration-200 ${
-                                                            rating >= s 
-                                                            ? 'bg-paymint-green text-black shadow-md shadow-paymint-green/20' 
-                                                            : '!bg-gray-50 dark:!bg-[#1E293B] text-gray-300 hover:bg-gray-100 dark:hover:!bg-[#334155]'
+                                                            rating >= s
+                                                            ? 'bg-paymint-green text-black shadow-md shadow-paymint-green/20'
+                                                            : 'bg-gray-50 dark:bg-[#1E293B] text-gray-300 hover:bg-gray-100 dark:hover:bg-[#334155]'
                                                         }`}
                                                     >
                                                         <Star size={20} fill={rating >= s ? "currentColor" : "none"} strokeWidth={2.5} />
@@ -120,14 +123,14 @@ export const FeedbackWidget = () => {
                                         </div>
 
                                         <div>
-                                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Comments</label>
+                                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">{t('feedback.comments')}</label>
                                             <textarea
                                                 required
                                                 value={comment}
                                                 onChange={(e) => setComment(e.target.value)}
                                                 rows={6}
-                                                className="w-full px-4 py-4 !bg-gray-50 dark:!bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none placeholder-gray-400"
-                                                placeholder="What can we do better?"
+                                                className="w-full px-4 py-4 bg-gray-50 dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none placeholder-gray-400"
+                                                placeholder={t('feedback.placeholder')}
                                             />
                                         </div>
 
@@ -141,7 +144,7 @@ export const FeedbackWidget = () => {
                                             ) : (
                                                 <>
                                                     <Send size={14} />
-                                                    Send Feedback
+                                                    {t('feedback.send')}
                                                 </>
                                             )}
                                         </button>

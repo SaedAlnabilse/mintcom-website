@@ -208,7 +208,7 @@ export function EmployeeFormModal({
       const response = await api.get(`/api/custom-roles/${estId}`);
       const rolesWithNames = (response.data || []).map((r: any) => ({
         ...r,
-        establishmentName: r.establishmentName || currentEstablishment?.name || t('staff.form.location')
+        establishmentName: r.establishmentName || currentEstablishment?.name || t('staff.form.locationLabel')
       }));
       setCustomRoles(rolesWithNames);
     } catch (error) {
@@ -451,7 +451,10 @@ export function EmployeeFormModal({
 
   return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans">
+      <div
+        dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+        className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
+      >
         <motion.div
           initial={{ opacity: 0, y: 100 }}
           animate={{ opacity: 1, y: 0 }}
@@ -566,7 +569,7 @@ export function EmployeeFormModal({
                         ? t('staff.form.selectLocation')
                         : selectedEstablishmentIds.length === establishments.length
                           ? t('staff.form.allLocations')
-                          : `${selectedEstablishmentIds.length} ${t('onboarding.step1.address')}${selectedEstablishmentIds.length === 1 ? '' : 's'}`}
+                          : t('staff.form.locationsCount', { count: selectedEstablishmentIds.length })}
                     </span>
                     <ChevronDown size={16} className={`text-gray-400 transition-transform ${activeDropdown === 'ESTABLISHMENT' ? 'rotate-180' : ''}`} />
                   </button>
@@ -735,7 +738,7 @@ export function EmployeeFormModal({
                                             <span className={`text-xs font-bold ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
                                               {customRole.name}
                                             </span>
-                                            <p className="text-xs font-bold text-gray-500 mt-0.5">{customRole.permissions.length + (customRole.backofficePermissions?.length || 0)} {t('onboarding.step1.menu')}</p>
+                                            <p className="text-xs font-bold text-gray-500 mt-0.5">{t('staff.form.permissionsCount', { count: customRole.permissions.length + (customRole.backofficePermissions?.length || 0) })}</p>
                                           </div>
                                           {selectedCustomRoleId === customRole.id && role !== 'ADMIN' && <Check size={14} className="text-paymint-green" />}
                                         </button>
@@ -788,7 +791,7 @@ export function EmployeeFormModal({
                                               <span className={`text-xs font-bold ${selectedCustomRoleId === customRole.id && role !== 'ADMIN' ? 'text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
                                                 {customRole.name}
                                               </span>
-                                              <p className="text-xs font-bold text-gray-500 mt-0.5">{customRole.permissions.length + (customRole.backofficePermissions?.length || 0)} {t('onboarding.step1.menu')}</p>
+                                              <p className="text-xs font-bold text-gray-500 mt-0.5">{t('staff.form.permissionsCount', { count: customRole.permissions.length + (customRole.backofficePermissions?.length || 0) })}</p>
                                             </div>
                                             {selectedCustomRoleId === customRole.id && role !== 'ADMIN' && <Check size={14} className="text-paymint-green" />}
                                           </button>

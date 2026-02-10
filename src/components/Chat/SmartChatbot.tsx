@@ -14,6 +14,7 @@ import {
   Lightbulb
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   PAYMINT_KNOWLEDGE,
   GREETINGS,
@@ -96,14 +97,9 @@ function findBestMatch(query: string): KnowledgeEntry | null {
   return null;
 }
 
-function getRelatedSuggestions(entry: KnowledgeEntry | null): string[] {
+function getRelatedSuggestions(entry: KnowledgeEntry | null, defaultSuggestions: string[]): string[] {
   if (!entry) {
-    return [
-      'How do I add a product?',
-      'Where can I view my orders?',
-      'How do I manage staff?',
-      'What reports are available?'
-    ];
+    return defaultSuggestions;
   }
 
   const suggestions: string[] = [];
@@ -133,6 +129,7 @@ function getRelatedSuggestions(entry: KnowledgeEntry | null): string[] {
 }
 
 export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -150,21 +147,22 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
   // Initialize with welcome message
   useEffect(() => {
     if (isOpen && messages.length === 0) {
-      const greeting = GREETINGS[Math.floor(Math.random() * GREETINGS.length)];
+      const index = Math.floor(Math.random() * 3);
+      const greeting = t(`chat.greetings.${index}`);
       setMessages([{
         id: '1',
         type: 'bot',
         content: greeting,
         timestamp: new Date(),
         suggestions: [
-          'How do I get started?',
-          'Show me how to add products',
-          'What features do you have?',
-          'Help with reports'
+          t('chat.suggestions.0'),
+          t('chat.suggestions.1'),
+          t('chat.suggestions.2'),
+          t('chat.suggestions.3')
         ]
       }]);
     }
-  }, [isOpen, messages.length]);
+  }, [isOpen, messages.length, t]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -179,6 +177,14 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
   }, [isOpen]);
 
   const processMessage = useCallback(async (userMessage: string) => {
+    // Default suggestions for when no match is found
+    const defaultSuggestions = [
+      t('chat.suggestions.add_product'),
+      t('chat.suggestions.view_orders'),
+      t('chat.suggestions.manage_staff'),
+      t('chat.suggestions.view_reports')
+    ];
+
     // Add user message
     const userMsg: Message = {
       id: Date.now().toString(),
@@ -202,12 +208,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
         type: 'bot',
         content: greeting,
         timestamp: new Date(),
-        suggestions: [
-          'How do I add a product?',
-          'View my orders',
-          'Help with staff management',
-          'Check reports'
-        ]
+        suggestions: defaultSuggestions
       };
       setMessages(prev => [...prev, botMsg]);
       setIsTyping(false);
@@ -231,7 +232,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
         type: 'bot',
         content: match.answer,
         timestamp: new Date(),
-        suggestions: getRelatedSuggestions(match),
+        suggestions: getRelatedSuggestions(match, defaultSuggestions),
         navigationPath: resolvedPath
       };
     } else {
@@ -243,17 +244,17 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
         content: fallback,
         timestamp: new Date(),
         suggestions: [
-          'How do I get started?',
-          'Add a product',
-          'View orders',
-          'Contact support'
+          t('chat.suggestions.get_started'),
+          t('chat.suggestions.add_product'),
+          t('chat.suggestions.view_orders'),
+          t('chat.suggestions.contact_support')
         ]
       };
     }
 
     setMessages(prev => [...prev, botResponse]);
     setIsTyping(false);
-  }, [currentLocationSlug]);
+  }, [currentLocationSlug, t]);
 
   const handleSend = () => {
     if (input.trim() && !isTyping) {
@@ -280,13 +281,14 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 20, scale: 0.95 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="fixed bottom-[100px] right-[30px] z-[999999] w-[400px] max-w-[calc(100vw-60px)] h-[600px] max-h-[calc(100vh-150px)] bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl border border-gray-200/50 dark:border-white/10 flex flex-col overflow-hidden"
-        >
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+            className="fixed bottom-[100px] right-[30px] z-[999999] w-[400px] max-w-[calc(100vw-60px)] h-[600px] max-h-[calc(100vh-150px)] bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl border border-gray-200/50 dark:border-white/10 flex flex-col overflow-hidden"
+          >
           {/* Header */}
           <div className="relative px-5 py-4 bg-gradient-to-r from-[#7CC39F] to-[#5BA882] overflow-hidden">
             {/* Decorative elements */}
@@ -309,8 +311,8 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                 </motion.div>
               </div>
               <div>
-                <h3 className="text-white font-bold text-lg tracking-tight">Minto</h3>
-                <p className="text-white/80 text-xs font-medium">Your Paymint Assistant</p>
+                <h3 className="text-white font-bold text-lg tracking-tight">{t('chat.botName')}</h3>
+                <p className="text-white/80 text-xs font-medium">{t('chat.assistantTitle')}</p>
               </div>
             </div>
           </div>
@@ -344,7 +346,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                         ? 'bg-[#7CC39F] text-black rounded-tr-sm'
                         : 'bg-gray-100 dark:bg-white/5 text-gray-800 dark:text-gray-200 rounded-tl-sm'
                     }`}>
-                      <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
+                                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
                     </div>
 
                     {/* Navigation Button */}
@@ -356,8 +358,8 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                         className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#7CC39F]/10 hover:bg-[#7CC39F]/20 text-[#7CC39F] text-xs font-bold rounded-full transition-colors"
                       >
                         <Zap size={12} />
-                        Take me there
-                        <ArrowRight size={12} />
+                        {t('chat.navigation.takeMe')}
+                        <ArrowRight size={12} className={t('common.locale') === 'ar' ? 'rotate-180' : ''} />
                       </motion.button>
                     )}
 
@@ -416,10 +418,10 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
           <div className="px-4 py-2 border-t border-gray-100 dark:border-white/5">
             <div className="flex gap-2 overflow-x-auto scrollbar-none">
               {[
-                { icon: <Package size={14} />, label: 'Products', query: 'How do I add products?' },
-                { icon: <ClipboardList size={14} />, label: 'Orders', query: 'Where are my orders?' },
-                { icon: <BarChart3 size={14} />, label: 'Reports', query: 'Show me reports' },
-                { icon: <Lightbulb size={14} />, label: 'Tips', query: 'Give me some tips' },
+                { icon: <Package size={14} />, label: t('chat.actions.products'), query: t('chat.queries.howToAddProduct') },
+                { icon: <ClipboardList size={14} />, label: t('chat.actions.orders'), query: t('chat.queries.whereAreOrders') },
+                { icon: <BarChart3 size={14} />, label: t('chat.actions.reports'), query: t('chat.queries.showMeReports') },
+                { icon: <Lightbulb size={14} />, label: t('chat.actions.tips'), query: t('chat.queries.giveMeTips') },
               ].map((action, index) => (
                 <motion.button
                   key={index}
@@ -445,7 +447,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Ask me anything..."
+                  placeholder={t('chat.inputPlaceholder')}
                   disabled={isTyping}
                   className="w-full px-4 py-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7CC39F]/30 focus:border-[#7CC39F] transition-all disabled:opacity-50"
                 />
@@ -456,13 +458,13 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                 whileTap={{ scale: 0.95 }}
                 onClick={handleSend}
                 disabled={!input.trim() || isTyping}
-                className="w-12 h-12 bg-[#7CC39F] hover:brightness-110 disabled:opacity-50 disabled:hover:brightness-100 text-black rounded-2xl flex items-center justify-center transition-all shadow-lg shadow-[#7CC39F]/30"
+                className={`w-12 h-12 bg-[#7CC39F] hover:brightness-110 disabled:opacity-50 disabled:hover:brightness-100 text-black rounded-2xl flex items-center justify-center transition-all shadow-lg shadow-[#7CC39F]/30 ${t('common.locale') === 'ar' ? 'rotate-180' : ''}`}
               >
                 <Send size={18} />
               </motion.button>
             </div>
             <p className="text-center text-[10px] text-gray-400 mt-2">
-              Powered by Paymint AI
+              {t('chat.poweredBy')}
             </p>
           </div>
         </motion.div>

@@ -24,7 +24,7 @@ import { QuickInfo } from '../../components/QuickInfo';
 import { useAuth } from '../../context/AuthContext';
 
 const paymentMethodSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
+  name: z.string().min(1, 'common.required'),
   isActive: z.boolean(),
 });
 
@@ -286,7 +286,7 @@ export function PaymentMethodsPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-10 pb-16">
+    <div className="max-w-7xl mx-auto space-y-10 pb-16" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>

@@ -10,6 +10,7 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
@@ -98,6 +99,7 @@ interface MenuItem {
 }
 
 export function RecipesPage() {
+  const { t } = useTranslation();
   const { locationSlug } = useParams();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'final' | 'sub'>('final');
@@ -166,7 +168,7 @@ export function RecipesPage() {
       setRawMaterials(materialsRes.data || []);
       setMenuItems(itemsRes.data || []);
     } catch {
-      toast.error('Failed to sync data');
+      toast.error(t('manufacturing.messages.syncFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -242,8 +244,8 @@ export function RecipesPage() {
   const handleSaveSubRecipe = async () => {
     setErrors({});
     const newErrors: Record<string, string> = {};
-    if (!subRecipeForm.name.trim()) newErrors.name = 'Required';
-    if (!subRecipeForm.yield || subRecipeForm.yield <= 0) newErrors.yield = 'Must be > 0';
+    if (!subRecipeForm.name.trim()) newErrors.name = t('common.required');
+    if (!subRecipeForm.yield || subRecipeForm.yield <= 0) newErrors.yield = t('manufacturing.formula.yield');
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -254,11 +256,11 @@ export function RecipesPage() {
     try {
       if (editingRecipe) await api.put(`/api/manufacturing/sub-recipes/${editingRecipe.id}`, subRecipeForm);
       else await api.post('/api/manufacturing/sub-recipes', subRecipeForm);
-      toast.success('Saved formula');
+      toast.success(t('manufacturing.messages.saveSuccess'));
       setShowSubRecipeModal(false);
       fetchData();
     } catch {
-      toast.error('Error saving');
+      toast.error(t('manufacturing.messages.saveError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -267,18 +269,18 @@ export function RecipesPage() {
   const handleSaveFinalRecipe = async () => {
     setErrors({});
     if (!finalRecipeForm.itemId) {
-      setErrors({ itemId: 'Required' });
+      setErrors({ itemId: t('common.required') });
       return;
     }
     setIsSubmitting(true);
     try {
       if (editingRecipe) await api.put(`/api/manufacturing/final-recipes/${editingRecipe.id}`, finalRecipeForm);
       else await api.post('/api/manufacturing/final-recipes', finalRecipeForm);
-      toast.success('Saved recipe');
+      toast.success(t('manufacturing.messages.saveSuccess'));
       setShowFinalRecipeModal(false);
       fetchData();
     } catch {
-      toast.error('Error saving');
+      toast.error(t('manufacturing.messages.saveError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -289,11 +291,11 @@ export function RecipesPage() {
     setIsSubmitting(true);
     try {
       await api.post(`/api/manufacturing/sub-recipes/${manufactureRecipe.id}/manufacture`, { batches: numBatches });
-      toast.success('Manufactured');
+      toast.success(t('manufacturing.manufactured'));
       setShowManufactureModal(false);
       fetchData();
     } catch {
-      toast.error('Failed');
+      toast.error(t('common.error'));
     } finally {
       setIsSubmitting(false);
     }
@@ -302,16 +304,16 @@ export function RecipesPage() {
   const handleDeleteRecipe = async (id: string, type: 'sub' | 'final') => {
     setConfirmConfig({
       isOpen: true,
-      title: 'Remove Formula',
-      message: 'Delete this blueprint?',
+      title: t('common.delete'),
+      message: t('manufacturing.messages.deleteConfirm'),
       type: 'danger',
       onConfirm: async () => {
         try {
           await api.delete(`/api/manufacturing/${type === 'sub' ? 'sub-recipes' : 'final-recipes'}/${id}`);
-          toast.success('Removed');
+          toast.success(t('manufacturing.messages.removed'));
           fetchData();
         } catch {
-          toast.error('Failed');
+          toast.error(t('common.error'));
         }
       }
     });
@@ -323,12 +325,12 @@ export function RecipesPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              Kitchen
+              {t('manufacturing.kitchen')}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Recipes</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('manufacturing.title')}</h1>
           <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
-            Manage recipes and prep
+            {t('manufacturing.subtitle')}
           </p>
         </div>
 
@@ -339,8 +341,8 @@ export function RecipesPage() {
                 if (menuItems.length === 0 && !isLoading) {
                   setConfirmConfig({
                     isOpen: true,
-                    title: 'No products found',
-                    message: 'You need to create menu items before you can define their recipes. Would you like to add a product now?',
+                    title: t('manufacturing.messages.noProducts'),
+                    message: t('manufacturing.messages.noProductsDesc'),
                     type: 'warning',
                     onConfirm: () => {
                       navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true } });
@@ -360,7 +362,7 @@ export function RecipesPage() {
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
           >
             <Plus size={18} />
-            <span>{activeTab === 'final' ? 'Link Product' : 'New Prep'}</span>
+            <span>{activeTab === 'final' ? t('manufacturing.linkProduct') : t('manufacturing.newPrep')}</span>
           </button>
         </div>
       </div>
@@ -374,13 +376,13 @@ export function RecipesPage() {
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
             onClear={() => { setSearchQuery(''); setPage(1); }}
-            placeholder="Search recipes..."
+            placeholder={t('manufacturing.search')}
             className="w-full"
           />
         </div>
         <div className="flex p-1 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl">
-          <button onClick={() => { setActiveTab('final'); setPage(1); }} className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'final' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>Products</button>
-          <button onClick={() => { setActiveTab('sub'); setPage(1); }} className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'sub' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>Prep</button>
+          <button onClick={() => { setActiveTab('final'); setPage(1); }} className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'final' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('manufacturing.products')}</button>
+          <button onClick={() => { setActiveTab('sub'); setPage(1); }} className={`px-4 py-2 rounded-lg text-xs font-black tracking-widest transition-all ${activeTab === 'sub' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'}`}>{t('manufacturing.prep')}</button>
         </div>
       </div>
 
@@ -396,8 +398,8 @@ export function RecipesPage() {
             <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
               <Pizza size={32} className="text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No recipes found</h3>
-            <p className="text-sm font-bold text-gray-500 max-w-xs">Create a recipe to get started.</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('manufacturing.noRecipes')}</h3>
+            <p className="text-sm font-bold text-gray-500 max-w-xs">{t('manufacturing.noRecipesDesc')}</p>
           </div>
         ) : (
           <div className="space-y-8">
@@ -421,18 +423,18 @@ export function RecipesPage() {
                                                                             <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[150px] group-hover:text-paymint-green transition-colors">
                                                                               {activeTab === 'final' ? (recipe as FinalRecipe).item?.name : (recipe as SubRecipe).name}
                                                                             </h3>
-                                                                            <p className="text-xs font-black text-gray-400 tracking-widest">{(recipe.ingredients || []).length} Ingredients</p>
+                                                                            <p className="text-xs font-black text-gray-400 tracking-widest">{(recipe.ingredients || []).length} {t('manufacturing.ingredients')}</p>
                                                                           </div>
                                                                         </div>
                                                                         <div className="flex gap-1 transition-all">
-                                                                          <button onClick={() => activeTab === 'final' ? openEditFinalRecipe(recipe as FinalRecipe) : openEditSubRecipe(recipe as SubRecipe)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-colors"><Edit2 size={16} /></button>
-                                                                          <button onClick={() => handleDeleteRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 transition-colors"><Trash2 size={16} /></button>
+                                                                          <button onClick={() => activeTab === 'final' ? openEditFinalRecipe(recipe as FinalRecipe) : openEditSubRecipe(recipe as SubRecipe)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-green hover:bg-paymint-green/10 transition-colors" title={t('common.edit')}><Edit2 size={16} /></button>
+                                                                          <button onClick={() => handleDeleteRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 transition-colors" title={t('common.delete')}><Trash2 size={16} /></button>
                                                                         </div>
-                                                                      </div>                        
+                                                                      </div>
                                               <div className="space-y-3 mb-6 bg-gray-50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-100 dark:border-white/5">
                                                 {(Array.isArray(recipe.ingredients) ? recipe.ingredients : []).slice(0, 3).map((ing: Record<string, any>, i: number) => {
                                                   const baseUnit = ing.rawMaterial?.unit || ing.subRecipe?.yieldUnit || 'Units';
-                        
+
                                                   let currentUnit = ing.selectedUnit || baseUnit;
                                                   // Smart scaling if no explicit unit is saved and value is fractional
                                                   if (!ing.selectedUnit) {
@@ -440,24 +442,24 @@ export function RecipesPage() {
                                                     else if (baseUnit === 'Kg' && ing.quantity < 1) currentUnit = 'G';
                                                     else if (baseUnit === 'G' && ing.quantity < 1) currentUnit = 'Mg';
                                                   }
-                        
+
                                                   const displayQty = convertToDisplay(ing.quantity, baseUnit, currentUnit);
-                        
+
                                                   return (
                                                     <div key={i} className="flex items-center justify-between">
                                                       <span className="text-xs font-bold text-gray-500 dark:text-gray-400 truncate max-w-[120px]">{ing.rawMaterial?.name || ing.subRecipe?.name}</span>
                                                       <span className="text-xs font-bold text-gray-900 dark:text-white">
-                                                        {Number(displayQty.toFixed(4))} <span className="text-xs opacity-50">{currentUnit}</span>
+                                                        {displayQty.toLocaleString(t('common.locale'), { maximumFractionDigits: 4 })} <span className="text-xs opacity-50">{currentUnit}</span>
                                                       </span>
                                                     </div>
                                                   );
                                                 })}
-                                                {(recipe.ingredients || []).length > 3 && <p className="text-xs font-black text-paymint-green text-center mt-2 tracking-widest">+ {(recipe.ingredients || []).length - 3} Additional Elements</p>}
+                                                {(recipe.ingredients || []).length > 3 && <p className="text-xs font-black text-paymint-green text-center mt-2 tracking-widest">+ {(recipe.ingredients || []).length - 3} {t('manufacturing.additionalElements')}</p>}
                                               </div>
-                        
+
                     {activeTab === 'sub' && (
                       <button onClick={() => openManufactureModal(recipe as SubRecipe)} className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 text-xs transition-all flex items-center justify-center gap-2 shadow-sm">
-                        Produce Batch
+                        {t('manufacturing.produceBatch')}
                       </button>
                     )}
                   </div>
@@ -478,14 +480,14 @@ export function RecipesPage() {
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingRecipe ? 'Edit Recipe' : 'New Recipe'}</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingRecipe ? t('manufacturing.formula.edit') : t('manufacturing.formula.new')}</h2>
                 <button onClick={() => setShowSubRecipeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={24} /></button>
               </div>
               <div className="p-8 space-y-6 overflow-y-auto custom-scrollbar flex-1">
                 <div>
                   <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
-                    Name <span className="text-paymint-red mx-1">*</span>
-                    <QuickInfo text="Name of the sub-recipe (e.g., 'Pizza Dough')." />
+                    {t('manufacturing.formula.name')} <span className="text-paymint-red mx-1">*</span>
+                    <QuickInfo text={t('manufacturing.formula.namePlaceholder')} />
                   </label>
                   <input
                     type="text"
@@ -495,15 +497,15 @@ export function RecipesPage() {
                       if (errors.name) setErrors({ ...errors, name: '' });
                     }}
                     className={`w-full px-5 py-3.5 bg-gray-50 dark:bg-white/5 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/20 transition-all`}
-                    placeholder="e.g. House Vinaigrette"
+                    placeholder={t('manufacturing.formula.namePlaceholder')}
                   />
                   {errors.name && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.name}</p>}
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col">
                     <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
-                      Yield
-                      <QuickInfo text="Total quantity produced by this formula." />
+                      {t('manufacturing.formula.yield')}
+                      <QuickInfo text={t('manufacturing.totalOutput')} />
                     </label>
                     <input
                       type="number"
@@ -514,22 +516,22 @@ export function RecipesPage() {
                   </div>
                   <div className="flex flex-col">
                     <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1 flex items-center">
-                      Unit
+                      {t('manufacturing.formula.unit')}
                     </label>
                                             <CustomSelect
                                               value={subRecipeForm.yieldUnit}
                                               onChange={(val) => setSubRecipeForm({ ...subRecipeForm, yieldUnit: String(val) })}
-                                              options={units}
+                                              options={units.map(u => ({ label: t(`inventory.units.${u.toLowerCase()}`, { defaultValue: u }), value: u }))}
                                               className="w-full"
                                             />                  </div>
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between px-1">
                     <div className="flex items-center">
-                      <label className="text-xs font-black text-gray-400 tracking-[0.2em]">Ingredients</label>
-                      <QuickInfo text="Ingredients required to make one batch." />
+                      <label className="text-xs font-black text-gray-400 tracking-[0.2em]">{t('manufacturing.ingredients')}</label>
+                      <QuickInfo text={t('manufacturing.formula.noIngredients')} />
                     </div>
-                    <span className="text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{subRecipeForm.ingredients.length} items</span>
+                    <span className="text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{subRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('dashboard.stats.orders')}</span>
                   </div>
 
                   <div className="space-y-3 min-h-[40px]">
@@ -561,7 +563,7 @@ export function RecipesPage() {
                                 setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
                               }}
                               options={rawMaterials.map(m => ({ label: `${m.name} (${m.unit})`, value: m.id }))}
-                              placeholder="Element..."
+                              placeholder={t('manufacturing.formula.selectItem')}
                               className="flex-[2]"
                             />
 
@@ -593,7 +595,7 @@ export function RecipesPage() {
                                   }}
                                 >
                                   {availableUnits.map(u => (
-                                    <option key={u} value={u} className="bg-white dark:bg-[#1E293B] text-black dark:text-white">{u}</option>
+                                    <option key={u} value={u} className="bg-white dark:bg-[#1E293B] text-black dark:text-white">{t(`inventory.units.${u.toLowerCase()}`, { defaultValue: u })}</option>
                                   ))}
                                 </select>
                               </div>
@@ -613,7 +615,7 @@ export function RecipesPage() {
                     {subRecipeForm.ingredients.length === 0 && (
                       <div className="py-8 text-center border-2 border-dashed border-gray-200 dark:border-white/5 rounded-2xl">
                         <Package size={24} className="mx-auto text-gray-300 mb-2 opacity-50" />
-                        <p className="text-xs font-black text-gray-400 tracking-widest">No ingredients yet</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest">{t('manufacturing.formula.noIngredients')}</p>
                       </div>
                     )}
                   </div>
@@ -624,8 +626,8 @@ export function RecipesPage() {
                         if (rawMaterials.length === 0 && !isLoading) {
                           setConfirmConfig({
                             isOpen: true,
-                            title: 'No materials found',
-                            message: 'You need to create raw materials (ingredients) before you can add them to a formula. Would you like to create one now?',
+                            title: t('manufacturing.messages.noMaterials'),
+                            message: t('manufacturing.messages.noMaterialsDesc'),
                             type: 'warning',
                             onConfirm: () => {
                               navigate(`/dashboard/${locationSlug}/materials`, { state: { openCreateModal: true } });
@@ -638,14 +640,14 @@ export function RecipesPage() {
                       className="w-full flex items-center justify-center gap-2 py-4 bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl text-xs font-black text-paymint-green tracking-widest hover:bg-paymint-green/5 hover:border-paymint-green/30 transition-all group"
                     >
                       <Plus size={16} className="group-hover:scale-125 transition-transform" />
-                      <span>Add Ingredient</span>
+                      <span>{t('manufacturing.formula.addMaterial')}</span>
                     </button>
                   </div>
                 </div>
               </div>
               <div className="p-8 border-t border-gray-200 dark:border-white/5">
                 <button onClick={handleSaveSubRecipe} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-emerald-400 tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
-                  Save Recipe
+                  {t('manufacturing.formula.saveFormula')}
                 </button>
               </div>
             </motion.div>
@@ -658,14 +660,14 @@ export function RecipesPage() {
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-lg max-h-[85vh] flex flex-col overflow-visible shadow-2xl">
               <div className="p-8 border-b border-gray-200 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingRecipe ? 'Edit Product Recipe' : 'Map Product'}</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{editingRecipe ? t('manufacturing.formula.editMap') : t('manufacturing.formula.map')}</h2>
                 <button onClick={() => setShowFinalRecipeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"><X size={24} /></button>
               </div>
               <div className="p-8 space-y-6 overflow-y-auto custom-scrollbar flex-1">
                 <div>
                   <div className="flex items-center mb-1">
-                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em]">Target Menu Item <span className="text-paymint-red">*</span></label>
-                    <QuickInfo text="The menu product this recipe defines." />
+                    <label className="block text-xs font-black text-gray-400 tracking-[0.2em]">{t('manufacturing.formula.targetItem')} <span className="text-paymint-red">*</span></label>
+                    <QuickInfo text={t('manufacturing.formula.targetItem')} />
                   </div>
                   <CustomSelect
                     value={finalRecipeForm.itemId}
@@ -674,17 +676,17 @@ export function RecipesPage() {
                       if (errors.itemId) setErrors({ ...errors, itemId: '' });
                     }}
                     options={products.map(p => ({ label: p.name, value: p.id }))}
-                    placeholder="Select Item..."
+                    placeholder={t('manufacturing.formula.selectItem')}
                   />
                   {errors.itemId && <p className="mt-1 text-xs font-bold text-paymint-red">{errors.itemId}</p>}
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between px-1">
                     <div className="flex items-center">
-                      <label className="text-xs font-black text-gray-400 tracking-[0.2em]">Ingredients</label>
-                      <QuickInfo text="Ingredients and sub-recipes used for one serving." />
+                      <label className="text-xs font-black text-gray-400 tracking-[0.2em]">{t('manufacturing.ingredients')}</label>
+                      <QuickInfo text={t('manufacturing.formula.noIngredients')} />
                     </div>
-                    <span className="text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{finalRecipeForm.ingredients.length} items</span>
+                    <span className="text-xs font-black text-gray-400 tracking-widest bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{finalRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('dashboard.stats.orders')}</span>
                   </div>
 
                   <div className="space-y-3 min-h-[40px]">
@@ -734,7 +736,7 @@ export function RecipesPage() {
                                   setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
                                 }}
                                 options={validMaterialOptions}
-                                placeholder="Raw Material..."
+                                placeholder={t('manufacturing.formula.addMaterial')}
                                 className="flex-[2] text-sm"
                               />
                             ) : (
@@ -750,7 +752,7 @@ export function RecipesPage() {
                                   setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
                                 }}
                                 options={validSubRecipeOptions}
-                                placeholder="Sub-Formula..."
+                                placeholder={t('manufacturing.prep')}
                                 className="flex-[2] text-sm"
                               />
                             )}
@@ -779,7 +781,7 @@ export function RecipesPage() {
                                     }}
                                     className="h-full px-4 flex items-center gap-2 bg-gray-100/50 dark:bg-white/5 hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors rounded-r-2xl"
                                   >
-                                    <span className="text-xs font-black text-gray-600 dark:text-gray-400 group-hover/input:text-gray-900 dark:group-hover/input:text-white transition-colors">{currentUnit}</span>
+                                    <span className="text-xs font-black text-gray-600 dark:text-gray-400 group-hover/input:text-gray-900 dark:group-hover/input:text-white transition-colors">{t(`inventory.units.${currentUnit.toLowerCase()}`, { defaultValue: currentUnit })}</span>
                                     <ChevronDown size={12} className="text-gray-400" />
                                   </button>
 
@@ -808,7 +810,7 @@ export function RecipesPage() {
                                               className={`w-full px-4 py-2 text-center text-xs font-black transition-colors ${u === currentUnit ? 'bg-paymint-green text-gray-900' : 'text-gray-500 hover:text-black dark:hover:text-white'
                                                 }`}
                                             >
-                                              {u}
+                                              {t(`inventory.units.${u.toLowerCase()}`, { defaultValue: u })}
                                             </button>
                                           ))}
                                         </motion.div>
@@ -833,8 +835,8 @@ export function RecipesPage() {
                     {finalRecipeForm.ingredients.length === 0 && (
                       <div className="py-12 text-center border-2 border-dashed border-gray-200 dark:border-white/5 rounded-[2rem]">
                         <Pizza size={32} className="mx-auto text-gray-300 mb-4 opacity-50" />
-                        <p className="text-sm font-bold text-gray-500">No ingredients mapped</p>
-                        <p className="text-xs font-black text-gray-400 tracking-widest mt-1">Add Ingredients Below</p>
+                        <p className="text-sm font-bold text-gray-500">{t('manufacturing.formula.noIngredients')}</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest mt-1">{t('manufacturing.messages.noSubFormulasDesc')}</p>
                       </div>
                     )}
                   </div>
@@ -845,8 +847,8 @@ export function RecipesPage() {
                         if (rawMaterials.length === 0) {
                           setConfirmConfig({
                             isOpen: true,
-                            title: 'No materials found',
-                            message: 'You need to create raw materials before adding them to a recipe. Create one now?',
+                            title: t('manufacturing.messages.noMaterials'),
+                            message: t('manufacturing.messages.noMaterialsDesc'),
                             type: 'warning',
                             onConfirm: () => {
                               navigate(`/dashboard/${locationSlug}/materials`, { state: { openCreateModal: true } });
@@ -859,15 +861,15 @@ export function RecipesPage() {
                       className="flex items-center justify-center gap-2 py-4 bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl text-xs font-black text-paymint-green tracking-widest hover:bg-paymint-green/5 hover:border-paymint-green/30 transition-all group"
                     >
                       <Package size={16} className="group-hover:scale-125 transition-transform" />
-                      <span>+ Material</span>
+                      <span>{t('manufacturing.formula.addMaterial')}</span>
                     </button>
                     <button
                       onClick={() => {
                         if (subRecipes.length === 0) {
                           setConfirmConfig({
                             isOpen: true,
-                            title: 'No sub-formulas found',
-                            message: 'You need to create sub-formulas (blueprints) before adding them to a recipe. Create one now?',
+                            title: t('manufacturing.messages.noSubFormulas'),
+                            message: t('manufacturing.messages.noSubFormulasDesc'),
                             type: 'warning',
                             onConfirm: () => {
                               setShowFinalRecipeModal(false);
@@ -883,14 +885,14 @@ export function RecipesPage() {
                       className="flex items-center justify-center gap-2 py-4 bg-gray-50 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl text-xs font-black text-blue-500 tracking-widest hover:bg-blue-500/5 hover:border-blue-500/30 transition-all group"
                     >
                       <Pizza size={16} className="group-hover:scale-125 transition-transform" />
-                      <span>+ Sub-Formula</span>
+                      <span>{t('manufacturing.formula.addPrep')}</span>
                     </button>
                   </div>
                 </div>
               </div>
               <div className="p-8 border-t border-gray-200 dark:border-white/5">
                 <button onClick={handleSaveFinalRecipe} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-emerald-400 tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
-                  Register Recipe
+                  {t('manufacturing.formula.registerRecipe')}
                 </button>
               </div>
             </motion.div>
@@ -903,28 +905,28 @@ export function RecipesPage() {
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl">
               <div className="p-8 text-center border-b border-gray-100 dark:border-white/5">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Run Batch</h2>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('manufacturing.runBatch')}</h2>
                 <p className="text-gray-500 font-bold mt-1 text-xs tracking-widest">{manufactureRecipe.name}</p>
               </div>
               <div className="p-8 space-y-8">
                 <div>
                   <input type="number" min="1" value={numBatches} onChange={(e) => setNumBatches(parseInt(e.target.value) || 1)} className="w-full bg-transparent text-center text-6xl font-black text-paymint-green focus:outline-none placeholder-gray-300" autoFocus />
                   <div className="flex items-center justify-center mt-4 gap-1">
-                    <p className="text-xs font-black text-gray-400 tracking-widest">Number of Batches</p>
+                    <p className="text-xs font-black text-gray-400 tracking-widest">{t('manufacturing.numBatches')}</p>
                   </div>
                 </div>
                 <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs font-black text-gray-500 tracking-widest">Total Output</span>
-                    <span className="text-sm font-black text-gray-900 dark:text-white">{(numBatches * manufactureRecipe.yield).toFixed(2)} {manufactureRecipe.yieldUnit}</span>
+                    <span className="text-xs font-black text-gray-500 tracking-widest">{t('manufacturing.totalOutput')}</span>
+                    <span className="text-sm font-black text-gray-900 dark:text-white">{(numBatches * manufactureRecipe.yield).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {manufactureRecipe.yieldUnit}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-xs font-black text-gray-500 tracking-widest">Material Cost</span>
-                    <span className="text-sm font-black text-gray-900 dark:text-white">High</span>
+                    <span className="text-xs font-black text-gray-500 tracking-widest">{t('manufacturing.materialCost')}</span>
+                    <span className="text-sm font-black text-gray-900 dark:text-white">{t('common.top')}</span>
                   </div>
                 </div>
                 <button onClick={handleManufacture} disabled={isSubmitting} className="w-full py-4 bg-paymint-green text-black font-black rounded-2xl hover:bg-emerald-400 tracking-widest text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-paymint-green/20">
-                  Confirm Production
+                  {t('manufacturing.confirmProduction')}
                 </button>
               </div>
             </motion.div>

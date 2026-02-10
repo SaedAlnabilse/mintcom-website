@@ -1,4 +1,3 @@
-import { AppStrings } from '../constants/AppStrings';
 import { useState, useEffect, useRef, useLayoutEffect, useMemo } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -73,7 +72,10 @@ export function OwnerLayout() {
     };
 
     return (
-        <div className="h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden selection:bg-paymint-green selection:text-black transition-colors duration-500">
+        <div
+            dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+            className="h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden selection:bg-paymint-green selection:text-black transition-colors duration-500"
+        >
             {/* Mobile Menu Overlay */}
             <AnimatePresence>
                 {mobileMenuOpen && (
@@ -116,7 +118,7 @@ export function OwnerLayout() {
                             >
                                 <img
                                     src={PaymintLogoGreen}
-                                    alt="PayMint"
+                                    alt={t('brand.name')}
                                     width={160}
                                     height={40}
                                     loading="eager"
@@ -125,7 +127,7 @@ export function OwnerLayout() {
                                 />
                                 <img
                                     src={PaymintLogoWhite}
-                                    alt="PayMint"
+                                    alt={t('brand.name')}
                                     width={160}
                                     height={40}
                                     loading="eager"
@@ -283,7 +285,7 @@ export function OwnerLayout() {
                                 {/* Text */}
                                 <p className="text-center text-sm font-bold text-gray-900 dark:text-white leading-tight">
                                     {t('owner.menu.scanToDownload')}<br />
-                                    <span className="text-paymint-green">Paymint App</span>
+                                    <span className="text-paymint-green">{t('brand.name')} {t('common.app')}</span>
                                 </p>
                             </div>
                         </div>
@@ -312,7 +314,7 @@ export function OwnerLayout() {
                                 <button
                                     onClick={handleLogout}
                                     className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all"
-                                    title="Sign Out"
+                                    title={t('dashboard.menu.logout')}
                                 >
                                     <LogOut size={20} />
                                 </button>
@@ -392,9 +394,9 @@ export function OwnerLayout() {
                                         </div>
                                     </div>
                                     <p className="text-center text-sm font-bold text-gray-900 dark:text-white leading-tight">
-                                        Scan to download<br />
-                                        <span className="text-paymint-green">Paymint App</span>
-                                    </p>
+                                    {t('dashboard.menu.scanToDownload')}<br />
+                                    <span className="text-paymint-green">{t('brand.name')} {t('common.app')}</span>
+                                </p>
                                 </div>
                             </div>
 
@@ -457,7 +459,7 @@ export function OwnerLayout() {
                                                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-500 transition-all text-left"
                                                 >
                                                     <LogOut size={18} />
-                                                    <span>Sign Out</span>
+                                                    <span>{t('dashboard.menu.logout')}</span>
                                                 </button>
                                             </div>
                                         </motion.div>
@@ -484,12 +486,12 @@ export function OwnerLayout() {
                     </button>
                     <img
                         src={PaymintLogoGreen}
-                        alt="PayMint"
+                        alt={t('brand.name')}
                         className="h-8 w-auto object-contain dark:hidden"
                     />
                     <img
                         src={PaymintLogoWhite}
-                        alt="PayMint"
+                        alt={t('brand.name')}
                         className="h-8 w-auto object-contain hidden dark:block"
                     />
                     <ThemeToggle dropdownDirection="down" />
@@ -515,7 +517,7 @@ export function OwnerLayout() {
                         <div className="flex items-center justify-between h-16 px-4 border-b border-gray-100 dark:border-white/5">
                             <div className="flex items-center gap-3">
                                 <img src={PaymintLeafIcon} className="w-8 h-8 object-contain" alt="P" />
-                                <span className="text-lg font-bold text-gray-900 dark:text-white">Paymint</span>
+                                <span className="text-lg font-bold text-gray-900 dark:text-white">{t('brand.name')}</span>
                             </div>
                             <button
                                 onClick={() => setMobileMenuOpen(false)}
@@ -559,7 +561,7 @@ export function OwnerLayout() {
                                 </div>
                                 <div className="flex-1">
                                     <p className="text-sm font-bold text-gray-900 dark:text-white">{account?.firstName}</p>
-                                    <p className="text-xs text-gray-500">Enterprise Owner</p>
+                                    <p className="text-xs text-gray-500">{t('owner.menu.enterpriseOwner')}</p>
                                 </div>
                                 <button
                                     onClick={handleLogout}
@@ -577,10 +579,10 @@ export function OwnerLayout() {
                 isOpen={isLogoutModalOpen}
                 onClose={() => setIsLogoutModalOpen(false)}
                 onConfirm={confirmLogout}
-                title="Sign Out"
-                message="Are you sure you want to sign out of your account?"
-                confirmText="Sign Out"
-                cancelText={AppStrings.COMMON.CANCEL}
+                title={t('dashboard.menu.logout')}
+                message={t('activity.actions.logout') || t('auth.logout.message')}
+                confirmText={t('dashboard.menu.logout')}
+                cancelText={t('common.cancel')}
                 type="danger"
             />
         </div >

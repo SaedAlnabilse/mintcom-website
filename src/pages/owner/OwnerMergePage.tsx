@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { ArrowLeft, GitMerge, Store, Check, X, Loader2, Sparkles, Building2, Zap, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 
 export function OwnerMergePage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { establishments, refreshEstablishments } = useAuth();
     const [selectedEstablishments, setSelectedEstablishments] = useState<string[]>([]);
@@ -22,7 +24,7 @@ export function OwnerMergePage() {
 
     const handleContinue = () => {
         if (selectedEstablishments.length < 2) {
-            toast.error('Please select at least 2 locations to merge');
+            toast.error(t('owner.merge.selectMinLocations'));
             return;
         }
         setStep('configure');
@@ -30,7 +32,7 @@ export function OwnerMergePage() {
 
     const handleMerge = async () => {
         if (!brandName.trim()) {
-            toast.error('Please enter a brand name');
+            toast.error(t('owner.merge.enterBrandName'));
             return;
         }
 
@@ -40,11 +42,11 @@ export function OwnerMergePage() {
                 name: brandName,
                 establishmentIds: selectedEstablishments,
             });
-            toast.success('Brand created');
+            toast.success(t('owner.merge.brandCreated'));
             await refreshEstablishments();
             navigate('/owner/brands');
         } catch (err: any) {
-            toast.error(err.response?.data?.message || 'Failed to create brand');
+            toast.error(err.response?.data?.message || t('owner.merge.createFailed'));
         } finally {
             setIsSubmitting(false);
         }
@@ -63,15 +65,15 @@ export function OwnerMergePage() {
                     <div className="space-y-6">
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-paymint-green/10 border border-paymint-green/20">
                             <GitMerge size={14} className="text-paymint-green" />
-                            <span className="text-xs font-black text-paymint-green tracking-[0.2em]">New Brand</span>
+                            <span className="text-xs font-black text-paymint-green tracking-[0.2em]">{t('owner.merge.newBrandBadge')}</span>
                         </div>
 
                         <div>
                             <h1 className="text-5xl xl:text-6xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-4">
-                                Create <span className="text-paymint-green">Brand</span>
+                                {t('owner.merge.create')} <span className="text-paymint-green">{t('owner.merge.brand')}</span>
                             </h1>
                             <p className="text-lg font-medium text-gray-500 dark:text-gray-400 max-w-xl">
-                                Combine locations into one brand.
+                                {t('owner.merge.subtitle')}
                             </p>
                         </div>
                     </div>
@@ -81,7 +83,7 @@ export function OwnerMergePage() {
                         className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 text-gray-900 dark:text-white font-black text-xs tracking-widest hover:bg-gray-100 dark:hover:bg-white/5 transition-all self-start xl:self-center shadow-lg"
                     >
                         <ArrowLeft size={18} />
-                        Cancel
+                        {t('common.cancel')}
                     </button>
                 </div>
             </div>
@@ -89,8 +91,8 @@ export function OwnerMergePage() {
             {/* Step Landscape */}
             <div className="flex items-center gap-8 px-6">
                 {[
-                    { id: 'select', label: 'Select Locations', icon: Store },
-                    { id: 'configure', label: 'Brand Details', icon: Building2 }
+                    { id: 'select', label: t('owner.merge.steps.select'), icon: Store },
+                    { id: 'configure', label: t('owner.merge.steps.details'), icon: Building2 }
                 ].map((s, idx) => (
                     <div key={s.id} className="flex items-center gap-4 group">
                         <div className={`
@@ -123,7 +125,7 @@ export function OwnerMergePage() {
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                             <div className="lg:col-span-2 space-y-6">
                                 <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight px-2 flex items-center gap-3">
-                                    <Store className="text-paymint-green" size={20} /> Available Locations
+                                    <Store className="text-paymint-green" size={20} /> {t('owner.merge.availableLocations')}
                                 </h3>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -173,7 +175,7 @@ export function OwnerMergePage() {
 
                             <div className="lg:col-span-1 space-y-6">
                                 <div className="p-8 rounded-[3rem] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 sticky top-8">
-                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Why Merge?</h3>
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">{t('owner.merge.whyMerge')}</h3>
 
                                     <div className="space-y-6">
                                         <div className="flex items-start gap-4">
@@ -181,20 +183,20 @@ export function OwnerMergePage() {
                                                 <Zap size={18} />
                                             </div>
                                             <p className="text-xs font-bold text-gray-500 leading-relaxed">
-                                                Grouping locations allows for <span className="text-gray-900 dark:text-white">Shared Reporting</span> and easier staff management.
+                                                {t('owner.merge.whyMergeDesc')}
                                             </p>
                                         </div>
 
                                         <div className="h-px bg-gray-200 dark:bg-white/10" />
 
                                         <div className="space-y-2">
-                                            <p className="text-xs font-black text-gray-400 tracking-widest leading-none">Status</p>
+                                            <p className="text-xs font-black text-gray-400 tracking-widest leading-none">{t('common.status.title')}</p>
                                             <div className="flex items-center gap-2">
                                                 <div className={`w-2 h-2 rounded-full ${selectedEstablishments.length >= 2 ? 'bg-paymint-green' : 'bg-paymint-red'} animate-pulse`} />
                                                 <span className="text-xs font-black text-gray-900 dark:text-white">
                                                     {selectedEstablishments.length < 2
-                                                        ? `Select ${2 - selectedEstablishments.length} more location(s)`
-                                                        : 'Ready for Next Step'}
+                                                        ? t('owner.merge.selectMore', { count: 2 - selectedEstablishments.length })
+                                                        : t('owner.merge.readyForNextStep')}
                                                 </span>
                                             </div>
                                         </div>
@@ -204,7 +206,7 @@ export function OwnerMergePage() {
                                             disabled={selectedEstablishments.length < 2}
                                             className="w-full py-5 bg-paymint-green text-black rounded-2xl font-black text-xs tracking-[0.2em] shadow-xl shadow-paymint-green/20 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:hover:scale-100"
                                         >
-                                            Next Step ({selectedEstablishments.length} Locations)
+                                            {t('owner.merge.nextStep', { count: selectedEstablishments.length })}
                                         </button>
                                     </div>
                                 </div>
@@ -222,12 +224,12 @@ export function OwnerMergePage() {
                         {/* Config Form */}
                         <div className="p-10 rounded-[3rem] bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 shadow-2xl space-y-8">
                             <div>
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">Brand Details</h3>
-                                <p className="text-xs font-black text-gray-400 tracking-widest uppercasest">Name your brand.</p>
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('owner.merge.brandDetails')}</h3>
+                                <p className="text-xs font-black text-gray-400 tracking-widest uppercasest">{t('owner.merge.brandDetailsSubtitle')}</p>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-black text-gray-400 tracking-[0.2em] px-2 block">Brand Name</label>
+                                <label className="text-xs font-black text-gray-400 tracking-[0.2em] px-2 block">{t('owner.merge.brandName')}</label>
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-6 flex items-center text-gray-400 group-hover:text-paymint-green transition-colors">
                                         <Building2 size={20} />
@@ -236,7 +238,7 @@ export function OwnerMergePage() {
                                         type="text"
                                         value={brandName}
                                         onChange={(e) => setBrandName(e.target.value)}
-                                        placeholder="Enter brand name..."
+                                        placeholder={t('owner.merge.brandNamePlaceholder')}
                                         className="w-full pl-16 pr-8 py-6 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-3xl font-black text-lg text-gray-900 dark:text-white placeholder-gray-300 focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/30 transition-all tracking-tight"
                                     />
                                 </div>
@@ -247,10 +249,10 @@ export function OwnerMergePage() {
                                     <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-500">
                                         <ShieldCheck size={18} />
                                     </div>
-                                    <h4 className="text-xl font-bold text-indigo-900 dark:text-indigo-200">Security</h4>
+                                    <h4 className="text-xl font-bold text-indigo-900 dark:text-indigo-200">{t('common.security')}</h4>
                                 </div>
                                 <p className="text-xs font-bold text-indigo-500 leading-relaxed px-1">
-                                    All locations will use the security settings from the main location <span className="text-indigo-900 dark:text-white">({firstSelectedEst?.name})</span>. Login info will be synced.
+                                    {t('owner.merge.securityInfo', { name: firstSelectedEst?.name })}
                                 </p>
                             </div>
 
@@ -259,7 +261,7 @@ export function OwnerMergePage() {
                                     onClick={() => setStep('select')}
                                     className="flex-1 py-5 rounded-2xl bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 font-black text-xs tracking-widest hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
                                 >
-                                    Back
+                                    {t('common.back')}
                                 </button>
                                 <button
                                     onClick={handleMerge}
@@ -267,14 +269,14 @@ export function OwnerMergePage() {
                                     className="flex-[2] py-5 bg-black dark:bg-white text-white dark:text-black rounded-2xl font-black text-xs tracking-[0.2em] shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3"
                                 >
                                     {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
-                                    Create Brand
+                                    {t('owner.merge.createBrand')}
                                 </button>
                             </div>
                         </div>
 
                         {/* Selected List */}
                         <div className="px-10 space-y-4">
-                            <h4 className="text-xs font-black text-gray-400 tracking-widest px-2">Selected Locations</h4>
+                            <h4 className="text-xs font-black text-gray-400 tracking-widest px-2">{t('owner.merge.selectedLocations')}</h4>
                             <div className="flex flex-wrap gap-2">
                                 {selectedEstInfo.map((est) => (
                                     <div key={est.id} className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 rounded-xl shadow-sm group">

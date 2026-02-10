@@ -77,6 +77,7 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
 
   // Format amount with currency (symbol after amount for consistency)
   const formatAmount = (amount: number | string | null | undefined): string => {
+    const locale = localStorage.getItem('i18nextLng') || 'en';
     if (amount === null || amount === undefined) {
       return `0.00 ${currencySymbol}`;
     }
@@ -84,7 +85,13 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
     if (isNaN(numAmount)) {
       return `0.00 ${currencySymbol}`;
     }
-    return `${numAmount.toFixed(2)} ${currencySymbol}`;
+
+    const formatted = numAmount.toLocaleString(locale, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
+    return `${formatted} ${currencySymbol}`;
   };
 
   return (

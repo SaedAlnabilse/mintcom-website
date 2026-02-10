@@ -354,7 +354,7 @@ export function OwnerEstablishmentsPage() {
                                                             className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
                                                         >
                                                             <Settings size={16} />
-                                                            {t('owner.locations.settings')}
+                                                            {t('common.settings')}
                                                         </button>
                                                 </div>
                                             )}
@@ -368,7 +368,7 @@ export function OwnerEstablishmentsPage() {
                                                 est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
                                                     'bg-red-500'
                                                 }`} />
-                                            {est.subscriptionStatus ? est.subscriptionStatus.charAt(0).toUpperCase() + est.subscriptionStatus.slice(1).toLowerCase() : ''}
+                                            {est.subscriptionStatus ? t(`owner.locations.${est.subscriptionStatus.toLowerCase()}`) : ''}
                                         </span>
                                     </div>
 
@@ -464,7 +464,7 @@ export function OwnerEstablishmentsPage() {
                                     <div className="flex items-center justify-between">
                                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(est.subscriptionStatus)}`}>
                                             <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-emerald-500' : est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
-                                            {est.subscriptionStatus ? est.subscriptionStatus.charAt(0).toUpperCase() + est.subscriptionStatus.slice(1).toLowerCase() : ''}
+                                            {est.subscriptionStatus ? t(`owner.locations.${est.subscriptionStatus.toLowerCase()}`) : ''}
                                         </span>
                                         <span className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'JOD'}</span>
                                     </div>
@@ -525,7 +525,7 @@ export function OwnerEstablishmentsPage() {
                                                 est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
                                                     'bg-red-500'
                                                 }`} />
-                                            {est.subscriptionStatus ? est.subscriptionStatus.charAt(0).toUpperCase() + est.subscriptionStatus.slice(1).toLowerCase() : ''}
+                                            {est.subscriptionStatus ? t(`owner.locations.${est.subscriptionStatus.toLowerCase()}`) : ''}
                                         </span>
                                     </div>
 

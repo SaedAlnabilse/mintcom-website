@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronDown, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface Option {
     label: string;
@@ -27,7 +28,7 @@ export function CustomSelect({
     value,
     onChange,
     options = [],
-    placeholder = 'Select...',
+    placeholder,
     className = '',
     error,
     required,
@@ -35,7 +36,12 @@ export function CustomSelect({
     disabled = false,
     scrollIntoViewOnOpen = false
 }: CustomSelectProps) {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
+
+    // Default placeholder from translation
+    const defaultPlaceholder = t('common.select');
+    const displayPlaceholder = placeholder || defaultPlaceholder;
     const containerRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const listRef = useRef<HTMLDivElement>(null);
@@ -142,7 +148,7 @@ export function CustomSelect({
                     className={`bg-white/95 dark:bg-[#0B1120]/95 backdrop-blur-xl border border-gray-100 dark:border-white/[0.08] rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden max-h-80 overflow-y-auto custom-scrollbar ring-1 ring-black/5`}
                 >
                     {formattedOptions.length === 0 ? (
-                        <div className="px-5 py-4 text-sm font-bold text-gray-500 italic text-center">No options available</div>
+                        <div className="px-5 py-4 text-sm font-bold text-gray-500 italic text-center">{t('common.noOptions')}</div>
                     ) : (
                         formattedOptions.map((opt) => (
                             <button
@@ -194,7 +200,7 @@ export function CustomSelect({
                     }`}
             >
                 <span className={`text-sm font-bold truncate pr-2 ${selectedOption ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
-                    {selectedOption ? selectedOption.label : placeholder}
+                    {selectedOption ? selectedOption.label : displayPlaceholder}
                 </span>
                 <ChevronDown
                     size={18}

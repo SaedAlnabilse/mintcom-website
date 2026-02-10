@@ -4,7 +4,49 @@
     "tagline": "Enterprise",
     "version": "v2.0",
     "copyright": "© 2025 PayMint LLC. All rights reserved.",
-    "description": "Simple, secure POS for growing businesses."
+    "description": "Simple, secure POS for growing businesses.",
+    "dashboard": {
+      "title": "Brand Dashboard",
+      "failedToLoad": "Failed to load dashboard data",
+      "loading": "Loading dashboard...",
+      "liveData": "Live Data",
+      "locations": "Locations",
+      "updatedNow": "Updated just now",
+      "totalRevenue": "Total Revenue",
+      "totalOrders": "Total Orders",
+      "avgOrderValue": "Avg. Order Value",
+      "teamSize": "Team Size",
+      "locationPerformance": "Location Performance",
+      "rankedByRevenue": "Ranked by revenue",
+      "viewAll": "View All",
+      "noLocations": "No Locations Found",
+      "addLocationsDesc": "Start by adding your first location to see performance data.",
+      "staff": "Staff",
+      "orders": "Orders",
+      "ofTotal": "of total",
+      "revenueTrend": "Revenue Trend",
+      "consolidatedPerformance": "Consolidated Performance",
+      "noRevenueData": "No revenue data available for this period",
+      "salesByCategory": "Sales by Category",
+      "revenueDistribution": "Revenue Distribution",
+      "viewAllLocations": "View All Locations",
+      "manageLocationsDesc": "Manage your store locations and their settings.",
+      "manageTeam": "Manage Team",
+      "manageTeamDesc": "View and manage your brand-level team members.",
+      "goTo": "Go to {{name}}"
+    },
+    "menu": {
+      "locations": "Locations",
+      "overview": "Overview",
+      "overviewDesc": "Dashboard & Analytics",
+      "locationsDesc": "Manage Locations",
+      "team": "Team",
+      "teamDesc": "Staff Management",
+      "activeBrand": "Active Brand",
+      "switchBrand": "Switch Brand",
+      "backToBrands": "Back to Brands",
+      "brandAdmin": "Brand Administrator"
+    }
   },
   "nav": {
     "features": "Features",
@@ -44,6 +86,7 @@
     "thisMonth": "This month"
   },
   "common": {
+    "locale": "en-US",
     "loading": "Loading...",
     "error": "Error",
     "success": "Success",
@@ -53,6 +96,12 @@
     "submit": "Submit",
     "back": "Back",
     "next": "Next",
+    "previous": "Previous",
+    "page": "Page",
+    "app": "App",
+    "more": "More",
+    "filters": "Filters",
+    "clearAll": "Clear all filters",
     "language": "Language",
     "english": "English",
     "arabic": "Arabic",
@@ -65,6 +114,9 @@
     "delete": "Delete",
     "edit": "Edit",
     "add": "Add",
+    "closeModal": "Close Modal",
+    "emailRequired": "Email is required",
+    "passwordRequired": "Password is required",
     "search": "Search",
     "filter": "Filter",
     "all": "All",
@@ -73,19 +125,33 @@
     "confirm": "Confirm",
     "continue": "Continue",
     "done": "Done",
+    "zero": "0",
+    "zeroDecimal": "0.00",
+    "percent": "%",
+    "allStaff": "All Staff",
+    "selectShift": "Select Shift",
     "view": "View",
     "download": "Download",
     "upload": "Upload",
     "refresh": "Refresh",
     "retry": "Retry",
+    "noRecordsFound": "No records found",
+    "viewDetails": "View Details",
+    "showing": "Showing",
+    "of": "of",
+    "currencyCode": "USD",
     "validationError": "Please correct the highlighted errors below",
     "active": "Active",
+    "online": "Online",
+    "offline": "Offline",
     "notice": "Notice",
     "gotIt": "Got it",
     "notAvailable": "N/A",
+    "unknown": "Unknown",
     "to": "to",
     "others": "Others",
     "top": "Top",
+    "pos": "POS",
     "date": "Date",
     "datePeriods": {
       "today": "Today",
@@ -101,13 +167,187 @@
       "this_year": "This Year (Jan-Today)",
       "custom": "Custom Range",
       "all": "All Time"
+    },
+    "currencies": {
+      "jod": "Jordanian Dinar",
+      "usd": "US Dollar",
+      "aed": "UAE Dirham",
+      "sar": "Saudi Riyal",
+      "kwd": "Kuwaiti Dinar",
+      "qar": "Qatari Riyal",
+      "bhd": "Bahraini Dinar",
+      "omr": "Omani Rial",
+      "egp": "Egyptian Pound",
+      "gbp": "British Pound",
+      "eur": "Euro",
+      "try": "Turkish Lira"
+    },
+    "daysShort": {
+      "monday": "Mon",
+      "tuesday": "Tue",
+      "wednesday": "Wed",
+      "thursday": "Thu",
+      "friday": "Fri",
+      "saturday": "Sat",
+      "sunday": "Sun"
+    },
+    "aria": {
+      "changeLanguage": "Change language",
+      "openMenu": "Open navigation menu",
+      "closeMenu": "Close navigation menu",
+      "mobileNav": "Mobile navigation"
+    },
+    "selectDate": "Select Date",
+    "selectDateRange": "Select Date Range",
+    "clear": "Clear",
+    "time": {
+      "am": "AM",
+      "pm": "PM"
+    },
+    "today": "Today",
+    "email": "Email",
+    "phone": "Phone",
+    "gotIt": "Got it",
+    "select": "Select...",
+    "noOptions": "No options available",
+    "reloadPage": "Reload Page",
+    "goBack": "Go Back",
+    "home": "Home",
+    "showTechnicalDetails": "Show Technical Details",
+    "time": {
+      "hourAbbr": "Hr",
+      "minuteAbbr": "Min"
     }
+  },
+  "errors": {
+    "unexpected": {
+      "title": "Unexpected Error",
+      "message": "Something went wrong. Please try again later."
+    },
+    "notFound": {
+      "title": "Page Not Found",
+      "message": "Sorry, we couldn't find the page you're looking for.",
+      "hint": "The page might have been moved or deleted."
+    },
+    "serverError": {
+      "title": "Server Error",
+      "message": "Our servers are having some trouble. Please try again later."
+    },
+    "generic": {
+      "title": "{{status}} Error"
+    },
+    "updateAvailable": {
+      "title": "Update Available",
+      "message": "A new version of the app is available.",
+      "hint": "Please reload the page to get the latest updates."
+    }
+  },
+  "chat": {
+    "launcher": {
+      "ask": "Ask Minto",
+      "help": "Help"
+    },
+    "botName": "Minto",
+    "assistantTitle": "Your Paymint Assistant",
+    "inputPlaceholder": "Ask me anything...",
+    "poweredBy": "Powered by Paymint AI",
+    "actions": {
+      "products": "Products",
+      "orders": "Orders",
+      "reports": "Reports",
+      "tips": "Tips"
+    },
+    "navigation": {
+      "takeMe": "Take me there"
+    },
+    "greetings": [
+      "Hey there! 👋 I'm Minto, your Paymint assistant. What can I help you with today?",
+      "Hi! Welcome! I'm Minto, here to help you get the most out of Paymint. What's on your mind?",
+      "Hello! 👋 Great to see you! I'm Minto - ask me anything about Paymint!"
+    ],
+    "suggestions": [
+      "How do I get started?",
+      "Show me how to add products",
+      "What features do you have?",
+      "Help with reports"
+    ]
+  },
+  "support": {
+    "qa": {
+      "title": "Help Center",
+      "subtitle": "Find answers quickly",
+      "searchPlaceholder": "Search for help...",
+      "categories": {
+        "all": "All",
+        "general": "Getting Started",
+        "products": "Products",
+        "orders": "Orders",
+        "staff": "Staff",
+        "billing": "Billing",
+        "technical": "Technical",
+        "account": "Account"
+      },
+      "noResults": "No results found",
+      "tryDifferent": "Try a different search term",
+      "needMoreHelp": "Need more help? Contact us at"
+    }
+  },
+  "footer": {
+    "product": "Product",
+    "company": "Company",
+    "resources": "Resources",
+    "getInTouch": "Get in Touch",
+    "aboutUs": "About Us",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "helpCenter": "Help Center",
+    "guides": "Guides & Tutorials",
+    "featureIdeas": "Feature Ideas",
+    "discussions": "Community Discussions",
+    "hardwareSolutions": "Hardware Solutions",
+    "professionalEquipment": "Professional Equipment for Your Business",
+    "viewOnAmazon": "View on Amazon"
+  },
+  "theme": {
+    "switchTheme": "Switch Theme",
+    "toggle": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "feedback": {
+    "tab": "Feedback",
+    "title": "Send Feedback",
+    "subtitle": "Help us improve Paymint",
+    "rateExperience": "Rate your experience",
+    "comments": "Comments",
+    "placeholder": "Tell us what you think...",
+    "send": "Send Feedback",
+    "sent": "Feedback Sent",
+    "thanks": "Thanks for your feedback!",
+    "sending": "Sending..."
   },
   "dashboard": {
     "title": "Dashboard",
     "noData": "No data available",
     "loading": "Loading dashboard...",
     "processing": "Processing Analytics...",
+    "messages": {
+      "loadFailed": "Failed to load report data",
+      "exporting": "Preparing export...",
+      "configSaved": "Configuration saved successfully",
+      "rewardAdded": "Reward added successfully",
+      "rewardUpdated": "Reward updated successfully",
+      "rewardDeleted": "Reward deleted successfully",
+      "deleteTitle": "Delete Reward",
+      "deleteMsg": "Are you sure you want to delete this reward?"
+    },
+    "errors": {
+      "failedToLoad": "Failed to load loyalty configuration",
+      "saveFailed": "Failed to save configuration",
+      "deleteFailed": "Failed to delete reward",
+      "validValues": "Please enter valid values for points and currency"
+    },
     "refresh": "Refresh",
     "lastUpdated": "Last updated",
     "trackingPerformance": "Tracking All Business Performance",
@@ -115,6 +355,7 @@
     "activeNow": "Active Now",
     "menu": {
       "dashboard": "Dashboard",
+      "orders": "Orders",
       "salesAndReporting": "Sales and Reporting",
       "salesSummary": "Sales Summary",
       "salesByItems": "Sales by Items",
@@ -142,7 +383,13 @@
       "system": "System",
       "settings": "Settings",
       "systemLogs": "System Logs",
-      "logout": "Logout"
+      "logout": "Logout",
+      "mainMenu": "Main Menu",
+      "openSidebar": "Open Sidebar",
+      "scanToDownload": "Scan to download",
+      "getMobileApp": "Get Mobile App",
+      "switchLocation": "Switch Location",
+      "activeLocation": "Active Location"
     },
     "stats": {
       "totalSales": "Total Sales",
@@ -217,6 +464,19 @@
       "started": "Started {{time}}",
       "lastCompleted": "Last completed shift",
       "rolling24h": "Rolling 24-hour window"
+    },
+    "viewMode": {
+      "currentShift": "Current Shift",
+      "previousShift": "Previous Shift",
+      "last24Hours": "Last 24 Hours",
+      "showingSince": "Showing since {{date}}",
+      "showingLastShift": "Showing last completed shift",
+      "showingLast24h": "Showing activity from last 24h"
+    },
+    "greetings": {
+      "morning": "Good Morning",
+      "afternoon": "Good Afternoon",
+      "evening": "Good Evening"
     }
   },
   "orders": {
@@ -283,7 +543,16 @@
         "noRevenueDesc": "There are no sales recorded for the selected period.",
         "paymentMethods": "Payment Methods",
         "breakdown": "Breakdown Chart",
-        "viewAll": "View All"
+        "viewAll": "View All",
+        "cashManagementLog": "Cash Management Log",
+        "transactionHistory": "Transaction History"
+      },
+      "receipts": {
+        "revenueSelected": "Revenue (Selected Period)",
+        "receiptsCount": "Receipts Count",
+        "refundsHeld": "Refunds / Held",
+        "searchReceiptPlaceholder": "Search by Receipt #...",
+        "heldOrders": "Held Orders"
       },
       "items": {
         "searchPlaceholder": "Search {{type}}...",
@@ -484,7 +753,21 @@
       "deleteDiscount": "Discount: Delete",
       "addPayment": "Payment: Add",
       "updatePayment": "Payment: Update",
-      "deletePayment": "Payment: Delete"
+      "deletePayment": "Payment: Delete",
+      "deleted_all_products": "Product: Delete All",
+      "updated_restaurant_name": "Update: Restaurant Name",
+      "updated_working_hours": "Update: Working Hours",
+      "updated_farewell_message": "Update: Farewell Message",
+      "updated_restaurant_logo": "Update: Restaurant Logo",
+      "updated_tax_rate": "Update: Tax Rate",
+      "updated_loyalty_program": "Update: Loyalty Program",
+      "added_discount": "Discount: Add",
+      "updated_discount": "Discount: Update",
+      "deleted_discount": "Discount: Delete",
+      "added_payment_method": "Payment: Add",
+      "updated_payment_method": "Payment: Update",
+      "deleted_payment_method": "Payment: Delete",
+      "logout": "Logout"
     }
   },
   "customers": {
@@ -507,12 +790,20 @@
       "updated": "Customer updated",
       "created": "Customer created",
       "removed": "Customer removed",
+      "removedPrompt": "Are you sure you want to remove {{name}}?",
       "errorSaving": "Error saving customer",
       "insufficientPoints": "Insufficient points. Customer only has {{points}} points.",
       "pointsAdjusted": "Loyalty points adjusted",
       "exporting": "Exporting...",
       "exportComplete": "Export complete",
-      "exportFailed": "Failed to export customers"
+      "exportFailed": "Failed to export customers",
+      "loadFailed": "Failed to load customers",
+      "viewProfile": "View Profile",
+      "deleteCustomer": "Delete Customer"
+    },
+    "errors": {
+      "nameRequired": "Name is required",
+      "invalidEmail": "Invalid email address"
     },
     "form": {
       "name": "Full Name",
@@ -521,7 +812,11 @@
       "address": "Physical Address",
       "notes": "Internal Notes",
       "updateCustomer": "Update Customer",
-      "saveCustomer": "Save Customer"
+      "saveCustomer": "Save Customer",
+      "namePlaceholder": "e.g. Alexander Hamilton",
+      "phonePlaceholder": "+000 000 000",
+      "emailPlaceholder": "client@example.com",
+      "addressPlaceholder": "Enter address..."
     },
     "details": {
       "points": "Loyalty Points",
@@ -537,7 +832,8 @@
       "pointsAllocation": "Points Allocation",
       "add": "Add",
       "deduct": "Deduct",
-      "partner": "Partner"
+      "partner": "Partner",
+      "orders": "Orders"
     }
   },
   "products": {
@@ -626,6 +922,8 @@
       "nameRequired": "Please enter a product name first",
       "imageGenerated": "AI Image generated!",
       "aiOverloaded": "AI services are currently overloaded. Please try again in a few seconds.",
+      "imageRemovalFailed": "Failed to remove image",
+      "invalidAiResponse": "Invalid response from AI service",
       "noMatches": "No Matches Found",
       "noneSelected": "None Selected",
       "noAddons": "No add-ons.",
@@ -691,7 +989,8 @@
       "noResults": "No results found",
       "noResultsDesc": "No categories matching \"{{query}}\"",
       "noCategories": "No categories found",
-      "noCategoriesDesc": "Create a category to organize your menu."
+      "noCategoriesDesc": "Create a category to organize your menu.",
+      "deleteBlocked": "This category cannot be deleted because it contains active products. Please move or delete the products first."
     },
     "form": {
       "nameLabel": "Name",
@@ -707,6 +1006,12 @@
   "paymentMethods": {
     "title": "Payment Methods",
     "subtitle": "Manage how you accept payments",
+    "brands": {
+      "visa": "Visa",
+      "mastercard": "Mastercard",
+      "amex": "Amex",
+      "discover": "Discover"
+    },
     "cardBrands": "Card Brands",
     "cardBrandsSubtitle": "Manage accepted card logos.",
     "noCardBrands": "No card brands added yet.",
@@ -733,8 +1038,10 @@
       "updated": "Payment method updated",
       "created": "Payment method created",
       "removed": "Payment method removed",
+      "added": "Payment method added",
       "failedToSave": "Failed to save payment method",
       "failedToRemove": "Failed to remove method",
+      "failedToAdd": "Failed to add card",
       "brandUpdated": "Brand updated",
       "brandAdded": "Brand added",
       "failedToSaveBrand": "Failed to save brand",
@@ -747,12 +1054,33 @@
       "removeMessage": "Are you sure you want to delete \"{{name}}\"? This may affect historical reporting.",
       "deleteCardTitle": "Delete Card Type",
       "deleteCardMessage": "Remove \"{{name}}\" from accepted card types?"
+    },
+    "modal": {
+      "title": "New Card",
+      "subtitle": "Secure Payment Vault",
+      "cardNumber": "Card Number",
+      "expiry": "Expiry",
+      "cvc": "Cvc",
+      "cardholder": "Cardholder Name",
+      "secureVault": "Secure Vault",
+      "encrypted": "256-Bit Ssl Encrypted",
+      "errors": {
+        "invalidExpiry": "Invalid expiry date",
+        "correctErrors": "Please correct the errors below"
+      }
     }
   },
   "discounts": {
     "title": "Discounts",
     "editDiscount": "Edit Discount",
     "newDiscount": "New Discount",
+    "messages": {
+      "loadFailed": "Failed to load discounts",
+      "updated": "Discount updated successfully",
+      "created": "Discount created successfully",
+      "deleted": "Discount deleted successfully",
+      "deleteConfirm": "Are you sure you want to delete \"{{name}}\"?"
+    },
     "form": {
       "nameLabel": "Name",
       "namePlaceholder": "E.g. Employee Discount",
@@ -784,6 +1112,14 @@
       "status": "Account Status",
       "joined": "Joined Date"
     },
+    "roles": {
+      "manager": "Manager",
+      "admin": "Admin",
+      "staff": "Staff",
+      "owner": "Enterprise Owner",
+      "user": "User",
+      "standardUsers": "Standard Users"
+    },
     "status": {
       "online": "Online",
       "offline": "Offline",
@@ -809,6 +1145,7 @@
       "phoneLabel": "Phone",
       "phoneOptional": "(Optional)",
       "phonePlaceholder": "E.g. +1 234 567 8900",
+      "defaultFirstName": "Staff",
       "accessLabel": "Access",
       "selectLocation": "Select location...",
       "allLocations": "All Locations",
@@ -829,6 +1166,10 @@
       "posPermissions": "POS Permissions",
       "backofficePermissions": "Back Office Permissions",
       "location": "Location",
+      "locationsCount": "{{count}} location",
+      "locationsCount_plural": "{{count}} locations",
+      "permissionsCount": "{{count}} permission",
+      "permissionsCount_plural": "{{count}} permissions",
       "defaultFirstName": "Staff"
     },
     "errors": {
@@ -1025,10 +1366,33 @@
       "rewardUpdated": "Reward updated",
       "rewardAdded": "Reward added",
       "deleteTitle": "Delete Reward",
-      "deleteMsg": "Are you sure you want to permanently remove this reward from the loyalty catalog? This action cannot be reversed."
+      "deleteMsg": "Are you sure you want to permanently remove this reward from the loyalty catalog? This action cannot be reversed.",
+      "rewardDeleted": "Reward deleted",
+      "rewardUpdated": "Reward updated",
+      "rewardAdded": "Reward added"
+    },
+    "items": {
+      "discount": "Discount {{percentage}}%",
+      "freeItem": "Free Item",
+      "freeFrom": "Free from {{category}}"
     }
   },
   "owner": {
+    "menu": {
+      "overview": "Overview",
+      "locations": "Locations",
+      "brands": "Brands",
+      "employees": "Employees",
+      "globalRoles": "Global Roles",
+      "billing": "Billing",
+      "accountManagement": "Account Management",
+      "openSidebar": "Open Sidebar",
+      "mainMenu": "Main Menu",
+      "getMobileApp": "Get Mobile App",
+      "scanToDownload": "Scan to download",
+      "enterpriseOwner": "Enterprise Owner",
+      "signOut": "Sign Out"
+    },
     "overview": {
       "badge": "Enterprise Overview",
       "online": "System Online",
@@ -1047,6 +1411,7 @@
       "salesTrends": "Sales Trends",
       "period": "Period",
       "totalRevenue": "Total Revenue",
+      "revenue": "Revenue",
       "noRevenueData": "No revenue data",
       "noSalesRecorded": "No sales recorded for this period.",
       "growBusiness": "Grow Your Business",
@@ -1073,8 +1438,9 @@
       "addFirstLocation": "Start by adding your first business location.",
       "new": "NEW",
       "standard": "Standard",
-      "enter": "Enter Dashboard",
-      "settings": "Location Settings",
+      "enter": "Enter",
+      "settings": "Settings",
+      "view": "View",
       "currency": "Currency",
       "status": "Status",
       "online": "Online",
@@ -1098,22 +1464,17 @@
       "searchPlaceholder": "Filter by name, email or location...",
       "allRoles": "All Roles",
       "allStatus": "All Status",
-      "noStaff": "No staff found",
-      "adjustFilters": "Adjust filters or add new staff",
       "loading": "Loading staff...",
-      "removeStaff": "Remove Staff",
-      "removeConfirm": "Are you sure you want to remove {{name}}? This action is irreversible.",
-      "verifyPassword": "Verify Password",
-      "passwordPlaceholder": "Enter your account password",
-      "enterPassword": "Please enter your password",
-      "staffRemoved": "Employee removed",
+      "noStaff": "No staff found",
       "editDetails": "Edit Details",
       "remove": "Remove",
       "accessLocations": "Access Locations",
       "noLocationsAssigned": "No locations assigned",
-      "moreLocations": "+{{count}} more",
-      "syncError": "Failed to synchronize workforce data",
+      "removeStaffTitle": "Remove Staff",
+      "removeConfirm": "Are you sure you want to remove {{name}}? This action is irreversible.",
+      "enterPassword": "Please enter your password",
       "incorrectPassword": "Incorrect password or failed to delete",
+      "moreLocations": "+{{count}} more",
       "noEmail": "No email",
       "noPhone": "No phone"
     },
@@ -1121,14 +1482,48 @@
       "title": "Company Roles",
       "subtitle": "Create roles that apply to all locations",
       "createNew": "Create Role",
+      "newRole": "New Role",
+      "editRole": "Edit Role",
       "searchPlaceholder": "Search roles...",
       "loading": "Loading Roles...",
       "noRoles": "No roles found",
       "noRolesDesc": "Create a role here to share it across all your locations.",
-      "editRole": "Edit Role",
       "deleteRole": "Delete Role",
       "deleteConfirm": "Are you sure you want to delete the \"{{name}}\" role? It will be removed from all locations.",
       "permissions": "Permissions",
+      "posAccess": "POS Access",
+      "backofficeAccess": "Backoffice Access",
+      "pos": {
+        "acceptPayments": "Accept Payments",
+        "acceptPaymentsDesc": "Allow employee to process customer payments",
+        "processRefunds": "Process Refunds",
+        "processRefundsDesc": "Allow employee to issue refunds",
+        "applyDiscounts": "Apply Discounts",
+        "applyDiscountsDesc": "Allow employee to apply discounts to orders",
+        "viewTransactions": "View Transactions",
+        "viewTransactionsDesc": "Allow employee to see transaction history",
+        "openRegister": "Open Register",
+        "openRegisterDesc": "Allow employee to start new shifts",
+        "closeRegister": "Close Register",
+        "closeRegisterDesc": "Allow employee to end shifts and reconcile cash",
+        "manageItems": "Manage Items",
+        "manageItemsDesc": "Allow employee to add or edit items in POS",
+        "manageCustomers": "Manage Customers",
+        "manageCustomersDesc": "Allow employee to manage customer data"
+      },
+      "backoffice": {
+        "reports": "Reports",
+        "reportsDesc": "Access to sales and performance reports",
+        "staff": "Staff",
+        "staffDesc": "Manage team members and roles",
+        "inventory": "Inventory",
+        "inventoryDesc": "Manage stock levels and suppliers",
+        "settings": "Settings",
+        "settingsDesc": "Modify store and establishment settings",
+        "customers": "Customers",
+        "customersDesc": "Manage customer database and loyalty"
+      },
+      "actions": "Actions",
       "scope": "Scope",
       "global": "Global",
       "createdOn": "Created {{date}}",
@@ -1137,12 +1532,10 @@
       "failedToDelete": "Failed to delete role",
       "roleUpdated": "Role updated",
       "roleCreated": "Role created",
-      "failedToSave": "Failed to save role"
+      "failedToSave": "Failed to save role",
+      "deleteConfirm": "Are you sure you want to delete the \"{{name}}\" role? It will be removed from all locations."
     },
     "brands": {
-      "title": "Brands",
-      "subtitle": "Manage multiple locations under one brand",
-      "badge": "Brands",
       "createBrand": "Create Brand",
       "activeBrands": "Active Brands",
       "linkedLocations": "Linked Locations",
@@ -1157,7 +1550,16 @@
       "created": "Created",
       "locations": "Locations",
       "openDashboard": "Open Dashboard",
+      "failedToLoad": "Failed to load brands",
+      "loading": "Loading...",
+      "badge": "Brands",
+      "title": "Brands",
+      "subtitle": "Manage multiple locations under one brand",
       "wizard": {
+        "messages": {
+          "createSuccess": "Brand created!",
+          "createFailed": "Failed to create brand"
+        },
         "title": "Create Brand",
         "desc": "Group multiple locations into one brand",
         "step1": "Brand Details",
@@ -1181,9 +1583,100 @@
         "createFailed": "Failed to create brand"
       }
     },
+    "merge": {
+      "selectMinToast": "Select at least 2 locations to merge",
+      "brandNameToast": "Please enter a brand name",
+      "success": "Success",
+      "fail": "Fail",
+      "newBrand": "New Brand",
+      "title": "Merge Locations",
+      "subtitle": "Combine multiple locations into a single brand",
+      "cancel": "Cancel",
+      "steps": "Steps",
+      "available": "Available",
+      "whyMerge": "Why merge?",
+      "status": "Status",
+      "ready": "Ready",
+      "selectMore": "Select more",
+      "nextStep": "Next Step",
+      "brandDetails": "Brand Details",
+      "nameLabel": "Brand Name",
+      "namePlaceholder": "Enter brand name...",
+      "securityTitle": "Security",
+      "securityDesc": "Set up admin credentials for this brand",
+      "back": "Back",
+      "create": "Create",
+      "creating": "Creating...",
+      "selected": "Selected",
+      "deselectAll": "Deselect All",
+      "selectAll": "Select All",
+      "globalAccess": "Global Access",
+      "scanEmployees": "Scanning Employees"
+    },
+    "account": {
+      "profileUpdated": "Profile updated successfully",
+      "verifyEmail": "Verify Email",
+      "updateFailed": "Failed to update profile",
+      "deleteInitiated": "Account deletion initiated",
+      "deleteFailed": "Failed to initiate deletion",
+      "restored": "Account restored",
+      "restoreFailed": "Failed to restore account",
+      "deletionScheduled": "Your account is scheduled for deletion in {{count}} days.",
+      "restoring": "Restoring...",
+      "restoreAction": "Restore Account",
+      "restored": "Account restored!",
+      "copied": "Copied to clipboard",
+      "copyFailed": "Failed to copy",
+      "badge": "Account",
+      "title": "Account Management",
+      "subtitle": "Manage your profile and security",
+      "locations": "Locations",
+      "brands": "Brands",
+      "admins": "Admins",
+      "editProfile": "Edit Profile",
+      "resetPassword": "Reset Password",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving...",
+      "fullName": "Full Name",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "verified": "Verified",
+      "joined": "Joined",
+      "completion": "Completion",
+      "completeProfile": "Complete Profile",
+      "locationLogins": "Location Logins",
+      "brandLogins": "Brand Logins",
+      "loginId": "Login ID",
+      "resources": "Resources",
+      "guides": "Guides",
+      "userManual": "User Manual",
+      "setupManual": "Setup Manual",
+      "videoTutorial": "Video Tutorial",
+      "qaCenter": "Q&A Center",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "about": "About",
+      "securityTips": "Security Tips",
+      "tips": "Tips",
+      "dangerZone": "Danger Zone",
+      "restore": "Restore",
+      "delete": "Delete",
+      "deleteWarning": "This will permanently delete your account",
+      "restoreWarning": "This will restore your deleted account",
+      "restoreButton": "Restore Account",
+      "deleteButton": "Delete Account",
+      "emptyState": "No data available",
+      "createFirst": "Create your first resource",
+      "deleteModal": "Delete Confirmation",
+      "activeBlock": "Active Block"
+    },
     "billing": {
-      "title": "Billing",
-      "subtitle": "Manage payments and subscriptions",
+      "failedToLoad": "Failed to load billing information",
+      "cardUpdated": "Card updated successfully",
+      "cardUpdateFailed": "Failed to update card",
+      "resumeFailed": "Failed to resume subscription",
       "monthlyCost": "Monthly Cost",
       "addPaymentMethod": "Add Payment Method",
       "cards": "Cards",
@@ -1203,20 +1696,16 @@
       "noSubscriptions": "No active subscriptions",
       "standardPlan": "Standard Plan",
       "cancelsSoon": "Cancels Soon",
-      "active": "Active",
-      "canceled": "Canceled",
+      "noCard": "No card",
       "stopTrial": "Stop Trial",
-      "cancelSub": "Cancel Sub",
-      "reactivate": "Reactivate ($20)",
+      "cancelSub": "Cancel Subscription",
       "resume": "Resume",
+      "reactivate": "Reactivate",
       "viewDashboard": "View Dashboard",
       "endingSoon": "Ending Soon",
-      "endingSoonDesc": "Some subscriptions will end after this billing cycle.",
-      "failedToLoad": "Failed to load billing information",
-      "cardUpdated": "Default card updated",
-      "cardUpdateFailed": "Failed to update default card",
-      "resumeFailed": "Failed to resume subscription",
-      "noCard": "No card",
+      "endingSoonDesc": "Your subscription is ending soon",
+      "active": "Active",
+      "canceled": "Canceled",
       "managePayments": "Manage payments for {{name}}",
       "plan": "Plan",
       "enterprise": "Enterprise",
@@ -1235,7 +1724,25 @@
         "paid": "Paid",
         "pending": "Pending",
         "failed": "Failed"
-      }
+      },
+      "plan": "Plan",
+      "enterprise": "Enterprise",
+      "cost": "Cost",
+      "location": "Location",
+      "main": "Main",
+      "upgrade": "Upgrade",
+      "cancel": "Cancel",
+      "invoices": "Invoices",
+      "payment": "Payment",
+      "expires": "Expires",
+      "addCard": "Add Card",
+      "needHelp": "Need Help?",
+      "billingQuestions": "Questions about billing?",
+      "contactSupport": "Contact Support",
+      "cancelsSoon": "Cancels Soon",
+      "active": "Active",
+      "canceled": "Canceled",
+      "managePayments": "Manage payments for {{name}}"
     }
   },
   "settings": {
@@ -1283,12 +1790,22 @@
       "taxId": "Tax ID / TRN",
       "openingHours": "Opening Hours",
       "setServiceTimes": "Set service times",
-      "comingSoon": "Coming Soon"
+      "comingSoon": "Coming Soon",
+      "namePlaceholder": "e.g. The Coffee House",
+      "aboutPlaceholder": "Describe your business...",
+      "taxIdPlaceholder": "Enter Tax ID...",
+      "selectDay": "Select a day to edit",
+      "chooseDays": "Choose your operating days"
     },
     "sales": {
       "title": "Sales Setup",
       "subtitle": "Set tax and currency",
       "taxRate": "Tax Rate (%)",
+      "taxLabel": "TAXATION",
+      "currencyLabel": "REGION",
+      "enterValidTax": "Please enter a valid numeric tax rate to proceed with the update.",
+      "invalidTaxTitle": "Invalid Tax Rate",
+      "invalidTaxMessage": "Tax rate must be between 0 and 100%",
       "update": "Update",
       "invalidInput": "Invalid Input",
       "taxWarning": "Modifying this will affect future transactions and net revenue calculations.",
@@ -1311,7 +1828,8 @@
       "showTaxId": "Tax ID",
       "showTaxIdDesc": "Show Tax ID on footer",
       "footerMessage": "Footer Message",
-      "footerMessageDesc": "Show custom message"
+      "footerMessageDesc": "Show custom message",
+      "footerPlaceholder": "Thank you for visiting!"
     },
     "danger": {
       "title": "Delete Location",
@@ -1319,7 +1837,8 @@
       "warning": "Warning",
       "description": "This will permanently delete \"{{name}}\". All data including orders, products, and customer info will be deleted.",
       "undoWarning": "You cannot undo this after 30 days.",
-      "startDeletion": "Start Deletion"
+      "startDeletion": "Start Deletion",
+      "thisLocation": "this location"
     }
   },
   "adminUsers": {
@@ -1340,6 +1859,7 @@
       "firstName": "First Name",
       "lastName": "Last Name",
       "email": "Email / Login ID",
+      "emailPlaceholder": "email@enterprise.com",
       "password": "Password",
       "passwordHint": "Min 8 chars",
       "locationAccess": "Location Access"
@@ -1374,6 +1894,169 @@
       "currency": "Currency",
       "type": "Type",
       "create": "Create a new location"
+    },
+    "types": {
+      "restaurant": "Restaurant",
+      "cafe": "Cafe",
+      "retail": "Retail",
+      "other": "Other"
+    },
+    "activeToast": "Active: {{name}}",
+    "switch": "Switch",
+    "opening": "Opening...",
+    "currentLocation": "Current Location"
+  },
+  "onboarding": {
+    "step": "Step",
+    "of": "of",
+    "nextStep": "NEXT STEP",
+    "back": "Back",
+    "completeLaunch": "COMPLETE & LAUNCH",
+    "step1": {
+      "title": "Location Details",
+      "subtitle": "Tell us about your business location.",
+      "locationName": "Location Name",
+      "locationNamePlaceholder": "e.g. The Coffee House",
+      "locationNameTip": "The name of your business.",
+      "businessType": "Business Type",
+      "businessTypeTip": "Select your business type.",
+      "currency": "CURRENCY",
+      "currencyTip": "Primary currency for sales.",
+      "address": "ADDRESS",
+      "addressTip": "Location address.",
+      "addressPlaceholder": "City, Area, Building",
+      "quickSetup": "Quick Setup",
+      "copySettings": "COPY SETTINGS",
+      "copySettingsTip": "Copy menu from another location.",
+      "startFresh": "Do not import (Start fresh)",
+      "selectData": "Select Data To Duplicate:",
+      "menu": "Menu",
+      "menuDesc": "Items & categories",
+      "discounts": "Discounts",
+      "discountsDesc": "Promo codes and discount rules",
+      "paymentMethods": "Payment Methods",
+      "paymentMethodsDesc": "Card types and custom payment options",
+      "businessTypes": {
+        "restaurant": "Restaurant",
+        "cafe": "Cafe",
+        "retail": "Retail",
+        "other": "Other"
+      },
+      "errors": {
+        "nameRequired": "Location name is required",
+        "typeRequired": "Business type is required",
+        "addressRequired": "Address is required",
+        "currencyRequired": "Currency is required"
+      }
+    },
+    "step2": {
+      "trialTitle": "Start Free Trial",
+      "activateTitle": "Activate Subscription",
+      "freeDays": "7 DAYS FREE",
+      "priceMonth": "$20/MONTH",
+      "trialDesc": "You won't be charged today. Cancel anytime before your trial ends.",
+      "activateDesc": "Your card will be charged $20.00 for this new location.",
+      "totalDue": "Total Due Today",
+      "afterTrial": "After 7 days",
+      "monthly": "Monthly",
+      "useSaved": "Use Saved Card",
+      "addNew": "Add New Card",
+      "differentMethod": "Use a different payment method",
+      "cardNumber": "Card Number",
+      "expiry": "Expiry",
+      "cvc": "CVC",
+      "cardName": "Cardholder Name",
+      "activateButton": "Activate & Pay $20",
+      "startTrialButton": "Start Free Trial",
+      "errors": {
+        "cardNumberMin": "Card number must be 16 digits",
+        "expiryRequired": "Mm/Yy required",
+        "cvcRequired": "Cvc required",
+        "cardNameRequired": "Name on card is required"
+      }
+    },
+    "step3": {
+      "title": "Create Location Login",
+      "subtitle": "This ID is for the POS app.",
+      "uniqueAccess": "Unique access:",
+      "uniqueAccessDesc": "Each location needs its own Id and password.",
+      "locationId": "LOCATION ID",
+      "locationIdTip": "Unique ID for POS login.",
+      "locationIdPlaceholder": "e.g. mycompany-downtown",
+      "locationIdDesc": "Unique ID for this location.",
+      "password": "Location Password",
+      "passwordTip": "Password for this location.",
+      "passwordPlaceholder": "••••••••",
+      "errors": {
+        "idMin": "Location ID must be at least 4 characters",
+        "idRegex": "Location ID can only contain letters, numbers, underscores, and hyphens",
+        "passwordMin": "Location Password must be at least 6 characters"
+      }
+    },
+    "step4": {
+      "title": "Create Your Login",
+      "subtitle": "Create your personal account.",
+      "step2Note": "This is Step 2 of the POS Login.",
+      "firstName": "FIRST NAME",
+      "firstNamePlaceholder": "John",
+      "lastName": "LAST NAME",
+      "lastNamePlaceholder": "Doe",
+      "username": "Admin Username",
+      "usernameTip": "Your username.",
+      "usernamePlaceholder": "admin",
+      "password": "Personal Password",
+      "passwordTip": "Your unique password.",
+      "passwordPlaceholder": "••••••••",
+      "errors": {
+        "usernameMin": "Username must be at least 3 characters",
+        "usernameRegex": "Username can only contain letters, numbers, underscores, and hyphens",
+        "passwordMin": "Password must be at least 6 characters",
+        "firstNameMin": "First name must be at least 2 characters",
+        "lastNameMin": "Last name must be at least 2 characters"
+      }
+    },
+    "step5": {
+      "welcomeTitle": "Welcome to Paymint!",
+      "isReadyToGo": "is ready to go",
+      "openOwnerPortal": "Open Owner Portal",
+      "posApp": "POS App",
+      "posAppDesc": "Download the Point of Sale app for your staff.",
+      "playStore": "Play Store",
+      "appStore": "App Store",
+      "ownerApp": "Owner App",
+      "ownerAppDesc": "Track live sales and analytics on the go.",
+      "locationReady": "Location Ready",
+      "setupComplete": "Setup Complete",
+      "locationId": "Location ID",
+      "currency": "Currency",
+      "resourcesAndHelp": "Resources & Help",
+      "userManual": "User Manual",
+      "completeGuide": "Complete Guide",
+      "setupManual": "Setup Manual",
+      "hardwareSetup": "Hardware Setup",
+      "videoGuide": "Video Guide",
+      "quickStart": "Quick Start",
+      "qaCenter": "Q&A Center",
+      "faqs": "FAQs",
+      "privacy": "Privacy",
+      "dataProtection": "Data Protection",
+      "terms": "Terms",
+      "agreement": "Agreement",
+      "aboutUs": "About Us",
+      "ourStory": "Our Story",
+      "needHelp": "Need help? Contact our support team at"
+    },
+    "tour": {
+      "openPortalTitle": "Open Owner Portal",
+      "openPortalDesc": "This is your main dashboard for managing all locations.",
+      "posAppTitle": "POS App",
+      "posAppDesc": "Download the app on your tablets to start selling.",
+      "ownerAppTitle": "Owner App",
+      "ownerAppDesc": "Keep track of your business from your phone.",
+      "locationStatsTitle": "Location Details",
+      "locationStatsDesc": "Your unique Location ID and settings.",
+      "resourcesTitle": "Help Center",
+      "resourcesDesc": "Manuals and guides to help you get started."
     }
   },
   "security": {
@@ -1474,6 +2157,936 @@
         "daysLeft": "Days Left",
         "cancel": "Cancel Deletion",
         "cancelling": "Cancelling..."
+      }
+    }
+  },
+  "inventory": {
+    "title": "Inventory",
+    "materials": "Ingredients",
+    "prepared": "Prepped",
+    "stock": "Stock",
+    "cost": "Cost",
+    "quantity": "Quantity",
+    "unitCost": "Unit Cost",
+    "lowStock": "Low Stock",
+    "optimal": "Optimal",
+    "manage": "Manage stock and costs",
+    "addIngredient": "Add Ingredient",
+    "editIngredient": "Edit Ingredient",
+    "addPrep": "Add Prep",
+    "search": "Search items...",
+    "noIngredients": "No ingredients",
+    "noIngredientsDesc": "Add ingredients to track stock.",
+    "units": {
+      "kg": "Kg",
+      "g": "G",
+      "l": "L",
+      "ml": "Ml",
+      "pcs": "Pcs",
+      "units": "Units",
+      "oz": "Oz",
+      "lb": "Lb",
+      "cups": "Cups",
+      "portions": "Portions",
+      "servings": "Servings"
+    },
+    "form": {
+      "name": "Name",
+      "namePlaceholder": "e.g. Flour Type 00",
+      "unit": "Unit",
+      "lowStockThreshold": "Low Stock Alert",
+      "inStock": "In Stock"
+    },
+    "messages": {
+      "syncFailed": "Failed to sync inventory",
+      "created": "Material created",
+      "updated": "Material updated",
+      "removed": "Material removed",
+      "saveError": "Error saving material",
+      "deleteConfirm": "Delete \"{{name}}\" from inventory? This action is permanent."
+    }
+  },
+  "manufacturing": {
+    "title": "Recipes",
+    "subtitle": "Manage recipes and prep",
+    "kitchen": "Kitchen",
+    "products": "Products",
+    "prep": "Prep",
+    "linkProduct": "Link Product",
+    "newPrep": "New Prep",
+    "search": "Search recipes...",
+    "noRecipes": "No recipes found",
+    "noRecipesDesc": "Create a recipe to get started.",
+    "ingredients": "Ingredients",
+    "additionalElements": "Additional Elements",
+    "produceBatch": "Produce Batch",
+    "runBatch": "Run Batch",
+    "numBatches": "Number of Batches",
+    "totalOutput": "Total Output",
+    "materialCost": "Material Cost",
+    "confirmProduction": "Confirm Production",
+    "manufactured": "Manufactured",
+    "formula": {
+      "title": "Recipe",
+      "edit": "Edit Recipe",
+      "new": "New Recipe",
+      "map": "Map Product",
+      "editMap": "Edit Product Recipe",
+      "name": "Name",
+      "namePlaceholder": "e.g. House Vinaigrette",
+      "yield": "Yield",
+      "unit": "Unit",
+      "targetItem": "Target Menu Item",
+      "selectItem": "Select Item...",
+      "addMaterial": "Add Material",
+      "addPrep": "Add Sub-Formula",
+      "noIngredients": "No ingredients yet",
+      "saveFormula": "Save Recipe",
+      "registerRecipe": "Register Recipe"
+    },
+    "messages": {
+      "syncFailed": "Failed to sync data",
+      "saveSuccess": "Saved formula",
+      "saveError": "Error saving",
+      "removed": "Removed",
+      "deleteConfirm": "Delete this blueprint?",
+      "noProducts": "No products found",
+      "noProductsDesc": "You need to create menu items before you can define their recipes. Would you like to add a product now?",
+      "noMaterials": "No materials found",
+      "noMaterialsDesc": "You need to create raw materials (ingredients) before you can add them to a formula. Would you like to create one now?",
+      "noSubFormulas": "No sub-formulas found",
+      "noSubFormulasDesc": "You need to create sub-formulas (blueprints) before adding them to a recipe. Create one now?"
+    }
+  },
+  "community": {
+    "hub": {
+      "title": "Community Hub",
+      "hero": {
+        "title_part1": "Learn, Share,",
+        "title_part2": "Grow",
+        "title_part3": "Together",
+        "subtitle": "Join thousands of business owners sharing tips, requesting features, and helping each other succeed.",
+        "search_placeholder": "Search discussions, ideas, or guides..."
+      }
+    },
+    "stats": {
+      "members": "Members",
+      "discussions": "Discussions",
+      "ideas": "Ideas Submitted",
+      "guides": "Guides"
+    },
+    "discussions": {
+      "title": "Discussions",
+      "subtitle": "Ask questions and share knowledge with the community",
+      "description": "Ask questions, share experiences, and connect with other Paymint users.",
+      "browse": "Browse Discussions",
+      "trending": "Trending Discussions",
+      "trending_subtitle": "Popular conversations in the community",
+      "new": "Start a Discussion",
+      "search_placeholder": "Search discussions..."
+    },
+    "ideas": {
+      "title": "Feature Ideas",
+      "subtitle": "Vote and help shape the future of Paymint",
+      "description": "Vote on feature requests and help shape the future of Paymint.",
+      "explore": "Explore Ideas",
+      "top": "Top Feature Ideas",
+      "top_subtitle": "Vote to help prioritize what we build next",
+      "see_all": "See all ideas",
+      "total": "Total Ideas",
+      "submit": "Share an Idea",
+      "search_placeholder": "Search ideas...",
+      "empty_title": "No ideas found",
+      "empty_subtitle": "Try adjusting your search or filters",
+      "submit_first": "Submit the First Idea"
+    },
+    "guides": {
+      "title": "Guides & Tutorials",
+      "subtitle": "Learn everything about Paymint with our comprehensive guides",
+      "description": "Learn best practices and master every feature with our guides.",
+      "start": "Start Learning",
+      "popular": "Popular Guides",
+      "popular_subtitle": "Most-read tutorials from the community",
+      "browse_all": "Browse all",
+      "featured": "Featured Guides",
+      "search_placeholder": "Search guides...",
+      "empty_title": "No guides found",
+      "empty_subtitle": "Try adjusting your search or filters"
+    },
+    "categories": {
+      "tips": "Tips & Tricks",
+      "success": "Success Stories",
+      "integrations": "Integrations",
+      "questions": "Questions",
+      "announcements": "Announcements",
+      "features": "Features",
+      "ui_ux": "UI/UX",
+      "hardware": "Hardware",
+      "performance": "Performance",
+      "getting_started": "Getting Started",
+      "best_practices": "Best Practices",
+      "reports": "Reports",
+      "team": "Team",
+      "security": "Security",
+      "tips_tricks": "Tips & Tricks",
+      "success_stories": "Success Stories"
+    },
+    "status": {
+      "planned": "Planned",
+      "in_progress": "In Progress",
+      "under_review": "Under Review",
+      "completed": "Completed",
+      "declined": "Declined",
+      "all": "All Status"
+    },
+    "labels": {
+      "hot": "Hot",
+      "by": "by",
+      "reads": "reads",
+      "categories": "Categories",
+      "pinned": "Pinned",
+      "solved": "Solved",
+      "load_more": "Load More Discussions",
+      "comments": "comments",
+      "difficulty": "Difficulty"
+    },
+    "sort": {
+      "latest": "Latest",
+      "popular": "Most Popular",
+      "trending": "Trending",
+      "top_voted": "Top Voted",
+      "recent": "Recent"
+    },
+    "cta": {
+      "title": "Become a Community Champion",
+      "subtitle": "Help others, earn badges, and get early access to new features. Join the Paymint community today!"
+    },
+    "difficulty": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "all": "All Levels"
+    },
+    "types": {
+      "article": "Article",
+      "video": "Video",
+      "tutorial": "Tutorial"
+    },
+    "badges": {
+      "champion": "Champion",
+      "pro_user": "Pro User"
+    }
+  },
+  "support": {
+    "qa": {
+      "title": "How can we help you?",
+      "search_placeholder": "Search for questions...",
+      "empty_title": "No results found",
+      "empty_subtitle": "Try adjusting your search or category filter.",
+      "categories": {
+        "all": "All Questions",
+        "general": "General",
+        "payments": "Payments",
+        "security": "Security",
+        "account": "Account"
+      },
+      "q1": {
+        "question": "What is Paymint?",
+        "answer": "Paymint is a comprehensive digital payment solution designed to help businesses of all sizes accept payments, manage finances, and grow. We offer a suite of tools including a payment gateway, point-of-sale systems, and detailed analytics."
+      },
+      "q2": {
+        "question": "Is Paymint available in my country?",
+        "answer": "Paymint is currently available in over 30 countries across North America, Europe, and Asia. We are rapidly expanding to new regions. Please check our supported countries list on our pricing page for the most up-to-date information."
+      },
+      "q3": {
+        "question": "What payment methods can I accept?",
+        "answer": "With Paymint, you can accept all major credit and debit cards (Visa, Mastercard, Amex), digital wallets (Apple Pay, Google Pay), and local payment methods specific to your region."
+      },
+      "q4": {
+        "question": "How long do payouts take?",
+        "answer": "Standard payouts are processed daily and typically arrive in your bank account within 2 business days. We also offer an Instant Payout feature for eligible merchants, allowing you to access your funds in minutes for a small fee."
+      },
+      "q5": {
+        "question": "Is Paymint secure?",
+        "answer": "Yes, security is our top priority. We are PCI DSS Level 1 compliant, which is the highest standard of payment security. All data is encrypted using advanced encryption standards (AES-256), and we employ 24/7 fraud monitoring."
+      },
+      "q6": {
+        "question": "How do I reset my password?",
+        "answer": "You can reset your password by clicking on the \"Forgot Password\" link on the login page. Follow the instructions sent to your registered email address to create a new password. If you are logged in, you can change it from your Account Settings."
+      },
+      "q7": {
+        "question": "Can I add multiple users to my account?",
+        "answer": "Yes! Our Team Management feature allows you to add multiple users with different roles and permissions (e.g., Admin, Manager, Cashier). You can manage these settings from the \"Team\" section in your dashboard."
+      },
+      "q8": {
+        "question": "Are there any hidden fees?",
+        "answer": "No, we believe in complete transparency. Our pricing model is simple: a small percentage per transaction plus a fixed fee. There are no setup fees, monthly fees, or hidden charges for our standard plan."
+      }
+    }
+  },
+  "chat": {
+    "botName": "Minto",
+    "assistantTitle": "Your Paymint Assistant",
+    "inputPlaceholder": "Ask me anything...",
+    "poweredBy": "Powered by Paymint AI",
+    "actions": {
+      "products": "Products",
+      "orders": "Orders",
+      "reports": "Reports",
+      "tips": "Tips"
+    },
+    "queries": {
+      "howToAddProduct": "How do I add a product?",
+      "whereAreReports": "Where can I find my reports?",
+      "howToStartShift": "How do I start a shift?",
+      "manageTeam": "How do I manage my team?"
+    },
+    "navigation": {
+      "takeMe": "Take me there"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Find answers to common questions about Paymint",
+      "searchPlaceholder": "Search FAQs...",
+      "noResults": "No results found",
+      "tryDifferent": "Try different keywords or browse categories",
+      "needHelp": "Still need help?",
+      "categories": {
+        "gettingStarted": "Getting Started",
+        "products": "Products",
+        "orders": "Orders",
+        "staff": "Staff",
+        "billing": "Billing",
+        "technical": "Technical",
+        "account": "Account"
+      }
+    },
+    "launcher": {
+      "ask": "Ask",
+      "help": "Help"
+    },
+    "greetings": [
+      "Hello! How can I help you today?",
+      "Hi there! I'm Minto, your Paymint assistant. What's on your mind?",
+      "Welcome to Paymint! Feel free to ask me anything about managing your business."
+    ],
+    "fallback": [
+      "I'm sorry, I didn't quite catch that. Could you try rephrasing your question?",
+      "I'm still learning and I'm not sure how to answer that yet. Would you like to check our FAQs?",
+      "I couldn't find an answer for that. You can try selecting one of the suggestions below."
+    ],
+    "suggestions": [
+      "How do I add a product?",
+      "How do I start a new shift?",
+      "Where are my sales reports?",
+      "How do I manage loyalty points?"
+    ]
+  },
+  "landing": {
+    "hero": {
+      "badge": "New version 2.0 is live",
+      "title1": "The ultimate OS for",
+      "title2": "Modern",
+      "title3": "Establishments",
+      "description": "Manage orders, inventory, and staff across all your locations with our powerful, intuitive cloud-based POS system.",
+      "cta": "Start Free Trial",
+      "watchVideo": "Watch Demo",
+      "noCreditCard": "No credit card required",
+      "freeTrial": "7-day free trial",
+      "revenue": "Revenue",
+      "fromYesterday": "from yesterday",
+      "orders": "Orders",
+      "activeRightNow": "active right now",
+      "customers": "Customers",
+      "today": "today",
+      "avgOrder": "Avg Order",
+      "thisWeek": "this week",
+      "growth": "Growth",
+      "thisMonth": "this month",
+      "recentOrders": "Recent Orders",
+      "viewAll": "View All",
+      "table": "Table",
+      "takeaway": "Takeaway",
+      "items": "items",
+      "minAgo": "min ago",
+      "getStarted": "Get Started"
+    },
+    "features": {
+      "title": "Powerful Features",
+      "subtitle": "Everything you need to run your business effectively.",
+      "badge": "Features",
+      "titleHighlight": "succeed",
+      "videoTitle": "PayMint Demo Video",
+      "liveDemo": "LIVE DEMO",
+      "seeInAction": "See Paymint in Action",
+      "seamlessSync": "Seamless real-time synchronization across all devices",
+      "cards": {
+        "smartPos": {
+          "title": "Smart POS",
+          "description": "Intuitive interface designed for speed and reliability."
+        },
+        "inventory": {
+          "title": "Inventory Management",
+          "description": "Real-time tracking and automated low-stock alerts."
+        },
+        "analytics": {
+          "title": "Real-time Analytics",
+          "description": "Deep insights into your sales, staff, and customer behavior."
+        },
+        "payments": {
+          "title": "Secure Payments",
+          "description": "Accept all major cards and digital wallets with ease."
+        },
+        "crm": {
+          "title": "Customer CRM",
+          "description": "Build lasting relationships with built-in loyalty programs."
+        },
+        "offline": {
+          "title": "Offline Mode",
+          "description": "Keep selling even when your internet connection goes down."
+        }
+      }
+    },
+    "workflow": {
+      "title": "Optimized Workflow",
+      "titleHighlight": "for Growth",
+      "subtitle": "Streamline your daily operations from opening to closing with automated tools and real-time insights.",
+      "sales": {
+        "title": "Fast Checkout",
+        "description": "Process transactions in seconds with our optimized POS interface."
+      },
+      "inventory": {
+        "title": "Inventory Control",
+        "description": "Track stock levels automatically and manage suppliers efficiently."
+      },
+      "staffRoles": {
+        "title": "Staff Management",
+        "description": "Assign roles and permissions to keep your team organized."
+      },
+      "dashboards": {
+        "title": "Live Dashboards",
+        "description": "Monitor your business performance with beautiful visual reports."
+      },
+      "multiLocation": {
+        "title": "Multi-Location",
+        "description": "Manage all your branches from a single unified dashboard."
+      },
+      "cloudSync": {
+        "title": "Cloud Sync",
+        "description": "Your data is always safe and synced across all your devices."
+      },
+      "stats": {
+        "visits": "Visits",
+        "sales": "Sales",
+        "totalOrders": "Total Orders",
+        "avgTime": "Avg. Time",
+        "retention": "Retention",
+        "newUsers": "New Users",
+        "totalVisits": "Total Visits",
+        "days": {
+          "wed": "We",
+          "thu": "Th",
+          "fri": "Fr",
+          "sat": "Sa"
+        },
+        "mock": {
+          "totalOrders": "8,052",
+          "newUsers": "1.3K",
+          "totalVisits": "12M"
+        }
+      }
+    },
+    "admin": {
+      "title": "Powerful Admin Dashboard",
+      "title1": "Manage Everything",
+      "title2": "From Your Pocket",
+      "title3": "With Paymint Admin",
+      "badge": "Owner App",
+      "adminApp": "Paymint Admin App",
+      "description": "Stay in control of your business even when you're away. Our mobile admin app gives you real-time visibility into every aspect of your operations.",
+      "shiftAlerts": "Real-time shift activity alerts",
+      "stockAlerts": "Automatic low stock notifications",
+      "liveReports": "Instant access to live sales reports",
+      "videoTitle": "Admin App Preview",
+      "dailyRevenue": "Daily Revenue",
+      "subtitle": "Complete control over your business from anywhere in the world.",
+      "controlCenter": "Control Center",
+      "liveAlerts": "Live Alerts",
+      "multiLocationManagement": "Multi-Location Management",
+      "realTime": "Real-time Sync",
+      "alerts": {
+        "lowStock": "Low stock alert for {{item}}",
+        "newOrder": "New order received #{{id}}",
+        "shiftStarted": "Shift started at {{location}}",
+        "voidItem": "Item voided by {{name}}"
+      }
+    },
+    "hardware": {
+      "title": "Compatible",
+      "titleHighlight": "Hardware",
+      "subtitle": "Paymint works with most standard tablets and thermal printers. Here are some models we recommend.",
+      "viewAllOptions": "View All Options",
+      "alreadyHave": "Already have hardware?",
+      "alreadyHaveDesc": "Simply download the app and connect your devices in seconds.",
+      "tablets": {
+        "name": "Tablets & Terminals",
+        "description": "Powerful handheld devices for your staff",
+        "note": "Android 10+ or iOS 15+ recommended for optimal performance."
+      },
+      "printers": {
+        "name": "Receipt Printers",
+        "description": "Fast and reliable thermal receipt printers",
+        "note": "80mm thermal paper is required for all listed models."
+      },
+      "products": {
+        "samsungTab": {
+          "name": "Samsung Galaxy Tab A8",
+          "specs": "10.5\" Display, 4GB RAM, 64GB Storage"
+        },
+        "ipad": {
+          "name": "iPad 10th Generation",
+          "specs": "10.9\" Liquid Retina, A14 Bionic"
+        },
+        "lenovo": {
+          "name": "Lenovo Tab M10 Plus",
+          "specs": "10.6\" 2K Display, 4GB RAM"
+        },
+        "munbyn": {
+          "name": "MUNBYN Thermal Receipt Printer",
+          "specs": "80mm USB/Ethernet/Bluetooth"
+        },
+        "epson": {
+          "name": "Epson TM-T20III",
+          "specs": "Standard 80mm POS Printer"
+        },
+        "star": {
+          "name": "Star Micronics TSP143",
+          "specs": "Premium 80mm High-Speed Printer"
+        }
+      },
+      "terminals": "Payment Terminals",
+      "tip": "Tip: Most modern tablets and Bluetooth printers are supported."
+    },
+    "pricing": {
+      "title": "Simple & Transparent Pricing",
+      "subtitle": "Choose the plan that fits your business needs.",
+      "monthly": "Monthly",
+      "standardPrice": "20$",
+      "yearly": "Yearly",
+      "save20": "Save 20%",
+      "popular": "Most Popular",
+      "plans": {
+        "starter": {
+          "name": "Starter",
+          "price": "20",
+          "description": "Perfect for single location businesses.",
+          "features": [
+            "1 Location",
+            "Basic Analytics",
+            "Unlimited Products",
+            "Email Support"
+          ]
+        },
+        "pro": {
+          "name": "Professional",
+          "price": "45",
+          "description": "Designed for growing establishments.",
+          "features": [
+            "Up to 3 Locations",
+            "Advanced Reporting",
+            "Inventory Management",
+            "Priority Support"
+          ]
+        },
+        "enterprise": {
+          "name": "Enterprise",
+          "price": "Custom",
+          "description": "Tailored solutions for large-scale operations.",
+          "features": [
+            "Unlimited Locations",
+            "Dedicated Account Manager",
+            "Custom Integrations",
+            "24/7 Phone Support"
+          ]
+        }
+      }
+    },
+    "download": {
+      "title": "Get Started Today",
+      "titleHighlight": "Transform Your Business",
+      "description": "Experience the power of Paymint on all your devices. Our apps are designed for speed, reliability, and ease of use.",
+      "badge": "Available Now",
+      "universal": "Universal tablet & phone support",
+      "offline": "Full offline capabilities",
+      "instantSync": "Instant cloud synchronization",
+      "platforms": "Available for iOS & Android",
+      "updateLinkAlert": "The download link will be available soon. Please check back shortly!",
+      "downloadFor": "Download for",
+      "android": "Android APK",
+      "comingSoon": "Coming Soon",
+      "appStore": "iOS App Store",
+      "totalSales": "Total Sales",
+      "order": "Order",
+      "completed": "Completed",
+      "subtitle": "Download the app and transform your business.",
+      "playStore": "Play Store",
+      "requirements": "Requires iOS 13+ or Android 8+",
+      "version": "Version 2.0"
+    },
+    "contact": {
+      "title": "Get in Touch",
+      "subtitle": "Have questions? Our team is here to help.",
+      "fullName": "Full Name",
+      "email": "Email Address",
+      "message": "Message",
+      "sendMessage": "Send Message",
+      "sending": "Sending...",
+      "success": "Message sent successfully!",
+      "error": "Failed to send message. Please try again.",
+      "privacy": "Privacy",
+      "policy": "Policy"
+    }
+  },
+  "about": {
+    "title": "About PayMint",
+    "intro": {
+      "p1": "PayMint LLC is a technology solutions company specializing in Point of Sale (POS) systems and digital business management platforms. Our products are designed to simplify daily operations—from fast, reliable sales processing on digital devices to automated management tools that give businesses full operational visibility.",
+      "p2": "At the core of PayMint is one clear goal: to give business owners accurate, real-time access to their data while enabling faster, smoother checkout experiences for their customers.",
+      "p3": "The PayMint app is available on both iOS and Android and can be downloaded for free. Businesses can create a PayMint account and complete setup directly through the POS app or via the online management dashboard.",
+      "p4": "PayMint also supports multi-branch operations. Owners and account managers can add, merge, or separate establishments as needed, all from a single universal dashboard. This allows centralized control over sales, staff, products, and performance across multiple locations, with discounted pricing for additional branches."
+    },
+    "values": {
+      "title": "Our Value Proposition",
+      "transparency": "Transparency",
+      "simplicity": "Simplicity",
+      "performance": "Performance",
+      "v1": {
+        "title": "Affordable. Transparent. Complete.",
+        "description": "PayMint offers one of the most competitive POS solutions in the market when considering the full range of included services. Our pricing is transparent, with no hidden fees or unexpected costs—just a complete, all-in-one system at an accessible monthly rate."
+      },
+      "v2": {
+        "title": "Built for Simplicity",
+        "description": "We developed PayMint in close collaboration with business owners and frontline staff. The result is an intuitive system that can be learned in minutes, not days. Guided in-app tours and clear workflows ensure users always know what to do and how to do it."
+      },
+      "v3": {
+        "title": "Performance-Driven Design",
+        "description": "Speed, reliability, and usability are central to everything we build. PayMint is engineered for fast transactions and smooth daily operations. Our UI and workflows are designed using behavioral insights and user interaction analysis, ensuring that critical actions are easy to access and setup is quick and effortless."
+      }
+    },
+    "story": {
+      "title": "Our Story",
+      "p1": "PayMint LLC is a Jordanian company operating globally. The platform officially launched in 2025, built on insights gathered from years of research into the POS and retail technology space.",
+      "p2": "Development spanned more than three years, with a strong focus on security, performance, and scalability. Every feature was designed to meet real-world business needs and compete confidently with leading global POS solutions. Today, PayMint stands as a modern, secure, and scalable system built to support businesses of all sizes—anywhere in the world."
+    }
+  },
+  "auth": {
+    "validation": {
+      "emailInvalid": "Please enter a valid email address",
+      "passwordRequired": "Password is required",
+      "passwordMin": "Password must be at least 8 characters",
+      "passwordLetter": "Password must contain at least one letter",
+      "passwordUppercase": "Must contain at least one uppercase letter",
+      "passwordLowercase": "Must contain at least one lowercase letter",
+      "passwordNumber": "Must contain at least one number",
+      "passwordsDoNotMatch": "Passwords do not match",
+      "firstNameMin": "First name must be at least 2 characters",
+      "lastNameMin": "Last name must be at least 2 characters"
+    },
+    "google": {
+      "signInWith": "Sign in with Google"
+    },
+    "login": {
+      "title": "Welcome Back",
+      "welcomeBack": "Welcome Back",
+      "redirecting": "Redirecting...",
+      "subtitle": "Log in to your account to continue",
+      "emailLabel": "Email Address",
+      "passwordLabel": "Password",
+      "keepLoggedIn": "Keep me logged in",
+      "forgotPassword": "Forgot Password?",
+      "loginButton": "Log In",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign Up",
+      "backToHome": "Back to Home",
+      "loggingIn": "Logging in...",
+      "emailPlaceholder": "you@example.com",
+      "passwordPlaceholder": "Enter your password",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "ariaEmail": "Email address",
+      "ariaPassword": "Password",
+      "ariaKeepLoggedIn": "Keep me logged in",
+      "ariaCloseModal": "Close modal"
+    },
+    "signup": {
+      "title": "Create Your Account",
+      "subtitle": "Join PayMint and start growing your business",
+      "firstNameLabel": "First Name",
+      "lastNameLabel": "Last Name",
+      "emailLabel": "Email Address",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm Password",
+      "signUpButton": "Sign Up",
+      "haveAccount": "Already have an account?",
+      "logIn": "Log In",
+      "creatingAccount": "Creating account...",
+      "pleaseWait": "Please wait",
+      "checkEmail": "Check your email",
+      "verificationSent": "Verification link sent",
+      "clickToVerify": "Click the link in your email to verify your account",
+      "didntReceive": "Didn't receive the email?",
+      "resendVerification": "Resend Verification",
+      "goToLogin": "Go to Login",
+      "backButton": "Back",
+      "creatingYourAccount": "Creating your account",
+      "firstNamePlaceholder": "John",
+      "lastNamePlaceholder": "Doe",
+      "emailPlaceholder": "john@example.com",
+      "passwordPlaceholder": "Create a strong password",
+      "confirmPasswordPlaceholder": "Confirm your password",
+      "allFeaturesIncluded": "All features included",
+      "feature1Title": "Unified Dashboard",
+      "feature1Desc": "Manage all your locations and brands from a single interface.",
+      "feature2Title": "Real-time Analytics",
+      "feature2Desc": "Monitor sales, inventory, and staff performance as it happens.",
+      "feature3Title": "Secure Payments",
+      "feature3Desc": "Industry-standard security for all your transactions and data.",
+      "feature4Title": "Staff Management",
+      "feature4Desc": "Control access levels and track employee productivity easily.",
+      "feature5Title": "Inventory Control",
+      "feature5Desc": "Never run out of stock with automated alerts and tracking."
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "subtitle": "Enter your email to receive a reset link",
+      "emailLabel": "Email Address",
+      "sendLink": "Send Reset Link",
+      "emailSent": "Email Sent",
+      "linkSentTo": "A reset link has been sent to",
+      "didntReceive": "Didn't receive the link?",
+      "tryAnotherEmail": "Try another email",
+      "backToLogin": "Back to Login",
+      "resetLinkSent": "Reset link sent!"
+    },
+    "resetPassword": {
+      "title": "Reset Password",
+      "subtitle": "Enter your new password below",
+      "passwordLabel": "New Password",
+      "confirmPasswordLabel": "Confirm New Password",
+      "reset": "Reset Password",
+      "success": "Password Reset Successfully",
+      "passwordUpdated": "Your password has been updated",
+      "invalidLink": "Invalid or expired reset link",
+      "invalidLinkTitle": "Invalid Link",
+      "invalidLinkSubtitle": "This link is invalid or expired.",
+      "getNewLink": "GET NEW LINK",
+      "successTitle": "Success",
+      "passwordUpdatedShort": "Password updated.",
+      "goToLogin": "GO TO LOGIN",
+      "resetTitle": "Reset",
+      "passwordHighlight": "Password",
+      "enterNewPassword": "Enter your new password."
+    },
+    "verifyEmail": {
+      "verifying": "Verifying your email...",
+      "success": "Email Verified",
+      "verified": "Your email has been successfully verified",
+      "error": "Verification Failed",
+      "linkExpired": "Verification link has expired",
+      "continueLogin": "Continue to Login",
+      "verifyingTitle": "Verifying Email",
+      "verifyingSubtitle": "Verifying your account...",
+      "successTitle": "Email Verified!",
+      "linkExpiredTitle": "Link Expired",
+      "linkInvalidOrExpired": "Link invalid or expired.",
+      "goToLogin": "GO TO LOGIN",
+      "backToHome": "Back to Home",
+      "sending": "Sending..."
+    },
+    "passwordReset": {
+      "title": {
+        "account": "Reset Account Password",
+        "establishment": "Reset Password for {{name}}",
+        "brand": "Reset Password for {{name}}",
+        "default": "Reset Password"
+      },
+      "steps": {
+        "verifyTitle": "Verify Your Identity",
+        "verifyDesc": "We'll send a 6-digit code to your registered email address.",
+        "enterCodeTitle": "Enter Verification Code",
+        "enterCodeDesc": "We sent a code to {{email}}",
+        "newPasswordTitle": "Create New Password",
+        "newPasswordDesc": "Enter a strong password with at least 8 characters",
+        "successTitle": "Password Reset Successfully!",
+        "successDesc": "Your password has been updated. You can now use your new password."
+      },
+      "form": {
+        "sendCode": "Send Verification Code",
+        "sending": "Sending...",
+        "verifyCode": "Verify Code",
+        "verifying": "Verifying...",
+        "resend": "Didn't receive the code? Resend",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password",
+        "passwordPlaceholder": "Enter new password",
+        "confirmPlaceholder": "Confirm new password",
+        "resetButton": "Reset Password",
+        "resetting": "Resetting..."
+      },
+      "messages": {
+        "codeSent": "Verification code sent to your email",
+        "codeVerified": "Code verified",
+        "passwordReset": "Password reset",
+        "failedToSend": "Failed to send code",
+        "invalidCode": "Invalid code",
+        "enterFullCode": "Enter the full code",
+        "failedToReset": "Failed to reset password"
+      }
+    }
+  },
+  "portal": {
+    "welcome": "Welcome back",
+    "welcomeUser": "Welcome back, {{name}}!",
+    "goToDashboard": "Go to Dashboard",
+    "overview": {
+      "title": "Account Overview",
+      "plan": "Plan",
+      "establishments": "Establishments",
+      "teamMembers": "Team Members",
+      "memberSince": "Member Since"
+    },
+    "quickActions": {
+      "downloadInvoice": "Download Invoice",
+      "updatePayment": "Update Payment Method",
+      "manageTeam": "Manage Team",
+      "securitySettings": "Security Settings"
+    },
+    "recentTickets": {
+      "title": "Recent Support Tickets",
+      "noTickets": "No open tickets",
+      "viewAll": "View all",
+      "submitNew": "Submit a new ticket"
+    },
+    "status": {
+      "open": "Open",
+      "inProgress": "In Progress",
+      "resolved": "Resolved"
+    },
+    "announcements": {
+      "title": "Announcements"
+    },
+    "plan": {
+      "title": "Your Plan",
+      "nextBilling": "Next billing",
+      "amount": "Amount",
+      "manage": "Manage Subscription",
+      "upgrade": "Upgrade Plan"
+    },
+    "resources": {
+      "title": "Resources",
+      "helpCenter": "Help Center",
+      "helpCenterDesc": "Browse knowledge base",
+      "community": "Community",
+      "communityDesc": "Join discussions",
+      "featureIdeas": "Feature Ideas",
+      "featureIdeasDesc": "Vote on features",
+      "guides": "Guides",
+      "guidesDesc": "Learn best practices"
+    },
+    "mobileApp": {
+      "title": "Mobile App",
+      "description": "Manage your business on the go with our mobile app.",
+      "appStore": "App Store",
+      "playStore": "Play Store"
+    }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Privacy Policy",
+      "lastUpdated": "LAST UPDATED",
+      "sections": {
+        "s1": "1. Information We Collect",
+        "s1_1": "1.1 Personal Information",
+        "s1_2": "1.2 Payment Information",
+        "s1_3": "1.3 Business & Operational Data",
+        "s1_4": "1.4 Technical & Usage Data",
+        "s2": "2. How We Use Your Information",
+        "s3": "3. Data Storage & Security",
+        "s4": "4. Data Sharing & Third Parties",
+        "s5": "5. Multi-Branch & Account Access",
+        "s6": "6. Data Retention",
+        "s7": "7. Your Rights",
+        "s8": "8. Cookies & Tracking Technologies",
+        "s9": "9. International Operations",
+        "s10": "10. Children’s Privacy",
+        "s11": "11. Changes to This Policy",
+        "s12": "12. Contact Us"
+      }
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "lastUpdated": "LAST UPDATED",
+      "sections": {
+        "s1": "1. Use of the Service",
+        "s2": "2. Subscriptions & Payments",
+        "s3": "3. User Responsibilities",
+        "s4": "4. Data & Privacy",
+        "s5": "5. Service Availability",
+        "s6": "6. Intellectual Property",
+        "s7": "7. Limitation of Liability",
+        "s8": "8. Termination",
+        "s9": "9. Governing Law",
+        "s10": "10. Contact"
+      }
+    },
+    "cookies": {
+      "banner": {
+        "title": "We use cookies",
+        "description": "We use cookies to enhance your experience and analyze our traffic.",
+        "acceptAll": "Accept All",
+        "preferences": "Cookie Preferences"
+      },
+      "preferences": {
+        "title": "Cookie Preferences",
+        "subtitle": "Manage how cookies are used on this site.",
+        "save": "Save Preferences"
+      },
+      "types": {
+        "essential": {
+          "title": "Essential Cookies",
+          "description": "Required for the site to function properly."
+        },
+        "analytics": {
+          "title": "Analytics Cookies",
+          "description": "Help us understand how visitors interact with the site."
+        },
+        "marketing": {
+          "title": "Marketing Cookies",
+          "description": "Used to track visitors across websites to show relevant ads."
+        }
+      },
+      "title": "Cookie Statement",
+      "lastUpdated": "Last Updated",
+      "preferenceCenter": "Cookie Preference Center",
+      "legalCenter": "Legal Center",
+      "subtitle": "We believe in being transparent about how we use your data. This policy explains how we use cookies and similar technologies to recognize you when you visit our website.",
+      "openSettings": "OPEN COOKIE SETTINGS",
+      "questions": "Questions?",
+      "preferenceCenterTitle": "Preference Center",
+      "preferenceCenterSubtitle": "You can change your settings at any time by clicking the button below.",
+      "backToHome": "Back to Home",
+      "sections": {
+        "whatAre": "What are cookies?",
+        "whyUse": "Why do we use them?",
+        "types": "Types of Cookies",
+        "thirdParty": "Third-Party Cookies",
+        "control": "How to control cookies",
+        "updates": "Updates to this policy"
+      },
+      "cards": {
+        "essential": "Essential Cookies",
+        "analytics": "Analytics & Customization",
+        "advertising": "Advertising (Targeting)"
       }
     }
   }
