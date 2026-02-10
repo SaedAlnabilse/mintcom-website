@@ -26,11 +26,13 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
 
   const formatCurrency = (value: number) => formatAmount(value);
 
-  const getMethodName = (name: string) => {
-    if (name === 'CARD') return t('orders.payment.allCards');
-    if (name === 'CASH') return t('orders.payment.cash');
-    if (name === 'OTHER') return t('orders.payment.allOther');
-    return name;
+  const getMethodName = (name: any) => {
+    if (!name) return '—';
+    const nameStr = String(name);
+    if (nameStr === 'CARD') return t('orders.payment.allCards');
+    if (nameStr === 'CASH') return t('orders.payment.cash');
+    if (nameStr === 'OTHER') return t('orders.payment.allOther');
+    return nameStr;
   };
 
   return (
@@ -53,7 +55,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
           <div className="relative z-10">
             <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('orders.reports.payments.topMethod')}</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight text-ellipsis overflow-hidden whitespace-nowrap">
-              {getMethodName([...(salesData.paymentMethodBreakdown || [])].sort((a: any, b: any) => b.value - a.value)[0]?.name || '—')}
+              {getMethodName([...(salesData.paymentMethodBreakdown || [])].sort((a: any, b: any) => b.value - a.value)[0]?.name)}
             </p>
             <p className="text-xs text-gray-500 mt-2">{t('orders.reports.payments.topMethodDesc')}</p>
           </div>
@@ -113,7 +115,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                       textTransform: 'capitalize'
                     }}
                     formatter={(val: any) => formatCurrency(val)}
-                    labelFormatter={(name: string) => getMethodName(name)}
+                    labelFormatter={(name: any) => getMethodName(name)}
                   />
                 </PieChart>
               </ResponsiveContainer>
