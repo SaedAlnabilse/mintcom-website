@@ -67,7 +67,8 @@ import { REQUIRED_PERMISSIONS } from '../config/permissions';
 const SIDEBAR_STATE_KEY = 'dashboard_sidebar_expanded';
 
 export function DashboardLayout() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const { account, currentEstablishment, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -448,7 +449,7 @@ export function DashboardLayout() {
                     )}
 
                     {!sidebarOpen && (
-                      <div className={`absolute left-[calc(100%+8px)] ${isBottomItem ? 'bottom-0' : 'top-0'} opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] pointer-events-none group-hover:pointer-events-auto translate-x-1 group-hover:translate-x-0`}>
+                      <div className={`absolute ${isRTL ? 'right-[calc(100%+8px)]' : 'left-[calc(100%+8px)]'} ${isBottomItem ? 'bottom-0' : 'top-0'} opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] pointer-events-none group-hover:pointer-events-auto ${isRTL ? '-translate-x-1 group-hover:translate-x-0' : 'translate-x-1 group-hover:translate-x-0'}`}>
                         <div className="bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden min-w-[200px] py-2">
                           <div className="px-4 py-2 border-b border-gray-100 dark:border-white/5 mb-1 bg-gray-50/50 dark:bg-white/[0.02]">
                             <p className="text-xs font-black text-paymint-green tracking-widest">{item.label}</p>
@@ -479,7 +480,7 @@ export function DashboardLayout() {
                           </div>
                         </div>
                         {/* Bridge hitbox to allow mouse movement to the popover */}
-                        <div className={`absolute -left-4 w-4 bg-transparent ${isBottomItem ? 'bottom-0 h-full' : 'top-0 bottom-0'}`} />
+                        <div className={`absolute ${isRTL ? '-right-4' : '-left-4'} w-4 bg-transparent ${isBottomItem ? 'bottom-0 h-full' : 'top-0 bottom-0'}`} />
                       </div>
                     )}
                   </button>
@@ -547,7 +548,7 @@ export function DashboardLayout() {
                   )}
 
                   {!sidebarOpen && (
-                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
+                    <div className={`absolute ${isRTL ? 'right-full mr-4 -translate-x-1 group-hover:translate-x-0' : 'left-full ml-4 translate-x-1 group-hover:translate-x-0'} top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl`}>
                       {item.label}
                     </div>
                   )}

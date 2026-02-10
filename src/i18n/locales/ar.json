@@ -2221,6 +2221,8 @@
       "aboutUs": "من نحن",
       "agreement": "الاتفاقية",
       "appStore": "App Store",
+      "chatBotDesc": "تعرف على مينتو، مساعدك الذكي المتاح 24/7 لمساعدتك في أي شيء.",
+      "chatBotTitle": "مساعد الدعم بالذكاء الاصطناعي",
       "completeGuide": "دليل كامل",
       "currency": "العملة",
       "dataProtection": "حماية البيانات",
@@ -2251,6 +2253,8 @@
       "welcomeTitle": "مرحباً بك في بيمنت!"
     },
     "tour": {
+      "chatBotDesc": "مينتو موجود دائماً للإجابة على أسئلتك وإرشادك عبر النظام.",
+      "chatBotTitle": "تعرف على مساعدك الذكي",
       "locationStatsDesc": "معرف الموقع الفريد وإعداداتك.",
       "locationStatsTitle": "تفاصيل الموقع",
       "openPortalDesc": "هذه هي لوحة التحكم الرئيسية لإدارة جميع المواقع.",

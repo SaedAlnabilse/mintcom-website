@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 export const FeedbackWidget = () => {
     const { t } = useTranslation();
+    const isRTL = t('common.locale') === 'ar';
     const [isOpen, setIsOpen] = useState(false);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
@@ -40,12 +41,12 @@ export const FeedbackWidget = () => {
             <AnimatePresence>
                 {!isOpen && isVisible && (
                     <motion.button
-                        initial={{ x: 50, opacity: 0 }}
+                        initial={{ x: isRTL ? -50 : 50, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
-                        exit={{ x: 100, opacity: 0 }}
+                        exit={{ x: isRTL ? -100 : 100, opacity: 0 }}
                         onClick={() => setIsOpen(true)}
                         style={{ opacity: 1 }}
-                        className="fixed right-0 top-[40%] -translate-y-1/2 z-[9999] !bg-white dark:!bg-[#0F172A] !bg-opacity-100 !opacity-100 border-y border-l border-gray-200 dark:border-white/10 py-4 px-2 rounded-l-2xl shadow-2xl hover:bg-gray-50 dark:hover:!bg-[#334155] transition-all flex flex-col items-center gap-3 group ring-1 ring-black/5"
+                        className={`fixed ${isRTL ? 'left-0 border-y border-r rounded-r-2xl' : 'right-0 border-y border-l rounded-l-2xl'} top-[40%] -translate-y-1/2 z-[9999] !bg-white dark:!bg-[#0F172A] !bg-opacity-100 !opacity-100 border-gray-200 dark:border-white/10 py-4 px-2 shadow-2xl hover:bg-gray-50 dark:hover:!bg-[#334155] transition-all flex flex-col items-center gap-3 group ring-1 ring-black/5`}
                     >
                         <MessageSquare size={18} className="text-paymint-green group-hover:scale-110 transition-transform" />
                         <span className="text-[10px] font-black text-gray-800 dark:text-gray-100 tracking-widest uppercase [writing-mode:vertical-rl] rotate-180">{t('feedback.tab')}</span>
@@ -65,12 +66,12 @@ export const FeedbackWidget = () => {
                         <div className="fixed inset-0 z-[9999]" onClick={() => setIsOpen(false)} />
                         
                         <motion.div
-                            initial={{ x: '100%', opacity: 0 }}
+                            initial={{ x: isRTL ? '-100%' : '100%', opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
-                            exit={{ x: '100%', opacity: 0 }}
+                            exit={{ x: isRTL ? '-100%' : '100%', opacity: 0 }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                            className="fixed right-0 top-0 h-full w-[350px] bg-white dark:bg-[#0F172A] shadow-[-10px_0_30px_rgba(0,0,0,0.1)] border-l border-gray-200 dark:border-white/10 z-[10000] flex flex-col"
+                            dir={isRTL ? 'rtl' : 'ltr'}
+                            className={`fixed ${isRTL ? 'left-0 border-r shadow-[10px_0_30px_rgba(0,0,0,0.1)]' : 'right-0 border-l shadow-[-10px_0_30px_rgba(0,0,0,0.1)]'} top-0 h-full w-[350px] bg-white dark:bg-[#0F172A] border-gray-200 dark:border-white/10 z-[10000] flex flex-col`}
                             onClick={(e) => e.stopPropagation()} // Prevent click from closing when clicking inside drawer
                         >
                             {/* Drawer Header */}

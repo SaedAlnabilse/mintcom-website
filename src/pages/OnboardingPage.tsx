@@ -40,7 +40,8 @@ import {
   HelpCircle,
   Shield,
   Scale,
-  Info
+  Info,
+  MessageCircle
 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
@@ -122,6 +123,11 @@ export function OnboardingPage() {
       targetId: 'tour-owner-app',
       title: t('onboarding.tour.ownerAppTitle'),
       description: t('onboarding.tour.ownerAppDesc')
+    },
+    {
+      targetId: 'tour-chat-bot',
+      title: t('onboarding.tour.chatBotTitle'),
+      description: t('onboarding.tour.chatBotDesc')
     },
     {
       targetId: 'tour-location-stats',
@@ -1158,10 +1164,35 @@ export function OnboardingPage() {
                         {t('onboarding.step5.appStore')}
                       </a>
                     </div>
-                  </motion.div>
-
-                  {/* Quick Stats */}
-                  <motion.div 
+                                      </motion.div>
+                  
+                                      {/* AI Assistant Card */}
+                                      <motion.div
+                                        id="tour-chat-bot"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.75 }}
+                                        className="bg-gradient-to-br from-paymint-green/10 to-emerald-500/5 border border-paymint-green/20 rounded-2xl p-5 group hover:border-paymint-green/40 transition-all cursor-pointer"
+                                        onClick={() => {
+                                          // Trigger chatbot if possible or just show info
+                                          toast.success(t('chat.assistantTitle'));
+                                        }}
+                                      >
+                                        <div className="flex items-start gap-4">
+                                          <div className="w-14 h-14 bg-paymint-green/20 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform">
+                                            <MessageCircle size={28} className="text-paymint-green" />
+                                          </div>
+                                          <div>
+                                            <div className="flex items-center gap-2">
+                                              <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.chatBotTitle')}</h3>
+                                              <span className="bg-paymint-green text-black text-[10px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter">AI</span>
+                                            </div>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t('onboarding.step5.chatBotDesc')}</p>
+                                          </div>
+                                        </div>
+                                      </motion.div>
+                  
+                                      {/* Quick Stats */}                  <motion.div 
                     id="tour-location-stats"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

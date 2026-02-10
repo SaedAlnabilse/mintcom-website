@@ -8,7 +8,9 @@ export interface KnowledgeEntry {
   id: string;
   keywords: string[];
   question: string;
+  questionAr?: string;
   answer: string;
+  answerAr?: string;
   category: 'navigation' | 'feature' | 'billing' | 'technical' | 'account' | 'getting-started' | 'products' | 'orders' | 'staff' | 'reports' | 'settings' | 'pos' | 'shifts' | 'payments' | 'loyalty' | 'troubleshooting';
   navigationPath?: string;
   relatedTopics?: string[];

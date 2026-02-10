@@ -2221,6 +2221,8 @@
       "aboutUs": "About Us",
       "agreement": "Agreement",
       "appStore": "App Store",
+      "chatBotDesc": "Meet Minto, your 24/7 AI assistant ready to help you with anything.",
+      "chatBotTitle": "AI Support Assistant",
       "completeGuide": "Complete Guide",
       "currency": "Currency",
       "dataProtection": "Data Protection",
@@ -2251,6 +2253,8 @@
       "welcomeTitle": "Welcome to Paymint!"
     },
     "tour": {
+      "chatBotDesc": "Minto is always here to answer your questions and guide you through the system.",
+      "chatBotTitle": "Meet your AI Assistant",
       "locationStatsDesc": "Your unique Location ID and settings.",
       "locationStatsTitle": "Location Details",
       "openPortalDesc": "This is your main dashboard for managing all locations.",

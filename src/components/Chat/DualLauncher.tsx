@@ -13,6 +13,7 @@ interface DualLauncherProps {
 
 export function DualLauncher({ onOpenChat, onOpenFAQ, isChatOpen, isFAQOpen, onCloseAll }: DualLauncherProps) {
   const { t } = useTranslation();
+  const isRTL = t('common.locale') === 'ar';
   const [isExpanded, setIsExpanded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +36,7 @@ export function DualLauncher({ onOpenChat, onOpenFAQ, isChatOpen, isFAQOpen, onC
         animate={{ scale: 1, rotate: 0 }}
         exit={{ scale: 0, rotate: 90 }}
         onClick={onCloseAll}
-        className="fixed bottom-6 right-6 z-[999999] w-14 h-14 rounded-2xl bg-white dark:bg-[#1E293B] text-gray-900 dark:text-white shadow-2xl flex items-center justify-center hover:bg-gray-100 dark:hover:bg-white/5 border border-gray-200 dark:border-white/10 transition-all hover:scale-105"
+        className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[999999] w-14 h-14 rounded-2xl bg-white dark:bg-[#1E293B] text-gray-900 dark:text-white shadow-2xl flex items-center justify-center hover:bg-gray-100 dark:hover:bg-white/5 border border-gray-200 dark:border-white/10 transition-all hover:scale-105`}
       >
         <X size={22} />
       </motion.button>
@@ -43,7 +44,7 @@ export function DualLauncher({ onOpenChat, onOpenFAQ, isChatOpen, isFAQOpen, onC
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-[999999]" ref={containerRef}>
+    <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[999999]`} ref={containerRef}>
       <motion.div
         layout
         transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}

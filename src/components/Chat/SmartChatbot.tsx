@@ -18,7 +18,9 @@ import { useTranslation } from 'react-i18next';
 import {
   PAYMINT_KNOWLEDGE,
   GREETINGS,
+  GREETINGS_AR,
   FALLBACK_RESPONSES,
+  FALLBACK_RESPONSES_AR,
 } from '../../data/chatbotKnowledge';
 import type { KnowledgeEntry } from '../../data/chatbotKnowledge';
 
@@ -38,6 +40,11 @@ interface SmartChatbotProps {
 }
 
 
+// Detect if text contains Arabic characters
+function isArabicText(text: string): boolean {
+  return /[\u0600-\u06FF]/.test(text);
+}
+
 // Simple but effective fuzzy matching
 function calculateRelevance(query: string, entry: KnowledgeEntry): number {
   const queryLower = query.toLowerCase().trim();
@@ -45,7 +52,7 @@ function calculateRelevance(query: string, entry: KnowledgeEntry): number {
 
   let score = 0;
 
-  // Check keywords (highest weight)
+  // Check keywords (highest weight) - includes both EN and AR keywords
   for (const keyword of entry.keywords) {
     if (queryLower.includes(keyword.toLowerCase())) {
       score += 10;
@@ -57,19 +64,33 @@ function calculateRelevance(query: string, entry: KnowledgeEntry): number {
     }
   }
 
-  // Check question text
+  // Check question text (both EN and AR)
   const questionLower = entry.question.toLowerCase();
   for (const word of words) {
     if (questionLower.includes(word)) {
       score += 3;
     }
   }
+  if (entry.questionAr) {
+    for (const word of words) {
+      if (entry.questionAr.includes(word)) {
+        score += 3;
+      }
+    }
+  }
 
-  // Check answer text (lower weight)
+  // Check answer text (lower weight, both EN and AR)
   const answerLower = entry.answer.toLowerCase();
   for (const word of words) {
     if (answerLower.includes(word)) {
       score += 1;
+    }
+  }
+  if (entry.answerAr) {
+    for (const word of words) {
+      if (entry.answerAr.includes(word)) {
+        score += 1;
+      }
     }
   }
 
@@ -77,8 +98,8 @@ function calculateRelevance(query: string, entry: KnowledgeEntry): number {
 }
 
 function findBestMatch(query: string): KnowledgeEntry | null {
-  // Check for greetings first
-  const greetingPatterns = /^(hi|hello|hey|good morning|good afternoon|good evening|howdy|what's up|sup)/i;
+  // Check for greetings first (EN and AR)
+  const greetingPatterns = /^(hi|hello|hey|good morning|good afternoon|good evening|howdy|what's up|sup|مرحبا|مرحباً|أهلاً|أهلا|هاي|السلام عليكم|سلام|صباح الخير|مساء الخير|كيف حالك|كيفك|هلا)/i;
   if (greetingPatterns.test(query.trim())) {
     return null; // Will trigger greeting response
   }
@@ -129,7 +150,8 @@ function getRelatedSuggestions(entry: KnowledgeEntry | null, defaultSuggestions:
 }
 
 export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const navigate = useNavigate();
   const location = useLocation();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -199,10 +221,13 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
     // Simulate thinking delay for natural feel
     await new Promise(resolve => setTimeout(resolve, 500 + Math.random() * 500));
 
-    // Check for greetings
-    const greetingPatterns = /^(hi|hello|hey|good morning|good afternoon|good evening|howdy|what's up|sup|yo)$/i;
+    // Check for greetings (EN and AR)
+    const greetingPatterns = /^(hi|hello|hey|good morning|good afternoon|good evening|howdy|what's up|sup|yo|مرحبا|مرحباً|أهلاً|أهلا|هاي|السلام عليكم|سلام|صباح الخير|مساء الخير|كيف حالك|كيفك|هلا)$/i;
     if (greetingPatterns.test(userMessage.trim())) {
-      const greeting = GREETINGS[Math.floor(Math.random() * GREETINGS.length)];
+      // Detect if the user typed in Arabic or if locale is Arabic
+      const useArabic = isArabicText(userMessage) || isRTL;
+      const greetings = useArabic ? GREETINGS_AR : GREETINGS;
+      const greeting = greetings[Math.floor(Math.random() * greetings.length)];
       const botMsg: Message = {
         id: (Date.now() + 1).toString(),
         type: 'bot',
@@ -227,17 +252,23 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
         resolvedPath = resolvedPath.replace(':location', currentLocationSlug);
       }
 
+      // Detect if user typed in Arabic or if locale is Arabic
+      const useArabic = isArabicText(userMessage) || isRTL;
+      const answer = useArabic && match.answerAr ? match.answerAr : match.answer;
+
       botResponse = {
         id: (Date.now() + 1).toString(),
         type: 'bot',
-        content: match.answer,
+        content: answer,
         timestamp: new Date(),
         suggestions: getRelatedSuggestions(match, defaultSuggestions),
         navigationPath: resolvedPath
       };
     } else {
-      // Fallback response
-      const fallback = FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)];
+      // Fallback response - detect language
+      const useArabic = isArabicText(userMessage) || isRTL;
+      const fallbacks = useArabic ? FALLBACK_RESPONSES_AR : FALLBACK_RESPONSES;
+      const fallback = fallbacks[Math.floor(Math.random() * fallbacks.length)];
       botResponse = {
         id: (Date.now() + 1).toString(),
         type: 'bot',
@@ -286,8 +317,8 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-            className="fixed bottom-[100px] right-[30px] z-[999999] w-[400px] max-w-[calc(100vw-60px)] h-[600px] max-h-[calc(100vh-150px)] bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl border border-gray-200/50 dark:border-white/10 flex flex-col overflow-hidden"
+            dir={isRTL ? 'rtl' : 'ltr'}
+            className={`fixed bottom-[100px] ${isRTL ? 'left-[30px]' : 'right-[30px]'} z-[999999] w-[400px] max-w-[calc(100vw-60px)] h-[600px] max-h-[calc(100vh-150px)] bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl border border-gray-200/50 dark:border-white/10 flex flex-col overflow-hidden`}
           >
           {/* Header */}
           <div className="relative px-5 py-4 bg-gradient-to-r from-[#7CC39F] to-[#5BA882] overflow-hidden">
@@ -359,7 +390,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                       >
                         <Zap size={12} />
                         {t('chat.navigation.takeMe')}
-                        <ArrowRight size={12} className={t('common.locale') === 'ar' ? 'rotate-180' : ''} />
+                        <ArrowRight size={12} className={isRTL ? 'rotate-180' : ''} />
                       </motion.button>
                     )}
 
@@ -458,7 +489,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
                 whileTap={{ scale: 0.95 }}
                 onClick={handleSend}
                 disabled={!input.trim() || isTyping}
-                className={`w-12 h-12 bg-[#7CC39F] hover:brightness-110 disabled:opacity-50 disabled:hover:brightness-100 text-black rounded-2xl flex items-center justify-center transition-all shadow-lg shadow-[#7CC39F]/30 ${t('common.locale') === 'ar' ? 'rotate-180' : ''}`}
+                className={`w-12 h-12 bg-[#7CC39F] hover:brightness-110 disabled:opacity-50 disabled:hover:brightness-100 text-black rounded-2xl flex items-center justify-center transition-all shadow-lg shadow-[#7CC39F]/30 ${isRTL ? 'rotate-180' : ''}`}
               >
                 <Send size={18} />
               </motion.button>
