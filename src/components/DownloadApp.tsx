@@ -63,17 +63,15 @@ export const DownloadApp = () => {
                 </div>
               </a>
 
-              <a
-                href="/downloads/paymint-ios.tar.gz"
-                download
-                className="flex items-center justify-center gap-3 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 py-4 px-8 rounded-xl opacity-90 hover:opacity-100 transition-opacity"
+              <div
+                className="flex items-center justify-center gap-3 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-500 py-4 px-8 rounded-xl cursor-not-allowed"
               >
                 <Apple className="w-6 h-6" />
                 <div className="text-left">
                   <div className="text-xs font-medium opacity-80">{t('landing.download.ios')}</div>
-                  <div className="text-lg font-bold leading-none">TAR.GZ</div>
+                  <div className="text-lg font-bold leading-none">Coming Soon</div>
                 </div>
-              </a>
+              </div>
             </div>
 
             <p className="mt-6 text-sm text-gray-500 dark:text-gray-400 italic">

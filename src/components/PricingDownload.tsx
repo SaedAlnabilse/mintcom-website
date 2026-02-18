@@ -273,19 +273,14 @@ export const PricingDownload = () => {
                                             </div>
                                         </motion.a>
 
-                                        {/* iOS - Compact */}
-                                        <a
-                                            href="/downloads/paymint-ios.tar.gz"
-                                            download
-                                            className="w-full sm:w-auto relative overflow-hidden bg-white/5 border border-white/10 text-white py-4 px-6 rounded-2xl flex items-center justify-center gap-4 group/ios backdrop-blur-sm hover:bg-white/10 transition-colors"
+                                        {/* iOS - Coming Soon */}
+                                        <div
+                                            className="w-full sm:w-auto relative overflow-hidden bg-white/5 border border-white/10 text-gray-500 py-4 px-6 rounded-2xl flex items-center justify-center gap-4 backdrop-blur-sm cursor-not-allowed"
                                         >
-                                            <Apple className="w-6 h-6 opacity-80" />
+                                            <Apple className="w-6 h-6 opacity-50" />
                                             <div className="text-left">
-                                                <div className="text-[8px] font-black uppercase tracking-[0.1em] opacity-70 leading-none mb-1">iOS</div>
-                                                <div className="text-xl font-black leading-none tracking-tighter uppercase italic">TAR.GZ</div>
-                                            </div>
-                                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/ios:opacity-100 transition-all bg-paymint-green/90 backdrop-blur-md">
-                                                <span className="text-black text-[9px] font-black uppercase tracking-widest">Download</span>
+                                                <div className="text-[8px] font-black uppercase tracking-[0.1em] opacity-50 leading-none mb-1">iOS</div>
+                                                <div className="text-xl font-black leading-none tracking-tighter uppercase italic">Coming Soon</div>
                                             </div>
                                         </a>
 
