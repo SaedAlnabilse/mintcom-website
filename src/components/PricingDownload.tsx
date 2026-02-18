@@ -282,7 +282,7 @@ export const PricingDownload = () => {
                                                 <div className="text-[8px] font-black uppercase tracking-[0.1em] opacity-50 leading-none mb-1">iOS</div>
                                                 <div className="text-xl font-black leading-none tracking-tighter uppercase italic">Coming Soon</div>
                                             </div>
-                                        </a>
+                                        </div>
 
                                         {/* Minimal Scan Hint */}
                                         <div className="hidden lg:flex items-center gap-3 py-2 px-4 rounded-2xl border border-white/5 bg-white/5">
