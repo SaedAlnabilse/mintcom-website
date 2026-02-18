@@ -8,15 +8,29 @@ import { useLocation } from 'react-router-dom';
  * This ensures that navigating between pages always starts at the top of the content.
  */
 export function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'instant' // Instant scroll is preferred for page navigation
-    });
-  }, [pathname]);
+    // If there's a hash, scroll to the element
+    if (hash) {
+      // Small timeout to allow the layout to stabilize
+      const timer = setTimeout(() => {
+        const id = hash.replace('#', '');
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    } else {
+      // Default behavior: scroll to top
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'instant'
+      });
+    }
+  }, [pathname, hash]);
 
   return null;
 }

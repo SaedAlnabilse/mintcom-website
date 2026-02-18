@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
@@ -18,6 +18,8 @@ import {
 } from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
+import { useAuth } from '../../context/AuthContext';
+import toast from 'react-hot-toast';
 
 interface Discussion {
   id: number;
@@ -36,6 +38,8 @@ interface Discussion {
 
 export const DiscussionsPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   const mockDiscussions: Discussion[] = [
     {
@@ -162,13 +166,26 @@ export const DiscussionsPage = () => {
               </p>
             </div>
 
-            <Link
-              to="/community/discussions/new"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-paymint-green/20"
-            >
-              <Plus size={18} />
-              {t('community.discussions.new', 'New Discussion')}
-            </Link>
+            {isAuthenticated ? (
+              <Link
+                to="/community/discussions/new"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-paymint-green/20"
+              >
+                <Plus size={18} />
+                {t('community.discussions.new', 'New Discussion')}
+              </Link>
+            ) : (
+              <button
+                onClick={() => {
+                  toast.error('Please log in to start a discussion', { icon: '🔒' });
+                  navigate('/login');
+                }}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 dark:bg-white/10 text-gray-500 dark:text-gray-400 rounded-xl font-bold hover:bg-gray-300 dark:hover:bg-white/20 transition-all"
+              >
+                <Plus size={18} />
+                {t('community.discussions.new', 'New Discussion')}
+              </button>
+            )}
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8">
@@ -183,16 +200,14 @@ export const DiscussionsPage = () => {
                     <button
                       key={category.id}
                       onClick={() => setSelectedCategory(category.id)}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-bold transition-all ${
-                        selectedCategory === category.id
-                          ? 'bg-paymint-green text-black'
-                          : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'
-                      }`}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-bold transition-all ${selectedCategory === category.id
+                        ? 'bg-paymint-green text-black'
+                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'
+                        }`}
                     >
                       <span>{category.label}</span>
-                      <span className={`text-xs ${
-                        selectedCategory === category.id ? 'text-black/60' : 'text-gray-400'
-                      }`}>{category.count}</span>
+                      <span className={`text-xs ${selectedCategory === category.id ? 'text-black/60' : 'text-gray-400'
+                        }`}>{category.count}</span>
                     </button>
                   ))}
                 </div>
@@ -220,11 +235,10 @@ export const DiscussionsPage = () => {
                       <button
                         key={option.id}
                         onClick={() => setSortBy(option.id)}
-                        className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${
-                          sortBy === option.id
-                            ? 'bg-gray-900 dark:bg-white text-white dark:text-black'
-                            : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20'
-                        }`}
+                        className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${sortBy === option.id
+                          ? 'bg-gray-900 dark:bg-white text-white dark:text-black'
+                          : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20'
+                          }`}
                       >
                         <option.icon size={16} />
                         <span className="hidden md:inline">{option.label}</span>
@@ -279,9 +293,11 @@ export const DiscussionsPage = () => {
                           </div>
 
                           {/* Title */}
-                          <h3 className="text-lg font-bold mb-2 group-hover:text-paymint-green transition-colors">
-                            {discussion.title}
-                          </h3>
+                          <Link to={`/community/discussions/${discussion.id}`}>
+                            <h3 className="text-xl font-black mb-2 hover:text-paymint-green transition-colors cursor-pointer group-hover:text-paymint-green">
+                              {discussion.title}
+                            </h3>
+                          </Link>
 
                           {/* Excerpt */}
                           <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-4">

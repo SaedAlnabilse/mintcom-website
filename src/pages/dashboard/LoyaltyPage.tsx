@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { RewardFormModal } from '../../components/forms/RewardFormModal';
 import { Pagination } from '../../components/ui';
+import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 
 interface ApiError {
     response?: {
@@ -43,6 +44,7 @@ interface LoyaltyReward {
 
 export function LoyaltyPage() {
     const { t } = useTranslation();
+    usePermissionGuard(['manage_loyalty_program', 'manage_settings']);
     const [loyaltyConfig, setLoyaltyConfig] = useState<LoyaltyConfig | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [initialLoyaltyConfig, setInitialLoyaltyConfig] = useState<LoyaltyConfig | null>(null);

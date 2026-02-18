@@ -28,7 +28,7 @@ Paymint is a comprehensive, cloud-based Point of Sale (POS) system designed spec
 
 ### 2.1 Dashboard & Analytics
 The central command center providing real-time business insights.
-- **Key Metrics:** Net Sales, Order Counts, Cash vs. Card Sales, Petty Cash (Pay In/Out), Labor Hours.
+- **Key Metrics:** Total Sales, Order Counts, Cash vs. Card Sales, Petty Cash (PAY-IN/PAY-OUT), Labor Hours.
 - **Visuals:** Hourly sales trend charts.
 - **Actions:** Quick access to Cash In/Out and End Shift functions.
 - **Reports:**
@@ -131,3 +131,5 @@ Add the following script tag before the closing `</body>` tag of the target webs
 - **Support Email:** support@paymint.io
 - **In-App Support:** Accessible via Settings > Contact Support.
 - **Languages:** Fully supports English and Arabic (RTL).
+
+

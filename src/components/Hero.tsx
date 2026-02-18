@@ -85,10 +85,6 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
             <div className="mt-12 flex items-center justify-center lg:justify-start gap-8 text-sm font-medium text-gray-500 dark:text-gray-400">
               <div className="flex items-center gap-2">
                 <CheckCircle2 size={18} className="text-paymint-green" />
-                <span>{t('landing.hero.noCreditCard')}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={18} className="text-paymint-green" />
                 <span>{t('landing.hero.freeTrial')}</span>
               </div>
             </div>

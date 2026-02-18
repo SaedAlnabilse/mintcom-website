@@ -1,4 +1,4 @@
-# Paymint POS System
+﻿# Paymint POS System
 ## User Manual
 
 **Version:** 6.0  
@@ -147,12 +147,12 @@ The Dashboard is your command center, providing a real-time overview of your bus
 +------------------------------------------------------------------+
 |                                                                   |
 |  +-------------------+  +-------------------+  +----------------+ |
-|  |   NET SALES       |  |  NUMBER OF        |  |  CASH SALES    | |
+|  |   Total Sales       |  |  NUMBER OF        |  |  CASH SALES    | |
 |  |   $1,234.50       |  |  ORDERS: 47       |  |  $567.00       | |
 |  +-------------------+  +-------------------+  +----------------+ |
 |                                                                   |
 |  +-------------------+  +-------------------+  +----------------+ |
-|  |   CARD SALES      |  |  OTHER PAYMENTS   |  |  PAY IN/OUT    | |
+|  |   CARD SALES      |  |  OTHER PAYMENTS   |  |  PAY-IN/PAY-OUT    | |
 |  |   $567.50         |  |  $100.00          |  |  +$50 / -$25   | |
 |  +-------------------+  +-------------------+  +----------------+ |
 |                                                                   |
@@ -172,12 +172,12 @@ The Dashboard is your command center, providing a real-time overview of your bus
 
 | Metric | Description |
 |--------|-------------|
-| **Net Sales** | Total revenue after discounts and refunds |
+| **Total Sales** | Total revenue after discounts and refunds |
 | **Number of Orders** | Count of completed transactions during current shift |
 | **Cash Sales** | Revenue collected via cash payments |
 | **Card Sales** | Revenue from credit/debit card transactions |
 | **Other Payments** | Revenue from third-party services (Talabat, Careem, etc.) |
-| **Pay In / Pay Out** | Summary of petty cash movements |
+| **PAY-IN/PAY-OUT** | Summary of petty cash movements |
 | **Total Hours Worked** | Cumulative hours worked during current shift |
 | **Cash Discrepancy** | Any surplus or deficit detected during reconciliation |
 
@@ -576,7 +576,7 @@ The Z-Report summarizes all transactions for the shift and reconciles the cash d
    - Card Sales
    - Other Payments
    - Expected Cash in Drawer
-   - Pay In/Pay Out transactions
+   - PAY-IN/PAY-OUT transactions
 4. **Count Physical Cash** in your drawer.
 5. **Enter Counted Amount** in the field.
 6. System calculates any **Discrepancy** (surplus or deficit).
@@ -590,7 +590,7 @@ The Z-Report summarizes all transactions for the shift and reconciles the cash d
 | **Deficit** | Less cash than expected | Report to manager immediately |
 | **Balanced** | Cash matches expected amount | Shift closes normally |
 
-> **Important:** Cash discrepancies are logged and reported to owners via the Paymint Owner app.
+> **Important:** Cash discrepancies are logged and reported to owners via the Paymint Backoffice app.
 
 #### Printing the Z-Report
 
@@ -621,7 +621,7 @@ The Activity Log tracks all system actions:
 | **Employee Actions** | Login, logout, permission changes |
 | **Order Activities** | Sales, refunds, voids |
 | **Settings Changes** | Configuration modifications |
-| **Cash Operations** | Pay in, pay out, shift closures |
+| **Cash Operations** | PAY-IN, PAY-OUT, shift closures |
 
 #### Filtering the Activity Log
 
@@ -791,8 +791,8 @@ If issues persist after troubleshooting:
 |------|------------|
 | **Shift** | A work session from clock-in to cash-out |
 | **Z-Report** | End-of-shift summary with cash reconciliation |
-| **Pay In** | Cash added to drawer (not from sales) |
-| **Pay Out** | Cash removed from drawer (not refunds) |
+| **PAY-IN** | Cash added to drawer (not from sales) |
+| **PAY-OUT** | Cash removed from drawer (not refunds) |
 | **Held Order** | Saved order to be completed later |
 | **Add-on** | Product modifier or customization option |
 | **Loyalty Points** | Customer rewards earned from purchases |
@@ -843,3 +843,6 @@ Standard receipts include:
 *This manual is intended for authorized Paymint users. For additional support, please contact your system administrator or Paymint support team.*
 
 *Generated for Paymint Inc.*
+
+
+

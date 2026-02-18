@@ -11,7 +11,8 @@ interface FAQModalProps {
 }
 
 export function FAQModal({ isOpen, onClose }: FAQModalProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const [search, setSearch] = useState('');
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<FAQItem['category'] | 'all'>('all');
@@ -30,7 +31,9 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
     return FAQ_DATA.filter(item => {
       const matchesSearch = search === '' ||
         item.question.toLowerCase().includes(search.toLowerCase()) ||
-        item.answer.toLowerCase().includes(search.toLowerCase());
+        item.answer.toLowerCase().includes(search.toLowerCase()) ||
+        (item.questionAr && item.questionAr.includes(search)) ||
+        (item.answerAr && item.answerAr.includes(search));
       const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
@@ -48,8 +51,8 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
           initial={{ opacity: 0, y: 20, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.95 }}
-          dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-          className="fixed bottom-[100px] right-[30px] z-[999999] w-[400px] max-w-[calc(100vw-60px)] h-[600px] max-h-[calc(100vh-150px)] bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl border border-gray-200/50 dark:border-white/10 flex flex-col overflow-hidden"
+          dir={isRTL ? 'rtl' : 'ltr'}
+          className={`fixed bottom-[100px] ${isRTL ? 'left-[30px]' : 'right-[30px]'} z-[999999] w-[400px] max-w-[calc(100vw-60px)] h-[600px] max-h-[calc(100vh-150px)] bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl border border-gray-200/50 dark:border-white/10 flex flex-col overflow-hidden`}
         >
           {/* Header */}
           <div className="p-4 bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-between">
@@ -73,13 +76,13 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
           {/* Search */}
           <div className="p-3 border-b border-gray-100 dark:border-white/5">
             <div className="relative">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Search size={16} className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 text-gray-400`} />
               <input
                 type="text"
                 placeholder={t('support.qa.searchPlaceholder')}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                className={`w-full ${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'} py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all`}
               />
             </div>
           </div>
@@ -150,7 +153,7 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
                         </div>
                         <div className="flex-1 min-w-0">
                           <span className="text-sm font-bold text-gray-800 dark:text-gray-200 block">
-                            {item.question}
+                            {isRTL && item.questionAr ? item.questionAr : item.question}
                           </span>
                           <span className={`text-[10px] font-bold uppercase tracking-wider ${config.color.split(' ')[0]}`}>
                             {config.label}
@@ -159,7 +162,7 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
                         <div className="flex-shrink-0 mt-0.5">
                           {expandedIndex === index
                             ? <ChevronDown size={16} className="text-gray-400" />
-                            : <ChevronRight size={16} className={`text-gray-400 ${t('common.locale') === 'ar' ? 'rotate-180' : ''}`} />
+                            : <ChevronRight size={16} className={`text-gray-400 ${isRTL ? 'rotate-180' : ''}`} />
                           }
                         </div>
                       </button>
@@ -173,9 +176,9 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
                             className="overflow-hidden"
                           >
                             <div className="px-3 pb-3 pt-0">
-                              <div className="p-3 bg-gray-50 dark:bg-white/[0.03] rounded-lg border-l-2 border-indigo-500">
+                              <div className={`p-3 bg-gray-50 dark:bg-white/[0.03] rounded-lg ${isRTL ? 'border-r-2' : 'border-l-2'} border-indigo-500`}>
                                 <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                                  {item.answer}
+                                  {isRTL && item.answerAr ? item.answerAr : item.answer}
                                 </p>
                               </div>
                             </div>

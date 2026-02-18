@@ -21,7 +21,7 @@ This document lists all the application screens (pages) and interactive popups (
 | `/onboarding` | **Onboarding Wizard** | Initial setup for new accounts. |
 | `/select-establishment` | **Select Establishment** | Context switcher for multi-location users. |
 
-### Owner Portal (Account Level)
+### Backoffice Portal (Account Level)
 *Route Prefix: `/owner`*
 
 | Page Name | Description |

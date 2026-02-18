@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
@@ -18,6 +18,8 @@ import {
 } from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
+import { useAuth } from '../../context/AuthContext';
+import toast from 'react-hot-toast';
 
 type IdeaStatus = 'under_review' | 'planned' | 'in_progress' | 'completed' | 'declined';
 
@@ -36,6 +38,8 @@ interface Idea {
 
 export const IdeasPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   const statusConfig: Record<IdeaStatus, { label: string; color: string; bg: string; icon: React.ElementType }> = {
     under_review: { label: t('community.status.under_review', 'Under Review'), color: 'text-gray-600', bg: 'bg-gray-100 dark:bg-gray-500/20', icon: Eye },
@@ -144,6 +148,11 @@ export const IdeasPage = () => {
   const [sortBy, setSortBy] = useState('votes');
 
   const handleVote = (ideaId: number) => {
+    if (!isAuthenticated) {
+      toast.error('Please log in to vote on ideas', { icon: '🔒' });
+      navigate('/login');
+      return;
+    }
     setIdeas(ideas.map(idea =>
       idea.id === ideaId
         ? { ...idea, votes: idea.hasVoted ? idea.votes - 1 : idea.votes + 1, hasVoted: !idea.hasVoted }
@@ -190,16 +199,29 @@ export const IdeasPage = () => {
               </p>
             </div>
 
-            <Link
-              to="/community/ideas/new"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-paymint-green/20"
-            >
-              <Plus size={18} />
-              {t('community.ideas.submit', 'Submit Idea')}
-            </Link>
+            {isAuthenticated ? (
+              <Link
+                to="/community/ideas/new"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-paymint-green/20"
+              >
+                <Plus size={18} />
+                {t('community.ideas.submit', 'Submit Idea')}
+              </Link>
+            ) : (
+              <button
+                onClick={() => {
+                  toast.error('Please log in to submit a feature idea', { icon: '🔒' });
+                  navigate('/login');
+                }}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 dark:bg-white/10 text-gray-500 dark:text-gray-400 rounded-xl font-bold hover:bg-gray-300 dark:hover:bg-white/20 transition-all"
+              >
+                <Plus size={18} />
+                {t('community.ideas.submit', 'Submit Idea')}
+              </button>
+            )}
           </div>
 
-          {/* Stats */}
+          {/* Stats middle part (keeping it as is) */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-4">
               <div className="flex items-center gap-3">
@@ -255,7 +277,7 @@ export const IdeasPage = () => {
             </div>
           </div>
 
-          {/* Filters */}
+          {/* Filters and List */}
           <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-4 mb-6">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="relative flex-1">
@@ -320,11 +342,10 @@ export const IdeasPage = () => {
                     <div className="flex-shrink-0">
                       <button
                         onClick={() => handleVote(idea.id)}
-                        className={`w-16 h-20 rounded-xl flex flex-col items-center justify-center gap-1 transition-all ${
-                          idea.hasVoted
-                            ? 'bg-paymint-green text-black'
-                            : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-paymint-green/20 hover:text-paymint-green'
-                        }`}
+                        className={`w-16 h-20 rounded-xl flex flex-col items-center justify-center gap-1 transition-all ${idea.hasVoted
+                          ? 'bg-paymint-green text-black'
+                          : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-paymint-green/20 hover:text-paymint-green'
+                          }`}
                       >
                         <ChevronUp size={24} />
                         <span className="text-lg font-black">{idea.votes}</span>
@@ -343,11 +364,13 @@ export const IdeasPage = () => {
                         </span>
                       </div>
 
-                      <h3 className="text-lg font-bold mb-2 hover:text-paymint-green transition-colors cursor-pointer">
-                        {idea.title}
-                      </h3>
+                      <Link to={`/community/ideas/${idea.id}`}>
+                        <h3 className="text-lg font-bold mb-2 hover:text-paymint-green transition-colors cursor-pointer group-hover:text-paymint-green">
+                          {idea.title}
+                        </h3>
+                      </Link>
 
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">
                         {idea.description}
                       </p>
 
@@ -379,13 +402,26 @@ export const IdeasPage = () => {
               <p className="text-gray-500 dark:text-gray-400 mb-6">
                 {t('community.ideas.empty_subtitle', 'Try adjusting your search or filters')}
               </p>
-              <Link
-                to="/community/ideas/new"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all"
-              >
-                <Plus size={18} />
-                {t('community.ideas.submit_first', 'Submit the First Idea')}
-              </Link>
+              {isAuthenticated ? (
+                <Link
+                  to="/community/ideas/new"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all"
+                >
+                  <Plus size={18} />
+                  {t('community.ideas.submit_first', 'Submit the First Idea')}
+                </Link>
+              ) : (
+                <button
+                  onClick={() => {
+                    toast.error('Please log in to submit a feature idea', { icon: '🔒' });
+                    navigate('/login');
+                  }}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 dark:bg-white/10 text-gray-500 dark:text-gray-400 rounded-xl font-bold hover:bg-gray-300 dark:hover:bg-white/20 transition-all"
+                >
+                  <Plus size={18} />
+                  {t('community.ideas.submit_first', 'Submit the First Idea')}
+                </button>
+              )}
             </div>
           )}
         </div>

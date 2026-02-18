@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
@@ -20,9 +20,13 @@ import {
 } from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
+import { useAuth } from '../../context/AuthContext';
+import toast from 'react-hot-toast';
 
 export const CommunityPage = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
 
   const featuredDiscussions = [
@@ -314,13 +318,12 @@ export const CommunityPage = () => {
                     <h4 className="font-bold">{idea.title}</h4>
                   </div>
                   <div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                      idea.status === 'planned' ? 'bg-blue-100 dark:bg-blue-500/20 text-blue-600' :
-                      idea.status === 'in_progress' ? 'bg-yellow-100 dark:bg-yellow-500/20 text-yellow-600' :
-                      'bg-gray-100 dark:bg-gray-500/20 text-gray-600'
-                    }`}>
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${idea.status === 'planned' ? 'bg-blue-100 dark:bg-blue-500/20 text-blue-600' :
+                        idea.status === 'in_progress' ? 'bg-yellow-100 dark:bg-yellow-500/20 text-yellow-600' :
+                          'bg-gray-100 dark:bg-gray-500/20 text-gray-600'
+                      }`}>
                       {idea.status === 'planned' ? t('community.status.planned', 'Planned') :
-                       idea.status === 'in_progress' ? t('community.status.in_progress', 'In Progress') : t('community.status.under_review', 'Under Review')}
+                        idea.status === 'in_progress' ? t('community.status.in_progress', 'In Progress') : t('community.status.under_review', 'Under Review')}
                     </span>
                   </div>
                   <ChevronRight size={20} className="text-gray-400" />
@@ -403,20 +406,47 @@ export const CommunityPage = () => {
                   {t('community.cta.subtitle', 'Help others, earn badges, and get early access to new features. Join the Paymint community today!')}
                 </p>
                 <div className="flex flex-wrap justify-center gap-4">
-                  <Link
-                    to="/community/discussions"
-                    className="inline-flex items-center gap-2 px-8 py-4 bg-white text-purple-600 rounded-xl font-bold hover:opacity-90 transition-all"
-                  >
-                    <MessageCircle size={18} />
-                    {t('community.discussions.new', 'Start a Discussion')}
-                  </Link>
-                  <Link
-                    to="/community/ideas"
-                    className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-all border border-white/20"
-                  >
-                    <Lightbulb size={18} />
-                    {t('community.ideas.submit', 'Share an Idea')}
-                  </Link>
+                  {isAuthenticated ? (
+                    <>
+                      <Link
+                        to="/community/discussions/new"
+                        className="inline-flex items-center gap-2 px-8 py-4 bg-white text-purple-600 rounded-xl font-bold hover:opacity-90 transition-all"
+                      >
+                        <MessageCircle size={18} />
+                        {t('community.discussions.new', 'Start a Discussion')}
+                      </Link>
+                      <Link
+                        to="/community/ideas/new"
+                        className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-all border border-white/20"
+                      >
+                        <Lightbulb size={18} />
+                        {t('community.ideas.submit', 'Share an Idea')}
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => {
+                          toast.error('Please log in to start a discussion', { icon: '🔒' });
+                          navigate('/login');
+                        }}
+                        className="inline-flex items-center gap-2 px-8 py-4 bg-white text-purple-600 rounded-xl font-bold hover:opacity-90 transition-all"
+                      >
+                        <MessageCircle size={18} />
+                        {t('community.discussions.new', 'Start a Discussion')}
+                      </button>
+                      <button
+                        onClick={() => {
+                          toast.error('Please log in to share an idea', { icon: '🔒' });
+                          navigate('/login');
+                        }}
+                        className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-all border border-white/20"
+                      >
+                        <Lightbulb size={18} />
+                        {t('community.ideas.submit', 'Share an Idea')}
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

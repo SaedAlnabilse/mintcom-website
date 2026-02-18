@@ -4,6 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, Eye, EyeOff, ChevronDown, Check } from 'lucide-react';
 import api from '../../config/api';
+import {
+  POS_PERMISSIONS as CANONICAL_POS_PERMISSIONS,
+  BACKOFFICE_PERMISSIONS as CANONICAL_BACKOFFICE_PERMISSIONS,
+  normalizePermissions,
+} from '../../config/permissions';
 import { useAuth } from '../../context/AuthContext';
 import { useScrollLock } from '../../hooks/useScrollLock';
 
@@ -30,10 +35,11 @@ interface StaffMember {
 interface CustomRole {
   id: string;
   name: string;
-  role: string;
+  role?: string; // legacy/compat
+  baseRole?: string;
   permissions: string[];
   allowedDiscounts: string[];
-  allDiscounts: boolean;
+  allDiscounts?: boolean;
   // Access Control
   posAccess: boolean;
   backofficeAccess: boolean;
@@ -62,6 +68,64 @@ interface EmployeeFormModalProps {
   isSubmitting?: boolean;
 }
 
+type CustomRoleApiPayload = {
+  id?: string;
+  name?: string;
+  role?: string;
+  baseRole?: string;
+  permissions?: unknown;
+  allowedDiscounts?: unknown;
+  allDiscounts?: boolean;
+  posAccess?: boolean;
+  backofficeAccess?: boolean;
+  backofficePermissions?: unknown;
+  establishmentId?: string;
+  establishmentName?: string;
+  isGlobal?: boolean;
+  [key: string]: unknown;
+};
+
+const normalizePermissionList = (values: unknown): string[] => {
+  if (!Array.isArray(values)) return [];
+  return normalizePermissions(values.filter((value): value is string => typeof value === 'string'));
+};
+
+const ALLOWED_POS_PERMISSION_IDS = new Set(CANONICAL_POS_PERMISSIONS.map(({ id }) => id));
+const ALLOWED_BACKOFFICE_PERMISSION_IDS = new Set(CANONICAL_BACKOFFICE_PERMISSIONS.map(({ id }) => id));
+
+const normalizeAndFilterPermissions = (
+  values: unknown,
+  allowedPermissions: Set<string>,
+): string[] => normalizePermissionList(values).filter((permission) => allowedPermissions.has(permission));
+
+const normalizeCustomRolesPayload = (payload: unknown): CustomRole[] => {
+  const payloadWithItems = payload as { items?: unknown };
+  const items: CustomRoleApiPayload[] = Array.isArray(payload)
+    ? (payload as CustomRoleApiPayload[])
+    : Array.isArray(payloadWithItems?.items)
+      ? (payloadWithItems.items as CustomRoleApiPayload[])
+      : [];
+
+  return items.map((r) => ({
+    id: typeof r?.id === 'string' ? r.id : '',
+    name: typeof r?.name === 'string' ? r.name : '',
+    role: r?.role || r?.baseRole || 'USER',
+    baseRole: r?.baseRole || r?.role || 'USER',
+    permissions: normalizeAndFilterPermissions(r?.permissions, ALLOWED_POS_PERMISSION_IDS),
+    backofficePermissions: normalizeAndFilterPermissions(r?.backofficePermissions, ALLOWED_BACKOFFICE_PERMISSION_IDS),
+    allowedDiscounts: Array.isArray(r?.allowedDiscounts) ? r.allowedDiscounts : [],
+    allDiscounts:
+      typeof r?.allDiscounts === 'boolean'
+        ? r.allDiscounts
+        : !(Array.isArray(r?.allowedDiscounts) && r.allowedDiscounts.length > 0),
+    posAccess: r?.posAccess !== false,
+    backofficeAccess: !!r?.backofficeAccess,
+    establishmentId: typeof r?.establishmentId === 'string' ? r.establishmentId : undefined,
+    establishmentName: typeof r?.establishmentName === 'string' ? r.establishmentName : undefined,
+    isGlobal: !!r?.isGlobal,
+  }));
+};
+
 export function EmployeeFormModal({
   isOpen,
   onClose,
@@ -75,33 +139,67 @@ export function EmployeeFormModal({
   // Get current establishment from context (for dashboard-level pages)
   const { currentEstablishment } = useAuth();
 
-  const POS_PERMISSIONS = useMemo(() => [
-    { id: 'accept_payments', label: t('staff.permissions.pos_list.accept_payments'), description: t('staff.permissions.descriptions.accept_payments') },
-    { id: 'apply_discounts', label: t('staff.permissions.pos_list.apply_discounts'), description: t('staff.permissions.descriptions.apply_discounts') },
-    { id: 'change_taxes', label: t('staff.permissions.pos_list.change_taxes'), description: t('staff.permissions.descriptions.change_taxes') },
-    { id: 'open_cash_drawer', label: t('staff.permissions.pos_list.open_cash_drawer'), description: t('staff.permissions.descriptions.open_cash_drawer') },
-    { id: 'view_all_receipts', label: t('staff.permissions.pos_list.view_all_receipts'), description: t('staff.permissions.descriptions.view_all_receipts') },
-    { id: 'refunds', label: t('staff.permissions.pos_list.refunds'), description: t('staff.permissions.descriptions.refunds') },
-    { id: 'reprint_receipts', label: t('staff.permissions.pos_list.reprint_receipts'), description: t('staff.permissions.descriptions.reprint_receipts') },
-    { id: 'inventory', label: t('staff.permissions.pos_list.inventory'), description: t('staff.permissions.descriptions.inventory') },
-    { id: 'view_item_cost', label: t('staff.permissions.pos_list.view_item_cost'), description: t('staff.permissions.descriptions.view_item_cost') },
-    { id: 'settings', label: t('staff.permissions.pos_list.settings'), description: t('staff.permissions.descriptions.settings') },
-    { id: 'live_chat', label: t('staff.permissions.pos_list.live_chat'), description: t('staff.permissions.descriptions.live_chat') },
-  ], [t]);
+  const POS_PERMISSIONS = useMemo(() => {
+    const legacyLabelKey: Record<string, string> = {
+      pos: 'staff.permissions.pos_list.accept_payments',
+      dashboard: 'dashboard.menu.dashboard',
+      view_reports: 'staff.permissions.backoffice_list.view_reports',
+      view_orders: 'dashboard.menu.viewCustomerOrders',
+      void_items: 'staff.permissions.pos_list.void_items',
+      refunds: 'staff.permissions.pos_list.refunds',
+      discounts: 'staff.permissions.pos_list.apply_discounts',
+    };
 
-  const BACKOFFICE_PERMISSIONS = useMemo(() => [
-    { id: 'view_reports', label: t('staff.permissions.backoffice_list.view_reports'), description: t('staff.permissions.descriptions.view_reports') },
-    { id: 'manage_items', label: t('staff.permissions.backoffice_list.manage_items'), description: t('staff.permissions.descriptions.manage_items') },
-    { id: 'view_cost', label: t('staff.permissions.backoffice_list.view_cost'), description: t('staff.permissions.descriptions.view_cost') },
-    { id: 'manage_employees', label: t('staff.permissions.backoffice_list.manage_employees'), description: t('staff.permissions.descriptions.manage_employees') },
-    { id: 'manage_customers', label: t('staff.permissions.backoffice_list.manage_customers'), description: t('staff.permissions.descriptions.manage_customers') },
-    { id: 'manage_settings', label: t('staff.permissions.backoffice_list.manage_settings'), description: t('staff.permissions.descriptions.manage_settings') },
-    { id: 'manage_billing', label: t('staff.permissions.backoffice_list.manage_billing'), description: t('staff.permissions.descriptions.manage_billing') },
-    { id: 'manage_payment_types', label: t('staff.permissions.backoffice_list.manage_payment_types'), description: t('staff.permissions.descriptions.manage_payment_types') },
-    { id: 'manage_loyalty', label: t('staff.permissions.backoffice_list.manage_loyalty'), description: t('staff.permissions.descriptions.manage_loyalty') },
-    { id: 'manage_taxes', label: t('staff.permissions.backoffice_list.manage_taxes'), description: t('staff.permissions.descriptions.manage_taxes') },
-    { id: 'manage_devices', label: t('staff.permissions.backoffice_list.manage_devices'), description: t('staff.permissions.descriptions.manage_devices') },
-  ], [t]);
+    const legacyDescriptionKey: Record<string, string> = {
+      pos: 'staff.permissions.descriptions.accept_payments',
+      dashboard: 'staff.permissions.descriptions.view_reports',
+      view_reports: 'staff.permissions.descriptions.view_reports',
+      view_orders: 'staff.permissions.descriptions.view_all_receipts',
+      void_items: 'staff.permissions.descriptions.void_items',
+      refunds: 'staff.permissions.descriptions.refunds',
+      discounts: 'staff.permissions.descriptions.apply_discounts',
+    };
+
+    return CANONICAL_POS_PERMISSIONS.map(({ id, label, description }) => ({
+      id,
+      label: t(legacyLabelKey[id] ?? `staff.permissions.pos_list.${id}`, { defaultValue: label }),
+      description: t(legacyDescriptionKey[id] ?? `staff.permissions.descriptions.${id}`, { defaultValue: description }),
+    }));
+  }, [t]);
+
+  const BACKOFFICE_PERMISSIONS = useMemo(() => {
+    const legacyLabelKey: Record<string, string> = {
+      view_reports: 'staff.permissions.backoffice_list.view_reports',
+      view_orders: 'dashboard.menu.viewCustomerOrders',
+      manage_inventory: 'staff.permissions.backoffice_list.manage_items',
+      manage_employees: 'staff.permissions.backoffice_list.manage_employees',
+      manage_customers: 'staff.permissions.backoffice_list.manage_customers',
+      manage_discounts: 'dashboard.menu.discounts',
+      manage_payment_methods: 'staff.permissions.backoffice_list.manage_payment_types',
+      manage_settings: 'staff.permissions.backoffice_list.manage_settings',
+      view_activity_logs: 'dashboard.menu.systemLogs',
+      manage_billing: 'staff.permissions.backoffice_list.manage_billing',
+    };
+
+    const legacyDescriptionKey: Record<string, string> = {
+      view_reports: 'staff.permissions.descriptions.view_reports',
+      view_orders: 'staff.permissions.descriptions.view_all_receipts',
+      manage_inventory: 'staff.permissions.descriptions.manage_items',
+      manage_employees: 'staff.permissions.descriptions.manage_employees',
+      manage_customers: 'staff.permissions.descriptions.manage_customers',
+      manage_discounts: 'staff.permissions.descriptions.apply_discounts',
+      manage_payment_methods: 'staff.permissions.descriptions.manage_payment_types',
+      manage_settings: 'staff.permissions.descriptions.manage_settings',
+      view_activity_logs: 'staff.permissions.descriptions.view_activity_logs',
+      manage_billing: 'staff.permissions.descriptions.manage_billing',
+    };
+
+    return CANONICAL_BACKOFFICE_PERMISSIONS.map(({ id, label, description }) => ({
+      id,
+      label: t(legacyLabelKey[id] ?? `staff.permissions.backoffice_list.${id}`, { defaultValue: label }),
+      description: t(legacyDescriptionKey[id] ?? `staff.permissions.descriptions.${id}`, { defaultValue: description }),
+    }));
+  }, [t]);
 
   useScrollLock(isOpen);
 
@@ -151,7 +249,7 @@ export function EmployeeFormModal({
         // 1. First fetch global/owner roles
         try {
           const globalResponse = await api.get('/api/custom-roles/owner/global');
-          const globalRoles = globalResponse.data || [];
+          const globalRoles = normalizeCustomRolesPayload(globalResponse.data);
 
           for (const r of globalRoles) {
             if (!seenIds.has(r.id)) {
@@ -172,7 +270,7 @@ export function EmployeeFormModal({
         for (const estId of selectedEstablishmentIds) {
           const est = establishments.find(e => e.id === estId);
           const response = await api.get(`/api/custom-roles/${estId}`);
-          const roles = response.data || [];
+          const roles = normalizeCustomRolesPayload(response.data);
 
           for (const r of roles) {
             if (!seenIds.has(r.id)) {
@@ -206,7 +304,7 @@ export function EmployeeFormModal({
 
     try {
       const response = await api.get(`/api/custom-roles/${estId}`);
-      const rolesWithNames = (response.data || []).map((r: any) => ({
+      const rolesWithNames = normalizeCustomRolesPayload(response.data).map((r) => ({
         ...r,
         establishmentName: r.establishmentName || currentEstablishment?.name || t('staff.form.locationLabel')
       }));
@@ -254,8 +352,8 @@ export function EmployeeFormModal({
         setRole(initialData.role.toUpperCase() === 'ADMIN' ? 'ADMIN' : 'USER');
         setPassword('');
         setConfirmPassword('');
-        setPermissions(initialData.permissions || ['accept_payments', 'apply_discounts', 'refunds']);
-        setBackofficePermissions(initialData.backofficePermissions || []);
+        setPermissions(normalizeAndFilterPermissions(initialData.permissions || ['pos', 'discounts', 'refunds'], ALLOWED_POS_PERMISSION_IDS));
+        setBackofficePermissions(normalizeAndFilterPermissions(initialData.backofficePermissions, ALLOWED_BACKOFFICE_PERMISSION_IDS));
         setSelectedCustomRoleId(initialData.customRoleId || '');
         // Platform access control
         setPosAccess(initialData.posAccess !== false); // Default to true
@@ -287,7 +385,7 @@ export function EmployeeFormModal({
         setRole('USER');
         setPassword('');
         setConfirmPassword('');
-        setPermissions(['accept_payments', 'apply_discounts', 'refunds']);
+        setPermissions(['pos', 'discounts', 'refunds']);
         setBackofficePermissions([]);
         setAllDiscountsSelected(true);
         setAllowedDiscounts([]);
@@ -331,12 +429,17 @@ export function EmployeeFormModal({
 
   const handleTemplateSelect = (roleTemplate: CustomRole) => {
     // Safely determine the role type
-    const roleType = roleTemplate.role && roleTemplate.role.toUpperCase() === 'ADMIN' ? 'ADMIN' : 'USER';
+    const templateRole = (roleTemplate.baseRole || roleTemplate.role || 'USER').toUpperCase();
+    const roleType = templateRole === 'ADMIN' ? 'ADMIN' : 'USER';
     setRole(roleType);
 
-    setPermissions(roleTemplate.permissions || []);
-    setBackofficePermissions(roleTemplate.backofficePermissions || []);
-    setAllDiscountsSelected(roleTemplate.allDiscounts);
+    setPermissions(normalizeAndFilterPermissions(roleTemplate.permissions, ALLOWED_POS_PERMISSION_IDS));
+    setBackofficePermissions(normalizeAndFilterPermissions(roleTemplate.backofficePermissions, ALLOWED_BACKOFFICE_PERMISSION_IDS));
+    setAllDiscountsSelected(
+      typeof roleTemplate.allDiscounts === 'boolean'
+        ? roleTemplate.allDiscounts
+        : (roleTemplate.allowedDiscounts || []).length === 0,
+    );
     setAllowedDiscounts(roleTemplate.allowedDiscounts || []);
     setSelectedCustomRoleId(roleTemplate.id);
     setLastAppliedTemplate(roleTemplate);
@@ -357,7 +460,7 @@ export function EmployeeFormModal({
       JSON.stringify([...allowedDiscounts].sort()) === JSON.stringify([...(lastAppliedTemplate.allowedDiscounts || [])].sort());
 
     // Safety check for role match
-    const templateRole = lastAppliedTemplate.role ? lastAppliedTemplate.role.toUpperCase() : 'USER';
+    const templateRole = (lastAppliedTemplate.baseRole || lastAppliedTemplate.role || 'USER').toUpperCase();
     const currentRole = role ? role.toUpperCase() : 'USER';
     const roleMatch = currentRole === templateRole;
 
@@ -425,14 +528,18 @@ export function EmployeeFormModal({
       email: email || undefined,
       phone: phone || undefined,
       role: role.toUpperCase(),
-      permissions: role === 'ADMIN' ? POS_PERMISSIONS.map(p => p.id) : permissions,
+      permissions: role === 'ADMIN'
+        ? POS_PERMISSIONS.map(p => p.id)
+        : normalizeAndFilterPermissions(permissions, ALLOWED_POS_PERMISSION_IDS),
       customRoleId: selectedCustomRoleId || undefined,
       allowedDiscounts: allDiscountsSelected ? [] : allowedDiscounts,
       establishmentIds: establishments ? selectedEstablishmentIds : undefined,
       // Platform access control
       posAccess,
       backofficeAccess,
-      backofficePermissions: backofficeAccess ? backofficePermissions : [],
+      backofficePermissions: backofficeAccess
+        ? normalizeAndFilterPermissions(backofficePermissions, ALLOWED_BACKOFFICE_PERMISSION_IDS)
+        : [],
     };
 
     if (password) {

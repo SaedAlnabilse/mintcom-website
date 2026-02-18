@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBlocker } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, Clock, Plus, DollarSign } from 'lucide-react';
+import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, DollarSign } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
@@ -10,6 +10,7 @@ import { EstablishmentDeletionWizard, PendingDeletionBanner } from '../../compon
 import { CustomSelect } from '../../components/CustomSelect';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useTranslation } from 'react-i18next';
+import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 
 interface ApiError {
   response?: {
@@ -39,6 +40,7 @@ interface AppSettings {
   showAddress?: boolean;
   showTaxId?: boolean;
   showFarewellMessage?: boolean;
+  holdOrderTableCount?: number;
   openingTime?: string;
   closingTime?: string;
   operatingSchedule?: {
@@ -74,6 +76,12 @@ interface EstablishmentInfo {
 
 export function SettingsPage() {
   const { t } = useTranslation();
+  usePermissionGuard([
+    'manage_settings',
+    'manage_taxes_backoffice',
+    'manage_kitchen_printers',
+    'manage_pos_devices',
+  ]);
   const { refreshCurrency } = useCurrency();
   const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
   const [, setSettings] = useState<AppSettings | null>(null);
@@ -127,7 +135,7 @@ export function SettingsPage() {
       'restaurantName', 'restaurantDescription', 'restaurantAddress', 'email',
       'taxIdNumber', 'taxRate', 'currency', 'showLogoOnReceipt', 'receiptHeader',
       'farewellMessage', 'showRestaurantName', 'showDescription', 'showAddress',
-      'showTaxId', 'showFarewellMessage'
+      'showTaxId', 'showFarewellMessage', 'holdOrderTableCount'
     ];
     for (const field of fieldsToCompare) {
       const watchedVal = watchedValues[field as keyof AppSettings];
@@ -228,7 +236,10 @@ export function SettingsPage() {
       // Convert taxRate from decimal (0.16) to percentage (16) for display
       const formData = {
         ...data,
-        taxRate: data.taxRate ? Math.round(data.taxRate * 100 * 100) / 100 : 0
+        taxRate: data.taxRate ? Math.round(data.taxRate * 100 * 100) / 100 : 0,
+        holdOrderTableCount: Number.isFinite(data.holdOrderTableCount)
+          ? Math.max(0, Math.floor(Number(data.holdOrderTableCount)))
+          : 20,
       };
 
       // Populate form with fetched data
@@ -321,7 +332,10 @@ export function SettingsPage() {
 
       const submissionData = {
         ...data,
-        taxRate: Number(data.taxRate) / 100
+        taxRate: Number(data.taxRate) / 100,
+        holdOrderTableCount: Number.isFinite(data.holdOrderTableCount)
+          ? Math.max(0, Math.floor(Number(data.holdOrderTableCount)))
+          : 20,
       };
 
       await api.put('/app-settings', submissionData);
@@ -576,6 +590,17 @@ export function SettingsPage() {
                 onConfirm: () => { },
                 onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
               });
+            } else if (errs.holdOrderTableCount) {
+              setConfirmConfig({
+                isOpen: true,
+                title: t('common.error'),
+                message: errs.holdOrderTableCount.message as string || t('settings.sales.holdOrderTableCountErrorRange'),
+                type: 'danger',
+                confirmText: t('common.gotIt'),
+                showCancel: false,
+                onConfirm: () => { },
+                onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+              });
             } else {
               toast.error(t('settings.messages.formErrors'));
             }
@@ -630,6 +655,17 @@ export function SettingsPage() {
             onConfirm: () => { },
             onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
           });
+        } else if (errs.holdOrderTableCount) {
+          setConfirmConfig({
+            isOpen: true,
+            title: t('settings.confirm.entryErrorTitle'),
+            message: errs.holdOrderTableCount.message as string || t('settings.sales.holdOrderTableCountErrorRange'),
+            type: 'danger',
+            confirmText: t('common.gotIt'),
+            showCancel: false,
+            onConfirm: () => { },
+            onClose: () => setConfirmConfig(prev => ({ ...prev, isOpen: false }))
+          });
         }
       })} className="space-y-8">
         {activeTab === 'profile' && (
@@ -669,45 +705,60 @@ export function SettingsPage() {
                 <input type="text" {...register('taxIdNumber')} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all font-medium" />
               </div>
             </div>
-            <div className="pt-8 border-t border-gray-100 dark:border-white/5 relative overflow-hidden">
-              {/* Coming Soon Overlay for Opening Hours */}
-              <div className="absolute inset-0 z-20 bg-white/60 dark:bg-[#0B1120]/80 backdrop-blur-[2px] flex items-center justify-center">
-                <div className="bg-white dark:bg-gray-900 px-6 py-3 rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 flex items-center gap-3 animate-bounce-slow">
-                  <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
-                  <span className="text-sm font-black text-gray-900 dark:text-white tracking-widest uppercase">{t('settings.profile.comingSoon')}</span>
-                </div>
-              </div>
 
-              <div className="flex items-center gap-3 mb-6 opacity-40">
-                <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green shadow-sm">
-                  <Clock size={18} />
-                </div>
-                <div>
-                  <h4 className="text-sm font-black text-gray-900 dark:text-white tracking-widest px-1">{t('settings.profile.openingHours')}</h4>
-                  <p className="text-xs text-gray-400 font-black tracking-widest px-1">{t('settings.profile.setServiceTimes')}</p>
-                </div>
+            {/* Table Shortcuts / Held Orders */}
+            <div className="p-6 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.05] space-y-4 mt-8">
+              <div>
+                <p className="text-xs font-black text-purple-500 tracking-[0.2em] mb-1">{t('settings.sales.holdOrderTableCountLabel')}</p>
+                <h4 className="text-sm font-bold text-gray-900 dark:text-white">{t('settings.sales.holdOrderTableCountTitle')}</h4>
               </div>
-              <div className="flex flex-wrap gap-2 mb-6 opacity-40 grayscale-[0.5]">
-                {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map((day) => {
-                  const currentSchedule = watch('operatingSchedule') || {};
-                  const dayConfig = currentSchedule[day];
-                  const isOpen = dayConfig ? dayConfig.isOpen : !!watch('openingTime');
-                  return (
-                    <button key={day} type="button" disabled className={`relative flex-1 min-w-[3.5rem] h-14 rounded-xl flex flex-col items-center justify-center gap-1 border bg-white dark:bg-white/5 text-gray-400 border-gray-200 dark:border-white/10 cursor-not-allowed`}>
-                      <span className="text-xs font-black tracking-widest uppercase">{t(`common.daysShort.${day}`)}</span>
-                      <div className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-paymint-green/50' : 'bg-gray-300 dark:bg-white/20'}`} />
-                    </button>
-                  );
-                })}
+              <div className="relative group transition-all">
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  inputMode="numeric"
+                  onInput={(e: React.FormEvent<HTMLInputElement>) => {
+                    const target = e.target as HTMLInputElement;
+                    const onlyDigits = target.value.replace(/[^\d]/g, '');
+                    target.value = onlyDigits;
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === '-' || e.key === '.' || e.key === 'e' || e.key === 'E') {
+                      e.preventDefault();
+                    }
+                  }}
+                  {...register('holdOrderTableCount', {
+                    valueAsNumber: true,
+                    min: { value: 0, message: t('settings.sales.holdOrderTableCountErrorRange') },
+                    max: { value: 200, message: t('settings.sales.holdOrderTableCountErrorRange') },
+                    setValueAs: (value) => {
+                      const parsed = Number(value);
+                      if (!Number.isFinite(parsed)) return 10;
+                      return Math.max(0, Math.floor(parsed));
+                    },
+                  })}
+                  className={`w-full h-14 bg-white dark:bg-white/[0.03] border ${errors.holdOrderTableCount ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl px-5 font-bold text-2xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${errors.holdOrderTableCount ? 'focus:ring-red-500/20' : 'focus:ring-paymint-green/20'} transition-all shadow-sm`}
+                  placeholder={t('settings.sales.holdOrderTableCountPlaceholder')}
+                />
               </div>
-              <div className="text-center py-12 border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl bg-gray-50/50 dark:bg-black/5 opacity-40">
-                <div className="w-12 h-12 rounded-full bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center mx-auto mb-4 text-gray-400 shadow-sm">
-                  <Plus size={24} />
-                </div>
-                <p className="text-xs font-black text-gray-400 tracking-widest">{t('settings.profile.selectDay')}</p>
-                <p className="text-xs font-black text-gray-400 mt-1 tracking-widest">{t('settings.profile.chooseDays')}</p>
-              </div>
+              {errors.holdOrderTableCount && (
+                <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
+                    <AlertTriangle size={18} className="text-red-500" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-black text-red-500 tracking-widest leading-none mb-1">{t('settings.sales.invalidInput')}</p>
+                    <p className="text-xs font-bold text-red-500/80 tracking-tight">{errors.holdOrderTableCount.message as string || t('settings.sales.holdOrderTableCountErrorRange')}</p>
+                  </div>
+                </motion.div>
+              )}
+              <p className="text-xs font-black text-gray-400 leading-relaxed tracking-tight flex items-start gap-2">
+                <span className="text-purple-500">•</span>
+                {t('settings.sales.holdOrderTableCountDesc')}
+              </p>
             </div>
+
           </motion.div>
         )}
 
@@ -822,6 +873,7 @@ export function SettingsPage() {
                     {t('settings.sales.currencyDesc')}
                   </p>
                 </div>
+
               </div>
             </div>
           </motion.div>

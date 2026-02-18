@@ -6,10 +6,8 @@ import { Features } from '../components/Features';
 import { WorkflowSupport } from '../components/WorkflowSupport';
 import { AdminControl } from '../components/AdminControl';
 import { Hardware } from '../components/Hardware';
-import { Pricing } from '../components/Pricing';
-
+import { PricingDownload } from '../components/PricingDownload';
 import { Contact } from '../components/Contact';
-import { DownloadApp } from '../components/DownloadApp';
 import { Footer } from '../components/Footer';
 
 export const LandingPage = () => {
@@ -24,10 +22,9 @@ export const LandingPage = () => {
         <Features />
         <WorkflowSupport />
         <AdminControl />
-        <Hardware />
-        <Pricing />
-        <DownloadApp />
+        <PricingDownload />
         <Contact />
+        <Hardware />
       </main>
       <Footer />
     </div>

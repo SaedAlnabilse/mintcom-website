@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { startOfDay, endOfDay, format } from 'date-fns';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -31,6 +31,7 @@ import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../
 import type { DatePeriod } from '../../utils/datePeriods';
 import { SearchInput, SelectInput, Pagination } from '../../components/ui';
 import { SingleSelect } from '../../components/SingleSelect';
+import { checkPermission, usePermissionGuard } from '../../hooks/usePermissionGuard';
 
 interface ApiError {
   response?: {
@@ -92,9 +93,22 @@ interface ShiftStatus {
 
 export function OrdersPage() {
   const { t } = useTranslation();
+  usePermissionGuard();
   const { formatAmount, currencySymbol } = useCurrency();
-  const { currentEstablishment } = useAuth();
+  const { account, currentEstablishment } = useAuth();
   const location = useLocation();
+  const canUsePosFeatures = useMemo(
+    () => checkPermission(account, ['pos']),
+    [account],
+  );
+  const canUseShiftFeatures = useMemo(
+    () => checkPermission(account, ['dashboard', 'pos']),
+    [account],
+  );
+  const canCancelReceipts = useMemo(
+    () => checkPermission(account, ['cancel_receipts', 'refunds']),
+    [account],
+  );
   const [orders, setOrders] = useState<Order[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [overallTotalCount, setOverallTotalCount] = useState(0);
@@ -206,6 +220,12 @@ export function OrdersPage() {
 
   // Check shift status function (can be called manually)
   const checkShiftStatus = useCallback(async (showToast = false) => {
+    if (!canUseShiftFeatures) {
+      setShiftStatus(null);
+      setLastShiftSnapshot(null);
+      return;
+    }
+
     try {
       // Fetch shift status
       const res = await api.get('/dashboard/live-shift');
@@ -238,14 +258,36 @@ export function OrdersPage() {
         toast.error(errorMessage);
       }
     }
-  }, []);
+  }, [canUseShiftFeatures, t]);
 
   // Fetch shift status on mount or establishment change
   useEffect(() => {
-    if (currentEstablishment?.id) {
+    if (currentEstablishment?.id && canUseShiftFeatures) {
       checkShiftStatus(false);
     }
-  }, [currentEstablishment?.id, checkShiftStatus]);
+  }, [currentEstablishment?.id, canUseShiftFeatures, checkShiftStatus]);
+
+  // Normalize filters for users without POS permission
+  useEffect(() => {
+    if (!canUsePosFeatures && statusFilter === 'HELD') {
+      setStatusFilter('all');
+      setPage(1);
+    }
+  }, [canUsePosFeatures, statusFilter]);
+
+  // Normalize shift range for users without shift access
+  useEffect(() => {
+    if (
+      !canUseShiftFeatures &&
+      (selectedDateRange === 'current_shift' || selectedDateRange === 'previous_shift')
+    ) {
+      const { start, end } = calculateDateRange('today');
+      setSelectedDateRange('today');
+      setStartDate(formatDateForInput(start));
+      setEndDate(formatDateForInput(end));
+      setPage(1);
+    }
+  }, [canUseShiftFeatures, selectedDateRange]);
 
   // Use dynamic payment options to match real data
   const [paymentOptions, setPaymentOptions] = useState<{ label: string; value: string; group?: string }[]>([]);
@@ -362,6 +404,8 @@ export function OrdersPage() {
   const fetchOrders = useCallback(async () => {
     try {
       setIsLoading(true);
+      const effectiveStatusFilter =
+        !canUsePosFeatures && statusFilter === 'HELD' ? 'all' : statusFilter;
 
       // Handle shift-based date ranges
       let start: Date;
@@ -389,7 +433,16 @@ export function OrdersPage() {
       const promises: Promise<any>[] = [];
 
       // 1. Held orders count (always needed for KPI)
-      promises.push(api.get('/api/held-orders').catch(e => { console.error('Failed held orders', e); return { data: [] }; }));
+      promises.push(
+        canUsePosFeatures
+          ? api
+              .get('/api/held-orders')
+              .catch((e) => {
+                console.error('Failed held orders', e);
+                return { data: [] };
+              })
+          : Promise.resolve({ data: [] }),
+      );
 
       // 2. Overall Total (always needed for KPI)
       const overallParams = {
@@ -425,7 +478,7 @@ export function OrdersPage() {
         note: h.orderData?.note,
       });
 
-      if (statusFilter === 'HELD') {
+      if (effectiveStatusFilter === 'HELD') {
         // If filtering by held, we don't need regular orders
         promises.push(Promise.resolve(null)); 
       } else {
@@ -437,8 +490,8 @@ export function OrdersPage() {
           endDate: end.toISOString()
         };
 
-        if (statusFilter !== 'all') {
-          params.status = statusFilter;
+        if (effectiveStatusFilter !== 'all') {
+          params.status = effectiveStatusFilter;
         }
 
         if (paymentFilter !== 'all') {
@@ -483,7 +536,7 @@ export function OrdersPage() {
       setOverallTotalCount(Number(regularTotalForPeriod) + filteredHeldCount);
 
       // Process Main Display Data
-      if (statusFilter === 'HELD') {
+      if (effectiveStatusFilter === 'HELD') {
         // Show Held Orders
         const total = heldOrdersList.length;
         setTotalCount(total);
@@ -498,7 +551,7 @@ export function OrdersPage() {
         let serverTotalPages = responseData.totalPages || Math.ceil(totalOrders / 10) || 1;
 
         // Mix held orders at the beginning of page 1 if showing 'all' status
-        if (page === 1 && filteredHeldCount > 0 && statusFilter === 'all' && paymentFilter === 'all' && !searchQuery) {
+        if (page === 1 && filteredHeldCount > 0 && effectiveStatusFilter === 'all' && paymentFilter === 'all' && !searchQuery) {
            const combined = [...heldOrdersList, ...fetchedOrders];
            combined.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
            fetchedOrders = combined;
@@ -531,7 +584,18 @@ export function OrdersPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [page, statusFilter, paymentFilter, startDate, endDate, selectedDateRange, searchQuery, shiftStatus, lastShiftSnapshot]);
+  }, [
+    page,
+    statusFilter,
+    paymentFilter,
+    startDate,
+    endDate,
+    selectedDateRange,
+    searchQuery,
+    shiftStatus,
+    lastShiftSnapshot,
+    canUsePosFeatures,
+  ]);
 
   useEffect(() => {
     fetchOrders();
@@ -678,6 +742,11 @@ export function OrdersPage() {
   };
 
   const handleRefund = (order: Order) => {
+    if (!canCancelReceipts) {
+      toast.error(t('orders.messages.refundFailed'));
+      return;
+    }
+
     setConfirmConfig({
       isOpen: true,
       title: t('orders.messages.refundConfirmTitle'),
@@ -750,7 +819,7 @@ export function OrdersPage() {
 
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Shift Selector */}
-          {(shiftStatus?.shiftStatus === 'ACTIVE' || lastShiftSnapshot) && (
+          {canUseShiftFeatures && (shiftStatus?.shiftStatus === 'ACTIVE' || lastShiftSnapshot) && (
             <div className="w-[200px]">
               <SingleSelect
                 value={['current_shift', 'previous_shift'].includes(selectedDateRange) ? selectedDateRange : null}
@@ -856,7 +925,7 @@ export function OrdersPage() {
                 }}
                 options={[
                   { label: t('orders.status.completed'), value: 'COMPLETED' },
-                  { label: t('orders.status.onHold'), value: 'HELD' },
+                  ...(canUsePosFeatures ? [{ label: t('orders.status.onHold'), value: 'HELD' }] : []),
                   { label: t('orders.status.refunded'), value: 'REFUNDED' },
                 ]}
                 showAllOption={true}
@@ -926,7 +995,7 @@ export function OrdersPage() {
             onClick: () => { setStatusFilter('all'); setPage(1); },
             active: statusFilter === 'all'
           },
-          {
+          ...(canUsePosFeatures ? [{
             label: t('orders.kpi.onHold'),
             value: totalHeldCount.toLocaleString(t('common.locale')),
             icon: Clock,
@@ -934,7 +1003,7 @@ export function OrdersPage() {
             bg: 'bg-orange-500/10',
             onClick: () => { setStatusFilter('HELD'); setPaymentFilter('all'); setPage(1); },
             active: statusFilter === 'HELD'
-          },
+          }] : []),
         ].map((stat, i) => (
           <div
             key={i}
@@ -1045,7 +1114,7 @@ export function OrdersPage() {
                       {t('orders.actions.viewDetails')}
                     </button>
 
-                    {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
+                    {canCancelReceipts && (order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -1177,7 +1246,7 @@ export function OrdersPage() {
                                       {t('orders.actions.viewDetails')}
                                     </button>
 
-                                    {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
+                                    {canCancelReceipts && (order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
                                       <button
                                         onClick={(e) => {
                                           e.stopPropagation();
@@ -1221,6 +1290,7 @@ export function OrdersPage() {
             order={selectedOrder}
             onClose={() => setSelectedOrder(null)}
             onRefundSuccess={fetchOrders}
+            canRefund={canCancelReceipts}
           />
         )}
 

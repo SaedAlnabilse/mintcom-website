@@ -14,10 +14,14 @@ import {
   Zap,
   Bug,
   Lightbulb,
-  Upload
+  Upload,
+  Lock,
+  ArrowRight
 } from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
+import { useAuth } from '../../context/AuthContext';
+import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 
 interface Attachment {
@@ -29,6 +33,7 @@ interface Attachment {
 export const NewTicketPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const categories = [
@@ -107,6 +112,49 @@ export const NewTicketPage = () => {
     }
   };
 
+  // Redirect or show login state if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
+        <Navbar />
+        <main className="pt-40 pb-20">
+          <div className="container mx-auto px-8 md:px-16 lg:px-24">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="max-w-xl mx-auto text-center"
+            >
+              <div className="w-20 h-20 bg-paymint-green/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-paymint-green/20">
+                <Lock size={36} className="text-paymint-green" />
+              </div>
+              <h1 className="text-3xl font-black mb-4 tracking-tight">Customer Only Support</h1>
+              <p className="text-gray-500 dark:text-gray-400 font-medium mb-10">
+                Submitting support tickets is a premium service for Paymint customers. Please log in to your account to open a ticket.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link
+                  to="/login"
+                  className="w-full sm:w-auto px-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-black rounded-xl font-bold hover:opacity-90 transition-all flex items-center justify-center gap-2"
+                >
+                  Log In to Continue
+                  <ArrowRight size={18} />
+                </Link>
+                <Link
+                  to="/#contact"
+                  className="w-full sm:w-auto px-8 py-4 bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
+                >
+                  Contact Sales Inquiry
+                </Link>
+              </div>
+            </motion.div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
       <Navbar />
@@ -146,17 +194,15 @@ export const NewTicketPage = () => {
                         setFormData({ ...formData, category: category.id });
                         setErrors({ ...errors, category: '' });
                       }}
-                      className={`flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${
-                        formData.category === category.id
+                      className={`flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${formData.category === category.id
                           ? 'border-paymint-green bg-paymint-green/5'
                           : 'border-gray-100 dark:border-white/10 hover:border-gray-200 dark:hover:border-white/20'
-                      }`}
+                        }`}
                     >
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        formData.category === category.id
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${formData.category === category.id
                           ? 'bg-paymint-green text-black'
                           : 'bg-gray-100 dark:bg-white/10 text-gray-500'
-                      }`}>
+                        }`}>
                         <category.icon size={20} />
                       </div>
                       <div>
@@ -187,11 +233,10 @@ export const NewTicketPage = () => {
                       key={priority.id}
                       type="button"
                       onClick={() => setFormData({ ...formData, priority: priority.id })}
-                      className={`p-4 rounded-xl border-2 transition-all text-center ${
-                        formData.priority === priority.id
+                      className={`p-4 rounded-xl border-2 transition-all text-center ${formData.priority === priority.id
                           ? 'border-paymint-green bg-paymint-green/5'
                           : `${priority.color} border-transparent`
-                      }`}
+                        }`}
                     >
                       <p className="font-bold mb-1">{priority.label}</p>
                       <p className="text-xs text-gray-500 hidden md:block">{priority.description}</p>
@@ -213,9 +258,8 @@ export const NewTicketPage = () => {
                     setErrors({ ...errors, subject: '' });
                   }}
                   placeholder={t('support.newTicket.subjectPlaceholder')}
-                  className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all ${
-                    errors.subject ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
-                  }`}
+                  className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all ${errors.subject ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
+                    }`}
                   maxLength={100}
                 />
                 <div className="flex justify-between mt-2">
@@ -244,9 +288,8 @@ export const NewTicketPage = () => {
                   }}
                   placeholder={t('support.newTicket.descriptionPlaceholder')}
                   rows={6}
-                  className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none ${
-                    errors.description ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
-                  }`}
+                  className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none ${errors.description ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
+                    }`}
                 />
                 {errors.description && (
                   <p className="mt-2 text-sm text-red-500 flex items-center gap-1">

@@ -284,7 +284,7 @@ export function OwnerRolesPage() {
                         <h3 className="font-bold text-gray-900 dark:text-white text-sm">{role.name}</h3>
                         <span className={`inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                           <UserCheck size={10} />
-                          {role.baseRole ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : ''}
+                          {role.baseRole ? (t(`staff.roles.${role.baseRole.toLowerCase()}`) !== `staff.roles.${role.baseRole.toLowerCase()}` ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : role.baseRole.charAt(0) + role.baseRole.slice(1).toLowerCase()) : ''}
                         </span>
                       </div>
                     </div>
@@ -358,7 +358,7 @@ export function OwnerRolesPage() {
                           <h3 className="font-bold text-gray-900 dark:text-white text-sm">{role.name}</h3>
                           <span className={`inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                             <UserCheck size={10} />
-                            {role.baseRole ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : ''}
+                            {role.baseRole ? (t(`staff.roles.${role.baseRole.toLowerCase()}`) !== `staff.roles.${role.baseRole.toLowerCase()}` ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : role.baseRole.charAt(0) + role.baseRole.slice(1).toLowerCase()) : ''}
                           </span>
                         </div>
                       </div>
@@ -452,7 +452,7 @@ export function OwnerRolesPage() {
                         <td className="px-6 py-4">
                           <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                             <UserCheck size={10} />
-                            {role.baseRole ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : ''}
+                            {role.baseRole ? (t(`staff.roles.${role.baseRole.toLowerCase()}`) !== `staff.roles.${role.baseRole.toLowerCase()}` ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : role.baseRole.charAt(0) + role.baseRole.slice(1).toLowerCase()) : ''}
                           </span>
                         </td>
                         <td className="px-6 py-4">

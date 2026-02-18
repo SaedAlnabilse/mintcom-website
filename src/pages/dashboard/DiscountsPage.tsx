@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { DiscountFormModal } from '../../components/forms/DiscountFormModal';
 import { SearchInput, Pagination } from '../../components/ui';
+import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 
 interface ApiError {
   response?: {
@@ -32,6 +33,7 @@ type SortKey = 'name' | 'value' | 'type' | 'adminOnly';
 
 export function DiscountsPage() {
   const { t } = useTranslation();
+  usePermissionGuard(['manage_discounts', 'manage_settings']);
   const { currencySymbol } = useCurrency();
   const [discounts, setDiscounts] = useState<Discount[]>([]);
   const [isLoading, setIsLoading] = useState(true);

@@ -51,7 +51,7 @@ export const Contact = () => {
             {/* Contact Info Sidebar */}
             <div className="lg:w-2/5 bg-gray-900 p-12 lg:p-16 text-white relative overflow-hidden flex flex-col justify-between">
               <div className="relative z-10">
-                <h2 className="text-4xl font-black tracking-tight mb-6">{t('landing.contact.title')} <span className="text-paymint-green">{t('landing.contact.titleHighlight')}</span></h2>
+                <h2 className="text-4xl font-black tracking-tight mb-6 text-white">{t('landing.contact.title')} <span className="text-paymint-green">{t('landing.contact.titleHighlight')}</span></h2>
                 <p className="text-gray-400 text-lg leading-relaxed mb-12">
                   {t('landing.contact.subtitle')}
                 </p>
@@ -67,7 +67,7 @@ export const Contact = () => {
                       </div>
                       <div>
                         <p className="text-xs font-bold text-gray-500 tracking-widest mb-1">{item.label}</p>
-                        <p className="text-lg font-bold">{item.value}</p>
+                        <p className="text-lg font-bold text-white">{item.value}</p>
                       </div>
                     </div>
                   ))}

@@ -62,7 +62,7 @@ const isMenuGroup = (item: MenuItemOrGroup): item is MenuGroup => {
 
 // ... (keep generic interface definitions)
 
-import { REQUIRED_PERMISSIONS } from '../config/permissions';
+import { REQUIRED_PERMISSIONS, hasPermission as checkPerms } from '../config/permissions';
 
 const SIDEBAR_STATE_KEY = 'dashboard_sidebar_expanded';
 
@@ -149,15 +149,13 @@ export function DashboardLayout() {
     if (!account) return [];
     if (!account.isSecondaryAdmin) return translatedMenuStructure;
 
-    const userPerms = new Set(account.permissions || []);
-
     const hasAccess = (path: string) => {
       if (path === '.') return true; // root
 
       const required = REQUIRED_PERMISSIONS[path];
       if (!required) return true;
 
-      return required.some(p => userPerms.has(p));
+      return checkPerms(account.permissions, required);
     };
 
     return translatedMenuStructure.map(item => {
@@ -469,9 +467,8 @@ export function DashboardLayout() {
                               >
                                 {({ isActive }) => (
                                   <>
-                                    <span className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                                      isActive ? 'bg-black' : 'bg-gray-300 dark:bg-gray-600'
-                                    }`} />
+                                    <span className={`w-1.5 h-1.5 rounded-full transition-colors ${isActive ? 'bg-black' : 'bg-gray-300 dark:bg-gray-600'
+                                      }`} />
                                     <span>{subItem.label}</span>
                                   </>
                                 )}
@@ -508,9 +505,8 @@ export function DashboardLayout() {
                             >
                               {({ isActive }) => (
                                 <>
-                                  <span className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                                    isActive ? 'bg-black' : 'bg-gray-300 dark:bg-gray-600'
-                                  }`} />
+                                  <span className={`w-1.5 h-1.5 rounded-full transition-colors ${isActive ? 'bg-black' : 'bg-gray-300 dark:bg-gray-600'
+                                    }`} />
                                   <span>{subItem.label}</span>
                                   {isActive && (
                                     <span className="ml-auto w-1.5 h-1.5 rounded-full bg-black" />
@@ -975,7 +971,7 @@ export function DashboardLayout() {
       {/* Bottom Navigation - Mobile Only */}
       <BottomNavigation onMenuClick={() => setMobileMenuOpen(true)} />
 
-        <ConfirmModal
+      <ConfirmModal
         isOpen={isLogoutModalOpen}
         onClose={() => setIsLogoutModalOpen(false)}
         onConfirm={confirmLogout}

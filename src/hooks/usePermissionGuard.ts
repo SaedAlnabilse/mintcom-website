@@ -2,14 +2,17 @@ import { useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { REQUIRED_PERMISSIONS } from '../config/permissions';
+import { REQUIRED_PERMISSIONS, hasPermission as checkPerms } from '../config/permissions';
 
 /**
  * Hook to check if the current user has permission to access the current page.
  * If not, redirects to dashboard and shows an error toast.
  *
+ * Uses the centralized hasPermission helper from config/permissions.ts
+ * which normalizes legacy aliases → canonical names before comparison.
+ *
  * @param overridePermissions - Optional custom permissions to check instead of route-based
- * @returns { hasPermission: boolean, isChecking: boolean }
+ * @returns { hasPermission: boolean, requiredPermissions: string[] }
  */
 export function usePermissionGuard(overridePermissions?: string[]) {
   const { account } = useAuth();
@@ -42,9 +45,8 @@ export function usePermissionGuard(overridePermissions?: string[]) {
     // No permissions required for this route
     if (!requiredPermissions || requiredPermissions.length === 0) return true;
 
-    // Check if user has at least one of the required permissions
-    const userPerms = new Set(account.permissions || []);
-    return requiredPermissions.some(p => userPerms.has(p));
+    // Alias-aware permission check via centralized helper
+    return checkPerms(account.permissions, requiredPermissions);
   };
 
   useEffect(() => {
@@ -70,6 +72,9 @@ export function usePermissionGuard(overridePermissions?: string[]) {
  * Helper function to check if user has a specific permission.
  * Use this for checking permissions within components (e.g., hide/show buttons).
  *
+ * Uses the centralized hasPermission helper from config/permissions.ts
+ * which normalizes legacy aliases → canonical names before comparison.
+ *
  * @param account - The account object from useAuth()
  * @param requiredPermissions - Array of permission strings (user needs at least one)
  * @returns boolean
@@ -87,7 +92,6 @@ export function checkPermission(
   // No permissions required
   if (!requiredPermissions || requiredPermissions.length === 0) return true;
 
-  // Check if user has at least one of the required permissions
-  const userPerms = new Set(account.permissions || []);
-  return requiredPermissions.some(p => userPerms.has(p));
+  // Alias-aware permission check via centralized helper
+  return checkPerms(account.permissions, requiredPermissions);
 }

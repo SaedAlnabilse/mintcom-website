@@ -3,6 +3,11 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown, Check, Smartphone, Monitor } from 'lucide-react';
 import api from '../config/api';
+import {
+  POS_PERMISSIONS as CANONICAL_POS_PERMISSIONS,
+  BACKOFFICE_PERMISSIONS as CANONICAL_BACKOFFICE_PERMISSIONS,
+  normalizePermissions,
+} from '../config/permissions';
 import { useScrollLock } from '../hooks/useScrollLock';
 import { useTranslation } from 'react-i18next';
 
@@ -33,33 +38,30 @@ interface CustomRoleFormModalProps {
   isSubmitting?: boolean;
 }
 
-const POS_PERMISSIONS = [
-  { id: 'accept_payments', label: 'roles.pos.acceptPayments', description: 'roles.pos.acceptPaymentsDesc' },
-  { id: 'apply_discounts', label: 'roles.pos.applyDiscounts', description: 'roles.pos.applyDiscountsDesc' },
-  { id: 'change_taxes', label: 'roles.pos.changeTaxes', description: 'roles.pos.changeTaxesDesc' },
-  { id: 'open_cash_drawer', label: 'roles.pos.openDrawer', description: 'roles.pos.openDrawerDesc' },
-  { id: 'view_all_receipts', label: 'roles.pos.viewReceipts', description: 'roles.pos.viewReceiptsDesc' },
-  { id: 'refunds', label: 'roles.pos.refunds', description: 'roles.pos.refundsDesc' },
-  { id: 'reprint_receipts', label: 'roles.pos.reprint', description: 'roles.pos.reprintDesc' },
-  { id: 'manage_items', label: 'roles.pos.manageItems', description: 'roles.pos.manageItemsDesc' },
-  { id: 'view_item_cost', label: 'roles.pos.viewCosts', description: 'roles.pos.viewCostsDesc' },
-  { id: 'settings', label: 'roles.pos.settings', description: 'roles.pos.settingsDesc' },
-  { id: 'live_chat', label: 'roles.pos.support', description: 'roles.pos.supportDesc' },
-];
+const POS_PERMISSIONS = CANONICAL_POS_PERMISSIONS.map((permission) => ({
+  id: permission.id,
+  label: permission.label,
+  description: permission.description,
+}));
 
-const BACKOFFICE_PERMISSIONS = [
-  { id: 'view_reports', label: 'roles.backoffice.reports', description: 'roles.backoffice.reportsDesc' },
-  { id: 'view_orders', label: 'roles.backoffice.orders', description: 'roles.backoffice.ordersDesc' },
-  { id: 'manage_inventory', label: 'roles.backoffice.inventory', description: 'roles.backoffice.inventoryDesc' },
-  { id: 'view_costs', label: 'roles.backoffice.costs', description: 'roles.backoffice.costsDesc' },
-  { id: 'manage_employees', label: 'roles.backoffice.staff', description: 'roles.backoffice.staffDesc' },
-  { id: 'manage_customers', label: 'roles.backoffice.customers', description: 'roles.backoffice.customersDesc' },
-  { id: 'manage_discounts', label: 'roles.backoffice.discounts', description: 'roles.backoffice.discountsDesc' },
-  { id: 'manage_payment_methods', label: 'roles.backoffice.payments', description: 'roles.backoffice.paymentsDesc' },
-  { id: 'manage_settings', label: 'roles.backoffice.settings', description: 'roles.backoffice.settingsDesc' },
-  { id: 'view_activity_logs', label: 'roles.backoffice.logs', description: 'roles.backoffice.logsDesc' },
-  { id: 'manage_billing', label: 'roles.backoffice.billing', description: 'roles.backoffice.billingDesc' },
-];
+const BACKOFFICE_PERMISSIONS = CANONICAL_BACKOFFICE_PERMISSIONS.map((permission) => ({
+  id: permission.id,
+  label: permission.label,
+  description: permission.description,
+}));
+
+const ALLOWED_POS_PERMISSION_IDS = new Set(POS_PERMISSIONS.map(({ id }) => id));
+const ALLOWED_BACKOFFICE_PERMISSION_IDS = new Set(BACKOFFICE_PERMISSIONS.map(({ id }) => id));
+
+const normalizePermissionList = (values: string[] | undefined): string[] => {
+  if (!Array.isArray(values)) return [];
+  return normalizePermissions(values);
+};
+
+const normalizeAndFilterPermissions = (
+  values: string[] | undefined,
+  allowedPermissions: Set<string>,
+): string[] => normalizePermissionList(values).filter((permission) => allowedPermissions.has(permission));
 
 export function CustomRoleFormModal({
   isOpen,
@@ -117,21 +119,8 @@ export function CustomRoleFormModal({
         setName(initialData.name || '');
         setPosAccess(initialData.posAccess !== false); // Default true
         setBackofficeAccess(initialData.backofficeAccess || false);
-        setPermissions(initialData.permissions || []);
-
-        // Handle Backoffice Permissions (with legacy mapping)
-        const initialBackofficePerms = [...(initialData.backofficePermissions || [])];
-        if (initialBackofficePerms.includes('manage_items') && !initialBackofficePerms.includes('manage_inventory')) {
-          initialBackofficePerms.push('manage_inventory');
-        }
-        if (initialBackofficePerms.includes('view_cost') && !initialBackofficePerms.includes('view_costs')) {
-          initialBackofficePerms.push('view_costs');
-        }
-        if (initialBackofficePerms.includes('manage_payment_types') && !initialBackofficePerms.includes('manage_payment_methods')) {
-          initialBackofficePerms.push('manage_payment_methods');
-        }
-
-        setBackofficePermissions(initialBackofficePerms);
+        setPermissions(normalizeAndFilterPermissions(initialData.permissions, ALLOWED_POS_PERMISSION_IDS));
+        setBackofficePermissions(normalizeAndFilterPermissions(initialData.backofficePermissions, ALLOWED_BACKOFFICE_PERMISSION_IDS));
         setAllowedDiscounts(initialData.allowedDiscounts || []);
         setAllDiscountsSelected(initialData.allowedDiscounts?.length === 0);
       } else {
@@ -139,7 +128,7 @@ export function CustomRoleFormModal({
         setName('');
         setPosAccess(true);
         setBackofficeAccess(false);
-        setPermissions(['accept_payments', 'apply_discounts']);
+        setPermissions(['pos', 'discounts', 'refunds']);
         setBackofficePermissions([]);
         setAllowedDiscounts([]);
         setAllDiscountsSelected(true);
@@ -179,8 +168,12 @@ export function CustomRoleFormModal({
     if (!name.trim()) newErrors.name = t('common.required');
 
     // Validation: At least one permission must be enabled
-    const finalPermissions = posAccess ? permissions : [];
-    const finalBackofficePermissions = backofficeAccess ? backofficePermissions : [];
+    const finalPermissions = posAccess
+      ? normalizeAndFilterPermissions(permissions, ALLOWED_POS_PERMISSION_IDS)
+      : [];
+    const finalBackofficePermissions = backofficeAccess
+      ? normalizeAndFilterPermissions(backofficePermissions, ALLOWED_BACKOFFICE_PERMISSION_IDS)
+      : [];
 
     if (finalPermissions.length === 0 && finalBackofficePermissions.length === 0) {
       newErrors.general = t('roles.validation.atLeastOnePermission');
@@ -308,8 +301,8 @@ export function CustomRoleFormModal({
                                 {permissions.includes(perm.id) && <Check size={14} className="text-white" />}
                               </div>
                               <div>
-                                <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{t(perm.label)}</p>
-                                {perm.description && <p className="text-xs text-gray-400 mt-1 font-medium">{t(perm.description)}</p>}
+                                <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{perm.label}</p>
+                                {perm.description && <p className="text-xs text-gray-400 mt-1 font-medium">{perm.description}</p>}
                               </div>
                             </div>
                           ))}
@@ -426,8 +419,8 @@ export function CustomRoleFormModal({
                               {backofficePermissions.includes(perm.id) && <Check size={14} className="text-white" />}
                             </div>
                             <div>
-                              <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{t(perm.label)}</p>
-                              {perm.description && <p className="text-xs text-gray-400 mt-1 font-medium">{t(perm.description)}</p>}
+                              <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{perm.label}</p>
+                              {perm.description && <p className="text-xs text-gray-400 mt-1 font-medium">{perm.description}</p>}
                             </div>
                           </div>
                         ))}

@@ -173,7 +173,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
 
                             {/* 1. Summary Cards Row */}
                             <div className="grid grid-cols-2 gap-4">
-                                {/* Pay In Card */}
+                                {/* PAY-IN Card */}
                                 <div className="relative overflow-hidden rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 p-5 group">
                                     <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-opacity">
                                         <ArrowUpRight size={60} className="text-paymint-green" />
@@ -191,7 +191,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                                     </div>
                                 </div>
 
-                                {/* Pay Out Card */}
+                                {/* PAY-OUT Card */}
                                 <div className="relative overflow-hidden rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 p-5 group">
                                     <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-opacity">
                                         <ArrowDownLeft size={60} className="text-red-500" />
@@ -290,3 +290,4 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
         document.body
     );
 };
+

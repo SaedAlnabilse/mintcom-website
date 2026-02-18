@@ -44,7 +44,7 @@ The application is divided into distinct "Portals" to manage complexity:
 
 1.  **Public Portal:** Landing page, Authentication, Demo.
 2.  **Onboarding Portal:** Wizard for new account setup.
-3.  **Owner Portal (`/owner`):** HQ view. Aggregated billing, global staff, multi-brand management.
+3.  **Backoffice Portal (`/owner`):** HQ view. Aggregated billing, global staff, multi-brand management.
 4.  **Establishment Dashboard (`/dashboard`):** The daily operating OS. POS, Local Inventory, Shift reporting.
 
 ### 3.3 API & Security
@@ -95,7 +95,7 @@ The application is divided into distinct "Portals" to manage complexity:
 *   **`/dashboard/products`**: Item editor.
 *   **`/dashboard/reports`**: Analytics suite.
 *   **`/dashboard/settings`**: Hardware/Tax config.
-*   **`/owner`**: Multi-location HQ.
+*   **`/owner` (Backoffice Portal)**: Multi-location HQ.
 
 ### 5.2 Critical Popups (Modals)
 *   **`ProductFormModal`**: The heart of inventory. Upload images, set prices, link recipes.

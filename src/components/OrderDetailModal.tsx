@@ -53,9 +53,10 @@ export interface OrderDetailModalProps {
     order: Order;
     onClose: () => void;
     onRefundSuccess?: () => void;
+    canRefund?: boolean;
 }
 
-export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetailModalProps) {
+export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = true }: OrderDetailModalProps) {
     const { t } = useTranslation();
     const [confirmConfig, setConfirmConfig] = useState<{
         isOpen: boolean;
@@ -103,6 +104,11 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
     };
 
     const handleRefund = async () => {
+        if (!canRefund) {
+            toast.error(t('orders.messages.refundFailed'));
+            return;
+        }
+
         setConfirmConfig({
             isOpen: true,
             title: t('orders.details.refundConfirmTitle'),
@@ -304,7 +310,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess }: OrderDetai
                             >
                                 {t('common.close')}
                             </button>
-                            {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
+                            {canRefund && (order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
                                 <button
                                     onClick={handleRefund}
                                     className="flex-1 py-4 px-6 bg-paymint-red/10 text-paymint-red hover:bg-paymint-red hover:text-white font-black tracking-[0.2em] text-xs rounded-2xl transition-all border border-paymint-red/20 active:scale-95 shadow-lg shadow-paymint-red/10"

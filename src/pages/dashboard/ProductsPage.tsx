@@ -26,6 +26,8 @@ import { LoadingFallback } from '../../components/LoadingFallback';
 import { QuickInfo } from '../../components/QuickInfo';
 import { SearchInput, Pagination } from '../../components/ui';
 import { useCurrency } from '../../context/CurrencyContext';
+import { useAuth } from '../../context/AuthContext';
+import { checkPermission } from '../../hooks/usePermissionGuard';
 
 
 interface Category {
@@ -55,6 +57,7 @@ interface Product {
 export function ProductsPage() {
     const { t } = useTranslation();
     const { currencySymbol } = useCurrency();
+    const { account } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
     const [products, setProducts] = useState<Product[]>([]);
@@ -112,6 +115,8 @@ export function ProductsPage() {
         message: '',
         onConfirm: () => { },
     });
+
+    const canViewCosts = checkPermission(account, ['view_cost']);
 
     const fetchData = async () => {
         try {
@@ -828,7 +833,7 @@ export function ProductsPage() {
                 initialData={editingProduct}
                 categories={categories}
                 isSubmitting={isSubmitting}
-                canViewCosts={true}
+                canViewCosts={canViewCosts}
                 defaultCategoryId={selectedCategoryId !== 'all' ? selectedCategoryId : undefined}
             />
 

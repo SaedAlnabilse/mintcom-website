@@ -139,7 +139,7 @@ export function OwnerOverviewPage() {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
         });
-        return `${formatted} ${useAuth().establishments?.[0]?.currency || 'JOD'}`;
+        return `${formatted} ${establishments?.[0]?.currency || 'JOD'}`;
     };
 
     return (

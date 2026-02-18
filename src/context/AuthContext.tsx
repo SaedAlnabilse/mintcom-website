@@ -87,10 +87,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // Fetch fresh data - this will validate the HttpOnly cookie
         try {
-          await Promise.all([
-            refreshEstablishments(),
-            refreshProfile()
-          ]);
+          const refreshTasks: Promise<void>[] = [refreshEstablishments()];
+
+          // Secondary admins/employees log in through /api/accounts/login but
+          // /api/accounts/profile returns the owner profile and can overwrite session identity.
+          if (!accountData.isSecondaryAdmin) {
+            refreshTasks.push(refreshProfile());
+          } else {
+            console.log('[Auth] Skipping owner profile refresh for secondary admin session');
+          }
+
+          await Promise.all(refreshTasks);
         } catch (error: any) {
           // If establishments fetch fails with 401, the cookie isn't working
           // This is a cross-origin cookie issue
@@ -113,17 +120,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshProfile = async () => {
     try {
+      const cachedRaw = localStorage.getItem('account');
+      const cachedAccount: Account | null = cachedRaw ? JSON.parse(cachedRaw) : null;
+      const activeAccount = account || cachedAccount;
+
+      // Never refresh secondary admin profile from owner-only endpoint
+      if (activeAccount?.isSecondaryAdmin) {
+        console.log('[Auth] Skipping /api/accounts/profile for secondary admin session');
+        return;
+      }
+
       console.log('[Auth] Refreshing profile...');
       const response = await api.get('/api/accounts/profile');
       if (response.data) {
-        const updatedAccount = {
-          ...account,
-          ...response.data,
-          // Map backend response fields to the frontend Account interface if necessary
-          defaultPaymentMethod: response.data.defaultPaymentMethod
-        };
-        setAccount(updatedAccount);
-        localStorage.setItem('account', JSON.stringify(updatedAccount));
+        setAccount(prev => {
+          const baseAccount = prev || activeAccount;
+          const updatedAccount: Account = {
+            ...baseAccount,
+            ...response.data,
+            defaultPaymentMethod: response.data.defaultPaymentMethod
+          };
+          localStorage.setItem('account', JSON.stringify(updatedAccount));
+          return updatedAccount;
+        });
         console.log('[Auth] Profile refreshed');
       }
     } catch (error) {

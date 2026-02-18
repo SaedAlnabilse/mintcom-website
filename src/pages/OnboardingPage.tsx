@@ -1100,7 +1100,8 @@ export function OnboardingPage() {
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <a
-                        href="https://play.google.com/store/apps/details?id=com.paymint.pos"
+                        href="/downloads/paymint-android.apk"
+                        download
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center justify-center gap-2 bg-gray-50 dark:bg-white/10 hover:bg-gray-100 dark:hover:bg-white/20 text-gray-900 dark:text-white py-3 px-4 rounded-xl text-xs font-bold transition-colors border border-gray-200 dark:border-white/10"
@@ -1111,7 +1112,8 @@ export function OnboardingPage() {
                         {t('onboarding.step5.playStore')}
                       </a>
                       <a
-                        href="https://apps.apple.com/app/paymint-pos/id0000000000"
+                        href="/downloads/paymint-ios.tar.gz"
+                        download
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center justify-center gap-2 bg-gray-50 dark:bg-white/10 hover:bg-gray-100 dark:hover:bg-white/20 text-gray-900 dark:text-white py-3 px-4 rounded-xl text-xs font-bold transition-colors border border-gray-200 dark:border-white/10"

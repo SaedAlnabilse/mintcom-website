@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { Mail, Phone, Instagram, Youtube, X, Tablet, Printer, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './Logo';
@@ -129,12 +130,21 @@ export const Footer = () => {
                 {productLinks.map((link) => (
                   <li key={link.name}>
                     {link.href ? (
-                      <a
-                        href={link.href}
+                      <Link
+                        to={link.href}
+                        onClick={(e) => {
+                          if (link.href?.startsWith('/#') && window.location.pathname === '/') {
+                            const el = document.getElementById(link.href.slice(2));
+                            if (el) {
+                              e.preventDefault();
+                              el.scrollIntoView({ behavior: 'smooth' });
+                            }
+                          }
+                        }}
                         className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
                       >
                         {link.name}
-                      </a>
+                      </Link>
                     ) : (
                       <button
                         onClick={link.action}
@@ -155,12 +165,21 @@ export const Footer = () => {
                 {companyLinks.map((link) => (
                   <li key={link.name}>
                     {link.href ? (
-                      <a
-                        href={link.href}
+                      <Link
+                        to={link.href}
+                        onClick={(e) => {
+                          if (link.href?.startsWith('/#') && window.location.pathname === '/') {
+                            const el = document.getElementById(link.href.slice(2));
+                            if (el) {
+                              e.preventDefault();
+                              el.scrollIntoView({ behavior: 'smooth' });
+                            }
+                          }
+                        }}
                         className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
                       >
                         {link.name}
-                      </a>
+                      </Link>
                     ) : (
                       <button
                         onClick={link.action}
@@ -181,12 +200,12 @@ export const Footer = () => {
                 {resourceLinks.map((link) => (
                   <li key={link.name}>
                     {link.href ? (
-                      <a
-                        href={link.href}
+                      <Link
+                        to={link.href}
                         className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
                       >
                         {link.name}
-                      </a>
+                      </Link>
                     ) : (
                       <button
                         onClick={link.action}

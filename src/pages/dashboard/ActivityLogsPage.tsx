@@ -17,6 +17,7 @@ import { DateRangePicker } from '../../components/DateRangePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
 import { Pagination } from '../../components/ui';
+import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 
 interface ActivityLog {
   id: string;
@@ -45,6 +46,7 @@ const actionColors: Record<string, string> = {
 
   // Staff
   'Added employee': 'bg-purple-500/10 text-purple-500 border-purple-500/20',
+  'Updated employee': 'bg-blue-500/10 text-blue-500 border-blue-500/20',
   'Deleted employee': 'bg-gray-500/10 text-gray-500 border-gray-500/20',
 
   // Settings
@@ -66,6 +68,8 @@ const actionColors: Record<string, string> = {
 
 export function ActivityLogsPage() {
   const { t } = useTranslation();
+  usePermissionGuard(['view_activity_logs']);
+
   const [logs, setLogs] = useState<ActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -166,6 +170,7 @@ export function ActivityLogsPage() {
       'Updated category': 'updateCategory',
       'Deleted category': 'deleteCategory',
       'Added employee': 'addEmployee',
+      'Updated employee': 'updateEmployee',
       'Deleted employee': 'deleteEmployee',
       'Updated restaurant name': 'updateName',
       'Updated working hours': 'updateHours',
@@ -354,7 +359,7 @@ export function ActivityLogsPage() {
                       </div>
                     </div>
                     <span className={`inline-flex px-2 py-0.5 rounded-lg text-[10px] font-black tracking-widest border ${getActionColor(log.action)}`}>
-                      {t(`activity.actions.${getActionKey(log.action)}`) || log.action}
+                      {(translation => translation.includes('activity.actions.') ? log.action : translation)(t(`activity.actions.${getActionKey(log.action)}`))}
                     </span>
                   </div>
 
@@ -447,7 +452,7 @@ export function ActivityLogsPage() {
                       </td>
                       <td className="px-8 py-4">
                         <span className={`inline-flex px-2 py-0.5 rounded-lg text-xs font-black tracking-widest border ${getActionColor(log.action)}`}>
-                          {t(`activity.actions.${log.action.toLowerCase().replace(/ /g, '_').replace(/:/g, '')}`) || log.action?.replace(/_/g, ' ')}
+                          {(translation => translation.includes('activity.actions.') ? log.action : translation)(t(`activity.actions.${getActionKey(log.action)}`))}
                         </span>
                       </td>
                       <td className="px-8 py-4">
@@ -490,7 +495,7 @@ export function ActivityLogsPage() {
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('activity.logDetails')}</h2>
-                    <p className="text-xs font-black text-paymint-green tracking-widest">{selectedLog.action ? (t(`activity.actions.${selectedLog.action.toLowerCase().replace(/ /g, '_').replace(/:/g, '')}`) || selectedLog.action.replace(/_/g, ' ')) : ''}</p>
+                    <p className="text-xs font-black text-paymint-green tracking-widest">{selectedLog.action ? ((translation => translation.includes('activity.actions.') ? selectedLog.action : translation)(t(`activity.actions.${getActionKey(selectedLog.action)}`))) : ''}</p>
                   </div>
                 </div>
                 <button onClick={() => setSelectedLog(null)} className="p-3 rounded-2xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-black dark:hover:text-white transition-colors">

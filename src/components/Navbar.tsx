@@ -19,11 +19,10 @@ export const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: t('nav.features'), href: '#features' },
-    { name: t('nav.hardware'), href: '#hardware' },
-    { name: t('nav.pricing'), href: '#pricing' },
+    { name: t('nav.features'), href: '/#features' },
+    { name: t('nav.pricing'), href: '/#pricing' },
     { name: t('nav.support'), href: '/support' },
-    { name: t('nav.community'), href: '/community' },
+    { name: t('nav.community'), href: '/community-hub' },
   ];
 
   return (
@@ -44,13 +43,25 @@ export const Navbar = () => {
         <div className="hidden lg:flex items-center gap-10">
           <div className="flex items-center gap-8">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
-                href={link.href}
+                to={link.href}
+                target={link.href.includes('community-hub') ? '_blank' : undefined}
+                rel={link.href.includes('community-hub') ? 'noopener noreferrer' : undefined}
                 className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green dark:hover:text-paymint-green transition-colors"
+                onClick={(e) => {
+                  // Direct smooth scroll if already on homepage
+                  if (link.href.startsWith('/#') && window.location.pathname === '/') {
+                    const el = document.getElementById(link.href.slice(2));
+                    if (el) {
+                      e.preventDefault();
+                      el.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }
+                }}
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -108,14 +119,25 @@ export const Navbar = () => {
             <div className="w-full max-w-sm space-y-10">
               <div className="flex flex-col items-center gap-8">
                 {navLinks.map((link) => (
-                  <a
+                  <Link
                     key={link.name}
-                    href={link.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    to={link.href}
+                    target={link.href.includes('community-hub') ? '_blank' : undefined}
+                    rel={link.href.includes('community-hub') ? 'noopener noreferrer' : undefined}
+                    onClick={(e) => {
+                      setIsMobileMenuOpen(false);
+                      if (link.href.startsWith('/#') && window.location.pathname === '/') {
+                        const el = document.getElementById(link.href.slice(2));
+                        if (el) {
+                          e.preventDefault();
+                          el.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }
+                    }}
                     className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white hover:text-paymint-green transition-colors tracking-tight"
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 ))}
               </div>
 

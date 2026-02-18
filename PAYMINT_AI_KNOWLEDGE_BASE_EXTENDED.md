@@ -22,7 +22,7 @@ This document is the **definitive source of truth** for the Paymint AI Chatbot. 
     - **Protected Routes:** Requires Authentication (`ProtectedRoute` wrapper).
     - **Establishment Context:** Requires an active establishment selection (`EstablishmentRequiredRoute` wrapper).
     - **Portals:**
-        - **Owner Portal:** `/owner` (Multi-establishment management, billing).
+        - **Backoffice Portal:** `/owner` (Multi-establishment management, billing).
         - **Brand Portal:** `/brand` (Multi-location brand management).
         - **Dashboard (POS):** `/dashboard` (Daily operations).
 
@@ -112,7 +112,7 @@ The system uses a flexible Role-Based Access Control (RBAC) system.
     - **Settings:** Printer setup, tax rules.
     - **Staff:** Shift management (Clock In/Out), cash reconciliation.
 
-### 4.2 Owner Portal
+### 4.2 Backoffice Portal
 - **Route:** `/owner`
 - **Purpose:** High-level management for business owners.
 - **Features:**

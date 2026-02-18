@@ -404,7 +404,9 @@ export function StaffPage() {
                       </div>
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getRoleStyle(member.role)}`}>
                         <Shield size={10} />
-                        {t(`staff.roles.${member.role.toLowerCase()}`)}
+                        {t(`staff.roles.${member.role.toLowerCase()}`) !== `staff.roles.${member.role.toLowerCase()}`
+                          ? t(`staff.roles.${member.role.toLowerCase()}`)
+                          : member.role.charAt(0) + member.role.slice(1).toLowerCase()}
                       </span>
                     </div>
 
@@ -526,7 +528,9 @@ export function StaffPage() {
                         <td className="px-6 py-4">
                           <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getRoleStyle(member.role)}`}>
                             <Shield size={10} />
-                            {t(`staff.roles.${member.role.toLowerCase()}`)}
+                            {t(`staff.roles.${member.role.toLowerCase()}`) !== `staff.roles.${member.role.toLowerCase()}`
+                              ? t(`staff.roles.${member.role.toLowerCase()}`)
+                              : member.role.charAt(0) + member.role.slice(1).toLowerCase()}
                           </span>
                         </td>
                         <td className="px-6 py-4">
