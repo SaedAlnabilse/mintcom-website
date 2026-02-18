@@ -260,7 +260,7 @@ export const PricingDownload = () => {
                                     <div className="flex flex-col sm:flex-row items-center gap-4 w-full xl:w-auto">
                                         {/* Android APK Button - Compact */}
                                         <motion.a
-                                            href="/downloads/paymint-android.apk"
+                                            href={import.meta.env.VITE_ANDROID_DOWNLOAD_URL || '/downloads/paymint-android.apk'}
                                             download
                                             whileHover={{ y: -5, scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}

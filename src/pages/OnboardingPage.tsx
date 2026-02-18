@@ -1100,7 +1100,7 @@ export function OnboardingPage() {
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <a
-                        href="/downloads/paymint-android.apk"
+                        href={import.meta.env.VITE_ANDROID_DOWNLOAD_URL || '/downloads/paymint-android.apk'}
                         download
                         target="_blank"
                         rel="noopener noreferrer"

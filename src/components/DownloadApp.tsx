@@ -52,7 +52,7 @@ export const DownloadApp = () => {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <a
-                href="/downloads/paymint-android.apk"
+                href={import.meta.env.VITE_ANDROID_DOWNLOAD_URL || '/downloads/paymint-android.apk'}
                 download
                 className="flex items-center justify-center gap-3 bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 py-4 px-8 rounded-xl transition-all shadow-xl group"
               >
