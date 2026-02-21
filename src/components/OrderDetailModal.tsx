@@ -70,6 +70,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
     // Use global currency context instead of hardcoded JOD
     const { formatAmount } = useCurrency();
     const formatCurrency = (value: number) => formatAmount(value);
+    const isNegativeTotal = (order.total || 0) < 0;
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', {
@@ -296,10 +297,12 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                             </div>
                             <div className="flex justify-between text-white font-bold text-xl pt-6 border-t border-white/10 mt-2">
                                 <span className="flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
+                                    <div className={`w-2 h-2 rounded-full animate-pulse ${isNegativeTotal ? 'bg-paymint-red' : 'bg-paymint-green'}`} />
                                     <span className="text-xs font-black tracking-[0.2em]">{t('orders.details.total')}</span>
                                 </span>
-                                <span className="text-2xl tracking-tighter text-paymint-green">{formatCurrency(order.total || 0)}</span>
+                                <span className={`text-2xl tracking-tighter ${isNegativeTotal ? 'text-paymint-red' : 'text-paymint-green'}`}>
+                                    {formatCurrency(order.total || 0)}
+                                </span>
                             </div>
                         </div>
 
@@ -314,20 +317,35 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                         )}
 
                         {/* Actions */}
-                        <div className="flex gap-4 pt-4">
+                        <div className="flex items-start gap-4 pt-4">
                             <button
                                 onClick={onClose}
                                 className="flex-1 py-4 px-6 bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-black tracking-[0.2em] text-xs rounded-2xl transition-all border border-gray-200 dark:border-white/5 active:scale-95 shadow-sm"
                             >
                                 {t('common.close')}
                             </button>
-                            {canRefund && (order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
-                                <button
-                                    onClick={handleRefund}
-                                    className="flex-1 py-4 px-6 bg-paymint-red/10 text-paymint-red hover:bg-paymint-red hover:text-white font-black tracking-[0.2em] text-xs rounded-2xl transition-all border border-paymint-red/20 active:scale-95 shadow-lg shadow-paymint-red/10"
-                                >
-                                    {t('orders.actions.refund')}
-                                </button>
+                            {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
+                                <div className="flex-1">
+                                    <button
+                                        onClick={() => {
+                                            if (!canRefund) return;
+                                            handleRefund();
+                                        }}
+                                        disabled={!canRefund}
+                                        className={`w-full py-4 px-6 font-black tracking-[0.2em] text-xs rounded-2xl transition-all border active:scale-95 ${
+                                            canRefund
+                                                ? 'bg-paymint-red/10 text-paymint-red hover:bg-paymint-red hover:text-white border-paymint-red/20 shadow-lg shadow-paymint-red/10'
+                                                : 'bg-gray-100 dark:bg-white/5 text-gray-400 border-gray-200 dark:border-white/10 cursor-not-allowed'
+                                        }`}
+                                    >
+                                        {t('orders.actions.refund')}
+                                    </button>
+                                    {!canRefund && (
+                                        <p className="mt-2 text-xs font-semibold text-red-600">
+                                            {t('orders.messages.noRefundPermission')}
+                                        </p>
+                                    )}
+                                </div>
                             )}
                         </div>
                     </div>

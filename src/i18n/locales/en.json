@@ -2328,6 +2328,7 @@
       "refundConfirmMessage": "Are you sure you want to refund this order? This action cannot be undone.",
       "refundConfirmTitle": "Confirm Refund",
       "refundFailed": "Failed to process refund",
+      "noRefundPermission": "You do not have permission to refund orders.",
       "refundReasonWeb": "Refunded via web dashboard",
       "refundSuccess": "Order refunded successfully",
       "shiftFound": "Shift found",

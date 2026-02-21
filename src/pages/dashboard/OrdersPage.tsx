@@ -1285,17 +1285,30 @@ export function OrdersPage() {
                       {t('orders.actions.viewDetails')}
                     </button>
 
-                    {canCancelReceipts && (order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRefund(order);
-                        }}
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-paymint-red hover:bg-paymint-red/10 transition-colors"
-                      >
-                        <Undo2 size={14} />
-                        {t('orders.actions.refund')}
-                      </button>
+                    {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
+                      <div className="flex flex-col items-end">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (!canCancelReceipts) return;
+                            handleRefund(order);
+                          }}
+                          disabled={!canCancelReceipts}
+                          className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition-colors ${
+                            canCancelReceipts
+                              ? 'text-paymint-red hover:bg-paymint-red/10'
+                              : 'text-gray-400 bg-gray-100 dark:bg-white/5 cursor-not-allowed'
+                          }`}
+                        >
+                          <Undo2 size={14} />
+                          {t('orders.actions.refund')}
+                        </button>
+                        {!canCancelReceipts && (
+                          <p className="mt-1 text-[11px] font-semibold text-red-600">
+                            {t('orders.messages.noRefundPermission')}
+                          </p>
+                        )}
+                      </div>
                     )}
 
                     <ChevronRight size={16} className="text-gray-400" />
@@ -1417,18 +1430,29 @@ export function OrdersPage() {
                                       {t('orders.actions.viewDetails')}
                                     </button>
 
-                                    {canCancelReceipts && (order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
+                                    {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
                                       <button
                                         onClick={(e) => {
                                           e.stopPropagation();
+                                          if (!canCancelReceipts) return;
                                           handleRefund(order);
                                           setActiveActionMenu(null);
                                         }}
-                                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-paymint-red hover:bg-paymint-red/10 transition-colors"
+                                        disabled={!canCancelReceipts}
+                                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors ${
+                                          canCancelReceipts
+                                            ? 'text-paymint-red hover:bg-paymint-red/10'
+                                            : 'text-gray-400 bg-gray-100 dark:bg-white/5 cursor-not-allowed'
+                                        }`}
                                       >
                                         <Undo2 size={14} />
                                         {t('orders.actions.refundOrder')}
                                       </button>
+                                    )}
+                                    {!canCancelReceipts && (order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
+                                      <p className="px-3 py-1 text-[11px] font-semibold text-red-600">
+                                        {t('orders.messages.noRefundPermission')}
+                                      </p>
                                     )}
                                   </div>
                                 </div>
