@@ -1002,8 +1002,8 @@ export function DashboardLayout() {
         isOpen={isLogoutModalOpen}
         onClose={() => setIsLogoutModalOpen(false)}
         onConfirm={confirmLogout}
-        title={t('dashboard.menu.logout')}
-        message={t('activity.actions.logout')}
+        title={t('common.confirmLogoutTitle')}
+        message={t('common.confirmLogout')}
         confirmText={t('dashboard.menu.logout')}
         cancelText={t('common.cancel')}
         type="danger"

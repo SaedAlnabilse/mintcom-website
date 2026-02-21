@@ -51,6 +51,10 @@ interface Employee {
 
 type ViewMode = 'grid' | 'list';
 type SortKey = 'name' | 'role' | 'status' | 'access';
+const MAX_EMPLOYEES_PER_ACCOUNT = 50;
+const EMPLOYEE_LIMIT_POPUP_MESSAGE =
+    `Maximum is ${MAX_EMPLOYEES_PER_ACCOUNT} employees.\n` +
+    `To add more than ${MAX_EMPLOYEES_PER_ACCOUNT} employees, contact Paymint support at support@paymint.app with your account email and password.`;
 
 export function OwnerEmployeesPage() {
     const { t } = useTranslation();
@@ -159,8 +163,21 @@ export function OwnerEmployeesPage() {
         }
     };
 
+    const handleOpenAddEmployeeModal = () => {
+        if (employees.length >= MAX_EMPLOYEES_PER_ACCOUNT) {
+            window.alert(EMPLOYEE_LIMIT_POPUP_MESSAGE);
+            return;
+        }
+        setEditingEmployee(null);
+        setIsFormModalOpen(true);
+    };
+
     const handleEmployeeSubmit = async (data: any) => {
         try {
+            if (!editingEmployee && employees.length >= MAX_EMPLOYEES_PER_ACCOUNT) {
+                window.alert(EMPLOYEE_LIMIT_POPUP_MESSAGE);
+                return;
+            }
             if (editingEmployee) {
                 await api.put(`/api/accounts/employees/${editingEmployee.id}`, data);
                 toast.success(t('common.success'));
@@ -172,6 +189,14 @@ export function OwnerEmployeesPage() {
             setEditingEmployee(null);
             fetchEmployees();
         } catch (error: any) {
+            const backendMessage = error?.response?.data?.message;
+            if (
+                typeof backendMessage === 'string' &&
+                backendMessage.toLowerCase().includes('maximum is 50 employees')
+            ) {
+                window.alert(backendMessage);
+                throw error;
+            }
             toast.error(error.response?.data?.message || t('common.error'));
             throw error; // Re-throw to let the modal know it failed
         }
@@ -310,7 +335,7 @@ export function OwnerEmployeesPage() {
 
                     <button
                         id="tour-add-employee-btn"
-                        onClick={() => { setEditingEmployee(null); setIsFormModalOpen(true); }}
+                        onClick={handleOpenAddEmployeeModal}
                         className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20"
                     >
                         <UserPlus size={18} />

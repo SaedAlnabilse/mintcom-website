@@ -267,7 +267,7 @@ export function SettingsPage() {
         ...data,
         taxRate: data.taxRate ? Math.round(data.taxRate * 100 * 100) / 100 : 0,
         holdOrderTableCount: Number.isFinite(data.holdOrderTableCount)
-          ? Math.max(0, Math.floor(Number(data.holdOrderTableCount)))
+          ? Math.min(300, Math.max(0, Math.floor(Number(data.holdOrderTableCount))))
           : 20,
       };
 
@@ -374,7 +374,7 @@ export function SettingsPage() {
         ...data,
         taxRate: Number(data.taxRate) / 100,
         holdOrderTableCount: Number.isFinite(data.holdOrderTableCount)
-          ? Math.max(0, Math.floor(Number(data.holdOrderTableCount)))
+          ? Math.min(300, Math.max(0, Math.floor(Number(data.holdOrderTableCount))))
           : 20,
       };
 
@@ -788,11 +788,11 @@ export function SettingsPage() {
                   {...register('holdOrderTableCount', {
                     valueAsNumber: true,
                     min: { value: 0, message: t('settings.sales.holdOrderTableCountErrorRange') },
-                    max: { value: 200, message: t('settings.sales.holdOrderTableCountErrorRange') },
+                    max: { value: 300, message: t('settings.sales.holdOrderTableCountErrorRange') },
                     setValueAs: (value) => {
                       const parsed = Number(value);
                       if (!Number.isFinite(parsed)) return 10;
-                      return Math.max(0, Math.floor(parsed));
+                      return Math.min(300, Math.max(0, Math.floor(parsed)));
                     },
                   })}
                   className={`w-full h-14 bg-white dark:bg-white/[0.03] border ${errors.holdOrderTableCount ? 'border-red-500 bg-red-500/5' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl px-5 font-bold text-2xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 ${errors.holdOrderTableCount ? 'focus:ring-red-500/20' : 'focus:ring-paymint-green/20'} transition-all shadow-sm`}

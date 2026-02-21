@@ -48,6 +48,10 @@ interface Employee {
 type ViewMode = 'grid' | 'list';
 type RoleFilter = 'all' | 'ADMIN' | 'CASHIER';
 type SortOption = 'name' | 'role' | 'locations';
+const MAX_EMPLOYEES_PER_ACCOUNT = 50;
+const EMPLOYEE_LIMIT_POPUP_MESSAGE =
+    `Maximum is ${MAX_EMPLOYEES_PER_ACCOUNT} employees.\n` +
+    `To add more than ${MAX_EMPLOYEES_PER_ACCOUNT} employees, contact Paymint support at support@paymint.app with your account email and password.`;
 
 export function BrandTeamPage() {
     const { t } = useTranslation();
@@ -126,6 +130,10 @@ export function BrandTeamPage() {
 
     const handleEmployeeSubmit = async (data: any) => {
         try {
+            if (!editingEmployee && employees.length >= MAX_EMPLOYEES_PER_ACCOUNT) {
+                window.alert(EMPLOYEE_LIMIT_POPUP_MESSAGE);
+                return;
+            }
             if (editingEmployee) {
                 await api.put(`/api/accounts/employees/${editingEmployee.id}`, data);
                 toast.success(t('common.success'));
@@ -137,6 +145,14 @@ export function BrandTeamPage() {
             setEditingEmployee(null);
             fetchEmployees();
         } catch (error: any) {
+            const backendMessage = error?.response?.data?.message;
+            if (
+                typeof backendMessage === 'string' &&
+                backendMessage.toLowerCase().includes('maximum is 50 employees')
+            ) {
+                window.alert(backendMessage);
+                throw error;
+            }
             toast.error(error.response?.data?.message || t('common.error'));
             throw error; // Re-throw to let the modal know it failed
         }
@@ -149,6 +165,10 @@ export function BrandTeamPage() {
     };
 
     const handleAddEmployee = () => {
+        if (employees.length >= MAX_EMPLOYEES_PER_ACCOUNT) {
+            window.alert(EMPLOYEE_LIMIT_POPUP_MESSAGE);
+            return;
+        }
         setEditingEmployee(null);
         setIsFormModalOpen(true);
     };

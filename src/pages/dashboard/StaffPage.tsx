@@ -48,6 +48,11 @@ interface Discount {
   adminOnly: boolean;
 }
 
+const MAX_EMPLOYEES_PER_ACCOUNT = 50;
+const EMPLOYEE_LIMIT_POPUP_MESSAGE =
+  `Maximum is ${MAX_EMPLOYEES_PER_ACCOUNT} employees.\n` +
+  `To add more than ${MAX_EMPLOYEES_PER_ACCOUNT} employees, contact Paymint support at support@paymint.app with your account email and password.`;
+
 export function StaffPage() {
   const { t } = useTranslation();
   // Permission guard - redirects if user lacks permission
@@ -234,6 +239,18 @@ export function StaffPage() {
   const onEmployeeSubmit = async (payload: Record<string, any>) => {
     try {
       setIsSubmitting(true);
+      if (!editingStaff && staff.length >= MAX_EMPLOYEES_PER_ACCOUNT) {
+        setConfirmConfig({
+          isOpen: true,
+          title: t('common.error'),
+          message: EMPLOYEE_LIMIT_POPUP_MESSAGE,
+          type: 'warning',
+          confirmText: t('common.ok'),
+          showCancel: false,
+          onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false })),
+        });
+        return;
+      }
       if (editingStaff) {
         await api.put(`/api/users/${editingStaff.id}`, payload);
         toast.success(t('dashboard.roles.messages.updated'));
@@ -243,11 +260,44 @@ export function StaffPage() {
       }
       setShowModal(false);
       fetchStaff();
-    } catch {
-      toast.error(t('dashboard.roles.messages.saveFailed'));
+    } catch (error: any) {
+      const backendMessage = error?.response?.data?.message;
+      if (
+        typeof backendMessage === 'string' &&
+        backendMessage.toLowerCase().includes('maximum is 50 employees')
+      ) {
+        setConfirmConfig({
+          isOpen: true,
+          title: t('common.error'),
+          message: backendMessage,
+          type: 'warning',
+          confirmText: t('common.ok'),
+          showCancel: false,
+          onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false })),
+        });
+      } else {
+        toast.error(t('dashboard.roles.messages.saveFailed'));
+      }
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleOpenAddEmployeeModal = () => {
+    if (staff.length >= MAX_EMPLOYEES_PER_ACCOUNT) {
+      setConfirmConfig({
+        isOpen: true,
+        title: t('common.error'),
+        message: EMPLOYEE_LIMIT_POPUP_MESSAGE,
+        type: 'warning',
+        confirmText: t('common.ok'),
+        showCancel: false,
+        onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false })),
+      });
+      return;
+    }
+    setEditingStaff(null);
+    setShowModal(true);
   };
 
   const handleDelete = (staffId: string, username: string) => {
@@ -299,7 +349,7 @@ export function StaffPage() {
             <span>{t('orders.export')}</span>
           </button>
           <button
-            onClick={() => { setEditingStaff(null); setShowModal(true); }}
+            onClick={handleOpenAddEmployeeModal}
             className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20 touch-target"
           >
             <Plus size={18} />

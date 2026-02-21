@@ -20,8 +20,7 @@ import {
   History,
   Eye,
   Undo2,
-  ArrowUpDown,
-  Trash2
+  ArrowUpDown
 } from 'lucide-react';
 import api from '../../config/api';
 import { ConfirmModal } from '../../components/ConfirmModal';
@@ -65,6 +64,7 @@ interface Order {
   };
   employeeName?: string;
   refundedByName?: string;
+  refundReason?: string;
   note?: string;
   status: string;
 }
@@ -179,6 +179,11 @@ export function OrdersPage() {
     message: '',
     onConfirm: () => { },
   });
+  const [isRefundReasonModalOpen, setIsRefundReasonModalOpen] = useState(false);
+  const [refundTargetOrder, setRefundTargetOrder] = useState<Order | null>(null);
+  const [refundReason, setRefundReason] = useState('');
+  const [refundReasonError, setRefundReasonError] = useState('');
+  const [isRefundSubmitting, setIsRefundSubmitting] = useState(false);
 
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
   const heldOrdersScrollRef = useRef<HTMLDivElement | null>(null);
@@ -785,43 +790,37 @@ export function OrdersPage() {
       return;
     }
 
-    setConfirmConfig({
-      isOpen: true,
-      title: t('orders.messages.refundConfirmTitle'),
-      message: t('orders.messages.refundConfirmMessage'),
-      type: 'danger',
-      onConfirm: async () => {
-        try {
-          await api.post(`/api/orders/${order.id}/refund`, {
-            reason: t('orders.messages.refundReasonWeb'),
-          });
-          toast.success(t('orders.messages.refundSuccess'));
-          fetchOrders(); // Refresh the list
-          setConfirmConfig(prev => ({ ...prev, isOpen: false }));
-        } catch (err) {
-          toast.error((err as ApiError).response?.data?.message || t('orders.messages.refundFailed'));
-        }
-      }
-    });
+    setRefundTargetOrder(order);
+    setRefundReason('');
+    setRefundReasonError('');
+    setIsRefundReasonModalOpen(true);
   };
 
-  const handleDeleteHeldOrder = (heldOrderId: string) => {
-    setConfirmConfig({
-      isOpen: true,
-      title: t('common.delete'),
-      message: t('orders.messages.deleteHeldConfirm'),
-      type: 'danger',
-      onConfirm: async () => {
-        try {
-          await api.delete(`/api/held-orders/${heldOrderId}`);
-          toast.success(t('orders.messages.deleteHeldSuccess'));
-          fetchOrders(); // Refresh the list
-          setConfirmConfig(prev => ({ ...prev, isOpen: false }));
-        } catch (err) {
-          toast.error((err as ApiError).response?.data?.message || t('orders.messages.deleteHeldFailed'));
-        }
-      }
-    });
+  const submitRefundWithReason = async () => {
+    if (!refundTargetOrder) return;
+    const trimmedReason = refundReason.trim();
+    if (!trimmedReason) {
+      setRefundReasonError('Refund reason is required');
+      return;
+    }
+
+    try {
+      setIsRefundSubmitting(true);
+      await api.post(`/api/orders/${refundTargetOrder.id}/refund`, {
+        reason: trimmedReason,
+        refundReason: trimmedReason,
+      });
+      toast.success(t('orders.messages.refundSuccess'));
+      setIsRefundReasonModalOpen(false);
+      setRefundTargetOrder(null);
+      setRefundReason('');
+      setRefundReasonError('');
+      fetchOrders();
+    } catch (err) {
+      toast.error((err as ApiError).response?.data?.message || t('orders.messages.refundFailed'));
+    } finally {
+      setIsRefundSubmitting(false);
+    }
   };
 
   const getStatusStyle = (status: string) => {
@@ -1179,15 +1178,6 @@ export function OrdersPage() {
                           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{formatDate(order.createdAt)}</p>
                         </div>
                       </div>
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteHeldOrder(order.id);
-                        }}
-                        className="p-2 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"
-                      >
-                        <Trash2 size={16} />
-                      </button>
                     </div>
 
                     <div className="space-y-1">
@@ -1479,12 +1469,71 @@ export function OrdersPage() {
         isOpen={confirmConfig.isOpen}
         onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
         onConfirm={confirmConfig.onConfirm}
-        title={t('orders.messages.refundConfirmTitle')}
-        message={t('orders.messages.refundConfirmMessage')}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
         type={confirmConfig.type}
         confirmText={confirmConfig.confirmText}
         showCancel={confirmConfig.showCancel}
       />
+
+      {isRefundReasonModalOpen && (
+        <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/50 p-4">
+          <div
+            className="w-full max-w-md rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 p-5 sm:p-6 shadow-2xl"
+            dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+          >
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+              {t('orders.messages.refundConfirmTitle')}
+            </h3>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+              {t('orders.messages.refundConfirmMessage')}
+            </p>
+
+            <div className="mt-4">
+              <label className="block text-sm font-semibold text-gray-800 dark:text-gray-100 mb-2">
+                Refund reason
+              </label>
+              <textarea
+                value={refundReason}
+                onChange={(e) => {
+                  setRefundReason(e.target.value);
+                  if (refundReasonError && e.target.value.trim()) {
+                    setRefundReasonError('');
+                  }
+                }}
+                placeholder="Enter refund reason"
+                rows={4}
+                className="w-full rounded-xl border border-gray-300 dark:border-white/15 bg-white dark:bg-[#0F172A] px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-paymint-green/40"
+              />
+              {refundReasonError && (
+                <p className="mt-2 text-sm text-red-600">{refundReasonError}</p>
+              )}
+            </div>
+
+            <div className="mt-5 flex gap-3">
+              <button
+                onClick={() => {
+                  if (isRefundSubmitting) return;
+                  setIsRefundReasonModalOpen(false);
+                  setRefundTargetOrder(null);
+                  setRefundReason('');
+                  setRefundReasonError('');
+                }}
+                className="flex-1 rounded-xl border border-gray-300 dark:border-white/15 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5"
+              >
+                {t('common.cancel')}
+              </button>
+              <button
+                onClick={submitRefundWithReason}
+                disabled={isRefundSubmitting}
+                className="flex-1 rounded-xl bg-paymint-red px-4 py-2.5 text-sm font-semibold text-white hover:bg-paymint-red/90 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {isRefundSubmitting ? t('common.loading') : t('orders.actions.refund')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -222,7 +222,7 @@ export function SelectEstablishmentPage() {
         isOpen={isLogoutModalOpen}
         onClose={() => setIsLogoutModalOpen(false)}
         onConfirm={confirmLogout}
-        title={t('common.logout')}
+        title={t('common.confirmLogoutTitle')}
         message={t('common.confirmLogout')}
         confirmText={t('common.logout')}
         cancelText={t('common.cancel')}

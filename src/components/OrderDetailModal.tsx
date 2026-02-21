@@ -3,7 +3,6 @@ import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import api from '../config/api';
-import { ConfirmModal } from './ConfirmModal';
 import { QuickInfo } from './QuickInfo';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -40,6 +39,9 @@ export interface Order {
     user?: { username: string };
     employeeName?: string;
     refundedByName?: string;
+    refundReason?: string;
+    reason?: string;
+    refund_reason?: string;
     customer?: { name: string; phone: string };
     items?: OrderItem[];
     subtotal?: number;
@@ -58,20 +60,10 @@ export interface OrderDetailModalProps {
 
 export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = true }: OrderDetailModalProps) {
     const { t } = useTranslation();
-    const [confirmConfig, setConfirmConfig] = useState<{
-        isOpen: boolean;
-        title: string;
-        message: string;
-        onConfirm: () => void;
-        type?: 'danger' | 'success' | 'warning' | 'info';
-        confirmText?: string;
-        showCancel?: boolean;
-    }>({
-        isOpen: false,
-        title: '',
-        message: '',
-        onConfirm: () => { },
-    });
+    const [isRefundReasonModalOpen, setIsRefundReasonModalOpen] = useState(false);
+    const [refundReason, setRefundReason] = useState('');
+    const [refundReasonError, setRefundReasonError] = useState('');
+    const [isRefundSubmitting, setIsRefundSubmitting] = useState(false);
 
     useScrollLock(!!order);
 
@@ -109,24 +101,33 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
             return;
         }
 
-        setConfirmConfig({
-            isOpen: true,
-            title: t('orders.details.refundConfirmTitle'),
-            message: t('orders.details.refundConfirmMessage'),
-            type: 'danger',
-            onConfirm: async () => {
-                try {
-                    await api.post(`/api/orders/${order.id}/refund`, {
-                        reason: t('orders.messages.refundReasonWeb'),
-                    });
-                    toast.success(t('orders.messages.refundSuccess'));
-                    if (onRefundSuccess) onRefundSuccess();
-                    onClose();
-                } catch (err) {
-                    toast.error((err as ApiError).response?.data?.message || t('orders.messages.refundFailed'));
-                }
-            }
-        });
+        setRefundReason('');
+        setRefundReasonError('');
+        setIsRefundReasonModalOpen(true);
+    };
+
+    const submitRefundWithReason = async () => {
+        const trimmedReason = refundReason.trim();
+        if (!trimmedReason) {
+            setRefundReasonError('Refund reason is required');
+            return;
+        }
+
+        try {
+            setIsRefundSubmitting(true);
+            await api.post(`/api/orders/${order.id}/refund`, {
+                reason: trimmedReason,
+                refundReason: trimmedReason,
+            });
+            toast.success(t('orders.messages.refundSuccess'));
+            setIsRefundReasonModalOpen(false);
+            if (onRefundSuccess) onRefundSuccess();
+            onClose();
+        } catch (err) {
+            toast.error((err as ApiError).response?.data?.message || t('orders.messages.refundFailed'));
+        } finally {
+            setIsRefundSubmitting(false);
+        }
     };
 
     return createPortal(
@@ -215,6 +216,16 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                         <QuickInfo text={t('orders.details.refundedByTip')} />
                                     </p>
                                     <p className="text-sm font-bold text-paymint-red">{order.refundedByName}</p>
+                                </div>
+                            )}
+                            {((order.paymentStatus || order.status) === 'REFUNDED') && (
+                                <div className="col-span-2 md:col-span-4">
+                                    <p className="text-xs font-black text-gray-400 tracking-widest mb-2">
+                                        Refund Reason
+                                    </p>
+                                    <p className="text-sm font-bold text-paymint-red break-words">
+                                        {order.refundReason || order.reason || order.refund_reason || 'N/A'}
+                                    </p>
                                 </div>
                             )}
                             {order.customer && (
@@ -322,14 +333,58 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                     </div>
                 </motion.div>
 
-                <ConfirmModal
-                    isOpen={confirmConfig.isOpen}
-                    onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
-                    onConfirm={confirmConfig.onConfirm}
-                    title={confirmConfig.title}
-                    message={confirmConfig.message}
-                    type={confirmConfig.type}
-                />
+                {isRefundReasonModalOpen && (
+                    <div className="fixed inset-0 z-[10001] flex items-center justify-center bg-black/60 p-4">
+                        <div className="w-full max-w-md rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 p-5 sm:p-6 shadow-2xl">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                                {t('orders.details.refundConfirmTitle')}
+                            </h3>
+                            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                                {t('orders.details.refundConfirmMessage')}
+                            </p>
+                            <div className="mt-4">
+                                <label className="block text-sm font-semibold text-gray-800 dark:text-gray-100 mb-2">
+                                    Refund reason
+                                </label>
+                                <textarea
+                                    value={refundReason}
+                                    onChange={(e) => {
+                                        setRefundReason(e.target.value);
+                                        if (refundReasonError && e.target.value.trim()) {
+                                            setRefundReasonError('');
+                                        }
+                                    }}
+                                    placeholder="Enter refund reason"
+                                    rows={4}
+                                    className="w-full rounded-xl border border-gray-300 dark:border-white/15 bg-white dark:bg-[#0F172A] px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-paymint-green/40"
+                                />
+                                {refundReasonError && (
+                                    <p className="mt-2 text-sm text-red-600">{refundReasonError}</p>
+                                )}
+                            </div>
+                            <div className="mt-5 flex gap-3">
+                                <button
+                                    onClick={() => {
+                                        if (isRefundSubmitting) return;
+                                        setIsRefundReasonModalOpen(false);
+                                        setRefundReason('');
+                                        setRefundReasonError('');
+                                    }}
+                                    className="flex-1 rounded-xl border border-gray-300 dark:border-white/15 px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5"
+                                >
+                                    {t('common.cancel')}
+                                </button>
+                                <button
+                                    onClick={submitRefundWithReason}
+                                    disabled={isRefundSubmitting}
+                                    className="flex-1 rounded-xl bg-paymint-red px-4 py-2.5 text-sm font-semibold text-white hover:bg-paymint-red/90 disabled:opacity-60 disabled:cursor-not-allowed"
+                                >
+                                    {isRefundSubmitting ? t('common.loading') : t('orders.actions.refund')}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </AnimatePresence>,
         document.body
