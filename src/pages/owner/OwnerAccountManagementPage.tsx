@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -113,6 +113,21 @@ export function OwnerAccountManagementPage() {
     const [deleteReason, setDeleteReason] = useState('');
     const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
     const [deletePassword, setDeletePassword] = useState('');
+
+    const locationLoginEstablishments = useMemo(() => {
+        const profileEstablishments = accountDetails?.establishments || [];
+        const contextEstablishments = establishments || [];
+
+        // Prefer profile payload (usually richer), then fill missing fields from context.
+        if (profileEstablishments.length > 0) {
+            return profileEstablishments.map((profileEst: any) => {
+                const contextMatch = contextEstablishments.find((ctxEst: any) => ctxEst.id === profileEst.id);
+                return { ...contextMatch, ...profileEst };
+            });
+        }
+
+        return contextEstablishments;
+    }, [accountDetails?.establishments, establishments]);
 
     const handleEditClick = () => {
         if (accountDetails) {
@@ -661,7 +676,7 @@ export function OwnerAccountManagementPage() {
                     </motion.div>
 
                     {/* Location Logins */}
-                    {establishments && establishments.length > 0 && (
+                    {locationLoginEstablishments && locationLoginEstablishments.length > 0 && (
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -674,14 +689,19 @@ export function OwnerAccountManagementPage() {
                                 </div>
                                 <div>
                                     <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                                        {t('owner.account.locationLogins', { count: establishments.length })}
+                                        {t('owner.account.locationLogins', { count: locationLoginEstablishments.length })}
                                     </h2>
                                     <p className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('owner.account.locationLoginsSubtitle')}</p>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {establishments.map((est: any) => {
+                                {locationLoginEstablishments.map((est: any) => {
+                                    const estLoginId =
+                                        est.establishmentLoginId ||
+                                        est.loginId ||
+                                        est.locationLoginId ||
+                                        '';
                                     const Icon = getBusinessTypeIcon(est.type);
                                     return (
                                         <div
@@ -728,7 +748,8 @@ export function OwnerAccountManagementPage() {
                                                                 {t('owner.account.loginId')}
                                                             </label>
                                                             <button
-                                                                onClick={() => copyToClipboard(est.establishmentLoginId, `est-login-${est.id}`)}
+                                                                onClick={() => copyToClipboard(estLoginId, `est-login-${est.id}`)}
+                                                                disabled={!estLoginId}
                                                                 className="text-xs font-bold text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1"
                                                             >
                                                                 {copiedId === `est-login-${est.id}` ? (
@@ -739,7 +760,7 @@ export function OwnerAccountManagementPage() {
                                                             </button>
                                                         </div>
                                                         <code className="block text-xs font-mono font-bold text-gray-900 dark:text-white truncate select-all">
-                                                            {est.establishmentLoginId}
+                                                            {estLoginId || t('common.na')}
                                                         </code>
                                                     </div>
 
