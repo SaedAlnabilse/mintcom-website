@@ -24,8 +24,10 @@ interface ActivityLog {
   id: string;
   userId: string;
   performedBy?: {
-    username: string;
-    name: string;
+    username?: string;
+    name?: string;
+    firstName?: string;
+    lastName?: string;
   };
   action: string;
   description: string;
@@ -202,11 +204,27 @@ export function ActivityLogsPage() {
     return actionColors[action] || 'bg-gray-500/10 text-gray-500 border-gray-500/20';
   };
 
+  const getActorName = (log: ActivityLog) => {
+    const fullName =
+      `${log.performedBy?.firstName || ''} ${log.performedBy?.lastName || ''}`.trim();
+    return (
+      log.performedBy?.name?.trim() ||
+      fullName ||
+      log.performedBy?.username?.trim() ||
+      t('activity.owner')
+    );
+  };
+
+  const getActorInitial = (log: ActivityLog) => {
+    const actorName = getActorName(log);
+    return actorName?.charAt(0)?.toUpperCase() || 'A';
+  };
+
   const handleExport = () => {
     const logsToExport = Array.isArray(logs) ? logs : [];
     const exportData = logsToExport.map(l => ({
       time: formatDate(l.timestamp),
-      user: l.performedBy?.username || t('activity.owner'),
+      user: getActorName(l),
       action: l.action,
       desc: l.description,
       ip: l.ipAddress
@@ -363,10 +381,10 @@ export function ActivityLogsPage() {
                   <div className="flex justify-between items-start mb-2">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black">
-                        {log.performedBy?.username?.charAt(0).toUpperCase() || 'A'}
+                        {getActorInitial(log)}
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-gray-900 dark:text-white tracking-tight truncate max-w-[150px]">{log.performedBy?.username || t('activity.owner')}</p>
+                        <p className="text-sm font-bold text-gray-900 dark:text-white tracking-tight truncate max-w-[150px]">{getActorName(log)}</p>
                         <p className="text-xs text-gray-400 font-black">{log.ipAddress || t('activity.internal')}</p>
                       </div>
                     </div>
@@ -454,10 +472,10 @@ export function ActivityLogsPage() {
                       <td className="px-8 py-4">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-lg bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black group-hover:scale-110 transition-transform">
-                            {log.performedBy?.username?.charAt(0).toUpperCase() || 'A'}
+                            {getActorInitial(log)}
                           </div>
                           <div>
-                            <p className="text-sm font-bold text-gray-900 dark:text-white tracking-tight truncate max-w-[100px]">{log.performedBy?.username || t('activity.owner')}</p>
+                            <p className="text-sm font-bold text-gray-900 dark:text-white tracking-tight truncate max-w-[100px]">{getActorName(log)}</p>
                             <p className="text-xs text-gray-400 font-black">{log.ipAddress || t('activity.internal')}</p>
                           </div>
                         </div>
@@ -523,7 +541,7 @@ export function ActivityLogsPage() {
                   </div>
                   <div>
                     <p className="text-xs font-black text-gray-400 tracking-widest mb-2">{t('activity.user')}</p>
-                    <p className="font-bold text-gray-900 dark:text-white">{selectedLog.performedBy?.name || t('activity.administrativeAccount')}</p>
+                    <p className="font-bold text-gray-900 dark:text-white">{getActorName(selectedLog)}</p>
                   </div>
                 </div>
 

@@ -112,19 +112,18 @@ export const REQUIRED_PERMISSIONS: Record<string, string[]> = {
 };
 
 export const POS_PERMISSIONS = [
-  { id: 'pos', label: 'POS System', description: 'Access to the sales screen' },
-  { id: 'dashboard', label: 'Dashboard', description: 'View sales summary & analytics' },
-  { id: 'view_shift_reports', label: 'View Shift Reports', description: 'View shift-level performance reports' },
-  { id: 'open_cash_drawer', label: 'Open Cash Drawer', description: 'Open cash drawer without sale completion' },
-  { id: 'change_taxes', label: 'Change Taxes', description: 'Change tax settings during sales operations' },
-  { id: 'pay_in_pay_out', label: 'Pay in Pay out', description: 'Pay in Pay out' },
-  { id: 'restock_items', label: 're-stock items', description: 're-stock items' },
-  { id: 'manage_open_tickets', label: 'Manage Open Tickets', description: 'View and manage all held/open tickets' },
+  { id: 'open_cash_drawer', label: 'Open Drawer', description: 'Open drawer without making a sale' },
+  { id: 'change_taxes', label: 'Change Tax Rate In Order', description: 'Change tax rate in the current order' },
+  { id: 'pay_in_pay_out', label: 'Pay In Pay Out', description: 'Record pay in and pay out entries' },
+  { id: 'dashboard', label: 'View Current Analytics In Dashboard', description: 'View current analytics in dashboard' },
+  { id: 'view_shift_reports', label: 'View Previous Shift Analytics In Dashboard', description: 'View previous shift analytics in dashboard' },
+  { id: 'restock_items', label: 'Restock Items', description: 'Restock items from POS' },
+  { id: 'manage_open_tickets', label: 'Manage Previous Hold Orders', description: 'Manage previous hold orders' },
   { id: 'refunds', label: 'Refunds', description: 'Process refunds on completed orders' },
   { id: 'discounts', label: 'Discounts', description: 'Apply discounts at POS' },
-  { id: 'loyalty_system_access', label: 'Loyalty System Access', description: 'Access to loyalty system' },
-  { id: 'reprint_receipts', label: 'Reprint Receipts', description: 'Reprint and resend receipts' },
-  { id: 'live_chat', label: 'Live Chat', description: 'Access live support chat' },
+  { id: 'loyalty_system_access', label: 'Loyalty System Access', description: 'Access loyalty system features' },
+  { id: 'reprint_receipts', label: 'Reprint Receipt Or Send', description: 'Reprint or send receipts' },
+  { id: 'live_chat', label: 'Access Support Portal', description: 'Access support portal' },
 ] as const;
 
 export const BACKOFFICE_PERMISSIONS = [
@@ -140,7 +139,6 @@ export const BACKOFFICE_PERMISSIONS = [
   { id: 'manage_tax_currency', label: 'Tax & Currency', description: 'Set up regional tax rates and currency display options' },
   { id: 'manage_receipt_settings', label: 'Receipts', description: 'Customize receipt layout, logo, and printed messages' },
   { id: 'delete_establishment', label: 'Delete Location', description: 'Permit the permanent removal of this establishment from the system' },
-  { id: 'delete_receipt', label: 'Delete Receipts', description: 'Grant permission to permanently remove transaction records' },
   { id: 'export_data', label: 'Allow Data Export', description: 'Export business data into CSV or PDF formats for external analysis' },
 ] as const;
 

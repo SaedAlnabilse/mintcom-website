@@ -486,7 +486,10 @@ export function EmployeeFormModal({
       role: role.toUpperCase(),
       permissions: role === 'ADMIN'
         ? POS_PERMISSIONS.map(p => p.id)
-        : normalizeAndFilterPermissions(permissions, ALLOWED_POS_PERMISSION_IDS),
+        : Array.from(new Set([
+            ...normalizeAndFilterPermissions(permissions, ALLOWED_POS_PERMISSION_IDS),
+            ...(posAccess ? ['pos', 'void_items'] : []),
+          ])),
       customRoleId: selectedCustomRoleId || undefined,
       allowedDiscounts: allDiscountsSelected ? [] : allowedDiscounts,
       establishmentIds: establishments ? selectedEstablishmentIds : undefined,

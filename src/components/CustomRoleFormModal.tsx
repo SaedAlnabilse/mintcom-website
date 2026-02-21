@@ -147,6 +147,7 @@ export function CustomRoleFormModal({
         setBackofficePermissions(normalizeAndFilterPermissions(initialData.backofficePermissions, ALLOWED_BACKOFFICE_PERMISSION_IDS));
         setAllowedDiscounts(initialData.allowedDiscounts || []);
         setAllDiscountsSelected(initialData.allowedDiscounts?.length === 0);
+        setShowDiscountsDropdown((initialData.allowedDiscounts?.length || 0) > 0);
       } else {
         // Defaults for new role
         setName('');
@@ -156,17 +157,37 @@ export function CustomRoleFormModal({
         setBackofficePermissions(['dashboard', 'view_orders']); // Default access to dashboard and orders
         setAllowedDiscounts([]);
         setAllDiscountsSelected(true);
+        setShowDiscountsDropdown(false);
       }
       setErrors({});
     }
   }, [isOpen, initialData]);
 
   const togglePermission = (permissionId: string) => {
+    const isCurrentlySelected = permissions.includes(permissionId);
+    const isEnabling = !isCurrentlySelected;
+
     setPermissions(prev =>
       prev.includes(permissionId)
         ? prev.filter(id => id !== permissionId)
         : [...prev, permissionId]
     );
+
+    // If discounts permission is enabled, reveal discounts chooser and scroll to it.
+    if (permissionId === 'discounts' && isEnabling) {
+      setAllDiscountsSelected(false);
+      setShowDiscountsDropdown(true);
+      setTimeout(() => {
+        discountsContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 120);
+    }
+
+    // If discounts permission is disabled, hide/reset the discounts chooser.
+    if (permissionId === 'discounts' && !isEnabling) {
+      setShowDiscountsDropdown(false);
+      setAllDiscountsSelected(true);
+      setAllowedDiscounts([]);
+    }
   };
 
   const toggleBackofficePermission = (permissionId: string) => {
@@ -291,7 +312,10 @@ export function CustomRoleFormModal({
                       <Smartphone size={24} />
                     </div>
                     <div>
-                      <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('roles.pos.title')}</h3>
+                      <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-1">
+                        {t('roles.pos.title')}
+                        <QuickInfo text={t('roles.pos.defaultSalesInfo', { defaultValue: 'Sales screen access is included by default when this section is enabled.' })} />
+                      </h3>
                       <p className="text-xs text-gray-500 max-w-[250px] leading-relaxed">{t('roles.pos.description')}</p>
                     </div>
                   </div>
@@ -335,65 +359,67 @@ export function CustomRoleFormModal({
                         </div>
 
                         {/* Discounts Section */}
-                        <div className="pt-4 border-t border-gray-200 dark:border-white/10" ref={discountsContainerRef}>
-                          <div
-                            className="flex items-center justify-between py-2 cursor-pointer group"
-                            onClick={() => setShowDiscountsDropdown(!showDiscountsDropdown)}
-                          >
-                            <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">{t('roles.form.allowedDiscounts')}</p>
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs font-medium text-gray-500 bg-white dark:bg-white/5 px-2 py-1 rounded-md border border-gray-200 dark:border-white/10">
-                                {allDiscountsSelected ? t('roles.form.allAllowed') : t('roles.form.selectedCount', { count: allowedDiscounts.length })}
-                              </span>
-                              <ChevronDown size={14} className={`text-gray-400 transition-transform duration-300 ${showDiscountsDropdown ? 'rotate-180' : ''} ${t('common.locale') === 'ar' ? 'mr-auto' : ''}`} />
+                        {permissions.includes('discounts') && (
+                          <div className="pt-4 border-t border-gray-200 dark:border-white/10" ref={discountsContainerRef}>
+                            <div
+                              className="flex items-center justify-between py-2 cursor-pointer group"
+                              onClick={() => setShowDiscountsDropdown(!showDiscountsDropdown)}
+                            >
+                              <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">{t('roles.form.allowedDiscounts')}</p>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs font-medium text-gray-500 bg-white dark:bg-white/5 px-2 py-1 rounded-md border border-gray-200 dark:border-white/10">
+                                  {allDiscountsSelected ? t('roles.form.allAllowed') : t('roles.form.selectedCount', { count: allowedDiscounts.length })}
+                                </span>
+                                <ChevronDown size={14} className={`text-gray-400 transition-transform duration-300 ${showDiscountsDropdown ? 'rotate-180' : ''} ${t('common.locale') === 'ar' ? 'mr-auto' : ''}`} />
+                              </div>
                             </div>
-                          </div>
 
-                          <AnimatePresence>
-                            {showDiscountsDropdown && (
-                              <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                className="space-y-2 pt-3 overflow-hidden"
-                              >
-                                <div
-                                  className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
-                                  onClick={() => {
-                                    setAllDiscountsSelected(!allDiscountsSelected);
-                                    if (!allDiscountsSelected) setAllowedDiscounts([]);
-                                  }}
+                            <AnimatePresence>
+                              {showDiscountsDropdown && (
+                                <motion.div
+                                  initial={{ height: 0, opacity: 0 }}
+                                  animate={{ height: 'auto', opacity: 1 }}
+                                  exit={{ height: 0, opacity: 0 }}
+                                  className="space-y-2 pt-3 overflow-hidden"
                                 >
-                                  <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-all ${allDiscountsSelected
-                                    ? 'bg-paymint-green border-paymint-green shadow-sm'
-                                    : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
-                                    }`}>
-                                    {allDiscountsSelected && <Check size={14} className="text-white" />}
-                                  </div>
-                                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('roles.form.allowAllDiscounts')}</p>
-                                </div>
-
-                                {!allDiscountsSelected && availableDiscounts.map(discount => (
                                   <div
-                                    key={discount.id}
-                                    className="flex items-start gap-3 pl-4 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
-                                    onClick={() => toggleDiscount(discount.id)}
+                                    className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                                    onClick={() => {
+                                      setAllDiscountsSelected(!allDiscountsSelected);
+                                      if (!allDiscountsSelected) setAllowedDiscounts([]);
+                                    }}
                                   >
-                                    <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-all ${allowedDiscounts.includes(discount.id)
+                                    <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-all ${allDiscountsSelected
                                       ? 'bg-paymint-green border-paymint-green shadow-sm'
                                       : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
                                       }`}>
-                                      {allowedDiscounts.includes(discount.id) && <Check size={14} className="text-white" />}
+                                      {allDiscountsSelected && <Check size={14} className="text-white" />}
                                     </div>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                                      {discount.name} ({(discount.percentage * 100).toLocaleString(t('common.locale'))}%)
-                                    </p>
+                                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('roles.form.allowAllDiscounts')}</p>
                                   </div>
-                                ))}
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
+
+                                  {!allDiscountsSelected && availableDiscounts.map(discount => (
+                                    <div
+                                      key={discount.id}
+                                      className="flex items-start gap-3 pl-4 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                                      onClick={() => toggleDiscount(discount.id)}
+                                    >
+                                      <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-all ${allowedDiscounts.includes(discount.id)
+                                        ? 'bg-paymint-green border-paymint-green shadow-sm'
+                                        : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
+                                        }`}>
+                                        {allowedDiscounts.includes(discount.id) && <Check size={14} className="text-white" />}
+                                      </div>
+                                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                                        {discount.name} ({(discount.percentage * 100).toLocaleString(t('common.locale'))}%)
+                                      </p>
+                                    </div>
+                                  ))}
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
+                        )}
                       </div>
                     </motion.div>
                   )}

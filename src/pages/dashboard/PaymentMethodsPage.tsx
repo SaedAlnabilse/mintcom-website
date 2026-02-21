@@ -396,14 +396,14 @@ export function PaymentMethodsPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {Array.isArray(paymentMethods) && paymentMethods.map((method) => (
-              <motion.div
-                layout
-                key={method.id}
-                className={`group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center min-h-[200px] ${method.isActive
-                  ? 'border-paymint-green/20 hover:border-paymint-green/50'
-                  : 'border-gray-100 dark:border-white/5 opacity-60'
-                  }`}
-              >
+            <motion.div
+              layout
+              key={method.id}
+              className={`group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center min-h-[200px] ${method.isActive
+                ? 'border-paymint-green/20 hover:border-paymint-green/50'
+                : 'border-gray-100 dark:border-white/5 opacity-60'
+                }`}
+            >
                 <div className="absolute top-3 right-3 flex gap-1 z-10">
                   {!method.isDefault && (
                     <>
@@ -417,10 +417,9 @@ export function PaymentMethodsPage() {
                   )}
                 </div>
 
-                <div className={`w-20 h-20 rounded-2xl flex items-center justify-center border border-gray-100 dark:border-white/5 overflow-hidden mb-4 shadow-sm ${method.isActive ? 'bg-paymint-green/10 text-paymint-green' : 'bg-gray-50 dark:bg-white/5 text-gray-400'
-                  }`}>
+                <div className="w-24 h-24 rounded-2xl bg-white dark:bg-black/40 flex items-center justify-center border border-gray-100 dark:border-white/5 overflow-hidden p-4 mb-4 shadow-sm">
                   {getImageUrl(method.imageUrl || method.logo) ? (
-                    <img src={getImageUrl(method.imageUrl || method.logo)!} alt={method.name} className="w-full h-full object-cover" />
+                    <img src={getImageUrl(method.imageUrl || method.logo)!} alt={method.name} className="w-full h-full object-contain" />
                   ) : (
                     getMethodIcon(method.name, 32)
                   )}

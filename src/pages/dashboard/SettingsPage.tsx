@@ -27,8 +27,8 @@ interface AppSettings {
   restaurantDescription?: string;
   restaurantAddress?: string;
   email?: string;
-  logo?: string;
-  receiptLogo?: string;
+  logo?: string | null;
+  receiptLogo?: string | null;
   taxRate: number;
   taxIdNumber?: string;
   currency: string;
@@ -77,7 +77,7 @@ interface EstablishmentInfo {
 
 export function SettingsPage() {
   const { t } = useTranslation();
-  const { account } = useAuth();
+  const { account, currentEstablishment, setCurrentEstablishment, refreshEstablishments } = useAuth();
   usePermissionGuard([
     'manage_settings',
     'manage_taxes_backoffice',
@@ -116,6 +116,7 @@ export function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null);
+  const [removeLogo, setRemoveLogo] = useState(false);
   const [receiptLogoPreview, setReceiptLogoPreview] = useState<string | null>(null);
   const [selectedReceiptLogo, setSelectedReceiptLogo] = useState<File | null>(null);
   const [initialSettings, setInitialSettings] = useState<AppSettings | null>(null);
@@ -182,7 +183,7 @@ export function SettingsPage() {
   })();
 
   // Combined dirty state
-  const hasUnsavedChanges = hasFormChanges || !!selectedLogo || !!selectedReceiptLogo;
+  const hasUnsavedChanges = hasFormChanges || !!selectedLogo || !!selectedReceiptLogo || removeLogo;
 
   // Navigation blocker with proper dependency tracking
   const blocker = useBlocker(
@@ -253,6 +254,7 @@ export function SettingsPage() {
       } else {
         setPreviewImage(null);
       }
+      setRemoveLogo(false);
 
       if (data.receiptLogo) {
         setReceiptLogoPreview(data.receiptLogo);
@@ -288,12 +290,19 @@ export function SettingsPage() {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedLogo(file);
+      setRemoveLogo(false);
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewImage(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleRemoveLogo = () => {
+    setPreviewImage(null);
+    setSelectedLogo(null);
+    setRemoveLogo(true);
   };
 
   const handleReceiptLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -342,6 +351,10 @@ export function SettingsPage() {
         }
       }
 
+      if (removeLogo) {
+        data.logo = null;
+      }
+
       if (selectedReceiptLogo) {
         const formData = new FormData();
         formData.append('file', selectedReceiptLogo);
@@ -367,12 +380,21 @@ export function SettingsPage() {
 
       await api.put('/app-settings', submissionData);
 
+      const nextRestaurantName = String(data.restaurantName || '').trim();
+      if (nextRestaurantName && currentEstablishment && nextRestaurantName !== currentEstablishment.name) {
+        // Keep shared establishment state in sync so the new name appears across the app immediately.
+        setCurrentEstablishment({ ...currentEstablishment, name: nextRestaurantName });
+      }
+      if (nextRestaurantName) {
+        setEstablishmentInfo(prev => (prev ? { ...prev, name: nextRestaurantName } : prev));
+      }
+
 
 
       setConfirmConfig({
         isOpen: true,
-        title: t('settings.confirm.taxUpdatedTitle'),
-        message: t('settings.confirm.taxUpdatedMessage'),
+        title: t('common.saveChanges'),
+        message: t('settings.messages.saveSuccess'),
         type: 'success',
         confirmText: t('common.yes'),
         showCancel: false,
@@ -380,6 +402,7 @@ export function SettingsPage() {
       });
       setSelectedLogo(null);
       setSelectedReceiptLogo(null);
+      setRemoveLogo(false);
 
       // Refresh data without showing loading spinner to keep form mounted for proper reset
       // Also refresh currency context to sync with POS
@@ -387,6 +410,9 @@ export function SettingsPage() {
         fetchSettings(false),
         refreshCurrency()
       ]);
+      refreshEstablishments().catch((error) => {
+        console.error('[Settings] Failed to refresh establishments after save:', error);
+      });
     } catch (err) {
       toast.error((err as ApiError).response?.data?.message || t('settings.messages.saveFailed'));
     } finally {
@@ -546,6 +572,7 @@ export function SettingsPage() {
           }
           setSelectedLogo(null);
           setSelectedReceiptLogo(null);
+          setRemoveLogo(false);
 
           setConfirmConfig(prev => ({ ...prev, isOpen: false }));
           setActiveTab(newTab);
@@ -696,10 +723,21 @@ export function SettingsPage() {
                 <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-2xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
                   {previewImage ? <img src={previewImage} alt="Logo" className="w-full h-full object-cover" /> : <Store className="w-12 h-12 text-gray-300 dark:text-gray-600" />}
                 </div>
-                <label className="px-5 py-3 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/[0.03] rounded-xl text-gray-900 dark:text-white font-bold text-sm shadow-sm transition-all">
-                  {t('settings.profile.changeLogo')}
-                  <input type="file" accept="image/*" onChange={handleLogoChange} className="hidden" />
-                </label>
+                <div className="flex flex-wrap items-center gap-3">
+                  <label className="px-5 py-3 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/[0.03] rounded-xl text-gray-900 dark:text-white font-bold text-sm shadow-sm transition-all">
+                    {t('settings.profile.changeLogo')}
+                    <input type="file" accept="image/*" onChange={handleLogoChange} className="hidden" />
+                  </label>
+                  {previewImage && (
+                    <button
+                      type="button"
+                      onClick={handleRemoveLogo}
+                      className="px-5 py-3 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-xl text-red-600 dark:text-red-400 font-bold text-sm shadow-sm transition-all hover:bg-red-100 dark:hover:bg-red-500/20"
+                    >
+                      {t('settings.profile.deleteLogo')}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
             <div>
