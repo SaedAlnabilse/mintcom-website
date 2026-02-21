@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Search,
@@ -17,7 +17,8 @@ import { DateRangePicker } from '../../components/DateRangePicker';
 import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
 import type { DatePeriod } from '../../utils/datePeriods';
 import { Pagination } from '../../components/ui';
-import { usePermissionGuard } from '../../hooks/usePermissionGuard';
+import { usePermissionGuard, checkPermission } from '../../hooks/usePermissionGuard';
+import { useAuth } from '../../context/AuthContext';
 
 interface ActivityLog {
   id: string;
@@ -68,7 +69,16 @@ const actionColors: Record<string, string> = {
 
 export function ActivityLogsPage() {
   const { t } = useTranslation();
-  usePermissionGuard(['view_activity_logs']);
+  const { account } = useAuth();
+  usePermissionGuard([
+    'view_activity_logs',
+    'manage_settings',
+    'manage_establishment_profile',
+    'manage_tax_currency',
+    'manage_receipt_settings',
+  ]);
+
+  const canExport = useMemo(() => checkPermission(account, ['export_data']), [account]);
 
   const [logs, setLogs] = useState<ActivityLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -228,13 +238,15 @@ export function ActivityLogsPage() {
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            onClick={handleExport}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
-          >
-            <Download size={18} />
-            <span>{t('activity.export')}</span>
-          </button>
+          {canExport && (
+            <button
+              onClick={handleExport}
+              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
+            >
+              <Download size={18} />
+              <span>{t('activity.export')}</span>
+            </button>
+          )}
         </div>
       </div>
 

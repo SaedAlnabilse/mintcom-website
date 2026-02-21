@@ -33,7 +33,7 @@ type SortKey = 'name' | 'value' | 'type' | 'adminOnly';
 
 export function DiscountsPage() {
   const { t } = useTranslation();
-  usePermissionGuard(['manage_discounts', 'manage_settings']);
+  usePermissionGuard(['manage_discounts']);
   const { currencySymbol } = useCurrency();
   const [discounts, setDiscounts] = useState<Discount[]>([]);
   const [isLoading, setIsLoading] = useState(true);

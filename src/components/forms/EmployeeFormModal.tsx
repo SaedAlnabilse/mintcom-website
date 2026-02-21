@@ -140,65 +140,21 @@ export function EmployeeFormModal({
   const { currentEstablishment } = useAuth();
 
   const POS_PERMISSIONS = useMemo(() => {
-    const legacyLabelKey: Record<string, string> = {
-      pos: 'staff.permissions.pos_list.accept_payments',
-      dashboard: 'dashboard.menu.dashboard',
-      view_reports: 'staff.permissions.backoffice_list.view_reports',
-      view_orders: 'dashboard.menu.viewCustomerOrders',
-      void_items: 'staff.permissions.pos_list.void_items',
-      refunds: 'staff.permissions.pos_list.refunds',
-      discounts: 'staff.permissions.pos_list.apply_discounts',
-    };
-
-    const legacyDescriptionKey: Record<string, string> = {
-      pos: 'staff.permissions.descriptions.accept_payments',
-      dashboard: 'staff.permissions.descriptions.view_reports',
-      view_reports: 'staff.permissions.descriptions.view_reports',
-      view_orders: 'staff.permissions.descriptions.view_all_receipts',
-      void_items: 'staff.permissions.descriptions.void_items',
-      refunds: 'staff.permissions.descriptions.refunds',
-      discounts: 'staff.permissions.descriptions.apply_discounts',
-    };
-
     return CANONICAL_POS_PERMISSIONS.map(({ id, label, description }) => ({
       id,
-      label: t(legacyLabelKey[id] ?? `staff.permissions.pos_list.${id}`, { defaultValue: label }),
-      description: t(legacyDescriptionKey[id] ?? `staff.permissions.descriptions.${id}`, { defaultValue: description }),
+      label: t(`staff.permissions.pos_list.${id}`, { defaultValue: label }),
+      description: t(`staff.permissions.descriptions.${id}`, { defaultValue: description }),
     }));
   }, [t]);
 
   const BACKOFFICE_PERMISSIONS = useMemo(() => {
-    const legacyLabelKey: Record<string, string> = {
-      view_reports: 'staff.permissions.backoffice_list.view_reports',
-      view_orders: 'dashboard.menu.viewCustomerOrders',
-      manage_inventory: 'staff.permissions.backoffice_list.manage_items',
-      manage_employees: 'staff.permissions.backoffice_list.manage_employees',
-      manage_customers: 'staff.permissions.backoffice_list.manage_customers',
-      manage_discounts: 'dashboard.menu.discounts',
-      manage_payment_methods: 'staff.permissions.backoffice_list.manage_payment_types',
-      manage_settings: 'staff.permissions.backoffice_list.manage_settings',
-      view_activity_logs: 'dashboard.menu.systemLogs',
-      manage_billing: 'staff.permissions.backoffice_list.manage_billing',
-    };
-
-    const legacyDescriptionKey: Record<string, string> = {
-      view_reports: 'staff.permissions.descriptions.view_reports',
-      view_orders: 'staff.permissions.descriptions.view_all_receipts',
-      manage_inventory: 'staff.permissions.descriptions.manage_items',
-      manage_employees: 'staff.permissions.descriptions.manage_employees',
-      manage_customers: 'staff.permissions.descriptions.manage_customers',
-      manage_discounts: 'staff.permissions.descriptions.apply_discounts',
-      manage_payment_methods: 'staff.permissions.descriptions.manage_payment_types',
-      manage_settings: 'staff.permissions.descriptions.manage_settings',
-      view_activity_logs: 'staff.permissions.descriptions.view_activity_logs',
-      manage_billing: 'staff.permissions.descriptions.manage_billing',
-    };
-
-    return CANONICAL_BACKOFFICE_PERMISSIONS.map(({ id, label, description }) => ({
-      id,
-      label: t(legacyLabelKey[id] ?? `staff.permissions.backoffice_list.${id}`, { defaultValue: label }),
-      description: t(legacyDescriptionKey[id] ?? `staff.permissions.descriptions.${id}`, { defaultValue: description }),
-    }));
+    return CANONICAL_BACKOFFICE_PERMISSIONS
+      .filter(p => !['manage_establishment_profile', 'manage_tax_currency', 'manage_receipt_settings', 'delete_establishment'].includes(p.id))
+      .map(({ id, label, description }) => ({
+        id,
+        label: t(`staff.permissions.backoffice_list.${id}`, { defaultValue: label }),
+        description: t(`staff.permissions.descriptions.${id}`, { defaultValue: description }),
+      }));
   }, [t]);
 
   useScrollLock(isOpen);
@@ -385,15 +341,15 @@ export function EmployeeFormModal({
         setRole('USER');
         setPassword('');
         setConfirmPassword('');
-        setPermissions(['pos', 'discounts', 'refunds']);
-        setBackofficePermissions([]);
+        setPermissions(['pos', 'dashboard', 'discounts', 'refunds']);
+        setBackofficePermissions(['dashboard', 'view_orders']);
         setAllDiscountsSelected(true);
         setAllowedDiscounts([]);
         setSelectedCustomRoleId('');
         setLastAppliedTemplate(null);
         // Platform access control - defaults for new employees
         setPosAccess(true);
-        setBackofficeAccess(false);
+        setBackofficeAccess(true); // Website is considered back office also
 
         // If creating new and there's only one establishment, select it by default
         if (establishments && establishments.length === 1) {
@@ -538,7 +494,11 @@ export function EmployeeFormModal({
       posAccess,
       backofficeAccess,
       backofficePermissions: backofficeAccess
-        ? normalizeAndFilterPermissions(backofficePermissions, ALLOWED_BACKOFFICE_PERMISSION_IDS)
+        ? Array.from(new Set([
+            ...normalizeAndFilterPermissions(backofficePermissions, ALLOWED_BACKOFFICE_PERMISSION_IDS),
+            'dashboard',
+            'view_orders'
+          ]))
         : [],
     };
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Store, Plus, LogOut, ChevronRight, CheckCircle2, Loader2, Crown, ArrowLeft } from 'lucide-react';
@@ -23,15 +23,32 @@ export function SelectEstablishmentPage() {
   const [selectedName, setSelectedName] = useState('');
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
-  const handleSelect = (est: any) => {
-    setIsSwitching(true);
-    setSelectedName(est.name);
+  // Auto-redirect if non-owner has only one establishment
+  useEffect(() => {
+    // Only auto-redirect if we have exactly one establishment and it's a secondary admin
+    if (account?.isSecondaryAdmin && establishments.length === 1) {
+      const est = establishments[0];
+      
+      // We don't show the full switching overlay for auto-redirects 
+      // to avoid race conditions with the Resolver component
+      setCurrentEstablishment(est);
+      const slug = est.establishmentLoginId && est.establishmentLoginId.trim().length > 0
+        ? est.establishmentLoginId
+        : est.id;
+      
+      navigate(`/dashboard/${slug}`, { replace: true });
+    }
+  }, [account, establishments, navigate, setCurrentEstablishment]);
 
-    // Simulate a "Real" backend switch transition
+  const handleSelect = (est: any) => {
+    // Manual selection DOES show the overlay
+    setSelectedName(est.name);
+    setIsSwitching(true);
+
+    // Simulate a transition then navigate
     setTimeout(() => {
       setCurrentEstablishment(est);
       toast.success(t('establishments.activeToast', { name: est.name }));
-      // Use establishmentLoginId if available for pretty URL, ensuring it's not null/undefined/empty
       const slug = est.establishmentLoginId && est.establishmentLoginId.trim().length > 0
         ? est.establishmentLoginId
         : est.id;
@@ -140,20 +157,22 @@ export function SelectEstablishmentPage() {
             </motion.div>
           ))}
 
-          {/* Add New - Solid Design */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: establishments.length * 0.05 }}
-            onClick={() => navigate('/onboarding')}
-            className="bg-gray-100/50 dark:bg-white/[0.02] border-2 border-dashed border-gray-300 dark:border-white/[0.1] rounded-[2.5rem] p-8 cursor-pointer hover:border-paymint-green hover:bg-white dark:hover:bg-white/[0.05] transition-all flex flex-col items-center justify-center group min-h-[280px]"
-          >
-            <div className="w-16 h-16 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all">
-              <Plus size={28} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
-            </div>
-            <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2">{t('establishments.addLocation')}</h3>
-            <p className="text-xs font-black text-gray-500 tracking-widest">{t('onboarding.step1.businessTypes.other')}</p>
-          </motion.div>
+          {/* Add New - Solid Design - Only show for owners */}
+          {!account?.isSecondaryAdmin && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: establishments.length * 0.05 }}
+              onClick={() => navigate('/onboarding')}
+              className="bg-gray-100/50 dark:bg-white/[0.02] border-2 border-dashed border-gray-300 dark:border-white/[0.1] rounded-[2.5rem] p-8 cursor-pointer hover:border-paymint-green hover:bg-white dark:hover:bg-white/[0.05] transition-all flex flex-col items-center justify-center group min-h-[280px]"
+            >
+              <div className="w-16 h-16 bg-white dark:bg-white/5 rounded-full flex items-center justify-center mb-4 border border-gray-200 dark:border-white/10 group-hover:bg-paymint-green/10 group-hover:border-paymint-green transition-all">
+                <Plus size={28} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
+              </div>
+              <h3 className="text-base font-bold text-gray-900 dark:text-white mb-2">{t('establishments.addLocation')}</h3>
+              <p className="text-xs font-black text-gray-500 tracking-widest">{t('onboarding.step1.businessTypes.other')}</p>
+            </motion.div>
+          )}
         </div>
       </div>
 

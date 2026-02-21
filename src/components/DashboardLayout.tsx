@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { AppStrings } from '../constants/AppStrings';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -79,13 +79,23 @@ export function DashboardLayout() {
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
 
-  const getRelativePathFromUrl = (pathname: string): string => {
+  const getRelativePathFromUrl = useCallback((pathname: string): string => {
     // /dashboard/:slug/rest -> rest
     const parts = pathname.split('/');
     // parts[0] = '', [1] = 'dashboard', [2] = slug, [3...] = rest
     if (parts.length <= 3) return '.'; // pointing to root
     return parts.slice(3).join('/');
-  };
+  }, []);
+
+  const hasAccess = useCallback((path: string) => {
+    if (path === '.') return true; // root
+    if (!account?.isSecondaryAdmin) return true; // owners bypass checks
+
+    const required = REQUIRED_PERMISSIONS[path];
+    if (!required || required.length === 0) return true;
+
+    return checkPerms(account.permissions, required);
+  }, [account?.isSecondaryAdmin, account?.permissions]);
 
   // Filter menu based on permissions
   const filteredMenu = useMemo(() => {
@@ -147,16 +157,6 @@ export function DashboardLayout() {
     ];
 
     if (!account) return [];
-    if (!account.isSecondaryAdmin) return translatedMenuStructure;
-
-    const hasAccess = (path: string) => {
-      if (path === '.') return true; // root
-
-      const required = REQUIRED_PERMISSIONS[path];
-      if (!required) return true;
-
-      return checkPerms(account.permissions, required);
-    };
 
     return translatedMenuStructure.map(item => {
       if (isMenuGroup(item)) {
@@ -168,7 +168,18 @@ export function DashboardLayout() {
       }
       return hasAccess(item.path) ? item : null;
     }).filter((item): item is MenuItemOrGroup => item !== null);
-  }, [account, t]);
+  }, [account, hasAccess, t]);
+
+  const mobileBottomNavItems = useMemo(() => {
+    const items = [
+      { path: '.', label: t('dashboard.menu.dashboard'), icon: LayoutDashboard, exact: true },
+      { path: 'orders', label: t('dashboard.menu.orders'), icon: ShoppingCart },
+      { path: 'products', label: t('dashboard.menu.products'), icon: Package },
+    ];
+
+    const visible = items.filter((item) => hasAccess(item.path));
+    return visible.length > 0 ? visible : [items[0]];
+  }, [hasAccess, t]);
 
 
   // ... (keep useEffects, but updated dependencies if needed)
@@ -182,6 +193,19 @@ export function DashboardLayout() {
       return currentRelative.startsWith(item.path);
     });
   };
+
+  useEffect(() => {
+    if (!account?.isSecondaryAdmin) return;
+
+    const currentRelative = getRelativePathFromUrl(location.pathname);
+    if (currentRelative === '.') return;
+    if (hasAccess(currentRelative)) return;
+
+    const segments = location.pathname.split('/');
+    const locationSlug = segments[2];
+    const fallbackPath = locationSlug ? `/dashboard/${locationSlug}` : '/select-establishment';
+    navigate(fallbackPath, { replace: true });
+  }, [account?.isSecondaryAdmin, getRelativePathFromUrl, hasAccess, location.pathname, navigate]);
 
 
   useEffect(() => {
@@ -969,7 +993,10 @@ export function DashboardLayout() {
       </AnimatePresence>
 
       {/* Bottom Navigation - Mobile Only */}
-      <BottomNavigation onMenuClick={() => setMobileMenuOpen(true)} />
+      <BottomNavigation
+        onMenuClick={() => setMobileMenuOpen(true)}
+        items={mobileBottomNavItems}
+      />
 
       <ConfirmModal
         isOpen={isLogoutModalOpen}

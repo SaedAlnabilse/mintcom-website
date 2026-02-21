@@ -25,6 +25,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { CategoryFormModal, ICON_MAP } from '../../components/forms/CategoryFormModal';
 import { SearchInput, Pagination } from '../../components/ui';
+import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 
 interface Category {
   id: string;
@@ -48,6 +49,7 @@ interface Product {
 
 export function CategoriesPage() {
   const { t } = useTranslation();
+  usePermissionGuard(['manage_inventory']);
   const { currencySymbol } = useCurrency();
   const { locationSlug } = useParams();
   const navigate = useNavigate();

@@ -22,6 +22,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { QuickInfo } from '../../components/QuickInfo';
 import { useAuth } from '../../context/AuthContext';
+import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 
 const paymentMethodSchema = z.object({
   name: z.string().min(1, 'common.required'),
@@ -50,6 +51,7 @@ interface CardType {
 
 export function PaymentMethodsPage() {
   const { t } = useTranslation();
+  usePermissionGuard(['manage_payment_methods']);
   const { currentEstablishment } = useAuth();
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [cardTypes, setCardTypes] = useState<CardType[]>([]);

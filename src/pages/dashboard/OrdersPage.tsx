@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { startOfDay, endOfDay, format } from 'date-fns';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -11,6 +11,7 @@ import { getDateLocale } from '../../utils/dateLocale';
 import {
   ShoppingCart,
   Clock,
+  ChevronLeft,
   ChevronRight,
   TrendingUp,
   Download,
@@ -19,7 +20,8 @@ import {
   History,
   Eye,
   Undo2,
-  ArrowUpDown
+  ArrowUpDown,
+  Trash2
 } from 'lucide-react';
 import api from '../../config/api';
 import { ConfirmModal } from '../../components/ConfirmModal';
@@ -109,7 +111,12 @@ export function OrdersPage() {
     () => checkPermission(account, ['cancel_receipts', 'refunds']),
     [account],
   );
+  const canExport = useMemo(
+    () => checkPermission(account, ['export_data']),
+    [account],
+  );
   const [orders, setOrders] = useState<Order[]>([]);
+  const [heldOrders, setHeldOrders] = useState<Order[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [overallTotalCount, setOverallTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -174,6 +181,10 @@ export function OrdersPage() {
   });
 
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
+  const heldOrdersScrollRef = useRef<HTMLDivElement | null>(null);
+  const lastHeldArrowClickRef = useRef(0);
+  const [canScrollHeldLeft, setCanScrollHeldLeft] = useState(false);
+  const [canScrollHeldRight, setCanScrollHeldRight] = useState(false);
 
   const requestSort = (key: string) => {
     let direction: 'asc' | 'desc' = 'asc';
@@ -212,6 +223,31 @@ export function OrdersPage() {
     }
     return 0;
   });
+
+  const updateHeldOrdersScrollIndicators = useCallback(() => {
+    const el = heldOrdersScrollRef.current;
+    if (!el) {
+      setCanScrollHeldLeft(false);
+      setCanScrollHeldRight(false);
+      return;
+    }
+
+    const hasLeft = el.scrollLeft > 2;
+    const hasRight = el.scrollLeft + el.clientWidth < el.scrollWidth - 2;
+    setCanScrollHeldLeft(hasLeft);
+    setCanScrollHeldRight(hasRight);
+  }, []);
+
+  const scrollHeldOrders = useCallback((direction: 'left' | 'right') => {
+    const el = heldOrdersScrollRef.current;
+    if (!el) return;
+    lastHeldArrowClickRef.current = Date.now();
+    const amount = Math.max(280, Math.floor(el.clientWidth * 0.8));
+    el.scrollBy({
+      left: direction === 'right' ? amount : -amount,
+      behavior: 'smooth',
+    });
+  }, []);
 
   // Shift status for shift-based filtering
   const [shiftStatus, setShiftStatus] = useState<ShiftStatus | null>(null);
@@ -266,14 +302,6 @@ export function OrdersPage() {
       checkShiftStatus(false);
     }
   }, [currentEstablishment?.id, canUseShiftFeatures, checkShiftStatus]);
-
-  // Normalize filters for users without POS permission
-  useEffect(() => {
-    if (!canUsePosFeatures && statusFilter === 'HELD') {
-      setStatusFilter('all');
-      setPage(1);
-    }
-  }, [canUsePosFeatures, statusFilter]);
 
   // Normalize shift range for users without shift access
   useEffect(() => {
@@ -380,6 +408,13 @@ export function OrdersPage() {
     fetchPaymentOptions();
   }, []);
 
+  useEffect(() => {
+    updateHeldOrdersScrollIndicators();
+    const onResize = () => updateHeldOrdersScrollIndicators();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, [updateHeldOrdersScrollIndicators, heldOrders.length, statusFilter]);
+
   // Sync date range when selectedDateRange changes (for non-custom, non-shift ranges)
   useEffect(() => {
     // Only sync for standard date ranges (not custom or shift-based)
@@ -434,14 +469,12 @@ export function OrdersPage() {
 
       // 1. Held orders count (always needed for KPI)
       promises.push(
-        canUsePosFeatures
-          ? api
-              .get('/api/held-orders')
-              .catch((e) => {
-                console.error('Failed held orders', e);
-                return { data: [] };
-              })
-          : Promise.resolve({ data: [] }),
+        api
+          .get('/api/held-orders')
+          .catch((e) => {
+            console.error('Failed held orders', e);
+            return { data: [] };
+          })
       );
 
       // 2. Overall Total (always needed for KPI)
@@ -523,12 +556,17 @@ export function OrdersPage() {
       if (heldRes?.data && Array.isArray(heldRes.data)) {
         heldOrdersList = heldRes.data
           .map(mapHeldOrder)
-          .filter((h: Record<string, any>) => {
+          .filter((h: Order) => {
             const hDate = new Date(h.createdAt);
             return hDate >= start && hDate <= end;
           });
+        heldOrdersList.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         filteredHeldCount = heldOrdersList.length;
         setTotalHeldCount(filteredHeldCount);
+        setHeldOrders(heldOrdersList);
+      } else {
+        setHeldOrders([]);
+        setTotalHeldCount(0);
       }
 
       // Process Overall Total (for KPI)
@@ -767,6 +805,25 @@ export function OrdersPage() {
     });
   };
 
+  const handleDeleteHeldOrder = (heldOrderId: string) => {
+    setConfirmConfig({
+      isOpen: true,
+      title: t('common.delete'),
+      message: t('orders.messages.deleteHeldConfirm'),
+      type: 'danger',
+      onConfirm: async () => {
+        try {
+          await api.delete(`/api/held-orders/${heldOrderId}`);
+          toast.success(t('orders.messages.deleteHeldSuccess'));
+          fetchOrders(); // Refresh the list
+          setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+        } catch (err) {
+          toast.error((err as ApiError).response?.data?.message || t('orders.messages.deleteHeldFailed'));
+        }
+      }
+    });
+  };
+
   const getStatusStyle = (status: string) => {
     switch (status) {
       case 'COMPLETED':
@@ -851,13 +908,15 @@ export function OrdersPage() {
             </div>
           )}
           
-          <button
-            onClick={handleExport}
-            className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all touch-target"
-          >
-            <Download size={18} />
-            <span className="hidden xs:inline">{t('orders.export')}</span>
-          </button>
+          {canExport && (
+            <button
+              onClick={handleExport}
+              className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/10 transition-all touch-target"
+            >
+              <Download size={18} />
+              <span className="hidden xs:inline">{t('orders.export')}</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -925,7 +984,7 @@ export function OrdersPage() {
                 }}
                 options={[
                   { label: t('orders.status.completed'), value: 'COMPLETED' },
-                  ...(canUsePosFeatures ? [{ label: t('orders.status.onHold'), value: 'HELD' }] : []),
+                  { label: t('orders.status.onHold'), value: 'HELD' },
                   { label: t('orders.status.refunded'), value: 'REFUNDED' },
                 ]}
                 showAllOption={true}
@@ -995,7 +1054,7 @@ export function OrdersPage() {
             onClick: () => { setStatusFilter('all'); setPage(1); },
             active: statusFilter === 'all'
           },
-          ...(canUsePosFeatures ? [{
+          {
             label: t('orders.kpi.onHold'),
             value: totalHeldCount.toLocaleString(t('common.locale')),
             icon: Clock,
@@ -1003,7 +1062,7 @@ export function OrdersPage() {
             bg: 'bg-orange-500/10',
             onClick: () => { setStatusFilter('HELD'); setPaymentFilter('all'); setPage(1); },
             active: statusFilter === 'HELD'
-          }] : []),
+          },
         ].map((stat, i) => (
           <div
             key={i}
@@ -1032,6 +1091,128 @@ export function OrdersPage() {
           </div>
         ))}
       </div>
+
+      {/* Held Orders Section */}
+      {heldOrders.length > 0 && (statusFilter === 'all' || statusFilter === 'HELD') && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-black text-gray-900 dark:text-white tracking-widest flex items-center gap-2 uppercase">
+              <Clock size={16} className="text-orange-500" />
+              {t('orders.status.onHold')} ({heldOrders.length})
+            </h2>
+          </div>
+          
+          <div className="relative">
+            {canScrollHeldLeft && (
+              <div
+                className="absolute left-0 top-0 bottom-2 z-30 w-14 bg-gradient-to-r from-white dark:from-[#111827] to-transparent flex items-center justify-start pl-1"
+                onClick={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+              >
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    scrollHeldOrders('left');
+                  }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  className="h-9 w-9 rounded-[12px] border border-orange-200/70 dark:border-orange-500/30 bg-white/90 dark:bg-[#1f2937]/90 backdrop-blur-sm shadow-sm hover:shadow-md hover:border-orange-300 dark:hover:border-orange-500/50 text-orange-500 transition-all flex items-center justify-center"
+                  aria-label="Scroll held orders left"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+              </div>
+            )}
+            {canScrollHeldRight && (
+              <div
+                className="absolute right-0 top-0 bottom-2 z-30 w-14 bg-gradient-to-l from-white dark:from-[#111827] to-transparent flex items-center justify-end pr-1"
+                onClick={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+              >
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    scrollHeldOrders('right');
+                  }}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  className="h-9 w-9 rounded-[12px] border border-orange-200/70 dark:border-orange-500/30 bg-white/90 dark:bg-[#1f2937]/90 backdrop-blur-sm shadow-sm hover:shadow-md hover:border-orange-300 dark:hover:border-orange-500/50 text-orange-500 transition-all flex items-center justify-center"
+                  aria-label="Scroll held orders right"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            )}
+
+            <div
+              ref={heldOrdersScrollRef}
+              onScroll={updateHeldOrdersScrollIndicators}
+              className="flex flex-nowrap gap-4 overflow-x-auto scrollbar-none pb-2"
+            >
+              {heldOrders.map((order) => (
+                <div 
+                  key={order.id}
+                  onClick={() => {
+                    if (Date.now() - lastHeldArrowClickRef.current < 450) return;
+                    setSelectedOrder(order);
+                  }}
+                  className="group flex-none basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4 bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-orange-200 dark:border-orange-500/20 shadow-sm hover:shadow-md transition-all cursor-pointer relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-orange-500/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+                  
+                  <div className="relative z-10 space-y-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 group-hover:scale-110 transition-transform">
+                          <Clock size={18} />
+                        </div>
+                        <div>
+                          <p className="font-black text-gray-900 dark:text-white text-sm">#{order.orderNumber}</p>
+                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{formatDate(order.createdAt)}</p>
+                        </div>
+                      </div>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteHeldOrder(order.id);
+                        }}
+                        className="p-2 text-gray-400 hover:text-paymint-red hover:bg-paymint-red/10 rounded-lg transition-colors"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+
+                    <div className="space-y-1">
+                      <p className="text-sm font-bold text-gray-800 dark:text-gray-200 truncate">
+                        {order.customer?.name || t('orders.table.walkIn')}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-gray-500">{order.items.length} {t('hero.items')}</span>
+                        <span className="text-lg font-black text-gray-900 dark:text-white">{formatAmount(order.total)}</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
+                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                        {t('orders.table.staff')}: {order.user?.username}
+                      </span>
+                      <ChevronRight size={14} className="text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Orders List Container */}
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col min-h-[250px] lg:min-h-[350px]">

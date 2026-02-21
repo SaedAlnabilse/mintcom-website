@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown, Check, Smartphone, Monitor } from 'lucide-react';
 import api from '../config/api';
+import { QuickInfo } from './QuickInfo';
 import {
   POS_PERMISSIONS as CANONICAL_POS_PERMISSIONS,
   BACKOFFICE_PERMISSIONS as CANONICAL_BACKOFFICE_PERMISSIONS,
@@ -38,20 +39,14 @@ interface CustomRoleFormModalProps {
   isSubmitting?: boolean;
 }
 
-const POS_PERMISSIONS = CANONICAL_POS_PERMISSIONS.map((permission) => ({
-  id: permission.id,
-  label: permission.label,
-  description: permission.description,
-}));
+interface PermissionItem {
+  id: string;
+  label: string;
+  description: string;
+}
 
-const BACKOFFICE_PERMISSIONS = CANONICAL_BACKOFFICE_PERMISSIONS.map((permission) => ({
-  id: permission.id,
-  label: permission.label,
-  description: permission.description,
-}));
-
-const ALLOWED_POS_PERMISSION_IDS = new Set(POS_PERMISSIONS.map(({ id }) => id));
-const ALLOWED_BACKOFFICE_PERMISSION_IDS = new Set(BACKOFFICE_PERMISSIONS.map(({ id }) => id));
+const ALLOWED_POS_PERMISSION_IDS = new Set(CANONICAL_POS_PERMISSIONS.map(({ id }) => id));
+const ALLOWED_BACKOFFICE_PERMISSION_IDS = new Set(CANONICAL_BACKOFFICE_PERMISSIONS.map(({ id }) => id));
 
 const normalizePermissionList = (values: string[] | undefined): string[] => {
   if (!Array.isArray(values)) return [];
@@ -71,6 +66,35 @@ export function CustomRoleFormModal({
   isSubmitting = false,
 }: CustomRoleFormModalProps) {
   const { t } = useTranslation();
+
+  const POS_PERMISSIONS = useMemo<PermissionItem[]>(() => {
+    return CANONICAL_POS_PERMISSIONS.map((permission) => ({
+      id: permission.id,
+      label: t(`staff.permissions.pos_list.${permission.id}`, { defaultValue: permission.label }),
+      description: t(`staff.permissions.descriptions.${permission.id}`, { defaultValue: permission.description }),
+    }));
+  }, [t]);
+
+  const BACKOFFICE_PERMISSIONS = useMemo<PermissionItem[]>(() => {
+    return CANONICAL_BACKOFFICE_PERMISSIONS
+      .filter(p => !['manage_establishment_profile', 'manage_tax_currency', 'manage_receipt_settings', 'delete_establishment'].includes(p.id))
+      .map((permission) => ({
+        id: permission.id,
+        label: permission.label,
+        description: permission.label, // Make them work as the text is distribution/description
+      }));
+  }, []);
+
+  const SETTINGS_SUB_PERMISSIONS = useMemo<PermissionItem[]>(() => {
+    return CANONICAL_BACKOFFICE_PERMISSIONS
+      .filter(p => ['manage_establishment_profile', 'manage_tax_currency', 'manage_receipt_settings', 'delete_establishment'].includes(p.id))
+      .map((permission) => ({
+        id: permission.id,
+        label: permission.label,
+        description: permission.description,
+      }));
+  }, []);
+
   const [name, setName] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -127,9 +151,9 @@ export function CustomRoleFormModal({
         // Defaults for new role
         setName('');
         setPosAccess(true);
-        setBackofficeAccess(false);
-        setPermissions(['pos', 'discounts', 'refunds']);
-        setBackofficePermissions([]);
+        setBackofficeAccess(true); // Website is considered back office also
+        setPermissions(['pos', 'dashboard', 'discounts', 'refunds']);
+        setBackofficePermissions(['dashboard', 'view_orders']); // Default access to dashboard and orders
         setAllowedDiscounts([]);
         setAllDiscountsSelected(true);
       }
@@ -167,7 +191,7 @@ export function CustomRoleFormModal({
     const newErrors: Record<string, string> = {};
     if (!name.trim()) newErrors.name = t('common.required');
 
-    // Validation: At least one permission must be enabled
+    // Validation: At least one permission must be enabled or posAccess implies defaults
     const finalPermissions = posAccess
       ? normalizeAndFilterPermissions(permissions, ALLOWED_POS_PERMISSION_IDS)
       : [];
@@ -175,7 +199,7 @@ export function CustomRoleFormModal({
       ? normalizeAndFilterPermissions(backofficePermissions, ALLOWED_BACKOFFICE_PERMISSION_IDS)
       : [];
 
-    if (finalPermissions.length === 0 && finalBackofficePermissions.length === 0) {
+    if (finalPermissions.length === 0 && finalBackofficePermissions.length === 0 && !posAccess) {
       newErrors.general = t('roles.validation.atLeastOnePermission');
     }
 
@@ -187,12 +211,14 @@ export function CustomRoleFormModal({
     const payload: Omit<CustomRole, 'id'> = {
       name: name.trim(),
       baseRole: 'USER', // Default base role for custom roles
-      permissions: finalPermissions,
+      permissions: posAccess ? Array.from(new Set([...finalPermissions, 'pos', 'void_items'])) : [],
       allowedDiscounts: allDiscountsSelected ? [] : allowedDiscounts,
       // Access Control
       posAccess,
       backofficeAccess,
-      backofficePermissions: finalBackofficePermissions,
+      backofficePermissions: backofficeAccess 
+        ? Array.from(new Set([...finalBackofficePermissions, 'dashboard', 'view_orders']))
+        : [],
     };
 
     await onSubmit(payload);
@@ -360,7 +386,7 @@ export function CustomRoleFormModal({
                                       {allowedDiscounts.includes(discount.id) && <Check size={14} className="text-white" />}
                                     </div>
                                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                                      {discount.name} ({ (discount.percentage * 100).toLocaleString(t('common.locale')) }%)
+                                      {discount.name} ({(discount.percentage * 100).toLocaleString(t('common.locale'))}%)
                                     </p>
                                   </div>
                                 ))}
@@ -385,7 +411,10 @@ export function CustomRoleFormModal({
                       <Monitor size={24} />
                     </div>
                     <div>
-                      <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('roles.backoffice.title')}</h3>
+                      <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-1">
+                        {t('roles.backoffice.title')}
+                        <QuickInfo text={`${t('dashboard.menu.dashboard')} & ${t('dashboard.menu.orders')} - Included by default with Back Office access`} />
+                      </h3>
                       <p className="text-xs text-gray-500 max-w-[250px] leading-relaxed">{t('roles.backoffice.description')}</p>
                     </div>
                   </div>
@@ -407,21 +436,49 @@ export function CustomRoleFormModal({
                     >
                       <div className="p-5 space-y-3">
                         {BACKOFFICE_PERMISSIONS.map(perm => (
-                          <div
-                            key={perm.id}
-                            className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
-                            onClick={() => toggleBackofficePermission(perm.id)}
-                          >
-                            <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-all duration-200 ${backofficePermissions.includes(perm.id)
-                              ? 'bg-paymint-green border-paymint-green shadow-sm'
-                              : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
-                              }`}>
-                              {backofficePermissions.includes(perm.id) && <Check size={14} className="text-white" />}
+                          <div key={perm.id}>
+                            <div
+                              className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                              onClick={() => toggleBackofficePermission(perm.id)}
+                            >
+                              <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-all duration-200 ${backofficePermissions.includes(perm.id)
+                                ? 'bg-paymint-green border-paymint-green shadow-sm'
+                                : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
+                                }`}>
+                                {backofficePermissions.includes(perm.id) && <Check size={14} className="text-white" />}
+                              </div>
+                              <div>
+                                <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{perm.label}</p>
+                                {perm.description && <p className="text-xs text-gray-400 mt-1 font-medium">{perm.description}</p>}
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{perm.label}</p>
-                              {perm.description && <p className="text-xs text-gray-400 mt-1 font-medium">{perm.description}</p>}
-                            </div>
+
+                            {/* Settings Sub-permissions */}
+                            {perm.id === 'manage_settings' && backofficePermissions.includes('manage_settings') && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                className="ml-8 mt-2 space-y-2 border-l-2 border-paymint-green/20 pl-4 mb-4"
+                              >
+                                {SETTINGS_SUB_PERMISSIONS.map(sub => (
+                                  <div
+                                    key={sub.id}
+                                    className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                                    onClick={() => toggleBackofficePermission(sub.id)}
+                                  >
+                                    <div className={`mt-0.5 w-4 h-4 rounded border flex items-center justify-center transition-all duration-200 ${backofficePermissions.includes(sub.id)
+                                      ? 'bg-paymint-green border-paymint-green shadow-sm'
+                                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
+                                      }`}>
+                                      {backofficePermissions.includes(sub.id) && <Check size={12} className="text-white" />}
+                                    </div>
+                                    <div>
+                                      <p className="text-xs font-bold text-gray-600 dark:text-gray-300 leading-none">{sub.label}</p>
+                                    </div>
+                                  </div>
+                                ))}
+                              </motion.div>
+                            )}
                           </div>
                         ))}
                       </div>

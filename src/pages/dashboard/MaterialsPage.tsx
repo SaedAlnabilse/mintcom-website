@@ -18,6 +18,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { CustomSelect } from '../../components/CustomSelect';
 import { QuickInfo } from '../../components/QuickInfo';
 import { SearchInput, Pagination } from '../../components/ui';
+import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 
 interface RawMaterial {
   id: string;
@@ -39,6 +40,7 @@ interface SubRecipe {
 
 export function MaterialsPage() {
   const { t } = useTranslation();
+  usePermissionGuard(['manage_inventory']);
   const { locationSlug } = useParams();
   const navigate = useNavigate();
   const location = useLocation();

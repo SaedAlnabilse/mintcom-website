@@ -20,6 +20,7 @@ import api from '../../config/api';
 import { useCurrency } from '../../context/CurrencyContext';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { Pagination } from '../../components/ui';
+import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 
 interface SubAttribute {
   id: string;
@@ -39,6 +40,7 @@ interface Attribute {
 
 export function AddonsPage() {
   const { t } = useTranslation();
+  usePermissionGuard(['manage_inventory']);
   const { formatAmount, currencySymbol } = useCurrency();
   const location = useLocation();
   const [attributes, setAttributes] = useState<Attribute[]>([]);

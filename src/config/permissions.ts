@@ -1,64 +1,69 @@
 /**
- * Centralized Permission Configuration
- *
- * This file defines all permissions used across the application.
- * Uses the canonical permission spec from the backend.
- * Legacy aliases are included in route maps for backward compatibility
- * with old tokens that haven't been re-issued yet.
+ * Centralized permission configuration for backoffice routing + UI checks.
+ * Keep LEGACY_ALIAS_MAP aligned with backend permissions.constants.ts.
  */
 
-// ─── Legacy Alias Map (client-side copy for normalization) ───────────
-// This mirrors the backend LEGACY_ALIAS_MAP for client-side normalization.
 export const LEGACY_ALIAS_MAP: Record<string, string> = {
+  // Reports
   reports: 'view_reports',
-  view_shift_reports: 'view_shift_reports',
   shift_reports: 'view_shift_reports',
+  view_previous_shift_analytics: 'view_shift_reports',
+
+  // Inventory
   items: 'manage_inventory',
   inventory: 'manage_inventory',
   manage_items: 'manage_inventory',
   manage_products: 'manage_inventory',
   manage_categories: 'manage_inventory',
-  view_cost: 'view_cost',
   view_costs: 'view_cost',
   view_item_cost: 'view_cost',
+
+  // Employees
   employees: 'manage_employees',
   manage_staff: 'manage_employees',
+
+  // Settings
   settings: 'manage_settings',
   manage_taxes: 'change_taxes',
   manage_devices: 'manage_settings',
   manage_loyalty: 'manage_settings',
   manage_loyalty_program: 'manage_loyalty_program',
-  manage_taxes_backoffice: 'manage_taxes_backoffice',
-  manage_kitchen_printers: 'manage_kitchen_printers',
   manage_printers: 'manage_kitchen_printers',
   kitchen_printers: 'manage_kitchen_printers',
   manage_pos_devices: 'manage_pos_devices',
   pos_devices: 'manage_pos_devices',
   manage_payment_types: 'manage_payment_methods',
+
+  // Discounts (POS)
+  apply_discounts: 'discounts',
+
+  // Refunds / Orders / POS
   refund_orders: 'refunds',
   void_orders: 'void_items',
   view_dashboard: 'dashboard',
-  apply_discounts: 'discounts',
   create_orders: 'pos',
   accept_payments: 'pos',
   view_all_receipts: 'view_orders',
   cancel_receipts: 'cancel_receipts',
-  cancel_receipt: 'cancel_receipts',
   manage_open_tickets: 'manage_open_tickets',
   open_cash_drawer: 'open_cash_drawer',
+  open_drawer: 'open_cash_drawer',
   reprint_receipts: 'reprint_receipts',
   change_taxes: 'change_taxes',
   live_chat: 'live_chat',
-  live_chat_support: 'live_chat',
+  pay_in_pay_out: 'pay_in_pay_out',
+  restock_items: 'restock_items',
+  loyalty_system_access: 'loyalty_system_access',
+  delete_establishment: 'delete_establishment',
 };
 
 /**
  * Map of route paths to required permissions.
  * User needs at least ONE of the listed permissions to access the route.
- * Multiple permissions are listed for backward compatibility with legacy permission names.
  */
 export const REQUIRED_PERMISSIONS: Record<string, string[]> = {
-  // Reports — only canonical names needed; hasPermission normalizes legacy aliases
+  // Reports
+  'reports': ['view_reports'],
   'reports/sales': ['view_reports'],
   'reports/items': ['view_reports'],
   'reports/staff-sales': ['view_reports'],
@@ -66,6 +71,7 @@ export const REQUIRED_PERMISSIONS: Record<string, string[]> = {
   'reports/modifiers': ['view_reports'],
   'reports/discounts': ['view_reports'],
   'reports/taxes': ['view_reports'],
+  'reports/receipts': ['view_reports'],
   'reports/shifts': ['view_shift_reports', 'view_reports'],
   'reports/cash-discrepancy': ['view_reports'],
 
@@ -87,65 +93,59 @@ export const REQUIRED_PERMISSIONS: Record<string, string[]> = {
   'roles': ['manage_employees'],
   'admin-users': ['manage_employees'],
 
-  // Discounts & Loyalty
+  // Discounts / Loyalty / Customers
   'discounts': ['manage_discounts'],
-  'loyalty': ['manage_loyalty_program', 'manage_settings'],
-  'customers': ['manage_customers'],
+  'loyalty': ['manage_loyalty_program', 'manage_discounts'],
+  'customers': ['manage_customers', 'manage_discounts'],
 
   // Settings & Admin
   'settings': ['manage_settings', 'manage_taxes_backoffice', 'manage_kitchen_printers', 'manage_pos_devices'],
-  'activity-logs': ['view_activity_logs'],
+  'activity-logs': [
+    'view_activity_logs',
+    'manage_settings',
+    'manage_establishment_profile',
+    'manage_tax_currency',
+    'manage_receipt_settings',
+  ],
   'billing': ['manage_billing'],
   'establishments': ['manage_settings'],
 };
 
-/**
- * POS Permissions - Used when displaying permission toggles for POS access.
- * Uses canonical permission IDs.
- */
 export const POS_PERMISSIONS = [
-  { id: 'pos', label: 'POS System', description: 'Access to sales screen' },
+  { id: 'pos', label: 'POS System', description: 'Access to the sales screen' },
   { id: 'dashboard', label: 'Dashboard', description: 'View sales summary & analytics' },
-  { id: 'view_reports', label: 'Reports', description: 'View sales reports' },
-  { id: 'view_orders', label: 'View Orders', description: 'View order history' },
-  { id: 'view_shift_reports', label: 'Shift Reports', description: 'View shift-level reports' },
-  { id: 'void_items', label: 'Void Items', description: 'Void items from active orders' },
-  { id: 'refunds', label: 'Refunds', description: 'Process refunds' },
+  { id: 'view_shift_reports', label: 'View Shift Reports', description: 'View shift-level performance reports' },
+  { id: 'open_cash_drawer', label: 'Open Cash Drawer', description: 'Open cash drawer without sale completion' },
+  { id: 'change_taxes', label: 'Change Taxes', description: 'Change tax settings during sales operations' },
+  { id: 'pay_in_pay_out', label: 'Pay in Pay out', description: 'Pay in Pay out' },
+  { id: 'restock_items', label: 're-stock items', description: 're-stock items' },
+  { id: 'manage_open_tickets', label: 'Manage Open Tickets', description: 'View and manage all held/open tickets' },
+  { id: 'refunds', label: 'Refunds', description: 'Process refunds on completed orders' },
   { id: 'discounts', label: 'Discounts', description: 'Apply discounts at POS' },
-  { id: 'manage_open_tickets', label: 'Manage Open Tickets', description: 'View and manage all open/held tickets' },
-  { id: 'open_cash_drawer', label: 'Open Cash Drawer', description: 'Open drawer without making a sale' },
+  { id: 'loyalty_system_access', label: 'Loyalty System Access', description: 'Access to loyalty system' },
   { id: 'reprint_receipts', label: 'Reprint Receipts', description: 'Reprint and resend receipts' },
-  { id: 'change_taxes', label: 'Change Taxes', description: 'Change tax rate in sales workflow' },
-  { id: 'view_cost', label: 'View Costs', description: 'View item costs and margins' },
-  { id: 'live_chat', label: 'Live Chat Support', description: 'Access live support chat' },
+  { id: 'live_chat', label: 'Live Chat', description: 'Access live support chat' },
 ] as const;
 
-/**
- * Backoffice Permissions - Used in the website dashboard.
- * Uses canonical permission IDs.
- */
 export const BACKOFFICE_PERMISSIONS = [
-  { id: 'view_reports', label: 'View Sales Reports', description: 'Access dashboard and analytics' },
-  { id: 'view_orders', label: 'View Orders', description: 'View order history and receipts' },
-  { id: 'cancel_receipts', label: 'Cancel Receipts', description: 'Cancel or refund completed receipts' },
-  { id: 'manage_inventory', label: 'Manage Items and Inventory', description: 'Create and edit products, categories, and stock' },
-  { id: 'view_cost', label: 'View Cost', description: 'View product cost and margin fields' },
-  { id: 'manage_customers', label: 'Manage Customers', description: 'View and edit customer database' },
-  { id: 'manage_employees', label: 'Manage Employees', description: 'Add/edit staff and roles' },
-  { id: 'manage_discounts', label: 'Manage Discounts', description: 'Create and edit discount definitions' },
-  { id: 'manage_settings', label: 'Edit General Settings', description: 'General store configuration and profile settings' },
-  { id: 'manage_billing', label: 'Manage Billing', description: 'View and manage subscription & billing' },
-  { id: 'manage_payment_methods', label: 'Manage Payment Types', description: 'Configure payment options' },
-  { id: 'manage_loyalty_program', label: 'Manage Loyalty Program', description: 'Configure loyalty earning and rewards rules' },
-  { id: 'manage_taxes_backoffice', label: 'Manage Taxes', description: 'Update tax settings from back office' },
-  { id: 'manage_kitchen_printers', label: 'Manage Kitchen Printers', description: 'Configure kitchen printer settings and routing' },
-  { id: 'manage_pos_devices', label: 'Manage POS Devices', description: 'Manage registers and connected POS devices' },
-  { id: 'live_chat', label: 'Access Live Chat Support', description: 'Access in-app support chat' },
-  { id: 'view_activity_logs', label: 'View Activity Logs', description: 'See system activity' },
+  { id: 'view_reports', label: 'Full Sales Reports', description: 'Access detailed sales analytics, peak hours, and financial summaries' },
+  { id: 'cancel_receipts', label: 'Refund Orders', description: 'Authorize order refunds and receipt cancellations from the back office' },
+  { id: 'manage_inventory', label: 'Inventory', description: 'Manage products, categories, stock tracking, and production recipes' },
+  { id: 'manage_payment_methods', label: 'Payment Methods', description: 'Configure accepted payment types like Cash, Card, and digital methods' },
+  { id: 'manage_employees', label: 'Manage Employees', description: 'Create and manage staff accounts and their access permissions' },
+  { id: 'manage_discounts', label: 'Discounts, Loyalty & Customers', description: 'Manage promotional discounts, loyalty points, rewards, and the customer database' },
+  { id: 'manage_loyalty_program', label: 'Loyalty Program', description: 'Configure loyalty points and rewards rules' },
+  { id: 'manage_settings', label: 'Store Settings', description: 'Control general store configurations and establishment settings' },
+  { id: 'manage_establishment_profile', label: 'Location Profile', description: 'Update store branding, address, and contact details' },
+  { id: 'manage_tax_currency', label: 'Tax & Currency', description: 'Set up regional tax rates and currency display options' },
+  { id: 'manage_receipt_settings', label: 'Receipts', description: 'Customize receipt layout, logo, and printed messages' },
+  { id: 'delete_establishment', label: 'Delete Location', description: 'Permit the permanent removal of this establishment from the system' },
+  { id: 'delete_receipt', label: 'Delete Receipts', description: 'Grant permission to permanently remove transaction records' },
+  { id: 'export_data', label: 'Allow Data Export', description: 'Export business data into CSV or PDF formats for external analysis' },
 ] as const;
 
 /**
- * Normalize a permission array: resolve legacy aliases → canonical names.
+ * Normalize a permission string using the legacy alias map.
  */
 export function normalizePermission(permission: string): string {
   const lower = permission.trim().toLowerCase();
@@ -162,8 +162,7 @@ export function normalizePermissions(permissions: string[]): string[] {
 }
 
 /**
- * Check if a user has at least one of the required permissions.
- * Normalizes both sides through the legacy alias map.
+ * Check whether a user has at least one of the required permissions.
  */
 export function hasPermission(
   userPermissions: string[] | undefined,
@@ -172,23 +171,22 @@ export function hasPermission(
   if (!requiredPermissions || requiredPermissions.length === 0) return true;
   if (!userPermissions || userPermissions.length === 0) return false;
 
-  // Wildcard check
   if (userPermissions.includes('*') || userPermissions.includes('ALL')) return true;
 
   const userNormalized = new Set(normalizePermissions(userPermissions));
   const requiredNormalized = normalizePermissions(requiredPermissions);
 
-  return requiredNormalized.some(p => userNormalized.has(p));
+  return requiredNormalized.some((p) => userNormalized.has(p));
 }
 
 /**
- * Check if a user has access to a specific route
+ * Check route access based on REQUIRED_PERMISSIONS.
  */
 export function hasRouteAccess(
   userPermissions: string[] | undefined,
   routePath: string
 ): boolean {
   const required = REQUIRED_PERMISSIONS[routePath];
-  if (!required) return true; // No permissions required for this route
+  if (!required) return true;
   return hasPermission(userPermissions, required);
 }

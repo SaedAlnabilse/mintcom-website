@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBlocker } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -10,7 +10,8 @@ import { EstablishmentDeletionWizard, PendingDeletionBanner } from '../../compon
 import { CustomSelect } from '../../components/CustomSelect';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useTranslation } from 'react-i18next';
-import { usePermissionGuard } from '../../hooks/usePermissionGuard';
+import { usePermissionGuard, checkPermission } from '../../hooks/usePermissionGuard';
+import { useAuth } from '../../context/AuthContext';
 
 interface ApiError {
   response?: {
@@ -76,14 +77,40 @@ interface EstablishmentInfo {
 
 export function SettingsPage() {
   const { t } = useTranslation();
+  const { account } = useAuth();
   usePermissionGuard([
     'manage_settings',
     'manage_taxes_backoffice',
     'manage_kitchen_printers',
     'manage_pos_devices',
+    'manage_establishment_profile',
+    'manage_tax_currency',
+    'manage_receipt_settings',
+    'delete_establishment',
   ]);
   const { refreshCurrency } = useCurrency();
+
+  const tabs = useMemo(() => {
+    const availableTabs = [
+      { id: 'profile', label: t('settings.tabs.profile'), icon: Store, permission: 'manage_establishment_profile' },
+      { id: 'sales', label: t('settings.tabs.sales'), icon: CreditCard, permission: 'manage_tax_currency' },
+      { id: 'receipt', label: t('settings.tabs.receipts'), icon: Receipt, permission: 'manage_receipt_settings' },
+      { id: 'danger', label: t('settings.tabs.danger'), icon: Trash2, isDanger: true, permission: 'delete_establishment' },
+    ];
+
+    // If owner or has specific permissions, show the tabs
+    return availableTabs.filter(tab => checkPermission(account, [tab.permission]));
+  }, [account, t]);
+
   const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
+
+  // Auto-select first available tab if current is not available
+  useEffect(() => {
+    if (tabs.length > 0 && !tabs.find((t: any) => t.id === activeTab)) {
+      setActiveTab(tabs[0].id as SettingsTab);
+    }
+  }, [tabs, activeTab]);
+
   const [, setSettings] = useState<AppSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -534,14 +561,6 @@ export function SettingsPage() {
     setActiveTab(newTab);
   };
 
-  const tabs = [
-    { id: 'profile', label: t('settings.tabs.profile'), icon: Store },
-    { id: 'sales', label: t('settings.tabs.sales'), icon: CreditCard },
-    { id: 'receipt', label: t('settings.tabs.receipts'), icon: Receipt },
-
-    { id: 'danger', label: t('settings.tabs.danger'), icon: Trash2, isDanger: true },
-  ];
-
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
@@ -614,7 +633,7 @@ export function SettingsPage() {
       </div>
 
       <div className="flex flex-wrap gap-1 p-1.5 bg-gray-100 dark:bg-black/40 rounded-2xl border border-gray-200 dark:border-white/[0.1] w-full relative isolate shadow-2xl backdrop-blur-xl ring-1 ring-black/20">
-        {tabs.map((tab) => (
+        {tabs.map((tab: any) => (
           <button
             key={tab.id}
             type="button"

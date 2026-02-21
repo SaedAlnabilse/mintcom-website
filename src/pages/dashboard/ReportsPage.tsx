@@ -12,6 +12,8 @@ import toast from 'react-hot-toast';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useTranslation } from 'react-i18next';
 import { getDateLocale } from '../../utils/dateLocale';
+import { useAuth } from '../../context/AuthContext';
+import { checkPermission, usePermissionGuard } from '../../hooks/usePermissionGuard';
 
 import { ReceiptsReport } from '../../components/dashboard/reports/ReceiptsReport';
 import { SingleSelect } from '../../components/SingleSelect';
@@ -43,7 +45,12 @@ interface EmployeeOption {
 
 export function ReportsPage() {
   const { t } = useTranslation();
+  const { account } = useAuth();
   const { currencySymbol } = useCurrency();
+  usePermissionGuard(['view_reports']);
+
+  const canExport = useMemo(() => checkPermission(account, ['export_data']), [account]);
+
   const location = useLocation();
   const navigate = useNavigate();
   const params = useParams();
@@ -411,13 +418,15 @@ export function ReportsPage() {
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            onClick={handleExport}
-            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
-          >
-            <Download size={18} className="text-gray-900 dark:text-white" />
-            <span>{t('orders.export')}</span>
-          </button>
+          {canExport && (
+            <button
+              onClick={handleExport}
+              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all"
+            >
+              <Download size={18} className="text-gray-900 dark:text-white" />
+              <span>{t('orders.export')}</span>
+            </button>
+          )}
         </div>
       </div>
 

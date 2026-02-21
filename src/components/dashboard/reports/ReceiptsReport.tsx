@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Search,
@@ -16,6 +16,8 @@ import { CustomSelect } from '../../CustomSelect';
 import api from '../../../config/api';
 import { exportToCSV } from '../../../utils/export';
 import { format } from 'date-fns';
+import { useAuth } from '../../../context/AuthContext';
+import { checkPermission } from '../../../hooks/usePermissionGuard';
 
 
 interface ReceiptsReportProps {
@@ -28,7 +30,11 @@ interface ReceiptsReportProps {
 
 export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsReportProps) {
     const { t } = useTranslation();
+    const { account } = useAuth();
     const { formatAmount, currencySymbol } = useCurrency();
+
+    const canExport = useMemo(() => checkPermission(account, ['export_data']), [account]);
+
     const [orders, setOrders] = useState<Order[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -216,13 +222,15 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                             ]}
                         />
                     </div>
-                    <button
-                        onClick={handleExport}
-                        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.05] text-gray-900 dark:text-white font-bold text-xs hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
-                    >
-                        <Download size={16} className="text-paymint-green" />
-                        <span>{t('orders.export')}</span>
-                    </button>
+                    {canExport && (
+                        <button
+                            onClick={handleExport}
+                            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.05] text-gray-900 dark:text-white font-bold text-xs hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
+                        >
+                            <Download size={16} className="text-paymint-green" />
+                            <span>{t('orders.export')}</span>
+                        </button>
+                    )}
                 </div>
             </div>
 

@@ -27,7 +27,7 @@ import { QuickInfo } from '../../components/QuickInfo';
 import { SearchInput, Pagination } from '../../components/ui';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useAuth } from '../../context/AuthContext';
-import { checkPermission } from '../../hooks/usePermissionGuard';
+import { checkPermission, usePermissionGuard } from '../../hooks/usePermissionGuard';
 
 
 interface Category {
@@ -56,6 +56,7 @@ interface Product {
 
 export function ProductsPage() {
     const { t } = useTranslation();
+    usePermissionGuard(['manage_inventory']);
     const { currencySymbol } = useCurrency();
     const { account } = useAuth();
     const location = useLocation();

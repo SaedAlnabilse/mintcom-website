@@ -44,7 +44,7 @@ interface LoyaltyReward {
 
 export function LoyaltyPage() {
     const { t } = useTranslation();
-    usePermissionGuard(['manage_loyalty_program', 'manage_settings']);
+    usePermissionGuard(['manage_loyalty_program', 'manage_discounts']);
     const [loyaltyConfig, setLoyaltyConfig] = useState<LoyaltyConfig | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [initialLoyaltyConfig, setInitialLoyaltyConfig] = useState<LoyaltyConfig | null>(null);

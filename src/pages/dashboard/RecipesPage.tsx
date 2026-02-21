@@ -17,6 +17,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { CustomSelect } from '../../components/CustomSelect';
 import { QuickInfo } from '../../components/QuickInfo';
 import { SearchInput, Pagination } from '../../components/ui';
+import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 
 const UNIT_CONVERSIONS: Record<string, { type: 'mass' | 'volume' | 'count'; factor: number }> = {
   Kg: { type: 'mass', factor: 1000 }, // Base: g
@@ -100,6 +101,7 @@ interface MenuItem {
 
 export function RecipesPage() {
   const { t } = useTranslation();
+  usePermissionGuard(['manage_inventory']);
   const { locationSlug } = useParams();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'final' | 'sub'>('final');
