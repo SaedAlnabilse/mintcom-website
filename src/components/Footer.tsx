@@ -84,14 +84,10 @@ export const Footer = () => {
   const companyLinks: FooterLink[] = [
     { name: t('footer.aboutUs'), href: '/about' },
     { name: t('contact.title'), href: '/#contact' },
-    { name: t('nav.community'), href: '/community' },
   ];
 
   const resourceLinks: FooterLink[] = [
     { name: t('footer.helpCenter'), href: '/support' },
-    { name: t('footer.guides'), href: '/community/guides' },
-    { name: t('footer.featureIdeas'), href: '/community/ideas' },
-    { name: t('footer.discussions'), href: '/community/discussions' },
   ];
 
   return (

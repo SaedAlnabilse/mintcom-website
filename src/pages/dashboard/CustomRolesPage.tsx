@@ -19,6 +19,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { CustomRoleFormModal } from '../../components/CustomRoleFormModal';
 import { Pagination } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
+import { getLocalizedRoleName } from '../../utils/roleNames';
 
 interface CustomRole {
   id: string;
@@ -65,6 +66,8 @@ export function CustomRolesPage() {
     fetchRoles();
   }, []);
 
+  const getRoleDisplayName = (name: string) => getLocalizedRoleName(name, t);
+
   const fetchRoles = async () => {
     try {
       setIsLoading(true);
@@ -93,6 +96,7 @@ export function CustomRolesPage() {
   const filteredRoles = useMemo(() => {
     const result = (Array.isArray(roles) ? roles : []).filter(role =>
       role.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      getRoleDisplayName(role.name).toLowerCase().includes(searchQuery.toLowerCase()) ||
       (role.baseRole || '').toLowerCase().includes(searchQuery.toLowerCase())
     );
 
@@ -121,7 +125,7 @@ export function CustomRolesPage() {
     }
 
     return result;
-  }, [roles, searchQuery, sortConfig]);
+  }, [roles, searchQuery, sortConfig, t]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -144,7 +148,7 @@ export function CustomRolesPage() {
     setConfirmConfig({
       isOpen: true,
       roleId: role.id,
-      roleName: role.name,
+      roleName: getRoleDisplayName(role.name),
     });
   };
 
@@ -297,7 +301,7 @@ export function CustomRolesPage() {
                         <Shield size={24} />
                       </div>
                       <div>
-                        <h3 className="font-bold text-gray-900 dark:text-white text-sm">{role.name}</h3>
+                        <h3 className="font-bold text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</h3>
                         <span className={`inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                           <UserCheck size={10} />
                           {role.baseRole ? (t(`staff.roles.${role.baseRole.toLowerCase()}`) !== `staff.roles.${role.baseRole.toLowerCase()}` ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : role.baseRole.charAt(0) + role.baseRole.slice(1).toLowerCase()) : ''}
@@ -362,7 +366,7 @@ export function CustomRolesPage() {
                           <Shield size={20} />
                         </div>
                         <div>
-                          <h3 className="font-bold text-gray-900 dark:text-white text-sm">{role.name}</h3>
+                          <h3 className="font-bold text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</h3>
                           <span className={`inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                             <UserCheck size={10} />
                             {role.baseRole ? (t(`staff.roles.${role.baseRole.toLowerCase()}`) !== `staff.roles.${role.baseRole.toLowerCase()}` ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : role.baseRole.charAt(0) + role.baseRole.slice(1).toLowerCase()) : ''}
@@ -452,7 +456,7 @@ export function CustomRolesPage() {
                               <Shield size={20} />
                             </div>
                             <div>
-                              <p className="font-bold text-gray-900 dark:text-white text-sm">{role.name}</p>
+                              <p className="font-bold text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</p>
                             </div>
                           </div>
                         </td>

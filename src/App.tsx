@@ -48,19 +48,6 @@ const ArticlePage = lazy(() => import('./pages/support/ArticlePage').then(m => (
 const AllArticlesPage = lazy(() => import('./pages/support/AllArticlesPage').then(m => ({ default: m.AllArticlesPage })));
 
 // ============================================================================
-// Lazy Imports - Community Pages
-// ============================================================================
-const CommunityPage = lazy(() => import('./pages/community/CommunityPage').then(m => ({ default: m.CommunityPage })));
-const DiscussionsPage = lazy(() => import('./pages/community/DiscussionsPage').then(m => ({ default: m.DiscussionsPage })));
-const NewDiscussionPage = lazy(() => import('./pages/community/NewDiscussionPage').then(m => ({ default: m.NewDiscussionPage })));
-const DiscussionDetailPage = lazy(() => import('./pages/community/DiscussionDetailPage').then(m => ({ default: m.DiscussionDetailPage })));
-const IdeasPage = lazy(() => import('./pages/community/IdeasPage').then(m => ({ default: m.IdeasPage })));
-const NewIdeaPage = lazy(() => import('./pages/community/NewIdeaPage').then(m => ({ default: m.NewIdeaPage })));
-const IdeaDetailPage = lazy(() => import('./pages/community/IdeaDetailPage').then(m => ({ default: m.IdeaDetailPage })));
-const GuidesPage = lazy(() => import('./pages/community/GuidesPage').then(m => ({ default: m.GuidesPage })));
-const CommunityHubPage = lazy(() => import('./pages/community/CommunityHubPage').then(m => ({ default: m.CommunityHubPage })));
-
-// ============================================================================
 // Lazy Imports - Portal Pages
 // ============================================================================
 const PortalPage = lazy(() => import('./pages/portal/PortalPage').then(m => ({ default: m.PortalPage })));
@@ -308,86 +295,14 @@ const router = createBrowserRouter([
         ),
       },
 
-      // ========== Community Routes (Public) ==========
+      // ========== Community Routes (Temporarily Disabled) ==========
       {
         path: "/community-hub",
-        element: (
-          <PageSuspense>
-            <CommunityHubPage />
-          </PageSuspense>
-        ),
+        element: <Navigate to="/" replace />,
       },
       {
-        path: "/community",
-        element: (
-          <PageSuspense>
-            <CommunityPage />
-          </PageSuspense>
-        ),
-      },
-      {
-        path: "/community/discussions",
-        element: (
-          <PageSuspense>
-            <DiscussionsPage />
-          </PageSuspense>
-        ),
-      },
-      {
-        path: "/community/discussions/new",
-        element: (
-          <PageSuspense>
-            <NewDiscussionPage />
-          </PageSuspense>
-        ),
-      },
-      {
-        path: "/community/discussions/:discussionId",
-        element: (
-          <PageSuspense>
-            <DiscussionDetailPage />
-          </PageSuspense>
-        ),
-      },
-      {
-        path: "/community/ideas",
-        element: (
-          <PageSuspense>
-            <IdeasPage />
-          </PageSuspense>
-        ),
-      },
-      {
-        path: "/community/ideas/new",
-        element: (
-          <PageSuspense>
-            <NewIdeaPage />
-          </PageSuspense>
-        ),
-      },
-      {
-        path: "/community/ideas/:ideaId",
-        element: (
-          <PageSuspense>
-            <IdeaDetailPage />
-          </PageSuspense>
-        ),
-      },
-      {
-        path: "/community/guides",
-        element: (
-          <PageSuspense>
-            <GuidesPage />
-          </PageSuspense>
-        ),
-      },
-      {
-        path: "/community/guides/:guideId",
-        element: (
-          <PageSuspense>
-            <GuidesPage />
-          </PageSuspense>
-        ),
+        path: "/community/*",
+        element: <Navigate to="/" replace />,
       },
 
       // ========== Portal Routes (Protected) ==========
@@ -404,6 +319,10 @@ const router = createBrowserRouter([
           },
           {
             path: "/onboarding",
+            element: <Navigate to="/onboarding/step/1" replace />,
+          },
+          {
+            path: "/onboarding/step/:step",
             element: (
               <PageSuspense>
                 <OnboardingPage />

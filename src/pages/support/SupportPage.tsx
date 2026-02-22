@@ -6,7 +6,6 @@ import {
   Search,
   Ticket,
   BookOpen,
-  MessageCircle,
   HelpCircle,
   CreditCard,
   Settings,
@@ -117,13 +116,6 @@ export const SupportPage = () => {
               >
                 <Ticket size={16} />
                 {t('support.quickLinks.submitTicket')}
-              </Link>
-              <Link
-                to="/community"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-bold hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
-              >
-                <MessageCircle size={16} />
-                {t('support.quickLinks.community')}
               </Link>
             </div>
           </motion.div>

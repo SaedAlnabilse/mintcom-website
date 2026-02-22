@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 
 import {
   Plus,
@@ -55,6 +56,7 @@ const EMPLOYEE_LIMIT_POPUP_MESSAGE =
 
 export function StaffPage() {
   const { t } = useTranslation();
+  const location = useLocation();
   // Permission guard - redirects if user lacks permission
   usePermissionGuard();
 
@@ -123,6 +125,15 @@ export function StaffPage() {
     fetchStaff();
     fetchDiscounts();
   }, []);
+
+  useEffect(() => {
+    const state = location.state as { openCreateModal?: boolean } | null;
+    if (state?.openCreateModal) {
+      setEditingStaff(null);
+      setShowModal(true);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const fetchStaff = async () => {
     try {

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -54,6 +55,8 @@ import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
 
 export function OnboardingPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { step: stepParam } = useParams<{ step?: string }>();
 
   // Step 1: Location Details
   const step1Schema = z.object({
@@ -107,6 +110,22 @@ export function OnboardingPage() {
 
   // Tour Guide State for Step 5
   const [isTourOpen, setIsTourOpen] = useState(false);
+
+  const goToStep = (nextStep: number) => {
+    const clampedStep = Math.min(5, Math.max(1, nextStep));
+    setStep(clampedStep);
+    navigate(`/onboarding/step/${clampedStep}`);
+  };
+
+  useEffect(() => {
+    const parsedStep = Number(stepParam);
+    const normalizedStep = Number.isInteger(parsedStep) && parsedStep >= 1 && parsedStep <= 5 ? parsedStep : 1;
+    setStep(normalizedStep);
+
+    if (stepParam !== String(normalizedStep)) {
+      navigate(`/onboarding/step/${normalizedStep}`, { replace: true });
+    }
+  }, [navigate, stepParam]);
 
   const launchCenterTourSteps: TourStep[] = [
     {
@@ -216,7 +235,7 @@ export function OnboardingPage() {
       duplicatePaymentMethods: duplicateFromId ? duplicatePaymentMethods : false,
     }));
 
-    setStep(2);
+    goToStep(2);
   };
 
   const onStep2Submit = async (data: any) => {
@@ -282,14 +301,14 @@ export function OnboardingPage() {
     }
 
     // Always show Step 3 - each establishment gets its own unique Owner Pos Id
-    setStep(3);
+    goToStep(3);
   };
 
   const onStep3Submit = (data: any) => {
     // Store Owner Pos credentials locally for this establishment
     // Each establishment gets its own unique Owner Pos Id
     setFormData((prev: any) => ({ ...prev, ...data }));
-    setStep(4);
+    goToStep(4);
   };
 
 
@@ -341,7 +360,7 @@ export function OnboardingPage() {
         allowedDiscounts: []
       });
 
-      setStep(5); // Success Step
+      goToStep(5); // Success Step
       toast.success(t('onboarding.messages.complete'));
       await refreshEstablishments();
     } catch (err: any) {
@@ -642,7 +661,7 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-8">
-                  <button onClick={() => setStep(1)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-black tracking-widest">
+                  <button onClick={() => goToStep(1)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-black tracking-widest">
                     <ArrowLeft size={14} /> {t('onboarding.back')}
                   </button>
                   <div className="flex items-center gap-3 mb-4">
@@ -820,7 +839,7 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
-                  <button onClick={() => setStep(2)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-black tracking-widest">
+                  <button onClick={() => goToStep(2)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-black tracking-widest">
                     <ArrowLeft size={14} /> {t('onboarding.back')}
                   </button>
                   <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step3.title')}</h2>
@@ -897,7 +916,7 @@ export function OnboardingPage() {
             >
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
-                  <button onClick={() => setStep(3)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-black tracking-widest">
+                  <button onClick={() => goToStep(3)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-black tracking-widest">
                     <ArrowLeft size={14} /> {t('onboarding.back')}
                   </button>
                   <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step4.title')}</h2>

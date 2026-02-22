@@ -53,6 +53,8 @@ interface Order {
   cardType?: string;
   otherPaymentMethod?: string;
   paymentStatus: string;
+  orderType?: 'PAID' | 'PAID_TAX_CHANGED' | 'REFUNDED';
+  isTaxChanged?: boolean;
   createdAt: string;
   items: OrderItem[];
   customer?: {
@@ -837,6 +839,19 @@ export function OrdersPage() {
     }
   };
 
+  const isPaidTaxChanged = (order: Order): boolean =>
+    (order.orderType === 'PAID_TAX_CHANGED' || !!order.isTaxChanged) &&
+    (order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED');
+
+  const getOrderStatusLabel = (order: Order): string => {
+    if (isPaidTaxChanged(order)) {
+      return t('orders.status.paidTaxChanged');
+    }
+    const rawStatus = (order.paymentStatus || order.status || 'PENDING').toLowerCase();
+    const statusKey = rawStatus === 'pending' || rawStatus === 'held' ? 'onHold' : rawStatus;
+    return t(`orders.status.${statusKey}` as any);
+  };
+
   const handleExport = () => {
     const exportData = orders.map(o => ({
       orderNumber: o.orderNumber,
@@ -983,6 +998,7 @@ export function OrdersPage() {
                 }}
                 options={[
                   { label: t('orders.status.completed'), value: 'COMPLETED' },
+                  { label: t('orders.status.paidTaxChanged'), value: 'PAID_TAX_CHANGED' },
                   { label: t('orders.status.onHold'), value: 'HELD' },
                   { label: t('orders.status.refunded'), value: 'REFUNDED' },
                 ]}
@@ -1253,7 +1269,7 @@ export function OrdersPage() {
                       </div>
                     </div>
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
-                      {t(`orders.status.${(order.paymentStatus || order.status || 'PENDING').toLowerCase() === 'pending' || (order.paymentStatus || order.status || 'PENDING').toLowerCase() === 'held' ? 'onHold' : (order.paymentStatus || order.status || 'PENDING').toLowerCase()}`)}
+                      {getOrderStatusLabel(order)}
                     </span>
                   </div>
 
@@ -1392,7 +1408,7 @@ export function OrdersPage() {
                       </td>
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
-                          {t(`orders.status.${(order.paymentStatus || order.status || 'PENDING').toLowerCase() === 'pending' || (order.paymentStatus || order.status || 'PENDING').toLowerCase() === 'held' ? 'onHold' : (order.paymentStatus || order.status || 'PENDING').toLowerCase()}`)}
+                          {getOrderStatusLabel(order)}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">

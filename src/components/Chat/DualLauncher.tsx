@@ -1,19 +1,22 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, HelpCircle, X, Sparkles } from 'lucide-react';
+import { Bot, HelpCircle, X, Sparkles, ClipboardList } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface DualLauncherProps {
   onOpenChat: () => void;
   onOpenFAQ: () => void;
+  onOpenTasks: () => void;
   isChatOpen: boolean;
   isFAQOpen: boolean;
+  isTasksOpen: boolean;
   onCloseAll: () => void;
 }
 
-export function DualLauncher({ onOpenChat, onOpenFAQ, isChatOpen, isFAQOpen, onCloseAll }: DualLauncherProps) {
+export function DualLauncher({ onOpenChat, onOpenFAQ, onOpenTasks, isChatOpen, isFAQOpen, isTasksOpen, onCloseAll }: DualLauncherProps) {
   const { t } = useTranslation();
   const isRTL = t('common.locale') === 'ar';
+  const isAnyOpen = isChatOpen || isFAQOpen || isTasksOpen;
   const [isExpanded, setIsExpanded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -28,28 +31,77 @@ export function DualLauncher({ onOpenChat, onOpenFAQ, isChatOpen, isFAQOpen, onC
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // When open, show a sleek close button at the bottom right
-  if (isChatOpen || isFAQOpen) {
+  // Keep mode switcher visible while one panel is open so users can switch directly.
+  if (isAnyOpen) {
     return (
-      <motion.button
-        initial={{ scale: 0, rotate: -90 }}
-        animate={{ scale: 1, rotate: 0 }}
-        exit={{ scale: 0, rotate: 90 }}
-        onClick={onCloseAll}
-        className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[999999] w-14 h-14 rounded-2xl bg-white dark:bg-[#1E293B] text-gray-900 dark:text-white shadow-2xl flex items-center justify-center hover:bg-gray-100 dark:hover:bg-white/5 border border-gray-200 dark:border-white/10 transition-all hover:scale-105`}
-      >
-        <X size={22} />
-      </motion.button>
+      <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[999999]`} ref={containerRef} dir={isRTL ? 'rtl' : 'ltr'}>
+        <motion.div
+          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 320, damping: 26 }}
+          className="w-[min(460px,calc(100vw-20px))] flex items-center gap-2 p-2 bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-xl rounded-2xl shadow-[0_10px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_10px_32px_rgba(0,0,0,0.4)] border border-gray-200/60 dark:border-white/10"
+        >
+          <div className="grid grid-cols-3 gap-1 flex-1 p-1 rounded-xl bg-gray-100/80 dark:bg-white/5">
+            <button
+              onClick={onOpenChat}
+              aria-pressed={isChatOpen}
+              className={`h-11 w-full flex items-center justify-center gap-2 px-3 rounded-xl font-bold text-sm transition-all ${
+                isChatOpen
+                  ? 'bg-gradient-to-r from-[#7CC39F] to-[#5BA882] text-white shadow-md shadow-[#7CC39F]/30'
+                  : 'text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-white/10'
+              }`}
+            >
+              <Bot size={18} />
+              <span>{t('chat.launcher.ask')}</span>
+            </button>
+
+            <button
+              onClick={onOpenFAQ}
+              aria-pressed={isFAQOpen}
+              className={`h-11 w-full flex items-center justify-center gap-2 px-3 rounded-xl font-bold text-sm transition-all ${
+                isFAQOpen
+                  ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md shadow-indigo-500/30'
+                  : 'text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-white/10'
+              }`}
+            >
+              <HelpCircle size={18} />
+              <span>{t('chat.launcher.help')}</span>
+            </button>
+
+            <button
+              onClick={onOpenTasks}
+              aria-pressed={isTasksOpen}
+              className={`h-11 w-full flex items-center justify-center gap-2 px-3 rounded-xl font-bold text-sm transition-all ${
+                isTasksOpen
+                  ? 'bg-gradient-to-r from-[#6FAE4A] to-[#5A9B37] text-white shadow-md shadow-[#6FAE4A]/30'
+                  : 'text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-white/10'
+              }`}
+            >
+              <ClipboardList size={18} />
+              <span>{t('chat.launcher.tasks')}</span>
+            </button>
+          </div>
+
+          <button
+            onClick={onCloseAll}
+            className="h-11 w-11 shrink-0 flex items-center justify-center rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors"
+            aria-label={t('common.close')}
+          >
+            <X size={18} />
+          </button>
+        </motion.div>
+      </div>
     );
   }
 
   return (
-    <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[999999]`} ref={containerRef}>
+    <div className={`fixed bottom-6 ${isRTL ? 'left-6' : 'right-6'} z-[999999]`} ref={containerRef} dir={isRTL ? 'rtl' : 'ltr'}>
       <motion.div
         layout
         transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
         className={`relative flex items-center ${isExpanded 
-          ? "p-1.5 bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-xl rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-gray-200/60 dark:border-white/10 overflow-hidden" 
+          ? "w-[min(460px,calc(100vw-20px))] p-1.5 bg-white/95 dark:bg-[#0F172A]/95 backdrop-blur-xl rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-gray-200/60 dark:border-white/10 overflow-hidden" 
           : "p-0 bg-transparent border-transparent shadow-none"}`}
       >
         <AnimatePresence mode="wait" initial={false}>
@@ -80,48 +132,62 @@ export function DualLauncher({ onOpenChat, onOpenFAQ, isChatOpen, isFAQOpen, onC
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.15 } }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              className="flex items-center gap-1"
+              className="flex items-center gap-2"
             >
-              {/* Primary Trigger (Ask AI) */}
-              <motion.button
-                layout="position"
-                onClick={() => {
-                  setIsExpanded(false);
-                  onOpenChat();
-                }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="relative z-10 flex items-center gap-2 px-4 py-2.5 rounded-full bg-gradient-to-r from-[#7CC39F] to-[#5BA882] text-white font-bold text-sm shadow-lg shadow-[#7CC39F]/30 transition-all hover:shadow-[#7CC39F]/50"
-              >
-                <Bot size={18} />
-                <span>{t('chat.launcher.ask')}</span>
-              </motion.button>
+              <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-gray-100/80 dark:bg-white/5">
+                {/* Primary Trigger (Ask AI) */}
+                <motion.button
+                  layout="position"
+                  onClick={() => {
+                    setIsExpanded(false);
+                    onOpenChat();
+                  }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="h-11 min-w-0 px-2 sm:px-3 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#7CC39F] to-[#5BA882] text-white font-bold text-sm shadow-md shadow-[#7CC39F]/30 transition-all hover:shadow-[#7CC39F]/50"
+                >
+                  <Bot size={18} />
+                  <span>{t('chat.launcher.ask')}</span>
+                </motion.button>
 
-              <div className="w-px h-6 bg-gray-200 dark:bg-white/10 mx-1" />
+                {/* Secondary Trigger (Q&A) */}
+                <motion.button
+                  layout="position"
+                  onClick={() => {
+                    setIsExpanded(false);
+                    onOpenFAQ();
+                  }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="h-11 min-w-0 px-2 sm:px-3 flex items-center justify-center gap-2 rounded-xl hover:bg-white dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 font-bold text-sm transition-all"
+                >
+                  <HelpCircle size={18} />
+                  <span>{t('chat.launcher.help')}</span>
+                </motion.button>
 
-              {/* Secondary Trigger (Q&A) */}
-              <motion.button
-                layout="position"
-                onClick={() => {
-                  setIsExpanded(false);
-                  onOpenFAQ();
-                }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex items-center gap-2 px-3 py-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 font-bold text-sm transition-all"
-              >
-                <HelpCircle size={18} />
-                <span>{t('chat.launcher.help')}</span>
-              </motion.button>
+                <motion.button
+                  layout="position"
+                  onClick={() => {
+                    setIsExpanded(false);
+                    onOpenTasks();
+                  }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="h-11 min-w-0 px-2 sm:px-3 flex items-center justify-center gap-2 rounded-xl hover:bg-white dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 font-bold text-sm transition-all"
+                >
+                  <ClipboardList size={18} />
+                  <span>{t('chat.launcher.tasks')}</span>
+                </motion.button>
+              </div>
 
               <motion.button
                 layout="position"
                 onClick={(e) => { e.stopPropagation(); setIsExpanded(false); }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors ml-0.5"
+                className="h-11 w-11 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors"
               >
-                <X size={16} />
+                <X size={18} />
               </motion.button>
             </motion.div>
           )}

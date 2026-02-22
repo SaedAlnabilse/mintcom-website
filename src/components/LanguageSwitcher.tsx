@@ -3,17 +3,39 @@ import { useTranslation } from 'react-i18next';
 import { Globe, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export const LanguageSwitcher = () => {
+interface LanguageSwitcherProps {
+  className?: string;
+  buttonClassName?: string;
+  menuClassName?: string;
+  compact?: boolean;
+  dropdownDirection?: 'down' | 'up' | 'right';
+  showGlobeIcon?: boolean;
+}
+
+export const LanguageSwitcher = ({
+  className = '',
+  buttonClassName = '',
+  menuClassName = '',
+  compact = false,
+  dropdownDirection = 'down',
+  showGlobeIcon = true,
+}: LanguageSwitcherProps) => {
   const { i18n, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const normalizedLanguage = (i18n.resolvedLanguage || i18n.language || 'en')
+    .toLowerCase()
+    .startsWith('ar')
+    ? 'ar'
+    : 'en';
+
   const languages = [
-    { code: 'en', name: t('common.languages.en'), nativeName: 'English', flag: '🇺🇸' },
-    { code: 'ar', name: t('common.languages.ar'), nativeName: 'العربية', flag: '🇸🇦' },
+    { code: 'en', nativeName: t('common.languages.en'), shortName: 'EN' },
+    { code: 'ar', nativeName: t('common.languages.ar'), shortName: 'AR' },
   ];
 
-  const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
+  const currentLanguage = languages.find((lang) => lang.code === normalizedLanguage) || languages[0];
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -31,16 +53,29 @@ export const LanguageSwitcher = () => {
     setIsOpen(false);
   };
 
+  const menuPositionClass =
+    dropdownDirection === 'up'
+      ? 'bottom-full mb-2 right-0 rtl:right-auto rtl:left-0'
+      : dropdownDirection === 'right'
+        ? 'left-full ml-2 top-1/2 -translate-y-1/2 rtl:left-auto rtl:right-full rtl:mr-2 rtl:ml-0'
+        : 'top-full mt-2 right-0 rtl:right-auto rtl:left-0';
+
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className={`relative ${className}`} ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10 transition-all text-gray-700 dark:text-gray-300"
+        className={`flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10 transition-all text-gray-700 dark:text-gray-300 ${buttonClassName}`}
         aria-label={t('common.aria.changeLanguage')}
       >
-        <Globe size={16} className="text-paymint-green" />
-        <span className="text-sm font-bold hidden sm:inline">{currentLanguage.nativeName}</span>
-        <span className="text-sm font-bold sm:hidden">{currentLanguage.flag}</span>
+        {showGlobeIcon && <Globe size={16} className="text-paymint-green" />}
+        {compact ? (
+          <span className="text-xs font-black tracking-wider leading-none">{currentLanguage.shortName}</span>
+        ) : (
+          <>
+            <span className="text-sm font-bold hidden sm:inline">{currentLanguage.nativeName}</span>
+            <span className="text-sm font-bold sm:hidden">{currentLanguage.shortName}</span>
+          </>
+        )}
       </button>
 
       <AnimatePresence>
@@ -51,25 +86,23 @@ export const LanguageSwitcher = () => {
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.15 }}
             dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-            className="absolute top-full mt-2 right-0 rtl:right-auto rtl:left-0 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden min-w-[160px] z-50"
+            className={`absolute ${menuPositionClass} bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden min-w-[160px] z-[90] ${menuClassName}`}
           >
             {languages.map((lang) => (
               <button
                 key={lang.code}
                 onClick={() => changeLanguage(lang.code)}
                 className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-sm font-bold transition-colors ${
-                  i18n.language === lang.code
+                  normalizedLanguage === lang.code
                     ? 'bg-paymint-green/10 text-paymint-green'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5'
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-lg">{lang.flag}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black tracking-wider opacity-70">{lang.shortName}</span>
                   <span>{lang.nativeName}</span>
                 </div>
-                {i18n.language === lang.code && (
-                  <Check size={16} className="text-paymint-green" />
-                )}
+                {normalizedLanguage === lang.code && <Check size={16} className="text-paymint-green" />}
               </button>
             ))}
           </motion.div>

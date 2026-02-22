@@ -130,6 +130,19 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
         return formatAmount(value);
     };
 
+    const isPaidTaxChanged = (order: Order): boolean =>
+        (order.orderType === 'PAID_TAX_CHANGED' || !!order.isTaxChanged) &&
+        ((order.paymentStatus || order.status) === 'COMPLETED');
+
+    const getOrderStatusLabel = (order: Order): string => {
+        if (isPaidTaxChanged(order)) {
+            return t('orders.status.paidTaxChanged');
+        }
+        const rawStatus = (order.paymentStatus || order.status || 'pending').toLowerCase();
+        const statusKey = rawStatus === 'pending' || rawStatus === 'held' ? 'onHold' : rawStatus;
+        return t(`orders.status.${statusKey}` as any);
+    };
+
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         if (t('common.locale') === 'ar') {
@@ -217,6 +230,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                             options={[
                                 { label: t('orders.status.all'), value: 'all' },
                                 { label: t('orders.status.completed'), value: 'COMPLETED' },
+                                { label: t('orders.status.paidTaxChanged'), value: 'PAID_TAX_CHANGED' },
                                 { label: t('orders.reports.receipts.heldOrders'), value: 'HELD' },
                                 { label: t('orders.status.refunded'), value: 'REFUNDED' },
                             ]}
@@ -294,7 +308,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-black border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
-                                                        {t(`orders.status.${(order.paymentStatus || order.status || 'pending').toLowerCase()}`)}
+                                                        {getOrderStatusLabel(order)}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
@@ -318,7 +332,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                                             <span className="text-xs text-gray-500">{formatDate(order.createdAt)}</span>
                                         </div>
                                         <span className={`px-1.5 py-0.5 rounded text-xs font-bold ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
-                                            {t(`orders.status.${(order.paymentStatus || order.status || 'pending').toLowerCase()}`)}
+                                            {getOrderStatusLabel(order)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between items-center mt-2">

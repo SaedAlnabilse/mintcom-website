@@ -3,6 +3,7 @@ import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { ThemeToggle } from './ThemeToggle';
+import { LanguageSwitcher } from './LanguageSwitcher';
 import { ConfirmModal } from './ConfirmModal';
 import { DeletionRestorationBanner } from './DeletionRestorationBanner';
 import { useTranslation } from 'react-i18next';
@@ -150,7 +151,7 @@ export function OwnerLayout() {
                                         size={24}
                                         className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
                                     />
-                                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
+                                    <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                                         {t('owner.menu.openSidebar')}
                                     </div>
                                 </button>
@@ -198,7 +199,7 @@ export function OwnerLayout() {
                                 )}
 
                                 {!sidebarOpen && (
-                                    <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
+                                    <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                                         {item.label}
                                     </div>
                                 )}
@@ -215,7 +216,7 @@ export function OwnerLayout() {
                                 <span className="text-sm font-bold">{t('owner.menu.getMobileApp')}</span>
                             </button>
                             {/* QR Code Popup */}
-                            <div className="absolute left-full bottom-0 ml-3 bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[70] translate-x-2 group-hover:translate-x-0 w-[200px]">
+                            <div className="absolute left-full rtl:left-auto rtl:right-full bottom-0 ml-3 rtl:ml-0 rtl:mr-3 bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[70] translate-x-2 rtl:-translate-x-2 group-hover:translate-x-0 w-[200px]">
                                 {/* QR Code Container */}
                                 <div className="bg-white rounded-xl p-3 mb-4 shadow-inner">
                                     {/* Fake QR Code Pattern */}
@@ -308,6 +309,12 @@ export function OwnerLayout() {
                             </div>
 
                             {/* Menu Items */}
+                            <LanguageSwitcher
+                                dropdownDirection="up"
+                                buttonClassName="w-full justify-between px-3 py-2.5 text-sm font-bold"
+                                menuClassName="w-full min-w-0"
+                            />
+
                             <ThemeToggle
                                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left"
                                 showLabel={true}
@@ -333,7 +340,7 @@ export function OwnerLayout() {
                                     <Smartphone size={24} />
                                 </button>
                                 {/* Tooltip/Popup for Closed Sidebar */}
-                                <div className="absolute left-full bottom-0 ml-4 bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[80] translate-x-2 group-hover:translate-x-0 w-[200px]">
+                                <div className="absolute left-full rtl:left-auto rtl:right-full bottom-0 ml-4 rtl:ml-0 rtl:mr-4 bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-gray-200 dark:border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto z-[80] translate-x-2 rtl:-translate-x-2 group-hover:translate-x-0 w-[200px]">
                                     {/* QR Code Container */}
                                     <div className="bg-white rounded-xl p-3 mb-4 shadow-inner">
                                         <div className="w-full aspect-square bg-white relative overflow-hidden rounded-lg">
@@ -404,6 +411,13 @@ export function OwnerLayout() {
                             </div>
 
                             {/* Theme Toggle Icon */}
+                            <LanguageSwitcher
+                                compact
+                                dropdownDirection="right"
+                                showGlobeIcon={false}
+                                buttonClassName="w-12 h-12 rounded-xl !px-0 !py-0 flex items-center justify-center gap-0 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white"
+                            />
+
                             <ThemeToggle
                                 dropdownDirection="right"
                                 className="w-12 h-12 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all"
@@ -417,7 +431,7 @@ export function OwnerLayout() {
                             >
                                 <LogOut size={24} />
                                 {/* Tooltip */}
-                                <div className="absolute left-full top-1/2 -translate-y-1/2 ml-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 group-hover:translate-x-0">
+                                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                                     {t('dashboard.menu.logout')}
                                 </div>
                             </button>
@@ -449,7 +463,13 @@ export function OwnerLayout() {
                         alt={t('brand.name')}
                         className="h-8 w-auto object-contain hidden dark:block"
                     />
-                    <ThemeToggle dropdownDirection="down" />
+                    <div className="flex items-center gap-2">
+                        <LanguageSwitcher
+                            compact
+                            buttonClassName="h-10 px-2.5"
+                        />
+                        <ThemeToggle dropdownDirection="down" />
+                    </div>
                 </div>
 
                 <DeletionRestorationBanner />
@@ -510,6 +530,14 @@ export function OwnerLayout() {
 
                         {/* Footer */}
                         <div className="p-4 border-t border-gray-100 dark:border-white/5">
+                            <div className="flex items-center gap-2 mb-3">
+                                <LanguageSwitcher
+                                    compact
+                                    buttonClassName="h-10 px-2.5"
+                                />
+                                <ThemeToggle dropdownDirection="up" />
+                            </div>
+
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center">
                                     <span className="text-black font-bold">{account?.firstName?.charAt(0).toUpperCase()}</span>

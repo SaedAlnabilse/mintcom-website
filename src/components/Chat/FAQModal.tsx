@@ -17,14 +17,14 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<FAQItem['category'] | 'all'>('all');
 
-  const CATEGORY_CONFIG: Record<FAQItem['category'], { label: string; icon: React.ReactNode; color: string }> = useMemo(() => ({
-    general: { label: t('support.qa.categories.general'), icon: <HelpCircle size={14} />, color: 'text-blue-500 bg-blue-500/10' },
-    products: { label: t('support.qa.categories.products'), icon: <Package size={14} />, color: 'text-purple-500 bg-purple-500/10' },
-    orders: { label: t('support.qa.categories.orders'), icon: <ClipboardList size={14} />, color: 'text-orange-500 bg-orange-500/10' },
-    staff: { label: t('support.qa.categories.staff'), icon: <Users size={14} />, color: 'text-cyan-500 bg-cyan-500/10' },
-    billing: { label: t('support.qa.categories.billing'), icon: <CreditCard size={14} />, color: 'text-green-500 bg-green-500/10' },
-    technical: { label: t('support.qa.categories.technical'), icon: <Wrench size={14} />, color: 'text-yellow-500 bg-yellow-500/10' },
-    account: { label: t('support.qa.categories.account'), icon: <UserCircle size={14} />, color: 'text-pink-500 bg-pink-500/10' },
+  const CATEGORY_CONFIG: Record<FAQItem['category'], { label: string; icon: React.ReactNode; color: string; activeChip: string }> = useMemo(() => ({
+    general: { label: t('support.qa.categories.general'), icon: <HelpCircle size={14} />, color: 'text-blue-500 bg-blue-500/10', activeChip: 'bg-blue-500 text-white' },
+    products: { label: t('support.qa.categories.products'), icon: <Package size={14} />, color: 'text-purple-500 bg-purple-500/10', activeChip: 'bg-purple-500 text-white' },
+    orders: { label: t('support.qa.categories.orders'), icon: <ClipboardList size={14} />, color: 'text-orange-500 bg-orange-500/10', activeChip: 'bg-orange-500 text-white' },
+    staff: { label: t('support.qa.categories.staff'), icon: <Users size={14} />, color: 'text-cyan-500 bg-cyan-500/10', activeChip: 'bg-cyan-500 text-white' },
+    billing: { label: t('support.qa.categories.billing'), icon: <CreditCard size={14} />, color: 'text-green-500 bg-green-500/10', activeChip: 'bg-green-500 text-white' },
+    technical: { label: t('support.qa.categories.technical'), icon: <Wrench size={14} />, color: 'text-yellow-500 bg-yellow-500/10', activeChip: 'bg-yellow-500 text-white' },
+    account: { label: t('support.qa.categories.account'), icon: <UserCircle size={14} />, color: 'text-pink-500 bg-pink-500/10', activeChip: 'bg-pink-500 text-white' },
   }), [t]);
 
   const filteredItems = useMemo(() => {
@@ -108,7 +108,7 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
                     onClick={() => setSelectedCategory(category)}
                     className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
                       selectedCategory === category
-                        ? config.color.replace('/10', '')
+                        ? `${config.activeChip} shadow-sm`
                         : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10'
                     }`}
                   >

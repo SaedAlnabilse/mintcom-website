@@ -28,7 +28,7 @@ export function ProtectedRoute() {
   // But allow access to onboarding page itself
   // NOTE: Only redirect if we've confirmed establishments are actually empty
   // (not just still loading)
-  if (needsOnboarding && location.pathname !== '/onboarding' && establishments.length === 0) {
+  if (needsOnboarding && !location.pathname.startsWith('/onboarding') && establishments.length === 0) {
     console.log('[ProtectedRoute] No establishments, redirecting to onboarding');
     return <Navigate to="/onboarding" replace />;
   }

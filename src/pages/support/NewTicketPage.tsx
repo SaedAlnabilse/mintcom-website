@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   ArrowLeft,
@@ -14,15 +14,13 @@ import {
   Zap,
   Bug,
   Lightbulb,
-  Upload,
-  Lock,
-  ArrowRight
+  Upload
 } from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
-import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import api from '../../config/api';
 
 interface Attachment {
   name: string;
@@ -100,59 +98,55 @@ export const NewTicketPage = () => {
     setIsSubmitting(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const payload = {
+        category: formData.category,
+        priority: formData.priority,
+        subject: formData.subject.trim(),
+        description: formData.description.trim(),
+        pageUrl: window.location.href,
+        attachments: attachments.map((attachment) => ({
+          name: attachment.name,
+          sizeBytes: attachment.file.size,
+          type: attachment.file.type || undefined
+        }))
+      };
 
-      toast.success(t('support.newTicket.success'));
+      const response = await api.post('/api/support/tickets', payload);
+      const ticketId = response.data?.ticketId;
+
+      toast.success(ticketId ? `${t('support.newTicket.success')} (${ticketId})` : t('support.newTicket.success'));
       navigate('/support/tickets');
-    } catch (error) {
-      toast.error(t('support.newTicket.error'));
+    } catch (error: any) {
+      const status = error.response?.status;
+      const serverMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message;
+
+      if (status === 401) {
+        toast.error('Session expired. Please log in again.');
+        navigate('/login');
+        return;
+      }
+
+      if (status === 404) {
+        toast.error('Support ticket service is not available yet. Please update/restart backend deployment.');
+        return;
+      }
+
+      toast.error(
+        typeof serverMessage === 'string' && serverMessage.trim()
+          ? serverMessage
+          : t('support.newTicket.error')
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Redirect or show login state if not authenticated
+  // Redirect unauthenticated users to login before entering ticket screen
   if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
-        <Navbar />
-        <main className="pt-40 pb-20">
-          <div className="container mx-auto px-8 md:px-16 lg:px-24">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="max-w-xl mx-auto text-center"
-            >
-              <div className="w-20 h-20 bg-paymint-green/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-paymint-green/20">
-                <Lock size={36} className="text-paymint-green" />
-              </div>
-              <h1 className="text-3xl font-black mb-4 tracking-tight">Customer Only Support</h1>
-              <p className="text-gray-500 dark:text-gray-400 font-medium mb-10">
-                Submitting support tickets is a premium service for Paymint customers. Please log in to your account to open a ticket.
-              </p>
-
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link
-                  to="/login"
-                  className="w-full sm:w-auto px-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-black rounded-xl font-bold hover:opacity-90 transition-all flex items-center justify-center gap-2"
-                >
-                  Log In to Continue
-                  <ArrowRight size={18} />
-                </Link>
-                <Link
-                  to="/#contact"
-                  className="w-full sm:w-auto px-8 py-4 bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
-                >
-                  Contact Sales Inquiry
-                </Link>
-              </div>
-            </motion.div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
+    return <Navigate to="/login" replace />;
   }
 
   return (

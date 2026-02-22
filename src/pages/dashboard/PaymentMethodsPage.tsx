@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import {
   Plus,
   CreditCard,
@@ -52,6 +53,7 @@ interface CardType {
 export function PaymentMethodsPage() {
   const { t } = useTranslation();
   usePermissionGuard(['manage_payment_methods']);
+  const location = useLocation();
   const { currentEstablishment } = useAuth();
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [cardTypes, setCardTypes] = useState<CardType[]>([]);
@@ -97,6 +99,18 @@ export function PaymentMethodsPage() {
     fetchPaymentMethods();
     fetchCardTypes();
   }, [currentEstablishment]);
+
+  useEffect(() => {
+    const state = location.state as { openCreateModal?: boolean } | null;
+    if (state?.openCreateModal) {
+      setEditingMethod(null);
+      reset({ name: '', isActive: true });
+      setSelectedImage(null);
+      setImagePreview(null);
+      setShowModal(true);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state, reset]);
 
   const fetchPaymentMethods = async () => {
     try {

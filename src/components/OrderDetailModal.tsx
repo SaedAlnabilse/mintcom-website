@@ -33,6 +33,8 @@ export interface Order {
     createdAt: string;
     status: string;
     paymentStatus?: string;
+    orderType?: 'PAID' | 'PAID_TAX_CHANGED' | 'REFUNDED';
+    isTaxChanged?: boolean;
     paymentMethod: string;
     cardType?: string;
     otherPaymentMethod?: string;
@@ -105,6 +107,18 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
         setRefundReason('');
         setRefundReasonError('');
         setIsRefundReasonModalOpen(true);
+    };
+
+    const getOrderStatusLabel = (): string => {
+        const isTaxChangedPaid =
+            (order.orderType === 'PAID_TAX_CHANGED' || !!order.isTaxChanged) &&
+            ((order.paymentStatus || order.status) === 'COMPLETED');
+        if (isTaxChangedPaid) {
+            return t('orders.status.paidTaxChanged');
+        }
+        const rawStatus = (order.paymentStatus || order.status || 'PENDING').toLowerCase();
+        const statusKey = rawStatus === 'pending' || rawStatus === 'held' ? 'onHold' : rawStatus;
+        return t(`orders.status.${statusKey}` as any);
     };
 
     const submitRefundWithReason = async () => {
@@ -187,7 +201,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                         order.paymentStatus || order.status,
                                     )}`}
                                 >
-                                    {t(`orders.status.${(order.paymentStatus || order.status || 'PENDING').toLowerCase() === 'pending' || (order.paymentStatus || order.status || 'PENDING').toLowerCase() === 'held' ? 'onHold' : (order.paymentStatus || order.status || 'PENDING').toLowerCase()}` as any)}
+                                    {getOrderStatusLabel()}
                                 </span>
                             </div>
                             <div>

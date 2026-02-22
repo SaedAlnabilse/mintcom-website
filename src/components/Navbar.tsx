@@ -22,7 +22,6 @@ export const Navbar = () => {
     { name: t('nav.features'), href: '/#features' },
     { name: t('nav.pricing'), href: '/#pricing' },
     { name: t('nav.support'), href: '/support' },
-    { name: t('nav.community'), href: '/community-hub' },
   ];
 
   return (

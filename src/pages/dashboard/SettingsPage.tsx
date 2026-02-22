@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { useBlocker } from 'react-router-dom';
+import { useBlocker, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, DollarSign } from 'lucide-react';
 import api from '../../config/api';
@@ -77,6 +77,7 @@ interface EstablishmentInfo {
 
 export function SettingsPage() {
   const { t } = useTranslation();
+  const location = useLocation();
   const { account, currentEstablishment, setCurrentEstablishment, refreshEstablishments } = useAuth();
   usePermissionGuard([
     'manage_settings',
@@ -110,6 +111,22 @@ export function SettingsPage() {
       setActiveTab(tabs[0].id as SettingsTab);
     }
   }, [tabs, activeTab]);
+
+  // Support deep-linking directly to a settings tab from widget tasks.
+  useEffect(() => {
+    const state = location.state as { openSettingsTab?: SettingsTab } | null;
+    const queryTab = new URLSearchParams(location.search).get('tab') as SettingsTab | null;
+    const requestedTab = state?.openSettingsTab || queryTab;
+    if (!requestedTab) return;
+
+    if (tabs.some((tab: any) => tab.id === requestedTab)) {
+      setActiveTab(requestedTab);
+    }
+
+    if (state?.openSettingsTab) {
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state, location.search, tabs]);
 
   const [, setSettings] = useState<AppSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
