@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown, Check, Smartphone, Monitor } from 'lucide-react';
@@ -11,6 +11,7 @@ import {
 } from '../config/permissions';
 import { useScrollLock } from '../hooks/useScrollLock';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../context/AuthContext';
 
 interface CustomRole {
   id: string;
@@ -45,8 +46,30 @@ interface PermissionItem {
   description: string;
 }
 
-const ALLOWED_POS_PERMISSION_IDS = new Set(CANONICAL_POS_PERMISSIONS.map(({ id }) => id));
-const ALLOWED_BACKOFFICE_PERMISSION_IDS = new Set(CANONICAL_BACKOFFICE_PERMISSIONS.map(({ id }) => id));
+const ALLOWED_POS_PERMISSION_IDS: Set<string> = new Set(CANONICAL_POS_PERMISSIONS.map(({ id }) => id));
+const ALLOWED_BACKOFFICE_PERMISSION_IDS: Set<string> = new Set(CANONICAL_BACKOFFICE_PERMISSIONS.map(({ id }) => id));
+const SETTINGS_SUB_PERMISSION_IDS = new Set([
+  'manage_establishment_profile',
+  'manage_tax_currency',
+  'manage_receipt_settings',
+  'delete_establishment',
+]);
+const BASIC_POS_ASSIGNABLE_PERMISSION_IDS = new Set([
+  'pos',
+  'void_items',
+  'open_cash_drawer',
+  'change_taxes',
+  'pay_in_pay_out',
+  'dashboard',
+  'view_shift_reports',
+  'restock_items',
+  'manage_open_tickets',
+  'refunds',
+  'discounts',
+  'loyalty_system_access',
+  'reprint_receipts',
+  'live_chat',
+]);
 
 const normalizePermissionList = (values: string[] | undefined): string[] => {
   if (!Array.isArray(values)) return [];
@@ -58,6 +81,11 @@ const normalizeAndFilterPermissions = (
   allowedPermissions: Set<string>,
 ): string[] => normalizePermissionList(values).filter((permission) => allowedPermissions.has(permission));
 
+const normalizePermissionId = (permissionId: string): string => {
+  const normalized = normalizePermissions([permissionId]);
+  return normalized[0] || permissionId.trim().toLowerCase();
+};
+
 export function CustomRoleFormModal({
   isOpen,
   onClose,
@@ -66,6 +94,78 @@ export function CustomRoleFormModal({
   isSubmitting = false,
 }: CustomRoleFormModalProps) {
   const { t } = useTranslation();
+  const { account } = useAuth();
+  const normalizedCurrentPermissionSet = useMemo(
+    () =>
+      new Set(
+        normalizePermissions(
+          (Array.isArray(account?.permissions) ? account.permissions : []) as string[],
+        ),
+      ),
+    [account?.permissions],
+  );
+  const canAssignAdminRole = normalizedCurrentPermissionSet.has('*');
+
+  const canAssignAdvancedPermission = useCallback(
+    (permissionId: string): boolean =>
+      canAssignAdminRole ||
+      normalizedCurrentPermissionSet.has(normalizePermissionId(permissionId)),
+    [canAssignAdminRole, normalizedCurrentPermissionSet],
+  );
+
+  const DEFAULT_BACKOFFICE_PERMISSION_IDS = useMemo(
+    () =>
+      ['dashboard', 'view_orders', 'view_reports'].filter((permission) =>
+        canAssignAdvancedPermission(permission),
+      ),
+    [canAssignAdvancedPermission],
+  );
+
+  const sanitizeAssignablePosPermissions = useCallback(
+    (requestedPermissions: string[] | undefined): string[] => {
+      if (!Array.isArray(requestedPermissions)) return [];
+
+      const seen = new Set<string>();
+      const result: string[] = [];
+      for (const permission of requestedPermissions) {
+        const normalized = normalizePermissionId(permission);
+        const canAssign =
+          canAssignAdminRole ||
+          BASIC_POS_ASSIGNABLE_PERMISSION_IDS.has(normalized) ||
+          normalizedCurrentPermissionSet.has(normalized);
+
+        if (canAssign && !seen.has(normalized)) {
+          seen.add(normalized);
+          result.push(normalized);
+        }
+      }
+      return result;
+    },
+    [canAssignAdminRole, normalizedCurrentPermissionSet],
+  );
+
+  const sanitizeAssignableBackofficePermissions = useCallback(
+    (requestedPermissions: string[] | undefined): string[] => {
+      if (!Array.isArray(requestedPermissions)) return [];
+
+      const seen = new Set<string>();
+      const result: string[] = [];
+      for (const permission of requestedPermissions) {
+        const normalized = normalizePermissionId(permission);
+        const canAssign =
+          ALLOWED_BACKOFFICE_PERMISSION_IDS.has(normalized) &&
+          canAssignAdvancedPermission(normalized);
+
+        if (canAssign && !seen.has(normalized)) {
+          seen.add(normalized);
+          result.push(normalized);
+        }
+      }
+
+      return result;
+    },
+    [canAssignAdvancedPermission],
+  );
 
   const POS_PERMISSIONS = useMemo<PermissionItem[]>(() => {
     return CANONICAL_POS_PERMISSIONS.map((permission) => ({
@@ -78,22 +178,24 @@ export function CustomRoleFormModal({
   const BACKOFFICE_PERMISSIONS = useMemo<PermissionItem[]>(() => {
     return CANONICAL_BACKOFFICE_PERMISSIONS
       .filter(p => !['manage_establishment_profile', 'manage_tax_currency', 'manage_receipt_settings', 'delete_establishment'].includes(p.id))
+      .filter(p => canAssignAdvancedPermission(p.id))
       .map((permission) => ({
         id: permission.id,
         label: permission.label,
         description: permission.label, // Make them work as the text is distribution/description
       }));
-  }, []);
+  }, [canAssignAdvancedPermission]);
 
   const SETTINGS_SUB_PERMISSIONS = useMemo<PermissionItem[]>(() => {
     return CANONICAL_BACKOFFICE_PERMISSIONS
       .filter(p => ['manage_establishment_profile', 'manage_tax_currency', 'manage_receipt_settings', 'delete_establishment'].includes(p.id))
+      .filter(p => canAssignAdvancedPermission(p.id))
       .map((permission) => ({
         id: permission.id,
         label: permission.label,
         description: permission.description,
       }));
-  }, []);
+  }, [canAssignAdvancedPermission]);
 
   const [name, setName] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -143,8 +245,22 @@ export function CustomRoleFormModal({
         setName(initialData.name || '');
         setPosAccess(initialData.posAccess !== false); // Default true
         setBackofficeAccess(initialData.backofficeAccess || false);
-        setPermissions(normalizeAndFilterPermissions(initialData.permissions, ALLOWED_POS_PERMISSION_IDS));
-        setBackofficePermissions(normalizeAndFilterPermissions(initialData.backofficePermissions, ALLOWED_BACKOFFICE_PERMISSION_IDS));
+        setPermissions(
+          sanitizeAssignablePosPermissions(
+            normalizeAndFilterPermissions(
+              initialData.permissions,
+              ALLOWED_POS_PERMISSION_IDS,
+            ),
+          ),
+        );
+        setBackofficePermissions(
+          sanitizeAssignableBackofficePermissions(
+            normalizeAndFilterPermissions(
+              initialData.backofficePermissions,
+              ALLOWED_BACKOFFICE_PERMISSION_IDS,
+            ),
+          ),
+        );
         setAllowedDiscounts(initialData.allowedDiscounts || []);
         setAllDiscountsSelected(initialData.allowedDiscounts?.length === 0);
         setShowDiscountsDropdown((initialData.allowedDiscounts?.length || 0) > 0);
@@ -154,14 +270,22 @@ export function CustomRoleFormModal({
         setPosAccess(true);
         setBackofficeAccess(true); // Website is considered back office also
         setPermissions(['pos', 'dashboard', 'discounts', 'refunds']);
-        setBackofficePermissions(['dashboard', 'view_orders']); // Default access to dashboard and orders
+        setBackofficePermissions(
+          sanitizeAssignableBackofficePermissions(DEFAULT_BACKOFFICE_PERMISSION_IDS),
+        ); // Default access to dashboard and orders
         setAllowedDiscounts([]);
         setAllDiscountsSelected(true);
         setShowDiscountsDropdown(false);
       }
       setErrors({});
     }
-  }, [isOpen, initialData]);
+  }, [
+    initialData,
+    isOpen,
+    DEFAULT_BACKOFFICE_PERMISSION_IDS,
+    sanitizeAssignableBackofficePermissions,
+    sanitizeAssignablePosPermissions,
+  ]);
 
   const togglePermission = (permissionId: string) => {
     const isCurrentlySelected = permissions.includes(permissionId);
@@ -191,11 +315,37 @@ export function CustomRoleFormModal({
   };
 
   const toggleBackofficePermission = (permissionId: string) => {
-    setBackofficePermissions(prev =>
-      prev.includes(permissionId)
-        ? prev.filter(id => id !== permissionId)
-        : [...prev, permissionId]
-    );
+    if (!canAssignAdvancedPermission(permissionId)) {
+      return;
+    }
+
+    setBackofficePermissions(prev => {
+      const isSelected = prev.includes(permissionId);
+      const isSettingsParent = permissionId === 'manage_settings';
+      const isSettingsChild = SETTINGS_SUB_PERMISSION_IDS.has(permissionId);
+
+      if (isSelected) {
+        if (isSettingsParent) {
+          return prev.filter(
+            (permission) =>
+              permission !== 'manage_settings' &&
+              !SETTINGS_SUB_PERMISSION_IDS.has(permission),
+          );
+        }
+        return prev.filter((permission) => permission !== permissionId);
+      }
+
+      const next = [...prev, permissionId];
+      if (
+        isSettingsChild &&
+        !next.includes('manage_settings') &&
+        canAssignAdvancedPermission('manage_settings')
+      ) {
+        next.push('manage_settings');
+      }
+
+      return Array.from(new Set(next));
+    });
   };
 
   const toggleDiscount = (discountId: string) => {
@@ -214,13 +364,23 @@ export function CustomRoleFormModal({
 
     // Validation: At least one permission must be enabled or posAccess implies defaults
     const finalPermissions = posAccess
-      ? normalizeAndFilterPermissions(permissions, ALLOWED_POS_PERMISSION_IDS)
+      ? sanitizeAssignablePosPermissions(
+          normalizeAndFilterPermissions(permissions, ALLOWED_POS_PERMISSION_IDS),
+        )
       : [];
     const finalBackofficePermissions = backofficeAccess
-      ? normalizeAndFilterPermissions(backofficePermissions, ALLOWED_BACKOFFICE_PERMISSION_IDS)
+      ? sanitizeAssignableBackofficePermissions(
+          normalizeAndFilterPermissions(
+            backofficePermissions,
+            ALLOWED_BACKOFFICE_PERMISSION_IDS,
+          ),
+        )
+      : [];
+    const effectiveBackofficePermissions = backofficeAccess
+      ? Array.from(new Set([...finalBackofficePermissions, ...DEFAULT_BACKOFFICE_PERMISSION_IDS]))
       : [];
 
-    if (finalPermissions.length === 0 && finalBackofficePermissions.length === 0 && !posAccess) {
+    if (finalPermissions.length === 0 && effectiveBackofficePermissions.length === 0 && !posAccess) {
       newErrors.general = t('roles.validation.atLeastOnePermission');
     }
 
@@ -238,7 +398,7 @@ export function CustomRoleFormModal({
       posAccess,
       backofficeAccess,
       backofficePermissions: backofficeAccess 
-        ? Array.from(new Set([...finalBackofficePermissions, 'dashboard', 'view_orders']))
+        ? effectiveBackofficePermissions
         : [],
     };
 
@@ -430,7 +590,17 @@ export function CustomRoleFormModal({
               <div className="rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 overflow-hidden transition-all duration-300">
                 <div
                   className="flex items-center justify-between p-5 cursor-pointer hover:bg-gray-100/50 dark:hover:bg-white/[0.02]"
-                  onClick={() => setBackofficeAccess(!backofficeAccess)}
+                  onClick={() =>
+                    setBackofficeAccess((prev) => {
+                      const next = !prev;
+                      if (next) {
+                        setBackofficePermissions((current) =>
+                          Array.from(new Set([...current, ...DEFAULT_BACKOFFICE_PERMISSION_IDS])),
+                        );
+                      }
+                      return next;
+                    })
+                  }
                 >
                   <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors duration-300 ${backofficeAccess ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/20' : 'bg-white dark:bg-white/5 text-gray-400 border border-gray-200 dark:border-white/5'}`}>

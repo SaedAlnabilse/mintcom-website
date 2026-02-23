@@ -100,6 +100,26 @@ class RealtimeService {
   private statusChangeCallbacks: Set<(status: ConnectionStatus) => void> = new Set();
   private refreshCallbacks: Set<(type: string) => void> = new Set();
 
+  private createSyntheticEvent<T>(
+    type: DataChangeEventType,
+    payload: T,
+  ): DataChangeEvent<T> {
+    return {
+      type,
+      timestamp: new Date().toISOString(),
+      establishmentId: this.establishmentId || '',
+      payload,
+      source: 'system',
+    };
+  }
+
+  private isDataChangeEventType(value: unknown): value is DataChangeEventType {
+    return (
+      typeof value === 'string' &&
+      Object.values(DataChangeEventTypes).includes(value as DataChangeEventType)
+    );
+  }
+
   /**
    * Initialize the service with optional auth token
    */
@@ -214,6 +234,44 @@ class RealtimeService {
     // Data change events
     this.socket.on('data:change', (event: DataChangeEvent<any>) => {
       this.handleDataChangeEvent(event);
+    });
+    // Backward-compatible alias emitted by some backend paths
+    this.socket.on('data:changed', (event: DataChangeEvent<any>) => {
+      this.handleDataChangeEvent(event);
+    });
+
+    // Legacy/direct room events emitted by backend listeners
+    const bindLegacyEvent = (eventName: string, eventType: DataChangeEventType) => {
+      this.socket?.on(eventName, (payload: any) => {
+        this.handleDataChangeEvent(this.createSyntheticEvent(eventType, payload));
+      });
+    };
+
+    bindLegacyEvent('order:created', DataChangeEventTypes.ORDER_CREATED);
+    bindLegacyEvent('order:updated', DataChangeEventTypes.ORDER_UPDATED);
+    bindLegacyEvent('order:refunded', DataChangeEventTypes.ORDER_REFUNDED);
+    bindLegacyEvent('shift:started', DataChangeEventTypes.SHIFT_STARTED);
+    bindLegacyEvent('shift:ended', DataChangeEventTypes.SHIFT_ENDED);
+    bindLegacyEvent('held_order:created', DataChangeEventTypes.HELD_ORDER_CREATED);
+    bindLegacyEvent('held_order:updated', DataChangeEventTypes.HELD_ORDER_UPDATED);
+    bindLegacyEvent('held_order:deleted', DataChangeEventTypes.HELD_ORDER_DELETED);
+
+    this.socket.on('inventory:changed', (payload: any) => {
+      const payloadType = payload?.type;
+      const eventType =
+        this.isDataChangeEventType(payloadType)
+          ? payloadType
+          : DataChangeEventTypes.ITEM_STOCK_CHANGED;
+      this.handleDataChangeEvent(this.createSyntheticEvent(eventType, payload));
+    });
+
+    this.socket.on('categories:changed', (payload: any) => {
+      const payloadType = payload?.type;
+      const eventType =
+        this.isDataChangeEventType(payloadType)
+          ? payloadType
+          : DataChangeEventTypes.CATEGORY_UPDATED;
+      this.handleDataChangeEvent(this.createSyntheticEvent(eventType, payload));
     });
 
     // Ping/pong for connection health

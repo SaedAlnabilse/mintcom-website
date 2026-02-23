@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -90,13 +90,34 @@ const normalizePermissionList = (values: unknown): string[] => {
   return normalizePermissions(values.filter((value): value is string => typeof value === 'string'));
 };
 
-const ALLOWED_POS_PERMISSION_IDS = new Set(CANONICAL_POS_PERMISSIONS.map(({ id }) => id));
-const ALLOWED_BACKOFFICE_PERMISSION_IDS = new Set(CANONICAL_BACKOFFICE_PERMISSIONS.map(({ id }) => id));
+const ALLOWED_POS_PERMISSION_IDS: Set<string> = new Set(CANONICAL_POS_PERMISSIONS.map(({ id }) => id));
+const ALLOWED_BACKOFFICE_PERMISSION_IDS: Set<string> = new Set(CANONICAL_BACKOFFICE_PERMISSIONS.map(({ id }) => id));
+const BASIC_POS_ASSIGNABLE_PERMISSION_IDS = new Set([
+  'pos',
+  'void_items',
+  'open_cash_drawer',
+  'change_taxes',
+  'pay_in_pay_out',
+  'dashboard',
+  'view_shift_reports',
+  'restock_items',
+  'manage_open_tickets',
+  'refunds',
+  'discounts',
+  'loyalty_system_access',
+  'reprint_receipts',
+  'live_chat',
+]);
 
 const normalizeAndFilterPermissions = (
   values: unknown,
   allowedPermissions: Set<string>,
 ): string[] => normalizePermissionList(values).filter((permission) => allowedPermissions.has(permission));
+
+const normalizePermissionId = (permissionId: string): string => {
+  const normalized = normalizePermissions([permissionId]);
+  return normalized[0] || permissionId.trim().toLowerCase();
+};
 
 const normalizeCustomRolesPayload = (payload: unknown): CustomRole[] => {
   const payloadWithItems = payload as { items?: unknown };
@@ -137,7 +158,7 @@ export function EmployeeFormModal({
 }: EmployeeFormModalProps) {
   const { t } = useTranslation();
   // Get current establishment from context (for dashboard-level pages)
-  const { currentEstablishment } = useAuth();
+  const { currentEstablishment, account } = useAuth();
 
   const POS_PERMISSIONS = useMemo(() => {
     return CANONICAL_POS_PERMISSIONS.map(({ id, label, description }) => ({
@@ -189,6 +210,119 @@ export function EmployeeFormModal({
   // Platform Access Control
   const [posAccess, setPosAccess] = useState(true);
   const [backofficeAccess, setBackofficeAccess] = useState(false);
+  const normalizedCurrentPermissionSet = useMemo(
+    () =>
+      new Set(
+        normalizePermissions(
+          (Array.isArray(account?.permissions) ? account.permissions : []) as string[],
+        ),
+      ),
+    [account?.permissions],
+  );
+  const canAssignAdminRole = normalizedCurrentPermissionSet.has('*');
+
+  const canAssignAdvancedPermission = useCallback(
+    (permissionId: string): boolean =>
+      canAssignAdminRole ||
+      normalizedCurrentPermissionSet.has(normalizePermissionId(permissionId)),
+    [canAssignAdminRole, normalizedCurrentPermissionSet],
+  );
+
+  const sanitizeAssignablePosPermissions = useCallback(
+    (requestedPermissions: string[] | undefined): string[] => {
+      if (!Array.isArray(requestedPermissions)) return [];
+
+      const seen = new Set<string>();
+      const result: string[] = [];
+
+      for (const permission of requestedPermissions) {
+        const normalized = normalizePermissionId(permission);
+        const canAssign =
+          canAssignAdminRole ||
+          BASIC_POS_ASSIGNABLE_PERMISSION_IDS.has(normalized) ||
+          normalizedCurrentPermissionSet.has(normalized);
+
+        if (canAssign && !seen.has(normalized)) {
+          seen.add(normalized);
+          result.push(normalized);
+        }
+      }
+
+      return result;
+    },
+    [canAssignAdminRole, normalizedCurrentPermissionSet],
+  );
+
+  const sanitizeAssignableBackofficePermissions = useCallback(
+    (requestedPermissions: string[] | undefined): string[] => {
+      if (!Array.isArray(requestedPermissions)) return [];
+
+      const seen = new Set<string>();
+      const result: string[] = [];
+
+      for (const permission of requestedPermissions) {
+        const normalized = normalizePermissionId(permission);
+        const canAssign =
+          ALLOWED_BACKOFFICE_PERMISSION_IDS.has(normalized) &&
+          canAssignAdvancedPermission(normalized);
+
+        if (canAssign && !seen.has(normalized)) {
+          seen.add(normalized);
+          result.push(normalized);
+        }
+      }
+
+      return result;
+    },
+    [canAssignAdvancedPermission],
+  );
+
+  const roleHasUnauthorizedPermissions = useCallback(
+    (roleTemplate: CustomRole): boolean => {
+      const templateBaseRole = (
+        roleTemplate.baseRole ||
+        roleTemplate.role ||
+        'USER'
+      ).toUpperCase();
+
+      if (templateBaseRole === 'ADMIN' && !canAssignAdminRole) {
+        return true;
+      }
+
+      const requestedPosPermissions = Array.isArray(roleTemplate.permissions)
+        ? roleTemplate.permissions
+        : [];
+      const requestedBackofficePermissions = Array.isArray(
+        roleTemplate.backofficePermissions,
+      )
+        ? roleTemplate.backofficePermissions
+        : [];
+
+      const hasUnauthorizedPos = requestedPosPermissions.some((permission) => {
+        const normalized = normalizePermissionId(permission);
+        return !(
+          canAssignAdminRole ||
+          BASIC_POS_ASSIGNABLE_PERMISSION_IDS.has(normalized) ||
+          normalizedCurrentPermissionSet.has(normalized)
+        );
+      });
+
+      const hasUnauthorizedBackoffice = requestedBackofficePermissions.some(
+        (permission) => !canAssignAdvancedPermission(permission),
+      );
+
+      return hasUnauthorizedPos || hasUnauthorizedBackoffice;
+    },
+    [
+      canAssignAdminRole,
+      canAssignAdvancedPermission,
+      normalizedCurrentPermissionSet,
+    ],
+  );
+  const assignableCustomRoles = useMemo(
+    () => customRoles.filter((roleTemplate) => !roleHasUnauthorizedPermissions(roleTemplate)),
+    [customRoles, roleHasUnauthorizedPermissions],
+  );
 
   const fetchCustomRoles = async () => {
     // In Owner/Brand mode - fetch global roles + establishment roles
@@ -276,14 +410,14 @@ export function EmployeeFormModal({
       fetchCustomRoles();
       // Clear role selection when establishments change
       if (selectedCustomRoleId) {
-        const stillValid = customRoles.some(r => r.id === selectedCustomRoleId);
+        const stillValid = assignableCustomRoles.some(r => r.id === selectedCustomRoleId);
         if (!stillValid) {
           setSelectedCustomRoleId('');
           setLastAppliedTemplate(null);
         }
       }
     }
-  }, [selectedEstablishmentIds]);
+  }, [selectedEstablishmentIds, assignableCustomRoles]);
 
   useEffect(() => {
     if (activeDropdown === 'ESTABLISHMENT' && establishmentButtonRef.current) {
@@ -308,8 +442,22 @@ export function EmployeeFormModal({
         setRole(initialData.role.toUpperCase() === 'ADMIN' ? 'ADMIN' : 'USER');
         setPassword('');
         setConfirmPassword('');
-        setPermissions(normalizeAndFilterPermissions(initialData.permissions || ['pos', 'discounts', 'refunds'], ALLOWED_POS_PERMISSION_IDS));
-        setBackofficePermissions(normalizeAndFilterPermissions(initialData.backofficePermissions, ALLOWED_BACKOFFICE_PERMISSION_IDS));
+        setPermissions(
+          sanitizeAssignablePosPermissions(
+            normalizeAndFilterPermissions(
+              initialData.permissions || ['pos', 'discounts', 'refunds'],
+              ALLOWED_POS_PERMISSION_IDS,
+            ),
+          ),
+        );
+        setBackofficePermissions(
+          sanitizeAssignableBackofficePermissions(
+            normalizeAndFilterPermissions(
+              initialData.backofficePermissions,
+              ALLOWED_BACKOFFICE_PERMISSION_IDS,
+            ),
+          ),
+        );
         setSelectedCustomRoleId(initialData.customRoleId || '');
         // Platform access control
         setPosAccess(initialData.posAccess !== false); // Default to true
@@ -342,7 +490,9 @@ export function EmployeeFormModal({
         setPassword('');
         setConfirmPassword('');
         setPermissions(['pos', 'dashboard', 'discounts', 'refunds']);
-        setBackofficePermissions(['dashboard', 'view_orders']);
+        setBackofficePermissions(
+          sanitizeAssignableBackofficePermissions(['dashboard', 'view_orders', 'view_reports']),
+        );
         setAllDiscountsSelected(true);
         setAllowedDiscounts([]);
         setSelectedCustomRoleId('');
@@ -360,7 +510,13 @@ export function EmployeeFormModal({
       }
       setActiveDropdown(null);
     }
-  }, [isOpen, initialData]);
+  }, [
+    isOpen,
+    initialData,
+    establishments,
+    sanitizeAssignableBackofficePermissions,
+    sanitizeAssignablePosPermissions,
+  ]);
 
   const toggleSection = (sectionId: string, e: React.MouseEvent<HTMLButtonElement>) => {
     const isExpanding = !expandedRoleSections.has(sectionId);
@@ -384,13 +540,31 @@ export function EmployeeFormModal({
   };
 
   const handleTemplateSelect = (roleTemplate: CustomRole) => {
+    if (roleHasUnauthorizedPermissions(roleTemplate)) {
+      return;
+    }
+
     // Safely determine the role type
     const templateRole = (roleTemplate.baseRole || roleTemplate.role || 'USER').toUpperCase();
-    const roleType = templateRole === 'ADMIN' ? 'ADMIN' : 'USER';
+    const roleType =
+      templateRole === 'ADMIN' && canAssignAdminRole ? 'ADMIN' : 'USER';
     setRole(roleType);
 
-    setPermissions(normalizeAndFilterPermissions(roleTemplate.permissions, ALLOWED_POS_PERMISSION_IDS));
-    setBackofficePermissions(normalizeAndFilterPermissions(roleTemplate.backofficePermissions, ALLOWED_BACKOFFICE_PERMISSION_IDS));
+    const filteredPosPermissions = sanitizeAssignablePosPermissions(
+      normalizeAndFilterPermissions(
+        roleTemplate.permissions,
+        ALLOWED_POS_PERMISSION_IDS,
+      ),
+    );
+    const filteredBackofficePermissions = sanitizeAssignableBackofficePermissions(
+      normalizeAndFilterPermissions(
+        roleTemplate.backofficePermissions,
+        ALLOWED_BACKOFFICE_PERMISSION_IDS,
+      ),
+    );
+
+    setPermissions(filteredPosPermissions);
+    setBackofficePermissions(filteredBackofficePermissions);
     setAllDiscountsSelected(
       typeof roleTemplate.allDiscounts === 'boolean'
         ? roleTemplate.allDiscounts
@@ -398,7 +572,12 @@ export function EmployeeFormModal({
     );
     setAllowedDiscounts(roleTemplate.allowedDiscounts || []);
     setSelectedCustomRoleId(roleTemplate.id);
-    setLastAppliedTemplate(roleTemplate);
+    setLastAppliedTemplate({
+      ...roleTemplate,
+      baseRole: roleType,
+      permissions: filteredPosPermissions,
+      backofficePermissions: filteredBackofficePermissions,
+    });
 
     // Sync access control from template
     setPosAccess(roleTemplate.posAccess !== false);
@@ -443,11 +622,28 @@ export function EmployeeFormModal({
     const newErrors: Record<string, string> = {};
     if (!name.trim()) newErrors.name = t('staff.errors.nameRequired');
     if (!username.trim()) newErrors.username = t('staff.errors.usernameRequired');
-    if (role === 'ADMIN' && !email.trim()) newErrors.email = t('staff.errors.emailRequired');
+    if ((role === 'ADMIN' || backofficeAccess) && !email.trim()) {
+      newErrors.email = t('staff.errors.emailRequired');
+    }
+
+    if (role === 'ADMIN' && !canAssignAdminRole) {
+      newErrors.role = t('staff.errors.roleNotAllowed', {
+        defaultValue: 'You cannot assign the admin role.',
+      });
+    }
 
     // Validate role selection - must be ADMIN or have a custom role selected
     if (role !== 'ADMIN' && !selectedCustomRoleId) {
       newErrors.role = t('staff.errors.roleRequired');
+    }
+
+    if (
+      selectedCustomRoleId &&
+      !assignableCustomRoles.some((customRole) => customRole.id === selectedCustomRoleId)
+    ) {
+      newErrors.role = t('staff.errors.roleNotAllowed', {
+        defaultValue: 'You cannot assign this role template.',
+      });
     }
 
     if (!initialData && !password) newErrors.password = t('staff.errors.passwordRequired');
@@ -476,6 +672,18 @@ export function EmployeeFormModal({
     const nameParts = name.trim().split(/\s+/);
     const firstName = nameParts[0] || t('staff.form.defaultFirstName');
     const lastName = nameParts.slice(1).join(' ');
+    const sanitizedPosPermissions = sanitizeAssignablePosPermissions(
+      normalizeAndFilterPermissions(permissions, ALLOWED_POS_PERMISSION_IDS),
+    );
+    const sanitizedBackofficePermissions = sanitizeAssignableBackofficePermissions(
+      normalizeAndFilterPermissions(
+        backofficePermissions,
+        ALLOWED_BACKOFFICE_PERMISSION_IDS,
+      ),
+    );
+    const defaultBackofficePermissions = ['dashboard', 'view_orders', 'view_reports'].filter(
+      (permission) => canAssignAdvancedPermission(permission),
+    );
 
     const payload: Partial<StaffMember> & { password?: string; pinCode?: string } = {
       firstName,
@@ -487,10 +695,14 @@ export function EmployeeFormModal({
       permissions: role === 'ADMIN'
         ? POS_PERMISSIONS.map(p => p.id)
         : Array.from(new Set([
-            ...normalizeAndFilterPermissions(permissions, ALLOWED_POS_PERMISSION_IDS),
+            ...sanitizedPosPermissions,
             ...(posAccess ? ['pos', 'void_items'] : []),
           ])),
-      customRoleId: selectedCustomRoleId || undefined,
+      customRoleId:
+        selectedCustomRoleId &&
+        assignableCustomRoles.some((customRole) => customRole.id === selectedCustomRoleId)
+          ? selectedCustomRoleId
+          : undefined,
       allowedDiscounts: allDiscountsSelected ? [] : allowedDiscounts,
       establishmentIds: establishments ? selectedEstablishmentIds : undefined,
       // Platform access control
@@ -498,9 +710,8 @@ export function EmployeeFormModal({
       backofficeAccess,
       backofficePermissions: backofficeAccess
         ? Array.from(new Set([
-            ...normalizeAndFilterPermissions(backofficePermissions, ALLOWED_BACKOFFICE_PERMISSION_IDS),
-            'dashboard',
-            'view_orders'
+            ...sanitizedBackofficePermissions,
+            ...defaultBackofficePermissions,
           ]))
         : [],
     };
@@ -736,7 +947,7 @@ export function EmployeeFormModal({
                         {role === 'ADMIN'
                           ? t('staff.form.adminRole')
                           : selectedCustomRoleId
-                            ? customRoles.find(r => r.id === selectedCustomRoleId)?.name || t('staff.form.selectRole')
+                            ? assignableCustomRoles.find(r => r.id === selectedCustomRoleId)?.name || t('staff.form.selectRole')
                             : t('staff.form.selectRole')}
                       </span>
                       <ChevronDown size={16} className={`text-gray-400 transition-transform ${activeDropdown === 'ROLE' ? 'rotate-180' : ''}`} />
@@ -752,32 +963,38 @@ export function EmployeeFormModal({
                         >
                           <div className="p-2 max-h-80 overflow-y-auto custom-scrollbar">
                             {/* Admin Option */}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setRole('ADMIN');
-                                setSelectedCustomRoleId('');
-                                setLastAppliedTemplate(null);
-                                setPermissions(POS_PERMISSIONS.map(p => p.id));
-                                setBackofficePermissions(BACKOFFICE_PERMISSIONS.map(p => p.id));
-                                setAllDiscountsSelected(true);
-                                setActiveDropdown(null);
-                                setPosAccess(true);
-                                setBackofficeAccess(true);
-                              }}
-                              className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${role === 'ADMIN' ? 'bg-purple-500/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
-                            >
-                              <div>
-                                <span className={`text-xs font-bold ${role === 'ADMIN' ? 'text-purple-500' : 'text-gray-700 dark:text-gray-300'}`}>
-                                  {t('staff.form.adminRole')}
-                                </span>
-                                <p className="text-xs font-bold text-gray-500 mt-0.5">{t('staff.form.adminDesc')}</p>
-                              </div>
-                              {role === 'ADMIN' && <Check size={14} className="text-purple-500" />}
-                            </button>
+                            {canAssignAdminRole && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setRole('ADMIN');
+                                  setSelectedCustomRoleId('');
+                                  setLastAppliedTemplate(null);
+                                  setPermissions(POS_PERMISSIONS.map(p => p.id));
+                                  setBackofficePermissions(
+                                    sanitizeAssignableBackofficePermissions(
+                                      BACKOFFICE_PERMISSIONS.map(p => p.id),
+                                    ),
+                                  );
+                                  setAllDiscountsSelected(true);
+                                  setActiveDropdown(null);
+                                  setPosAccess(true);
+                                  setBackofficeAccess(true);
+                                }}
+                                className={`w-full flex items-center justify-between p-3 rounded-lg text-left transition-colors ${role === 'ADMIN' ? 'bg-purple-500/10' : 'hover:bg-gray-50 dark:hover:bg-white/5'}`}
+                              >
+                                <div>
+                                  <span className={`text-xs font-bold ${role === 'ADMIN' ? 'text-purple-500' : 'text-gray-700 dark:text-gray-300'}`}>
+                                    {t('staff.form.adminRole')}
+                                  </span>
+                                  <p className="text-xs font-bold text-gray-500 mt-0.5">{t('staff.form.adminDesc')}</p>
+                                </div>
+                                {role === 'ADMIN' && <Check size={14} className="text-purple-500" />}
+                              </button>
+                            )}
 
                             {/* Global Roles Section - Accordion */}
-                            {customRoles.filter(r => r.isGlobal).length > 0 && (
+                            {assignableCustomRoles.filter(r => r.isGlobal).length > 0 && (
                               <div className="mt-2">
                                 <div className="border-t border-gray-100 dark:border-white/5 mb-2" />
                                 <button
@@ -797,7 +1014,7 @@ export function EmployeeFormModal({
                                       transition={{ duration: 0.2 }}
                                       className="overflow-hidden"
                                     >
-                                      {customRoles.filter(r => r.isGlobal).map(customRole => (
+                                      {assignableCustomRoles.filter(r => r.isGlobal).map(customRole => (
                                         <button
                                           key={customRole.id}
                                           type="button"
@@ -821,7 +1038,7 @@ export function EmployeeFormModal({
 
                             {/* Establishment-Specific Roles - Accordion */}
                             {(() => {
-                              const estRoles = customRoles.filter(r => !r.isGlobal);
+                              const estRoles = assignableCustomRoles.filter(r => !r.isGlobal);
                               // Group by establishment
                               const grouped: Record<string, CustomRole[]> = {};
                               estRoles.forEach(r => {
@@ -874,7 +1091,7 @@ export function EmployeeFormModal({
                             })()}
 
                             {/* No custom roles message */}
-                            {customRoles.length === 0 && (
+                            {assignableCustomRoles.length === 0 && (
                               <div className="p-3 text-center">
                                 <p className="text-xs text-gray-500">{t('staff.form.noRoles')}</p>
                                 <p className="text-xs font-bold text-gray-500 mt-1">{t('staff.form.createRolesInSettings')}</p>

@@ -2,9 +2,13 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Star, CheckCircle2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
+import api from '../config/api';
+import { useAuth } from '../context/AuthContext';
 
 export const FeedbackWidget = () => {
     const { t } = useTranslation();
+    const { account } = useAuth();
     const isRTL = t('common.locale') === 'ar';
     const [isOpen, setIsOpen] = useState(false);
     const [rating, setRating] = useState(0);
@@ -15,22 +19,37 @@ export const FeedbackWidget = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!rating || !comment.trim()) return;
         setIsSubmitting(true);
-        
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        setIsSubmitting(false);
-        setIsSubmitted(true);
-        
-        // Reset and close after a delay
-        setTimeout(() => {
-            setIsOpen(false);
-            // After modal closes, hide the tab entirely
+
+        try {
+            await api.post('/contact/feedback', {
+                rating,
+                comment: comment.trim(),
+                pageUrl: window.location.href,
+                userName: account
+                    ? `${account.firstName || ''} ${account.lastName || ''}`.trim() || account.email
+                    : undefined,
+                userEmail: account?.email,
+            });
+
+            setIsSubmitted(true);
+            toast.success(t('feedback.thanks'));
+
+            // Reset and close after a delay
             setTimeout(() => {
-                setIsVisible(false);
-            }, 300);
-        }, 3000);
+                setIsOpen(false);
+                // After modal closes, hide the tab entirely
+                setTimeout(() => {
+                    setIsVisible(false);
+                }, 300);
+            }, 3000);
+        } catch (error) {
+            console.error('Failed to submit feedback:', error);
+            toast.error(t('errors.unexpected.message'));
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     if (!isVisible && !isOpen) return null;
@@ -141,7 +160,10 @@ export const FeedbackWidget = () => {
                                             className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black rounded-2xl font-black text-xs tracking-[0.15em] uppercase shadow-lg hover:opacity-90 disabled:opacity-50 disabled:shadow-none transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
                                         >
                                             {isSubmitting ? (
-                                                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                                                    <span>{t('feedback.sending')}</span>
+                                                </div>
                                             ) : (
                                                 <>
                                                     <Send size={14} />

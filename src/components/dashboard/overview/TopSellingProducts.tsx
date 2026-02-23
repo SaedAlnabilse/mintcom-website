@@ -14,9 +14,15 @@ interface TopSellingProductsProps {
   topProducts: TopProduct[];
   categoryBreakdown: { name: string; value: number; count?: number }[];
   viewMode: 'current_shift' | 'previous_shift' | 'last_24_hours';
+  canViewReports?: boolean;
 }
 
-export const TopSellingProducts = React.memo(function TopSellingProducts({ topProducts, categoryBreakdown, viewMode }: TopSellingProductsProps) {
+export const TopSellingProducts = React.memo(function TopSellingProducts({
+  topProducts,
+  categoryBreakdown,
+  viewMode,
+  canViewReports = true,
+}: TopSellingProductsProps) {
   const { t } = useTranslation();
   const { locationSlug } = useParams();
   const navigate = useNavigate();
@@ -37,12 +43,14 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({ topPr
               </p>
             </div>
           </div>
-          <button
-            onClick={() => navigate(`/dashboard/${locationSlug}/reports`)}
-            className="text-xs font-bold text-paymint-green hover:underline tracking-wide"
-          >
-            {t('orders.reports.sales.viewAll')}
-          </button>
+          {canViewReports && (
+            <button
+              onClick={() => navigate(`/dashboard/${locationSlug}/reports`)}
+              className="text-xs font-bold text-paymint-green hover:underline tracking-wide"
+            >
+              {t('orders.reports.sales.viewAll')}
+            </button>
+          )}
         </div>
         <div className="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           {/* Top Items Column */}
@@ -50,7 +58,7 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({ topPr
             <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 text-center">{t('dashboard.stats.top3Items')}</h4>
             {topProducts.length > 0 ? topProducts.slice(0, 3).map((item, index) => (
               <motion.div
-                key={item.name}
+                key={`${item.name}-${index}`}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
@@ -82,7 +90,7 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({ topPr
             <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 text-center">{t('dashboard.stats.top3Categories')}</h4>
             {categoryBreakdown && categoryBreakdown.length > 0 ? categoryBreakdown.slice(0, 3).map((cat, index) => (
               <motion.div
-                key={cat.name}
+                key={`${cat.name}-${index}`}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}

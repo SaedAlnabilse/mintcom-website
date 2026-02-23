@@ -202,7 +202,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
       <div className="flex overflow-x-auto scrollbar-none gap-3 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-4 sm:overflow-visible">
         {statCards.map((stat: any, index) => (
           <motion.div
-            key={stat.label}
+            key={`${stat.label}-${index}`}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}

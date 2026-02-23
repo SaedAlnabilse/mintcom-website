@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   FileBarChart,
@@ -16,6 +16,7 @@ import { useRealtime } from '../../hooks/useRealtime';
 import { DataChangeEventTypes } from '../../services/realtimeService';
 import { useTranslation } from 'react-i18next';
 import { getDateLocale } from '../../utils/dateLocale';
+import { hasPermission } from '../../config/permissions';
 
 import type { 
   PeakHour, 
@@ -44,7 +45,12 @@ export const DashboardPage = () => {
   const { t } = useTranslation();
   const { locationSlug } = useParams();
   const navigate = useNavigate();
-  const { currentEstablishment } = useAuth();
+  const { currentEstablishment, account } = useAuth();
+  const accountRole = ((account as { role?: string } | null)?.role || '')
+    .toString()
+    .toUpperCase();
+  const isPrivilegedAccount =
+    accountRole === 'ACCOUNT_OWNER' || accountRole === 'OWNER' || accountRole === 'ADMIN';
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
@@ -59,6 +65,32 @@ export const DashboardPage = () => {
   
   // Modals
   const [showPayInOutModal, setShowPayInOutModal] = useState(false);
+  const fallbackShiftStatus: ShiftStatus = useMemo(
+    () => ({
+      shiftStatus: 'NO_SHIFT',
+      activeShift: null,
+      netSales: 0,
+      numberOfOrders: 0,
+      cashSales: 0,
+      cardSales: 0,
+      otherPayments: 0,
+      payIn: 0,
+      payOut: 0,
+      totalTimeWorked: '0 minutes',
+    }),
+    [],
+  );
+
+  const canViewDashboardAnalytics = useMemo(
+    () =>
+      isPrivilegedAccount ||
+      hasPermission(account?.permissions, ['dashboard', 'view_orders', 'view_reports']),
+    [account?.permissions, isPrivilegedAccount],
+  );
+  const canOpenReportsPage = useMemo(
+    () => isPrivilegedAccount || hasPermission(account?.permissions, ['view_reports']),
+    [account?.permissions, isPrivilegedAccount],
+  );
 
   // Ref for click outside handling
   const viewModeRef = useRef<HTMLDivElement>(null);
@@ -93,9 +125,9 @@ export const DashboardPage = () => {
       }
     } catch (error) {
       console.error('Failed to fetch shift status:', error);
-      setShiftStatus(null);
+      setShiftStatus(fallbackShiftStatus);
     }
-  }, []);
+  }, [fallbackShiftStatus]);
 
   // Refresh shift status without changing view mode (for real-time updates)
   const refreshShiftStatus = useCallback(async () => {
@@ -148,6 +180,28 @@ export const DashboardPage = () => {
       }
 
       setLastRefresh(new Date());
+
+      if (!canViewDashboardAnalytics) {
+        setStats({
+          totalRevenue: 0,
+          totalOrders: 0,
+          averageOrderValue: 0,
+          pendingOrders: 0,
+          completedOrders: 0,
+          activeEmployees: 0,
+          taxCollected: 0,
+          totalRefunds: 0,
+          grossProfit: 0,
+          totalPayIn: 0,
+          totalPayOut: 0,
+          paymentMethodBreakdown: [],
+          categoryBreakdown: [],
+          dailyBreakdown: [],
+        });
+        setTopProducts([]);
+        setPeakHours([]);
+        return;
+      }
 
       // Track if any API call failed
       let hasError = false;
@@ -207,7 +261,7 @@ export const DashboardPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [viewMode, shiftStatus]);
+  }, [canViewDashboardAnalytics, t, viewMode, shiftStatus]);
 
   // Initial load: fetch shift status first
   useEffect(() => {
@@ -263,7 +317,11 @@ export const DashboardPage = () => {
       console.log('[Dashboard] 📥 Received real-time event:', eventType);
       // Refresh data when orders are created or updated
       if (eventType === DataChangeEventTypes.ORDER_CREATED ||
-          eventType === DataChangeEventTypes.ORDER_REFUNDED) {
+          eventType === DataChangeEventTypes.ORDER_UPDATED ||
+          eventType === DataChangeEventTypes.ORDER_REFUNDED ||
+          eventType === DataChangeEventTypes.HELD_ORDER_CREATED ||
+          eventType === DataChangeEventTypes.HELD_ORDER_UPDATED ||
+          eventType === DataChangeEventTypes.HELD_ORDER_DELETED) {
         refreshShiftStatusRef.current();
         fetchDashboardDataRef.current();
       }
@@ -451,13 +509,15 @@ export const DashboardPage = () => {
               {/* Action buttons row */}
               <div className="flex items-center gap-2 sm:gap-3">
 
-                <button
-                  onClick={() => navigate(`/dashboard/${locationSlug}/reports`)}
-                  className="flex items-center gap-2 px-4 sm:px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all touch-target"
-                >
-                  <FileBarChart size={18} className="text-paymint-green" />
-                  <span className="hidden xs:inline">{t('dashboard.menu.salesAndReporting')}</span>
-                </button>
+                {canOpenReportsPage && (
+                  <button
+                    onClick={() => navigate(`/dashboard/${locationSlug}/reports`)}
+                    className="flex items-center gap-2 px-4 sm:px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all touch-target"
+                  >
+                    <FileBarChart size={18} className="text-paymint-green" />
+                    <span className="hidden xs:inline">{t('dashboard.menu.salesAndReporting')}</span>
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -482,6 +542,14 @@ export const DashboardPage = () => {
               {t('dashboard.lastUpdated')} {format(lastRefresh, 'h:mm a', { locale: getDateLocale(t('common.locale')) })}
             </span>
           </div>
+
+          {!canViewDashboardAnalytics && (
+            <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-700 dark:text-amber-300 text-xs font-bold">
+              {t('dashboard.permissions.analyticsRequired', {
+                defaultValue: 'You do not have permission to load dashboard analytics.',
+              })}
+            </div>
+          )}
 
           {/* Components Grid */}
           <DashboardStatsCards 
@@ -508,6 +576,7 @@ export const DashboardPage = () => {
               topProducts={topProducts}
               categoryBreakdown={stats?.categoryBreakdown || []}
               viewMode={viewMode}
+              canViewReports={canOpenReportsPage}
             />
             <PeakHoursChart 
               peakHours={peakHours} 

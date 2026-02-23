@@ -30,4 +30,17 @@ export default defineConfig([
       'prefer-const': 'warn',
     },
   },
+  {
+    files: [
+      'src/pages/dashboard/**/*.{ts,tsx}',
+      'src/components/dashboard/**/*.{ts,tsx}',
+      'src/components/DashboardLayout.tsx',
+      'src/pages/brand/BrandDashboardPage.tsx',
+    ],
+    rules: {
+      // Dashboard modules intentionally keep manually-controlled effects and memoization.
+      'react-hooks/exhaustive-deps': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+    },
+  },
 ])

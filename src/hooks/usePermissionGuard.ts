@@ -34,23 +34,19 @@ export function usePermissionGuard(overridePermissions?: string[]) {
   const relativePath = getRelativePath();
   const requiredPermissions = overridePermissions || REQUIRED_PERMISSIONS[relativePath];
 
-  // Check if user has at least one of the required permissions
-  const hasPermission = (): boolean => {
+  const hasAccess =
     // No account = not authenticated, let ProtectedRoute handle it
-    if (!account) return true;
-
+    !account ||
     // Primary owners bypass all permission checks
-    if (!account.isSecondaryAdmin) return true;
-
+    !account.isSecondaryAdmin ||
     // No permissions required for this route
-    if (!requiredPermissions || requiredPermissions.length === 0) return true;
-
+    !requiredPermissions ||
+    requiredPermissions.length === 0 ||
     // Alias-aware permission check via centralized helper
-    return checkPerms(account.permissions, requiredPermissions);
-  };
+    checkPerms(account.permissions, requiredPermissions);
 
   useEffect(() => {
-    if (!hasPermission()) {
+    if (!hasAccess) {
       toast.error('You do not have permission to access this page', {
         duration: 5000,
         id: 'route-permission-denied',
@@ -60,10 +56,10 @@ export function usePermissionGuard(overridePermissions?: string[]) {
       const dashboardHome = locationSlug ? `/dashboard/${locationSlug}` : '/dashboard';
       navigate(dashboardHome, { replace: true });
     }
-  }, [location.pathname, account?.permissions]);
+  }, [hasAccess, locationSlug, navigate]);
 
   return {
-    hasPermission: hasPermission(),
+    hasPermission: hasAccess,
     requiredPermissions,
   };
 }
