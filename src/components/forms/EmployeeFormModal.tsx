@@ -90,8 +90,15 @@ const normalizePermissionList = (values: unknown): string[] => {
   return normalizePermissions(values.filter((value): value is string => typeof value === 'string'));
 };
 
+const BACKOFFICE_DEFAULT_PERMISSION_IDS = ['dashboard', 'view_orders'] as const;
+const LEGACY_AUTO_BACKOFFICE_PERMISSION_IDS = ['dashboard', 'view_orders', 'view_reports'] as const;
+const LEGACY_AUTO_BACKOFFICE_PERMISSION_ID_SET = new Set<string>(LEGACY_AUTO_BACKOFFICE_PERMISSION_IDS);
+
 const ALLOWED_POS_PERMISSION_IDS: Set<string> = new Set(CANONICAL_POS_PERMISSIONS.map(({ id }) => id));
-const ALLOWED_BACKOFFICE_PERMISSION_IDS: Set<string> = new Set(CANONICAL_BACKOFFICE_PERMISSIONS.map(({ id }) => id));
+const ALLOWED_BACKOFFICE_PERMISSION_IDS: Set<string> = new Set([
+  ...CANONICAL_BACKOFFICE_PERMISSIONS.map(({ id }) => id),
+  ...BACKOFFICE_DEFAULT_PERMISSION_IDS,
+]);
 const BASIC_POS_ASSIGNABLE_PERMISSION_IDS = new Set([
   'pos',
   'void_items',
@@ -228,6 +235,37 @@ export function EmployeeFormModal({
     [canAssignAdminRole, normalizedCurrentPermissionSet],
   );
 
+  const getDefaultBackofficePermissions = useCallback(
+    (): string[] =>
+      BACKOFFICE_DEFAULT_PERMISSION_IDS.filter((permission) =>
+        canAssignAdvancedPermission(permission),
+      ),
+    [canAssignAdvancedPermission],
+  );
+
+  const isLegacyAutoBackofficePermissionSet = useCallback(
+    (requestedPermissions: string[] | undefined): boolean => {
+      if (!Array.isArray(requestedPermissions)) return false;
+
+      const normalizedUnique = Array.from(
+        new Set(
+          requestedPermissions
+            .filter((permission): permission is string => typeof permission === 'string')
+            .map((permission) => normalizePermissionId(permission)),
+        ),
+      );
+
+      if (normalizedUnique.length !== LEGACY_AUTO_BACKOFFICE_PERMISSION_ID_SET.size) {
+        return false;
+      }
+
+      return normalizedUnique.every((permission) =>
+        LEGACY_AUTO_BACKOFFICE_PERMISSION_ID_SET.has(permission),
+      );
+    },
+    [],
+  );
+
   const sanitizeAssignablePosPermissions = useCallback(
     (requestedPermissions: string[] | undefined): string[] => {
       if (!Array.isArray(requestedPermissions)) return [];
@@ -275,6 +313,32 @@ export function EmployeeFormModal({
       return result;
     },
     [canAssignAdvancedPermission],
+  );
+
+  const buildEffectiveBackofficePermissions = useCallback(
+    (requestedPermissions: string[] | undefined, accessEnabled: boolean): string[] => {
+      if (!accessEnabled) return [];
+
+      const sanitized = sanitizeAssignableBackofficePermissions(requestedPermissions);
+      const normalizeLegacyAutoSelection =
+        isLegacyAutoBackofficePermissionSet(requestedPermissions) ||
+        isLegacyAutoBackofficePermissionSet(sanitized);
+      const normalizedSanitized = normalizeLegacyAutoSelection
+        ? sanitized.filter((permission) => permission !== 'view_reports')
+        : sanitized;
+
+      return Array.from(
+        new Set([
+          ...normalizedSanitized,
+          ...getDefaultBackofficePermissions(),
+        ]),
+      );
+    },
+    [
+      getDefaultBackofficePermissions,
+      isLegacyAutoBackofficePermissionSet,
+      sanitizeAssignableBackofficePermissions,
+    ],
   );
 
   const roleHasUnauthorizedPermissions = useCallback(
@@ -442,6 +506,7 @@ export function EmployeeFormModal({
         setRole(initialData.role.toUpperCase() === 'ADMIN' ? 'ADMIN' : 'USER');
         setPassword('');
         setConfirmPassword('');
+        const initialBackofficeAccess = initialData.backofficeAccess || false;
         setPermissions(
           sanitizeAssignablePosPermissions(
             normalizeAndFilterPermissions(
@@ -451,17 +516,18 @@ export function EmployeeFormModal({
           ),
         );
         setBackofficePermissions(
-          sanitizeAssignableBackofficePermissions(
+          buildEffectiveBackofficePermissions(
             normalizeAndFilterPermissions(
               initialData.backofficePermissions,
               ALLOWED_BACKOFFICE_PERMISSION_IDS,
             ),
+            initialBackofficeAccess,
           ),
         );
         setSelectedCustomRoleId(initialData.customRoleId || '');
         // Platform access control
         setPosAccess(initialData.posAccess !== false); // Default to true
-        setBackofficeAccess(initialData.backofficeAccess || false);
+        setBackofficeAccess(initialBackofficeAccess);
 
         if (initialData.allowedDiscounts && initialData.allowedDiscounts.length > 0) {
           setAllDiscountsSelected(false);
@@ -491,7 +557,10 @@ export function EmployeeFormModal({
         setConfirmPassword('');
         setPermissions(['pos', 'dashboard', 'discounts', 'refunds']);
         setBackofficePermissions(
-          sanitizeAssignableBackofficePermissions(['dashboard', 'view_orders', 'view_reports']),
+          buildEffectiveBackofficePermissions(
+            [...BACKOFFICE_DEFAULT_PERMISSION_IDS],
+            true,
+          ),
         );
         setAllDiscountsSelected(true);
         setAllowedDiscounts([]);
@@ -515,7 +584,7 @@ export function EmployeeFormModal({
     initialData,
     establishments,
     fetchCustomRoles,
-    sanitizeAssignableBackofficePermissions,
+    buildEffectiveBackofficePermissions,
     sanitizeAssignablePosPermissions,
   ]);
 
@@ -557,11 +626,13 @@ export function EmployeeFormModal({
         ALLOWED_POS_PERMISSION_IDS,
       ),
     );
-    const filteredBackofficePermissions = sanitizeAssignableBackofficePermissions(
+    const templateBackofficeAccess = roleTemplate.backofficeAccess || false;
+    const filteredBackofficePermissions = buildEffectiveBackofficePermissions(
       normalizeAndFilterPermissions(
         roleTemplate.backofficePermissions,
         ALLOWED_BACKOFFICE_PERMISSION_IDS,
       ),
+      templateBackofficeAccess,
     );
 
     setPermissions(filteredPosPermissions);
@@ -582,7 +653,7 @@ export function EmployeeFormModal({
 
     // Sync access control from template
     setPosAccess(roleTemplate.posAccess !== false);
-    setBackofficeAccess(roleTemplate.backofficeAccess || false);
+    setBackofficeAccess(templateBackofficeAccess);
 
     setActiveDropdown(null);
   };
@@ -676,14 +747,9 @@ export function EmployeeFormModal({
     const sanitizedPosPermissions = sanitizeAssignablePosPermissions(
       normalizeAndFilterPermissions(permissions, ALLOWED_POS_PERMISSION_IDS),
     );
-    const sanitizedBackofficePermissions = sanitizeAssignableBackofficePermissions(
-      normalizeAndFilterPermissions(
-        backofficePermissions,
-        ALLOWED_BACKOFFICE_PERMISSION_IDS,
-      ),
-    );
-    const defaultBackofficePermissions = ['dashboard', 'view_orders', 'view_reports'].filter(
-      (permission) => canAssignAdvancedPermission(permission),
+    const effectiveBackofficePermissions = buildEffectiveBackofficePermissions(
+      normalizeAndFilterPermissions(backofficePermissions, ALLOWED_BACKOFFICE_PERMISSION_IDS),
+      backofficeAccess,
     );
 
     const payload: Partial<StaffMember> & { password?: string; pinCode?: string } = {
@@ -709,12 +775,7 @@ export function EmployeeFormModal({
       // Platform access control
       posAccess,
       backofficeAccess,
-      backofficePermissions: backofficeAccess
-        ? Array.from(new Set([
-            ...sanitizedBackofficePermissions,
-            ...defaultBackofficePermissions,
-          ]))
-        : [],
+      backofficePermissions: effectiveBackofficePermissions,
     };
 
     if (password) {
