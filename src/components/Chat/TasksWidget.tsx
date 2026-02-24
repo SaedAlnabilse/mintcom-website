@@ -235,10 +235,17 @@ export function TasksWidget() {
 
     /* ---- handlers ---- */
     const toggleComplete = (taskId: string) => {
-        setCompletedById((prev) => ({
-            ...prev,
-            [taskId]: !prev[taskId],
-        }));
+        setCompletedById((prev) => {
+            const isNowComplete = !prev[taskId];
+            // If marking as complete and it's the currently expanded task, collapse it
+            if (isNowComplete && expandedId === taskId) {
+                setExpandedId(null);
+            }
+            return {
+                ...prev,
+                [taskId]: isNowComplete,
+            };
+        });
     };
 
     const handleOpenTask = (navigation: TaskNavigation) => {
