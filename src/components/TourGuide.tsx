@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect } from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronRight, ChevronLeft, HelpCircle } from 'lucide-react';
@@ -27,7 +27,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
   const isLastStep = currentStepIndex === steps.length - 1;
 
   // Function to update the target element's position
-  const updateTargetPosition = () => {
+  const updateTargetPosition = useCallback(() => {
     if (!isOpen) return;
 
     const element = document.getElementById(currentStep?.targetId);
@@ -40,7 +40,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
       // If element not found, move to next step or nullify
       // console.warn(`Tour target #${currentStep?.targetId} not found`);
     }
-  };
+  }, [isOpen, currentStep?.targetId]);
 
   // Update position on step change, resize, or scroll
   useLayoutEffect(() => {
@@ -56,7 +56,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
       window.removeEventListener('scroll', updateTargetPosition, true);
       clearTimeout(timer);
     };
-  }, [currentStepIndex, isOpen, currentStep?.targetId]);
+  }, [updateTargetPosition]);
 
   const handleNext = () => {
     if (isLastStep) {

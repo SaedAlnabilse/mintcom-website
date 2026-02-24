@@ -1,4 +1,4 @@
-import { useRef, useEffect, useLayoutEffect, useState, type ReactNode } from 'react';
+import { useRef, useEffect, useLayoutEffect, useState, useCallback, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -26,7 +26,7 @@ export function PortalDropdown({
         position: 'fixed'
     });
 
-    const updatePosition = () => {
+    const updatePosition = useCallback(() => {
         if (!triggerRef.current) return;
 
         const rect = triggerRef.current.getBoundingClientRect();
@@ -45,13 +45,13 @@ export function PortalDropdown({
             opacity: 1,
             pointerEvents: 'auto'
         });
-    };
+    }, [triggerRef]);
 
     useLayoutEffect(() => {
         if (isOpen) {
             updatePosition();
         }
-    }, [isOpen]);
+    }, [isOpen, updatePosition]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -76,7 +76,7 @@ export function PortalDropdown({
             window.removeEventListener('scroll', updatePosition, true);
             window.removeEventListener('resize', updatePosition);
         };
-    }, [isOpen, onClose]);
+    }, [isOpen, onClose, updatePosition, triggerRef]);
 
     const dropdownContent = (
         <AnimatePresence>

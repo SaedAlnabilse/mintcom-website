@@ -58,7 +58,7 @@ export const NewDiscussionPage = () => {
             await new Promise(resolve => setTimeout(resolve, 1500));
             toast.success(t('community.discussions.submitSuccess', 'Discussion started!'), { icon: '💬' });
             navigate('/community/discussions');
-        } catch (error) {
+        } catch {
             toast.error(t('community.discussions.submitError', 'Failed to start discussion.'));
         } finally {
             setIsSubmitting(false);

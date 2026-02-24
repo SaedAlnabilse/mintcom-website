@@ -37,6 +37,33 @@ interface CustomRole {
 type ViewMode = 'grid' | 'list';
 type SortKey = 'name' | 'baseRole' | 'createdAt';
 
+const LEGACY_AUTO_DEFAULT_BACKOFFICE_PERMISSIONS = [
+  'dashboard',
+  'view_orders',
+  'view_reports',
+] as const;
+
+const getBackofficePermissionCount = (permissions: string[] | undefined): number => {
+  if (!Array.isArray(permissions) || permissions.length === 0) return 0;
+
+  const normalized = Array.from(
+    new Set(
+      permissions
+        .filter((permission): permission is string => typeof permission === 'string')
+        .map((permission) => permission.trim().toLowerCase()),
+    ),
+  );
+  const normalizedSet = new Set(normalized);
+
+  const isLegacyAutoDefaultOnly =
+    normalized.length === LEGACY_AUTO_DEFAULT_BACKOFFICE_PERMISSIONS.length &&
+    LEGACY_AUTO_DEFAULT_BACKOFFICE_PERMISSIONS.every((permission) =>
+      normalizedSet.has(permission),
+    );
+
+  return isLegacyAutoDefaultOnly ? 2 : normalized.length;
+};
+
 export function CustomRolesPage() {
   const { t } = useTranslation();
   // Permission guard - redirects if user lacks permission
@@ -336,7 +363,7 @@ export function CustomRolesPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                        <span className="text-xs font-bold text-blue-500">{t('dashboard.roles.office')}: {role.backofficePermissions?.length || 0}</span>
+                        <span className="text-xs font-bold text-blue-500">{t('dashboard.roles.office')}: {getBackofficePermissionCount(role.backofficePermissions)}</span>
                       </div>
                     </div>
                   </div>
@@ -394,7 +421,7 @@ export function CustomRolesPage() {
                         <span className="text-gray-500 block mb-1">{t('dashboard.roles.permissions')}</span>
                         <div className="flex gap-2">
                           <span className="font-bold text-paymint-green">{t('dashboard.roles.pos')}: {(role.permissions?.length || 0).toLocaleString(t('common.locale'))}</span>
-                          <span className="font-bold text-blue-500">{t('dashboard.roles.office')}: {(role.backofficePermissions?.length || 0).toLocaleString(t('common.locale'))}</span>
+                          <span className="font-bold text-blue-500">{t('dashboard.roles.office')}: {getBackofficePermissionCount(role.backofficePermissions).toLocaleString(t('common.locale'))}</span>
                         </div>
                       </div>
                       <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-lg">
@@ -474,7 +501,7 @@ export function CustomRolesPage() {
                             </div>
                             <div className="flex items-center gap-2">
                               <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                              <span className="text-xs text-gray-500 font-medium">{t('dashboard.roles.office')}: {(role.backofficePermissions?.length || 0).toLocaleString(t('common.locale'))}</span>
+                              <span className="text-xs text-gray-500 font-medium">{t('dashboard.roles.office')}: {getBackofficePermissionCount(role.backofficePermissions).toLocaleString(t('common.locale'))}</span>
                             </div>
                           </div>
                         </td>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     Search,
@@ -82,27 +82,7 @@ export function OwnerEmployeesPage() {
 
 
 
-    useEffect(() => {
-        fetchEmployees();
-    }, []);
-
-    // Close menu when clicking outside or scrolling
-    useEffect(() => {
-        if (!activeMenu) return;
-
-        const handleClick = () => setActiveMenu(null);
-        const handleScroll = () => setActiveMenu(null);
-
-        document.addEventListener('click', handleClick);
-        window.addEventListener('scroll', handleScroll, true);
-
-        return () => {
-            document.removeEventListener('click', handleClick);
-            window.removeEventListener('scroll', handleScroll, true);
-        };
-    }, [activeMenu]);
-
-    const fetchEmployees = async () => {
+    const fetchEmployees = useCallback(async () => {
         try {
             setIsLoading(true);
             const response = await api.get('/api/accounts/all-employees');
@@ -113,7 +93,11 @@ export function OwnerEmployeesPage() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [t]);
+
+    useEffect(() => {
+        fetchEmployees();
+    }, [fetchEmployees]);
 
     const openDeleteModal = (emp: Employee) => {
         setEmployeeToDelete(emp);
@@ -211,7 +195,7 @@ export function OwnerEmployeesPage() {
     };
 
     const filteredEmployees = useMemo(() => {
-        let result = employees.filter(emp => {
+        const result = employees.filter(emp => {
             const matchesSearch =
                 `${emp.firstName} ${emp.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 (emp.email?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||

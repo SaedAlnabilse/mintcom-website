@@ -69,6 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     initializeAuth();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const initializeAuth = async () => {

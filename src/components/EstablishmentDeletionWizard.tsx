@@ -122,7 +122,7 @@ export function EstablishmentDeletionWizard({
             }
         };
         fetchStats();
-    }, [establishmentId, onClose]);
+    }, [establishmentId, onClose, t]);
 
     const handleRequestDeletion = async () => {
         if (!establishmentLoginId) {

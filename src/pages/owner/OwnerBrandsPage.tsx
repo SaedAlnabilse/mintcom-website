@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
@@ -70,15 +70,11 @@ interface EstablishmentEmployees {
 type ViewMode = 'grid' | 'list';
 type SortOption = 'name' | 'date' | 'locations';
 
-const createBrandSchema = z.object({
-    name: z.string().min(2, 'Brand name must be at least 2 characters'),
-    establishmentLoginId: z.string()
-        .min(4, 'Login ID must be at least 4 characters')
-        .regex(/^[a-zA-Z0-9_-]+$/, 'Login ID can only contain letters, numbers, underscores, and hyphens'),
-    establishmentPassword: z.string().min(6, 'Password must be at least 6 characters'),
-});
-
-type BrandFormData = z.infer<typeof createBrandSchema>;
+type BrandFormData = {
+    name: string;
+    establishmentLoginId: string;
+    establishmentPassword?: string;
+};
 
 export function OwnerBrandsPage() {
     const { t } = useTranslation();
@@ -123,7 +119,7 @@ export function OwnerBrandsPage() {
         }
     };
 
-    const createBrandSchema = useMemo(() => z.object({
+    const createBrandSchemaObj = useMemo(() => z.object({
         name: z.string().min(2, t('owner.brands.validation.nameMin')),
         establishmentLoginId: z.string()
             .min(4, t('owner.brands.validation.loginIdMin'))
@@ -131,8 +127,8 @@ export function OwnerBrandsPage() {
         establishmentPassword: z.string().min(6, t('owner.brands.validation.passwordMin')),
     }), [t]);
 
-    const { register, handleSubmit, formState: { errors }, reset, trigger } = useForm<z.infer<typeof createBrandSchema>>({
-        resolver: zodResolver(createBrandSchema)
+    const { register, handleSubmit, formState: { errors }, reset, trigger } = useForm<z.infer<typeof createBrandSchemaObj>>({
+        resolver: zodResolver(createBrandSchemaObj)
     });
 
     // Close menu when clicking outside or scrolling
@@ -210,11 +206,7 @@ export function OwnerBrandsPage() {
         };
     }, [brands, establishments]);
 
-    useEffect(() => {
-        fetchBrands();
-    }, []);
-
-    const fetchBrands = async () => {
+    const fetchBrands = useCallback(async () => {
         try {
             setIsLoading(true);
             const response = await api.get('/api/brands');
@@ -225,7 +217,11 @@ export function OwnerBrandsPage() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [t]);
+
+    useEffect(() => {
+        fetchBrands();
+    }, [fetchBrands]);
 
     const fetchEmployeesForMerging = async (establishmentIds: string[]) => {
         if (establishmentIds.length === 0) {

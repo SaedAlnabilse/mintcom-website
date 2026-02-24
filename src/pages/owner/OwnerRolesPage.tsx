@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -37,6 +37,33 @@ interface CustomRole {
 type ViewMode = 'grid' | 'list';
 type SortKey = 'name' | 'baseRole' | 'createdAt';
 
+const LEGACY_AUTO_DEFAULT_BACKOFFICE_PERMISSIONS = [
+  'dashboard',
+  'view_orders',
+  'view_reports',
+] as const;
+
+const getBackofficePermissionCount = (permissions: string[] | undefined): number => {
+  if (!Array.isArray(permissions) || permissions.length === 0) return 0;
+
+  const normalized = Array.from(
+    new Set(
+      permissions
+        .filter((permission): permission is string => typeof permission === 'string')
+        .map((permission) => permission.trim().toLowerCase()),
+    ),
+  );
+  const normalizedSet = new Set(normalized);
+
+  const isLegacyAutoDefaultOnly =
+    normalized.length === LEGACY_AUTO_DEFAULT_BACKOFFICE_PERMISSIONS.length &&
+    LEGACY_AUTO_DEFAULT_BACKOFFICE_PERMISSIONS.every((permission) =>
+      normalizedSet.has(permission),
+    );
+
+  return isLegacyAutoDefaultOnly ? 2 : normalized.length;
+};
+
 export function OwnerRolesPage() {
   const { t } = useTranslation();
   const [roles, setRoles] = useState<CustomRole[]>([]);
@@ -59,13 +86,9 @@ export function OwnerRolesPage() {
     roleName: '',
   });
 
-  useEffect(() => {
-    fetchRoles();
-  }, []);
+  const getRoleDisplayName = useCallback((name: string) => getLocalizedRoleName(name, t), [t]);
 
-  const getRoleDisplayName = (name: string) => getLocalizedRoleName(name, t);
-
-  const fetchRoles = async () => {
+  const fetchRoles = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await api.get('/api/custom-roles/owner/global');
@@ -76,7 +99,11 @@ export function OwnerRolesPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [t]);
+
+  useEffect(() => {
+    fetchRoles();
+  }, [fetchRoles]);
 
   const handleSort = (key: SortKey) => {
     let direction: 'asc' | 'desc' = 'asc';
@@ -118,7 +145,7 @@ export function OwnerRolesPage() {
     }
 
     return result;
-  }, [roles, searchQuery, sortConfig, t]);
+  }, [roles, searchQuery, sortConfig, getRoleDisplayName]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -321,7 +348,7 @@ export function OwnerRolesPage() {
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                          <span className="text-xs font-bold text-blue-500">{t('owner.roles.backofficeAccess')}: {role.backofficePermissions?.length || 0}</span>
+                          <span className="text-xs font-bold text-blue-500">{t('owner.roles.backofficeAccess')}: {getBackofficePermissionCount(role.backofficePermissions)}</span>
                         </div>
                       </div>
                     </div>
@@ -387,7 +414,7 @@ export function OwnerRolesPage() {
                         <span className="text-gray-500 block mb-1">{t('owner.roles.permissions')}</span>
                         <div className="flex gap-2">
                           <span className="font-bold text-paymint-green">{t('owner.roles.posAccess')}: {role.permissions?.length || 0}</span>
-                          <span className="font-bold text-blue-500">{t('owner.roles.backofficeAccess')}: {role.backofficePermissions?.length || 0}</span>
+                          <span className="font-bold text-blue-500">{t('owner.roles.backofficeAccess')}: {getBackofficePermissionCount(role.backofficePermissions)}</span>
                         </div>
                       </div>
                       <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-lg">
@@ -467,7 +494,7 @@ export function OwnerRolesPage() {
                             </div>
                             <div className="flex items-center gap-2">
                               <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                              <span className="text-xs text-gray-500 font-medium">{t('owner.roles.backofficeAccess')}: {role.backofficePermissions?.length || 0}</span>
+                              <span className="text-xs text-gray-500 font-medium">{t('owner.roles.backofficeAccess')}: {getBackofficePermissionCount(role.backofficePermissions)}</span>
                             </div>
                           </div>
                         </td>

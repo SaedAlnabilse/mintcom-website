@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
@@ -32,7 +32,6 @@ interface Message {
 export const TicketDetailPage = () => {
   const { t } = useTranslation();
   const { isAuthenticated } = useAuth();
-  const { ticketId: _ticketId } = useParams();
   const [newMessage, setNewMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
 

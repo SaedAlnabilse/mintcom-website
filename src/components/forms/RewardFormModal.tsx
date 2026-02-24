@@ -57,7 +57,7 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
     } else if (isOpen) {
       setTimeout(() => resetForm(), 0);
     }
-  }, [initialData, isOpen]);
+  }, [initialData, isOpen, t]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const errorBannerRef = useRef<HTMLDivElement>(null);

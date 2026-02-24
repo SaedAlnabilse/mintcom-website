@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -69,29 +69,7 @@ export function BrandLocationsPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 10;
 
-    useEffect(() => {
-        if (brandId) {
-            fetchLocations();
-        }
-    }, [brandId]);
-
-    // Close menu when clicking outside or scrolling
-    useEffect(() => {
-        if (!activeMenu) return;
-
-        const handleClick = () => setActiveMenu(null);
-        const handleScroll = () => setActiveMenu(null);
-
-        document.addEventListener('click', handleClick);
-        window.addEventListener('scroll', handleScroll, true);
-
-        return () => {
-            document.removeEventListener('click', handleClick);
-            window.removeEventListener('scroll', handleScroll, true);
-        };
-    }, [activeMenu]);
-
-    const fetchLocations = async () => {
+    const fetchLocations = useCallback(async () => {
         try {
             setIsLoading(true);
 
@@ -139,7 +117,13 @@ export function BrandLocationsPage() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [brandId, t]);
+
+    useEffect(() => {
+        if (brandId) {
+            fetchLocations();
+        }
+    }, [brandId, fetchLocations]);
 
     // Get unique types for filter
     const locationTypes = useMemo(() => {

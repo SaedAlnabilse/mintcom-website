@@ -343,7 +343,7 @@ export function ProductFormModal({
       setCategorySearchQuery('');
       setAddonsSearchQuery('');
     }
-  }, [isOpen, initialData, categories]);
+  }, [isOpen, initialData, categories, defaultCategoryId, t]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -366,7 +366,7 @@ export function ProductFormModal({
     if (Object.keys(errors).length > 0) {
       setErrors({});
     }
-  }, [name, price, categoryId, stock, lowStockYellow, lowStockRed, trackStock, description, costPrice]);
+  }, [name, price, categoryId, stock, lowStockYellow, lowStockRed, trackStock, description, costPrice, errors]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

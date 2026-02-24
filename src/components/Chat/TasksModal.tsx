@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Check, ChevronDown, ChevronUp, ClipboardList, ExternalLink, X } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -59,8 +59,9 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
     return match ? match[1] : null;
   }, [location.pathname]);
 
-  const dashboardRoute = (suffix: string, fallback: string) =>
-    dashboardSlug ? `/dashboard/${dashboardSlug}${suffix}` : fallback;
+  const dashboardRoute = useCallback((suffix: string, fallback: string) =>
+    dashboardSlug ? `/dashboard/${dashboardSlug}${suffix}` : fallback,
+  [dashboardSlug]);
 
   const tasks = useMemo<TaskItem[]>(() => [
     {
@@ -148,7 +149,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
       navigation: { path: '/onboarding/step/5' },
       estimateMinutes: 3
     }
-  ], [t, dashboardSlug]);
+  ], [t, dashboardRoute]);
 
   useEffect(() => {
     setCompletedById(readCompletedState());

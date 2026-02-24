@@ -51,7 +51,7 @@ export function DiscountFormModal({
         setAdminOnly(false);
       }
     }
-  }, [isOpen, initialData]);
+  }, [isOpen, initialData, t]);
 
   const errorBannerRef = useRef<HTMLDivElement>(null);
 

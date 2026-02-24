@@ -34,7 +34,7 @@ export function ForgotPasswordPage() {
       setSentEmail(data.email);
       setIsSuccess(true);
       toast.success(t('auth.forgotPassword.resetLinkSent'));
-    } catch (err: any) {
+    } catch {
       // Always show success to prevent email enumeration
       // The backend returns success even for non-existent emails
       setSentEmail(data.email);

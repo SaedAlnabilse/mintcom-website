@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -73,7 +73,7 @@ export function OwnerOverviewPage() {
         setEndTime('23:59');
     };
 
-    const fetchOverviewStats = async () => {
+    const fetchOverviewStats = useCallback(async () => {
         try {
             // Map UI filter IDs to API expected parameters
             // Map UI filter IDs to API expected parameters
@@ -123,11 +123,11 @@ export function OwnerOverviewPage() {
             console.error('Failed to fetch overview stats:', err);
             // Non-blocking error handling for UI
         }
-    };
+    }, [startDate, endDate, startTime, endTime, selectedDateRange, establishments.length]);
 
     useEffect(() => {
         fetchOverviewStats();
-    }, [startDate, endDate, startTime, endTime, selectedDateRange]);
+    }, [fetchOverviewStats]);
 
     const selectedFilterLabel = selectedDateRange === 'custom'
         ? `${startDate} - ${endDate}`

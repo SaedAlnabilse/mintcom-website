@@ -1,7 +1,7 @@
 // @ts-ignore
 export default {
     // @ts-ignore
-    async fetch(request, env, _ctx) {
+    async fetch(request, env) {
         try {
             const url = new URL(request.url);
 

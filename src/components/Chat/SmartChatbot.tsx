@@ -285,7 +285,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
 
     setMessages(prev => [...prev, botResponse]);
     setIsTyping(false);
-  }, [currentLocationSlug, t]);
+  }, [currentLocationSlug, t, isRTL]);
 
   const handleSend = () => {
     if (input.trim() && !isTyping) {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Plus, CreditCard, DollarSign, Trash2, Star, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye, Sparkles } from 'lucide-react';
@@ -66,7 +66,7 @@ export function OwnerBillingPage() {
 
     const { refreshEstablishments } = useAuth();
 
-    const fetchBillingInfo = async (silent = false) => {
+    const fetchBillingInfo = useCallback(async (silent = false) => {
         try {
             if (!silent) setIsLoading(true);
             const response = await api.get('/api/accounts/billing');
@@ -77,11 +77,11 @@ export function OwnerBillingPage() {
         } finally {
             if (!silent) setIsLoading(false);
         }
-    };
+    }, [t]);
 
     useEffect(() => {
         fetchBillingInfo();
-    }, []);
+    }, [fetchBillingInfo]);
 
     // Close menu when clicking outside or scrolling
     useEffect(() => {

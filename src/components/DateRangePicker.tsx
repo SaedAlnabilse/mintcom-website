@@ -179,7 +179,7 @@ export function DateRangePicker({
         const monthStart = startOfMonth(currentMonth);
         const monthEnd = endOfMonth(monthStart);
         // Start from Monday
-        let startDate = startOfWeek(monthStart, { weekStartsOn: 1 });
+        const startDate = startOfWeek(monthStart, { weekStartsOn: 1 });
         const endDate = endOfWeek(monthEnd, { weekStartsOn: 1 });
 
         const rows = [];
@@ -199,7 +199,7 @@ export function DateRangePicker({
                 const isToday = isSameDay(day, new Date());
 
                 // Determine cell styling
-                let cellClass = 'relative py-2 text-center text-sm transition-all duration-150 cursor-pointer ';
+                const cellClass = 'relative py-2 text-center text-sm transition-all duration-150 cursor-pointer ';
                 let bgClass = '';
                 let textClass = '';
                 let roundedClass = '';

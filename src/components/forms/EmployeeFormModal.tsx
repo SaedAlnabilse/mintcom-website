@@ -324,7 +324,7 @@ export function EmployeeFormModal({
     [customRoles, roleHasUnauthorizedPermissions],
   );
 
-  const fetchCustomRoles = async () => {
+  const fetchCustomRoles = useCallback(async () => {
     // In Owner/Brand mode - fetch global roles + establishment roles
     if (establishments && establishments.length > 0) {
       if (selectedEstablishmentIds.length === 0) {
@@ -402,7 +402,7 @@ export function EmployeeFormModal({
     } catch (error) {
       console.error('Error fetching custom roles:', error);
     }
-  };
+  }, [currentEstablishment, establishments, initialData?.establishmentIds, selectedEstablishmentIds, t]);
 
   // Refetch roles when selected establishments change
   useEffect(() => {
@@ -417,7 +417,7 @@ export function EmployeeFormModal({
         }
       }
     }
-  }, [selectedEstablishmentIds, assignableCustomRoles]);
+  }, [selectedEstablishmentIds, assignableCustomRoles, establishments, fetchCustomRoles, isOpen, selectedCustomRoleId]);
 
   useEffect(() => {
     if (activeDropdown === 'ESTABLISHMENT' && establishmentButtonRef.current) {
@@ -514,6 +514,7 @@ export function EmployeeFormModal({
     isOpen,
     initialData,
     establishments,
+    fetchCustomRoles,
     sanitizeAssignableBackofficePermissions,
     sanitizeAssignablePosPermissions,
   ]);

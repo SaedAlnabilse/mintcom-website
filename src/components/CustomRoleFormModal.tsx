@@ -46,8 +46,24 @@ interface PermissionItem {
   description: string;
 }
 
+const BACKOFFICE_DEFAULT_PERMISSION_IDS = [
+  'dashboard',
+  'view_orders',
+] as const;
+const LEGACY_AUTO_DEFAULT_BACKOFFICE_IDS = [
+  'dashboard',
+  'view_orders',
+  'view_reports',
+] as const;
+const LEGACY_AUTO_DEFAULT_BACKOFFICE_SET = new Set<string>(
+  LEGACY_AUTO_DEFAULT_BACKOFFICE_IDS,
+);
+
 const ALLOWED_POS_PERMISSION_IDS: Set<string> = new Set(CANONICAL_POS_PERMISSIONS.map(({ id }) => id));
-const ALLOWED_BACKOFFICE_PERMISSION_IDS: Set<string> = new Set(CANONICAL_BACKOFFICE_PERMISSIONS.map(({ id }) => id));
+const ALLOWED_BACKOFFICE_PERMISSION_IDS: Set<string> = new Set([
+  ...CANONICAL_BACKOFFICE_PERMISSIONS.map(({ id }) => id),
+  ...BACKOFFICE_DEFAULT_PERMISSION_IDS,
+]);
 const SETTINGS_SUB_PERMISSION_IDS = new Set([
   'manage_establishment_profile',
   'manage_tax_currency',
@@ -95,15 +111,22 @@ export function CustomRoleFormModal({
 }: CustomRoleFormModalProps) {
   const { t } = useTranslation();
   const { account } = useAuth();
-  const normalizedCurrentPermissionSet = useMemo(
-    () =>
-      new Set(
-        normalizePermissions(
-          (Array.isArray(account?.permissions) ? account.permissions : []) as string[],
-        ),
+  const normalizedCurrentPermissionSet = useMemo(() => {
+    const accountPermissions = Array.isArray(account?.permissions)
+      ? account.permissions
+      : [];
+    const accountBackofficePermissions = Array.isArray(
+      (account as any)?.backofficePermissions,
+    )
+      ? (account as any).backofficePermissions
+      : [];
+
+    return new Set(
+      normalizePermissions(
+        [...accountPermissions, ...accountBackofficePermissions] as string[],
       ),
-    [account?.permissions],
-  );
+    );
+  }, [account]);
   const canAssignAdminRole = normalizedCurrentPermissionSet.has('*');
 
   const canAssignAdvancedPermission = useCallback(
@@ -115,7 +138,7 @@ export function CustomRoleFormModal({
 
   const DEFAULT_BACKOFFICE_PERMISSION_IDS = useMemo(
     () =>
-      ['dashboard', 'view_orders', 'view_reports'].filter((permission) =>
+      [...BACKOFFICE_DEFAULT_PERMISSION_IDS].filter((permission) =>
         canAssignAdvancedPermission(permission),
       ),
     [canAssignAdvancedPermission],
@@ -165,6 +188,48 @@ export function CustomRoleFormModal({
       return result;
     },
     [canAssignAdvancedPermission],
+  );
+
+  const buildEffectiveBackofficePermissions = useCallback(
+    (requestedPermissions: string[] | undefined, accessEnabled: boolean): string[] => {
+      if (!accessEnabled) return [];
+
+      const requested = normalizeAndFilterPermissions(
+        requestedPermissions,
+        ALLOWED_BACKOFFICE_PERMISSION_IDS,
+      );
+      const sanitizedRequested =
+        sanitizeAssignableBackofficePermissions(requested);
+      const sanitizedRequestedSet = new Set(sanitizedRequested);
+
+      // Legacy compatibility:
+      // older versions auto-injected view_reports as a hidden default.
+      // If a role only contains that historical auto-default trio, normalize
+      // it back to the current 2-default behavior.
+      const hasOnlyLegacyAutoDefaults =
+        sanitizedRequested.length > 0 &&
+        sanitizedRequested.every((permission) =>
+          LEGACY_AUTO_DEFAULT_BACKOFFICE_SET.has(permission),
+        ) &&
+        LEGACY_AUTO_DEFAULT_BACKOFFICE_IDS.every((permission) =>
+          sanitizedRequestedSet.has(permission),
+        );
+
+      const normalizedRequested = hasOnlyLegacyAutoDefaults
+        ? sanitizedRequested.filter((permission) => permission !== 'view_reports')
+        : sanitizedRequested;
+
+      return Array.from(
+        new Set([
+          ...normalizedRequested,
+          ...DEFAULT_BACKOFFICE_PERMISSION_IDS,
+        ]),
+      );
+    },
+    [
+      DEFAULT_BACKOFFICE_PERMISSION_IDS,
+      sanitizeAssignableBackofficePermissions,
+    ],
   );
 
   const POS_PERMISSIONS = useMemo<PermissionItem[]>(() => {
@@ -254,11 +319,12 @@ export function CustomRoleFormModal({
           ),
         );
         setBackofficePermissions(
-          sanitizeAssignableBackofficePermissions(
+          buildEffectiveBackofficePermissions(
             normalizeAndFilterPermissions(
               initialData.backofficePermissions,
               ALLOWED_BACKOFFICE_PERMISSION_IDS,
             ),
+            initialData.backofficeAccess || false,
           ),
         );
         setAllowedDiscounts(initialData.allowedDiscounts || []);
@@ -268,11 +334,13 @@ export function CustomRoleFormModal({
         // Defaults for new role
         setName('');
         setPosAccess(true);
-        setBackofficeAccess(true); // Website is considered back office also
-        setPermissions(['pos', 'dashboard', 'discounts', 'refunds']);
-        setBackofficePermissions(
-          sanitizeAssignableBackofficePermissions(DEFAULT_BACKOFFICE_PERMISSION_IDS),
-        ); // Default access to dashboard and orders
+        setBackofficeAccess(false);
+        setPermissions(
+          sanitizeAssignablePosPermissions(
+            POS_PERMISSIONS.map((permission) => permission.id),
+          ),
+        );
+        setBackofficePermissions([]);
         setAllowedDiscounts([]);
         setAllDiscountsSelected(true);
         setShowDiscountsDropdown(false);
@@ -283,7 +351,8 @@ export function CustomRoleFormModal({
     initialData,
     isOpen,
     DEFAULT_BACKOFFICE_PERMISSION_IDS,
-    sanitizeAssignableBackofficePermissions,
+    POS_PERMISSIONS,
+    buildEffectiveBackofficePermissions,
     sanitizeAssignablePosPermissions,
   ]);
 
@@ -368,17 +437,10 @@ export function CustomRoleFormModal({
           normalizeAndFilterPermissions(permissions, ALLOWED_POS_PERMISSION_IDS),
         )
       : [];
-    const finalBackofficePermissions = backofficeAccess
-      ? sanitizeAssignableBackofficePermissions(
-          normalizeAndFilterPermissions(
-            backofficePermissions,
-            ALLOWED_BACKOFFICE_PERMISSION_IDS,
-          ),
-        )
-      : [];
-    const effectiveBackofficePermissions = backofficeAccess
-      ? Array.from(new Set([...finalBackofficePermissions, ...DEFAULT_BACKOFFICE_PERMISSION_IDS]))
-      : [];
+    const effectiveBackofficePermissions = buildEffectiveBackofficePermissions(
+      backofficePermissions,
+      backofficeAccess,
+    );
 
     if (finalPermissions.length === 0 && effectiveBackofficePermissions.length === 0 && !posAccess) {
       newErrors.general = t('roles.validation.atLeastOnePermission');
@@ -595,7 +657,7 @@ export function CustomRoleFormModal({
                       const next = !prev;
                       if (next) {
                         setBackofficePermissions((current) =>
-                          Array.from(new Set([...current, ...DEFAULT_BACKOFFICE_PERMISSION_IDS])),
+                          buildEffectiveBackofficePermissions(current, true),
                         );
                       }
                       return next;

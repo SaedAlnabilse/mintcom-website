@@ -64,7 +64,7 @@ export const NewIdeaPage = () => {
             await new Promise(resolve => setTimeout(resolve, 1500));
             toast.success(t('community.ideas.submitSuccess', 'Idea submitted! Our team will review it soon.'), { icon: '🚀' });
             navigate('/community/ideas');
-        } catch (error) {
+        } catch {
             toast.error(t('community.ideas.submitError', 'Failed to submit idea. Please try again.'));
         } finally {
             setIsSubmitting(false);

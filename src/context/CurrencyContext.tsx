@@ -59,7 +59,7 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
     } finally {
       setLoading(false);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, currentEstablishment]);
 
   // Load currency on mount and poll periodically
   useEffect(() => {

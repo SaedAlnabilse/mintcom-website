@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -218,9 +218,52 @@ export function OwnerAccountManagementPage() {
         }
     }, [showDeleteConfirm]);
 
+    const fetchAccountData = useCallback(async () => {
+        try {
+            setIsLoading(true);
+
+            const response = await api.get('/api/accounts/profile');
+            const data = response.data;
+
+            setAccountDetails({
+                id: data.id,
+                email: data.email,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                avatar: data.avatar,
+                emailVerified: data.emailVerified,
+                createdAt: data.createdAt,
+                trialUsed: data.trialUsed,
+                trialEndDate: data.trialEndDate,
+                defaultCardId: data.defaultCardId,
+                deletionRequestedAt: data.deletionRequestedAt,
+                establishments: data.establishments || [],
+            });
+
+            setBrands(data.brands || []);
+            setAdminUsers(data.adminUsers || []);
+        } catch (err) {
+            console.error('Failed to fetch account data:', err);
+            // Use context data as fallback
+            if (account) {
+                setAccountDetails({
+                    id: account.id,
+                    email: account.email,
+                    firstName: account.firstName,
+                    lastName: account.lastName,
+                    emailVerified: account.emailVerified || false,
+                    createdAt: new Date().toISOString(),
+                    trialUsed: false,
+                });
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    }, [account]);
+
     useEffect(() => {
         fetchAccountData();
-    }, []);
+    }, [fetchAccountData]);
 
     const handleDeleteClick = () => {
         // Check for active establishments in either accountDetails or establishments from context
@@ -261,49 +304,6 @@ export function OwnerAccountManagementPage() {
             toast.error(t('owner.account.deletionFailed'));
         } finally {
             setIsDeletingAccount(false);
-        }
-    };
-
-    const fetchAccountData = async () => {
-        try {
-            setIsLoading(true);
-
-            const response = await api.get('/api/accounts/profile');
-            const data = response.data;
-
-            setAccountDetails({
-                id: data.id,
-                email: data.email,
-                firstName: data.firstName,
-                lastName: data.lastName,
-                avatar: data.avatar,
-                emailVerified: data.emailVerified,
-                createdAt: data.createdAt,
-                trialUsed: data.trialUsed,
-                trialEndDate: data.trialEndDate,
-                defaultCardId: data.defaultCardId,
-                deletionRequestedAt: data.deletionRequestedAt,
-                establishments: data.establishments || [],
-            });
-
-            setBrands(data.brands || []);
-            setAdminUsers(data.adminUsers || []);
-        } catch (err) {
-            console.error('Failed to fetch account data:', err);
-            // Use context data as fallback
-            if (account) {
-                setAccountDetails({
-                    id: account.id,
-                    email: account.email,
-                    firstName: account.firstName,
-                    lastName: account.lastName,
-                    emailVerified: account.emailVerified || false,
-                    createdAt: new Date().toISOString(),
-                    trialUsed: false,
-                });
-            }
-        } finally {
-            setIsLoading(false);
         }
     };
 

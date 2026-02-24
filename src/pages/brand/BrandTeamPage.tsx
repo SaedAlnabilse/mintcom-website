@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -83,39 +83,16 @@ export function BrandTeamPage() {
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState('');
 
-    useEffect(() => {
-        if (brandId) {
-            fetchEmployees();
-            fetchBrandInfo();
-        }
-    }, [brandId]);
-
-    // Close menu when clicking outside or scrolling
-    useEffect(() => {
-        if (!activeMenu) return;
-
-        const handleClick = () => setActiveMenu(null);
-        const handleScroll = () => setActiveMenu(null);
-
-        document.addEventListener('click', handleClick);
-        window.addEventListener('scroll', handleScroll, true);
-
-        return () => {
-            document.removeEventListener('click', handleClick);
-            window.removeEventListener('scroll', handleScroll, true);
-        };
-    }, [activeMenu]);
-
-    const fetchBrandInfo = async () => {
+    const fetchBrandInfo = useCallback(async () => {
         try {
             const response = await api.get(`/api/brands/${brandId}`);
             setBrandName(response.data?.name || t('brand.dashboard.title'));
         } catch (err) {
             console.error('Failed to fetch brand info:', err);
         }
-    };
+    }, [brandId, t]);
 
-    const fetchEmployees = async () => {
+    const fetchEmployees = useCallback(async () => {
         try {
             setIsLoading(true);
             const response = await api.get(`/api/brands/${brandId}/employees`);
@@ -126,7 +103,14 @@ export function BrandTeamPage() {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [brandId, t]);
+
+    useEffect(() => {
+        if (brandId) {
+            fetchEmployees();
+            fetchBrandInfo();
+        }
+    }, [brandId, fetchEmployees, fetchBrandInfo]);
 
     const handleEmployeeSubmit = async (data: any) => {
         try {
