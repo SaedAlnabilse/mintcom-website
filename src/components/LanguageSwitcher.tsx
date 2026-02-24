@@ -10,6 +10,8 @@ interface LanguageSwitcherProps {
   compact?: boolean;
   dropdownDirection?: 'down' | 'up' | 'right';
   showGlobeIcon?: boolean;
+  label?: string;
+  iconSize?: number;
 }
 
 export const LanguageSwitcher = ({
@@ -19,6 +21,8 @@ export const LanguageSwitcher = ({
   compact = false,
   dropdownDirection = 'down',
   showGlobeIcon = true,
+  label,
+  iconSize = 16,
 }: LanguageSwitcherProps) => {
   const { i18n, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -55,10 +59,10 @@ export const LanguageSwitcher = ({
 
   const menuPositionClass =
     dropdownDirection === 'up'
-      ? 'bottom-full mb-2 right-0 rtl:right-auto rtl:left-0'
+      ? 'bottom-full mb-2 left-0 rtl:left-auto rtl:right-0'
       : dropdownDirection === 'right'
-        ? 'left-full ml-2 top-1/2 -translate-y-1/2 rtl:left-auto rtl:right-full rtl:mr-2 rtl:ml-0'
-        : 'top-full mt-2 right-0 rtl:right-auto rtl:left-0';
+        ? 'left-full ml-2 bottom-0 rtl:left-auto rtl:right-full rtl:mr-2 rtl:ml-0'
+        : 'top-full mt-2 left-0 rtl:left-auto rtl:right-0';
 
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
@@ -67,8 +71,10 @@ export const LanguageSwitcher = ({
         className={`flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10 transition-all text-gray-700 dark:text-gray-300 ${buttonClassName}`}
         aria-label={t('common.aria.changeLanguage')}
       >
-        {showGlobeIcon && <Globe size={16} className="text-paymint-green" />}
-        {compact ? (
+        {showGlobeIcon && <Globe size={iconSize} className="text-gray-500 dark:text-gray-400" />}
+        {label ? (
+          <span className="text-sm font-bold">{label}</span>
+        ) : compact ? (
           <span className="text-xs font-black tracking-wider leading-none">{currentLanguage.shortName}</span>
         ) : (
           <>
@@ -86,20 +92,20 @@ export const LanguageSwitcher = ({
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.15 }}
             dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-            className={`absolute ${menuPositionClass} bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden min-w-[160px] z-[90] ${menuClassName}`}
+            className={`absolute ${menuPositionClass} w-40 bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden p-1.5 shadow-xl z-[90] ${menuClassName}`}
           >
             {languages.map((lang) => (
               <button
                 key={lang.code}
                 onClick={() => changeLanguage(lang.code)}
-                className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-sm font-bold transition-colors ${
+                className={`w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all ${
                   normalizedLanguage === lang.code
                     ? 'bg-paymint-green/10 text-paymint-green'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5'
+                    : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-black tracking-wider opacity-70">{lang.shortName}</span>
+                  <span className="opacity-70">{lang.shortName}</span>
                   <span>{lang.nativeName}</span>
                 </div>
                 {normalizedLanguage === lang.code && <Check size={16} className="text-paymint-green" />}

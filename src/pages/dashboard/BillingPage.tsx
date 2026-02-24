@@ -7,7 +7,9 @@ import {
   XCircle,
   Calendar,
   Zap,
-  ShieldAlert
+  ShieldAlert,
+  Sparkles,
+  ArrowRight
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +19,7 @@ import { SecurityVerificationModal } from '../../components/SecurityVerification
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface Invoice {
   id: string;
@@ -31,11 +34,17 @@ interface EstablishmentBilling {
   subscriptionStatus: string;
   cancelAtPeriodEnd: boolean;
   monthlyPrice: number;
+  billingCycle?: 'monthly' | 'yearly';
 }
+
+// Pricing constants
+const MONTHLY_PRICE = 20;
+const YEARLY_PRICE = 210;
+const MONTHLY_ADDITIONAL = 17;
+const YEARLY_ADDITIONAL = 180;
 
 export function BillingPage() {
   const { t } = useTranslation();
-  // Permission guard - redirects if user lacks permission
   usePermissionGuard();
 
   const { currentEstablishment, refreshEstablishments } = useAuth();
@@ -43,6 +52,7 @@ export function BillingPage() {
   const [billingInfo, setBillingInfo] = useState<EstablishmentBilling | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   useEffect(() => {
     if (currentEstablishment) {
@@ -57,13 +67,13 @@ export function BillingPage() {
       setBillingInfo(response.data);
     } catch (err) {
       console.error('Failed to fetch establishment billing info:', err);
-      // Fallback to basic info if specific endpoint fails or isn't implemented yet
       setBillingInfo({
         id: currentEstablishment?.id || '',
         name: currentEstablishment?.name || '',
         subscriptionStatus: currentEstablishment?.subscriptionStatus || 'UNKNOWN',
         cancelAtPeriodEnd: false,
-        monthlyPrice: 20
+        monthlyPrice: 20,
+        billingCycle: 'monthly'
       });
     } finally {
       setIsLoading(false);
@@ -71,21 +81,20 @@ export function BillingPage() {
   };
 
   const handleCancelSuccess = async () => {
-    // Optimistic update
     setBillingInfo(prev => prev ? { ...prev, subscriptionStatus: 'CANCELED' } : null);
-
-    // Refresh global state
     await refreshEstablishments();
     toast.success(t('owner.billing.success.canceled'));
   };
 
-  // Calculate billing info from establishments
-  const totalMonthly = billingInfo?.monthlyPrice || 20;
+  const isYearly = billingInfo?.billingCycle === 'yearly';
+  const totalMonthly = billingInfo?.monthlyPrice || MONTHLY_PRICE;
+  const effectiveMonthlyRate = isYearly ? Math.round((YEARLY_PRICE / 12) * 100) / 100 : totalMonthly;
+  const yearlySavings = (MONTHLY_PRICE * 12) - YEARLY_PRICE;
 
-  // Mock invoices for demo
+  // Mock invoices
   const invoices: Invoice[] = [
-    { id: '1', date: '2025-10-12', amount: `${currencySymbol} 20.000`, status: 'Paid' },
-    { id: '2', date: '2025-09-12', amount: `${currencySymbol} 20.000`, status: 'Paid' },
+    { id: '1', date: '2025-10-12', amount: `${currencySymbol} ${isYearly ? '210.000' : '20.000'}`, status: 'Paid' },
+    { id: '2', date: '2025-09-12', amount: `${currencySymbol} ${isYearly ? '210.000' : '20.000'}`, status: 'Paid' },
   ];
 
   const formatDate = (dateStr: string) => {
@@ -154,6 +163,12 @@ export function BillingPage() {
               {t('dashboard.menu.billing')}
             </span>
             {!isLoading && getStatusBadge()}
+            {!isLoading && isYearly && (
+              <span className="px-3 py-1 rounded-lg bg-blue-500/10 text-blue-500 text-xs font-black tracking-widest border border-blue-500/20 flex items-center gap-1.5">
+                <Sparkles size={10} />
+                YEARLY
+              </span>
+            )}
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.billing.title')}</h1>
           <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
@@ -175,7 +190,9 @@ export function BillingPage() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white">{t('owner.billing.plan')}</h3>
-                  <p className="text-gray-400 text-sm font-bold tracking-widest mt-1">{t('owner.billing.enterprise')}</p>
+                  <p className="text-gray-400 text-sm font-bold tracking-widest mt-1">
+                    {isYearly ? 'YEARLY' : 'MONTHLY'} • {t('owner.billing.enterprise')}
+                  </p>
                 </div>
               </div>
 
@@ -190,8 +207,14 @@ export function BillingPage() {
                 <p className="text-xs font-black text-gray-400 tracking-widest mb-2">{t('owner.billing.cost')}</p>
                 <div className="flex items-baseline gap-2">
                   <span className="text-sm font-bold text-paymint-green">{currencySymbol}</span>
-                  <span className="text-4xl font-black text-white">{(totalMonthly || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</span>
+                  <span className="text-4xl font-black text-white">
+                    {(isYearly ? YEARLY_PRICE : totalMonthly || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
+                  </span>
                 </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  {isYearly ? 'Billed annually' : 'Billed monthly'}
+                  {isYearly && ` • ~$${effectiveMonthlyRate.toFixed(2)}/mo`}
+                </p>
               </div>
               <div className="p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-colors">
                 <p className="text-xs font-black text-gray-400 tracking-widest mb-2">{t('owner.billing.location')}</p>
@@ -200,10 +223,35 @@ export function BillingPage() {
               </div>
             </div>
 
+            {/* Upgrade to yearly banner (show only if monthly) */}
+            {!isYearly && (
+              <div className="relative z-10 mb-6 p-4 rounded-2xl bg-paymint-green/10 border border-paymint-green/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <Sparkles size={18} className="text-paymint-green" />
+                  <div>
+                    <p className="text-sm font-bold text-white">Switch to Yearly & Save ${yearlySavings}/yr</p>
+                    <p className="text-xs text-gray-400">Pay $210/year instead of $240 — that's $17.50/mo</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowUpgradeModal(true)}
+                  className="px-5 py-2.5 bg-paymint-green text-black font-black text-xs rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20 tracking-widest flex items-center gap-2 whitespace-nowrap"
+                >
+                  UPGRADE
+                  <ArrowRight size={14} />
+                </button>
+              </div>
+            )}
+
             <div className="flex flex-col sm:flex-row gap-4 relative z-10">
-              <button className="flex-1 px-8 py-4 bg-paymint-green text-black font-black text-xs rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20 tracking-widest flex items-center justify-center gap-2">
-                <Zap size={16} /> {t('owner.billing.upgrade')}
-              </button>
+              {!isYearly && (
+                <button
+                  onClick={() => setShowUpgradeModal(true)}
+                  className="flex-1 px-8 py-4 bg-paymint-green text-black font-black text-xs rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20 tracking-widest flex items-center justify-center gap-2"
+                >
+                  <Zap size={16} /> {t('owner.billing.upgrade')}
+                </button>
+              )}
 
               {!isLoading && billingInfo?.subscriptionStatus === 'ACTIVE' && !billingInfo?.cancelAtPeriodEnd && (
                 <button
@@ -288,8 +336,44 @@ export function BillingPage() {
           </div>
         </div>
 
-        {/* Payment Method */}
+        {/* Payment Method & Plans Overview */}
         <div className="space-y-8">
+          {/* Plans Summary */}
+          <div className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 shadow-sm">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Plans Overview</h3>
+
+            <div className="space-y-3">
+              <div className="p-3 rounded-xl bg-paymint-green/5 border border-paymint-green/10">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-xs font-black text-gray-600 dark:text-gray-300">First Location</span>
+                  <span className="text-xs font-black text-paymint-green">
+                    ${isYearly ? YEARLY_PRICE : MONTHLY_PRICE}{isYearly ? '/yr' : '/mo'}
+                  </span>
+                </div>
+                <p className="text-[10px] text-gray-400">Full access to all features</p>
+              </div>
+
+              <div className="p-3 rounded-xl bg-blue-500/5 border border-blue-500/10">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-xs font-black text-gray-600 dark:text-gray-300">Each Extra Location</span>
+                  <span className="text-xs font-black text-blue-500">
+                    ${isYearly ? YEARLY_ADDITIONAL : MONTHLY_ADDITIONAL}{isYearly ? '/yr' : '/mo'}
+                  </span>
+                </div>
+                <p className="text-[10px] text-gray-400">
+                  {isYearly ? `Save $${(MONTHLY_ADDITIONAL * 12) - YEARLY_ADDITIONAL}/yr vs monthly` : `Save $${MONTHLY_PRICE - MONTHLY_ADDITIONAL}/mo vs first location`}
+                </p>
+              </div>
+
+              {isYearly && (
+                <div className="p-2 rounded-lg bg-paymint-green/10 flex items-center gap-2">
+                  <Sparkles size={12} className="text-paymint-green" />
+                  <span className="text-[10px] font-bold text-paymint-green">Yearly plan active — saving ${yearlySavings}/yr</span>
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 rounded-2xl p-6 shadow-sm">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">{t('owner.billing.payment')}</h3>
 
@@ -328,6 +412,75 @@ export function BillingPage() {
           </div>
         </div>
       </div>
+
+      {/* Upgrade to Yearly Modal */}
+      <AnimatePresence>
+        {showUpgradeModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowUpgradeModal(false)}
+              className="absolute inset-0 bg-black/40 dark:bg-black/70 backdrop-blur-md"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative z-10 bg-white dark:bg-[#1a1a1a] rounded-3xl max-w-md w-full p-8 border border-gray-200 dark:border-white/10 shadow-2xl"
+            >
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 mx-auto bg-paymint-green/10 rounded-2xl flex items-center justify-center mb-4">
+                  <Sparkles size={28} className="text-paymint-green" />
+                </div>
+                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">Switch to Yearly</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-bold">
+                  Save ${yearlySavings} per year on your subscription
+                </p>
+              </div>
+
+              <div className="space-y-3 mb-6">
+                <div className="flex justify-between items-center p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                  <div>
+                    <p className="text-sm font-bold text-gray-700 dark:text-gray-300">Monthly (current)</p>
+                    <p className="text-xs text-gray-400">Billed every month</p>
+                  </div>
+                  <span className="text-lg font-black text-gray-400 line-through">${MONTHLY_PRICE * 12}/yr</span>
+                </div>
+                <div className="flex justify-between items-center p-4 rounded-xl bg-paymint-green/5 border-2 border-paymint-green/30">
+                  <div>
+                    <p className="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                      Yearly
+                      <span className="px-2 py-0.5 bg-paymint-green text-black rounded text-[9px] font-black">RECOMMENDED</span>
+                    </p>
+                    <p className="text-xs text-paymint-green font-bold">~${(YEARLY_PRICE / 12).toFixed(2)}/mo effective rate</p>
+                  </div>
+                  <span className="text-lg font-black text-paymint-green">${YEARLY_PRICE}/yr</span>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowUpgradeModal(false)}
+                  className="flex-1 py-3 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 font-bold text-sm hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    toast.success('Yearly plan upgrade requested');
+                    setShowUpgradeModal(false);
+                  }}
+                  className="flex-1 py-3 rounded-xl bg-paymint-green text-black font-black text-sm hover:bg-paymint-green/90 transition-colors shadow-lg shadow-paymint-green/20"
+                >
+                  Upgrade Now
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       <SecurityVerificationModal
         isOpen={isSecurityModalOpen}

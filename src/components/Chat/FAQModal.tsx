@@ -136,12 +136,25 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
                   const config = CATEGORY_CONFIG[item.category];
                   return (
                     <motion.div
+                      id={`faq-item-${index}`}
                       key={index}
                       layout
                       className="rounded-xl overflow-hidden border border-gray-100 dark:border-white/5 bg-white dark:bg-white/[0.02]"
                     >
                       <button
-                        onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
+                        onClick={() => {
+                          const isExpanding = expandedIndex !== index;
+                          setExpandedIndex(isExpanding ? index : null);
+                          
+                          if (isExpanding) {
+                            setTimeout(() => {
+                              const el = document.getElementById(`faq-item-${index}`);
+                              if (el) {
+                                el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                              }
+                            }, 250);
+                          }
+                        }}
                         className={`w-full flex items-start gap-3 p-3 text-left transition-colors ${
                           expandedIndex === index
                             ? 'bg-gray-50 dark:bg-white/5'

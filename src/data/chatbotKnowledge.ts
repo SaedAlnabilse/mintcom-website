@@ -842,15 +842,27 @@ Supports: Epson TM series, Star TSP series, Bluetooth thermal printers.`,
   // ========== BILLING ==========
   {
     id: 'billing',
-    keywords: ['billing', 'subscription', 'plan', 'pricing', 'invoice', 'payment', 'فوترة', 'اشتراك', 'خطة', 'أسعار', 'فاتورة', 'دفع'],
+    keywords: ['billing', 'subscription', 'plan', 'pricing', 'invoice', 'payment', 'yearly', 'annual', 'monthly', 'location', 'branch', 'فوترة', 'اشتراك', 'خطة', 'أسعار', 'فاتورة', 'دفع', 'سنوي', 'شهري', 'فرع'],
     question: 'How does billing work?',
     questionAr: 'كيف تعمل الفوترة؟',
     answer: `**Trial:** 7-day free trial with full access.
-**Subscription:** Monthly billing after trial. Manage at **Owner > Billing**.
-**Features:** View plan, upgrade/downgrade, payment history, download invoices, update payment method.`,
+
+**Monthly Plan:** $20/month for your first location with full access to all features.
+
+**Yearly Plan:** $210/year (instead of $240) — save $30! You can switch between monthly and yearly anytime.
+
+**Additional Locations:** Each extra location after the first is $17/month or $180/year (instead of $204). That's a discounted rate for multi-branch businesses!
+
+**Manage:** Go to **Owner > Billing** to view plans, switch billing cycles, update payment methods, and download invoices.`,
     answerAr: `**التجربة:** تجربة مجانية 7 أيام مع وصول كامل.
-**الاشتراك:** فوترة شهرية بعد التجربة. إدارة من **المالك > الفوترة**.
-**الميزات:** عرض الخطة، ترقية/تخفيض، سجل الدفعات، تحميل الفواتير، تحديث طريقة الدفع.`,
+
+**الخطة الشهرية:** 20$/شهر للموقع الأول مع وصول كامل لجميع الميزات.
+
+**الخطة السنوية:** 210$/سنة (بدلاً من 240$) — وفّر 30$! يمكنك التبديل بين الشهري والسنوي في أي وقت.
+
+**المواقع الإضافية:** كل موقع إضافي بعد الأول بـ 17$/شهر أو 180$/سنة (بدلاً من 204$). سعر مخفض للأعمال متعددة الفروع!
+
+**الإدارة:** اذهب إلى **المالك > الفوترة** لعرض الخطط، تبديل دورة الفوترة، تحديث طرق الدفع، وتحميل الفواتير.`,
     category: 'billing',
     navigationPath: '/owner/billing'
   },

@@ -4,6 +4,7 @@ import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { ThemeToggle } from './ThemeToggle';
+import { LanguageSwitcher } from './LanguageSwitcher';
 import { DeletionRestorationBanner } from './DeletionRestorationBanner';
 import { BottomNavigation } from './mobile/BottomNavigation';
 import { useTranslation } from 'react-i18next';
@@ -830,6 +831,15 @@ export function DashboardLayout() {
                               <span className="text-paymint-green">{t('brand.name')} {t('common.app')}</span>
                             </p>
                           </div>
+                        </div>
+
+                        <div className="relative">
+                          <LanguageSwitcher
+                            label={t('common.aria.changeLanguage')}
+                            dropdownDirection="right"
+                            className="w-full"
+                            buttonClassName="w-full justify-start gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all text-left !bg-transparent dark:!bg-transparent !border-transparent"
+                          />
                         </div>
 
                         {/* Theme Item - We wrap accessibility of ThemeToggle or recreate it visually */}

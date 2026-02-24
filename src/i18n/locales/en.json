@@ -605,7 +605,9 @@
         "title": "Install POS app and run test sale",
         "description": "Open the launch guide, sign in on POS, and complete one test order to verify your full setup.",
         "action": "Open Launch Guide"
-      }
+      },
+      "allDoneTitle": "All Done! 🎉",
+      "allDoneSubtitle": "Your location is fully set up and ready to go."
     },
     "navigation": {
       "takeMe": "Take me there"

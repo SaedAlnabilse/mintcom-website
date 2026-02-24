@@ -83,8 +83,15 @@ export const FAQ_DATA: FAQItem[] = [
     category: 'billing',
     question: 'How do I change my subscription?',
     questionAr: 'كيف أغير اشتراكي؟',
-    answer: 'Navigate to Owner Portal > Billing to view your current plan, upgrade, or manage your subscription. You can also download invoices and update payment methods.',
-    answerAr: 'اذهب إلى بوابة المالك > الفوترة لعرض خطتك الحالية أو الترقية أو إدارة اشتراكك. يمكنك أيضاً تحميل الفواتير وتحديث طرق الدفع.'
+    answer: 'Navigate to Owner Portal > Billing to view your current plan, switch between monthly ($20/mo) and yearly ($210/yr) billing, or manage your subscription. You can also download invoices and update payment methods.',
+    answerAr: 'اذهب إلى بوابة المالك > الفوترة لعرض خطتك الحالية أو التبديل بين الفوترة الشهرية (20$/شهر) والسنوية (210$/سنة) أو إدارة اشتراكك. يمكنك أيضاً تحميل الفواتير وتحديث طرق الدفع.'
+  },
+  {
+    category: 'billing',
+    question: 'What are the pricing plans?',
+    questionAr: 'ما هي خطط الأسعار؟',
+    answer: 'First location: $20/month or $210/year (save $30/yr). Additional locations: $17/month or $180/year each (save $24/yr per location). All plans include full access to all features. New users get a 7-day free trial!',
+    answerAr: 'الموقع الأول: 20$/شهر أو 210$/سنة (وفّر 30$/سنة). المواقع الإضافية: 17$/شهر أو 180$/سنة لكل موقع (وفّر 24$/سنة لكل موقع). جميع الخطط تتضمن وصول كامل لجميع الميزات. المستخدمون الجدد يحصلون على تجربة مجانية 7 أيام!'
   },
   {
     category: 'billing',

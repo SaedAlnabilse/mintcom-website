@@ -6,7 +6,9 @@ import {
   PlayCircle,
   History,
   Timer,
-  ChevronDown
+  ChevronDown,
+  PartyPopper,
+  X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format, subHours } from 'date-fns';
@@ -28,6 +30,7 @@ import type {
 } from '../../types';
 
 // Sub-components
+import { TourGuide } from '../../components/TourGuide';
 import { DashboardStatsCards } from '../../components/dashboard/overview/DashboardStatsCards';
 import { RevenueChart } from '../../components/dashboard/overview/RevenueChart';
 import { PaymentMethodsBreakdown } from '../../components/dashboard/overview/PaymentMethodsBreakdown';
@@ -65,6 +68,28 @@ export const DashboardPage = () => {
   
   // Modals
   const [showPayInOutModal, setShowPayInOutModal] = useState(false);
+  const [showWelcomePopup, setShowWelcomePopup] = useState(false);
+  const [showTasksTour, setShowTasksTour] = useState(false);
+
+  // Check if first visit to this location's dashboard
+  useEffect(() => {
+    if (locationSlug) {
+      const visitedKey = `paymint.dashboard.visited.${locationSlug}`;
+      if (!localStorage.getItem(visitedKey)) {
+        setShowWelcomePopup(true);
+        localStorage.setItem(visitedKey, 'true');
+      }
+    }
+  }, [locationSlug]);
+
+  const handleStartTasks = () => {
+    setShowWelcomePopup(false);
+    window.dispatchEvent(new Event('paymint-open-tasks'));
+    setTimeout(() => {
+      setShowTasksTour(true);
+    }, 500);
+  };
+
   const fallbackShiftStatus: ShiftStatus = useMemo(
     () => ({
       shiftStatus: 'NO_SHIFT',
@@ -588,6 +613,78 @@ export const DashboardPage = () => {
             onClose={() => setShowPayInOutModal(false)}
             startDate={new Date().toISOString()} // Not used strictly for adding, but required props
             endDate={new Date().toISOString()}
+          />
+
+          {/* Welcome Popup */}
+          <AnimatePresence>
+            {showWelcomePopup && (
+              <div className="fixed inset-0 z-[9999999] flex items-center justify-center p-4">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setShowWelcomePopup(false)}
+                  className="absolute inset-0 bg-[#0F172A]/40 backdrop-blur-sm"
+                />
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  className="relative w-full max-w-sm bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl border border-gray-200/50 dark:border-white/10 overflow-hidden"
+                >
+                  <div className="px-6 pt-8 pb-6 flex flex-col items-center text-center">
+                    <div className="w-16 h-16 mb-4 rounded-full bg-[#7CC39F]/10 flex items-center justify-center">
+                      <PartyPopper size={32} className="text-[#7CC39F]" />
+                    </div>
+                    
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                      {t('common.congratulations', 'Congratulations! 🎉')}
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
+                      {t('dashboard.welcome.message', {
+                        defaultValue: 'Welcome to your new dashboard for {{location}}! Let\'s get your location set up and ready for business.',
+                        location: currentEstablishment?.name || 'this location'
+                      })}
+                    </p>
+
+                    <button
+                      onClick={handleStartTasks}
+                      className="w-full py-3.5 px-4 bg-gradient-to-r from-[#7CC39F] to-[#5BA882] hover:brightness-105 text-white font-bold rounded-xl shadow-lg shadow-[#7CC39F]/30 transition-all active:scale-[0.98]"
+                    >
+                      {t('dashboard.welcome.startGuide', 'Start Setup Guide')}
+                    </button>
+                  </div>
+                  
+                  <button
+                    onClick={() => setShowWelcomePopup(false)}
+                    className="absolute top-4 right-4 rtl:left-4 rtl:right-auto p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors"
+                  >
+                    <X size={16} />
+                  </button>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>
+
+          <TourGuide
+            isOpen={showTasksTour}
+            onClose={() => setShowTasksTour(false)}
+            onComplete={() => setShowTasksTour(false)}
+            steps={[
+              {
+                targetId: 'tasks-widget-panel',
+                title: t('dashboard.tour.tasks.title', 'Setup Tasks'),
+                description: t('dashboard.tour.tasks.desc', 'Here you can track your location\'s setup progress. Complete these tasks to get ready for business!'),
+                position: 'left'
+              },
+              {
+                targetId: 'widget-task-item-location-profile',
+                title: t('dashboard.tour.taskItem.title', 'First Task'),
+                description: t('dashboard.tour.taskItem.desc', 'Click on a task to expand it, then follow the link to complete the setup step.'),
+                position: 'left'
+              }
+            ]}
           />
 
         </motion.div>

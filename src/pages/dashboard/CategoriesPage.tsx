@@ -14,7 +14,6 @@ import {
   Edit2,
   Trash2,
   X,
-  Image as ImageIcon,
   Tag,
   AlertTriangle,
   Grid,
@@ -179,10 +178,10 @@ export function CategoriesPage() {
         api.get('/api/categories'),
         api.get('/api/items')
       ]);
-      
+
       const freshCategories = catsRes.data || [];
       const freshProducts = prodsRes.data?.items || [];
-      
+
       const category = freshCategories.find((c: Category) => c.id === categoryId);
       const categoryItems = freshProducts.filter((p: Product) => p.categoryId === categoryId);
 
@@ -541,9 +540,7 @@ export function CategoriesPage() {
                             {p.image ? (
                               <img src={p.image} alt="" className="w-full h-full object-cover" />
                             ) : (
-                              <div className="w-full h-full flex items-center justify-center text-gray-300">
-                                <ImageIcon size={16} />
-                              </div>
+                              <img src="/default_product.png" alt="Default Product" className="w-full h-full object-cover" />
                             )}
                           </div>
                           <div className="min-w-0">
@@ -643,9 +640,7 @@ export function CategoriesPage() {
                           {p.image ? (
                             <img src={p.image} alt="" className="w-full h-full object-cover" />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-300">
-                              <ImageIcon size={16} />
-                            </div>
+                            <img src="/default_product.png" alt="Default Product" className="w-full h-full object-cover" />
                           )}
                         </div>
                         <div className="min-w-0 flex-1">

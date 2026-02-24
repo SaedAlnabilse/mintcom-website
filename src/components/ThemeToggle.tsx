@@ -34,12 +34,12 @@ export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSi
   const getDropdownClasses = () => {
     switch (dropdownDirection) {
       case 'up':
-        return 'left-0 bottom-full mb-3';
+        return 'left-0 rtl:left-auto rtl:right-0 bottom-full mb-3';
       case 'right':
-        return 'left-full bottom-0 ml-2';
+        return 'left-full rtl:left-auto rtl:right-full bottom-0 ml-2 rtl:ml-0 rtl:mr-2';
       case 'down':
       default:
-        return 'right-0 top-full mt-3';
+        return 'right-0 rtl:right-auto rtl:left-0 top-full mt-3';
     }
   };
 
@@ -59,7 +59,7 @@ export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSi
     <div className={`relative ${showLabel ? 'w-full' : ''}`} ref={containerRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center transition-all active:scale-90 ${!showLabel && !className.includes('justify-') ? 'justify-center' : ''} ${className || 'w-9 h-9 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green dark:hover:text-paymint-green'}`}
+        className={`flex items-center transition-all active:scale-90 ${!showLabel && !className.includes('justify-') ? 'justify-center' : ''} ${className || 'w-9 h-9 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green dark:hover:text-paymint-green'} ${isOpen ? 'bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white' : ''}`}
         title={t('theme.toggle')}
       >
         <div className="relative flex items-center justify-center" style={{ width: iconSize, height: iconSize }}>

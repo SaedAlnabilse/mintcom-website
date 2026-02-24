@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Plus, CreditCard, DollarSign, Trash2, Star, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye } from 'lucide-react';
+import { Plus, CreditCard, DollarSign, Trash2, Star, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye, Sparkles } from 'lucide-react';
 import api from '../../config/api';
 import { AddPaymentMethodModal } from '../../components/AddPaymentMethodModal';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
@@ -30,8 +30,11 @@ interface EstablishmentBilling {
     trialEndsAt?: string;
     subscriptionEndDate?: string;
     monthlyPrice: number;
+    billingCycle?: 'monthly' | 'yearly';
+    yearlyPrice?: number;
     paymentCard: { id: string; brand: string; last4: string } | null;
 }
+
 
 interface BillingData {
     savedCards: SavedCard[];
@@ -227,7 +230,29 @@ export function OwnerBillingPage() {
     };
 
 
-    const totalMonthlyCost = billingData?.totalMonthlyCost || 0;
+    // Apply correct pricing: first location = $20/mo, additional = $17/mo
+    // The backend may return flat $20 for all, so we override client-side
+    const FIRST_LOCATION_PRICE = 20;
+    const ADDITIONAL_LOCATION_PRICE = 17;
+
+    const activeEstablishments = billingData?.establishments.filter(
+        est => est.subscriptionStatus?.toUpperCase() !== 'CANCELED'
+    ) || [];
+
+    // Compute correct total: first location at $20, rest at $17
+    const totalMonthlyCost = activeEstablishments.length > 0
+        ? FIRST_LOCATION_PRICE + Math.max(0, activeEstablishments.length - 1) * ADDITIONAL_LOCATION_PRICE
+        : 0;
+
+    // Helper to get correct price for an establishment by its index
+    const getEstablishmentPrice = (est: EstablishmentBilling, index: number) => {
+        // If backend provides billingCycle=yearly, use yearly price
+        if (est.billingCycle === 'yearly') {
+            return est.yearlyPrice || (index === 0 ? 210 : 180);
+        }
+        // Monthly: first location = $20, additional = $17
+        return index === 0 ? FIRST_LOCATION_PRICE : ADDITIONAL_LOCATION_PRICE;
+    };
 
     const paginatedEstablishments = billingData?.establishments.slice(
         (currentPage - 1) * itemsPerPage,
@@ -254,7 +279,7 @@ export function OwnerBillingPage() {
 
                 <div className="flex items-center gap-6">
                     <div className="text-right hidden sm:block">
-                        <p className="text-xs font-black text-gray-400 tracking-widestst mb-1">{t('owner.billing.monthlyCost')}</p>
+                        <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('owner.billing.monthlyCost')}</p>
                         <div className="flex items-baseline justify-end gap-1">
                             <span className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">${totalMonthlyCost.toFixed(2)}</span>
                             <span className="text-xs font-bold text-gray-400">/{t('common.mo')}</span>
@@ -454,7 +479,15 @@ export function OwnerBillingPage() {
                                             </div>
                                             <div>
                                                 <h3 className="text-sm font-bold text-gray-900 dark:text-white">{est.name}</h3>
-                                                <p className="text-xs font-bold text-gray-500">{t('owner.billing.standardPlan')}</p>
+                                                <div className="flex items-center gap-2">
+                                                    <p className="text-xs font-bold text-gray-500">{t('owner.billing.standardPlan')}</p>
+                                                    {est.billingCycle === 'yearly' && (
+                                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-paymint-green/10 text-paymint-green text-[9px] font-black rounded tracking-wider border border-paymint-green/20">
+                                                            <Sparkles size={8} />
+                                                            YEARLY
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
 
@@ -465,8 +498,26 @@ export function OwnerBillingPage() {
 
                                         {/* Cost */}
                                         <div className="col-span-2">
-                                            <p className="font-bold text-gray-900 dark:text-white text-sm">${est.monthlyPrice}</p>
-                                            <p className="text-xs text-gray-400">/{t('common.month')}</p>
+                                            {(() => {
+                                                // Find original index in full list for correct pricing
+                                                const fullIndex = billingData?.establishments.findIndex(e => e.id === est.id) ?? 0;
+                                                const price = getEstablishmentPrice(est, fullIndex);
+                                                const isYearly = est.billingCycle === 'yearly';
+                                                const isAdditional = fullIndex > 0;
+                                                return (
+                                                    <>
+                                                        <p className="font-bold text-gray-900 dark:text-white text-sm">
+                                                            ${price}
+                                                        </p>
+                                                        <p className="text-xs text-gray-400">
+                                                            /{isYearly ? (t('common.year') || 'year') : t('common.month')}
+                                                            {isAdditional && !isYearly && (
+                                                                <span className="text-paymint-green ml-1">(-$3)</span>
+                                                            )}
+                                                        </p>
+                                                    </>
+                                                );
+                                            })()}
                                         </div>
 
                                         {/* Payment & Actions */}

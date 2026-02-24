@@ -161,6 +161,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
 
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(completedById));
+      window.dispatchEvent(new Event('paymint-tasks-updated'));
     } catch {
       // No-op if storage is unavailable.
     }
@@ -216,7 +217,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
         >
           <div className="px-4 py-3 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-[#6FAE4A]/10 text-[#6FAE4A] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-[#7CC39F]/10 text-[#7CC39F] flex items-center justify-center">
                 <ClipboardList size={16} />
               </div>
               <h3 className="font-bold text-gray-900 dark:text-white text-lg">{t('chat.tasks.title')}</h3>
@@ -244,7 +245,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
 
               <div className="mt-2 h-2 rounded-full bg-gray-200 dark:bg-white/10 overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-[#6FAE4A] to-[#5A9B37] transition-all"
+                  className="h-full rounded-full bg-gradient-to-r from-[#7CC39F] to-[#5BA882] transition-all"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -261,17 +262,29 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
               return (
                 <div
                   key={task.id}
+                  id={`task-item-${task.id}`}
                   className="rounded-2xl border border-gray-200/80 dark:border-white/10 bg-white dark:bg-white/[0.02] shadow-sm overflow-hidden"
                 >
                   <button
-                    onClick={() => setExpandedId(isExpanded ? null : task.id)}
+                    onClick={() => {
+                      const isExpanding = expandedId !== task.id;
+                      setExpandedId(isExpanding ? task.id : null);
+                      if (isExpanding) {
+                        setTimeout(() => {
+                          const el = document.getElementById(`task-item-${task.id}`);
+                          if (el) {
+                            el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                          }
+                        }, 250);
+                      }
+                    }}
                     className="w-full p-4 flex items-center gap-3 text-left hover:bg-gray-50/80 dark:hover:bg-white/[0.03] transition-colors"
                   >
                     <div
                       className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0 ${
                         isCompleted
-                          ? 'bg-[#6FAE4A]/15 text-[#356A1F]'
-                          : 'bg-[#6FAE4A]/10 text-gray-700 dark:text-gray-200'
+                          ? 'bg-[#7CC39F]/15 text-[#5BA882]'
+                          : 'bg-[#7CC39F]/10 text-gray-700 dark:text-gray-200'
                       }`}
                     >
                       {isCompleted ? <Check size={18} /> : index + 1}
@@ -304,7 +317,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
                           <div className="mt-4 flex items-center gap-2">
                             <button
                               onClick={() => handleOpenTask(task.navigation)}
-                              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#6FAE4A] to-[#5A9B37] text-white font-bold text-sm shadow-sm hover:brightness-105 transition-all"
+                              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#7CC39F] to-[#5BA882] text-white font-bold text-sm shadow-sm hover:brightness-105 transition-all"
                             >
                               <span>{task.actionLabel}</span>
                               <ExternalLink size={14} />
@@ -315,7 +328,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
                               className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl font-bold text-sm transition-colors ${
                                 isCompleted
                                   ? 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'
-                                  : 'text-[#6FAE4A] hover:bg-[#6FAE4A]/10'
+                                  : 'text-[#7CC39F] hover:bg-[#7CC39F]/10'
                               }`}
                             >
                               <Check size={14} />

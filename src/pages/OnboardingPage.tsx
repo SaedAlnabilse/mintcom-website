@@ -41,8 +41,7 @@ import {
   HelpCircle,
   Shield,
   Scale,
-  Info,
-  MessageCircle
+  Info
 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
@@ -97,6 +96,18 @@ export function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<any>({});
   const [useSavedCard, setUseSavedCard] = useState(true); // Default to using saved card if available
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+
+  // Pricing constants
+  const MONTHLY_PRICE = 20;
+  const YEARLY_PRICE = 210;
+  const MONTHLY_ADDITIONAL = 17;
+  const YEARLY_ADDITIONAL = 180;
+  const isAdditionalLocation = establishments.length > 0;
+  const currentMonthlyPrice = isAdditionalLocation ? MONTHLY_ADDITIONAL : MONTHLY_PRICE;
+  const currentYearlyPrice = isAdditionalLocation ? YEARLY_ADDITIONAL : YEARLY_PRICE;
+  const displayPrice = billingCycle === 'yearly' ? currentYearlyPrice : currentMonthlyPrice;
+  const yearlySavings = (currentMonthlyPrice * 12) - currentYearlyPrice;
 
   // Password Visibility State
   const [showEstablishmentPassword, setShowEstablishmentPassword] = useState(false);
@@ -146,7 +157,8 @@ export function OnboardingPage() {
     {
       targetId: 'tour-chat-bot',
       title: t('onboarding.tour.chatBotTitle'),
-      description: t('onboarding.tour.chatBotDesc')
+      description: t('onboarding.tour.chatBotDesc'),
+      position: 'top'
     },
     {
       targetId: 'tour-location-stats',
@@ -246,7 +258,10 @@ export function OnboardingPage() {
         ...prev,
         paymentMethodToken: 'use_saved_card',
         useSavedCard: true,
-        savedCardId: account?.defaultCardId // Ensure we capture the existing default card ID
+        savedCardId: account?.defaultCardId,
+        billingCycle,
+        monthlyPrice: currentMonthlyPrice,
+        yearlyPrice: currentYearlyPrice
       }));
     } else {
       // New card - save the card to the account
@@ -290,7 +305,10 @@ export function OnboardingPage() {
           ...prev,
           paymentMethodToken: 'tok_mock_' + Date.now(),
           useSavedCard: false,
-          savedCardId: newCardId
+          savedCardId: newCardId,
+          billingCycle,
+          monthlyPrice: currentMonthlyPrice,
+          yearlyPrice: currentYearlyPrice
         }));
 
       } catch (err: any) {
@@ -325,6 +343,9 @@ export function OnboardingPage() {
         establishmentPassword: formData.establishmentPassword, // User-provided password
         paymentMethodToken: formData.paymentMethodToken,
         savedCardId: formData.savedCardId,
+        billingCycle: formData.billingCycle || 'monthly',
+        monthlyPrice: formData.monthlyPrice,
+        yearlyPrice: formData.yearlyPrice,
         // Duplication params
         duplicateFromId: formData.duplicateFromId,
         duplicateInventory: formData.duplicateInventory,
@@ -675,7 +696,9 @@ export function OnboardingPage() {
                       {isTrialFlow ? (
                         <span className="bg-yellow-400 text-black text-xs font-black tracking-widest px-2 py-0.5 rounded">{t('onboarding.step2.freeDays')}</span>
                       ) : (
-                        <span className="bg-paymint-green text-black text-xs font-black tracking-widest px-2 py-0.5 rounded">{t('onboarding.step2.priceMonth')}</span>
+                        <span className="bg-paymint-green text-black text-xs font-black tracking-widest px-2 py-0.5 rounded">
+                          {billingCycle === 'yearly' ? `$${currentYearlyPrice}/YEAR` : `$${currentMonthlyPrice}/MONTH`}
+                        </span>
                       )}
                     </div>
                   </div>
@@ -685,18 +708,72 @@ export function OnboardingPage() {
                       : t('onboarding.step2.activateDesc')
                     }
                   </p>
+                  {isAdditionalLocation && !isTrialFlow && (
+                    <div className="mt-3 px-3 py-2 bg-blue-500/10 text-blue-500 text-xs font-bold rounded-xl border border-blue-500/20">
+                      💰 Discounted rate for additional locations
+                    </div>
+                  )}
                 </div>
 
                 <form onSubmit={form2.handleSubmit(onStep2Submit)} className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+                  {/* Billing Cycle Toggle */}
+                  {!isTrialFlow && (
+                    <div className="flex items-center justify-center">
+                      <div className="inline-flex items-center gap-1.5 bg-gray-100 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded-2xl p-1">
+                        <button
+                          type="button"
+                          onClick={() => setBillingCycle('monthly')}
+                          className={`px-5 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all duration-300 ${billingCycle === 'monthly'
+                            ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                            }`}
+                        >
+                          MONTHLY
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setBillingCycle('yearly')}
+                          className={`px-5 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all duration-300 relative ${billingCycle === 'yearly'
+                            ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                            }`}
+                        >
+                          YEARLY
+                          <span className={`absolute -top-2 -right-2 px-1.5 py-0.5 rounded-full text-[8px] font-black tracking-wider ${billingCycle === 'yearly' ? 'bg-black text-paymint-green' : 'bg-paymint-green text-black'
+                            } shadow`}>
+                            SAVE
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="p-4 bg-gray-50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-300 dark:border-white/10">
                     <div className="flex justify-between items-center mb-4">
                       <span className="text-xs font-black text-gray-400 tracking-widest">{t('onboarding.step2.totalDue')}</span>
-                      <span className="text-xl font-bold text-gray-900 dark:text-white">{isTrialFlow ? (0).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD' }) : (20).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD' })}</span>
+                      <span className="text-xl font-bold text-gray-900 dark:text-white">
+                        {isTrialFlow
+                          ? (0).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD' })
+                          : `$${displayPrice.toFixed(2)}`
+                        }
+                      </span>
                     </div>
                     <div className="flex justify-between items-center text-xs font-bold text-gray-500">
-                      <span>{isTrialFlow ? t('onboarding.step2.afterTrial') : t('onboarding.step2.monthly')}</span>
-                      <span>{(20).toLocaleString(t('common.locale'), { style: 'currency', currency: 'USD' })}/{t('common.month')}</span>
+                      <span>{isTrialFlow ? t('onboarding.step2.afterTrial') : (billingCycle === 'yearly' ? 'Yearly' : t('onboarding.step2.monthly'))}</span>
+                      <span>
+                        ${currentMonthlyPrice.toFixed(2)}/{t('common.month')}
+                        {billingCycle === 'yearly' && ' (billed yearly)'}
+                      </span>
                     </div>
+                    {billingCycle === 'yearly' && !isTrialFlow && (
+                      <div className="mt-3 flex items-center justify-center gap-2">
+                        <Sparkles size={12} className="text-paymint-green" />
+                        <span className="text-xs font-black text-paymint-green tracking-wider">
+                          SAVE ${yearlySavings}/YEAR
+                        </span>
+                        <span className="text-xs text-gray-400 line-through">${(currentMonthlyPrice * 12)}/yr</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Saved Card Option */}
@@ -819,7 +896,10 @@ export function OnboardingPage() {
                       onClick={hasSavedCard && useSavedCard ? () => onStep2Submit({}) : undefined}
                       className="w-full py-5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
-                      {isTrialFlow ? t('onboarding.step2.startTrialButton') : t('onboarding.step2.activateButton')}
+                      {isTrialFlow
+                        ? t('onboarding.step2.startTrialButton')
+                        : `${t('onboarding.step2.activateButton')} $${displayPrice}`
+                      }
                       <ArrowRight size={24} />
                     </button>
                   </div>
@@ -1031,7 +1111,7 @@ export function OnboardingPage() {
                   <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
                     {/* Left: Welcome Message */}
                     <div className="flex items-center gap-5">
-                      <motion.div 
+                      <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
@@ -1097,11 +1177,11 @@ export function OnboardingPage() {
 
               {/* Main Content Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                
+
                 {/* Left Column: Download Apps (5 cols) */}
                 <div className="lg:col-span-5 space-y-4">
                   {/* POS App */}
-                  <motion.div 
+                  <motion.div
                     id="tour-pos-app"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -1181,35 +1261,11 @@ export function OnboardingPage() {
                         {t('onboarding.step5.appStore')}
                       </a>
                     </div>
-                                      </motion.div>
-                  
-                                      {/* AI Assistant Card */}
-                                      <motion.div
-                                        id="tour-chat-bot"
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.75 }}
-                                        className="bg-gradient-to-br from-paymint-green/10 to-emerald-500/5 border border-paymint-green/20 rounded-2xl p-5 group hover:border-paymint-green/40 transition-all cursor-pointer"
-                                        onClick={() => {
-                                          // Trigger chatbot if possible or just show info
-                                          toast.success(t('chat.assistantTitle'));
-                                        }}
-                                      >
-                                        <div className="flex items-start gap-4">
-                                          <div className="w-14 h-14 bg-paymint-green/20 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform">
-                                            <MessageCircle size={28} className="text-paymint-green" />
-                                          </div>
-                                          <div>
-                                            <div className="flex items-center gap-2">
-                                              <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('onboarding.step5.chatBotTitle')}</h3>
-                                              <span className="bg-paymint-green text-black text-[10px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter">AI</span>
-                                            </div>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t('onboarding.step5.chatBotDesc')}</p>
-                                          </div>
-                                        </div>
-                                      </motion.div>
-                  
-                                      {/* Quick Stats */}                  <motion.div 
+                  </motion.div>
+
+
+
+                  {/* Quick Stats */}                  <motion.div
                     id="tour-location-stats"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -1226,7 +1282,7 @@ export function OnboardingPage() {
                         <p className="text-xs text-gray-500">{t('onboarding.step5.setupComplete')}</p>
                       </div>
                     </div>
-                    
+
                     {/* Location ID Row */}
                     <div className="flex items-center gap-3 py-2.5 border-b border-gray-100 dark:border-white/5">
                       <Hash size={16} className="text-gray-400 dark:text-gray-500 flex-shrink-0" />
@@ -1270,7 +1326,7 @@ export function OnboardingPage() {
 
                 {/* Right Column: Resources Grid (7 cols) */}
                 <div className="lg:col-span-7">
-                  <motion.div 
+                  <motion.div
                     id="tour-resources"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

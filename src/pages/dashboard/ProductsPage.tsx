@@ -208,12 +208,12 @@ export function ProductsPage() {
     // Helper to construct full image URLs
     // In development, use relative paths to leverage Vite proxy (avoids CORS issues)
     // In production (Cloudflare Workers), use the full backend URL
-    const isCloudflareWorkers = typeof window !== 'undefined' && 
+    const isCloudflareWorkers = typeof window !== 'undefined' &&
         window.location.hostname.endsWith('.workers.dev');
-    const BACKEND_URL = isCloudflareWorkers 
+    const BACKEND_URL = isCloudflareWorkers
         ? 'https://grateful-liberation-production-d036.up.railway.app'
         : '';
-    
+
     const getProductImageUrl = (imagePath?: string) => {
         if (!imagePath) return null;
         if (imagePath.startsWith('http')) return imagePath;
@@ -674,49 +674,47 @@ export function ProductsPage() {
                                     className="group bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 hover:shadow-xl transition-all overflow-hidden flex flex-col cursor-pointer"
                                     onClick={() => handleEdit(p)}
                                 >
-                                        <div className="aspect-[4/3] bg-gray-50 dark:bg-black/20 relative overflow-hidden">
-                                            {p.image ? (
-                                                <img src={getProductImageUrl(p.image)!} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                            ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-gray-300">
-                                                    <Package size={32} />
-                                                </div>
-                                            )}
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 flex items-end justify-between p-3">
-                                                <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-gray-900 hover:bg-paymint-green hover:text-black transition-colors"><Edit2 size={18} /></button>
-                                                <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors"><Trash2 size={18} /></button>
+                                    <div className="aspect-[4/3] bg-gray-50 dark:bg-black/20 relative overflow-hidden">
+                                        {p.image ? (
+                                            <img src={getProductImageUrl(p.image)!} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                        ) : (
+                                            <img src="/default_product.png" alt="Default Product" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                        )}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 flex items-end justify-between p-3">
+                                            <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-gray-900 hover:bg-paymint-green hover:text-black transition-colors"><Edit2 size={18} /></button>
+                                            <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id); }} aria-label={t('products.delete.title')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white rounded-lg text-paymint-red hover:bg-red-500 hover:text-white transition-colors"><Trash2 size={18} /></button>
+                                        </div>
+                                    </div>
+                                    <div className="p-3 flex-1 flex flex-col">
+                                        <div className="flex items-start justify-between mb-2 gap-2">
+                                            <h3 className="font-bold text-sm text-gray-900 dark:text-white leading-tight line-clamp-2">{p.name}</h3>
+                                            <span className="text-xs font-black tracking-widest text-gray-400 bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded-md whitespace-nowrap shrink-0">
+                                                {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
+                                            </span>
+                                        </div>
+                                        {p.description && <p className="text-xs text-gray-500 line-clamp-2 mb-3 flex-1">{p.description}</p>}
+                                        <div className="border-t border-gray-100 dark:border-white/5 pt-3 flex items-center justify-between mt-auto">
+                                            <div>
+                                                <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">{t('products.table.price')}</p>
+                                                <p className="text-sm font-black text-paymint-green">
+                                                    {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
+                                                </p>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">{t('products.table.stock')}</p>
+                                                {p.trackStock ? (
+                                                    <div className={`text-xs font-bold flex items-center justify-end gap-1 ${getStockColor(p.availableStock || 0, p.lowStockThresholdRed, p.lowStockThresholdYellow)}`}>
+                                                        {(p.availableStock || 0) <= (p.lowStockThresholdYellow || 5) && <AlertCircle size={10} />}
+                                                        {(p.availableStock || 0).toLocaleString(t('common.locale'))}
+                                                    </div>
+                                                ) : (
+                                                    <div className="text-xs font-bold text-gray-400 dark:text-gray-500 flex items-center justify-end">
+                                                        <InfinityIcon size={16} strokeWidth={3} />
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
-                                        <div className="p-3 flex-1 flex flex-col">
-                                            <div className="flex items-start justify-between mb-2 gap-2">
-                                                <h3 className="font-bold text-sm text-gray-900 dark:text-white leading-tight line-clamp-2">{p.name}</h3>
-                                                <span className="text-xs font-black tracking-widest text-gray-400 bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded-md whitespace-nowrap shrink-0">
-                                                    {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
-                                                </span>
-                                            </div>
-                                            {p.description && <p className="text-xs text-gray-500 line-clamp-2 mb-3 flex-1">{p.description}</p>}
-                                            <div className="border-t border-gray-100 dark:border-white/5 pt-3 flex items-center justify-between mt-auto">
-                                                <div>
-                                                    <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">{t('products.table.price')}</p>
-                                                    <p className="text-sm font-black text-paymint-green">
-                                                        {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
-                                                    </p>
-                                                </div>
-                                                <div className="text-right">
-                                                    <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">{t('products.table.stock')}</p>
-                                                    {p.trackStock ? (
-                                                        <div className={`text-xs font-bold flex items-center justify-end gap-1 ${getStockColor(p.availableStock || 0, p.lowStockThresholdRed, p.lowStockThresholdYellow)}`}>
-                                                            {(p.availableStock || 0) <= (p.lowStockThresholdYellow || 5) && <AlertCircle size={10} />}
-                                                            {(p.availableStock || 0).toLocaleString(t('common.locale'))}
-                                                        </div>
-                                                    ) : (
-                                                        <div className="text-xs font-bold text-gray-400 dark:text-gray-500 flex items-center justify-end">
-                                                            <InfinityIcon size={16} strokeWidth={3} />
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -774,7 +772,7 @@ export function ProductsPage() {
                                                         {p.image ? (
                                                             <img src={getProductImageUrl(p.image)!} alt="" className="w-full h-full object-cover" />
                                                         ) : (
-                                                            <div className="w-full h-full flex items-center justify-center text-gray-300"><Package size={16} /></div>
+                                                            <img src="/default_product.png" alt="Default Product" className="w-full h-full object-cover" />
                                                         )}
                                                     </div>
                                                 </td>
@@ -816,7 +814,8 @@ export function ProductsPage() {
                         </div>
                     )}
                 </>
-            )}
+            )
+            }
 
             {/* Pagination Controls */}
             <Pagination
@@ -839,14 +838,14 @@ export function ProductsPage() {
             />
 
             <ConfirmModal
-        isOpen={confirmConfig.isOpen}
-        onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
-        onConfirm={confirmConfig.onConfirm}
-        title={t('products.delete.title')}
-        message={t('products.delete.message')}
-        type={confirmConfig.type}
-      />
-        </div>
+                isOpen={confirmConfig.isOpen}
+                onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
+                onConfirm={confirmConfig.onConfirm}
+                title={t('products.delete.title')}
+                message={t('products.delete.message')}
+                type={confirmConfig.type}
+            />
+        </div >
 
     );
 }

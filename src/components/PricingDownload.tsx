@@ -1,11 +1,24 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, ArrowRight, Download, Apple, CheckCircle2, Zap, QrCode } from 'lucide-react';
+import { Check, ArrowRight, Download, Apple, CheckCircle2, Zap, QrCode, MapPin, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 
 export const PricingDownload = () => {
     const { t } = useTranslation();
     const [showDetails, setShowDetails] = useState(false);
+    const [isYearly, setIsYearly] = useState(false);
+
+    // Pricing constants
+    const MONTHLY_PRICE = 20;
+    const YEARLY_PRICE = 210;
+    const MONTHLY_ADDITIONAL = 17;
+    const YEARLY_ADDITIONAL = 180;
+
+    const currentPrice = isYearly ? YEARLY_PRICE : MONTHLY_PRICE;
+    const currentPeriod = isYearly ? '/YEAR' : '/MONTH';
+    const currentAdditionalPrice = isYearly ? YEARLY_ADDITIONAL : MONTHLY_ADDITIONAL;
+    const yearlySavings = (MONTHLY_PRICE * 12) - YEARLY_PRICE; // $30
+    const yearlyAdditionalSavings = (MONTHLY_ADDITIONAL * 12) - YEARLY_ADDITIONAL; // $24
 
     // 3D Tilt Effect Logic
     const x = useMotionValue(0);
@@ -57,7 +70,7 @@ export const PricingDownload = () => {
 
             <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl">
                 {/* Header Section */}
-                <div className="text-center mb-16 lg:mb-24">
+                <div className="text-center mb-16 lg:mb-20">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -70,12 +83,45 @@ export const PricingDownload = () => {
                     <h2 className="text-5xl lg:text-8xl font-black text-gray-900 dark:text-white mb-6 tracking-tighter leading-none">
                         Get Started
                     </h2>
-                    <p className="text-2xl lg:text-3xl text-gray-500 dark:text-gray-400 max-w-3xl mx-auto font-black leading-tight">
-                        Your “aha” moment is just minutes away.
+                    <p className="text-2xl lg:text-3xl text-gray-500 dark:text-gray-400 max-w-3xl mx-auto font-black leading-tight mb-10">
+                        Your "aha" moment is just minutes away.
                     </p>
+
+                    {/* Billing Toggle */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="inline-flex items-center gap-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl p-1.5 shadow-sm"
+                    >
+                        <button
+                            onClick={() => setIsYearly(false)}
+                            className={`px-6 py-3 rounded-xl text-sm font-black tracking-wider transition-all duration-300 ${!isYearly
+                                    ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                                }`}
+                        >
+                            MONTHLY
+                        </button>
+                        <button
+                            onClick={() => setIsYearly(true)}
+                            className={`px-6 py-3 rounded-xl text-sm font-black tracking-wider transition-all duration-300 relative ${isYearly
+                                    ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                                }`}
+                        >
+                            YEARLY
+                            <span className={`absolute -top-2 -right-2 px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider ${isYearly
+                                    ? 'bg-black text-paymint-green'
+                                    : 'bg-paymint-green text-black'
+                                } shadow-lg`}>
+                                SAVE
+                            </span>
+                        </button>
+                    </motion.div>
                 </div>
 
-                <div className="flex flex-col lg:flex-row items-stretch gap-12 lg:gap-16">
+                <div className="flex flex-col lg:flex-row items-stretch gap-12 lg:gap-8">
 
                     {/* Left Side: Premium Pricing Card */}
                     <motion.div
@@ -92,10 +138,12 @@ export const PricingDownload = () => {
                             <div className="relative h-full bg-white dark:bg-[#0c0c0c] border border-gray-100 dark:border-white/10 rounded-[2.5rem] p-8 lg:p-12 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] dark:shadow-none transition-all duration-500 group-hover:translate-y-[-8px] flex flex-col">
 
                                 {/* Plan Identity */}
-                                <div className="flex justify-between items-start mb-10">
+                                <div className="flex justify-between items-start mb-8">
                                     <div>
                                         <div className="text-paymint-green text-xs font-black uppercase tracking-widest mb-1 italic">FULL ACCESS</div>
-                                        <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">$20 / Month Plan</h3>
+                                        <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+                                            {isYearly ? 'Yearly' : 'Monthly'} Plan
+                                        </h3>
                                     </div>
                                     <div className="bg-gradient-to-br from-paymint-green to-emerald-500 text-black px-4 py-2 rounded-2xl text-[10px] font-black tracking-widest uppercase shadow-lg shadow-paymint-green/20">
                                         {t('landing.pricing.popular')}
@@ -103,18 +151,47 @@ export const PricingDownload = () => {
                                 </div>
 
                                 {/* Price Large Display */}
-                                <div className="mb-10">
-                                    <div className="flex items-baseline gap-2">
-                                        <span className="text-7xl lg:text-8xl font-black text-gray-900 dark:text-white tracking-tighter transition-all group-hover:text-paymint-green">$20</span>
-                                        <span className="text-gray-400 dark:text-gray-500 font-black text-xl lg:text-2xl uppercase tracking-tighter">/MONTH</span>
-                                    </div>
-                                    <p className="text-gray-500 dark:text-gray-400 mt-4 text-sm font-bold leading-relaxed italic">
-                                        No hidden fees. No setup costs. No commitment.
+                                <div className="mb-8">
+                                    <AnimatePresence mode="wait">
+                                        <motion.div
+                                            key={isYearly ? 'yearly' : 'monthly'}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -10 }}
+                                            transition={{ duration: 0.3 }}
+                                            className="flex items-baseline gap-2"
+                                        >
+                                            <span className="text-7xl lg:text-8xl font-black text-gray-900 dark:text-white tracking-tighter transition-all group-hover:text-paymint-green">
+                                                ${currentPrice}
+                                            </span>
+                                            <span className="text-gray-400 dark:text-gray-500 font-black text-xl lg:text-2xl uppercase tracking-tighter">
+                                                {currentPeriod}
+                                            </span>
+                                        </motion.div>
+                                    </AnimatePresence>
+
+                                    {isYearly && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            className="mt-3 flex items-center gap-3"
+                                        >
+                                            <span className="text-sm font-bold text-gray-400 line-through">${MONTHLY_PRICE * 12}/yr</span>
+                                            <span className="px-3 py-1 rounded-full bg-paymint-green/10 text-paymint-green text-xs font-black tracking-wider border border-paymint-green/20 flex items-center gap-1.5">
+                                                <Sparkles size={12} />
+                                                SAVE ${yearlySavings}
+                                            </span>
+                                        </motion.div>
+                                    )}
+
+                                    <p className="text-gray-500 dark:text-gray-400 mt-3 text-sm font-bold leading-relaxed italic">
+                                        No hidden fees. No setup costs. {isYearly ? 'Billed annually.' : 'No commitment.'}
                                     </p>
                                 </div>
 
-                                {/* Feature List - Using Exact Text from Request */}
-                                <div className="space-y-6 mb-12 flex-1">
+                                {/* Feature List */}
+                                <div className="space-y-5 mb-10 flex-1">
                                     <div className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.3em] mb-4">Core Benefits</div>
                                     {[
                                         { label: "POS for tablets and mobile devices" },
@@ -161,33 +238,116 @@ export const PricingDownload = () => {
                         </div>
                     </motion.div>
 
-                    {/* Right Side: Aha Moment & Download */}
+                    {/* Right Side */}
                     <motion.div
                         initial={{ opacity: 0, x: 50 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
-                        className="flex-1 flex flex-col justify-between py-4"
+                        className="flex-1 flex flex-col justify-between py-4 gap-8"
                     >
+                        {/* Additional Location Pricing Card */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.2 }}
+                            className="relative group/loc"
+                        >
+                            <div className="relative bg-white dark:bg-[#0f0f0f] rounded-[2rem] p-6 lg:p-8 border border-gray-200 dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-paymint-green/30 overflow-hidden">
+                                {/* Background decoration */}
+                                <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+
+                                <div className="relative z-10">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center">
+                                                <MapPin size={22} className="text-blue-500" />
+                                            </div>
+                                            <div>
+                                                <h4 className="text-lg font-black text-gray-900 dark:text-white tracking-tight">Additional Locations</h4>
+                                                <p className="text-xs font-bold text-gray-500 dark:text-gray-400">Scale your business with multi-branch support</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-2 sm:gap-3">
+                                            {isYearly && (
+                                                <motion.span
+                                                    initial={{ opacity: 0, scale: 0.8 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    className="text-sm font-bold text-gray-400 line-through"
+                                                >
+                                                    ${MONTHLY_ADDITIONAL * 12}
+                                                </motion.span>
+                                            )}
+                                            <AnimatePresence mode="wait">
+                                                <motion.div
+                                                    key={isYearly ? 'yearly-add' : 'monthly-add'}
+                                                    initial={{ opacity: 0, y: 5 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, y: -5 }}
+                                                    className="flex items-baseline gap-1"
+                                                >
+                                                    <span className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white tracking-tighter">
+                                                        ${currentAdditionalPrice}
+                                                    </span>
+                                                    <span className="text-sm font-black text-gray-400 tracking-tighter">
+                                                        {isYearly ? '/yr' : '/mo'}
+                                                    </span>
+                                                </motion.div>
+                                            </AnimatePresence>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        {[
+                                            "Same full access for each location",
+                                            "Centralized from one dashboard",
+                                            "Separate staff & inventory per branch",
+                                            isYearly ? `Save $${yearlyAdditionalSavings}/yr per location` : "Save $3/mo vs standard price"
+                                        ].map((item, i) => (
+                                            <div key={i} className="flex items-center gap-2.5">
+                                                <div className="w-5 h-5 rounded-md bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+                                                    <Check size={10} className="text-blue-500 stroke-[4px]" />
+                                                </div>
+                                                <span className="text-xs font-bold text-gray-600 dark:text-gray-300">{item}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {isYearly && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            className="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-500 text-[10px] font-black tracking-wider border border-blue-500/20"
+                                        >
+                                            <Sparkles size={10} />
+                                            SAVE ${yearlyAdditionalSavings} PER LOCATION
+                                        </motion.div>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
+
                         {/* The "Aha Moment" Section */}
-                        <div className="mb-16">
+                        <div className="flex-1">
                             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-blue-500/10 text-blue-500 font-black text-[10px] uppercase tracking-[0.2em] mb-6 border border-blue-500/20">
                                 <Zap size={12} fill="currentColor" />
                                 <span>The Revelation</span>
                             </div>
 
-                            <h2 className="text-4xl lg:text-6xl font-black text-gray-900 dark:text-white mb-8 tracking-tighter leading-tight">
+                            <h2 className="text-4xl lg:text-5xl font-black text-gray-900 dark:text-white mb-8 tracking-tighter leading-tight">
                                 That <span className="italic font-serif text-paymint-green">"Everything Just Works"</span> Feeling.
                             </h2>
 
                             <div className="space-y-8 relative">
                                 <div className="absolute left-[-24px] top-0 bottom-0 w-px bg-gradient-to-b from-paymint-green via-transparent to-transparent opacity-30 hidden md:block" />
 
-                                <blockquote className="text-xl lg:text-2xl text-gray-600 dark:text-gray-300 leading-relaxed font-medium italic">
+                                <blockquote className="text-lg lg:text-xl text-gray-600 dark:text-gray-300 leading-relaxed font-medium italic">
                                     "The first time you check your phone while away from the shop and see a live sale notification pop up—knowing exactly how your business is performing without calling anyone... <span className="text-gray-900 dark:text-white font-black not-italic">that's when everything clicks.</span>"
                                 </blockquote>
 
-                                {/* Visual Mockup of the "Aha Moment" */}
+                                {/* Visual Mockup */}
                                 <div className="relative h-24 max-w-sm">
                                     <motion.div
                                         initial={{ x: 50, opacity: 0 }}
@@ -208,36 +368,20 @@ export const PricingDownload = () => {
                                     </motion.div>
                                     <div className="absolute inset-0 bg-gradient-to-t from-gray-50 dark:from-[#080808] to-transparent z-10 h-full pointer-events-none" />
                                 </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 ring-1 ring-gray-100 dark:ring-white/5 p-8 rounded-[2rem] bg-white/50 dark:bg-white/[0.02] backdrop-blur-sm">
-                                    <div>
-                                        <h4 className="font-black text-gray-900 dark:text-white text-sm uppercase tracking-widest mb-2">Multi-Branch Mastery</h4>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed font-bold">
-                                            Scale from one shop to ten with a few clicks. Centralized control over products, staff, and performance from a single universal dashboard.
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <h4 className="font-black text-gray-900 dark:text-white text-sm uppercase tracking-widest mb-2">Total Visibility</h4>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed font-bold">
-                                            Accurate, real-time data access enables faster checkout experiences and smooth daily operations. No more guesswork, just pure visibility.
-                                        </p>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
-                        {/* Compact Download Section Design with 3D Tilt */}
+                        {/* Compact Download Section with 3D Tilt */}
                         <motion.div
                             style={{ perspective: 1000, rotateX, rotateY }}
                             onMouseMove={handleMouse}
                             onMouseLeave={handleMouseLeave}
-                            className="relative group/card mt-4" // Reduced top margin
+                            className="relative group/card mt-4"
                         >
                             {/* Outer Glow Effect */}
                             <div className="absolute -inset-0.5 bg-gradient-to-r from-paymint-green/30 to-blue-500/30 rounded-[2rem] blur opacity-10 group-hover/card:opacity-60 transition duration-500" />
 
                             <div className="relative bg-black dark:bg-[#080808] rounded-[2rem] p-6 lg:p-8 border border-white/10 overflow-hidden shadow-2xl">
-                                {/* Abstract Background Decoration - Scaled Down */}
                                 <div className="absolute top-0 right-0 w-[250px] h-[250px] bg-paymint-green/10 rounded-full blur-[80px] pointer-events-none group-hover/card:bg-paymint-green/20 transition-all duration-1000" />
                                 <div className="absolute bottom-0 left-0 w-[250px] h-[250px] bg-blue-600/10 rounded-full blur-[80px] pointer-events-none group-hover/card:bg-blue-600/20 transition-all duration-1000" />
 
@@ -258,7 +402,7 @@ export const PricingDownload = () => {
                                     </div>
 
                                     <div className="flex flex-col sm:flex-row items-center gap-4 w-full xl:w-auto">
-                                        {/* Android APK Button - Compact */}
+                                        {/* Android APK Button */}
                                         <motion.a
                                             href={import.meta.env.VITE_ANDROID_DOWNLOAD_URL || '/downloads/paymint-android.apk'}
                                             download
