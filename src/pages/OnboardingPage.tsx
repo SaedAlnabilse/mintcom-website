@@ -353,7 +353,14 @@ export function OnboardingPage() {
         duplicatePaymentMethods: formData.duplicatePaymentMethods,
       };
 
-      const estRes = await api.post('/api/establishments', establishmentPayload);
+      const requestHeaders: Record<string, string> = {};
+      if (formData.duplicateFromId) {
+        requestHeaders['X-Establishment-Id'] = formData.duplicateFromId;
+      }
+
+      const estRes = await api.post('/api/establishments', establishmentPayload, {
+        headers: requestHeaders
+      });
       const estId = estRes.data.establishment?.id || estRes.data.id;
 
       if (!estId) {
@@ -379,6 +386,10 @@ export function OnboardingPage() {
         role: 'ADMIN',
         permissions: [],
         allowedDiscounts: []
+      }, {
+        headers: {
+          'X-Establishment-Id': estId
+        }
       });
 
       goToStep(5); // Success Step
@@ -697,7 +708,7 @@ export function OnboardingPage() {
                         <span className="bg-yellow-400 text-black text-xs font-black tracking-widest px-2 py-0.5 rounded">{t('onboarding.step2.freeDays')}</span>
                       ) : (
                         <span className="bg-paymint-green text-black text-xs font-black tracking-widest px-2 py-0.5 rounded">
-                          {billingCycle === 'yearly' ? `$${currentYearlyPrice}/YEAR` : `$${currentMonthlyPrice}/MONTH`}
+                          {billingCycle === 'yearly' ? `$${currentYearlyPrice}/${t('common.yearly').toUpperCase()}` : `$${currentMonthlyPrice}/${t('common.monthly').toUpperCase()}`}
                         </span>
                       )}
                     </div>
@@ -705,7 +716,7 @@ export function OnboardingPage() {
                   <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
                     {isTrialFlow
                       ? t('onboarding.step2.trialDesc')
-                      : t('onboarding.step2.activateDesc')
+                      : t('onboarding.step2.activateDesc', { amount: `$${displayPrice.toFixed(2)}` })
                     }
                   </p>
                   {isAdditionalLocation && !isTrialFlow && (
@@ -728,7 +739,7 @@ export function OnboardingPage() {
                             : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                             }`}
                         >
-                          MONTHLY
+                          {t('common.monthly').toUpperCase()}
                         </button>
                         <button
                           type="button"
@@ -738,7 +749,7 @@ export function OnboardingPage() {
                             : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                             }`}
                         >
-                          YEARLY
+                          {t('common.yearly').toUpperCase()}
                           <span className={`absolute -top-2 -right-2 px-1.5 py-0.5 rounded-full text-[8px] font-black tracking-wider ${billingCycle === 'yearly' ? 'bg-black text-paymint-green' : 'bg-paymint-green text-black'
                             } shadow`}>
                             SAVE
@@ -759,9 +770,9 @@ export function OnboardingPage() {
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-xs font-bold text-gray-500">
-                      <span>{isTrialFlow ? t('onboarding.step2.afterTrial') : (billingCycle === 'yearly' ? 'Yearly' : t('onboarding.step2.monthly'))}</span>
+                      <span>{isTrialFlow ? t('onboarding.step2.afterTrial') : (billingCycle === 'yearly' ? t('common.yearly') : t('common.monthly'))}</span>
                       <span>
-                        ${currentMonthlyPrice.toFixed(2)}/{t('common.month')}
+                        ${currentMonthlyPrice.toFixed(2)}/{t('common.monthly')}
                         {billingCycle === 'yearly' && ' (billed yearly)'}
                       </span>
                     </div>
@@ -771,7 +782,7 @@ export function OnboardingPage() {
                         <span className="text-xs font-black text-paymint-green tracking-wider">
                           SAVE ${yearlySavings}/YEAR
                         </span>
-                        <span className="text-xs text-gray-400 line-through">${(currentMonthlyPrice * 12)}/yr</span>
+                        <span className="text-xs text-gray-400 line-through">${(currentMonthlyPrice * 12)}/{t('common.yearly')}</span>
                       </div>
                     )}
                   </div>

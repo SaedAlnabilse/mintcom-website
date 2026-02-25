@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Plus, CreditCard, DollarSign, Trash2, Star, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye } from 'lucide-react';
+import { Plus, CreditCard, DollarSign, Trash2, Star, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye, ArrowUpDown } from 'lucide-react';
 import api from '../../config/api';
 import { AddPaymentMethodModal } from '../../components/AddPaymentMethodModal';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
@@ -64,6 +64,7 @@ export function OwnerBillingPage() {
         mode: 'cancel'
     });
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
+    const [nextBillSortOrder, setNextBillSortOrder] = useState<'asc' | 'desc'>('asc');
 
     const { refreshEstablishments } = useAuth();
 
@@ -99,6 +100,10 @@ export function OwnerBillingPage() {
             window.removeEventListener('scroll', handleScroll, true);
         };
     }, [activeMenu]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [nextBillSortOrder]);
 
     const handleSecuritySuccess = async () => {
         const targetId = securityModal.targetId;
@@ -263,12 +268,62 @@ export function OwnerBillingPage() {
         return index === 0 ? FIRST_LOCATION_PRICE : ADDITIONAL_LOCATION_PRICE;
     };
 
-    const paginatedEstablishments = billingData?.establishments.slice(
+    const getBillTimestamp = (dateValue?: string) => {
+        if (!dateValue) return null;
+        const timestamp = new Date(dateValue).getTime();
+        return Number.isNaN(timestamp) ? null : timestamp;
+    };
+
+    const sortedEstablishments = [...(billingData?.establishments || [])].sort((a, b) => {
+        const timeA = getBillTimestamp(a.nextBillDate);
+        const timeB = getBillTimestamp(b.nextBillDate);
+
+        if (timeA === null && timeB === null) return a.name.localeCompare(b.name);
+        if (timeA === null) return 1;
+        if (timeB === null) return -1;
+        if (timeA === timeB) return a.name.localeCompare(b.name);
+
+        return nextBillSortOrder === 'asc' ? timeA - timeB : timeB - timeA;
+    });
+
+    const paginatedEstablishments = sortedEstablishments.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
-    ) || [];
+    );
 
-    const totalPages = Math.ceil((billingData?.establishments.length || 0) / itemsPerPage);
+    const totalPages = Math.ceil(sortedEstablishments.length / itemsPerPage);
+    const billingDateLocale = t('common.language') === 'Arabic' ? 'ar-SA' : 'en-US';
+
+    const formatBillingDate = (dateValue?: string | Date | null) => {
+        if (!dateValue) return null;
+        const parsedDate = dateValue instanceof Date ? dateValue : new Date(dateValue);
+        if (Number.isNaN(parsedDate.getTime())) return null;
+        return parsedDate.toLocaleDateString(billingDateLocale, { month: 'short', day: 'numeric', year: 'numeric' });
+    };
+
+    const toHeaderCase = (value: string) => {
+        if (t('common.language') === 'Arabic') return value;
+        return value
+            .toLowerCase()
+            .replace(/\b\w/g, (char) => char.toUpperCase());
+    };
+
+    const tableNextBillDate = (() => {
+        if (!billingData?.establishments.length) return null;
+
+        const validDates = billingData.establishments
+            .map(est => est.nextBillDate)
+            .filter((date): date is string => Boolean(date))
+            .map(date => new Date(date))
+            .filter(date => !Number.isNaN(date.getTime()))
+            .sort((a, b) => a.getTime() - b.getTime());
+
+        if (!validDates.length) return null;
+
+        const startOfToday = new Date();
+        startOfToday.setHours(0, 0, 0, 0);
+        return validDates.find(date => date.getTime() >= startOfToday.getTime()) ?? validDates[0];
+    })();
 
     return (
         <div className="max-w-7xl mx-auto space-y-8 pb-10">
@@ -291,7 +346,7 @@ export function OwnerBillingPage() {
                         <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('owner.billing.monthlyCost')}</p>
                         <div className="flex items-baseline justify-end gap-1">
                             <span className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">${totalMonthlyCost.toFixed(2)}</span>
-                            <span className="text-xs font-bold text-gray-400">{t('common.mo')}</span>
+                            <span className="text-xs font-bold text-gray-400">/{t('common.monthly')}</span>
                         </div>
                     </div>
                     {hasYearlyPlan && (
@@ -301,7 +356,7 @@ export function OwnerBillingPage() {
                                 <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('owner.billing.yearlyCost')}</p>
                                 <div className="flex items-baseline justify-end gap-1">
                                     <span className="text-2xl font-black text-paymint-green tracking-tight">${totalYearlyCost.toFixed(2)}</span>
-                                    <span className="text-xs font-bold text-gray-400">{t('common.yr')}</span>
+                                    <span className="text-xs font-bold text-gray-400">/{t('common.yearly')}</span>
                                 </div>
                             </div>
                         </>
@@ -324,8 +379,8 @@ export function OwnerBillingPage() {
                     { label: t('owner.billing.plans'), value: billingData?.establishments.filter(e => e.subscriptionStatus === 'ACTIVE' || e.subscriptionStatus === 'TRIAL').length || 0, icon: Zap, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
                     {
                         label: t('owner.billing.nextBill'),
-                        value: billingData?.nextInvoiceDate
-                            ? new Date(billingData.nextInvoiceDate).toLocaleDateString(t('common.language') === 'Arabic' ? 'ar-SA' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                        value: tableNextBillDate
+                            ? formatBillingDate(tableNextBillDate)
                             : t('owner.billing.noBill'),
                         icon: Calendar,
                         color: 'text-purple-500',
@@ -469,12 +524,22 @@ export function OwnerBillingPage() {
 
                     <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-visible shadow-sm">
                         {/* Table Header */}
-                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest uppercase">
-                            <div className="col-span-3">{t('owner.billing.service')}</div>
-                            <div className="col-span-2">{t('owner.billing.status')}</div>
-                            <div className="col-span-2">{t('owner.billing.cost')}</div>
-                            <div className="col-span-2">{t('owner.billing.nextBill')}</div>
-                            <div className="col-span-3 text-center">{t('owner.billing.payment')}</div>
+                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-wide">
+                            <div className="col-span-3">{toHeaderCase(t('owner.billing.service'))}</div>
+                            <div className="col-span-2">{toHeaderCase(t('owner.billing.status'))}</div>
+                            <div className="col-span-2">{toHeaderCase(t('owner.billing.cost'))}</div>
+                            <div className="col-span-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setNextBillSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
+                                    className="inline-flex items-center gap-1 text-gray-400 hover:text-paymint-green transition-colors"
+                                    title={`${toHeaderCase(t('owner.billing.nextBill'))}: ${nextBillSortOrder === 'asc' ? toHeaderCase(t('common.next')) : toHeaderCase(t('sort.latest'))}`}
+                                >
+                                    <span>{toHeaderCase(t('owner.billing.nextBill'))}</span>
+                                    <ArrowUpDown size={12} />
+                                </button>
+                            </div>
+                            <div className="col-span-3 text-center">{toHeaderCase(t('owner.billing.payment'))}</div>
                         </div>
 
                         {isLoading ? (
@@ -526,7 +591,7 @@ export function OwnerBillingPage() {
                                                             ${price}
                                                         </p>
                                                         <p className="text-xs text-gray-400">
-                                                            /{isYearly ? (t('common.year') || 'year') : t('common.month')}
+                                                            /{isYearly ? t('common.yearly') : t('common.monthly')}
                                                             {isAdditional && !isYearly && (
                                                                 <span className="text-paymint-green ml-1">(-$3)</span>
                                                             )}
@@ -535,12 +600,11 @@ export function OwnerBillingPage() {
                                                 );
                                             })()}
                                         </div>
-
                                         {/* Next Bill */}
                                         <div className="col-span-2">
-                                            {est.nextBillDate ? (
+                                            {formatBillingDate(est.nextBillDate) ? (
                                                 <p className="text-xs font-bold text-gray-500 dark:text-gray-400">
-                                                    {new Date(est.nextBillDate).toLocaleDateString(t('common.language') === 'Arabic' ? 'ar-SA' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                    {formatBillingDate(est.nextBillDate)}
                                                 </p>
                                             ) : (
                                                 <p className="text-xs font-bold text-gray-400">—</p>

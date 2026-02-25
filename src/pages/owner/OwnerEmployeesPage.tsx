@@ -279,13 +279,14 @@ export function OwnerEmployeesPage() {
             return (
                 <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-xs font-bold tracking-wide w-fit mx-auto">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    {t('common.active')}
+                    {t('common.status.active')}
                 </span>
             );
         }
         return (
-            <span className="px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 border border-gray-200 dark:border-white/10 text-xs font-bold tracking-wide w-fit mx-auto">
-                {t('paymentMethods.messages.notActive')}
+            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-paymint-red/10 text-paymint-red border border-paymint-red/20 text-xs font-bold tracking-wide w-fit mx-auto">
+                <span className="w-1.5 h-1.5 rounded-full bg-paymint-red" />
+                {t('common.status.inactive')}
             </span>
         );
     };
@@ -396,8 +397,8 @@ export function OwnerEmployeesPage() {
                                     onChange={(val) => setStatusFilter(val as string)}
                                     options={[
                                         { label: t('owner.staff.allStatus'), value: 'all' },
-                                        { label: t('common.active'), value: 'active' },
-                                        { label: t('paymentMethods.messages.notActive'), value: 'inactive' }
+                                        { label: t('common.status.active'), value: 'active' },
+                                        { label: t('common.status.inactive'), value: 'inactive' }
                                     ]}
                                 />
                             </div>

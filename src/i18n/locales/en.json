@@ -751,7 +751,10 @@
     "logout": "Logout",
     "mo": "/mo",
     "yr": "/yr",
+    "year": "Year",
     "month": "Month",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
     "more": "More",
     "na": "N/A",
     "name": "Name",
@@ -2205,8 +2208,8 @@
       "title": "Location Details"
     },
     "step2": {
-      "activateButton": "Activate & Pay $20",
-      "activateDesc": "Your card will be charged $20.00 for this new location.",
+      "activateButton": "Activate & Pay",
+      "activateDesc": "Your card will be charged {{amount}} for this new location.",
       "activateTitle": "Activate Subscription",
       "addNew": "Add New Card",
       "afterTrial": "After 7 days",
