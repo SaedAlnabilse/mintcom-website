@@ -468,20 +468,22 @@ export function EmployeeFormModal({
     }
   }, [currentEstablishment, establishments, initialData?.establishmentIds, selectedEstablishmentIds, t]);
 
-  // Refetch roles when selected establishments change
+  // Fetch roles whenever the modal is open and relevant role scope changes
   useEffect(() => {
-    if (isOpen && establishments && establishments.length > 0) {
-      fetchCustomRoles();
-      // Clear role selection when establishments change
-      if (selectedCustomRoleId) {
-        const stillValid = assignableCustomRoles.some(r => r.id === selectedCustomRoleId);
-        if (!stillValid) {
-          setSelectedCustomRoleId('');
-          setLastAppliedTemplate(null);
-        }
-      }
+    if (!isOpen) return;
+    fetchCustomRoles();
+  }, [fetchCustomRoles, isOpen]);
+
+  // Clear role selection when the selected role is no longer assignable
+  useEffect(() => {
+    if (!isOpen || !selectedCustomRoleId) return;
+
+    const stillValid = assignableCustomRoles.some((r) => r.id === selectedCustomRoleId);
+    if (!stillValid) {
+      setSelectedCustomRoleId('');
+      setLastAppliedTemplate(null);
     }
-  }, [selectedEstablishmentIds, assignableCustomRoles, establishments, fetchCustomRoles, isOpen, selectedCustomRoleId]);
+  }, [assignableCustomRoles, isOpen, selectedCustomRoleId]);
 
   useEffect(() => {
     if (activeDropdown === 'ESTABLISHMENT' && establishmentButtonRef.current) {
@@ -497,7 +499,6 @@ export function EmployeeFormModal({
 
   useEffect(() => {
     if (isOpen) {
-      fetchCustomRoles();
       if (initialData) {
         setName(initialData.name || '');
         setUsername(initialData.username || '');
@@ -538,13 +539,15 @@ export function EmployeeFormModal({
         }
 
         // Populate establishments from initialData if available
-        if (initialData.establishmentIds && initialData.establishmentIds.length > 0) {
-          setSelectedEstablishmentIds(initialData.establishmentIds);
-        } else if (establishments && establishments.length === 1) {
-          // If there is only one establishment, pre-select it
-          setSelectedEstablishmentIds([establishments[0].id]);
-        } else {
-          setSelectedEstablishmentIds([]);
+        if (establishments) {
+          if (initialData.establishmentIds && initialData.establishmentIds.length > 0) {
+            setSelectedEstablishmentIds(initialData.establishmentIds);
+          } else if (establishments.length === 1) {
+            // If there is only one establishment, pre-select it
+            setSelectedEstablishmentIds([establishments[0].id]);
+          } else {
+            setSelectedEstablishmentIds([]);
+          }
         }
 
       } else {
@@ -571,10 +574,12 @@ export function EmployeeFormModal({
         setBackofficeAccess(true); // Website is considered back office also
 
         // If creating new and there's only one establishment, select it by default
-        if (establishments && establishments.length === 1) {
-          setSelectedEstablishmentIds([establishments[0].id]);
-        } else {
-          setSelectedEstablishmentIds([]);
+        if (establishments) {
+          if (establishments.length === 1) {
+            setSelectedEstablishmentIds([establishments[0].id]);
+          } else {
+            setSelectedEstablishmentIds([]);
+          }
         }
       }
       setActiveDropdown(null);
@@ -583,7 +588,6 @@ export function EmployeeFormModal({
     isOpen,
     initialData,
     establishments,
-    fetchCustomRoles,
     buildEffectiveBackofficePermissions,
     sanitizeAssignablePosPermissions,
   ]);
