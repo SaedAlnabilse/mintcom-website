@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Search, ChevronDown, ChevronRight, HelpCircle, Package, CreditCard, Wrench, UserCircle, ClipboardList, Users } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FAQ_DATA } from '../../data/faq';
 import type { FAQItem } from '../../data/faq';
@@ -16,6 +16,24 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
   const [search, setSearch] = useState('');
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<FAQItem['category'] | 'all'>('all');
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  // Handle click outside to close
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        // Only close if it's not the launcher button that triggered it
+        const isLauncher = (event.target as Element).closest('[aria-label="Help"]');
+        if (!isLauncher) {
+          onClose();
+        }
+      }
+    }
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen, onClose]);
 
   const CATEGORY_CONFIG: Record<FAQItem['category'], { label: string; icon: React.ReactNode; color: string; activeChip: string }> = useMemo(() => ({
     general: { label: t('support.qa.categories.general'), icon: <HelpCircle size={14} />, color: 'text-blue-500 bg-blue-500/10', activeChip: 'bg-blue-500 text-white' },
@@ -48,6 +66,7 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          ref={modalRef}
           initial={{ opacity: 0, y: 20, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.95 }}

@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Check, ChevronDown, ChevronUp, ClipboardList, ExternalLink, X } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -53,6 +53,24 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
   const location = useLocation();
   const [completedById, setCompletedById] = useState<Record<string, boolean>>({});
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  // Handle click outside to close
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        // Only close if it's not the launcher button that triggered it
+        const isLauncher = (event.target as Element).closest('[aria-label="Tasks"]');
+        if (!isLauncher) {
+          onClose();
+        }
+      }
+    }
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen, onClose]);
 
   const dashboardSlug = useMemo(() => {
     const match = location.pathname.match(/^\/dashboard\/([^/]+)/);
@@ -173,9 +191,26 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
       return;
     }
 
-    const firstPending = tasks.find((task) => !completedById[task.id]);
-    setExpandedId(firstPending ? firstPending.id : tasks[0].id);
+    // Only auto-expand if no task is currently expanded
+    setExpandedId(current => {
+      if (current) return current;
+      const firstPending = tasks.find((task) => !completedById[task.id]);
+      return firstPending ? firstPending.id : tasks[0].id;
+    });
   }, [isOpen, tasks, completedById]);
+
+  // Scroll to expanded task if it exists when the modal opens
+  useEffect(() => {
+    if (isOpen && expandedId) {
+      setTimeout(() => {
+        const el = document.getElementById(`task-item-${expandedId}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }, 350);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]); // Only fire when isOpen changes
 
   const completedCount = useMemo(
     () => tasks.filter((task) => completedById[task.id]).length,
@@ -195,13 +230,21 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
   const progress = tasks.length > 0 ? (completedCount / tasks.length) * 100 : 0;
 
   const toggleComplete = (taskId: string) => {
-    setCompletedById((prev) => ({
-      ...prev,
-      [taskId]: !prev[taskId]
-    }));
+    setCompletedById((prev) => {
+      const isNowComplete = !prev[taskId];
+      // If marking as complete and it's the currently expanded task, collapse it
+      if (isNowComplete && expandedId === taskId) {
+        setExpandedId(null);
+      }
+      return {
+        ...prev,
+        [taskId]: isNowComplete
+      };
+    });
   };
 
   const handleOpenTask = (navigation: TaskNavigation) => {
+    onClose(); // Close the modal so the user can complete the task
     navigate(navigation.path, navigation.state ? { state: navigation.state } : undefined);
   };
 
@@ -209,6 +252,7 @@ export function TasksModal({ isOpen, onClose }: TasksModalProps) {
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          ref={modalRef}
           initial={{ opacity: 0, y: 20, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 20, scale: 0.95 }}

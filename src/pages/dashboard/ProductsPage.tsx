@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +13,7 @@ import {
     Edit2,
     Package,
     Infinity as InfinityIcon,
-
+    Upload,
     ArrowUpDown,
     AlertCircle,
     Search
@@ -22,6 +22,7 @@ import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { ProductFormModal } from '../../components/forms/ProductFormModal';
+import { CsvImportModal, type CsvColumn, type ImportResult } from '../../components/CsvImportModal';
 import { LoadingFallback } from '../../components/LoadingFallback';
 import { QuickInfo } from '../../components/QuickInfo';
 import { SearchInput, Pagination } from '../../components/ui';
@@ -73,6 +74,7 @@ export function ProductsPage() {
     const [sortConfig, setSortConfig] = useState<{ key: keyof Product | 'category'; direction: 'asc' | 'desc' } | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [stockFilter, setStockFilter] = useState<'all' | 'yellow' | 'red' | 'out'>('all');
+    const [showCsvImport, setShowCsvImport] = useState(false);
     const ITEMS_PER_PAGE = 10;
 
     // Click outside handler for category dropdown
@@ -119,9 +121,9 @@ export function ProductsPage() {
 
     const canViewCosts = checkPermission(account, ['view_cost']);
 
-    const fetchData = async () => {
+    const fetchData = async (silent = false) => {
         try {
-            setIsLoading(true);
+            if (!silent) setIsLoading(true);
             const [productsRes, categoriesRes] = await Promise.all([
                 api.get('/api/items'),
                 api.get('/api/categories')
@@ -165,7 +167,7 @@ export function ProductsPage() {
             console.error('Failed to load data', err);
             toast.error(t('products.messages.loadFailed'));
         } finally {
-            setIsLoading(false);
+            if (!silent) setIsLoading(false);
         }
     };
 
@@ -277,6 +279,172 @@ export function ProductsPage() {
         document.body.removeChild(link);
         toast.success(t('products.messages.exportDownloaded'));
     };
+
+    // ─── CSV Import Configuration ──────────────────────────────
+    const productCsvColumns: CsvColumn[] = [
+        { key: 'name', label: 'Name', required: true, type: 'string' },
+        { key: 'price', label: 'Price', required: true, type: 'number' },
+        { key: 'category', label: 'Category', required: true, type: 'string' },
+        { key: 'description', label: 'Description', required: false, type: 'string' },
+        { key: 'cost_price', label: 'Cost Price', required: false, type: 'number' },
+        { key: 'track_stock', label: 'Track Stock', required: false, type: 'string' },
+        { key: 'available_stock', label: 'Available Stock', required: false, type: 'number' },
+    ];
+
+    const productSampleData = [
+        { name: 'Cappuccino', price: '4.50', category: 'Hot Drinks', description: 'Classic Italian coffee', cost_price: '1.20', track_stock: 'false', available_stock: '' },
+        { name: 'Iced Latte', price: '5.00', category: 'Cold Drinks', description: 'Chilled espresso with milk', cost_price: '1.50', track_stock: 'false', available_stock: '' },
+        { name: 'Chocolate Cake', price: '6.00', category: 'Desserts', description: 'Rich chocolate slice', cost_price: '2.00', track_stock: 'true', available_stock: '25' },
+        { name: 'Chicken Burger', price: '8.50', category: 'Food', description: 'Grilled chicken with lettuce', cost_price: '3.50', track_stock: 'true', available_stock: '40' },
+    ];
+
+    const handleProductCsvImport = useCallback(async (rows: Record<string, string>[]): Promise<ImportResult> => {
+        let success = 0;
+        let failed = 0;
+        const errors: string[] = [];
+        const createdCategories: string[] = [];
+
+        // Build a mapping of category name → ID (case-insensitive)
+        // Refresh categories first to get latest state
+        let categoryMap: Map<string, string>;
+        try {
+            const res = await api.get('/api/categories');
+            const cats = Array.isArray(res.data) ? res.data : [];
+            categoryMap = new Map(cats.map((c: Category) => [c.name.toLowerCase().trim(), c.id]));
+        } catch {
+            categoryMap = new Map(categories.map(c => [c.name.toLowerCase().trim(), c.id]));
+        }
+
+        // Build a set of existing product names for duplicate detection
+        // Key: "productName|categoryId" (lowercase) to detect duplicates per category
+        const existingProducts: Set<string> = new Set();
+        try {
+            const prodRes = await api.get('/api/items');
+            const prods = prodRes.data?.items ?? prodRes.data;
+            if (Array.isArray(prods)) {
+                prods.forEach((p: Product) => {
+                    existingProducts.add(`${p.name.toLowerCase().trim()}|${p.categoryId || ''}`);
+                });
+            }
+        } catch {
+            // Fallback to current state
+            products.forEach(p => {
+                existingProducts.add(`${p.name.toLowerCase().trim()}|${p.categoryId || ''}`);
+            });
+        }
+
+        // Process rows one by one
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            const name = row.name?.trim();
+            const priceStr = row.price?.trim();
+            const categoryName = row.category?.trim();
+
+            // Validate required fields
+            if (!name) {
+                errors.push(`Row ${i + 1}: Name is required`);
+                failed++;
+                continue;
+            }
+            if (!priceStr || isNaN(Number(priceStr)) || Number(priceStr) < 0) {
+                errors.push(`Row ${i + 1}: Price must be a valid positive number`);
+                failed++;
+                continue;
+            }
+            if (!categoryName) {
+                errors.push(`Row ${i + 1}: Category is required`);
+                failed++;
+                continue;
+            }
+
+            // Find or create the category
+            let categoryId = categoryMap.get(categoryName.toLowerCase());
+
+            if (!categoryId) {
+                // Auto-create the category
+                try {
+                    const catPayload = { name: categoryName, icon: 'tag', sortOrder: 0 };
+                    const catRes = await api.post('/api/categories', catPayload);
+                    categoryId = catRes.data.id;
+                    categoryMap.set(categoryName.toLowerCase(), categoryId!);
+                    createdCategories.push(categoryName);
+                } catch (catErr: any) {
+                    const catMsg = catErr.response?.data?.message || '';
+                    // If unique constraint, try to fetch the category again (race condition)
+                    if (catMsg.includes('Unique constraint')) {
+                        try {
+                            const refreshRes = await api.get('/api/categories');
+                            const refreshCats = Array.isArray(refreshRes.data) ? refreshRes.data : [];
+                            const found = refreshCats.find((c: Category) =>
+                                c.name.toLowerCase().trim() === categoryName.toLowerCase()
+                            );
+                            if (found) {
+                                categoryId = found.id;
+                                categoryMap.set(categoryName.toLowerCase(), categoryId!);
+                            }
+                        } catch {
+                            // ignore - will fail below
+                        }
+                    }
+
+                    if (!categoryId) {
+                        errors.push(`Row ${i + 1}: Failed to create category "${categoryName}" - ${catMsg || 'Unknown error'}`);
+                        failed++;
+                        continue;
+                    }
+                }
+            }
+
+            // Check for duplicate product (same name + same category)
+            const dupKey = `${name.toLowerCase()}|${categoryId}`;
+            if (existingProducts.has(dupKey)) {
+                errors.push(`Row ${i + 1}: Product "${name}" already exists in "${categoryName}", skipped`);
+                failed++;
+                continue;
+            }
+
+            // Build FormData for product creation (same as ProductFormModal)
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('price', priceStr);
+            formData.append('categoryId', categoryId!);
+            formData.append('trackStock', row.track_stock?.toLowerCase() === 'true' ? 'true' : 'false');
+
+            if (row.description?.trim()) {
+                formData.append('description', row.description.trim());
+            }
+            if (row.cost_price?.trim() && !isNaN(Number(row.cost_price))) {
+                formData.append('costPrice', row.cost_price.trim());
+            }
+            if (row.available_stock?.trim() && !isNaN(Number(row.available_stock))) {
+                formData.append('availableStock', row.available_stock.trim());
+            }
+
+            // All imported products are considered standard items
+            formData.append('type', 'ITEM');
+
+            // isAvailable defaults to true
+            formData.append('isAvailable', 'true');
+
+            try {
+                await api.post('/api/items', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                });
+                existingProducts.add(dupKey); // Track newly created to catch duplicates within same CSV
+                success++;
+            } catch (err: any) {
+                const msg = err.response?.data?.message || err.message || 'Unknown error';
+                errors.push(`Row ${i + 1}: Failed to create "${name}" - ${msg}`);
+                failed++;
+            }
+        }
+
+        if (success > 0) {
+            fetchData(true); // Refresh silently so the CSV modal stays open
+        }
+
+        return { success, failed, errors, createdCategories };
+    }, [categories, products, fetchData]);
 
     const handleSort = (key: keyof Product | 'category') => {
         let direction: 'asc' | 'desc' = 'asc';
@@ -429,6 +597,14 @@ export function ProductsPage() {
                     >
                         <Download size={18} className="group-hover:text-paymint-green transition-colors" />
                         <span className="font-bold text-xs sm:text-sm hidden sm:inline">{t('orders.export')}</span>
+                    </button>
+                    <button
+                        onClick={() => setShowCsvImport(true)}
+                        className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm group"
+                        title="Import from CSV"
+                    >
+                        <Upload size={18} className="group-hover:text-paymint-green transition-colors" />
+                        <span className="font-bold text-xs sm:text-sm hidden sm:inline">Import CSV</span>
                     </button>
                     <button
                         onClick={handleCreateNew}
@@ -844,6 +1020,18 @@ export function ProductsPage() {
                 title={t('products.delete.title')}
                 message={t('products.delete.message')}
                 type={confirmConfig.type}
+            />
+
+            <CsvImportModal
+                isOpen={showCsvImport}
+                onClose={() => setShowCsvImport(false)}
+                title="Import Products"
+                description="Bulk import products from a CSV file. Missing categories will be auto-created."
+                columns={productCsvColumns}
+                sampleData={productSampleData}
+                sampleFileName="products_sample.csv"
+                onImport={handleProductCsvImport}
+                maxRows={500}
             />
         </div >
 

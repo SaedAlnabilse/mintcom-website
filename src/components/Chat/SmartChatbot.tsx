@@ -159,6 +159,24 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const chatRef = useRef<HTMLDivElement>(null);
+
+  // Handle click outside to close
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (chatRef.current && !chatRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    }
+    
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, onClose]);
 
   // Get current location slug for navigation
   const currentLocationSlug = useMemo(() => {
@@ -313,6 +331,7 @@ export function SmartChatbot({ isOpen, onClose }: SmartChatbotProps) {
     <AnimatePresence>
       {isOpen && (
           <motion.div
+            ref={chatRef}
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}

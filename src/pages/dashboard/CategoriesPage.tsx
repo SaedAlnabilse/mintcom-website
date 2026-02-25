@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useNavigate, useLocation, useOutletContext, useParams } from 'react-router-dom';
@@ -17,12 +17,14 @@ import {
   Tag,
   AlertTriangle,
   Grid,
-  List
+  List,
+  Upload
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { CategoryFormModal, ICON_MAP } from '../../components/forms/CategoryFormModal';
+import { CsvImportModal, type CsvColumn, type ImportResult } from '../../components/CsvImportModal';
 import { SearchInput, Pagination } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 
@@ -66,6 +68,7 @@ export function CategoriesPage() {
   const [deleteBlockedCategory, setDeleteBlockedCategory] = useState<Category | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [showCsvImport, setShowCsvImport] = useState(false);
   const ITEMS_PER_PAGE = 12;
 
   const [confirmConfig, setConfirmConfig] = useState<{
@@ -94,9 +97,9 @@ export function CategoriesPage() {
     fetchData();
   }, []);
 
-  const fetchData = async () => {
+  const fetchData = async (silent = false) => {
     try {
-      setIsLoading(true);
+      if (!silent) setIsLoading(true);
       const [catsRes, prodsRes] = await Promise.all([
         api.get('/api/categories'),
         api.get('/api/items')
@@ -107,7 +110,7 @@ export function CategoriesPage() {
     } catch {
       toast.error(t('categories.messages.loadFailed'));
     } finally {
-      setIsLoading(false);
+      if (!silent) setIsLoading(false);
     }
   };
 
@@ -116,6 +119,114 @@ export function CategoriesPage() {
     setFormError(null);
     setShowModal(true);
   };
+
+  // ─── CSV Import Configuration ──────────────────────────────
+  const categoryCsvColumns: CsvColumn[] = [
+    { key: 'name', label: 'Name', required: true, type: 'string' },
+  ];
+
+  const categorySampleData = [
+    { name: 'Hot Drinks' },
+    { name: 'Cold Drinks' },
+    { name: 'Food' },
+    { name: 'Desserts' },
+    { name: 'Sandwiches' },
+  ];
+
+  // Auto-detect icon based on category name keywords
+  const detectIconFromName = (name: string): string => {
+    const lower = name.toLowerCase();
+    const keywords: [string[], string][] = [
+      [['coffee', 'espresso', 'latte', 'cappuccino', 'mocha', 'americano', 'hot drink', 'tea'], 'coffee'],
+      [['cold drink', 'juice', 'smoothie', 'soda', 'lemonade', 'milkshake', 'shake', 'drink', 'beverage'], 'cup'],
+      [['cocktail', 'wine', 'beer', 'alcohol', 'spirit', 'bar', 'mojito'], 'glass-cocktail'],
+      [['cake', 'pastry', 'muffin', 'cupcake', 'tart', 'pie'], 'cake'],
+      [['dessert', 'sweet', 'chocolate', 'candy', 'sugar'], 'ice-cream'],
+      [['bread', 'croissant', 'baguette', 'bakery', 'toast', 'waffle', 'pancake'], 'bread-slice'],
+      [['cookie', 'biscuit', 'brownie', 'donut', 'doughnut'], 'cookie'],
+      [['pizza'], 'pizza'],
+      [['burger', 'sandwich', 'wrap', 'sub', 'panini', 'hotdog'], 'hamburger'],
+      [['chicken', 'wing', 'nugget', 'poultry', 'turkey'], 'food-drumstick'],
+      [['fish', 'seafood', 'shrimp', 'sushi', 'salmon', 'tuna'], 'fish'],
+      [['fruit', 'apple', 'banana', 'berry', 'melon', 'mango', 'orange'], 'fruit-watermelon'],
+      [['salad', 'vegetable', 'veggie', 'vegan', 'carrot', 'healthy'], 'carrot'],
+      [['food', 'meal', 'lunch', 'dinner', 'breakfast', 'main', 'entree', 'dish', 'plate', 'kitchen', 'grill', 'bbq', 'meat', 'steak', 'pasta', 'rice', 'soup', 'appetizer', 'starter'], 'food'],
+      [['combo', 'set', 'bundle', 'special', 'offer', 'deal', 'promo', 'value'], 'star'],
+      [['gift', 'present', 'voucher', 'card'], 'gift'],
+      [['shop', 'merchandise', 'merch', 'retail', 'product', 'accessory', 'item'], 'shopping'],
+      [['favorite', 'popular', 'best', 'top', 'recommended', 'featured'], 'heart'],
+    ];
+
+    for (const [words, icon] of keywords) {
+      if (words.some(w => lower.includes(w))) {
+        return icon;
+      }
+    }
+    return 'tag'; // Default fallback
+  };
+
+  const handleCsvImport = useCallback(async (rows: Record<string, string>[]): Promise<ImportResult> => {
+    let success = 0;
+    let failed = 0;
+    const errors: string[] = [];
+
+    // Fetch existing categories to get duplicate check + max sort order
+    let existingNames: Set<string>;
+    let nextSortOrder: number;
+    try {
+      const res = await api.get('/api/categories');
+      const existing = Array.isArray(res.data) ? res.data : [];
+      existingNames = new Set(existing.map((c: Category) => c.name.toLowerCase().trim()));
+      const maxSort = existing.reduce((max: number, c: Category) => Math.max(max, c.sortOrder || 0), 0);
+      nextSortOrder = maxSort + 1;
+    } catch {
+      existingNames = new Set(categories.map(c => c.name.toLowerCase().trim()));
+      const maxSort = categories.reduce((max, c) => Math.max(max, c.sortOrder || 0), 0);
+      nextSortOrder = maxSort + 1;
+    }
+
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const name = row.name?.trim();
+
+      if (!name) {
+        errors.push(`Row ${i + 1}: Name is required`);
+        failed++;
+        continue;
+      }
+
+      // Check for duplicate
+      if (existingNames.has(name.toLowerCase())) {
+        errors.push(`Row ${i + 1}: Category "${name}" already exists, skipped`);
+        failed++;
+        continue;
+      }
+
+      // Auto-detect icon from the category name
+      const icon = detectIconFromName(name);
+
+      try {
+        await api.post('/api/categories', { name, icon, sortOrder: nextSortOrder });
+        existingNames.add(name.toLowerCase());
+        nextSortOrder++;
+        success++;
+      } catch (err: any) {
+        const msg = err.response?.data?.message || err.message || 'Unknown error';
+        if (msg.includes('Unique constraint')) {
+          errors.push(`Row ${i + 1}: Category "${name}" already exists`);
+        } else {
+          errors.push(`Row ${i + 1}: Failed to create "${name}" - ${msg}`);
+        }
+        failed++;
+      }
+    }
+
+    if (success > 0) {
+      fetchData(true); // Refresh silently so the CSV modal stays open
+    }
+
+    return { success, failed, errors };
+  }, [categories]);
 
   const filteredCategories = useMemo(() => {
     return (Array.isArray(categories) ? categories : []).filter(cat =>
@@ -254,7 +365,15 @@ export function CategoriesPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <button
+            onClick={() => setShowCsvImport(true)}
+            className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm group"
+            title="Import from CSV"
+          >
+            <Upload size={18} className="group-hover:text-paymint-green transition-colors" />
+            <span className="font-bold text-xs sm:text-sm hidden sm:inline">Import CSV</span>
+          </button>
           <button
             onClick={openCreateModal}
             className="flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-xs sm:text-sm hover:bg-emerald-400 transition-all shadow-sm"
@@ -578,6 +697,18 @@ export function CategoriesPage() {
         title={t('categories.delete.title')}
         message={t('categories.delete.message')}
         type={confirmConfig.type}
+      />
+
+      <CsvImportModal
+        isOpen={showCsvImport}
+        onClose={() => setShowCsvImport(false)}
+        title="Import Categories"
+        description="Bulk import categories from a CSV file"
+        columns={categoryCsvColumns}
+        sampleData={categorySampleData}
+        sampleFileName="categories_sample.csv"
+        onImport={handleCsvImport}
+        maxRows={200}
       />
 
       {/* Delete Blocked Modal */}

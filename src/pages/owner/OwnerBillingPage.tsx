@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Plus, CreditCard, DollarSign, Trash2, Star, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye, Sparkles } from 'lucide-react';
+import { Plus, CreditCard, DollarSign, Trash2, Star, AlertCircle, Calendar, CheckCircle2, XCircle, Zap, MoreVertical, Eye } from 'lucide-react';
 import api from '../../config/api';
 import { AddPaymentMethodModal } from '../../components/AddPaymentMethodModal';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
@@ -32,6 +32,7 @@ interface EstablishmentBilling {
     monthlyPrice: number;
     billingCycle?: 'monthly' | 'yearly';
     yearlyPrice?: number;
+    nextBillDate?: string;
     paymentCard: { id: string; brand: string; last4: string } | null;
 }
 
@@ -239,10 +240,18 @@ export function OwnerBillingPage() {
         est => est.subscriptionStatus?.toUpperCase() !== 'CANCELED'
     ) || [];
 
-    // Compute correct total: first location at $20, rest at $17
-    const totalMonthlyCost = activeEstablishments.length > 0
-        ? FIRST_LOCATION_PRICE + Math.max(0, activeEstablishments.length - 1) * ADDITIONAL_LOCATION_PRICE
-        : 0;
+    let totalMonthlyCost = 0;
+    let totalYearlyCost = 0;
+    let hasYearlyPlan = false;
+
+    activeEstablishments.forEach((est, index) => {
+        if (est.billingCycle === 'yearly') {
+            hasYearlyPlan = true;
+            totalYearlyCost += est.yearlyPrice || (index === 0 ? 210 : 180);
+        } else {
+            totalMonthlyCost += index === 0 ? FIRST_LOCATION_PRICE : ADDITIONAL_LOCATION_PRICE;
+        }
+    });
 
     // Helper to get correct price for an establishment by its index
     const getEstablishmentPrice = (est: EstablishmentBilling, index: number) => {
@@ -282,9 +291,21 @@ export function OwnerBillingPage() {
                         <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('owner.billing.monthlyCost')}</p>
                         <div className="flex items-baseline justify-end gap-1">
                             <span className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">${totalMonthlyCost.toFixed(2)}</span>
-                            <span className="text-xs font-bold text-gray-400">/{t('common.mo')}</span>
+                            <span className="text-xs font-bold text-gray-400">{t('common.mo')}</span>
                         </div>
                     </div>
+                    {hasYearlyPlan && (
+                        <>
+                            <div className="w-px h-10 bg-gray-200 dark:bg-white/10 hidden sm:block" />
+                            <div className="text-right hidden sm:block">
+                                <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('owner.billing.yearlyCost')}</p>
+                                <div className="flex items-baseline justify-end gap-1">
+                                    <span className="text-2xl font-black text-paymint-green tracking-tight">${totalYearlyCost.toFixed(2)}</span>
+                                    <span className="text-xs font-bold text-gray-400">{t('common.yr')}</span>
+                                </div>
+                            </div>
+                        </>
+                    )}
                     <div className="w-px h-10 bg-gray-200 dark:bg-white/10 hidden sm:block" />
                     <button
                         onClick={() => setIsAddCardModalOpen(true)}
@@ -449,9 +470,10 @@ export function OwnerBillingPage() {
                     <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-visible shadow-sm">
                         {/* Table Header */}
                         <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest uppercase">
-                            <div className="col-span-4">{t('owner.billing.service')}</div>
-                            <div className="col-span-3">{t('owner.billing.status')}</div>
+                            <div className="col-span-3">{t('owner.billing.service')}</div>
+                            <div className="col-span-2">{t('owner.billing.status')}</div>
                             <div className="col-span-2">{t('owner.billing.cost')}</div>
+                            <div className="col-span-2">{t('owner.billing.nextBill')}</div>
                             <div className="col-span-3 text-center">{t('owner.billing.payment')}</div>
                         </div>
 
@@ -473,26 +495,20 @@ export function OwnerBillingPage() {
                                         className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors items-center group relative"
                                     >
                                         {/* Service */}
-                                        <div className="col-span-4 flex items-center gap-4">
+                                        <div className="col-span-3 flex items-center gap-4">
                                             <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-sm font-bold text-gray-400 group-hover:text-paymint-green transition-colors">
                                                 {est.name.charAt(0)}
                                             </div>
                                             <div>
                                                 <h3 className="text-sm font-bold text-gray-900 dark:text-white">{est.name}</h3>
-                                                <div className="flex items-center gap-2">
-                                                    <p className="text-xs font-bold text-gray-500">{t('owner.billing.standardPlan')}</p>
-                                                    {est.billingCycle === 'yearly' && (
-                                                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-paymint-green/10 text-paymint-green text-[9px] font-black rounded tracking-wider border border-paymint-green/20">
-                                                            <Sparkles size={8} />
-                                                            YEARLY
-                                                        </span>
-                                                    )}
-                                                </div>
+                                                <p className="text-xs font-bold text-gray-500">
+                                                    {est.billingCycle === 'yearly' ? t('owner.billing.yearlyPlan') : t('owner.billing.monthlyPlan')}
+                                                </p>
                                             </div>
                                         </div>
 
                                         {/* Status */}
-                                        <div className="col-span-3">
+                                        <div className="col-span-2">
                                             {getStatusBadge(est)}
                                         </div>
 
@@ -518,6 +534,17 @@ export function OwnerBillingPage() {
                                                     </>
                                                 );
                                             })()}
+                                        </div>
+
+                                        {/* Next Bill */}
+                                        <div className="col-span-2">
+                                            {est.nextBillDate ? (
+                                                <p className="text-xs font-bold text-gray-500 dark:text-gray-400">
+                                                    {new Date(est.nextBillDate).toLocaleDateString(t('common.language') === 'Arabic' ? 'ar-SA' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                </p>
+                                            ) : (
+                                                <p className="text-xs font-bold text-gray-400">—</p>
+                                            )}
                                         </div>
 
                                         {/* Payment & Actions */}

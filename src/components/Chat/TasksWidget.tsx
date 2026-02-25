@@ -73,6 +73,36 @@ export function TasksWidget() {
     const [isDismissed, setIsDismissed] = useState(readDismissedState);
 
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const widgetRef = useRef<HTMLDivElement>(null);
+
+    // Handle click outside to close
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            // Also ignore clicks on the DualLauncher trigger (if any logic needed, but standard is checking ref)
+            // We assume the open button click stops propagation or we just check if it's within widgetRef
+            if (widgetRef.current && !widgetRef.current.contains(event.target as Node)) {
+                // Ignore clicks on the floating action button to prevent immediate close/reopen cycle
+                const fab = document.getElementById('tasks-widget-fab');
+                if (fab && fab.contains(event.target as Node)) {
+                    return;
+                }
+                
+                // For the launcher button specifically, check if it's not the launcher
+                const isLauncher = (event.target as Element).closest('[aria-label="Tasks"]');
+                if (!isLauncher) {
+                    setIsPanelOpen(false);
+                }
+            }
+        }
+
+        if (isPanelOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isPanelOpen]);
 
     /* ---- only show on dashboard routes ---- */
     const isDashboardRoute = /^\/dashboard\/[^/]+/.test(location.pathname);
@@ -224,13 +254,18 @@ export function TasksWidget() {
         }
     }, [allCompleted, isPanelOpen]);
 
-    /* ---- when panel opens, expand first pending, then collapse (no auto expand) ---- */
+    /* ---- when panel opens, we intentionally leave the currently expanded task alone ---- */
     useEffect(() => {
-        if (!isPanelOpen) {
-            setExpandedId(null);
-            return;
+        // Scroll to expanded task if it exists when the panel opens
+        if (isPanelOpen && expandedId) {
+            setTimeout(() => {
+                const el = document.getElementById(`widget-task-item-${expandedId}`);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }, 350);
         }
-        // Do NOT auto-expand any task — panel opens collapsed
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isPanelOpen]);
 
     /* ---- handlers ---- */
@@ -249,8 +284,9 @@ export function TasksWidget() {
     };
 
     const handleOpenTask = (navigation: TaskNavigation) => {
-        // Close the expanded task so user can focus
-        setExpandedId(null);
+        // We leave the task expanded (don't setExpandedId(null)) so when they reopen the panel, they see exactly where they left off.
+        // Close the panel so the user can see the page to complete the task
+        setIsPanelOpen(false);
         navigate(navigation.path, navigation.state ? { state: navigation.state } : undefined);
     };
 
@@ -345,6 +381,7 @@ export function TasksWidget() {
             <AnimatePresence>
                 {isPanelOpen && (
                     <motion.div
+                        ref={widgetRef}
                         id="tasks-widget-panel"
                         key="tasks-panel"
                         initial={{ opacity: 0, y: 30, scale: 0.92 }}

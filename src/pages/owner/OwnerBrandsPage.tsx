@@ -12,7 +12,7 @@ import {
     ChevronRight,
     ChevronLeft,
     Shield,
-    UserCheck,
+    Check,
     Plus,
     Grid3X3,
     List,
@@ -894,7 +894,7 @@ export function OwnerBrandsPage() {
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="relative w-full max-w-4xl bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-white/10"
+                            className="relative w-full max-w-2xl bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-white/10"
                         >
                             {/* Modal Content */}
                             <div className="flex flex-col h-[85vh] sm:h-auto max-h-[90vh]">
@@ -933,7 +933,7 @@ export function OwnerBrandsPage() {
                                         <div className="space-y-6 max-w-lg mx-auto py-4">
                                             <div className="space-y-4">
                                                 <div>
-                                                    <label className="block text-xs font-black text-gray-400 tracking-widest uppercase mb-2">{t('owner.brands.brandName')}</label>
+                                                    <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">{t('owner.brands.brandName')}</label>
                                                     <div className="relative">
                                                         <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                                                         <input
@@ -942,11 +942,11 @@ export function OwnerBrandsPage() {
                                                             placeholder={t('owner.brands.brandNamePlaceholder')}
                                                         />
                                                     </div>
-                                                    {errors.name && <p className="text-red-500 text-xs mt-1 font-bold">{errors.name.message}</p>}
+                                                    {errors.name && <p className="text-[#ef4444] text-xs mt-1 font-bold">{errors.name.message}</p>}
                                                 </div>
 
                                                 <div>
-                                                    <label className="block text-xs font-black text-gray-400 tracking-widest uppercase mb-2">{t('owner.brands.adminLoginId')}</label>
+                                                    <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">{t('owner.brands.adminLoginId')}</label>
                                                     <div className="relative">
                                                         <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                                                         <input
@@ -956,7 +956,7 @@ export function OwnerBrandsPage() {
                                                         />
                                                     </div>
                                                     <p className="text-xs font-bold text-gray-500 mt-1">{t('owner.brands.adminLoginIdHint')}</p>
-                                                    {errors.establishmentLoginId && <p className="text-red-500 text-xs mt-1 font-bold">{errors.establishmentLoginId.message}</p>}
+                                                    {errors.establishmentLoginId && <p className="text-[#ef4444] text-xs mt-1 font-bold">{errors.establishmentLoginId.message}</p>}
                                                 </div>
 
                                                 <div>
@@ -970,7 +970,7 @@ export function OwnerBrandsPage() {
                                                             placeholder="••••••••"
                                                         />
                                                     </div>
-                                                    {errors.establishmentPassword && <p className="text-red-500 text-xs mt-1 font-bold">{errors.establishmentPassword.message}</p>}
+                                                    {errors.establishmentPassword && <p className="text-[#ef4444] text-xs mt-1 font-bold">{errors.establishmentPassword.message}</p>}
                                                 </div>
                                             </div>
                                         </div>
@@ -1007,7 +1007,7 @@ export function OwnerBrandsPage() {
                                                                 <p className="text-xs font-bold text-gray-500 truncate">{est.type || t('owner.brands.location')}</p>
                                                             </div>
                                                             <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-paymint-green border-paymint-green' : 'border-gray-300 dark:border-white/10'}`}>
-                                                                {isSelected && <UserCheck size={14} className="text-black" />}
+                                                                {isSelected && <Check size={14} className="text-black" strokeWidth={3} />}
                                                             </div>
                                                         </button>
                                                     );
@@ -1039,47 +1039,55 @@ export function OwnerBrandsPage() {
                                                                     <Store size={14} />
                                                                     {group.establishmentName}
                                                                 </h4>
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={() => {
-                                                                        const allSelected = group.employees.every(e => selectedEmployees.includes(e.employeeId));
-                                                                        selectAllFromEstablishment(group, !allSelected);
-                                                                    }}
-                                                                    className="text-xs font-bold text-paymint-green hover:underline"
-                                                                >
-                                                                    {group.employees.every(e => selectedEmployees.includes(e.employeeId)) ? t('owner.brands.wizard.deselectAll') : t('owner.brands.wizard.selectAll')}
-                                                                </button>
+                                                                {group.employees.length > 0 && (
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => {
+                                                                            const allSelected = group.employees.every(e => selectedEmployees.includes(e.employeeId));
+                                                                            selectAllFromEstablishment(group, !allSelected);
+                                                                        }}
+                                                                        className="text-xs font-bold text-paymint-green hover:underline"
+                                                                    >
+                                                                        {group.employees.every(e => selectedEmployees.includes(e.employeeId)) ? t('owner.brands.wizard.deselectAll') : t('owner.brands.wizard.selectAll')}
+                                                                    </button>
+                                                                )}
                                                             </div>
 
-                                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                                                                {group.employees.map((emp) => {
-                                                                    const isSelected = selectedEmployees.includes(emp.employeeId);
-                                                                    return (
-                                                                        <button
-                                                                            key={`${group.establishmentId}-${emp.employeeId}`}
-                                                                            type="button"
-                                                                            onClick={() => toggleEmployee(emp.employeeId)}
-                                                                            className={`flex items-center gap-3 p-3 rounded-xl border transition-all text-left group ${isSelected
-                                                                                ? 'border-paymint-green bg-paymint-green/5'
-                                                                                : 'border-gray-100 dark:border-white/5 hover:border-paymint-green/30'
-                                                                                }`}
-                                                                        >
-                                                                            <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold transition-all ${isSelected ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-500'}`}>
-                                                                                {emp.firstName[0]}{emp.lastName[0]}
-                                                                            </div>
-                                                                            <div className="flex-1 min-w-0">
-                                                                                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{emp.firstName} {emp.lastName}</p>
-                                                                                <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold ${getRoleBadgeColor(emp.role)}`}>
-                                                                                    {emp.role}
-                                                                                </span>
-                                                                            </div>
-                                                                            <div className={`w-5 h-5 rounded-md border transition-all flex items-center justify-center ${isSelected ? 'bg-paymint-green border-paymint-green' : 'border-gray-200 dark:border-white/10'}`}>
-                                                                                {isSelected && <UserCheck size={12} className="text-black" />}
-                                                                            </div>
-                                                                        </button>
-                                                                    );
-                                                                })}
-                                                            </div>
+                                                            {group.employees.length === 0 ? (
+                                                                <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 text-center">
+                                                                    <p className="text-sm font-bold text-gray-500">{t('owner.brands.wizard.noEmployees', 'This location does not have any employees.')}</p>
+                                                                </div>
+                                                            ) : (
+                                                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                                                    {group.employees.map((emp) => {
+                                                                        const isSelected = selectedEmployees.includes(emp.employeeId);
+                                                                        return (
+                                                                            <button
+                                                                                key={`${group.establishmentId}-${emp.employeeId}`}
+                                                                                type="button"
+                                                                                onClick={() => toggleEmployee(emp.employeeId)}
+                                                                                className={`flex items-center gap-3 p-3 rounded-xl border transition-all text-left group ${isSelected
+                                                                                    ? 'border-paymint-green bg-paymint-green/5'
+                                                                                    : 'border-gray-100 dark:border-white/5 hover:border-paymint-green/30'
+                                                                                    }`}
+                                                                            >
+                                                                                <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold transition-all ${isSelected ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-500'}`}>
+                                                                                    {emp.firstName[0]}{emp.lastName[0]}
+                                                                                </div>
+                                                                                <div className="flex-1 min-w-0">
+                                                                                    <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{emp.firstName} {emp.lastName}</p>
+                                                                                    <span className={`text-[10px] px-2 py-0.5 rounded-full border font-bold ${getRoleBadgeColor(emp.role)}`}>
+                                                                                        {emp.role}
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div className={`w-5 h-5 rounded-md border transition-all flex items-center justify-center ${isSelected ? 'bg-paymint-green border-paymint-green' : 'border-gray-200 dark:border-white/10'}`}>
+                                                                                    {isSelected && <Check size={12} className="text-black" strokeWidth={3} />}
+                                                                                </div>
+                                                                            </button>
+                                                                        );
+                                                                    })}
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     ))}
                                                 </div>
@@ -1090,25 +1098,26 @@ export function OwnerBrandsPage() {
 
                                 {/* Footer */}
                                 <div className="p-6 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.01]">
-                                    {error && (
-                                        <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold text-center">
-                                            {error}
-                                        </div>
-                                    )}
-                                    <div className="flex items-center justify-between gap-4">
-                                        <button
-                                            type="button"
-                                            onClick={wizardStep === 1 ? handleCloseModal : handlePrevStep}
-                                            className="px-6 py-3 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
-                                        >
-                                            {wizardStep === 1 ? t('common.cancel') : t('common.back')}
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={wizardStep === 3 ? handleSubmit(onCreateBrand) : handleNextStep}
-                                            disabled={isCreating}
-                                            className="flex-1 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                                        >
+                                    <div className="max-w-lg mx-auto">
+                                        {error && (
+                                            <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold text-center">
+                                                {error}
+                                            </div>
+                                        )}
+                                        <div className="flex items-center justify-between gap-4">
+                                            <button
+                                                type="button"
+                                                onClick={wizardStep === 1 ? handleCloseModal : handlePrevStep}
+                                                className="px-6 py-3 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                                            >
+                                                {wizardStep === 1 ? t('common.cancel') : t('common.back')}
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={wizardStep === 3 ? handleSubmit(onCreateBrand) : handleNextStep}
+                                                disabled={isCreating}
+                                                className="flex-1 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                            >
                                             {isCreating ? (
                                                 <>
                                                     <Loader2 size={16} className="animate-spin" />
@@ -1121,6 +1130,7 @@ export function OwnerBrandsPage() {
                                                 </>
                                             )}
                                         </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
