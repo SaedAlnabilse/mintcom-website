@@ -1,13 +1,13 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Send, Mail, Phone, X, CheckCircle2, Loader2 } from 'lucide-react';
+import { Send, Mail, Phone, CheckCircle2, Loader2 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
 
 export const Contact = () => {
   const { t } = useTranslation();
-  const [activeModal, setActiveModal] = useState<'privacy' | 'terms' | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -170,7 +170,7 @@ export const Contact = () => {
                         className="mt-1.5 w-4 h-4 rounded border-gray-300 dark:border-white/20 text-paymint-green focus:ring-paymint-green cursor-pointer"
                       />
                       <label htmlFor="terms" className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                        {t('landing.contact.termsAgree')} <button type="button" onClick={() => setActiveModal('privacy')} className="text-paymint-green font-bold hover:underline">{t('landing.contact.privacyPolicy')}</button> {t('common.and')} <button type="button" onClick={() => setActiveModal('terms')} className="text-paymint-green font-bold hover:underline">{t('landing.contact.termsOfService')}</button>.
+                        {t('landing.contact.termsAgree')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-bold hover:underline">{t('landing.contact.privacyPolicy')}</Link> {t('common.and')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-bold hover:underline">{t('landing.contact.termsOfService')}</Link>.
                       </label>
                     </div>
 
@@ -189,51 +189,6 @@ export const Contact = () => {
           </div>
         </div>
       </div>
-
-      {/* Policy Modals */}
-      <AnimatePresence>
-        {activeModal && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setActiveModal(null)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-[2.5rem] max-w-2xl w-full max-h-[80vh] overflow-hidden shadow-2xl flex flex-col"
-            >
-              <div className="p-8 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
-                <h3 className="text-2xl font-black text-gray-900 dark:text-white capitalize">
-                  {activeModal === 'privacy' ? t('landing.contact.privacy') : t('landing.contact.terms')} {t('landing.contact.policy')}
-                </h3>
-                <button
-                  onClick={() => setActiveModal(null)}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors text-gray-400"
-                >
-                  <X size={24} />
-                </button>
-              </div>
-              <div className="p-8 overflow-y-auto custom-scrollbar text-gray-600 dark:text-gray-400 space-y-6 font-medium leading-relaxed">
-                <p>{activeModal === 'privacy' ? t('legal.privacy.intro') : t('legal.terms.intro')}</p>
-                <p>{activeModal === 'privacy' ? t('legal.privacy.sections.s1_desc') : t('legal.terms.use.u1')}</p>
-              </div>
-              <div className="p-8 border-t border-gray-100 dark:border-white/10 flex justify-end">
-                <button
-                  onClick={() => setActiveModal(null)}
-                  className="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl transition-all"
-                >
-                  {t('common.gotIt')}
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </section>
   );
 };

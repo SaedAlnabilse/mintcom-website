@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Check, Loader2, X, ShieldCheck } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Check, Loader2, ShieldCheck, Newspaper } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { GoogleAuthButton, AuthDivider, GOOGLE_CLIENT_ID, type GoogleAuthButtonHandle } from '../components/GoogleAuthButton';
@@ -43,11 +43,12 @@ export function SignUpPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState('');
-  const [activeModal, setActiveModal] = useState<'privacy' | 'terms' | null>(null);
   const [showGoogleTermsModal, setShowGoogleTermsModal] = useState(false);
   const [modalAgreed, setModalAgreed] = useState(false);
+  const [subscribeToNews, setSubscribeToNews] = useState(false);
+  const [modalSubscribeToNews, setModalSubscribeToNews] = useState(false);
   const googleAuthRef = useRef<GoogleAuthButtonHandle>(null);
-  
+
   const navigate = useNavigate();
   const { register: registerAccount, loginWithGoogle } = useAuth();
 
@@ -76,6 +77,7 @@ export function SignUpPage() {
     if (!agreed) {
       e.stopPropagation();
       setModalAgreed(false);
+      setModalSubscribeToNews(false);
       setShowGoogleTermsModal(true);
     }
   };
@@ -83,6 +85,7 @@ export function SignUpPage() {
   const handleModalContinue = () => {
     if (modalAgreed) {
       setValue('agreeToTerms', true);
+      setSubscribeToNews(modalSubscribeToNews);
       setShowGoogleTermsModal(false);
       // Small delay to ensure state update and then trigger Google
       setTimeout(() => {
@@ -93,14 +96,14 @@ export function SignUpPage() {
 
   const handleGoogleSuccess = async (credential: string) => {
     if (!agreed) {
-      setError('agreeToTerms', { 
-        type: 'manual', 
-        message: t('auth.validation.termsRequired') 
+      setError('agreeToTerms', {
+        type: 'manual',
+        message: t('auth.validation.termsRequired')
       });
       return;
     }
     try {
-      const result = await loginWithGoogle(credential);
+      const result = await loginWithGoogle(credential, subscribeToNews);
 
       if (result.success) {
         toast.success(result.message || t('auth.signup.success'));
@@ -129,6 +132,7 @@ export function SignUpPage() {
         password: data.password,
         firstName: data.firstName,
         lastName: data.lastName,
+        subscribeToNews,
       });
 
       if (result.success) {
@@ -375,12 +379,25 @@ export function SignUpPage() {
                     className={`mt-1 w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors ${errors.agreeToTerms ? 'border-accent ring-1 ring-accent' : ''}`}
                   />
                   <label htmlFor="agreeToTerms" className="text-sm text-gray-600 dark:text-gray-400 leading-tight cursor-pointer">
-                    {t('landing.contact.termsAgree')} <button type="button" onClick={() => setActiveModal('privacy')} className="text-paymint-green font-bold hover:underline inline-block">{t('landing.contact.privacyPolicy')}</button> {t('common.and')} <button type="button" onClick={() => setActiveModal('terms')} className="text-paymint-green font-bold hover:underline inline-block">{t('landing.contact.termsOfService')}</button>.
+                    {t('landing.contact.termsAgree')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-bold hover:underline inline-block">{t('landing.contact.privacyPolicy')}</Link> {t('common.and')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-bold hover:underline inline-block">{t('landing.contact.termsOfService')}</Link>.
                   </label>
                 </div>
                 {errors.agreeToTerms && (
                   <p className="text-accent text-xs font-bold -mt-1">{errors.agreeToTerms.message}</p>
                 )}
+
+                <div className="flex items-start gap-3 py-1">
+                  <input
+                    id="subscribeToNews"
+                    type="checkbox"
+                    checked={subscribeToNews}
+                    onChange={(e) => setSubscribeToNews(e.target.checked)}
+                    className="mt-1 w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors"
+                  />
+                  <label htmlFor="subscribeToNews" className="text-sm text-gray-600 dark:text-gray-400 leading-tight cursor-pointer">
+                    {t('auth.signup.subscribeToNews')}
+                  </label>
+                </div>
               </div>
 
               <button
@@ -420,7 +437,7 @@ export function SignUpPage() {
 
             <div className="mt-8 pt-6 border-t border-gray-100 dark:border-white/5">
               <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 text-center leading-relaxed uppercase tracking-wider">
-                {t('auth.signup.disclaimerPrefix')} <button type="button" onClick={() => setActiveModal('terms')} className="text-paymint-green hover:underline">{t('footer.termsOfService')}</button> {t('common.and')} <button type="button" onClick={() => setActiveModal('privacy')} className="text-paymint-green hover:underline">{t('footer.privacyPolicy')}</button>.
+                {t('auth.signup.disclaimerPrefix')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-paymint-green hover:underline">{t('footer.termsOfService')}</Link> {t('common.and')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-paymint-green hover:underline">{t('footer.privacyPolicy')}</Link>.
               </p>
             </div>
           </div>
@@ -452,51 +469,6 @@ export function SignUpPage() {
           </div>
         </div>
       </div>
-
-      {/* Policy Modals */}
-      <AnimatePresence>
-        {activeModal && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setActiveModal(null)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-[2.5rem] max-w-2xl w-full max-h-[80vh] overflow-hidden shadow-2xl flex flex-col"
-            >
-              <div className="p-8 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
-                <h3 className="text-2xl font-black text-gray-900 dark:text-white capitalize">
-                  {activeModal === 'privacy' ? t('landing.contact.privacy') : t('landing.contact.terms')} {t('landing.contact.policy')}
-                </h3>
-                <button
-                  onClick={() => setActiveModal(null)}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors text-gray-400"
-                >
-                  <X size={24} />
-                </button>
-              </div>
-              <div className="p-8 overflow-y-auto custom-scrollbar text-gray-600 dark:text-gray-400 space-y-6 font-medium leading-relaxed">
-                <p>{activeModal === 'privacy' ? t('legal.privacy.intro') : t('legal.terms.intro')}</p>
-                <p>{activeModal === 'privacy' ? t('legal.privacy.sections.s1_desc') : t('legal.terms.use.u1')}</p>
-              </div>
-              <div className="p-8 border-t border-gray-100 dark:border-white/10 flex justify-end">
-                <button
-                  onClick={() => setActiveModal(null)}
-                  className="px-8 py-3 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl transition-all"
-                >
-                  {t('common.gotIt')}
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
 
       {/* Google Terms Modal */}
       <AnimatePresence>
@@ -537,7 +509,20 @@ export function SignUpPage() {
                     className="mt-1 w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors"
                   />
                   <label htmlFor="modal-agree" className="text-sm font-bold text-gray-600 dark:text-gray-300 leading-snug cursor-pointer">
-                    {t('landing.contact.termsAgree')} <button type="button" onClick={() => setActiveModal('privacy')} className="text-paymint-green font-black hover:underline">{t('landing.contact.privacyPolicy')}</button> {t('common.and')} <button type="button" onClick={() => setActiveModal('terms')} className="text-paymint-green font-black hover:underline">{t('landing.contact.termsOfService')}</button>.
+                    {t('landing.contact.termsAgree')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-black hover:underline">{t('landing.contact.privacyPolicy')}</Link> {t('common.and')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-black hover:underline">{t('landing.contact.termsOfService')}</Link>.
+                  </label>
+                </div>
+
+                <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5">
+                  <input
+                    id="modal-subscribe"
+                    type="checkbox"
+                    checked={modalSubscribeToNews}
+                    onChange={(e) => setModalSubscribeToNews(e.target.checked)}
+                    className="mt-1 w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors"
+                  />
+                  <label htmlFor="modal-subscribe" className="text-sm font-bold text-gray-600 dark:text-gray-300 leading-snug cursor-pointer">
+                    {t('auth.signup.subscribeToNews')}
                   </label>
                 </div>
 
@@ -549,7 +534,7 @@ export function SignUpPage() {
                   {t('common.continue').toUpperCase()}
                   <Check size={18} strokeWidth={3} />
                 </button>
-                
+
                 <button
                   onClick={() => setShowGoogleTermsModal(false)}
                   className="w-full py-2 text-xs font-black text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors uppercase tracking-widest"

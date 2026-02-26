@@ -71,6 +71,7 @@ export const Footer = () => {
   type FooterLink = {
     name: string;
     href?: string;
+    target?: string;
     action?: () => void;
   };
 
@@ -88,6 +89,8 @@ export const Footer = () => {
 
   const resourceLinks: FooterLink[] = [
     { name: t('footer.helpCenter'), href: '/support' },
+    { name: t('footer.privacyPolicy'), href: '/legal/privacy', target: '_blank' },
+    { name: t('footer.termsOfService'), href: '/legal/terms', target: '_blank' },
   ];
 
   return (
@@ -128,6 +131,8 @@ export const Footer = () => {
                     {link.href ? (
                       <Link
                         to={link.href}
+                        target={link.target}
+                        rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
                         onClick={(e) => {
                           if (link.href?.startsWith('/#') && window.location.pathname === '/') {
                             const el = document.getElementById(link.href.slice(2));
@@ -163,6 +168,8 @@ export const Footer = () => {
                     {link.href ? (
                       <Link
                         to={link.href}
+                        target={link.target}
+                        rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
                         onClick={(e) => {
                           if (link.href?.startsWith('/#') && window.location.pathname === '/') {
                             const el = document.getElementById(link.href.slice(2));
@@ -198,6 +205,8 @@ export const Footer = () => {
                     {link.href ? (
                       <Link
                         to={link.href}
+                        target={link.target}
+                        rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
                         className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green transition-colors"
                       >
                         {link.name}

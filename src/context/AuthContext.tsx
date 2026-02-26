@@ -20,7 +20,7 @@ interface AuthContextType {
   // Account auth methods
   register: (data: RegisterData) => Promise<AuthResult>;
   login: (email: string, password: string) => Promise<AuthResult>;
-  loginWithGoogle: (credential: string) => Promise<AuthResult>;
+  loginWithGoogle: (credential: string, subscribeToNews?: boolean) => Promise<AuthResult>;
   logout: () => Promise<void>;
 
   // Verification methods
@@ -44,6 +44,7 @@ interface RegisterData {
   firstName: string;
   lastName: string;
   phone?: string;
+  subscribeToNews?: boolean;
 }
 
 interface AuthResult {
@@ -103,7 +104,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           // If establishments fetch fails with 401, the cookie isn't working
           // This is a cross-origin cookie issue
           console.error('[Auth] Failed to fetch data - cookie issue?', error.response?.status);
-          
+
           if (error.response?.status === 401) {
             // Don't clear auth - let the user stay "logged in" with cached data
             // But show a warning that some features may not work
@@ -183,10 +184,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (response.data.account) {
         // 2. Success state
         setLoginSuccess(true);
-        
+
         // Wait for success animation to play
         await new Promise(resolve => setTimeout(resolve, 1500));
-        
+
         const { account: accountData, establishments: estList, token } = response.data;
 
         // Save account data and token to localStorage
@@ -197,7 +198,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         setAccount(accountData);
         setEstablishments(estList || []);
-        
+
         // Auto-select the first establishment if available
         // This ensures the X-Establishment-Id header is set for subsequent requests
         if (estList && estList.length > 0) {
@@ -205,19 +206,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setCurrentEstablishmentState(defaultEst);
           sessionStorage.setItem('currentEstablishment', JSON.stringify(defaultEst));
         }
-        
+
         // Keep overlay on until navigation completes
         setTimeout(() => {
           setIsLoggingIn(false);
           setLoginSuccess(false);
         }, 500);
 
-        return { 
-          success: true, 
-          isSecondaryAdmin: !!accountData.isSecondaryAdmin 
+        return {
+          success: true,
+          isSecondaryAdmin: !!accountData.isSecondaryAdmin
         };
       }
-      
+
       setIsLoggingIn(false);
       return { success: false, error: 'Login failed' };
     } catch (error: any) {
@@ -231,13 +232,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const loginWithGoogle = async (credential: string): Promise<AuthResult> => {
+  const loginWithGoogle = async (credential: string, subscribeToNews?: boolean): Promise<AuthResult> => {
     setIsLoggingIn(true);
     setLoginSuccess(false);
 
     try {
       // Send the Google ID token to our backend for verification
-      const response = await api.post('/api/accounts/google-auth', { credential });
+      const response = await api.post('/api/accounts/google-auth', { credential, subscribeToNews });
 
       if (response.data.account) {
         // Success state
@@ -305,14 +306,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem('account');
       localStorage.removeItem('accessToken');
       sessionStorage.removeItem('currentEstablishment');
-      
+
       // IMPORTANT: We do NOT call setAccount(null) here.
       // Calling setAccount(null) triggers ProtectedRoute to redirect to /login via React Router.
       // Then window.location.href reloads the page.
       // This causes the "double login screen" or "flicker" effect.
       // By skipping setAccount(null), the user stays on the current screen (covered by the overlay)
       // until the hard reload happens.
-      
+
       window.location.href = '/login';
     }
   };
