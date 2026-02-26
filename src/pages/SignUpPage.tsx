@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Check, Loader2, ShieldCheck, Newspaper } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, Mail, Lock, User, Check, Loader2, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { GoogleAuthButton, AuthDivider, GOOGLE_CLIENT_ID, type GoogleAuthButtonHandle } from '../components/GoogleAuthButton';
