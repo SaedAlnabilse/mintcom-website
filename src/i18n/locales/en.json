@@ -664,6 +664,7 @@
     "confirm": "Confirm",
     "confirmLogout": "Are you sure you want to log out? You will need to sign in again to access your business dashboard.",
     "confirmLogoutTitle": "Ready to Log Out?",
+    "congratulations": "Congratulations! 🎉",
     "connecting": "Connecting...",
     "continue": "Continue",
     "copied": "Copied to clipboard",
@@ -1327,6 +1328,20 @@
     },
     "title": "Dashboard",
     "trackingPerformance": "Tracking All Business Performance",
+    "welcome": {
+      "message": "Welcome to your new dashboard for {{location}}! Let's get your location set up and ready for business.",
+      "startGuide": "Start Setup Guide"
+    },
+    "tour": {
+      "tasks": {
+        "title": "Setup Tasks",
+        "desc": "Here you can track your location's setup progress. Complete these tasks to get ready for business!"
+      },
+      "taskItem": {
+        "title": "First Task",
+        "desc": "Click on a task to expand it, then follow the link to complete the setup step."
+      }
+    },
     "viewMode": {
       "currentShift": "Current Shift",
       "last24Hours": "Last 24 Hours",

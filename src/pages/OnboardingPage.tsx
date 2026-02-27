@@ -54,6 +54,7 @@ import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
 
 export function OnboardingPage() {
   const { t } = useTranslation();
+  const isRTL = t('common.locale') === 'ar';
   const navigate = useNavigate();
   const { step: stepParam } = useParams<{ step?: string }>();
 
@@ -169,7 +170,7 @@ export function OnboardingPage() {
       targetId: 'tour-resources',
       title: t('onboarding.tour.resourcesTitle'),
       description: t('onboarding.tour.resourcesDesc'),
-      position: 'left'
+      position: isRTL ? 'right' : 'left'
     }
   ];
 
@@ -441,6 +442,7 @@ export function OnboardingPage() {
 
           {step <= totalSteps && (
             <div className="flex items-center gap-4">
+              {isRTL && <span className="text-xs font-black text-gray-400 tracking-widest">{t('onboarding.step')} {step} {t('onboarding.of')} {totalSteps}</span>}
               <div className="flex gap-1.5">
                 {[1, 2, 3, 4].map((s) => (
                   <div
@@ -450,7 +452,7 @@ export function OnboardingPage() {
                   />
                 ))}
               </div>
-              <span className="text-xs font-black text-gray-400 tracking-widest">{t('onboarding.step')} {step} {t('onboarding.of')} {totalSteps}</span>
+              {!isRTL && <span className="text-xs font-black text-gray-400 tracking-widest">{t('onboarding.step')} {step} {t('onboarding.of')} {totalSteps}</span>}
             </div>
           )}
         </div>
@@ -673,8 +675,9 @@ export function OnboardingPage() {
                       type="submit"
                       className="w-full py-5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
+                      {isRTL && <ArrowRight size={24} />}
                       {t('onboarding.nextStep')}
-                      <ArrowRight size={24} />
+                      {!isRTL && <ArrowRight size={24} />}
                     </button>
                   </div>
                 </form>
@@ -694,7 +697,9 @@ export function OnboardingPage() {
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-8">
                   <button onClick={() => goToStep(1)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-black tracking-widest">
-                    <ArrowLeft size={14} /> {t('onboarding.back')}
+                    {!isRTL && <ArrowLeft size={14} />}
+                    {t('onboarding.back')}
+                    {isRTL && <ArrowLeft size={14} />}
                   </button>
                   <div className="flex items-center gap-3 mb-4">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center ${isTrialFlow ? 'bg-yellow-400/10' : 'bg-paymint-green/10'}`}>
@@ -907,11 +912,12 @@ export function OnboardingPage() {
                       onClick={hasSavedCard && useSavedCard ? () => onStep2Submit({}) : undefined}
                       className="w-full py-5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
+                      {isRTL && <ArrowRight size={24} />}
                       {isTrialFlow
                         ? t('onboarding.step2.startTrialButton')
                         : `${t('onboarding.step2.activateButton')} $${displayPrice}`
                       }
-                      <ArrowRight size={24} />
+                      {!isRTL && <ArrowRight size={24} />}
                     </button>
                   </div>
                 </form>
@@ -931,7 +937,9 @@ export function OnboardingPage() {
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
                   <button onClick={() => goToStep(2)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-black tracking-widest">
-                    <ArrowLeft size={14} /> {t('onboarding.back')}
+                    {!isRTL && <ArrowLeft size={14} />}
+                    {t('onboarding.back')}
+                    {isRTL && <ArrowLeft size={14} />}
                   </button>
                   <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step3.title')}</h2>
                   <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('onboarding.step3.subtitle')}</p>
@@ -987,8 +995,9 @@ export function OnboardingPage() {
                       type="submit"
                       className="w-full py-5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
+                      {isRTL && <ArrowRight size={24} />}
                       {t('onboarding.nextStep')}
-                      <ArrowRight size={24} />
+                      {!isRTL && <ArrowRight size={24} />}
                     </button>
                   </div>
                 </form>
@@ -1008,7 +1017,9 @@ export function OnboardingPage() {
               <div className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 shadow-2xl shadow-gray-200/50 dark:shadow-none">
                 <div className="mb-10">
                   <button onClick={() => goToStep(3)} className="flex items-center gap-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 text-xs font-black tracking-widest">
-                    <ArrowLeft size={14} /> {t('onboarding.back')}
+                    {!isRTL && <ArrowLeft size={14} />}
+                    {t('onboarding.back')}
+                    {isRTL && <ArrowLeft size={14} />}
                   </button>
                   <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('onboarding.step4.title')}</h2>
                   <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('onboarding.step4.subtitle')}</p>
@@ -1120,68 +1131,133 @@ export function OnboardingPage() {
                 <div className="absolute -inset-1 bg-gradient-to-r from-paymint-green/30 via-paymint-green/10 to-transparent rounded-[2rem] blur-xl opacity-60" />
                 <div className="relative bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-3xl p-6 lg:p-8 overflow-hidden">
                   <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
-                    {/* Left: Welcome Message */}
-                    <div className="flex items-center gap-5">
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-                        className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-paymint-green to-emerald-400 rounded-3xl flex items-center justify-center shadow-2xl shadow-paymint-green/40"
-                      >
-                        <Sparkles size={32} className="text-black" />
-                      </motion.div>
-                      <div>
-                        <motion.h2
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.3 }}
-                          className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white"
+                    {/* Welcome Message (Right in RTL, Left in LTR) */}
+                    {!isRTL ? (
+                      <div className="flex items-center gap-5">
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+                          className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-paymint-green to-emerald-400 rounded-3xl flex items-center justify-center shadow-2xl shadow-paymint-green/40"
                         >
-                          {t('onboarding.step5.welcomeTitle')}
-                        </motion.h2>
-                        <motion.p
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.4 }}
-                          className="text-gray-500 dark:text-gray-400 mt-1"
-                        >
-                          <span className="text-paymint-green font-bold">{formData.name}</span> {t('onboarding.step5.isReadyToGo')}
-                        </motion.p>
+                          <Sparkles size={32} className="text-black" />
+                        </motion.div>
+                        <div>
+                          <motion.h2
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white"
+                          >
+                            {t('onboarding.step5.welcomeTitle')}
+                          </motion.h2>
+                          <motion.p
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.4 }}
+                            className="text-gray-500 dark:text-gray-400 mt-1"
+                          >
+                            <span className="text-paymint-green font-bold">{formData.name}</span> {t('onboarding.step5.isReadyToGo')}
+                          </motion.p>
+                        </div>
                       </div>
-                    </div>
-
-                    {/* Right: CTA Button */}
-                    <motion.div
-                      id="tour-open-portal"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.5 }}
-                      className="relative"
-                    >
-                      {/* Animated pulse ring */}
+                    ) : (
                       <motion.div
-                        animate={{ scale: [1, 1.15, 1], opacity: [0.4, 0, 0.4] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                        className="absolute inset-0 bg-paymint-green rounded-2xl"
-                      />
-
-                      <motion.button
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => {
-                          const newEstablishment = establishments.find(e => e.id === formData.establishmentId);
-                          if (newEstablishment) {
-                            setCurrentEstablishment(newEstablishment);
-                          }
-                          window.open(`/owner/establishments?highlight=${formData.establishmentId}`, '_blank');
-                        }}
-                        className="relative flex items-center gap-3 bg-paymint-green text-black px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-paymint-green/30"
+                        id="tour-open-portal"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.5 }}
+                        className="relative"
                       >
-                        <Building2 size={24} />
-                        {t('onboarding.step5.openOwnerPortal')}
-                        <ExternalLink size={20} />
-                      </motion.button>
-                    </motion.div>
+                        {/* Animated pulse ring */}
+                        <motion.div
+                          animate={{ scale: [1, 1.15, 1], opacity: [0.4, 0, 0.4] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                          className="absolute inset-0 bg-paymint-green rounded-2xl"
+                        />
+
+                        <motion.button
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => {
+                            const newEstablishment = establishments.find(e => e.id === formData.establishmentId);
+                            if (newEstablishment) {
+                              setCurrentEstablishment(newEstablishment);
+                            }
+                            window.open(`/owner/establishments?highlight=${formData.establishmentId}`, '_blank');
+                          }}
+                          className="relative flex items-center gap-3 bg-paymint-green text-black px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-paymint-green/30"
+                        >
+                          <Building2 size={24} />
+                          {t('onboarding.step5.openOwnerPortal')}
+                          <ExternalLink size={20} />
+                        </motion.button>
+                      </motion.div>
+                    )}
+
+                    {/* Second element (Button in LTR, Welcome in RTL) */}
+                    {!isRTL ? (
+                      <motion.div
+                        id="tour-open-portal"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.5 }}
+                        className="relative"
+                      >
+                        {/* Animated pulse ring */}
+                        <motion.div
+                          animate={{ scale: [1, 1.15, 1], opacity: [0.4, 0, 0.4] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                          className="absolute inset-0 bg-paymint-green rounded-2xl"
+                        />
+
+                        <motion.button
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => {
+                            const newEstablishment = establishments.find(e => e.id === formData.establishmentId);
+                            if (newEstablishment) {
+                              setCurrentEstablishment(newEstablishment);
+                            }
+                            window.open(`/owner/establishments?highlight=${formData.establishmentId}`, '_blank');
+                          }}
+                          className="relative flex items-center gap-3 bg-paymint-green text-black px-8 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-paymint-green/30"
+                        >
+                          <Building2 size={24} />
+                          {t('onboarding.step5.openOwnerPortal')}
+                          <ExternalLink size={20} />
+                        </motion.button>
+                      </motion.div>
+                    ) : (
+                      <div className="flex items-center gap-5">
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+                          className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-paymint-green to-emerald-400 rounded-3xl flex items-center justify-center shadow-2xl shadow-paymint-green/40"
+                        >
+                          <Sparkles size={32} className="text-black" />
+                        </motion.div>
+                        <div>
+                          <motion.h2
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white"
+                          >
+                            {t('onboarding.step5.welcomeTitle')}
+                          </motion.h2>
+                          <motion.p
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.4 }}
+                            className="text-gray-500 dark:text-gray-400 mt-1"
+                          >
+                            <span className="text-paymint-green font-bold">{formData.name}</span> {t('onboarding.step5.isReadyToGo')}
+                          </motion.p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

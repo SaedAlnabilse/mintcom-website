@@ -46,6 +46,7 @@ const AUTO_REFRESH_INTERVAL = 60 * 60 * 1000;
 
 export const DashboardPage = () => {
   const { t } = useTranslation();
+  const isRTL = t('common.locale') === 'ar';
   const { locationSlug } = useParams();
   const navigate = useNavigate();
   const { currentEstablishment, account } = useAuth();
@@ -639,11 +640,10 @@ export const DashboardPage = () => {
                     </div>
                     
                     <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                      {t('common.congratulations', 'Congratulations! 🎉')}
+                      {t('common.congratulations')}
                     </h3>
                     <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
                       {t('dashboard.welcome.message', {
-                        defaultValue: 'Welcome to your new dashboard for {{location}}! Let\'s get your location set up and ready for business.',
                         location: currentEstablishment?.name || 'this location'
                       })}
                     </p>
@@ -652,7 +652,7 @@ export const DashboardPage = () => {
                       onClick={handleStartTasks}
                       className="w-full py-3.5 px-4 bg-gradient-to-r from-[#7CC39F] to-[#5BA882] hover:brightness-105 text-white font-bold rounded-xl shadow-lg shadow-[#7CC39F]/30 transition-all active:scale-[0.98]"
                     >
-                      {t('dashboard.welcome.startGuide', 'Start Setup Guide')}
+                      {t('dashboard.welcome.startGuide')}
                     </button>
                   </div>
                   
@@ -674,15 +674,15 @@ export const DashboardPage = () => {
             steps={[
               {
                 targetId: 'tasks-widget-panel',
-                title: t('dashboard.tour.tasks.title', 'Setup Tasks'),
-                description: t('dashboard.tour.tasks.desc', 'Here you can track your location\'s setup progress. Complete these tasks to get ready for business!'),
-                position: 'left'
+                title: t('dashboard.tour.tasks.title'),
+                description: t('dashboard.tour.tasks.desc'),
+                position: isRTL ? 'right' : 'left'
               },
               {
                 targetId: 'widget-task-item-location-profile',
-                title: t('dashboard.tour.taskItem.title', 'First Task'),
-                description: t('dashboard.tour.taskItem.desc', 'Click on a task to expand it, then follow the link to complete the setup step.'),
-                position: 'left'
+                title: t('dashboard.tour.taskItem.title'),
+                description: t('dashboard.tour.taskItem.desc'),
+                position: isRTL ? 'right' : 'left'
               }
             ]}
           />

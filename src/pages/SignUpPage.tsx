@@ -247,7 +247,7 @@ export function SignUpPage() {
                     {t('auth.signup.firstNameLabel')}<span className="text-accent ml-1">*</span>
                   </label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <User className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input
                       {...register('firstName')}
                       type="text"
@@ -256,7 +256,7 @@ export function SignUpPage() {
                       aria-describedby={errors.firstName ? 'firstName-error' : undefined}
                       autoComplete="given-name"
                       className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.firstName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                        } rounded-lg py-3 pl-10 pr-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                        } rounded-lg py-3 ps-10 pe-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                       placeholder={t('auth.signup.firstNamePlaceholder')}
                     />
                   </div>
@@ -290,7 +290,7 @@ export function SignUpPage() {
                   {t('auth.signup.emailLabel')}<span className="text-accent ml-1">*</span>
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Mail className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     {...register('email')}
                     type="email"
@@ -299,7 +299,7 @@ export function SignUpPage() {
                     aria-describedby={errors.email ? 'email-error' : undefined}
                     autoComplete="email"
                     className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                      } rounded-lg py-3 pl-10 pr-4 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                      } rounded-lg py-3 ps-10 pe-4 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                     placeholder={t('auth.signup.emailPlaceholder')}
                   />
                 </div>
@@ -313,7 +313,7 @@ export function SignUpPage() {
                   {t('auth.signup.passwordLabel')}<span className="text-accent ml-1">*</span>
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Lock className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     {...register('password')}
                     type={showPassword ? 'text' : 'password'}
@@ -322,14 +322,14 @@ export function SignUpPage() {
                     aria-describedby={errors.password ? 'password-error' : undefined}
                     autoComplete="new-password"
                     className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                      } rounded-lg py-3 pl-10 pr-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                      } rounded-lg py-3 ps-10 pe-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                     placeholder={t('auth.signup.passwordPlaceholder')}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                    className="absolute end-2 top-1/2 -translate-y-1/2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -344,7 +344,7 @@ export function SignUpPage() {
                   {t('auth.signup.confirmPasswordLabel')}<span className="text-accent ml-1">*</span>
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Lock className="absolute start-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     {...register('confirmPassword')}
                     type={showConfirmPassword ? 'text' : 'password'}
@@ -353,14 +353,14 @@ export function SignUpPage() {
                     aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
                     autoComplete="new-password"
                     className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.confirmPassword ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                      } rounded-lg py-3 pl-10 pr-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                      } rounded-lg py-3 ps-10 pe-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
                     placeholder={t('auth.signup.confirmPasswordPlaceholder')}
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     aria-label={showConfirmPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white"
+                    className="absolute end-2 top-1/2 -translate-y-1/2 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-white"
                   >
                     {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -445,28 +445,37 @@ export function SignUpPage() {
       </div>
 
       {/* Right Side - Benefits */}
-      <div className="hidden lg:flex flex-1 bg-paymint-green/5 dark:bg-gradient-to-br dark:from-paymint-green/20 dark:to-paymint-green/5 items-center justify-center p-8 transition-colors duration-300">
-        <div className="max-w-md">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-8">{t('auth.signup.allFeaturesIncluded')}</h2>
-          <div className="space-y-6">
-            {[
-              { title: t('auth.signup.feature1Title'), desc: t('auth.signup.feature1Desc') },
-              { title: t('auth.signup.feature2Title'), desc: t('auth.signup.feature2Desc') },
-              { title: t('auth.signup.feature3Title'), desc: t('auth.signup.feature3Desc') },
-              { title: t('auth.signup.feature4Title'), desc: t('auth.signup.feature4Desc') },
-              { title: t('auth.signup.feature5Title'), desc: t('auth.signup.feature5Desc') },
-            ].map((item, i) => (
-              <div key={i} className="flex items-start gap-4">
-                <div className="w-6 h-6 rounded-full bg-paymint-green/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Check className="w-4 h-4 text-paymint-green" />
+      <div className="hidden lg:flex flex-1 bg-gray-50 dark:bg-[#0a0f12] items-center justify-center p-12 transition-colors duration-300">
+        <div className="max-w-xl w-full">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white dark:bg-gray-800/50 rounded-xl p-10 shadow-2xl dark:shadow-none border border-gray-100 dark:border-white/5 backdrop-blur-sm"
+          >
+            <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-8 tracking-tight">{t('auth.signup.allFeaturesIncluded')}</h2>
+            <div className="grid grid-cols-1 gap-y-7">
+              {[
+                { title: t('auth.signup.feature1Title'), desc: t('auth.signup.feature1Desc') },
+                { title: t('auth.signup.feature2Title'), desc: t('auth.signup.feature2Desc') },
+                { title: t('auth.signup.feature3Title'), desc: t('auth.signup.feature3Desc') },
+                { title: t('landing.features.cards.inventory.title'), desc: t('landing.features.cards.inventory.description') },
+                { title: t('landing.features.cards.crm.title'), desc: t('landing.features.cards.crm.description') },
+                { title: t('landing.features.cards.offline.title'), desc: t('landing.features.cards.offline.description') },
+                { title: t('dashboard.menu.recipes'), desc: t('manufacturing.subtitle', 'Track raw materials, recipes, and automatic production costs.') },
+                { title: t('auth.signup.feature4Title'), desc: t('auth.signup.feature4Desc') },
+              ].map((item, i) => (
+                <div key={i} className="flex items-start gap-6 group">
+                  <div className="w-12 h-12 rounded-xl bg-paymint-green/10 dark:bg-paymint-green/20 flex items-center justify-center flex-shrink-0 mt-1 transition-all duration-300 group-hover:scale-110 group-hover:bg-paymint-green/20 group-hover:rotate-3">
+                    <Check className="w-7 h-7 text-paymint-green" />
+                  </div>
+                  <div>
+                    <h3 className="text-gray-900 dark:text-white font-black text-xl leading-tight mb-1">{item.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm font-bold leading-relaxed">{item.desc}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-gray-900 dark:text-white font-bold text-sm">{item.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-300 text-xs font-bold">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </div>
 
@@ -485,7 +494,7 @@ export function SignUpPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-[2.5rem] max-w-md w-full p-8 shadow-2xl"
+              className="relative bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl max-w-md w-full p-8 shadow-2xl"
             >
               <div className="text-center mb-8">
                 <div className="w-16 h-16 bg-paymint-green/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -518,7 +527,7 @@ export function SignUpPage() {
                     id="modal-subscribe"
                     type="checkbox"
                     checked={modalSubscribeToNews}
-                    onChange={(e) => setModalSubscribeToNews(e.target.checked)}
+                    onChange={(e) => setSubscribeToNews(e.target.checked)}
                     className="mt-1 w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors"
                   />
                   <label htmlFor="modal-subscribe" className="text-sm font-bold text-gray-600 dark:text-gray-300 leading-snug cursor-pointer">
@@ -549,6 +558,3 @@ export function SignUpPage() {
     </div>
   );
 }
-
-
-

@@ -20,6 +20,7 @@ interface TourGuideProps {
 
 export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps) => {
   const { t } = useTranslation();
+  const isRTL = t('common.locale') === 'ar';
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
 
@@ -75,7 +76,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[9999] overflow-hidden font-sans">
+        <div id="paymint-tour-guide-active" className="fixed inset-0 z-[9999] overflow-hidden font-sans">
           {/* Backdrop with cutout using SVG mask */}
           <div className="absolute inset-0 w-full h-full pointer-events-none">
             {targetRect && (
@@ -133,12 +134,12 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
                     return Math.min(Math.max(20, targetRect.top + (targetRect.height / 2) - 100), window.innerHeight - 250);
                   }
                   if (currentStep.position === 'top') {
-                    return targetRect.top - 220;
+                    return targetRect.top - 280;
                   }
                   // Default or 'bottom'
                   return targetRect.bottom + 20 < window.innerHeight - 200
                     ? targetRect.bottom + 20
-                    : targetRect.top - 220;
+                    : targetRect.top - 280;
                 })(),
                 left: (() => {
                   if (currentStep.position === 'left') {
@@ -190,15 +191,22 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete }: TourGuideProps
                       onClick={handleBack}
                       className="p-2 rounded-xl text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
                     >
-                      <ChevronLeft size={20} />
+                      {isRTL ? null : <ChevronLeft size={20} />}
+                      {/* Back button logic in RTL: Arrow on Left means Text on Right, but here it's just an icon. 
+                          If it's just an icon, standard RTL behavior is to flip the icon direction if it's a directional arrow. 
+                          Wait, original was <ChevronLeft size={20} />. 
+                          In RTL, a back arrow should point Right. So <ChevronRight />. 
+                      */}
+                      {isRTL ? <ChevronRight size={20} /> : null}
                     </button>
                   )}
                   <button
                     onClick={handleNext}
                     className="flex items-center gap-2 px-4 py-2 bg-paymint-green text-black font-bold text-sm rounded-xl hover:bg-paymint-green/90 transition-all shadow-lg shadow-paymint-green/20"
                   >
+                    {isRTL && !isLastStep && <ChevronLeft size={16} />}
                     {isLastStep ? t('common.finish') : t('common.next')}
-                    {!isLastStep && <ChevronRight size={16} />}
+                    {!isRTL && !isLastStep && <ChevronRight size={16} />}
                   </button>
                 </div>
               </div>

@@ -630,6 +630,13 @@ export function CategoriesPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <button
+                      onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
+                      className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-paymint-green transition-colors"
+                      title={t('common.add')}
+                    >
+                      <Plus size={20} />
+                    </button>
+                    <button
                       onClick={() => setViewingCategory(null)}
                       className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                     >
@@ -644,8 +651,15 @@ export function CategoriesPage() {
                       <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 shadow-sm">
                         <Package size={40} strokeWidth={1.5} className="text-gray-300" />
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('categories.messages.noCategories')}</h3>
-                      <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto mb-8">{t('categories.messages.noCategoriesDesc')}</p>
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('products.messages.noProducts')}</h3>
+                      <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto mb-6">{t('products.messages.noProductsDesc')}</p>
+                      <button
+                        onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
+                        className="px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-colors flex items-center gap-2 shadow-sm"
+                      >
+                        <Plus size={18} />
+                        {t('common.add')}
+                      </button>
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -670,6 +684,16 @@ export function CategoriesPage() {
                           </div>
                         </div>
                       ))}
+                      {/* Add Product Card */}
+                      <div className="flex items-center">
+                        <button
+                          onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
+                          className="w-20 h-20 rounded-xl flex items-center justify-center bg-white dark:bg-white/5 border border-dashed border-gray-200 dark:border-white/10 text-gray-400 hover:text-paymint-green hover:border-paymint-green/50 hover:bg-paymint-green/5 transition-all group shadow-sm"
+                          title={t('common.add')}
+                        >
+                          <Plus size={20} className="group-hover:scale-110 transition-transform" />
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>

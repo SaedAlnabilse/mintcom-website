@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
@@ -61,7 +61,6 @@ export function ProductsPage() {
     const { currencySymbol } = useCurrency();
     const { account } = useAuth();
     const location = useLocation();
-    const navigate = useNavigate();
     const [products, setProducts] = useState<Product[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -121,6 +120,8 @@ export function ProductsPage() {
 
     const canViewCosts = checkPermission(account, ['view_cost']);
 
+    const navigationStateChecked = useRef(false);
+
     const fetchData = async (silent = false) => {
         try {
             if (!silent) setIsLoading(true);
@@ -133,36 +134,6 @@ export function ProductsPage() {
             const productsData = productsRes.data?.items ?? productsRes.data;
             setProducts(Array.isArray(productsData) ? productsData : []);
             setCategories(Array.isArray(categoriesRes.data) ? categoriesRes.data : []);
-
-            // Handle product ID from state if available
-            const state = location.state as {
-                productId?: string;
-                filterCategoryId?: string;
-                openCreateModal?: boolean;
-                categoryId?: string;
-            };
-
-            if (state?.filterCategoryId) {
-                setSelectedCategoryId(state.filterCategoryId);
-            }
-
-            if (state?.productId) {
-                const productsList = Array.isArray(productsRes.data?.items) ? productsRes.data.items : (Array.isArray(productsRes.data) ? productsRes.data : []);
-                const found = productsList.find((p: Product) => p.id === state.productId);
-                if (found) {
-                    setEditingProduct(found);
-                    setShowModal(true);
-                }
-            } else if (state?.openCreateModal) {
-                setEditingProduct(null);
-                setShowModal(true);
-            }
-
-            // Clear state to avoid re-triggering on refresh
-            if (state) {
-                window.history.replaceState({}, document.title);
-            }
-
         } catch (err) {
             console.error('Failed to load data', err);
             toast.error(t('products.messages.loadFailed'));
@@ -171,9 +142,42 @@ export function ProductsPage() {
         }
     };
 
+    // Handle initial navigation state (once data is loaded)
+    useEffect(() => {
+        if (!isLoading && products.length > 0 && !navigationStateChecked.current) {
+            const state = location.state as {
+                productId?: string;
+                filterCategoryId?: string;
+                openCreateModal?: boolean;
+                categoryId?: string;
+            };
+
+            if (state) {
+                if (state.filterCategoryId || state.categoryId) {
+                    setSelectedCategoryId(state.filterCategoryId || state.categoryId || 'all');
+                }
+
+                if (state.productId) {
+                    const found = products.find((p: Product) => p.id === state.productId);
+                    if (found) {
+                        setEditingProduct(found);
+                        setShowModal(true);
+                    }
+                } else if (state.openCreateModal) {
+                    setEditingProduct(null);
+                    setShowModal(true);
+                }
+
+                // Clear history state to avoid re-triggering on refresh
+                window.history.replaceState({}, document.title);
+                navigationStateChecked.current = true;
+            }
+        }
+    }, [isLoading, products, location.state]);
+
     useEffect(() => {
         fetchData();
-    }, [location.state, navigate, location.pathname]);
+    }, [location.pathname]);
 
     const handleCreateNew = () => {
         setEditingProduct(null);
@@ -242,7 +246,7 @@ export function ProductsPage() {
                 toast.success(t('products.messages.created'));
             }
             setShowModal(false);
-            fetchData();
+            fetchData(true);
         } catch (err) {
             console.error('Save error', err);
             toast.error(t('products.messages.saveFailed'));

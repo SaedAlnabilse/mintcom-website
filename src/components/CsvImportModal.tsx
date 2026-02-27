@@ -150,7 +150,7 @@ export function CsvImportModal({
     };
 
     // ─── Column Matching ─────────────────────────────────────────
-    const matchColumns = (csvHeaders: string[]): { mapping: Record<string, string>; errors: string[] } => {
+    const matchColumns = useCallback((csvHeaders: string[]): { mapping: Record<string, string>; errors: string[] } => {
         const mapping: Record<string, string> = {};
         const errors: string[] = [];
 
@@ -172,7 +172,7 @@ export function CsvImportModal({
         }
 
         return { mapping, errors };
-    };
+    }, [columns]);
 
     // ─── File Processing ──────────────────────────────────────────
     const processFile = useCallback((file: File) => {
@@ -292,7 +292,7 @@ export function CsvImportModal({
         };
 
         reader.readAsText(file);
-    }, [columns, maxRows]);
+    }, [columns, maxRows, matchColumns]);
 
     // ─── Drag & Drop ──────────────────────────────────────────────
     const handleDragOver = (e: React.DragEvent) => {

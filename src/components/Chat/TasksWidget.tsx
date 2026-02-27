@@ -81,6 +81,12 @@ export function TasksWidget() {
             // Also ignore clicks on the DualLauncher trigger (if any logic needed, but standard is checking ref)
             // We assume the open button click stops propagation or we just check if it's within widgetRef
             if (widgetRef.current && !widgetRef.current.contains(event.target as Node)) {
+                // IMPORTANT: If a tour guide is active, DO NOT close the panel automatically on outside click
+                // This allows the user to interact with the tour (clicking "Next", etc.) without closing the task list
+                if (document.getElementById('paymint-tour-guide-active')) {
+                    return;
+                }
+
                 // Ignore clicks on the floating action button to prevent immediate close/reopen cycle
                 const fab = document.getElementById('tasks-widget-fab');
                 if (fab && fab.contains(event.target as Node)) {
