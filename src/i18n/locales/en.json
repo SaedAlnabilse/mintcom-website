@@ -1542,18 +1542,18 @@
       "badge": "Owner App",
       "controlCenter": "Control Center",
       "dailyRevenue": "Daily Revenue",
-      "description": "Stay in control of your business even when you're away. Our mobile admin app gives you real-time visibility into every aspect of your operations.",
+      "description": "With the PayMint Admin Mobile App, you can monitor and manage your business anytime, anywhere—right from your phone.",
       "liveAlerts": "Live Alerts",
-      "liveReports": "Instant access to live sales reports",
+      "liveReports": "Live Sales & Performance Reports",
       "multiLocationManagement": "Multi-Location Management",
       "realTime": "Real-time Sync",
-      "shiftAlerts": "Real-time shift activity alerts",
-      "stockAlerts": "Automatic low stock notifications",
+      "shiftAlerts": "Shift Alerts",
+      "stockAlerts": "Stock Alerts",
       "subtitle": "Complete control over your business from anywhere in the world.",
       "title": "Powerful Admin Dashboard",
-      "title1": "Manage Everything",
-      "title2": "From Your Pocket",
-      "title3": "With Paymint Admin",
+      "title1": "Full Visibility.",
+      "title2": "Full Control.",
+      "title3": "From Your Pocket.",
       "videoTitle": "Admin App Preview"
     },
     "contact": {
@@ -1616,37 +1616,29 @@
     "features": {
       "badge": "Features",
       "cards": {
-        "analytics": {
-          "description": "Deep insights into your sales, staff, and customer behavior.",
-          "title": "Real-time Analytics"
+        "complete": {
+          "title": "A Complete Solution — No Hidden Costs",
+          "description": "PayMint is more than a checkout system. You get a powerful reporting engine with advanced filters, staff and role management, customer profiles and loyalty programs, discounts, raw material and stock tracking, and much more—all included in one fixed monthly plan."
         },
-        "crm": {
-          "description": "Build lasting relationships with built-in loyalty programs.",
-          "title": "Customer CRM"
+        "realUsers": {
+          "title": "Designed for Real Users",
+          "description": "PayMint is built for business owners, cashiers, and managers—not tech experts. We worked closely with real users to design an intuitive experience that minimizes training time. From login to first sale in under 10 minutes."
         },
-        "inventory": {
-          "description": "Real-time tracking and automated low-stock alerts.",
-          "title": "Inventory Management"
+        "security": {
+          "title": "Enterprise-Grade Security",
+          "description": "Your data is fully encrypted, securely stored, and automatically archived. We've invested heavily in top-tier security standards to ensure your business information is protected at all times."
         },
-        "offline": {
-          "description": "Keep selling even when your internet connection goes down.",
-          "title": "Offline Mode"
-        },
-        "payments": {
-          "description": "Accept all major cards and digital wallets with ease.",
-          "title": "Secure Payments"
-        },
-        "smartPos": {
-          "description": "Intuitive interface designed for speed and reliability.",
-          "title": "Smart POS"
+        "multiBranch": {
+          "title": "Multi-Branch Management",
+          "description": "Run one store or many—PayMint supports multiple merged branches or separate stores under one unified dashboard. Manage staff, products, sales, and performance across all locations from a single control panel."
         }
       },
       "liveDemo": "LIVE DEMO",
       "seamlessSync": "Seamless real-time synchronization across all devices",
       "seeInAction": "See Paymint in Action",
-      "subtitle": "Everything you need to run your business effectively.",
-      "title": "Powerful Features",
-      "titleHighlight": "succeed",
+      "subtitle": "At PayMint, we believe in keeping things simple: simple onboarding, simple installation, simple setup, and simple pricing.",
+      "title": "Why",
+      "titleHighlight": "PayMint?",
       "videoTitle": "PayMint Demo Video"
     },
     "hardware": {
@@ -1698,11 +1690,11 @@
     "hero": {
       "activeRightNow": "active right now",
       "avgOrder": "Avg Order",
-      "badge": "New version 2.0 is live",
+      "badge": "All-in-One Point of Sale System",
       "cta": "Start Free Trial",
       "customers": "Customers",
-      "description": "Manage orders, inventory, and staff across all your locations with our powerful, intuitive cloud-based POS system.",
-      "freeTrial": "7-day free trial",
+      "description": "PayMint is a complete 360° POS solution built for modern businesses. Manage sales, inventory, staff, reporting, and operations—all from one simple system.",
+      "freeTrial": "",
       "fromYesterday": "from yesterday",
       "getStarted": "Get Started",
       "growth": "Growth",
@@ -1723,31 +1715,31 @@
       "takeaway": "Takeaway",
       "thisMonth": "this month",
       "thisWeek": "this week",
-      "title1": "The ultimate OS for",
-      "title2": "Modern",
-      "title3": "Establishments",
+      "title1": "Earn More.",
+      "title2": "Manage Better.",
+      "title3": "Work Smarter.",
       "today": "today",
       "viewAll": "View All",
-      "watchVideo": "Watch Demo"
+      "watchVideo": "See how it works"
     },
     "pricing": {
       "features": {
-        "adminApp": "Admin App",
+        "adminApp": "Access to the Admin Mobile App",
         "advancedReporting": "Advanced Reporting",
-        "dashboard": "Real-time Dashboard",
+        "dashboard": "Online dashboard & management system",
         "inventory": "Inventory Management",
         "pointOfSale": "Point of Sale",
-        "pos": "POS System",
+        "pos": "POS for tablets and mobile devices",
         "production": "Production & Recipes",
-        "reports": "Sales Reports",
+        "reports": "Advanced reports & analytics",
         "staffManagement": "Staff Management",
-        "support": "24/7 Support",
-        "unlimitedStaff": "Unlimited Staff"
+        "support": "Dedicated customer support",
+        "unlimitedStaff": "Unlimited staff accounts"
       },
       "monthly": "Monthly",
       "monthlyPlan": "Monthly Plan",
       "perMonth": "/month",
-      "planDescription": "Everything you need to run your business. No hidden fees, cancel anytime.",
+      "planDescription": "",
       "plans": {
         "enterprise": {
           "description": "Tailored solutions for large-scale operations.",
@@ -1787,8 +1779,8 @@
       "save20": "Save 20%",
       "standardPrice": "20$",
       "startFreeTrial": "Start Free Trial",
-      "subtitle": "Choose the plan that fits your business needs.",
-      "title": "Simple & Transparent Pricing",
+      "subtitle": "Your \"aha\" moment is just minutes away.",
+      "title": "Get Started",
       "yearly": "Yearly"
     },
     "workflow": {
@@ -1801,8 +1793,8 @@
         "title": "Live Dashboards"
       },
       "inventory": {
-        "description": "Track stock levels automatically and manage suppliers efficiently.",
-        "title": "Inventory Control"
+        "title": "Inventory Management",
+        "description": "Track stock levels, manage raw materials, and receive low-stock alerts."
       },
       "multiLocation": {
         "description": "Manage all your branches from a single unified dashboard.",
@@ -1836,9 +1828,25 @@
         "totalVisits": "Total Visits",
         "visits": "Visits"
       },
-      "subtitle": "Streamline your daily operations from opening to closing with automated tools and real-time insights.",
-      "title": "Optimized Workflow",
-      "titleHighlight": "for Growth"
+      "subtitle": "",
+      "title": "What Do You Get for",
+      "titleHighlight": "$20 / Month?",
+      "pointOfSale": {
+        "title": "Point of Sale",
+        "description": "Create products and categories, process sales quickly and easily."
+      },
+      "staffManagement": {
+        "title": "Staff Management",
+        "description": "Add unlimited staff, assign roles, and track shifts and performance."
+      },
+      "advancedReporting": {
+        "title": "Advanced Reporting",
+        "description": "Get real-time analytics and insights across every part of your business."
+      },
+      "production": {
+        "title": "Production & Cost Tracking",
+        "description": "Set recipes, calculate costs, and track profit margins accurately."
+      }
     }
   },
   "legal": {

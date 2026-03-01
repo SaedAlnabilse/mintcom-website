@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { CreditCard, Package, Users, BarChart3, Building2, Cloud, TrendingUp } from 'lucide-react';
+import { CreditCard, Package, Users, BarChart3, TrendingUp } from 'lucide-react';
 import { useMemo } from 'react';
 
 export const WorkflowSupport = () => {
@@ -8,8 +8,8 @@ export const WorkflowSupport = () => {
 
   const workflowFeatures = [
     {
-      title: t('landing.workflow.sales.title'),
-      description: t('landing.workflow.sales.description'),
+      title: t('landing.workflow.pointOfSale.title'),
+      description: t('landing.workflow.pointOfSale.description'),
       icon: CreditCard,
     },
     {
@@ -18,24 +18,19 @@ export const WorkflowSupport = () => {
       icon: Package,
     },
     {
-      title: t('landing.workflow.staffRoles.title'),
-      description: t('landing.workflow.staffRoles.description'),
+      title: t('landing.workflow.staffManagement.title'),
+      description: t('landing.workflow.staffManagement.description'),
       icon: Users,
     },
     {
-      title: t('landing.workflow.dashboards.title'),
-      description: t('landing.workflow.dashboards.description'),
+      title: t('landing.workflow.advancedReporting.title'),
+      description: t('landing.workflow.advancedReporting.description'),
       icon: BarChart3,
     },
     {
-      title: t('landing.workflow.multiLocation.title'),
-      description: t('landing.workflow.multiLocation.description'),
-      icon: Building2,
-    },
-    {
-      title: t('landing.workflow.cloudSync.title'),
-      description: t('landing.workflow.cloudSync.description'),
-      icon: Cloud,
+      title: t('landing.workflow.production.title'),
+      description: t('landing.workflow.production.description'),
+      icon: TrendingUp,
     }
   ];
 

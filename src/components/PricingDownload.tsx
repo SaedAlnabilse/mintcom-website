@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, ArrowRight, Download, Apple, CheckCircle2, Zap, QrCode, MapPin, Sparkles } from 'lucide-react';
-import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import { Check, ArrowRight, Sparkles } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const PricingDownload = () => {
     const { t } = useTranslation();
@@ -11,33 +11,10 @@ export const PricingDownload = () => {
     // Pricing constants
     const MONTHLY_PRICE = 20;
     const YEARLY_PRICE = 210;
-    const MONTHLY_ADDITIONAL = 17;
-    const YEARLY_ADDITIONAL = 180;
 
     const currentPrice = isYearly ? YEARLY_PRICE : MONTHLY_PRICE;
     const currentPeriod = isYearly ? '/YEAR' : '/MONTH';
-    const currentAdditionalPrice = isYearly ? YEARLY_ADDITIONAL : MONTHLY_ADDITIONAL;
     const yearlySavings = (MONTHLY_PRICE * 12) - YEARLY_PRICE; // $30
-    const yearlyAdditionalSavings = (MONTHLY_ADDITIONAL * 12) - YEARLY_ADDITIONAL; // $24
-
-    // 3D Tilt Effect Logic
-    const x = useMotionValue(0);
-    const y = useMotionValue(0);
-    const rotateX = useTransform(y, [-100, 100], [10, -10]);
-    const rotateY = useTransform(x, [-100, 100], [-10, 10]);
-
-    function handleMouse(event: any) {
-        const rect = event.currentTarget.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        x.set(event.clientX - centerX);
-        y.set(event.clientY - centerY);
-    }
-
-    function handleMouseLeave() {
-        x.set(0);
-        y.set(0);
-    }
 
     const plan = {
         name: t('landing.pricing.monthlyPlan'),
@@ -71,20 +48,11 @@ export const PricingDownload = () => {
             <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl">
                 {/* Header Section */}
                 <div className="text-center mb-16 lg:mb-20">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-paymint-green/10 text-paymint-green font-black text-xs uppercase tracking-[0.2em] mb-6 border border-paymint-green/20"
-                    >
-                        <Zap size={14} fill="currentColor" />
-                        <span>FIFTH SECTION</span>
-                    </motion.div>
                     <h2 className="text-5xl lg:text-8xl font-black text-gray-900 dark:text-white mb-6 tracking-tighter leading-none">
-                        Get Started
+                        {t('landing.pricing.title')}
                     </h2>
                     <p className="text-2xl lg:text-3xl text-gray-500 dark:text-gray-400 max-w-3xl mx-auto font-black leading-tight mb-10">
-                        Your "aha" moment is just minutes away.
+                        {t('landing.pricing.subtitle')}
                     </p>
 
                     {/* Billing Toggle */}
@@ -121,9 +89,9 @@ export const PricingDownload = () => {
                     </motion.div>
                 </div>
 
-                <div className="flex flex-col lg:flex-row items-stretch gap-12 lg:gap-8">
+                <div className="flex flex-col items-center justify-center">
 
-                    {/* Left Side: Premium Pricing Card */}
+                    {/* Premium Pricing Card */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
@@ -144,9 +112,6 @@ export const PricingDownload = () => {
                                         <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
                                             {isYearly ? 'Yearly' : 'Monthly'} Plan
                                         </h3>
-                                    </div>
-                                    <div className="bg-gradient-to-br from-paymint-green to-emerald-500 text-black px-4 py-2 rounded-2xl text-[10px] font-black tracking-widest uppercase shadow-lg shadow-paymint-green/20">
-                                        {t('landing.pricing.popular')}
                                     </div>
                                 </div>
 
@@ -186,20 +151,19 @@ export const PricingDownload = () => {
                                     )}
 
                                     <p className="text-gray-500 dark:text-gray-400 mt-3 text-sm font-bold leading-relaxed italic">
-                                        No hidden fees. No setup costs. {isYearly ? 'Billed annually.' : 'No commitment.'}
+                                        {isYearly ? 'Billed annually.' : 'No commitment.'}
                                     </p>
                                 </div>
 
                                 {/* Feature List */}
                                 <div className="space-y-5 mb-10 flex-1">
-                                    <div className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.3em] mb-4">Core Benefits</div>
                                     {[
-                                        { label: "POS for tablets and mobile devices" },
-                                        { label: "Online dashboard & management system" },
-                                        { label: "Unlimited staff accounts" },
-                                        { label: "Access to the Admin Mobile App" },
-                                        { label: "Dedicated customer support" },
-                                        { label: "Advanced reports & analytics" }
+                                        { label: t('landing.pricing.features.pos') },
+                                        { label: t('landing.pricing.features.dashboard') },
+                                        { label: t('landing.pricing.features.unlimitedStaff') },
+                                        { label: t('landing.pricing.features.adminApp') },
+                                        { label: t('landing.pricing.features.support') },
+                                        { label: t('landing.pricing.features.reports') }
                                     ].map((f, i) => (
                                         <motion.div
                                             key={i}
@@ -226,218 +190,9 @@ export const PricingDownload = () => {
                                         <span className="relative z-10">{plan.cta}</span>
                                         <ArrowRight size={22} className="relative z-10 transition-transform group-hover/btn:translate-x-2" />
                                     </button>
-
-                                    <div className="flex items-center justify-center gap-4 py-2">
-                                        <div className="flex items-center gap-2">
-                                            <CheckCircle2 size={14} className="text-paymint-green" />
-                                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">7-Day Free Trial</span>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </motion.div>
-
-                    {/* Right Side */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                        className="flex-1 flex flex-col justify-between py-4 gap-8"
-                    >
-                        {/* Additional Location Pricing Card */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.2 }}
-                            className="relative group/loc"
-                        >
-                            <div className="relative bg-white dark:bg-[#0f0f0f] rounded-[2rem] p-6 lg:p-8 border border-gray-200 dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-paymint-green/30 overflow-hidden">
-                                {/* Background decoration */}
-                                <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
-
-                                <div className="relative z-10">
-                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center">
-                                                <MapPin size={22} className="text-blue-500" />
-                                            </div>
-                                            <div>
-                                                <h4 className="text-lg font-black text-gray-900 dark:text-white tracking-tight">Additional Locations</h4>
-                                                <p className="text-xs font-bold text-gray-500 dark:text-gray-400">Scale your business with multi-branch support</p>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-2 sm:gap-3">
-                                            {isYearly && (
-                                                <motion.span
-                                                    initial={{ opacity: 0, scale: 0.8 }}
-                                                    animate={{ opacity: 1, scale: 1 }}
-                                                    className="text-sm font-bold text-gray-400 line-through"
-                                                >
-                                                    ${MONTHLY_ADDITIONAL * 12}
-                                                </motion.span>
-                                            )}
-                                            <AnimatePresence mode="wait">
-                                                <motion.div
-                                                    key={isYearly ? 'yearly-add' : 'monthly-add'}
-                                                    initial={{ opacity: 0, y: 5 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    exit={{ opacity: 0, y: -5 }}
-                                                    className="flex items-baseline gap-1"
-                                                >
-                                                    <span className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white tracking-tighter">
-                                                        ${currentAdditionalPrice}
-                                                    </span>
-                                                    <span className="text-sm font-black text-gray-400 tracking-tighter">
-                                                        {isYearly ? '/yr' : '/mo'}
-                                                    </span>
-                                                </motion.div>
-                                            </AnimatePresence>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                        {[
-                                            "Same full access for each location",
-                                            "Centralized from one dashboard",
-                                            "Separate staff & inventory per branch",
-                                            isYearly ? `Save $${yearlyAdditionalSavings}/yr per location` : "Save $3/mo vs standard price"
-                                        ].map((item, i) => (
-                                            <div key={i} className="flex items-center gap-2.5">
-                                                <div className="w-5 h-5 rounded-md bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                                                    <Check size={10} className="text-blue-500 stroke-[4px]" />
-                                                </div>
-                                                <span className="text-xs font-bold text-gray-600 dark:text-gray-300">{item}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    {isYearly && (
-                                        <motion.div
-                                            initial={{ opacity: 0, height: 0 }}
-                                            animate={{ opacity: 1, height: 'auto' }}
-                                            className="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-500 text-[10px] font-black tracking-wider border border-blue-500/20"
-                                        >
-                                            <Sparkles size={10} />
-                                            SAVE ${yearlyAdditionalSavings} PER LOCATION
-                                        </motion.div>
-                                    )}
-                                </div>
-                            </div>
-                        </motion.div>
-
-                        {/* The "Aha Moment" Section */}
-                        <div className="flex-1">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-blue-500/10 text-blue-500 font-black text-[10px] uppercase tracking-[0.2em] mb-6 border border-blue-500/20">
-                                <Zap size={12} fill="currentColor" />
-                                <span>The Revelation</span>
-                            </div>
-
-                            <h2 className="text-4xl lg:text-5xl font-black text-gray-900 dark:text-white mb-8 tracking-tighter leading-tight">
-                                That <span className="italic font-serif text-paymint-green">"Everything Just Works"</span> Feeling.
-                            </h2>
-
-                            <div className="space-y-8 relative">
-                                <div className="absolute left-[-24px] top-0 bottom-0 w-px bg-gradient-to-b from-paymint-green via-transparent to-transparent opacity-30 hidden md:block" />
-
-                                <blockquote className="text-lg lg:text-xl text-gray-600 dark:text-gray-300 leading-relaxed font-medium italic">
-                                    "The first time you check your phone while away from the shop and see a live sale notification pop up—knowing exactly how your business is performing without calling anyone... <span className="text-gray-900 dark:text-white font-black not-italic">that's when everything clicks.</span>"
-                                </blockquote>
-
-                                {/* Visual Mockup */}
-                                <div className="relative h-24 max-w-sm">
-                                    <motion.div
-                                        initial={{ x: 50, opacity: 0 }}
-                                        whileInView={{ x: 0, opacity: 1 }}
-                                        viewport={{ once: true }}
-                                        className="absolute top-0 right-0 left-0 bg-white dark:bg-gray-900 shadow-2xl rounded-2xl p-4 border border-paymint-green/20 flex items-center gap-4 animate-bounce-subtle"
-                                    >
-                                        <div className="w-10 h-10 rounded-full bg-paymint-green flex items-center justify-center">
-                                            <Check size={20} className="text-black stroke-[3px]" />
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="flex justify-between items-center mb-0.5">
-                                                <span className="text-[10px] font-black uppercase tracking-widest text-paymint-green">Sale Confirmed</span>
-                                                <span className="text-[10px] text-gray-400">Just now</span>
-                                            </div>
-                                            <div className="text-sm font-black text-gray-900 dark:text-white">$145.50 - Table 04</div>
-                                        </div>
-                                    </motion.div>
-                                    <div className="absolute inset-0 bg-gradient-to-t from-gray-50 dark:from-[#080808] to-transparent z-10 h-full pointer-events-none" />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Compact Download Section with 3D Tilt */}
-                        <motion.div
-                            style={{ perspective: 1000, rotateX, rotateY }}
-                            onMouseMove={handleMouse}
-                            onMouseLeave={handleMouseLeave}
-                            className="relative group/card mt-4"
-                        >
-                            {/* Outer Glow Effect */}
-                            <div className="absolute -inset-0.5 bg-gradient-to-r from-paymint-green/30 to-blue-500/30 rounded-[2rem] blur opacity-10 group-hover/card:opacity-60 transition duration-500" />
-
-                            <div className="relative bg-black dark:bg-[#080808] rounded-[2rem] p-6 lg:p-8 border border-white/10 overflow-hidden shadow-2xl">
-                                <div className="absolute top-0 right-0 w-[250px] h-[250px] bg-paymint-green/10 rounded-full blur-[80px] pointer-events-none group-hover/card:bg-paymint-green/20 transition-all duration-1000" />
-                                <div className="absolute bottom-0 left-0 w-[250px] h-[250px] bg-blue-600/10 rounded-full blur-[80px] pointer-events-none group-hover/card:bg-blue-600/20 transition-all duration-1000" />
-
-                                <div className="flex flex-col xl:flex-row items-center gap-8 relative z-10">
-                                    <div className="flex-1 text-center xl:text-left">
-                                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-4">
-                                            <div className="w-2 h-2 rounded-full bg-paymint-green animate-pulse" />
-                                            <span className="text-white text-[8px] font-black uppercase tracking-[0.3em]">{t('landing.download.getApp')}</span>
-                                        </div>
-
-                                        <h3 className="text-3xl lg:text-4xl font-black text-white mb-3 tracking-tighter uppercase leading-tight">
-                                            Test It <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green via-emerald-400 to-blue-400">Firsthand</span>
-                                        </h3>
-
-                                        <p className="text-gray-400 text-sm font-bold max-w-sm mx-auto xl:mx-0">
-                                            Powerful POS features, ready for your tablets today.
-                                        </p>
-                                    </div>
-
-                                    <div className="flex flex-col sm:flex-row items-center gap-4 w-full xl:w-auto">
-                                        {/* Android APK Button */}
-                                        <motion.a
-                                            href={import.meta.env.VITE_ANDROID_DOWNLOAD_URL || '/downloads/paymint-android.apk'}
-                                            download
-                                            whileHover={{ y: -5, scale: 1.02 }}
-                                            whileTap={{ scale: 0.98 }}
-                                            className="w-full sm:w-auto relative overflow-hidden group/dl bg-white text-black py-4 px-6 rounded-2xl flex items-center justify-center gap-4 shadow-xl transition-all"
-                                        >
-                                            <Download className="w-6 h-6" />
-                                            <div className="text-left">
-                                                <div className="text-[8px] font-black uppercase tracking-[0.1em] opacity-40 leading-none mb-1">Android</div>
-                                                <div className="text-xl font-black leading-none tracking-tighter uppercase">APK</div>
-                                            </div>
-                                        </motion.a>
-
-                                        {/* iOS - Coming Soon */}
-                                        <div
-                                            className="w-full sm:w-auto relative overflow-hidden bg-white/5 border border-white/10 text-gray-500 py-4 px-6 rounded-2xl flex items-center justify-center gap-4 backdrop-blur-sm cursor-not-allowed"
-                                        >
-                                            <Apple className="w-6 h-6 opacity-50" />
-                                            <div className="text-left">
-                                                <div className="text-[8px] font-black uppercase tracking-[0.1em] opacity-50 leading-none mb-1">iOS</div>
-                                                <div className="text-xl font-black leading-none tracking-tighter uppercase italic">Coming Soon</div>
-                                            </div>
-                                        </div>
-
-                                        {/* Minimal Scan Hint */}
-                                        <div className="hidden lg:flex items-center gap-3 py-2 px-4 rounded-2xl border border-white/5 bg-white/5">
-                                            <QrCode className="w-5 h-5 text-white opacity-20" />
-                                            <span className="text-[7px] font-black text-white/30 uppercase tracking-[0.2em] leading-tight">PREVIEW<br />SCAN</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </motion.div>
-
                     </motion.div>
 
                 </div>

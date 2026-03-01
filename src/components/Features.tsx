@@ -12,23 +12,23 @@ export const Features = () => {
   const features = [
     {
       icon: <Store className="w-6 h-6 text-white" />,
-      title: t('landing.features.cards.smartPos.title'),
-      description: t('landing.features.cards.smartPos.description')
+      title: t('landing.features.cards.complete.title'),
+      description: t('landing.features.cards.complete.description')
     },
     {
       icon: <Zap className="w-6 h-6 text-white" />,
-      title: t('landing.hero.growth'), // Reusing growth or lightning fast key
-      description: t('landing.features.cards.smartPos.description') // Need to check if I added lightning fast keys
+      title: t('landing.features.cards.realUsers.title'),
+      description: t('landing.features.cards.realUsers.description')
     },
     {
       icon: <ShieldCheck className="w-6 h-6 text-white" />,
-      title: t('landing.features.cards.payments.title'),
-      description: t('landing.features.cards.payments.description')
+      title: t('landing.features.cards.security.title'),
+      description: t('landing.features.cards.security.description')
     },
     {
       icon: <Settings className="w-6 h-6 text-white" />,
-      title: t('landing.features.cards.inventory.title'),
-      description: t('landing.features.cards.inventory.description')
+      title: t('landing.features.cards.multiBranch.title'),
+      description: t('landing.features.cards.multiBranch.description')
     }
   ];
 
@@ -83,23 +83,55 @@ export const Features = () => {
           </p>
         </motion.div>
 
-        {/* Video + Features Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+        {/* Redesigned Layout: Cards First, then Video or vice-versa */}
+        <div className="flex flex-col gap-16 lg:gap-24">
 
-          {/* Video Card - Spans 7 columns */}
+          {/* Feature Cards Grid - Spans full width 4 columns */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
+                whileHover={{ y: -8, scale: 1.02 }}
+                className="flex flex-col p-8 rounded-[2rem] bg-white dark:bg-[#121212] border border-gray-100 dark:border-white/5 hover:border-paymint-green/30 shadow-xl shadow-gray-200/20 dark:shadow-none hover:shadow-2xl hover:shadow-paymint-green/10 transition-all duration-500 group h-full relative overflow-hidden"
+              >
+                {/* Glow effect on hover */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-paymint-green/10 dark:bg-white/5 flex items-center justify-center mb-6 group-hover:bg-paymint-green group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-inner">
+                  <div className="text-paymint-green group-hover:text-white transition-colors duration-500">
+                    {feature.icon}
+                  </div>
+                </div>
+
+                <h3 className="text-xl font-black text-gray-900 dark:text-white mb-4 group-hover:text-paymint-green transition-colors leading-tight tracking-tight">
+                  {feature.title}
+                </h3>
+                
+                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed flex-1 font-medium">
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Video Section */}
           <motion.div
             ref={videoRef}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.7 }}
-            className="lg:col-span-7"
+            className="w-full max-w-5xl mx-auto"
           >
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-gray-200 dark:border-white/10 aspect-video bg-gray-900 group h-full min-h-[320px]">
+            <div className="relative rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-200 dark:border-white/10 aspect-video bg-gray-900 group">
               {isVideoVisible ? (
                 <iframe
                   src="https://player.vimeo.com/video/1158972798?h=234e7f9175&autoplay=1&background=1&muted=1&loop=1"
-                  className="w-full h-full scale-105 group-hover:scale-100 transition-transform duration-700"
+                  className="w-full h-full scale-[1.02] group-hover:scale-100 transition-transform duration-1000"
                   allow="autoplay; fullscreen; picture-in-picture"
                   allowFullScreen
                   style={{ pointerEvents: 'none' }}
@@ -109,63 +141,34 @@ export const Features = () => {
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gray-900">
                   <div className="text-center">
-                    <div className="w-16 h-16 rounded-full bg-paymint-green/20 flex items-center justify-center mx-auto mb-4">
-                      <Play className="w-8 h-8 text-paymint-green" fill="currentColor" />
+                    <div className="w-20 h-20 rounded-full bg-paymint-green/20 flex items-center justify-center mx-auto mb-6">
+                      <Play className="w-10 h-10 text-paymint-green" fill="currentColor" />
                     </div>
-                    <p className="text-white/60 text-sm">{t('common.loadingVideo')}</p>
+                    <p className="text-white/60 text-sm font-bold uppercase tracking-widest">{t('common.loadingVideo')}</p>
                   </div>
                 </div>
               )}
 
               {/* Overlay Content */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
 
-              <div className="absolute bottom-6 left-6 right-6 text-white z-10 pointer-events-none">
+              <div className="absolute bottom-8 left-8 right-8 md:bottom-12 md:left-12 text-white z-10 pointer-events-none">
                 <div className="flex items-end justify-between gap-4">
                   <div>
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 mb-3">
-                      <span className="relative flex h-2 w-2">
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 mb-4 shadow-lg">
+                      <span className="relative flex h-2.5 w-2.5">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
                       </span>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-white/90">{t('landing.features.liveDemo')}</span>
+                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/90">{t('landing.features.liveDemo')}</span>
                     </div>
-                    <h4 className="font-bold text-xl lg:text-2xl mb-1 tracking-tight">{t('landing.features.seeInAction')}</h4>
-                    <p className="text-sm text-white/70">{t('landing.features.seamlessSync')}</p>
+                    <h4 className="font-black text-3xl md:text-5xl mb-2 tracking-tighter">{t('landing.features.seeInAction')}</h4>
+                    <p className="text-base md:text-lg text-white/70 font-medium">{t('landing.features.seamlessSync')}</p>
                   </div>
                 </div>
               </div>
             </div>
           </motion.div>
-
-          {/* Feature Cards Grid - Spans 5 columns */}
-          <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
-            {features.map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.08, duration: 0.5 }}
-                whileHover={{ y: -4, scale: 1.01 }}
-                className="flex flex-col p-5 rounded-2xl bg-white dark:bg-[#151515] border border-gray-100 dark:border-white/5 hover:border-paymint-green/30 hover:shadow-lg hover:shadow-paymint-green/5 transition-all duration-300 group h-full"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-paymint-green flex items-center justify-center shadow-lg shadow-paymint-green/15 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                    {feature.icon}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-1.5 group-hover:text-paymint-green transition-colors leading-tight">
-                      {feature.title}
-                    </h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-3">
-                      {feature.description}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
 
         </div>
       </div>
