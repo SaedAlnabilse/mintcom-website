@@ -125,6 +125,7 @@ export function OrdersPage() {
   const [, setError] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState(() => {
     return location.state?.statusFilter || 'all';
   });
@@ -190,6 +191,8 @@ export function OrdersPage() {
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
   const heldOrdersScrollRef = useRef<HTMLDivElement | null>(null);
   const lastHeldArrowClickRef = useRef(0);
+  const fetchRequestIdRef = useRef(0);
+  const realtimeRefreshTimeoutRef = useRef<number | null>(null);
   const [canScrollHeldLeft, setCanScrollHeldLeft] = useState(false);
   const [canScrollHeldRight, setCanScrollHeldRight] = useState(false);
 
@@ -201,35 +204,40 @@ export function OrdersPage() {
     setSortConfig({ key, direction });
   };
 
-  const sortedOrders = [...orders].sort((a, b) => {
-    if (!sortConfig) return 0;
-    
-    let aValue: any = a[sortConfig.key as keyof Order];
-    let bValue: any = b[sortConfig.key as keyof Order];
+  const sortedOrders = useMemo(() => {
+    const nextOrders = [...orders];
+    if (!sortConfig) return nextOrders;
 
-    // Handle nested properties
-    if (sortConfig.key === 'customer') {
-      aValue = a.customer?.name || t('orders.table.walkIn');
-      bValue = b.customer?.name || t('orders.table.walkIn');
-    } else if (sortConfig.key === 'staff') {
-      aValue = a.user?.username || '';
-      bValue = b.user?.username || '';
-    } else if (sortConfig.key === 'date') {
-      aValue = new Date(a.createdAt).getTime();
-      bValue = new Date(b.createdAt).getTime();
-    } else if (sortConfig.key === 'status') {
-      aValue = a.paymentStatus || a.status || '';
-      bValue = b.paymentStatus || b.status || '';
-    }
+    nextOrders.sort((a, b) => {
+      let aValue: any = a[sortConfig.key as keyof Order];
+      let bValue: any = b[sortConfig.key as keyof Order];
 
-    if (aValue < bValue) {
-      return sortConfig.direction === 'asc' ? -1 : 1;
-    }
-    if (aValue > bValue) {
-      return sortConfig.direction === 'asc' ? 1 : -1;
-    }
-    return 0;
-  });
+      // Handle nested properties
+      if (sortConfig.key === 'customer') {
+        aValue = a.customer?.name || t('orders.table.walkIn');
+        bValue = b.customer?.name || t('orders.table.walkIn');
+      } else if (sortConfig.key === 'staff') {
+        aValue = a.user?.username || '';
+        bValue = b.user?.username || '';
+      } else if (sortConfig.key === 'date') {
+        aValue = new Date(a.createdAt).getTime();
+        bValue = new Date(b.createdAt).getTime();
+      } else if (sortConfig.key === 'status') {
+        aValue = a.paymentStatus || a.status || '';
+        bValue = b.paymentStatus || b.status || '';
+      }
+
+      if (aValue < bValue) {
+        return sortConfig.direction === 'asc' ? -1 : 1;
+      }
+      if (aValue > bValue) {
+        return sortConfig.direction === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+
+    return nextOrders;
+  }, [orders, sortConfig, t]);
 
   const updateHeldOrdersScrollIndicators = useCallback(() => {
     const el = heldOrdersScrollRef.current;
@@ -272,7 +280,6 @@ export function OrdersPage() {
     try {
       // Fetch shift status
       const res = await api.get('/dashboard/live-shift');
-      console.log('Shift status:', res.data);
       setShiftStatus(res.data);
 
       if (showToast) {
@@ -415,6 +422,16 @@ export function OrdersPage() {
     fetchPaymentOptions();
   }, []);
 
+  // Debounce free-text search to avoid firing a request on every keystroke.
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery.trim());
+      setPage(1);
+    }, 300);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [searchQuery]);
+
   useEffect(() => {
     updateHeldOrdersScrollIndicators();
     const onResize = () => updateHeldOrdersScrollIndicators();
@@ -442,8 +459,17 @@ export function OrdersPage() {
     }
   }, [selectedDateRange, startDate, endDate]);
 
+  const activeShiftStartTime =
+    selectedDateRange === 'current_shift' ? shiftStatus?.activeShift?.startTime : null;
+  const previousShiftStartTime =
+    selectedDateRange === 'previous_shift' ? lastShiftSnapshot?.startTime : null;
+  const previousShiftEndTime =
+    selectedDateRange === 'previous_shift' ? lastShiftSnapshot?.timestamp : null;
+
   // Memoize fetchOrders to prevent stale closures
   const fetchOrders = useCallback(async () => {
+    const requestId = ++fetchRequestIdRef.current;
+
     try {
       setIsLoading(true);
       const effectiveStatusFilter =
@@ -453,14 +479,18 @@ export function OrdersPage() {
       let start: Date;
       let end: Date;
 
-      if (selectedDateRange === 'current_shift' && shiftStatus?.activeShift) {
+      if (selectedDateRange === 'current_shift' && activeShiftStartTime) {
         // Current shift data
-        start = new Date(shiftStatus.activeShift.startTime);
+        start = new Date(activeShiftStartTime);
         end = new Date();
-      } else if (selectedDateRange === 'previous_shift' && lastShiftSnapshot) {
+      } else if (selectedDateRange === 'previous_shift' && previousShiftStartTime && previousShiftEndTime) {
         // Previous shift data
-        start = new Date(lastShiftSnapshot.startTime);
-        end = new Date(lastShiftSnapshot.timestamp);
+        start = new Date(previousShiftStartTime);
+        end = new Date(previousShiftEndTime);
+      } else if (selectedDateRange === 'last_24_hours') {
+        // Rolling last 24 hours
+        end = new Date();
+        start = new Date(end.getTime() - 24 * 60 * 60 * 1000);
       } else if (selectedDateRange === 'all') {
         // All time - use a very early date
         start = new Date(0);
@@ -471,27 +501,34 @@ export function OrdersPage() {
         end = endOfDay(new Date(endDate));
       }
 
-      // Prepare parallel requests
-      const promises: Promise<any>[] = [];
+      const needsOverallTotalsRequest =
+        effectiveStatusFilter !== 'all' ||
+        paymentFilter !== 'all' ||
+        !!debouncedSearchQuery;
 
-      // 1. Held orders count (always needed for KPI)
-      promises.push(
-        api
-          .get('/api/held-orders')
-          .catch((e) => {
-            console.error('Failed held orders', e);
-            return { data: [] };
-          })
-      );
+      // 1. Held orders data (needed for KPI + held section)
+      const heldPromise = api
+        .get('/api/held-orders')
+        .catch((e) => {
+          console.error('Failed held orders', e);
+          return { data: [] };
+        });
 
-      // 2. Overall Total (always needed for KPI)
+      // 2. Overall Total (only needed when filtered/searching)
       const overallParams = {
         startDate: start.toISOString(),
         endDate: end.toISOString(),
         limit: 1,
         page: 1
       };
-      promises.push(api.get('/reports/orders-history', { params: overallParams }).catch(e => { console.error('Failed total count', e); return { data: { totalOrders: 0 } }; }));
+      const overallPromise = needsOverallTotalsRequest
+        ? api
+            .get('/reports/orders-history', { params: overallParams })
+            .catch((e) => {
+              console.error('Failed total count', e);
+              return { data: { totalOrders: 0 } };
+            })
+        : Promise.resolve(null);
 
       // 3. Main Data (Held or Regular)
       const mapHeldOrder = (h: Record<string, any>) => ({
@@ -518,9 +555,10 @@ export function OrdersPage() {
         note: h.orderData?.note,
       });
 
+      let mainPromise: Promise<any>;
       if (effectiveStatusFilter === 'HELD') {
         // If filtering by held, we don't need regular orders
-        promises.push(Promise.resolve(null)); 
+        mainPromise = Promise.resolve(null);
       } else {
         // Calculate params for regular orders
         const params: Record<string, any> = {
@@ -546,15 +584,20 @@ export function OrdersPage() {
           }
         }
 
-        if (searchQuery.trim()) {
-          params.search = searchQuery.trim();
+        if (debouncedSearchQuery) {
+          params.search = debouncedSearchQuery;
         }
-        
-        promises.push(api.get('/reports/orders-history', { params }));
+
+        mainPromise = api.get('/reports/orders-history', { params });
       }
 
       // Execute all requests in parallel
-      const [heldRes, overallRes, mainRes] = await Promise.all(promises);
+      const [heldRes, overallRes, mainRes] = await Promise.all([heldPromise, overallPromise, mainPromise]);
+
+      // Ignore stale responses when a newer request is already in flight.
+      if (requestId !== fetchRequestIdRef.current) {
+        return;
+      }
 
       // Process Held Orders (for KPI and potentially for list)
       let heldOrdersList: Order[] = [];
@@ -577,7 +620,16 @@ export function OrdersPage() {
       }
 
       // Process Overall Total (for KPI)
-      const regularTotalForPeriod = (overallRes?.data?.totalOrders || overallRes?.data?.total || 0);
+      const fallbackMainTotal =
+        (mainRes?.data?.totalOrders || mainRes?.data?.total || 0) ||
+        (Array.isArray(mainRes?.data?.orders)
+          ? mainRes.data.orders.length
+          : Array.isArray(mainRes?.data)
+            ? mainRes.data.length
+            : 0);
+      const regularTotalForPeriod = needsOverallTotalsRequest
+        ? (overallRes?.data?.totalOrders || overallRes?.data?.total || 0)
+        : fallbackMainTotal;
       setOverallTotalCount(Number(regularTotalForPeriod) + filteredHeldCount);
 
       // Process Main Display Data
@@ -596,7 +648,7 @@ export function OrdersPage() {
         let serverTotalPages = responseData.totalPages || Math.ceil(totalOrders / 10) || 1;
 
         // Mix held orders at the beginning of page 1 if showing 'all' status
-        if (page === 1 && filteredHeldCount > 0 && effectiveStatusFilter === 'all' && paymentFilter === 'all' && !searchQuery) {
+        if (page === 1 && filteredHeldCount > 0 && effectiveStatusFilter === 'all' && paymentFilter === 'all' && !debouncedSearchQuery) {
            const combined = [...heldOrdersList, ...fetchedOrders];
            combined.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
            fetchedOrders = combined;
@@ -624,10 +676,15 @@ export function OrdersPage() {
 
       setError('');
     } catch (err) {
+      if (requestId !== fetchRequestIdRef.current) {
+        return;
+      }
       console.error('Orders fetch error:', err);
       setError((err as ApiError).response?.data?.message || t('orders.messages.loadFailed'));
     } finally {
-      setIsLoading(false);
+      if (requestId === fetchRequestIdRef.current) {
+        setIsLoading(false);
+      }
     }
   }, [
     page,
@@ -636,10 +693,12 @@ export function OrdersPage() {
     startDate,
     endDate,
     selectedDateRange,
-    searchQuery,
-    shiftStatus,
-    lastShiftSnapshot,
+    debouncedSearchQuery,
     canUsePosFeatures,
+    activeShiftStartTime,
+    previousShiftStartTime,
+    previousShiftEndTime,
+    t,
   ]);
 
   useEffect(() => {
@@ -689,55 +748,58 @@ export function OrdersPage() {
     establishmentId: currentEstablishment?.id || null,
     authToken: accessToken || undefined,
   });
+  const scheduleOrdersRefresh = useCallback((delayMs = 120) => {
+    if (realtimeRefreshTimeoutRef.current) {
+      window.clearTimeout(realtimeRefreshTimeoutRef.current);
+    }
+
+    realtimeRefreshTimeoutRef.current = window.setTimeout(() => {
+      fetchOrders();
+    }, delayMs);
+  }, [fetchOrders]);
+
+  useEffect(() => {
+    return () => {
+      if (realtimeRefreshTimeoutRef.current) {
+        window.clearTimeout(realtimeRefreshTimeoutRef.current);
+        realtimeRefreshTimeoutRef.current = null;
+      }
+    };
+  }, []);
 
   // Listen for real-time order events
   useEffect(() => {
-    console.log('[Orders] 📡 Registering real-time event listener');
     const unsubscribe = onRefresh((eventType) => {
-      console.log('[Orders] 📥 Received real-time event:', eventType);
       if (eventType === DataChangeEventTypes.ORDER_CREATED ||
           eventType === DataChangeEventTypes.ORDER_REFUNDED ||
           eventType === DataChangeEventTypes.ORDER_UPDATED) {
-        // Trigger immediate refresh
-        fetchOrders();
+        // Coalesce bursts of events into one refresh.
+        scheduleOrdersRefresh(80);
       }
 
       // Refresh when held order events occur
       if (eventType === DataChangeEventTypes.HELD_ORDER_CREATED ||
           eventType === DataChangeEventTypes.HELD_ORDER_DELETED) {
-        // Always refresh if viewing held orders
-        if (statusFilter === 'HELD') {
-          fetchOrders();
+        // Refresh if the current view can show held orders.
+        if (statusFilter === 'HELD' || statusFilter === 'all') {
+          scheduleOrdersRefresh(80);
         }
       }
 
       // Refresh shift status when shift events occur
       if (eventType === DataChangeEventTypes.SHIFT_STARTED ||
           eventType === DataChangeEventTypes.SHIFT_ENDED) {
-        // Refetch shift status
-        api.get('/dashboard/live-shift').then(res => {
-          setShiftStatus(res.data);
-          // Also refresh orders if filtering by current shift
-          fetchOrders();
-        }).catch(console.error);
+        checkShiftStatus(false);
       }
     });
 
     return unsubscribe;
-  }, [onRefresh, fetchOrders, statusFilter]); // Added missing dependencies
+  }, [onRefresh, statusFilter, scheduleOrdersRefresh, checkShiftStatus]);
 
-  const searchOrder = useCallback(async () => {
-    if (!searchQuery.trim()) {
-      fetchOrders();
-      return;
-    }
-
-    // Reset to page 1 when searching
+  const searchOrder = useCallback(() => {
+    setDebouncedSearchQuery(searchQuery.trim());
     setPage(1);
-    
-    // Use the main fetchOrders which now supports search param
-    fetchOrders();
-  }, [searchQuery, fetchOrders]);
+  }, [searchQuery]);
 
 
 
@@ -775,6 +837,11 @@ export function OrdersPage() {
     const options: { label: string; value: string; icon?: React.ReactNode; subtitle?: string }[] = [];
 
     // Add all standard date period options
+    options.push({
+      label: t('dashboard.viewMode.last24Hours'),
+      value: 'last_24_hours'
+    });
+
     options.push(...DATE_PERIOD_OPTIONS.map(opt => ({
       ...opt,
       label: t(`common.datePeriods.${opt.value}`)
@@ -944,7 +1011,7 @@ export function OrdersPage() {
             <SearchInput
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              onClear={() => { setSearchQuery(''); fetchOrders(); }}
+              onClear={() => { setSearchQuery(''); setDebouncedSearchQuery(''); setPage(1); }}
               onKeyPress={(e) => e.key === 'Enter' && searchOrder()}
               placeholder={t('orders.searchPlaceholder')}
               className="w-full h-full"

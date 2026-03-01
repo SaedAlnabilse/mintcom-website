@@ -141,7 +141,7 @@ export function StaffPage() {
       const response = await api.get('/api/users');
       setStaff(response.data || []);
     } catch {
-      toast.error(t('dashboard.roles.messages.loadFailed'));
+      toast.error(t('staff.messages.loadFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -264,10 +264,10 @@ export function StaffPage() {
       }
       if (editingStaff) {
         await api.put(`/api/users/${editingStaff.id}`, payload);
-        toast.success(t('dashboard.roles.messages.updated'));
+        toast.success(t('staff.messages.updated'));
       } else {
         await api.post('/api/users', payload);
-        toast.success(t('dashboard.roles.messages.created'));
+        toast.success(t('staff.messages.created'));
       }
       setShowModal(false);
       fetchStaff();
@@ -287,7 +287,11 @@ export function StaffPage() {
           onConfirm: () => setConfirmConfig(prev => ({ ...prev, isOpen: false })),
         });
       } else {
-        toast.error(t('dashboard.roles.messages.saveFailed'));
+        toast.error(
+          typeof backendMessage === 'string' && backendMessage.trim().length > 0
+            ? backendMessage
+            : t('staff.messages.saveFailed')
+        );
       }
     } finally {
       setIsSubmitting(false);

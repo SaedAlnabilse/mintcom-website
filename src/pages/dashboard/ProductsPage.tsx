@@ -545,6 +545,31 @@ export function ProductsPage() {
         );
     }, [filteredProducts, currentPage]);
 
+    const hasAnyProducts = (Array.isArray(products) ? products : []).length > 0;
+    const selectedCategoryName = (Array.isArray(categories) ? categories : []).find(c => c.id === selectedCategoryId)?.name || '';
+    const activeStockFilterLabel =
+        stockFilter === 'yellow'
+            ? t('products.stats.low')
+            : stockFilter === 'red'
+                ? t('products.stats.critical')
+                : stockFilter === 'out'
+                    ? t('products.stats.outOfStock')
+                    : '';
+
+    const emptyStateTitle = !hasAnyProducts
+        ? t('products.messages.noProducts')
+        : stockFilter !== 'all'
+            ? `${t('products.messages.noProducts')} (${activeStockFilterLabel})`
+            : t('products.messages.noResults');
+
+    const emptyStateDescription = !hasAnyProducts
+        ? t('products.messages.noProductsDesc')
+        : searchQuery.trim()
+            ? t('products.messages.noResultsDesc', { query: searchQuery.trim() })
+            : selectedCategoryId !== 'all' && selectedCategoryName
+                ? `${t('products.messages.noProducts')} (${selectedCategoryName})`
+                : '';
+
     // Statistics - calculated from all products (not filtered) so counts remain accurate
     const stats = useMemo(() => {
         const trackingProducts = (Array.isArray(products) ? products : []).filter(p => p.trackStock);
@@ -834,15 +859,19 @@ export function ProductsPage() {
                     <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
                         <Package className="w-10 h-10 text-gray-300" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('products.messages.noProducts')}</h3>
-                    <p className="text-sm font-bold text-gray-500 max-w-xs mb-6">{t('products.messages.noProductsDesc')}</p>
-                    <button
-                        onClick={handleCreateNew}
-                        className="flex items-center gap-2 px-6 py-3 bg-paymint-green text-black font-bold text-xs rounded-xl hover:bg-emerald-400 transition-all tracking-widest"
-                    >
-                        <Plus size={16} />
-                        {t('products.messages.addFirst')}
-                    </button>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{emptyStateTitle}</h3>
+                    {emptyStateDescription && (
+                        <p className="text-sm font-bold text-gray-500 max-w-xs mb-6">{emptyStateDescription}</p>
+                    )}
+                    {!hasAnyProducts && (
+                        <button
+                            onClick={handleCreateNew}
+                            className="flex items-center gap-2 px-6 py-3 bg-paymint-green text-black font-bold text-xs rounded-xl hover:bg-emerald-400 transition-all tracking-widest"
+                        >
+                            <Plus size={16} />
+                            {t('products.messages.addFirst')}
+                        </button>
+                    )}
                 </div>
             ) : (
                 <>

@@ -149,8 +149,13 @@ export function ProductFormModal({
     }
   };
   const [showAddonsWarning, setShowAddonsWarning] = useState(false);
-  const [taxRate, setTaxRate] = useState(0);
+  const [taxRate, setTaxRate] = useState<number>(0);
   const [currencySymbol, setCurrencySymbol] = useState('JOD');
+
+  const toFiniteNumber = (value: unknown, fallback = 0) => {
+    const numericValue = typeof value === 'number' ? value : Number(value);
+    return Number.isFinite(numericValue) ? numericValue : fallback;
+  };
 
   const formatATM = (val: string) => {
     const digits = val.replace(/\D/g, '');
@@ -255,7 +260,7 @@ export function ProductFormModal({
         api.get('/app-settings')
       ]);
       setAttributes(attrRes.data || []);
-      setTaxRate(settingsRes.data?.taxRate || 0);
+      setTaxRate(toFiniteNumber(settingsRes.data?.taxRate, 0));
       setCurrencySymbol(settingsRes.data?.currency || 'JOD');
     } catch (error) {
       console.error('Failed to fetch settings/addons:', error);
@@ -482,8 +487,10 @@ export function ProductFormModal({
     attr.name.toLowerCase().includes(addonsSearchQuery.toLowerCase())
   );
 
-  const totalRetailPrice = parseFloat(price) || 0;
-  const effectiveTaxRate = taxRate < 1 ? taxRate : taxRate / 100;
+  const totalRetailPrice = toFiniteNumber(parseFloat(price), 0);
+  const normalizedTaxRate = toFiniteNumber(taxRate, 0);
+  const effectiveTaxRate = normalizedTaxRate < 1 ? normalizedTaxRate : normalizedTaxRate / 100;
+  const displayTaxRatePercent = effectiveTaxRate * 100;
   const netPrice = totalRetailPrice / (1 + effectiveTaxRate);
   const taxAmount = totalRetailPrice - netPrice;
 
@@ -693,7 +700,7 @@ export function ProductFormModal({
                       </div>
                       <div className="flex items-baseline gap-1">
                         <p className="text-gray-900 dark:text-white font-bold text-lg">
-                          {(taxRate < 1 ? taxRate * 100 : taxRate).toLocaleString(t('common.locale'), { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
+                          {displayTaxRatePercent.toLocaleString(t('common.locale'), { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
                         </p>
                         <p className="text-xs text-gray-400 font-black">{t('common.percent')}</p>
                       </div>

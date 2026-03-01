@@ -3835,10 +3835,14 @@
       "usernamePlaceholder": "E.g. johndoe"
     },
     "messages": {
+      "created": "Employee created successfully",
+      "loadFailed": "Failed to load staff",
       "loading": "Loading team directory...",
       "noStaff": "No staff found",
       "noStaffDesc": "Start building your team by adding your first employee.",
-      "resetSuccess": "Password reset successful"
+      "resetSuccess": "Password reset successful",
+      "saveFailed": "Failed to save employee",
+      "updated": "Employee updated successfully"
     },
     "newEmployee": "New Employee",
     "permissions": {

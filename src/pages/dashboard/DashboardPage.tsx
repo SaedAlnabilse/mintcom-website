@@ -66,6 +66,13 @@ export const DashboardPage = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('last_24_hours');
   const [isViewModeOpen, setIsViewModeOpen] = useState(false);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
+  const [activeDateRange, setActiveDateRange] = useState<{ start: string; end: string }>(() => {
+    const now = new Date();
+    return {
+      start: subHours(now, 24).toISOString(),
+      end: now.toISOString(),
+    };
+  });
   
   // Modals
   const [showPayInOutModal, setShowPayInOutModal] = useState(false);
@@ -206,6 +213,7 @@ export const DashboardPage = () => {
       }
 
       setLastRefresh(new Date());
+      setActiveDateRange({ start, end });
 
       if (!canViewDashboardAnalytics) {
         setStats({
@@ -231,11 +239,16 @@ export const DashboardPage = () => {
 
       // Track if any API call failed
       let hasError = false;
-      const [summaryRes, topItemsRes, peakRes, categoryRes] = await Promise.all([
+      const nowForPendingOrders = new Date();
+      const pendingOrdersStart = subHours(nowForPendingOrders, 24).toISOString();
+      const pendingOrdersEnd = nowForPendingOrders.toISOString();
+
+      const [summaryRes, topItemsRes, peakRes, categoryRes, pendingOrdersRes] = await Promise.all([
         api.get('/reports/historical-summary', { params: { startDate: start, endDate: end } }).catch((err) => { hasError = true; console.error('Summary API error:', err); return { data: null }; }),
         api.get('/reports/top-selling-items', { params: { startDate: start, endDate: end, limit: 5 } }).catch((err) => { hasError = true; console.error('Top items API error:', err); return { data: [] }; }),
         api.get('/reports/peak-hours', { params: { startDate: start, endDate: end } }).catch((err) => { hasError = true; console.error('Peak hours API error:', err); return { data: [] }; }),
-        api.get('/reports/category-report', { params: { startDate: start, endDate: end } }).catch((err) => { hasError = true; console.error('Category API error:', err); return { data: { breakdown: [] } }; })
+        api.get('/reports/category-report', { params: { startDate: start, endDate: end } }).catch((err) => { hasError = true; console.error('Category API error:', err); return { data: { breakdown: [] } }; }),
+        api.get('/reports/historical-summary', { params: { startDate: pendingOrdersStart, endDate: pendingOrdersEnd } }).catch((err) => { hasError = true; console.error('Pending orders API error:', err); return { data: null }; })
       ]);
 
       // Show warning if any API failed
@@ -245,6 +258,8 @@ export const DashboardPage = () => {
 
       // Process stats
       const summaryData = summaryRes.data || {};
+      const pendingOrdersData = pendingOrdersRes.data || {};
+      const pendingOrdersLast24Hours = Number(pendingOrdersData.pendingOrders) || 0;
       const categoryData = Array.isArray(categoryRes.data?.breakdown) ? categoryRes.data.breakdown : [];
       
       // Process categories specifically from the robust report endpoint
@@ -258,7 +273,7 @@ export const DashboardPage = () => {
         totalRevenue: summaryData.totalRevenue || 0,
         totalOrders: summaryData.totalOrders || 0,
         averageOrderValue: summaryData.averageOrderValue || 0,
-        pendingOrders: summaryData.pendingOrders || 0,
+        pendingOrders: pendingOrdersLast24Hours,
         completedOrders: summaryData.completedOrders || summaryData.totalOrders || 0,
         activeEmployees: summaryData.activeEmployees || 0,
         taxCollected: summaryData.taxCollected || 0,
@@ -612,8 +627,8 @@ export const DashboardPage = () => {
           <PayInPayOutLogModal
             isOpen={showPayInOutModal}
             onClose={() => setShowPayInOutModal(false)}
-            startDate={new Date().toISOString()} // Not used strictly for adding, but required props
-            endDate={new Date().toISOString()}
+            startDate={activeDateRange.start}
+            endDate={activeDateRange.end}
           />
 
           {/* Welcome Popup */}

@@ -3,6 +3,7 @@
  */
 
 export type DatePeriod =
+  | 'last_24_hours'
   | 'today'
   | 'yesterday'
   | 'this_week'
@@ -54,7 +55,8 @@ export function getDatePeriodLabel(period: DatePeriod | string): string {
  * @returns Object with start and end Date objects
  */
 export function calculateDateRange(period: DatePeriod | string): { start: Date; end: Date } {
-  const today = new Date();
+  const now = new Date();
+  const today = new Date(now);
   today.setHours(0, 0, 0, 0);
 
   let start = new Date(today);
@@ -62,6 +64,13 @@ export function calculateDateRange(period: DatePeriod | string): { start: Date; 
   end.setHours(23, 59, 59, 999);
 
   switch (period) {
+    case 'last_24_hours': {
+      // Rolling 24-hour window (now - 24h to now)
+      start = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      end = new Date(now);
+      break;
+    }
+
     case 'today':
       // Already set to today
       break;

@@ -538,6 +538,13 @@ export function AddonsPage() {
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="flex gap-3">
+                    <button
+                      onClick={(e) => { e.stopPropagation(); openSubAttributeModal(attr.id); }}
+                      className="p-2 rounded-xl bg-paymint-green/10 border border-paymint-green/20 text-paymint-green hover:bg-paymint-green hover:text-black transition-all"
+                      title={t('attributes.list.addOption')}
+                    >
+                      <Plus size={16} />
+                    </button>
                     <button onClick={(e) => { e.stopPropagation(); openAttributeModal(attr); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-paymint-green hover:border-paymint-green/30 transition-colors" title={t('common.edit')}>
                       <Edit2 size={16} />
                     </button>
@@ -606,13 +613,13 @@ export function AddonsPage() {
               <div className="sm:hidden flex justify-center pt-3 pb-1">
                 <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
               </div>
-              <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+              <div className="px-8 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{t('attributes.form.groupTitle')}</h2>
                 <button onClick={() => setShowAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
                   <X size={24} />
                 </button>
               </div>
-              <div className="p-8 space-y-8 overflow-y-auto flex-1 custom-scrollbar">
+              <div className="px-8 pt-5 pb-8 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
                 <div>
                   <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1">
                     {t('attributes.form.groupNameLabel')} <span className="text-paymint-red">*</span>
@@ -703,13 +710,13 @@ export function AddonsPage() {
               <div className="sm:hidden flex justify-center pt-3 pb-1">
                 <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
               </div>
-              <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+              <div className="px-8 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
                 <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">{t('attributes.form.optionTitle')}</h2>
                 <button onClick={() => setShowSubAttributeModal(false)} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
                   <X size={24} />
                 </button>
               </div>
-              <div className="p-8 space-y-8 overflow-y-auto flex-1 custom-scrollbar">
+              <div className="px-8 pt-5 pb-8 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
                 <div>
                   <label className="block text-xs font-black text-gray-400 tracking-[0.2em] mb-3 px-1">
                     {t('attributes.form.optionNameLabel')} <span className="text-paymint-red">*</span>

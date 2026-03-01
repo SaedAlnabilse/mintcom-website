@@ -95,24 +95,20 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
         if (viewMode === 'previous_shift') state.selectedDateRange = 'previous_shift';
         navigate(`/dashboard/${locationSlug}/orders`, { state });
       }
-    }
-  ];
-
-  if (viewMode === 'current_shift') {
-    statCards.push({
+    },
+    {
       label: t('dashboard.stats.onHold'),
       value: (stats?.pendingOrders || 0).toLocaleString(t('common.locale')),
-      sub: t('dashboard.stats.pendingOrders'),
+      sub: `${t('dashboard.stats.pendingOrders')} (${t('dashboard.stats.last24h')})`,
       icon: ShoppingBag,
       color: 'text-orange-500',
       bg: 'bg-orange-500/10',
       onClick: () => {
-        const state: any = { statusFilter: 'HELD' };
-        state.selectedDateRange = 'current_shift';
+        const state: any = { statusFilter: 'HELD', selectedDateRange: 'last_24_hours' };
         navigate(`/dashboard/${locationSlug}/orders`, { state });
       }
-    });
-  }
+    }
+  ];
 
   statCards.push(
     {

@@ -3831,10 +3831,14 @@
       "usernamePlaceholder": "مثال: ahmed123"
     },
     "messages": {
+      "created": "تم إنشاء الموظف بنجاح",
+      "loadFailed": "فشل تحميل الموظفين",
       "loading": "جاري تحميل دليل الفريق...",
       "noStaff": "لم يتم العثور على موظفين",
       "noStaffDesc": "ابدأ ببناء فريقك عن طريق إضافة موظفك الأول.",
-      "resetSuccess": "تم إعادة تعيين كلمة المرور بنجاح"
+      "resetSuccess": "تم إعادة تعيين كلمة المرور بنجاح",
+      "saveFailed": "فشل حفظ الموظف",
+      "updated": "تم تحديث الموظف بنجاح"
     },
     "newEmployee": "موظف جديد",
     "permissions": {
