@@ -2,6 +2,24 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Play, X, ArrowRight, Zap, BarChart3, Users, TrendingUp, ShoppingCart, DollarSign } from 'lucide-react';
 
+const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
+  return (
+    <span className={className}>
+      {text.split(' ').map((word, i) => {
+        const isPaymint = word.toLowerCase().includes('paymint');
+        return (
+          <span 
+            key={i} 
+            className={isPaymint ? 'text-paymint-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-paymint-green')}
+          >
+            {word}{' '}
+          </span>
+        );
+      })}
+    </span>
+  );
+};
+
 export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; setIsVideoOpen: (open: boolean) => void }) => {
   const { t } = useTranslation();
 
@@ -51,11 +69,10 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               <span>{t('landing.hero.badge')}</span>
             </motion.div>
 
-            <h1 className="text-5xl lg:text-7xl font-bold font-sans text-gray-900 dark:text-white mb-8 leading-[1.1] rtl:leading-tight tracking-tight">
-              {t('landing.hero.title1')} <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-emerald-400">
-                {t('landing.hero.title2')} <br /> {t('landing.hero.title3')}
-              </span>
+            <h1 className="text-4xl lg:text-6xl font-bold font-magilio mb-8 leading-[1.3] rtl:leading-tight tracking-tight">
+              <SplitText text={t('landing.hero.title1')} /> <br />
+              <SplitText text={t('landing.hero.title2')} /> <br />
+              <SplitText text={t('landing.hero.title3')} />
             </h1>
 
             <p className="text-xl text-gray-600 dark:text-gray-400 mb-10 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-light">

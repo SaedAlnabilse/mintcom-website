@@ -3,6 +3,24 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tablet, Printer, X, CheckCircle2, ExternalLink } from 'lucide-react';
 
+const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
+  return (
+    <span className={className}>
+      {text.split(' ').map((word, i) => {
+        const isPaymint = word.toLowerCase().includes('paymint');
+        return (
+          <span 
+            key={i} 
+            className={isPaymint ? 'text-paymint-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-paymint-green')}
+          >
+            {word}{' '}
+          </span>
+        );
+      })}
+    </span>
+  );
+};
+
 export const Hardware = () => {
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
@@ -79,8 +97,8 @@ export const Hardware = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-5xl lg:text-7xl font-bold font-sans text-gray-900 dark:text-white mb-5 leading-[1.1] rtl:leading-tight tracking-tight">
-              {t('landing.hardware.title')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-emerald-400">{t('landing.hardware.titleHighlight')}</span>
+            <h2 className="text-4xl lg:text-6xl font-bold font-magilio mb-5 leading-[1.3] rtl:leading-tight tracking-tight">
+              <SplitText text={t('landing.hardware.title') + ' ' + t('landing.hardware.titleHighlight')} />
             </h2>
             <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl mx-auto font-light">
               {t('landing.hardware.subtitle')}
@@ -103,7 +121,7 @@ export const Hardware = () => {
                     <item.icon size={28} className="text-paymint-green" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold font-sans text-gray-900 dark:text-white">{item.name}</h3>
+                    <h3 className="text-xl font-bold font-magilio text-gray-900 dark:text-white">{item.name}</h3>
                     <p className="text-gray-500 dark:text-gray-400 text-sm">{item.description}</p>
                   </div>
                 </div>
@@ -172,7 +190,7 @@ export const Hardware = () => {
                     <selectedHardware.icon size={24} className="text-white" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold font-sans text-gray-900 dark:text-white">{selectedHardware.name}</h3>
+                    <h3 className="text-xl font-bold font-magilio text-gray-900 dark:text-white">{selectedHardware.name}</h3>
                     <p className="text-gray-500 dark:text-gray-400 text-sm">{selectedHardware.description}</p>
                   </div>
                 </div>

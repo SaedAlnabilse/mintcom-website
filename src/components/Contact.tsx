@@ -6,6 +6,24 @@ import { Send, Mail, Phone, CheckCircle2, Loader2 } from 'lucide-react';
 import api from '../config/api';
 import toast from 'react-hot-toast';
 
+const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
+  return (
+    <span className={className}>
+      {text.split(' ').map((word, i) => {
+        const isPaymint = word.toLowerCase().includes('paymint');
+        return (
+          <span 
+            key={i} 
+            className={isPaymint ? 'text-paymint-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-paymint-green')}
+          >
+            {word}{' '}
+          </span>
+        );
+      })}
+    </span>
+  );
+};
+
 export const Contact = () => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,11 +69,12 @@ export const Contact = () => {
             {/* Contact Info Sidebar */}
             <div className="lg:w-2/5 bg-gray-900 p-12 lg:p-16 text-white relative overflow-hidden flex flex-col justify-between">
               <div className="relative z-10">
-                <h2 className="text-5xl lg:text-7xl font-bold font-sans text-white mb-5 leading-[1.1] rtl:leading-tight tracking-tight">{t('landing.contact.title')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-emerald-400">{t('landing.contact.titleHighlight')}</span></h2>
+                <h2 className="text-4xl lg:text-6xl font-bold font-magilio text-white mb-5 leading-[1.3] rtl:leading-tight tracking-tight">
+                  <SplitText text={t('landing.contact.title') + ' ' + t('landing.contact.titleHighlight')} />
+                </h2>  
                 <p className="text-lg lg:text-xl text-gray-400 leading-relaxed mb-12 font-light">
                   {t('landing.contact.subtitle')}
                 </p>
-
                 <div className="space-y-8">
                   {[
                     { icon: Mail, label: t('common.email'), value: 'hello@paymint.com', color: 'text-paymint-green' },
@@ -92,7 +111,7 @@ export const Contact = () => {
                       <CheckCircle2 size={48} className="text-paymint-green" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold font-sans text-gray-900 dark:text-white mb-2">{t('landing.contact.success')}</h3>
+                      <h3 className="text-2xl font-bold font-magilio text-gray-900 dark:text-white mb-2">{t('landing.contact.success')}</h3>
                       <p className="text-gray-600 dark:text-gray-400 font-medium">{t('landing.contact.responseTime')}</p>
                     </div>
                     <button

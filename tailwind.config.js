@@ -75,6 +75,7 @@ export default {
         paymint: ['Crimson Text', 'serif'],
         poppins: ['Poppins', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
+        magilio: ['Magilio', 'serif'],
       },
       fontSize: {
         // POS Typography System - Display (New)

@@ -2,6 +2,24 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Download, Smartphone, CheckCircle2, Apple, Tablet } from 'lucide-react';
 
+const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
+  return (
+    <span className={className}>
+      {text.split(' ').map((word, i) => {
+        const isPaymint = word.toLowerCase().includes('paymint');
+        return (
+          <span 
+            key={i} 
+            className={isPaymint ? 'text-paymint-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-paymint-green')}
+          >
+            {word}{' '}
+          </span>
+        );
+      })}
+    </span>
+  );
+};
+
 export const DownloadApp = () => {
   const { t } = useTranslation();
 
@@ -27,9 +45,8 @@ export const DownloadApp = () => {
               <span>{t('landing.download.badge')}</span>
             </div>
 
-            <h2 className="text-5xl lg:text-7xl font-bold font-sans text-gray-900 dark:text-white mb-5 leading-[1.1] rtl:leading-tight tracking-tight">
-              {t('landing.download.title')} <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-emerald-400">{t('landing.download.titleHighlight')}</span>
+            <h2 className="text-4xl lg:text-6xl font-bold font-magilio mb-5 leading-[1.3] rtl:leading-tight tracking-tight">
+              <SplitText text={t('landing.download.title') + ' ' + t('landing.download.titleHighlight')} />
             </h2>
 
             <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 mb-8 leading-relaxed font-light">

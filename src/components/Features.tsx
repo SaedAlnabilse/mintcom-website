@@ -3,6 +3,24 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ShieldCheck, Zap, Settings, Store, Play } from 'lucide-react';
 
+const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
+  return (
+    <span className={className}>
+      {text.split(' ').map((word, i) => {
+        const isPaymint = word.toLowerCase().includes('paymint');
+        return (
+          <span 
+            key={i} 
+            className={isPaymint ? 'text-paymint-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-paymint-green')}
+          >
+            {word}{' '}
+          </span>
+        );
+      })}
+    </span>
+  );
+};
+
 export const Features = () => {
   const { t } = useTranslation();
   const [isVideoVisible, setIsVideoVisible] = useState(false);
@@ -75,8 +93,8 @@ export const Features = () => {
             <span className="text-paymint-green text-xs font-bold uppercase tracking-wider">{t('landing.features.badge')}</span>
           </div>
 
-          <h2 className="text-5xl lg:text-7xl font-bold font-sans text-gray-900 dark:text-white mb-5 leading-[1.1] rtl:leading-tight tracking-tight">
-            {t('landing.features.title')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-emerald-400">{t('landing.features.titleHighlight')}</span>
+          <h2 className="text-4xl lg:text-6xl font-bold font-magilio mb-5 leading-[1.3] rtl:leading-tight tracking-tight">
+            <SplitText text={t('landing.features.title') + ' ' + t('landing.features.titleHighlight')} />
           </h2>
           <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl mx-auto font-light">
             {t('landing.features.subtitle')}
@@ -107,7 +125,7 @@ export const Features = () => {
                   </div>
                 </div>
 
-                <h3 className="text-xl font-bold font-sans text-gray-900 dark:text-white mb-4 group-hover:text-paymint-green transition-colors leading-tight tracking-tight">
+                <h3 className="text-xl font-bold font-magilio text-gray-900 dark:text-white mb-4 group-hover:text-paymint-green transition-colors leading-tight tracking-tight">
                   {feature.title}
                 </h3>
                 
@@ -162,7 +180,7 @@ export const Features = () => {
                       </span>
                       <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/90">{t('landing.features.liveDemo')}</span>
                     </div>
-                    <h4 className="font-bold font-sans text-3xl md:text-5xl mb-2 tracking-tighter">{t('landing.features.seeInAction')}</h4>
+                    <h4 className="font-bold font-magilio text-3xl md:text-5xl mb-2 tracking-tighter">{t('landing.features.seeInAction')}</h4>
                     <p className="text-base md:text-lg text-white/70 font-medium">{t('landing.features.seamlessSync')}</p>
                   </div>
                 </div>
