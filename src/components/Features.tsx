@@ -11,22 +11,22 @@ export const Features = () => {
 
   const features = [
     {
-      icon: <Store className="w-6 h-6 text-white" />,
+      icon: <Store className="w-6 h-6" />,
       title: t('landing.features.cards.complete.title'),
       description: t('landing.features.cards.complete.description')
     },
     {
-      icon: <Zap className="w-6 h-6 text-white" />,
+      icon: <Zap className="w-6 h-6" />,
       title: t('landing.features.cards.realUsers.title'),
       description: t('landing.features.cards.realUsers.description')
     },
     {
-      icon: <ShieldCheck className="w-6 h-6 text-white" />,
+      icon: <ShieldCheck className="w-6 h-6" />,
       title: t('landing.features.cards.security.title'),
       description: t('landing.features.cards.security.description')
     },
     {
-      icon: <Settings className="w-6 h-6 text-white" />,
+      icon: <Settings className="w-6 h-6" />,
       title: t('landing.features.cards.multiBranch.title'),
       description: t('landing.features.cards.multiBranch.description')
     }
@@ -75,10 +75,10 @@ export const Features = () => {
             <span className="text-paymint-green text-xs font-bold uppercase tracking-wider">{t('landing.features.badge')}</span>
           </div>
 
-          <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-5 tracking-tight leading-[1.1]">
-            {t('landing.features.title')} <span className="text-paymint-green">{t('landing.features.titleHighlight')}</span>
+          <h2 className="text-5xl lg:text-7xl font-bold font-sans text-gray-900 dark:text-white mb-5 leading-[1.1] rtl:leading-tight tracking-tight">
+            {t('landing.features.title')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-emerald-400">{t('landing.features.titleHighlight')}</span>
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl mx-auto font-light">
             {t('landing.features.subtitle')}
           </p>
         </motion.div>
@@ -107,7 +107,7 @@ export const Features = () => {
                   </div>
                 </div>
 
-                <h3 className="text-xl font-black text-gray-900 dark:text-white mb-4 group-hover:text-paymint-green transition-colors leading-tight tracking-tight">
+                <h3 className="text-xl font-bold font-sans text-gray-900 dark:text-white mb-4 group-hover:text-paymint-green transition-colors leading-tight tracking-tight">
                   {feature.title}
                 </h3>
                 
@@ -162,7 +162,7 @@ export const Features = () => {
                       </span>
                       <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/90">{t('landing.features.liveDemo')}</span>
                     </div>
-                    <h4 className="font-black text-3xl md:text-5xl mb-2 tracking-tighter">{t('landing.features.seeInAction')}</h4>
+                    <h4 className="font-bold font-sans text-3xl md:text-5xl mb-2 tracking-tighter">{t('landing.features.seeInAction')}</h4>
                     <p className="text-base md:text-lg text-white/70 font-medium">{t('landing.features.seamlessSync')}</p>
                   </div>
                 </div>

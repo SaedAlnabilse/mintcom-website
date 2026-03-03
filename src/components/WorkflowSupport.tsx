@@ -43,7 +43,7 @@ export const WorkflowSupport = () => {
 
   return (
     <>
-      <section className="py-24 lg:py-32 bg-white dark:bg-[#0f0f0f] overflow-hidden relative" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+      <section className="pt-24 lg:pt-32 pb-12 lg:pb-16 bg-white dark:bg-[#0f0f0f] overflow-hidden relative" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
         {/* Background Decor */}
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-paymint-green/5 rounded-full blur-[120px] -z-10" />
         <div className="absolute top-20 right-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px] -z-10" />
@@ -66,10 +66,10 @@ export const WorkflowSupport = () => {
                 transition={{ duration: 0.6 }}
                 className="mb-12"
               >
-                <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-6 tracking-tight">
-                  {t('landing.workflow.title')} <span className="text-paymint-green">{t('landing.workflow.titleHighlight')}</span>
+                <h2 className="text-5xl lg:text-7xl font-bold font-sans text-gray-900 dark:text-white mb-5 leading-[1.1] rtl:leading-tight tracking-tight">
+                  {t('landing.workflow.title')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-emerald-400">{t('landing.workflow.titleHighlight')}</span>
                 </h2>
-                <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed font-light">
                   {t('landing.workflow.subtitle')}
                 </p>
               </motion.div>
@@ -90,7 +90,7 @@ export const WorkflowSupport = () => {
                       <feature.icon size={20} className="text-paymint-green group-hover:text-white transition-colors" />
                     </div>
                     <div>
-                      <h3 className="text-gray-900 dark:text-white font-bold text-base mb-1 group-hover:text-paymint-green transition-colors">{feature.title}</h3>
+                      <h3 className="text-gray-900 dark:text-white font-bold font-sans text-base mb-1 group-hover:text-paymint-green transition-colors">{feature.title}</h3>
                       <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">{feature.description}</p>
                     </div>
                   </motion.div>

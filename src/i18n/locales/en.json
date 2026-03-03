@@ -359,6 +359,10 @@
       "feature4Title": "Staff Management",
       "feature5Desc": "Never run out of stock with automated alerts and tracking.",
       "feature5Title": "Inventory Control",
+      "feature6Desc": "Build loyalty and understand your customers better.",
+      "feature6Title": "Customer Management",
+      "feature7Desc": "Keep selling even when your internet connection drops.",
+      "feature7Title": "Offline Mode",
       "firstNameLabel": "First Name",
       "firstNamePlaceholder": "John",
       "goToLogin": "Go to Login",
@@ -2427,6 +2431,8 @@
     },
     "period": "Period",
     "reports": {
+      "restockItems": "Restock Items",
+      "restockDescription": "Add refunded items back to available inventory",
       "cashGap": {
         "accuracyRate": "Accuracy Rate",
         "balanced": "Balanced",

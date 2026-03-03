@@ -253,21 +253,21 @@ export function ProductFormModal({
     }
   };
 
-  const fetchAddonsAndSettings = async () => {
-    try {
-      const [attrRes, settingsRes] = await Promise.all([
-        api.get('/api/attributes'),
-        api.get('/app-settings')
-      ]);
-      setAttributes(attrRes.data || []);
-      setTaxRate(toFiniteNumber(settingsRes.data?.taxRate, 0));
-      setCurrencySymbol(settingsRes.data?.currency || 'JOD');
-    } catch (error) {
-      console.error('Failed to fetch settings/addons:', error);
-    }
-  };
-
   useEffect(() => {
+    const fetchAddonsAndSettings = async () => {
+      try {
+        const [attrRes, settingsRes] = await Promise.all([
+          api.get('/api/attributes'),
+          api.get('/app-settings')
+        ]);
+        setAttributes(attrRes.data || []);
+        setTaxRate(toFiniteNumber(settingsRes.data?.taxRate, 0));
+        setCurrencySymbol(settingsRes.data?.currency || 'JOD');
+      } catch (error) {
+        console.error('Failed to fetch settings/addons:', error);
+      }
+    };
+
     if (isOpen) {
       isInitialLoad.current = true;
       fetchAddonsAndSettings();

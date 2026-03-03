@@ -18,7 +18,6 @@ test.describe('Landing Page Smoke Tests', () => {
   test('should toggle dark mode if available', async ({ page }) => {
     await page.goto('/');
     // Assuming there's a theme toggle button. Let's look for one in the code or just verify the initial class.
-    const html = page.locator('html');
     // We can't easily trigger it if we don't know the button, but we can check if it respects system preference or has a class
     // For now, just check if the page has the 'dark' or 'light' context correctly
   });

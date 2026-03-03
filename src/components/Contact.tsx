@@ -51,8 +51,8 @@ export const Contact = () => {
             {/* Contact Info Sidebar */}
             <div className="lg:w-2/5 bg-gray-900 p-12 lg:p-16 text-white relative overflow-hidden flex flex-col justify-between">
               <div className="relative z-10">
-                <h2 className="text-4xl font-black tracking-tight mb-6 text-white">{t('landing.contact.title')} <span className="text-paymint-green">{t('landing.contact.titleHighlight')}</span></h2>
-                <p className="text-gray-400 text-lg leading-relaxed mb-12">
+                <h2 className="text-5xl lg:text-7xl font-bold font-sans text-white mb-5 leading-[1.1] rtl:leading-tight tracking-tight">{t('landing.contact.title')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-emerald-400">{t('landing.contact.titleHighlight')}</span></h2>
+                <p className="text-lg lg:text-xl text-gray-400 leading-relaxed mb-12 font-light">
                   {t('landing.contact.subtitle')}
                 </p>
 
@@ -92,7 +92,7 @@ export const Contact = () => {
                       <CheckCircle2 size={48} className="text-paymint-green" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">{t('landing.contact.success')}</h3>
+                      <h3 className="text-2xl font-bold font-sans text-gray-900 dark:text-white mb-2">{t('landing.contact.success')}</h3>
                       <p className="text-gray-600 dark:text-gray-400 font-medium">{t('landing.contact.responseTime')}</p>
                     </div>
                     <button

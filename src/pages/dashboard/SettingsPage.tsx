@@ -12,6 +12,8 @@ import { useCurrency } from '../../context/CurrencyContext';
 import { useTranslation } from 'react-i18next';
 import { usePermissionGuard, checkPermission } from '../../hooks/usePermissionGuard';
 import { useAuth } from '../../context/AuthContext';
+import { useRealtime } from '../../hooks/useRealtime';
+import { DataChangeEventTypes } from '../../services/realtimeService';
 
 interface ApiError {
   response?: {
@@ -90,6 +92,12 @@ export function SettingsPage() {
     'delete_establishment',
   ]);
   const { refreshCurrency } = useCurrency();
+  const accessToken = localStorage.getItem('accessToken');
+  const { onRefresh } = useRealtime({
+    establishmentId: currentEstablishment?.id || null,
+    authToken: accessToken || undefined,
+    enabled: !!currentEstablishment?.id,
+  });
 
   const tabs = useMemo(() => {
     const availableTabs = [
@@ -105,10 +113,22 @@ export function SettingsPage() {
 
   const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
 
+  const syncTabQueryParam = (tab: SettingsTab) => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('tab') === tab) return;
+
+    params.set('tab', tab);
+    const nextSearch = params.toString();
+    const nextUrl = `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ''}${window.location.hash}`;
+    window.history.replaceState(window.history.state, document.title, nextUrl);
+  };
+
   // Auto-select first available tab if current is not available
   useEffect(() => {
     if (tabs.length > 0 && !tabs.find((t: any) => t.id === activeTab)) {
-      setActiveTab(tabs[0].id as SettingsTab);
+      const fallbackTab = tabs[0].id as SettingsTab;
+      setActiveTab(fallbackTab);
+      syncTabQueryParam(fallbackTab);
     }
   }, [tabs, activeTab]);
 
@@ -121,6 +141,7 @@ export function SettingsPage() {
 
     if (tabs.some((tab: any) => tab.id === requestedTab)) {
       setActiveTab(requestedTab);
+      syncTabQueryParam(requestedTab);
     }
 
     if (state?.openSettingsTab) {
@@ -315,6 +336,16 @@ export function SettingsPage() {
       reader.readAsDataURL(file);
     }
   };
+
+  useEffect(() => {
+    const unsubscribe = onRefresh((eventType) => {
+      if (eventType === DataChangeEventTypes.SETTINGS_UPDATED) {
+        fetchSettings(false);
+      }
+    });
+
+    return unsubscribe;
+  }, [onRefresh]);
 
   const handleRemoveLogo = () => {
     setPreviewImage(null);
@@ -593,6 +624,7 @@ export function SettingsPage() {
 
           setConfirmConfig(prev => ({ ...prev, isOpen: false }));
           setActiveTab(newTab);
+          syncTabQueryParam(newTab);
         },
         showCancel: true,
         confirmText: t('common.continue'),
@@ -603,6 +635,7 @@ export function SettingsPage() {
     }
 
     setActiveTab(newTab);
+    syncTabQueryParam(newTab);
   };
 
   if (isLoading) {

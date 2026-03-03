@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Play, X, ArrowRight, Zap, BarChart3, Users, TrendingUp, ShoppingCart, DollarSign, CheckCircle2 } from 'lucide-react';
+import { Play, X, ArrowRight, Zap, BarChart3, Users, TrendingUp, ShoppingCart, DollarSign } from 'lucide-react';
 
 export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; setIsVideoOpen: (open: boolean) => void }) => {
   const { t } = useTranslation();
@@ -39,19 +39,19 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="flex-1 text-center lg:text-left"
+            className="flex-1 text-center lg:text-start"
           >
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-paymint-green/10 text-paymint-green font-medium text-sm mb-8 border border-paymint-green/20"
+              className="inline-flex items-center gap-2 rtl:gap-3 px-4 py-2 rounded-full bg-paymint-green/10 text-paymint-green font-medium text-sm mb-8 border border-paymint-green/20"
             >
               <Zap size={14} fill="currentColor" />
               <span>{t('landing.hero.badge')}</span>
             </motion.div>
 
-            <h1 className="text-5xl lg:text-7xl font-bold font-sans text-gray-900 dark:text-white mb-8 leading-[1.1] tracking-tight">
+            <h1 className="text-5xl lg:text-7xl font-bold font-sans text-gray-900 dark:text-white mb-8 leading-[1.1] rtl:leading-tight tracking-tight">
               {t('landing.hero.title1')} <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-emerald-400">
                 {t('landing.hero.title2')} <br /> {t('landing.hero.title3')}
@@ -82,12 +82,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               </motion.button>
             </div>
 
-            <div className="mt-12 flex items-center justify-center lg:justify-start gap-8 text-sm font-medium text-gray-500 dark:text-gray-400">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={18} className="text-paymint-green" />
-                <span>{t('landing.hero.freeTrial')}</span>
-              </div>
-            </div>
+
           </motion.div>
 
           {/* Visual Content / Abstract Dashboard */}

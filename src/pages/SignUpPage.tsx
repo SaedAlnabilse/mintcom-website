@@ -371,14 +371,14 @@ export function SignUpPage() {
               </div>
 
               <div className="space-y-3">
-                <div className="flex items-start gap-3 py-1">
+                <div className="flex items-center gap-3 py-1">
                   <input
                     {...register('agreeToTerms')}
                     id="agreeToTerms"
                     type="checkbox"
-                    className={`mt-1 w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors ${errors.agreeToTerms ? 'border-accent ring-1 ring-accent' : ''}`}
+                    className={`w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors ${errors.agreeToTerms ? 'border-accent ring-1 ring-accent' : ''}`}
                   />
-                  <label htmlFor="agreeToTerms" className="text-sm text-gray-600 dark:text-gray-400 leading-tight cursor-pointer">
+                  <label htmlFor="agreeToTerms" className="text-xs text-gray-600 dark:text-gray-400 leading-tight cursor-pointer pt-0.5">
                     {t('landing.contact.termsAgree')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-bold hover:underline inline-block">{t('landing.contact.privacyPolicy')}</Link> {t('common.and')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-bold hover:underline inline-block">{t('landing.contact.termsOfService')}</Link>.
                   </label>
                 </div>
@@ -386,15 +386,15 @@ export function SignUpPage() {
                   <p className="text-accent text-xs font-bold -mt-1">{errors.agreeToTerms.message}</p>
                 )}
 
-                <div className="flex items-start gap-3 py-1">
+                <div className="flex items-center gap-3 py-1">
                   <input
                     id="subscribeToNews"
                     type="checkbox"
                     checked={subscribeToNews}
                     onChange={(e) => setSubscribeToNews(e.target.checked)}
-                    className="mt-1 w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors"
+                    className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors"
                   />
-                  <label htmlFor="subscribeToNews" className="text-sm text-gray-600 dark:text-gray-400 leading-tight cursor-pointer">
+                  <label htmlFor="subscribeToNews" className="text-xs text-gray-600 dark:text-gray-400 leading-tight cursor-pointer pt-0.5">
                     {t('auth.signup.subscribeToNews')}
                   </label>
                 </div>
@@ -450,7 +450,7 @@ export function SignUpPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white dark:bg-gray-800/50 rounded-xl p-10 shadow-2xl dark:shadow-none border border-gray-100 dark:border-white/5 backdrop-blur-sm"
+            className="bg-white dark:bg-gray-800/50 rounded-xl p-10 shadow-xl dark:shadow-2xl border border-gray-100 dark:border-white/5 backdrop-blur-sm"
           >
             <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-8 tracking-tight">{t('auth.signup.allFeaturesIncluded')}</h2>
             <div className="grid grid-cols-1 gap-y-7">
@@ -458,9 +458,9 @@ export function SignUpPage() {
                 { title: t('auth.signup.feature1Title'), desc: t('auth.signup.feature1Desc') },
                 { title: t('auth.signup.feature2Title'), desc: t('auth.signup.feature2Desc') },
                 { title: t('auth.signup.feature3Title'), desc: t('auth.signup.feature3Desc') },
-                { title: t('landing.features.cards.inventory.title'), desc: t('landing.features.cards.inventory.description') },
-                { title: t('landing.features.cards.crm.title'), desc: t('landing.features.cards.crm.description') },
-                { title: t('landing.features.cards.offline.title'), desc: t('landing.features.cards.offline.description') },
+                { title: t('auth.signup.feature5Title'), desc: t('auth.signup.feature5Desc') },
+                { title: t('auth.signup.feature6Title'), desc: t('auth.signup.feature6Desc') },
+                { title: t('auth.signup.feature7Title'), desc: t('auth.signup.feature7Desc') },
                 { title: t('dashboard.menu.recipes'), desc: t('manufacturing.subtitle', 'Track raw materials, recipes, and automatic production costs.') },
                 { title: t('auth.signup.feature4Title'), desc: t('auth.signup.feature4Desc') },
               ].map((item, i) => (
@@ -509,28 +509,28 @@ export function SignUpPage() {
               </div>
 
               <div className="space-y-6">
-                <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5">
+                <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5">
                   <input
                     id="modal-agree"
                     type="checkbox"
                     checked={modalAgreed}
                     onChange={(e) => setModalAgreed(e.target.checked)}
-                    className="mt-1 w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors"
+                    className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors"
                   />
-                  <label htmlFor="modal-agree" className="text-sm font-bold text-gray-600 dark:text-gray-300 leading-snug cursor-pointer">
+                  <label htmlFor="modal-agree" className="text-xs font-bold text-gray-600 dark:text-gray-300 leading-snug cursor-pointer pt-0.5">
                     {t('landing.contact.termsAgree')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-black hover:underline">{t('landing.contact.privacyPolicy')}</Link> {t('common.and')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-black hover:underline">{t('landing.contact.termsOfService')}</Link>.
                   </label>
                 </div>
 
-                <div className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5">
+                <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5">
                   <input
                     id="modal-subscribe"
                     type="checkbox"
                     checked={modalSubscribeToNews}
                     onChange={(e) => setSubscribeToNews(e.target.checked)}
-                    className="mt-1 w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors"
+                    className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors"
                   />
-                  <label htmlFor="modal-subscribe" className="text-sm font-bold text-gray-600 dark:text-gray-300 leading-snug cursor-pointer">
+                  <label htmlFor="modal-subscribe" className="text-xs font-bold text-gray-600 dark:text-gray-300 leading-snug cursor-pointer pt-0.5">
                     {t('auth.signup.subscribeToNews')}
                   </label>
                 </div>

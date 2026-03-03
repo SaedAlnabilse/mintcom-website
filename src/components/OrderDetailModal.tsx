@@ -66,6 +66,10 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
     const [refundReason, setRefundReason] = useState('');
     const [refundReasonError, setRefundReasonError] = useState('');
     const [isRefundSubmitting, setIsRefundSubmitting] = useState(false);
+    const [restockItems, setRestockItems] = useState(false);
+
+    // Compute if any item has trackStock enabled - check both possible data shapes
+    const hasStockTrackedItems = order?.items?.some((item: any) => item?.trackStock || item?.item?.trackStock) || false;
 
     useScrollLock(!!order);
 
@@ -106,6 +110,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
 
         setRefundReason('');
         setRefundReasonError('');
+        setRestockItems(false);
         setIsRefundReasonModalOpen(true);
     };
 
@@ -133,6 +138,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
             await api.post(`/api/orders/${order.id}/refund`, {
                 reason: trimmedReason,
                 refundReason: trimmedReason,
+                restockItems: restockItems,
             });
             toast.success(t('orders.messages.refundSuccess'));
             setIsRefundReasonModalOpen(false);
@@ -346,11 +352,10 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                             handleRefund();
                                         }}
                                         disabled={!canRefund}
-                                        className={`w-full py-4 px-6 font-black tracking-[0.2em] text-xs rounded-2xl transition-all border active:scale-95 ${
-                                            canRefund
-                                                ? 'bg-paymint-red/10 text-paymint-red hover:bg-paymint-red hover:text-white border-paymint-red/20 shadow-lg shadow-paymint-red/10'
-                                                : 'bg-gray-100 dark:bg-white/5 text-gray-400 border-gray-200 dark:border-white/10 cursor-not-allowed'
-                                        }`}
+                                        className={`w-full py-4 px-6 font-black tracking-[0.2em] text-xs rounded-2xl transition-all border active:scale-95 ${canRefund
+                                            ? 'bg-paymint-red/10 text-paymint-red hover:bg-paymint-red hover:text-white border-paymint-red/20 shadow-lg shadow-paymint-red/10'
+                                            : 'bg-gray-100 dark:bg-white/5 text-gray-400 border-gray-200 dark:border-white/10 cursor-not-allowed'
+                                            }`}
                                     >
                                         {t('orders.actions.refund')}
                                     </button>
@@ -394,6 +399,32 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                     <p className="mt-2 text-sm text-red-600">{refundReasonError}</p>
                                 )}
                             </div>
+
+                            {/* Restock Toggle */}
+                            {hasStockTrackedItems && (
+                                <div className="mt-4 flex items-center justify-between rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 p-4">
+                                    <div className="flex flex-col">
+                                        <div className="flex items-center gap-2">
+                                            <span className={`text-sm font-semibold ${restockItems ? 'text-paymint-green dark:text-paymint-green' : 'text-gray-700 dark:text-gray-300'}`}>
+                                                {t('reports.restockItems') || 'Restock Items'}
+                                            </span>
+                                        </div>
+                                        <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                            {t('reports.restockDescription') || 'Add refunded items back to inventory'}
+                                        </span>
+                                    </div>
+                                    <label className="relative inline-flex cursor-pointer items-center">
+                                        <input
+                                            type="checkbox"
+                                            className="peer sr-only"
+                                            checked={restockItems}
+                                            onChange={(e) => setRestockItems(e.target.checked)}
+                                        />
+                                        <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-paymint-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-paymint-primary/20 dark:border-gray-600 dark:bg-gray-700"></div>
+                                    </label>
+                                </div>
+                            )}
+
                             <div className="mt-5 flex gap-3">
                                 <button
                                     onClick={() => {

@@ -70,13 +70,13 @@ export const Pricing = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, amount: 0.2 }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-6 tracking-tight">
+          <h2 className="text-5xl lg:text-7xl font-bold font-sans text-gray-900 dark:text-white mb-5 leading-[1.1] rtl:leading-tight tracking-tight">
             {t('landing.pricing.title')}
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed mb-8">
+          <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl mx-auto font-light mb-8">
             {t('landing.pricing.subtitle')}
           </p>
 
@@ -110,13 +110,8 @@ export const Pricing = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative z-10 max-w-4xl mx-auto">
           {/* Main Plan Card */}
           {plans.map((plan, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
-              whileHover={{ y: -10 }}
               className={`rounded-3xl p-8 border relative flex flex-col transition-all duration-300 ${plan.highlight
                 ? 'border-paymint-green bg-white dark:bg-[#1a1a1a] shadow-2xl shadow-paymint-green/10 dark:shadow-none'
                 : 'border-gray-200 dark:border-white/10 bg-white dark:bg-[#151515] hover:border-paymint-green/30 shadow-lg shadow-gray-200/50 dark:shadow-none'
@@ -129,36 +124,24 @@ export const Pricing = () => {
               )}
 
               <div className="mb-6">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{plan.name}</h3>
+                <h3 className="text-xl font-bold font-sans text-gray-900 dark:text-white mb-2">{plan.name}</h3>
                 <p className="text-gray-600 dark:text-gray-400 text-sm h-10">{plan.description}</p>
               </div>
 
               <div className="mb-6">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={isYearly ? 'yearly' : 'monthly'}
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -5 }}
-                    className="flex items-baseline gap-1"
-                  >
-                    <span className="text-5xl font-bold text-gray-900 dark:text-white tracking-tight">${currentPrice}</span>
-                    <span className="text-gray-500 dark:text-gray-400 font-medium">{plan.period}</span>
-                  </motion.div>
-                </AnimatePresence>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-5xl font-bold text-gray-900 dark:text-white tracking-tight">${currentPrice}</span>
+                  <span className="text-gray-500 dark:text-gray-400 font-medium">{plan.period}</span>
+                </div>
 
                 {isYearly && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="mt-2 flex items-center gap-2"
-                  >
+                  <div className="mt-2 flex items-center gap-2">
                     <span className="text-sm text-gray-400 line-through">${MONTHLY_PRICE * 12}/yr</span>
                     <span className="px-2 py-0.5 rounded-full bg-paymint-green/10 text-paymint-green text-xs font-bold border border-paymint-green/20 flex items-center gap-1">
                       <Sparkles size={10} />
                       Save ${yearlySavings}
                     </span>
-                  </motion.div>
+                  </div>
                 )}
               </div>
 
@@ -190,16 +173,15 @@ export const Pricing = () => {
               >
                 {t('pricing.viewDetails')}
               </button>
-            </motion.div>
+            </div>
           ))}
 
           {/* Additional Location Card */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.2 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            whileHover={{ y: -10 }}
             className="rounded-3xl p-8 border border-gray-200 dark:border-white/10 bg-white dark:bg-[#151515] hover:border-blue-500/30 shadow-lg shadow-gray-200/50 dark:shadow-none relative flex flex-col transition-all duration-300"
           >
             <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-6 py-1.5 rounded-full text-sm font-bold shadow-lg shadow-blue-500/20 whitespace-nowrap">
@@ -209,37 +191,25 @@ export const Pricing = () => {
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-2">
                 <MapPin size={20} className="text-blue-500" />
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Additional Locations</h3>
+                <h3 className="text-xl font-bold font-sans text-gray-900 dark:text-white">Additional Locations</h3>
               </div>
               <p className="text-gray-600 dark:text-gray-400 text-sm h-10">Each extra location after your first one</p>
             </div>
 
             <div className="mb-6">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={isYearly ? 'yearly-add' : 'monthly-add'}
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -5 }}
-                  className="flex items-baseline gap-1"
-                >
-                  <span className="text-5xl font-bold text-gray-900 dark:text-white tracking-tight">${currentAdditionalPrice}</span>
-                  <span className="text-gray-500 dark:text-gray-400 font-medium">{isYearly ? '/year' : '/month'}</span>
-                </motion.div>
-              </AnimatePresence>
+              <div className="flex items-baseline gap-1">
+                <span className="text-5xl font-bold text-gray-900 dark:text-white tracking-tight">${currentAdditionalPrice}</span>
+                <span className="text-gray-500 dark:text-gray-400 font-medium">{isYearly ? '/year' : '/month'}</span>
+              </div>
 
               {isYearly && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="mt-2 flex items-center gap-2"
-                >
+                <div className="mt-2 flex items-center gap-2">
                   <span className="text-sm text-gray-400 line-through">${MONTHLY_ADDITIONAL * 12}/yr</span>
                   <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500 text-xs font-bold border border-blue-500/20 flex items-center gap-1">
                     <Sparkles size={10} />
                     Save ${yearlyAdditionalSavings}
                   </span>
-                </motion.div>
+                </div>
               )}
 
               {!isYearly && (
@@ -295,7 +265,7 @@ export const Pricing = () => {
               className="bg-white dark:bg-[#1a1a1a] w-full max-w-lg rounded-3xl shadow-2xl relative z-10 overflow-hidden border border-gray-100 dark:border-white/5 transition-colors duration-300"
             >
               <div className="p-6 border-b border-gray-100 dark:border-white/5 flex justify-between items-center bg-gray-50/50 dark:bg-transparent">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('pricing.planDetails')}</h3>
+                <h3 className="text-xl font-bold font-sans text-gray-900 dark:text-white">{t('pricing.planDetails')}</h3>
                 <button
                   onClick={() => setSelectedPlan(null)}
                   className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
@@ -306,7 +276,7 @@ export const Pricing = () => {
 
               <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">{selectedPlan.name}</h2>
+                  <h2 className="text-2xl sm:text-3xl font-bold font-sans text-gray-900 dark:text-white mb-2">{selectedPlan.name}</h2>
                   <div className="flex items-baseline justify-center gap-1 mb-2">
                     <span className="text-4xl font-bold text-paymint-green">${currentPrice}</span>
                     <span className="text-gray-500 dark:text-gray-400">{currentPeriod}</span>

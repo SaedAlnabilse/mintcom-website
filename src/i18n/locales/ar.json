@@ -359,6 +359,10 @@
       "feature4Title": "إدارة الموظفين",
       "feature5Desc": "لا تنفد الكمية أبداً مع التنبيهات والتتبع التلقائي.",
       "feature5Title": "التحكم في المخزون",
+      "feature6Desc": "ابنِ الولاء وافهم عملائك بشكل أفضل.",
+      "feature6Title": "إدارة العملاء",
+      "feature7Desc": "استمر في البيع حتى عند انقطاع الاتصال بالإنترنت.",
+      "feature7Title": "وضع عدم الاتصال",
       "firstNameLabel": "الاسم الأول",
       "firstNamePlaceholder": "جون",
       "goToLogin": "الذهاب لتسجيل الدخول",
@@ -2425,6 +2429,8 @@
     },
     "period": "الفترة",
     "reports": {
+      "restockItems": "إعادة تخزين العناصر",
+      "restockDescription": "إضافة العناصر المستردة مرة أخرى إلى المخزون المتاح",
       "cashGap": {
         "accuracyRate": "معدل الدقة",
         "balanced": "متطابق",

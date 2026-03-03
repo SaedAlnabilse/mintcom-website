@@ -23,8 +23,8 @@ export const LandingPage = () => {
         <WorkflowSupport />
         <AdminControl />
         <PricingDownload />
-        <Contact />
         <Hardware />
+        <Contact />
       </main>
       <Footer />
     </div>

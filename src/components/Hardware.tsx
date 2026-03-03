@@ -79,10 +79,10 @@ export const Hardware = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
-              {t('landing.hardware.title')} <span className="text-paymint-green">{t('landing.hardware.titleHighlight')}</span>
+            <h2 className="text-5xl lg:text-7xl font-bold font-sans text-gray-900 dark:text-white mb-5 leading-[1.1] rtl:leading-tight tracking-tight">
+              {t('landing.hardware.title')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-emerald-400">{t('landing.hardware.titleHighlight')}</span>
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl mx-auto font-light">
               {t('landing.hardware.subtitle')}
             </p>
           </motion.div>
@@ -103,7 +103,7 @@ export const Hardware = () => {
                     <item.icon size={28} className="text-paymint-green" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">{item.name}</h3>
+                    <h3 className="text-xl font-bold font-sans text-gray-900 dark:text-white">{item.name}</h3>
                     <p className="text-gray-500 dark:text-gray-400 text-sm">{item.description}</p>
                   </div>
                 </div>
@@ -172,7 +172,7 @@ export const Hardware = () => {
                     <selectedHardware.icon size={24} className="text-white" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">{selectedHardware.name}</h3>
+                    <h3 className="text-xl font-bold font-sans text-gray-900 dark:text-white">{selectedHardware.name}</h3>
                     <p className="text-gray-500 dark:text-gray-400 text-sm">{selectedHardware.description}</p>
                   </div>
                 </div>

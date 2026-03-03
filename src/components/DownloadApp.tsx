@@ -27,12 +27,12 @@ export const DownloadApp = () => {
               <span>{t('landing.download.badge')}</span>
             </div>
 
-            <h2 className="text-4xl lg:text-5xl font-bold font-sans text-gray-900 dark:text-white mb-6 tracking-tight leading-tight">
+            <h2 className="text-5xl lg:text-7xl font-bold font-sans text-gray-900 dark:text-white mb-5 leading-[1.1] rtl:leading-tight tracking-tight">
               {t('landing.download.title')} <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-paymint-green to-emerald-400">{t('landing.download.titleHighlight')}</span>
             </h2>
 
-            <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+            <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 mb-8 leading-relaxed font-light">
               {t('landing.download.description')}
             </p>
 
