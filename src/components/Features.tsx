@@ -33,11 +33,11 @@ const FeatureCard = ({ feature, index, t }: { feature: any, index: number, t: an
       viewport={{ once: true }}
       transition={{ delay: index * 0.1, duration: 0.5 }}
       whileHover={{ y: -8, scale: 1.02 }}
-      className="flex flex-col p-8 rounded-[2rem] bg-white dark:bg-[#121212] border border-gray-100 dark:border-white/5 hover:border-paymint-green/30 shadow-xl shadow-gray-200/20 dark:shadow-none hover:shadow-2xl hover:shadow-paymint-green/10 transition-all duration-500 group relative overflow-hidden"
+      className="flex flex-col p-8 rounded-xl bg-white dark:bg-[#121212] border border-gray-100 dark:border-white/5 hover:border-paymint-green/30 shadow-xl shadow-gray-200/20 dark:shadow-none hover:shadow-2xl hover:shadow-paymint-green/10 transition-all duration-500 group relative overflow-hidden"
     >
       <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-      <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-paymint-green/10 dark:bg-white/5 flex items-center justify-center mb-6 group-hover:bg-paymint-green group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-inner">
+      <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-paymint-green/10 dark:bg-white/5 flex items-center justify-center mb-6 group-hover:bg-paymint-green group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-inner">
         <div className="text-paymint-green group-hover:text-white transition-colors duration-500">
           {feature.icon}
         </div>
@@ -59,7 +59,7 @@ const FeatureCard = ({ feature, index, t }: { feature: any, index: number, t: an
             onClick={() => setIsExpanded(!isExpanded)}
             className="mt-4 text-sm font-bold text-paymint-green hover:text-paymint-green/80 self-start transition-colors focus:outline-none"
           >
-            {isExpanded ? t('landing.common.readLess', 'Read less') : t('landing.common.readMore', 'Read more')}
+            {isExpanded ? t('landing.features.readLess', 'Read less') : t('landing.features.readMore', 'Read more')}
           </button>
         )}
       </div>
@@ -166,7 +166,7 @@ export const Features = () => {
             transition={{ duration: 0.7 }}
             className="w-full max-w-5xl mx-auto"
           >
-            <div className="relative rounded-[2.5rem] overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-200 dark:border-white/10 aspect-video bg-gray-900 group">
+            <div className="relative rounded-xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-200 dark:border-white/10 aspect-video bg-gray-900 group">
               {isVideoVisible ? (
                 <iframe
                   src="https://player.vimeo.com/video/1158972798?h=234e7f9175&autoplay=1&background=1&muted=1&loop=1"

@@ -131,7 +131,7 @@ export function LoginPage() {
           {t('auth.login.backToHome')}
         </Link>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-2xl p-8 transition-colors duration-300 border border-gray-100 dark:border-transparent">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-none p-8 transition-colors duration-300 border border-gray-200 dark:border-white/10">
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
               <img
@@ -174,7 +174,7 @@ export function LoginPage() {
                   aria-describedby={errors.email ? 'email-error' : undefined}
                   autoComplete="email"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 pl-10 pr-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
+                    } rounded-xl py-3 pl-10 pr-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
                   placeholder={t('auth.login.emailPlaceholder')}
                 />
               </div>
@@ -197,7 +197,7 @@ export function LoginPage() {
                   aria-describedby={errors.password ? 'password-error' : undefined}
                   autoComplete="current-password"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 pl-10 pr-12 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
+                    } rounded-xl py-3 pl-10 pr-12 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
                   placeholder={t('auth.login.passwordPlaceholder')}
                 />
                 <button
@@ -231,7 +231,7 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-PayMint-green text-black text-xs font-black tracking-widest hover:bg-PayMint-green/90 disabled:opacity-50 disabled:cursor-PayMint-wait py-3 px-4 rounded-lg transition-colors shadow-lg shadow-PayMint-green/20"
+              className="w-full bg-paymint-green text-black text-xs font-black tracking-widest hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-wait py-5 rounded-xl transition-all shadow-md shadow-paymint-green/20"
             >
               {isSubmitting ? t('auth.login.loggingIn') : t('auth.login.loginButton')}
             </button>
@@ -256,7 +256,7 @@ export function LoginPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-md relative border border-gray-100 dark:border-gray-700"
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-md relative border border-gray-200 dark:border-white/10"
             >
               <button
                 onClick={() => setShowVerifyModal(false)}
@@ -285,7 +285,7 @@ export function LoginPage() {
                 <button
                   onClick={handleResendVerification}
                   disabled={isResending}
-                  className="w-full flex items-center justify-center bg-PayMint-green text-black text-xs font-black tracking-widest py-3 px-4 rounded-lg hover:bg-PayMint-green/90 transition-colors disabled:opacity-50"
+                  className="w-full flex items-center justify-center bg-paymint-green text-black text-xs font-black tracking-widest py-5 rounded-xl hover:bg-paymint-green/90 transition-all shadow-md shadow-paymint-green/20 disabled:opacity-50"
                 >
                   {isResending ? (
                     t('auth.verifyEmail.sending')
@@ -298,7 +298,7 @@ export function LoginPage() {
                 </button>
                 <button
                   onClick={() => setShowVerifyModal(false)}
-                  className="w-full py-3 px-4 rounded-lg border border-gray-200 dark:border-gray-700 text-xs font-black tracking-widest text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  className="w-full py-3 px-4 rounded-xl border border-gray-200 dark:border-gray-700 text-xs font-black tracking-widest text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
                   {t('common.close').toUpperCase()}
                 </button>
@@ -310,6 +310,3 @@ export function LoginPage() {
     </div>
   );
 }
-
-
-

@@ -1729,6 +1729,18 @@
       "watchVideo": "See how it works"
     },
     "pricing": {
+      "monthly": "MONTHLY",
+      "yearly": "YEARLY",
+      "monthlyPlan": "Monthly Plan",
+      "yearlyPlan": "Yearly Plan",
+      "perMonth": "/MONTH",
+      "perYear": "/YEAR",
+      "fullAccess": "FULL ACCESS",
+      "save": "SAVE",
+      "billedAnnually": "Billed annually.",
+      "noCommitment": "No commitment.",
+      "saveAmount": "SAVE ${{amount}}",
+      "planDescription": "",
       "features": {
         "adminApp": "Access to the Admin Mobile App",
         "advancedReporting": "Advanced Reporting",
@@ -1742,10 +1754,6 @@
         "support": "Dedicated customer support",
         "unlimitedStaff": "Unlimited staff accounts"
       },
-      "monthly": "Monthly",
-      "monthlyPlan": "Monthly Plan",
-      "perMonth": "/month",
-      "planDescription": "",
       "plans": {
         "enterprise": {
           "description": "Tailored solutions for large-scale operations.",
@@ -1786,8 +1794,7 @@
       "standardPrice": "20$",
       "startFreeTrial": "Start Free Trial",
       "subtitle": "Your \"aha\" moment is just minutes away.",
-      "title": "Get Started",
-      "yearly": "Yearly"
+      "title": "Get Started"
     },
     "workflow": {
       "cloudSync": {

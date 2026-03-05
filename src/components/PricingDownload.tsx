@@ -31,7 +31,7 @@ export const PricingDownload = () => {
     const YEARLY_PRICE = 210;
 
     const currentPrice = isYearly ? YEARLY_PRICE : MONTHLY_PRICE;
-    const currentPeriod = isYearly ? '/YEAR' : '/MONTH';
+    const currentPeriod = isYearly ? t('landing.pricing.perYear') : t('landing.pricing.perMonth');
     const yearlySavings = (MONTHLY_PRICE * 12) - YEARLY_PRICE; // $30
 
     const plan = {
@@ -91,7 +91,7 @@ export const PricingDownload = () => {
                                 : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                                 }`}
                         >
-                            MONTHLY
+                            {t('landing.pricing.monthly')}
                         </button>
                         <button
                             onClick={() => setIsYearly(true)}
@@ -100,12 +100,12 @@ export const PricingDownload = () => {
                                 : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                                 }`}
                         >
-                            YEARLY
+                            {t('landing.pricing.yearly')}
                             <span className={`absolute -top-2 -right-2 px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider ${isYearly
                                 ? 'bg-black text-paymint-green'
                                 : 'bg-paymint-green text-black'
                                 } shadow-lg`}>
-                                SAVE
+                                {t('landing.pricing.save')}
                             </span>
                         </button>
                     </motion.div>
@@ -124,14 +124,14 @@ export const PricingDownload = () => {
                         <div className="relative group h-full">
                             {/* Card Content */}
 
-                            <div className="relative h-full bg-white dark:bg-[#0c0c0c] border border-gray-100 dark:border-white/10 rounded-[2.5rem] p-8 lg:p-12 shadow-xl shadow-gray-200/40 dark:shadow-none transition-all duration-500 group-hover:translate-y-[-8px] flex flex-col">
+                            <div className="relative h-full bg-white dark:bg-[#0c0c0c] border border-gray-100 dark:border-white/10 rounded-xl p-8 lg:p-12 shadow-xl shadow-gray-200/40 dark:shadow-none transition-all duration-500 group-hover:translate-y-[-8px] flex flex-col">
 
                                 {/* Plan Identity */}
                                 <div className="flex justify-between items-start mb-8">
                                     <div>
-                                        <div className="text-paymint-green text-xs font-black uppercase tracking-widest mb-1 italic">FULL ACCESS</div>
+                                        <div className="text-paymint-green text-xs font-black uppercase tracking-widest mb-1 italic">{t('landing.pricing.fullAccess')}</div>
                                         <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                                            {isYearly ? 'Yearly' : 'Monthly'} Plan
+                                            {isYearly ? t('landing.pricing.yearlyPlan') : t('landing.pricing.monthlyPlan')}
                                         </h3>
                                     </div>
                                 </div>
@@ -166,13 +166,13 @@ export const PricingDownload = () => {
                                             <span className="text-sm font-bold text-gray-400 line-through">${MONTHLY_PRICE * 12}/yr</span>
                                             <span className="px-3 py-1 rounded-full bg-paymint-green/10 text-paymint-green text-xs font-black tracking-wider border border-paymint-green/20 flex items-center gap-1.5">
                                                 <Sparkles size={12} />
-                                                SAVE ${yearlySavings}
+                                                {t('landing.pricing.saveAmount', { amount: yearlySavings })}
                                             </span>
                                         </motion.div>
                                     )}
 
                                     <p className="text-gray-500 dark:text-gray-400 mt-3 text-sm font-bold leading-relaxed italic">
-                                        {isYearly ? 'Billed annually.' : 'No commitment.'}
+                                        {isYearly ? t('landing.pricing.billedAnnually') : t('landing.pricing.noCommitment')}
                                     </p>
                                 </div>
 
@@ -232,7 +232,7 @@ export const PricingDownload = () => {
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="bg-white dark:bg-[#1a1a1a] w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden border border-gray-100 dark:border-white/5"
+                            className="bg-white dark:bg-[#1a1a1a] w-full max-w-lg rounded-xl shadow-2xl relative z-10 overflow-hidden border border-gray-100 dark:border-white/5"
                         >
                             <div className="p-10">
                                 <div className="text-center mb-10">
@@ -246,7 +246,7 @@ export const PricingDownload = () => {
                                     </div>
                                 </div>
 
-                                <div className="bg-gray-50 dark:bg-white/5 rounded-3xl p-8 mb-10 border border-gray-100 dark:border-white/5">
+                                <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-8 mb-10 border border-gray-100 dark:border-white/5">
                                     <h4 className="font-bold text-gray-900 dark:text-white mb-6 text-xs uppercase tracking-[0.2em]">{t('pricing.whatsIncluded')}</h4>
                                     <ul className="grid grid-cols-1 gap-4">
                                         {[...plan.features, ...plan.detailedFeatures].map((feature, i) => (

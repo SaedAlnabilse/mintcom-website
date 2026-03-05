@@ -42,9 +42,9 @@ export const AdminControl = () => {
             className="w-full lg:w-1/2 relative flex justify-center items-center h-[500px] lg:justify-start"
           >
             {/* iPhone Frame Mockup (Left/Back) */}
-            <div className="absolute left-[10%] lg:left-[5%] w-[220px] h-[460px] bg-[#0a0a0a] rounded-[2.5rem] border-[6px] border-gray-800 shadow-2xl overflow-hidden ring-1 ring-white/10 group z-10 transform -rotate-6 scale-95 opacity-80 hover:rotate-0 hover:scale-100 hover:z-30 hover:opacity-100 transition-all duration-500">
+            <div className="absolute left-[10%] lg:left-[5%] w-[220px] h-[460px] bg-[#0a0a0a] rounded-xl border-[6px] border-gray-800 shadow-2xl overflow-hidden ring-1 ring-white/10 group z-10 transform -rotate-6 scale-95 opacity-80 hover:rotate-0 hover:scale-100 hover:z-30 hover:opacity-100 transition-all duration-500">
               {/* iPhone Notch */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-5 bg-gray-800 rounded-b-2xl z-30" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-5 bg-gray-800 rounded-b-xl z-30" />
 
               {/* App UI Container */}
               <div className="w-full h-full pt-10 pb-4 px-3 flex flex-col gap-3 relative z-10 bg-gradient-to-b from-gray-900 to-[#0a0a0a]">
@@ -110,7 +110,7 @@ export const AdminControl = () => {
             </div>
 
             {/* Android Frame Mockup (Right/Front) */}
-            <div className="absolute left-[35%] lg:left-[45%] w-[240px] h-[480px] bg-[#0a0a0a] rounded-[2rem] border-[6px] border-gray-800 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] overflow-hidden ring-1 ring-white/10 group z-20 transform rotate-3 hover:-translate-y-2 transition-all duration-500">
+            <div className="absolute left-[35%] lg:left-[45%] w-[240px] h-[480px] bg-[#0a0a0a] rounded-xl border-[6px] border-gray-800 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)] overflow-hidden ring-1 ring-white/10 group z-20 transform rotate-3 hover:-translate-y-2 transition-all duration-500">
               {/* Android Hole Punch */}
               <div className="absolute top-2 left-1/2 -translate-x-1/2 w-3 h-3 bg-black border border-gray-800 rounded-full z-30 shadow-inner" />
 
@@ -134,7 +134,7 @@ export const AdminControl = () => {
                   whileInView={{ y: 0, opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.3, duration: 0.5 }}
-                  className="bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 rounded-2xl p-4 shadow-lg shadow-paymint-green/5 relative overflow-hidden"
+                  className="bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 rounded-xl p-4 shadow-lg shadow-paymint-green/5 relative overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 w-20 h-20 bg-paymint-green/20 rounded-full blur-2xl pointer-events-none" />
                   <div className="flex justify-between items-start mb-3 relative z-10">
@@ -215,7 +215,7 @@ export const AdminControl = () => {
             </h2>
 
             {/* Logo Lockup */}
-            <div className="flex items-center gap-6 mb-8 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 w-fit">
+            <div className="flex items-center gap-6 mb-8 p-4 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-100 dark:border-white/5 w-fit">
               <img src={WhiteLogo} alt={t('common.logoAlt')} width={128} height={32} className="h-8 w-auto object-contain hidden dark:block" loading="lazy" decoding="async" />
               <img src={GreenLogo} alt={t('common.logoAlt')} width={128} height={32} className="h-8 w-auto object-contain block dark:hidden" loading="lazy" decoding="async" />
               <div className="h-8 w-px bg-gray-300 dark:bg-white/20"></div>

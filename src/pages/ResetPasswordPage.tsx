@@ -65,7 +65,7 @@ export function ResetPasswordPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 max-w-md w-full text-center shadow-2xl shadow-gray-200/50 dark:shadow-none"
+          className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-white/10 p-8 lg:p-12 max-w-md w-full text-center shadow-lg shadow-gray-200/50 dark:shadow-none"
         >
           <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-8">
             <XCircle className="w-10 h-10 text-accent" />
@@ -76,7 +76,7 @@ export function ResetPasswordPage() {
           </p>
           <Link
             to="/forgot-password"
-            className="inline-flex items-center justify-center w-full bg-paymint-green text-black text-xs font-black tracking-widest py-4 px-6 rounded-2xl hover:bg-paymint-green/90 transition-all active:scale-95 shadow-lg shadow-paymint-green/20"
+            className="inline-flex items-center justify-center w-full bg-paymint-green text-black text-xs font-black tracking-widest py-4 px-6 rounded-xl hover:bg-paymint-green/90 transition-all active:scale-95 shadow-md shadow-paymint-green/20"
           >
             {t('auth.resetPassword.getNewLink')}
           </Link>
@@ -91,7 +91,7 @@ export function ResetPasswordPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 max-w-md w-full text-center shadow-2xl shadow-gray-200/50 dark:shadow-none"
+          className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-white/10 p-8 lg:p-12 max-w-md w-full text-center shadow-lg shadow-gray-200/50 dark:shadow-none"
         >
           <div className="w-20 h-20 bg-paymint-green/10 rounded-full flex items-center justify-center mx-auto mb-8">
             <CheckCircle className="w-10 h-10 text-paymint-green" />
@@ -102,7 +102,7 @@ export function ResetPasswordPage() {
           </p>
           <Link
             to="/login"
-            className="inline-flex items-center justify-center w-full bg-gray-900 dark:bg-white text-white dark:text-black text-xs font-black tracking-widest py-4 px-6 rounded-2xl hover:scale-105 transition-all active:scale-95 shadow-lg shadow-gray-900/20"
+            className="inline-flex items-center justify-center w-full bg-gray-900 dark:bg-white text-white dark:text-black text-xs font-black tracking-widest py-4 px-6 rounded-xl hover:scale-105 transition-all active:scale-95 shadow-md shadow-gray-900/20"
           >
             {t('auth.resetPassword.goToLogin')}
           </Link>
@@ -116,7 +116,7 @@ export function ResetPasswordPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-white/5 rounded-[2.5rem] border border-gray-200 dark:border-white/10 p-8 lg:p-12 max-w-md w-full shadow-2xl shadow-gray-200/50 dark:shadow-none"
+        className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-white/10 p-8 lg:p-12 max-w-md w-full shadow-lg shadow-gray-200/50 dark:shadow-none"
       >
         <div className="text-center mb-10">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 tracking-tight">
@@ -133,7 +133,7 @@ export function ResetPasswordPage() {
               <input
                 type={showPassword ? 'text' : 'password'}
                 {...register('password')}
-                className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 pl-12 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
+                className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-4 pl-12 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
                 placeholder="••••••••"
               />
               <button
@@ -154,7 +154,7 @@ export function ResetPasswordPage() {
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
                 {...register('confirmPassword')}
-                className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl py-4 pl-12 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
+                className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-4 pl-12 pr-12 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
                 placeholder="••••••••"
               />
               <button
@@ -172,7 +172,7 @@ export function ResetPasswordPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-paymint-green text-black text-xs font-black tracking-widest py-4 px-6 rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95"
+              className="w-full bg-paymint-green text-black text-xs font-black tracking-widest py-4 px-6 rounded-xl hover:bg-paymint-green/90 transition-all shadow-md shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-95"
             >
               {isLoading ? <Loader2 className="animate-spin" size={20} /> : null}
               {t('auth.resetPassword.reset').toUpperCase()}

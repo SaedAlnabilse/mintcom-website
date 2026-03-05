@@ -114,7 +114,7 @@ export const Hardware = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white dark:bg-white/5 rounded-3xl p-8 border border-gray-200 dark:border-white/10 hover:border-paymint-green/30 transition-all shadow-lg shadow-gray-200/50 dark:shadow-none"
+                className="bg-white dark:bg-white/5 rounded-xl p-8 border border-gray-200 dark:border-white/10 hover:border-paymint-green/30 transition-all shadow-lg shadow-gray-200/50 dark:shadow-none"
               >
                 <div className="flex items-start gap-4 mb-6">
                   <div className="w-14 h-14 rounded-2xl bg-paymint-green/10 dark:bg-paymint-green/20 flex items-center justify-center">
@@ -181,7 +181,7 @@ export const Hardware = () => {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white dark:bg-[#1a1a1a] rounded-3xl border border-gray-100 dark:border-white/5 max-w-2xl w-full max-h-[85vh] overflow-hidden shadow-2xl"
+              className="bg-white dark:bg-[#1a1a1a] rounded-xl border border-gray-100 dark:border-white/5 max-w-2xl w-full max-h-[85vh] overflow-hidden shadow-2xl"
             >
               {/* Header */}
               <div className="bg-gray-50 dark:bg-black/20 border-b border-gray-100 dark:border-white/5 p-6 flex items-center justify-between">
@@ -229,7 +229,7 @@ export const Hardware = () => {
                       href={product.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 rounded-2xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group border border-transparent hover:border-paymint-green/30"
+                      className="flex items-center justify-between p-4 bg-gray-50 dark:bg-black/20 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group border border-transparent hover:border-paymint-green/30"
                     >
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-xl bg-paymint-green/10 dark:bg-paymint-green/20 flex items-center justify-center group-hover:bg-paymint-green transition-colors">
@@ -252,7 +252,7 @@ export const Hardware = () => {
                 </div>
 
                 {/* Note */}
-                <div className="p-4 bg-blue-50 dark:bg-blue-500/10 rounded-2xl border border-blue-200 dark:border-blue-500/20">
+                <div className="p-4 bg-blue-50 dark:bg-blue-500/10 rounded-xl border border-blue-200 dark:border-blue-500/20">
                   <p className="text-sm text-blue-700 dark:text-blue-400">
                     <span className="font-bold">💡 {t('common.tip')}:</span> {selectedHardware.note}
                   </p>

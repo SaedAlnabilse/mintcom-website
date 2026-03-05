@@ -27,6 +27,11 @@
     font-family: 'Noto Sans Arabic', 'Inter', sans-serif;
   }
 
+  html[dir="rtl"] * {
+    letter-spacing: normal !important;
+    font-feature-settings: "kern" 1, "liga" 1 !important;
+  }
+
   html[dir="rtl"] body {
     text-align: right;
   }

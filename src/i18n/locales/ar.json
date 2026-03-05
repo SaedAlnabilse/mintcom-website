@@ -757,8 +757,8 @@
     "yr": "/سنة",
     "year": "سنة",
     "month": "شهر",
-    "monthly": "شهري",
-    "yearly": "سنوي",
+    "monthly": "شهرياً",
+    "yearly": "سنوياً",
     "more": "المزيد",
     "na": "غ/م",
     "name": "الاسم",
@@ -1742,7 +1742,6 @@
       },
       "monthly": "شهرياً",
       "monthlyPlan": "الخطة الشهرية",
-      "perMonth": "/شهر",
       "planDescription": "",
       "plans": {
         "enterprise": {
@@ -1783,9 +1782,31 @@
       "save20": "وفر 20%",
       "standardPrice": "20$",
       "startFreeTrial": "ابدأ التجربة المجانية",
-      "subtitle": "لحظة \"اكتشافك\" على بعد دقائق فقط.",
+      "subtitle": "لحظة الـ \"aha\" الخاصة بك على بعد دقائق فقط.",
       "title": "ابدأ الآن",
-      "yearly": "سنوياً"
+      "yearly": "سنوياً",
+      "perYear": "/سنة",
+      "perMonth": "/شهر",
+      "yearlyPlan": "الخطة السنوية",
+      "fullAccess": "وصول كامل",
+      "save": "وفر",
+      "billedAnnually": "يتم الفوترة سنوياً",
+      "noCommitment": "بدون التزام",
+      "saveAmount": "وفر {{amount}}$",
+      "multiBranch": "متعدد الفروع",
+      "additionalLocations": "مواقع إضافية",
+      "additionalLocationsDesc": "كل موقع إضافي بعد موقعك الأول",
+      "addLocation": "إضافة موقع",
+      "additionalFeatures": {
+        "fullAccess": "نفس مستوى الوصول الكامل لموقعك الأساسي",
+        "centralized": "إدارة مركزية من لوحة تحكم واحدة",
+        "separate": "موظفين ومخزون منفصل لكل فرع",
+        "combinedReports": "تقارير مجمعة أو مفلترة حسب الفرع"
+      },
+      "insteadOf": "بدلاً من",
+      "viewDetails": "عرض التفاصيل",
+      "planDetails": "تفاصيل الخطة",
+      "whatsIncluded": "ما الذي تتضمنه الخطة"
     },
     "workflow": {
       "cloudSync": {

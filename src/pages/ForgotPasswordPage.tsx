@@ -66,7 +66,7 @@ export function ForgotPasswordPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-white/5 rounded-[2.5rem] shadow-2xl shadow-gray-200/50 dark:shadow-none p-8 lg:p-12 border border-gray-200 dark:border-white/10"
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-none p-8 lg:p-12 border border-gray-200 dark:border-white/10"
             >
               <div className="text-center mb-10">
                 <div className="w-16 h-16 bg-paymint-green/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
@@ -84,7 +84,7 @@ export function ForgotPasswordPage() {
                     <input
                       type="email"
                       {...register('email')}
-                      className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-white/10'} rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
+                      className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-white/10'} rounded-xl py-4 pl-12 pr-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all`}
                       placeholder={t('auth.login.emailPlaceholder')}
                     />
                   </div>
@@ -96,7 +96,7 @@ export function ForgotPasswordPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3"
+                  className="w-full py-5 bg-paymint-green text-black text-xs font-black tracking-widest rounded-xl hover:bg-paymint-green/90 transition-all shadow-md shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3"
                 >
                   {isSubmitting ? <Loader2 className="animate-spin" size={24} /> : null}
                   {t('auth.forgotPassword.sendLink')}
@@ -108,7 +108,7 @@ export function ForgotPasswordPage() {
               key="success"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white dark:bg-white/5 rounded-[2.5rem] shadow-2xl shadow-gray-200/50 dark:shadow-none p-8 lg:p-12 border border-gray-200 dark:border-white/10 text-center"
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-none p-8 lg:p-12 border border-gray-200 dark:border-white/10 text-center"
             >
               <div className="w-20 h-20 bg-paymint-green/10 rounded-full flex items-center justify-center mx-auto mb-8">
                 <CheckCircle2 className="text-paymint-green" size={40} />

@@ -85,7 +85,7 @@ export const WorkflowSupport = () => {
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1, duration: 0.5 }}
                     whileHover={{ scale: 1.02 }}
-                    className="group flex items-start gap-4 p-5 rounded-2xl border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 hover:border-paymint-green/30 hover:shadow-lg hover:shadow-paymint-green/5 transition-all duration-300"
+                    className="group flex items-start gap-4 p-5 rounded-xl border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 hover:border-paymint-green/30 hover:shadow-lg hover:shadow-paymint-green/5 transition-all duration-300"
                   >
                     <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-paymint-green/10 dark:bg-paymint-green/20 flex items-center justify-center group-hover:bg-paymint-green group-hover:scale-110 transition-all duration-300">
                       <feature.icon size={20} className="text-paymint-green group-hover:text-white transition-colors" />
@@ -107,8 +107,8 @@ export const WorkflowSupport = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="w-full lg:w-1/2 relative"
             >
-              <div className="absolute -inset-4 bg-gradient-to-r from-paymint-green/20 to-blue-500/20 rounded-[2rem] blur-2xl opacity-50" />
-              <div className="relative bg-[#0a0a0a] rounded-2xl overflow-hidden shadow-2xl border border-white/10 p-5">
+              <div className="absolute -inset-4 bg-gradient-to-r from-paymint-green/20 to-blue-500/20 rounded-xl blur-2xl opacity-50" />
+              <div className="relative bg-[#0a0a0a] rounded-xl overflow-hidden shadow-2xl border border-white/10 p-5">
                 {/* Dashboard Header */}
                 <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-2">

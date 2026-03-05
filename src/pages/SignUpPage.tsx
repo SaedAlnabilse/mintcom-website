@@ -155,7 +155,7 @@ export function SignUpPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-2xl p-8 max-w-md w-full text-center border border-gray-100 dark:border-transparent transition-colors duration-300"
+          className="bg-white dark:bg-gray-800 rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-none p-8 max-w-md w-full text-center border border-gray-200 dark:border-white/10 transition-colors duration-300"
         >
           <div className="w-16 h-16 bg-PayMint-green/10 dark:bg-PayMint-green/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <Check className="w-8 h-8 text-PayMint-green" />
@@ -173,7 +173,7 @@ export function SignUpPage() {
           </div>
           <Link
             to="/login"
-            className="inline-flex items-center justify-center w-full bg-PayMint-green text-black font-bold py-3 px-4 rounded-lg transition-colors shadow-lg shadow-PayMint-green/20"
+            className="inline-flex items-center justify-center w-full bg-paymint-green text-black text-xs font-black tracking-widest py-5 rounded-xl transition-all shadow-md shadow-paymint-green/20"
           >
             {t('auth.signup.goToLogin')}
           </Link>
@@ -197,7 +197,7 @@ export function SignUpPage() {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl p-8 flex flex-col items-center gap-4 shadow-2xl"
+              className="bg-white dark:bg-gray-800 rounded-xl p-8 flex flex-col items-center gap-4 shadow-2xl"
             >
               <Loader2 className="w-16 h-16 text-PayMint-green animate-spin" />
               <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.signup.creatingYourAccount')}</p>
@@ -239,7 +239,7 @@ export function SignUpPage() {
             <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('auth.signup.subtitle')}</p>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-2xl p-8 transition-colors duration-300 border border-gray-100 dark:border-transparent">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-none p-8 transition-colors duration-300 border border-gray-200 dark:border-white/10">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -256,7 +256,7 @@ export function SignUpPage() {
                       aria-describedby={errors.firstName ? 'firstName-error' : undefined}
                       autoComplete="given-name"
                       className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.firstName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                        } rounded-lg py-3 ps-10 pe-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
+                        } rounded-xl py-3 ps-10 pe-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
                       placeholder={t('auth.signup.firstNamePlaceholder')}
                     />
                   </div>
@@ -276,7 +276,7 @@ export function SignUpPage() {
                     aria-describedby={errors.lastName ? 'lastName-error' : undefined}
                     autoComplete="family-name"
                     className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.lastName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                      } rounded-lg py-3 px-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
+                      } rounded-xl py-3 px-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
                     placeholder={t('auth.signup.lastNamePlaceholder')}
                   />
                   {errors.lastName?.message && (
@@ -299,7 +299,7 @@ export function SignUpPage() {
                     aria-describedby={errors.email ? 'email-error' : undefined}
                     autoComplete="email"
                     className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                      } rounded-lg py-3 ps-10 pe-4 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
+                      } rounded-xl py-3 ps-10 pe-4 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
                     placeholder={t('auth.signup.emailPlaceholder')}
                   />
                 </div>
@@ -322,7 +322,7 @@ export function SignUpPage() {
                     aria-describedby={errors.password ? 'password-error' : undefined}
                     autoComplete="new-password"
                     className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                      } rounded-lg py-3 ps-10 pe-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
+                      } rounded-xl py-3 ps-10 pe-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
                     placeholder={t('auth.signup.passwordPlaceholder')}
                   />
                   <button
@@ -353,7 +353,7 @@ export function SignUpPage() {
                     aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
                     autoComplete="new-password"
                     className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.confirmPassword ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                      } rounded-lg py-3 ps-10 pe-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
+                      } rounded-xl py-3 ps-10 pe-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
                     placeholder={t('auth.signup.confirmPasswordPlaceholder')}
                   />
                   <button
@@ -403,7 +403,7 @@ export function SignUpPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-PayMint-green text-black text-xs font-black tracking-widest hover:bg-PayMint-green/90 disabled:opacity-50 disabled:cursor-PayMint-wait py-3 px-4 rounded-lg transition-colors shadow-lg shadow-PayMint-green/20"
+                className="w-full bg-paymint-green text-black text-xs font-black tracking-widest hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-wait py-5 rounded-xl transition-all shadow-md shadow-paymint-green/20"
               >
                 {isSubmitting ? t('auth.signup.creatingAccount') : t('auth.signup.signUpButton')}
               </button>
@@ -450,7 +450,7 @@ export function SignUpPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white dark:bg-gray-800/50 rounded-xl p-10 shadow-xl dark:shadow-2xl border border-gray-100 dark:border-white/5 backdrop-blur-sm"
+            className="bg-white dark:bg-gray-800/50 rounded-xl p-10 shadow-lg shadow-gray-200/50 dark:shadow-none border border-gray-200 dark:border-white/10 backdrop-blur-sm"
           >
             <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-8 tracking-tight">{t('auth.signup.allFeaturesIncluded')}</h2>
             <div className="grid grid-cols-1 gap-y-7">
@@ -509,36 +509,46 @@ export function SignUpPage() {
               </div>
 
               <div className="space-y-6">
-                <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5">
-                  <input
-                    id="modal-agree"
-                    type="checkbox"
-                    checked={modalAgreed}
-                    onChange={(e) => setModalAgreed(e.target.checked)}
-                    className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-PayMint-green focus:ring-PayMint-green cursor-pointer transition-colors"
-                  />
-                  <label htmlFor="modal-agree" className="text-xs font-bold text-gray-600 dark:text-gray-300 leading-snug cursor-pointer pt-0.5">
-                    {t('landing.contact.termsAgree')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-PayMint-green font-black hover:underline">{t('landing.contact.privacyPolicy')}</Link> {t('common.and')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-PayMint-green font-black hover:underline">{t('landing.contact.termsOfService')}</Link>.
+                <div
+                  className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 cursor-pointer"
+                  onClick={() => setModalAgreed(!modalAgreed)}
+                >
+                  <label htmlFor="modal-agree" className="relative flex items-center justify-center pointer-events-none">
+                    <input
+                      id="modal-agree"
+                      type="checkbox"
+                      checked={modalAgreed}
+                      readOnly
+                      className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-PayMint-green focus:ring-PayMint-green transition-colors"
+                    />
                   </label>
+                  <div className="text-xs font-bold text-gray-600 dark:text-gray-300 leading-snug pt-0.5 select-none" onClick={(e) => e.stopPropagation()}>
+                    {t('landing.contact.termsAgree')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-PayMint-green font-black hover:underline">{t('landing.contact.privacyPolicy')}</Link> {t('common.and')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-PayMint-green font-black hover:underline">{t('landing.contact.termsOfService')}</Link>.
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5">
-                  <input
-                    id="modal-subscribe"
-                    type="checkbox"
-                    checked={modalSubscribeToNews}
-                    onChange={(e) => setSubscribeToNews(e.target.checked)}
-                    className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-PayMint-green focus:ring-PayMint-green cursor-pointer transition-colors"
-                  />
-                  <label htmlFor="modal-subscribe" className="text-xs font-bold text-gray-600 dark:text-gray-300 leading-snug cursor-pointer pt-0.5">
-                    {t('auth.signup.subscribeToNews')}
+                <div
+                  className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 cursor-pointer"
+                  onClick={() => setSubscribeToNews(!subscribeToNews)}
+                >
+                  <label htmlFor="modal-subscribe" className="relative flex items-center justify-center pointer-events-none">
+                    <input
+                      id="modal-subscribe"
+                      type="checkbox"
+                      checked={subscribeToNews}
+                      readOnly
+                      className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-PayMint-green focus:ring-PayMint-green transition-colors"
+                    />
                   </label>
+                  <div className="text-xs font-bold text-gray-600 dark:text-gray-300 leading-snug pt-0.5 select-none" onClick={(e) => e.stopPropagation()}>
+                    {t('auth.signup.subscribeToNews')}
+                  </div>
                 </div>
 
                 <button
                   onClick={handleModalContinue}
                   disabled={!modalAgreed}
-                  className="w-full py-4 bg-PayMint-green text-black font-black text-sm tracking-widest rounded-xl hover:bg-PayMint-green/90 transition-all shadow-xl shadow-PayMint-green/20 disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-2"
+                  className="w-full py-5 bg-paymint-green text-black font-black text-xs tracking-widest rounded-xl hover:bg-paymint-green/90 transition-all shadow-md shadow-paymint-green/20 disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-2"
                 >
                   {t('common.continue').toUpperCase()}
                   <Check size={18} strokeWidth={3} />

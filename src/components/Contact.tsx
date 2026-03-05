@@ -64,7 +64,7 @@ export const Contact = () => {
     <section id="contact" className="py-16 lg:py-20 bg-white dark:bg-[#050505] relative overflow-hidden transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       <div className="container mx-auto px-8 md:px-16 lg:px-24 relative z-10">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col lg:flex-row items-stretch bg-gray-50 dark:bg-white/5 rounded-[3rem] border border-gray-200 dark:border-white/10 overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none">
+          <div className="flex flex-col lg:flex-row items-stretch bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none">
 
             {/* Contact Info Sidebar */}
             <div className="lg:w-2/5 bg-gray-100 dark:bg-gray-900 p-12 lg:p-16 relative overflow-hidden flex flex-col justify-between">
@@ -78,10 +78,10 @@ export const Contact = () => {
                 <div className="space-y-8">
                   {[
                     { icon: Mail, label: t('common.email'), value: 'hello@paymint.com', color: 'text-paymint-green' },
-                    { icon: Phone, label: t('common.phone'), value: '+962 7XXXXXXXX', color: 'text-blue-400' },
+                    { icon: Phone, label: t('common.phone'), value: '+962 7XXXXXXXX', color: 'text-paymint-green' },
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-4 group">
-                      <div className="w-12 h-12 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center transition-transform duration-500 shadow-sm dark:shadow-none">
+                      <div className="w-12 h-12 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center transition-transform duration-500 shadow-sm dark:shadow-none">
                         <item.icon size={20} className={item.color} />
                       </div>
                       <div>
@@ -137,7 +137,7 @@ export const Contact = () => {
                           name="fullName"
                           value={formData.fullName}
                           onChange={handleInputChange}
-                          className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-2xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
+                          className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
                           placeholder={t('landing.contact.placeholder.name')}
                         />
                       </div>
@@ -149,7 +149,7 @@ export const Contact = () => {
                           name="businessName"
                           value={formData.businessName}
                           onChange={handleInputChange}
-                          className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-2xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
+                          className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
                           placeholder={t('landing.contact.placeholder.business')}
                         />
                       </div>
@@ -163,7 +163,7 @@ export const Contact = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-2xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
+                        className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
                         placeholder={t('landing.contact.placeholder.email')}
                       />
                     </div>
@@ -176,7 +176,7 @@ export const Contact = () => {
                         value={formData.message}
                         onChange={handleInputChange}
                         rows={4}
-                        className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-2xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none"
+                        className="w-full bg-gray-100 dark:bg-black/20 border border-transparent dark:border-white/10 rounded-xl py-4 px-6 text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all resize-none"
                         placeholder={t('landing.contact.placeholder.message')}
                       />
                     </div>
@@ -196,7 +196,7 @@ export const Contact = () => {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full py-5 bg-paymint-green text-black font-black text-xl rounded-2xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-[0.98]"
+                      className="w-full py-5 bg-paymint-green text-black font-black text-xl rounded-xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 flex items-center justify-center gap-3 active:scale-[0.98]"
                     >
                       {isSubmitting ? <Loader2 className="animate-spin" size={24} /> : <Send size={24} />}
                       {t('landing.contact.sendMessage')}

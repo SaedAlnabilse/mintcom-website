@@ -114,7 +114,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               <motion.div
                 animate={{ y: [0, -20, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="relative z-20 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl shadow-xl shadow-gray-200/40 dark:shadow-none p-6 overflow-hidden transition-colors duration-300"
+                className="relative z-20 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl shadow-xl shadow-gray-200/40 dark:shadow-none p-6 overflow-hidden transition-colors duration-300"
               >
                 {/* Mock Header */}
                 <div className="flex items-center justify-between mb-8 border-b border-gray-100 dark:border-gray-800 pb-4">
@@ -128,7 +128,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
 
                 {/* Mock Content */}
                 <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 transition-colors">
+                  <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-100 dark:border-gray-800 transition-colors">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-2 bg-paymint-green/10 dark:bg-paymint-green/20 rounded-lg">
                         <BarChart3 size={16} className="text-paymint-green" />
@@ -138,7 +138,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
                     <div className="text-2xl font-bold text-gray-900 dark:text-white">{(12450).toLocaleString(t('common.locale'), { style: 'currency', currency: 'JOD', maximumFractionDigits: 0, minimumFractionDigits: 0 })}</div>
                     <div className="text-xs text-paymint-green mt-1">{(0.15).toLocaleString(t('common.locale'), { style: 'percent' })} {t('landing.hero.fromYesterday')}</div>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 transition-colors">
+                  <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-100 dark:border-gray-800 transition-colors">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-2 bg-blue-500/10 dark:bg-blue-500/20 rounded-lg">
                         <ShoppingCart size={16} className="text-blue-600 dark:text-blue-500" />
@@ -227,7 +227,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               <motion.div
                 animate={{ rotate: [0, 5, 0] }}
                 transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute top-[-20px] right-[-20px] w-full h-full bg-gradient-to-br from-paymint-green/20 to-blue-500/20 rounded-3xl -z-10 blur-xl opacity-50"
+                className="absolute top-[-20px] right-[-20px] w-full h-full bg-gradient-to-br from-paymint-green/20 to-blue-500/20 rounded-xl -z-10 blur-xl opacity-50"
               />
             </div>
           </motion.div>
@@ -255,7 +255,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="w-full max-w-6xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10"
+              className="w-full max-w-6xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-white/10"
               onClick={(e) => e.stopPropagation()}
             >
               <iframe
