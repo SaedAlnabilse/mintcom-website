@@ -76,12 +76,13 @@ export default {
         poppins: ['Poppins', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
         magilio: ['Magilio', 'serif'],
+        outfit: ['Outfit', 'sans-serif'],
       },
       fontSize: {
         // POS Typography System - Display (New)
         'display-1': ['48px', { lineHeight: '1.1', fontWeight: '900', letterSpacing: '-0.02em' }],
         'display-2': ['36px', { lineHeight: '1.2', fontWeight: '900', letterSpacing: '-0.02em' }],
-        
+
         // POS Typography System - Headings (Updated to match usage)
         'heading-1': ['32px', { lineHeight: '1.2', fontWeight: '900', letterSpacing: '-0.02em' }],
         'heading-2': ['28px', { lineHeight: '1.2', fontWeight: '900', letterSpacing: '-0.02em' }],

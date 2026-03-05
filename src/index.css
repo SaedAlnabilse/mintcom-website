@@ -3,6 +3,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 @import url('https://fonts.cdnfonts.com/css/magilio');
 
 @tailwind base;
@@ -66,19 +67,19 @@
   }
 
   h3 {
-    @apply font-barlow text-heading-3 text-text-primary dark:text-paymint-text font-bold;
+    @apply font-outfit text-heading-3 text-text-primary dark:text-paymint-text font-bold tracking-tight;
   }
 
   h4 {
-    @apply font-magilio text-heading-4 text-text-primary dark:text-paymint-text;
+    @apply font-outfit text-heading-4 text-text-primary dark:text-paymint-text font-bold tracking-tight;
   }
 
   h5 {
-    @apply font-magilio text-subheading text-text-primary dark:text-paymint-text;
+    @apply font-outfit text-subheading text-text-primary dark:text-paymint-text font-bold;
   }
 
   h6 {
-    @apply font-magilio text-body-lg font-bold text-text-primary dark:text-paymint-text;
+    @apply font-outfit text-body-lg font-bold text-text-primary dark:text-paymint-text;
   }
 
   /* Body text defaults */
@@ -144,7 +145,7 @@
   .label-strong {
     @apply text-label text-gray-400 font-black tracking-widest uppercase;
   }
-  
+
   /* Standardized Subtitle */
   .text-subtitle {
     @apply text-sm text-gray-500 dark:text-gray-400 font-medium;
@@ -179,7 +180,7 @@
 
   /* Section titles */
   .section-title {
-    @apply font-barlow text-heading-3 text-text-primary dark:text-paymint-text font-bold;
+    @apply font-outfit text-heading-3 text-text-primary dark:text-paymint-text font-bold tracking-tight;
   }
 
   .section-subtitle {
@@ -421,7 +422,7 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  .horizontal-scroll-snap > * {
+  .horizontal-scroll-snap>* {
     scroll-snap-align: start;
     flex-shrink: 0;
   }
@@ -438,9 +439,7 @@
 
   /* Mobile filter chip */
   .filter-chip {
-    @apply inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold
-           bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300
-           hover:bg-gray-200 dark:hover:bg-white/10 transition-all touch-target;
+    @apply inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-all touch-target;
   }
 
   .filter-chip-active {
@@ -449,10 +448,7 @@
 
   /* Mobile-optimized input */
   .mobile-input {
-    @apply w-full h-12 px-4 text-base rounded-xl bg-gray-50 dark:bg-white/5
-           border border-gray-200 dark:border-white/10
-           focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/20
-           transition-all;
+    @apply w-full h-12 px-4 text-base rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 focus:border-paymint-green focus:ring-2 focus:ring-paymint-green/20 transition-all;
   }
 }
 
@@ -517,9 +513,12 @@ body.app-loading #global-blocking-overlay {
 
 /* Smart Chatbot Animations */
 @keyframes chat-pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 0 0 rgba(124, 195, 159, 0.4);
   }
+
   50% {
     box-shadow: 0 0 0 8px rgba(124, 195, 159, 0);
   }
@@ -559,9 +558,12 @@ body.app-loading #global-blocking-overlay {
 }
 
 @keyframes bounce-subtle {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-8px);
   }
