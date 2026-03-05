@@ -66,7 +66,7 @@
   }
 
   h3 {
-    @apply font-magilio text-heading-3 text-text-primary dark:text-paymint-text;
+    @apply font-barlow text-heading-3 text-text-primary dark:text-paymint-text font-bold;
   }
 
   h4 {
@@ -179,7 +179,7 @@
 
   /* Section titles */
   .section-title {
-    @apply font-magilio text-heading-3 text-text-primary dark:text-paymint-text;
+    @apply font-barlow text-heading-3 text-text-primary dark:text-paymint-text font-bold;
   }
 
   .section-subtitle {

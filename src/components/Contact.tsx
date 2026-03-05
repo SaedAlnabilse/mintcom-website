@@ -12,8 +12,8 @@ const SplitText = ({ text, className = "" }: { text: string; className?: string 
       {text.split(' ').map((word, i) => {
         const isPaymint = word.toLowerCase().includes('paymint');
         return (
-          <span 
-            key={i} 
+          <span
+            key={i}
             className={isPaymint ? 'text-paymint-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-paymint-green')}
           >
             {word}{' '}
@@ -61,18 +61,18 @@ export const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-24 lg:py-32 bg-white dark:bg-[#050505] relative overflow-hidden transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+    <section id="contact" className="py-16 lg:py-20 bg-white dark:bg-[#050505] relative overflow-hidden transition-colors duration-300" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       <div className="container mx-auto px-8 md:px-16 lg:px-24 relative z-10">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col lg:flex-row items-stretch bg-gray-50 dark:bg-white/5 rounded-[3rem] border border-gray-200 dark:border-white/10 overflow-hidden shadow-2xl shadow-gray-200/50 dark:shadow-none">
 
             {/* Contact Info Sidebar */}
-            <div className="lg:w-2/5 bg-gray-900 p-12 lg:p-16 text-white relative overflow-hidden flex flex-col justify-between">
+            <div className="lg:w-2/5 bg-gray-100 dark:bg-gray-900 p-12 lg:p-16 relative overflow-hidden flex flex-col justify-between">
               <div className="relative z-10">
-                <h2 className="text-4xl lg:text-6xl font-bold font-magilio text-white mb-5 leading-[1.3] rtl:leading-tight tracking-tight">
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
                   <SplitText text={t('landing.contact.title') + ' ' + t('landing.contact.titleHighlight')} />
-                </h2>  
-                <p className="text-lg lg:text-xl text-gray-400 leading-relaxed mb-12 font-light">
+                </h2>
+                <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed mb-12 font-light">
                   {t('landing.contact.subtitle')}
                 </p>
                 <div className="space-y-8">
@@ -81,12 +81,12 @@ export const Contact = () => {
                     { icon: Phone, label: t('common.phone'), value: '+962 7XXXXXXXX', color: 'text-blue-400' },
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-4 group">
-                      <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center transition-transform duration-500">
+                      <div className="w-12 h-12 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center transition-transform duration-500 shadow-sm dark:shadow-none">
                         <item.icon size={20} className={item.color} />
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-gray-500 tracking-widest mb-1">{item.label}</p>
-                        <p className="text-lg font-bold text-white">{item.value}</p>
+                        <p className="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-widest mb-1">{item.label}</p>
+                        <p className="text-lg font-bold text-gray-900 dark:text-white">{item.value}</p>
                       </div>
                     </div>
                   ))}

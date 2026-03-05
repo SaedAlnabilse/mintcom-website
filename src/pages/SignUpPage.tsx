@@ -10,7 +10,7 @@ import { useAuth } from '../context/AuthContext';
 import { GoogleAuthButton, AuthDivider, GOOGLE_CLIENT_ID, type GoogleAuthButtonHandle } from '../components/GoogleAuthButton';
 import { useTranslation } from 'react-i18next';
 
-// Paymint Logo imports
+// PayMint Logo imports
 import PaymintLogoGreen from '../assets/green-full-logo.svg';
 import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
 
@@ -157,8 +157,8 @@ export function SignUpPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-2xl p-8 max-w-md w-full text-center border border-gray-100 dark:border-transparent transition-colors duration-300"
         >
-          <div className="w-16 h-16 bg-paymint-green/10 dark:bg-paymint-green/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Check className="w-8 h-8 text-paymint-green" />
+          <div className="w-16 h-16 bg-PayMint-green/10 dark:bg-PayMint-green/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Check className="w-8 h-8 text-PayMint-green" />
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4 tracking-tight">{t('auth.signup.checkEmail')}</h2>
           <p className="text-sm font-bold text-gray-600 dark:text-gray-300 mb-6">
@@ -168,12 +168,12 @@ export function SignUpPage() {
           <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 mb-6 border border-gray-100 dark:border-transparent">
             <p className="text-xs font-bold text-gray-500">
               {t('auth.signup.didntReceive')}{' '}
-              <button className="text-sm font-bold text-paymint-green hover:underline">{t('auth.signup.resendVerification')}</button>
+              <button className="text-sm font-bold text-PayMint-green hover:underline">{t('auth.signup.resendVerification')}</button>
             </p>
           </div>
           <Link
             to="/login"
-            className="inline-flex items-center justify-center w-full bg-paymint-green text-black font-bold py-3 px-4 rounded-lg transition-colors shadow-lg shadow-paymint-green/20"
+            className="inline-flex items-center justify-center w-full bg-PayMint-green text-black font-bold py-3 px-4 rounded-lg transition-colors shadow-lg shadow-PayMint-green/20"
           >
             {t('auth.signup.goToLogin')}
           </Link>
@@ -199,7 +199,7 @@ export function SignUpPage() {
               exit={{ scale: 0.8, opacity: 0 }}
               className="bg-white dark:bg-gray-800 rounded-2xl p-8 flex flex-col items-center gap-4 shadow-2xl"
             >
-              <Loader2 className="w-16 h-16 text-paymint-green animate-spin" />
+              <Loader2 className="w-16 h-16 text-PayMint-green animate-spin" />
               <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">{t('auth.signup.creatingYourAccount')}</p>
               <p className="text-xs font-bold text-gray-500">{t('auth.signup.pleaseWait')}</p>
             </motion.div>
@@ -256,7 +256,7 @@ export function SignUpPage() {
                       aria-describedby={errors.firstName ? 'firstName-error' : undefined}
                       autoComplete="given-name"
                       className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.firstName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                        } rounded-lg py-3 ps-10 pe-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                        } rounded-lg py-3 ps-10 pe-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
                       placeholder={t('auth.signup.firstNamePlaceholder')}
                     />
                   </div>
@@ -276,7 +276,7 @@ export function SignUpPage() {
                     aria-describedby={errors.lastName ? 'lastName-error' : undefined}
                     autoComplete="family-name"
                     className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.lastName ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                      } rounded-lg py-3 px-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                      } rounded-lg py-3 px-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
                     placeholder={t('auth.signup.lastNamePlaceholder')}
                   />
                   {errors.lastName?.message && (
@@ -299,7 +299,7 @@ export function SignUpPage() {
                     aria-describedby={errors.email ? 'email-error' : undefined}
                     autoComplete="email"
                     className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                      } rounded-lg py-3 ps-10 pe-4 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                      } rounded-lg py-3 ps-10 pe-4 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
                     placeholder={t('auth.signup.emailPlaceholder')}
                   />
                 </div>
@@ -322,7 +322,7 @@ export function SignUpPage() {
                     aria-describedby={errors.password ? 'password-error' : undefined}
                     autoComplete="new-password"
                     className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                      } rounded-lg py-3 ps-10 pe-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                      } rounded-lg py-3 ps-10 pe-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
                     placeholder={t('auth.signup.passwordPlaceholder')}
                   />
                   <button
@@ -353,7 +353,7 @@ export function SignUpPage() {
                     aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
                     autoComplete="new-password"
                     className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.confirmPassword ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                      } rounded-lg py-3 ps-10 pe-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                      } rounded-lg py-3 ps-10 pe-14 text-base sm:text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
                     placeholder={t('auth.signup.confirmPasswordPlaceholder')}
                   />
                   <button
@@ -376,10 +376,10 @@ export function SignUpPage() {
                     {...register('agreeToTerms')}
                     id="agreeToTerms"
                     type="checkbox"
-                    className={`w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors ${errors.agreeToTerms ? 'border-accent ring-1 ring-accent' : ''}`}
+                    className={`w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-PayMint-green focus:ring-PayMint-green cursor-pointer transition-colors ${errors.agreeToTerms ? 'border-accent ring-1 ring-accent' : ''}`}
                   />
                   <label htmlFor="agreeToTerms" className="text-xs text-gray-600 dark:text-gray-400 leading-tight cursor-pointer pt-0.5">
-                    {t('landing.contact.termsAgree')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-bold hover:underline inline-block">{t('landing.contact.privacyPolicy')}</Link> {t('common.and')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-bold hover:underline inline-block">{t('landing.contact.termsOfService')}</Link>.
+                    {t('landing.contact.termsAgree')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-PayMint-green font-bold hover:underline inline-block">{t('landing.contact.privacyPolicy')}</Link> {t('common.and')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-PayMint-green font-bold hover:underline inline-block">{t('landing.contact.termsOfService')}</Link>.
                   </label>
                 </div>
                 {errors.agreeToTerms && (
@@ -392,7 +392,7 @@ export function SignUpPage() {
                     type="checkbox"
                     checked={subscribeToNews}
                     onChange={(e) => setSubscribeToNews(e.target.checked)}
-                    className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors"
+                    className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-PayMint-green focus:ring-PayMint-green cursor-pointer transition-colors"
                   />
                   <label htmlFor="subscribeToNews" className="text-xs text-gray-600 dark:text-gray-400 leading-tight cursor-pointer pt-0.5">
                     {t('auth.signup.subscribeToNews')}
@@ -403,7 +403,7 @@ export function SignUpPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-paymint-green text-black text-xs font-black tracking-widest hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-paymint-wait py-3 px-4 rounded-lg transition-colors shadow-lg shadow-paymint-green/20"
+                className="w-full bg-PayMint-green text-black text-xs font-black tracking-widest hover:bg-PayMint-green/90 disabled:opacity-50 disabled:cursor-PayMint-wait py-3 px-4 rounded-lg transition-colors shadow-lg shadow-PayMint-green/20"
               >
                 {isSubmitting ? t('auth.signup.creatingAccount') : t('auth.signup.signUpButton')}
               </button>
@@ -429,7 +429,7 @@ export function SignUpPage() {
             <div className="mt-6 text-center">
               <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
                 {t('auth.signup.haveAccount')}{' '}
-                <Link to="/login" className="text-sm font-bold text-paymint-green hover:underline">
+                <Link to="/login" className="text-sm font-bold text-PayMint-green hover:underline">
                   {t('auth.signup.logIn')}
                 </Link>
               </p>
@@ -437,7 +437,7 @@ export function SignUpPage() {
 
             <div className="mt-8 pt-6 border-t border-gray-100 dark:border-white/5">
               <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 text-center leading-relaxed uppercase tracking-wider">
-                {t('auth.signup.disclaimerPrefix')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-paymint-green hover:underline">{t('footer.termsOfService')}</Link> {t('common.and')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-paymint-green hover:underline">{t('footer.privacyPolicy')}</Link>.
+                {t('auth.signup.disclaimerPrefix')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-PayMint-green hover:underline">{t('footer.termsOfService')}</Link> {t('common.and')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-PayMint-green hover:underline">{t('footer.privacyPolicy')}</Link>.
               </p>
             </div>
           </div>
@@ -465,8 +465,8 @@ export function SignUpPage() {
                 { title: t('auth.signup.feature4Title'), desc: t('auth.signup.feature4Desc') },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-6 group">
-                  <div className="w-12 h-12 rounded-xl bg-paymint-green/10 dark:bg-paymint-green/20 flex items-center justify-center flex-shrink-0 mt-1 transition-all duration-300 group-hover:scale-110 group-hover:bg-paymint-green/20 group-hover:rotate-3">
-                    <Check className="w-7 h-7 text-paymint-green" />
+                  <div className="w-12 h-12 rounded-xl bg-PayMint-green/10 dark:bg-PayMint-green/20 flex items-center justify-center flex-shrink-0 mt-1 transition-all duration-300 group-hover:scale-110 group-hover:bg-PayMint-green/20 group-hover:rotate-3">
+                    <Check className="w-7 h-7 text-PayMint-green" />
                   </div>
                   <div>
                     <h3 className="text-gray-900 dark:text-white font-black text-xl leading-tight mb-1">{item.title}</h3>
@@ -497,8 +497,8 @@ export function SignUpPage() {
               className="relative bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl max-w-md w-full p-8 shadow-2xl"
             >
               <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-paymint-green/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <ShieldCheck size={32} className="text-paymint-green" />
+                <div className="w-16 h-16 bg-PayMint-green/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <ShieldCheck size={32} className="text-PayMint-green" />
                 </div>
                 <h3 className="text-2xl font-black text-gray-900 dark:text-white">
                   {t('common.security')}
@@ -515,10 +515,10 @@ export function SignUpPage() {
                     type="checkbox"
                     checked={modalAgreed}
                     onChange={(e) => setModalAgreed(e.target.checked)}
-                    className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors"
+                    className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-PayMint-green focus:ring-PayMint-green cursor-pointer transition-colors"
                   />
                   <label htmlFor="modal-agree" className="text-xs font-bold text-gray-600 dark:text-gray-300 leading-snug cursor-pointer pt-0.5">
-                    {t('landing.contact.termsAgree')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-black hover:underline">{t('landing.contact.privacyPolicy')}</Link> {t('common.and')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-paymint-green font-black hover:underline">{t('landing.contact.termsOfService')}</Link>.
+                    {t('landing.contact.termsAgree')} <Link to="/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-PayMint-green font-black hover:underline">{t('landing.contact.privacyPolicy')}</Link> {t('common.and')} <Link to="/legal/terms" target="_blank" rel="noopener noreferrer" className="text-PayMint-green font-black hover:underline">{t('landing.contact.termsOfService')}</Link>.
                   </label>
                 </div>
 
@@ -528,7 +528,7 @@ export function SignUpPage() {
                     type="checkbox"
                     checked={modalSubscribeToNews}
                     onChange={(e) => setSubscribeToNews(e.target.checked)}
-                    className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green cursor-pointer transition-colors"
+                    className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-PayMint-green focus:ring-PayMint-green cursor-pointer transition-colors"
                   />
                   <label htmlFor="modal-subscribe" className="text-xs font-bold text-gray-600 dark:text-gray-300 leading-snug cursor-pointer pt-0.5">
                     {t('auth.signup.subscribeToNews')}
@@ -538,7 +538,7 @@ export function SignUpPage() {
                 <button
                   onClick={handleModalContinue}
                   disabled={!modalAgreed}
-                  className="w-full py-4 bg-paymint-green text-black font-black text-sm tracking-widest rounded-xl hover:bg-paymint-green/90 transition-all shadow-xl shadow-paymint-green/20 disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-PayMint-green text-black font-black text-sm tracking-widest rounded-xl hover:bg-PayMint-green/90 transition-all shadow-xl shadow-PayMint-green/20 disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-2"
                 >
                   {t('common.continue').toUpperCase()}
                   <Check size={18} strokeWidth={3} />

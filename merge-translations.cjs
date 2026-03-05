@@ -185,7 +185,7 @@ const properEnglish = {
         "title": "How we reduced checkout time by 40%"
       },
       "featured_3": {
-        "title": "Integrating Paymint with our inventory system"
+        "title": "Integrating PayMint with our inventory system"
       },
       "item_1": {
         "excerpt": "I recently expanded to 3 locations and looking for tips on how to manage inventory and staff across all of them efficiently...",
@@ -196,8 +196,8 @@ const properEnglish = {
         "title": "How we reduced checkout time by 40%"
       },
       "item_3": {
-        "excerpt": "Has anyone successfully integrated Paymint with a third-party inventory management system? Looking for recommendations...",
-        "title": "Integrating Paymint with our inventory system"
+        "excerpt": "Has anyone successfully integrated PayMint with a third-party inventory management system? Looking for recommendations...",
+        "title": "Integrating PayMint with our inventory system"
       },
       "item_4": {
         "excerpt": "I want to add our logo and customize the footer of our receipts. Is this possible with the current version?",
@@ -335,7 +335,7 @@ const properEnglish = {
 
   // ── HARDWARE ──
   "hardware": {
-    "tip": "Pro Tip: All recommended hardware is plug-and-play with the Paymint POS app."
+    "tip": "Pro Tip: All recommended hardware is plug-and-play with the PayMint POS app."
   },
 
   // ── INVENTORY ──
@@ -386,7 +386,7 @@ const properEnglish = {
         "fbDesc": "Used to measure the effectiveness of our advertising campaigns on Facebook and to deliver targeted ads.",
         "ga": "Google Analytics",
         "gaDesc": "Used to collect anonymous data about how visitors use our site, including pages visited, time spent, and traffic sources.",
-        "questionsDesc": "If you have any questions about our use of cookies, please contact us at support@paymint.app",
+        "questionsDesc": "If you have any questions about our use of cookies, please contact us at support@PayMint.app",
         "thirdParty_1": "We may use third-party cookies from services like Google Analytics and Facebook to help us analyze traffic and improve our services.",
         "updates_1": "We may update this Cookie Policy from time to time to reflect changes in our practices or for operational, legal, or regulatory reasons.",
         "updates_2": "We will notify you of any material changes by posting the updated policy on this page with a new effective date.",
@@ -396,7 +396,7 @@ const properEnglish = {
       }
     },
     "privacy": {
-      "agreement": "By using Paymint, you agree to the collection and use of information in accordance with this Privacy Policy.",
+      "agreement": "By using PayMint, you agree to the collection and use of information in accordance with this Privacy Policy.",
       "branch": {
         "b1": "Amman, Jordan – Headquarters",
         "b2": "Dubai, UAE – Regional Office",
@@ -409,7 +409,7 @@ const properEnglish = {
         "desc": "Our services are not directed to individuals under the age of 16. We do not knowingly collect personal information from children."
       },
       "contact": {
-        "desc": "If you have any questions about this Privacy Policy or our data practices, please contact us at privacy@paymint.app"
+        "desc": "If you have any questions about this Privacy Policy or our data practices, please contact us at privacy@PayMint.app"
       },
       "cookies": {
         "c1": "Essential cookies for site functionality and authentication",
@@ -447,7 +447,7 @@ const properEnglish = {
         "r3": "Analytics data: Retained in anonymized form indefinitely"
       },
       "rights": {
-        "contact": "To exercise any of these rights, please contact us at privacy@paymint.app",
+        "contact": "To exercise any of these rights, please contact us at privacy@PayMint.app",
         "ri1": "Right to access your personal data and request a copy",
         "ri2": "Right to correct inaccurate or incomplete personal data",
         "ri3": "Right to request deletion of your personal data",
@@ -457,7 +457,7 @@ const properEnglish = {
         "s1_1_desc": "We collect information you provide directly, such as when you create an account, make a purchase, or contact us for support.",
         "s1_2_desc": "We automatically collect certain information about your device and usage patterns when you interact with our services.",
         "s1_2_note": "We never sell your personal information to third parties.",
-        "s1_3_desc": "We may receive information about you from third-party services you connect to your Paymint account.",
+        "s1_3_desc": "We may receive information about you from third-party services you connect to your PayMint account.",
         "s1_4_desc": "We collect transaction data processed through our point-of-sale system to provide our services.",
         "s1_desc": "We collect several types of information to provide and improve our services.",
         "s2_desc": "We use the information we collect to operate, maintain, and improve our services, process transactions, and communicate with you.",
@@ -466,7 +466,7 @@ const properEnglish = {
         "s5_desc": "We retain your information only as long as necessary to fulfill the purposes outlined in this policy, unless a longer retention period is required by law.",
         "s6_desc": "Depending on your location, you may have certain rights regarding your personal information, including the right to access, correct, or delete your data.",
         "s7_desc": "We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the updated policy on our website.",
-        "s8_desc": "If you have any questions about this Privacy Policy, please contact us at privacy@paymint.app"
+        "s8_desc": "If you have any questions about this Privacy Policy, please contact us at privacy@PayMint.app"
       },
       "security": {
         "noAbsoluteSecurity": "While we strive to protect your personal information, no method of transmission over the Internet or electronic storage is 100% secure.",
@@ -498,9 +498,9 @@ const properEnglish = {
         "desc": "We strive to maintain high availability but do not guarantee uninterrupted service. We may perform scheduled maintenance with advance notice."
       },
       "contact": {
-        "desc": "For questions about these Terms of Service, please contact us at legal@paymint.app"
+        "desc": "For questions about these Terms of Service, please contact us at legal@PayMint.app"
       },
-      "intro": "Welcome to Paymint. By accessing or using our services, you agree to be bound by these Terms of Service. Please read them carefully.",
+      "intro": "Welcome to PayMint. By accessing or using our services, you agree to be bound by these Terms of Service. Please read them carefully.",
       "ip": {
         "desc": "All content, trademarks, and intellectual property on our platform are owned by PayMint LLC or its licensors. You may not copy, modify, or distribute our content without written permission."
       },
@@ -529,7 +529,7 @@ const properEnglish = {
         "desc": "We may suspend or terminate your access to our services at any time for violation of these terms. You may cancel your account at any time through your account settings."
       },
       "use": {
-        "u1": "Paymint grants you a limited, non-exclusive, non-transferable license to use our services for your business operations.",
+        "u1": "PayMint grants you a limited, non-exclusive, non-transferable license to use our services for your business operations.",
         "u2": "You may not sublicense, sell, or redistribute access to our services without our written consent."
       }
     }
@@ -699,7 +699,7 @@ const properEnglish = {
         },
         "title": "Resources & Help",
         "userManual": {
-          "desc": "Complete guide to using Paymint",
+          "desc": "Complete guide to using PayMint",
           "title": "User Manual"
         },
         "videoTutorial": {
@@ -956,8 +956,8 @@ const properEnglish = {
         "li21": "Contact support for billing disputes",
         "note_desc": "Keep your payment method up to date to avoid service interruptions.",
         "note_label": "Important",
-        "p1": "This guide covers everything you need to know about billing, payments, and managing your Paymint subscription.",
-        "p2": "Paymint uses a simple, transparent pricing model with no hidden fees.",
+        "p1": "This guide covers everything you need to know about billing, payments, and managing your PayMint subscription.",
+        "p2": "PayMint uses a simple, transparent pricing model with no hidden fees.",
         "p3": "We accept all major payment methods for your convenience."
       },
       "bl3": "Managing Payment Methods",
@@ -978,7 +978,7 @@ const properEnglish = {
       "featuredTitle": "Featured Articles",
       "feedbackSorry": "We're sorry this wasn't helpful. We'll work on improving it.",
       "feedbackThanks": "Thanks for your feedback!",
-      "ft1_excerpt": "A comprehensive guide to understanding and using all Paymint features.",
+      "ft1_excerpt": "A comprehensive guide to understanding and using all PayMint features.",
       "ft1": {
         "h1": "Complete Feature Guide",
         "h2": "Point of Sale (POS)",
@@ -1006,7 +1006,7 @@ const properEnglish = {
         "li13": "View real-time sales dashboards with key metrics",
         "li14": "Generate detailed reports on sales, staff, and inventory",
         "li15": "Export reports as CSV for further analysis",
-        "p1": "Paymint is a complete 360° point-of-sale solution built for modern businesses. This guide covers all the features available to you.",
+        "p1": "PayMint is a complete 360° point-of-sale solution built for modern businesses. This guide covers all the features available to you.",
         "p2": "The POS system is designed to be fast, reliable, and easy for your staff to learn.",
         "p3": "Keep track of every item in your inventory with real-time updates.",
         "p4": "Manage your team with flexible roles and detailed performance tracking.",
@@ -1026,7 +1026,7 @@ const properEnglish = {
         "type6_label": "Settings & Config"
       },
       "ft10": "Offline Mode & Data Sync",
-      "ft10_excerpt": "How Paymint handles offline transactions and syncs data when back online.",
+      "ft10_excerpt": "How PayMint handles offline transactions and syncs data when back online.",
       "ft2": "Inventory Management Guide",
       "ft2_excerpt": "Learn how to track stock, set alerts, and manage your inventory efficiently.",
       "ft3": "Staff Roles & Permissions",
@@ -1043,16 +1043,16 @@ const properEnglish = {
       "ft8_excerpt": "Configure accepted payment methods including cards and digital wallets.",
       "ft9": "Add-ons & Modifiers Guide",
       "ft9_excerpt": "Create product add-ons and modifiers for customizable orders.",
-      "gs1_excerpt": "Step-by-step guide to setting up your first Paymint location and getting started.",
+      "gs1_excerpt": "Step-by-step guide to setting up your first PayMint location and getting started.",
       "gs1": {
-        "h1": "Getting Started with Paymint",
+        "h1": "Getting Started with PayMint",
         "h2": "Creating Your Account",
         "h3": "Setting Up Your First Location",
         "h4": "Adding Products",
         "h5": "Configuring Payment Methods",
         "h6": "Inviting Staff",
         "h7": "Going Live",
-        "li1_desc": "Visit paymint.app and click \"Get Started\" to begin your registration.",
+        "li1_desc": "Visit PayMint.app and click \"Get Started\" to begin your registration.",
         "li1_label": "Sign Up",
         "li2_desc": "Check your inbox for a verification email and click the link to activate your account.",
         "li2_label": "Verify Email",
@@ -1060,7 +1060,7 @@ const properEnglish = {
         "li3_label": "Business Details",
         "li4_desc": "Create a unique login ID and password for your POS terminal.",
         "li4_label": "POS Credentials",
-        "p1": "Welcome to Paymint! This guide will walk you through everything you need to get your business up and running.",
+        "p1": "Welcome to PayMint! This guide will walk you through everything you need to get your business up and running.",
         "p2": "Start by creating your account and verifying your email address.",
         "p3": "Next, set up your first business location with all the essential details.",
         "p4": "Add your products, set prices, and organize them into categories.",
@@ -1068,7 +1068,7 @@ const properEnglish = {
         "p6": "Invite your team members and assign them appropriate roles and permissions.",
         "p7": "Once everything is set up, download the POS app and start processing orders!"
       },
-      "gs2_excerpt": "Learn how to navigate the Paymint dashboard and use its key features.",
+      "gs2_excerpt": "Learn how to navigate the PayMint dashboard and use its key features.",
       "gs2": {
         "h1": "Navigating Your Dashboard",
         "h2": "Dashboard Overview",
@@ -1101,7 +1101,7 @@ const properEnglish = {
         "li16": "Create custom roles for different access levels",
         "li17": "Monitor who is currently active and on shift",
         "li18": "Track individual staff performance and sales metrics",
-        "p1": "Your Paymint dashboard is your command center for managing your business.",
+        "p1": "Your PayMint dashboard is your command center for managing your business.",
         "p2": "The main dashboard gives you a real-time overview of your business performance.",
         "p3": "Access comprehensive reports to understand your sales trends and performance.",
         "p4": "Manage all your orders from a single, unified view.",
@@ -1117,7 +1117,7 @@ const properEnglish = {
       "gs6": "Understanding Roles & Permissions",
       "gs6_excerpt": "Learn how to create custom roles with specific POS and back-office access.",
       "gs7": "Downloading the POS App",
-      "gs7_excerpt": "Get the Paymint POS app on your tablet and connect to your location.",
+      "gs7_excerpt": "Get the PayMint POS app on your tablet and connect to your location.",
       "gs8": "Starting Your First Shift",
       "gs8_excerpt": "Learn how to open a shift, process orders, and close out at the end of the day.",
       "helpfulNo": "No",
@@ -1144,7 +1144,7 @@ const properEnglish = {
         "a1_3": "If none of these steps work, contact our support team with details about the error you're seeing.",
         "a2_1": "Ensure your printer is powered on and connected to the same network as your POS device. Check that the correct printer is selected in Settings > Receipts.",
         "a2_2": "Try printing a test page from the printer settings. If that works but POS printing doesn't, reinstall the printer driver.",
-        "a3_1": "Paymint automatically syncs data when your connection is restored. You can continue processing orders in offline mode.",
+        "a3_1": "PayMint automatically syncs data when your connection is restored. You can continue processing orders in offline mode.",
         "a3_2": "Once back online, go to Settings > Sync to manually trigger a sync if needed.",
         "a3_3": "All offline transactions are securely stored on your device and will be uploaded when connectivity returns.",
         "h1": "Troubleshooting Common Issues",
@@ -1156,28 +1156,28 @@ const properEnglish = {
         "li2": "Clear your browser cache and cookies",
         "li3": "Try using a different browser (Chrome recommended)",
         "li4": "Restart your device and try again",
-        "li5": "Ensure your firewall isn't blocking Paymint",
+        "li5": "Ensure your firewall isn't blocking PayMint",
         "li6": "Update your browser to the latest version",
         "li7": "Contact support if issues persist after trying all steps",
-        "p1": "This guide helps you troubleshoot the most common technical issues you may encounter with Paymint.",
+        "p1": "This guide helps you troubleshoot the most common technical issues you may encounter with PayMint.",
         "p2": "Most issues can be resolved with these simple steps. If you need further assistance, our support team is available 24/7.",
         "p3": "Follow this diagnostic process to identify and resolve technical issues.",
-        "q1": "Why can't I access the Paymint dashboard?",
+        "q1": "Why can't I access the PayMint dashboard?",
         "q2": "My receipt printer isn't working. What should I do?",
         "q3": "What happens to my data during an internet outage?",
         "step1_desc": "Ensure your device is connected to the internet and the connection is stable.",
         "step1_label": "Check Connection",
-        "step2_desc": "Close and reopen the Paymint app or refresh your browser.",
+        "step2_desc": "Close and reopen the PayMint app or refresh your browser.",
         "step2_label": "Restart Application",
         "step3_desc": "Remove temporary files that might cause issues.",
         "step3_label": "Clear Cache",
-        "step4_desc": "Make sure you're running the latest version of Paymint.",
+        "step4_desc": "Make sure you're running the latest version of PayMint.",
         "step4_label": "Update Software",
         "step5_desc": "If the issue persists, reach out to our support team with error details.",
         "step5_label": "Contact Support"
       },
       "tc10": "API Integration Guide",
-      "tc10_excerpt": "Technical guide for integrating with the Paymint API.",
+      "tc10_excerpt": "Technical guide for integrating with the PayMint API.",
       "tc2": "Network & Connectivity Setup",
       "tc2_excerpt": "Optimize your network setup for reliable POS operations.",
       "tc3": "Printer Setup & Configuration",
@@ -1185,13 +1185,13 @@ const properEnglish = {
       "tc4": "App Performance Optimization",
       "tc4_excerpt": "Tips and tricks to keep your POS app running smoothly.",
       "tc5": "Data Backup & Recovery",
-      "tc5_excerpt": "Understand how Paymint backs up your data and how to recover it.",
+      "tc5_excerpt": "Understand how PayMint backs up your data and how to recover it.",
       "tc6": "Browser Compatibility Guide",
       "tc6_excerpt": "Supported browsers and recommendations for the best experience.",
       "tc7": "Security Best Practices",
-      "tc7_excerpt": "Keep your Paymint account and data secure with these tips.",
+      "tc7_excerpt": "Keep your PayMint account and data secure with these tips.",
       "tc8": "Device Requirements",
-      "tc8_excerpt": "Minimum hardware and software requirements for running Paymint.",
+      "tc8_excerpt": "Minimum hardware and software requirements for running PayMint.",
       "tc9": "Error Codes Reference",
       "tc9_excerpt": "A reference guide for common error codes and their solutions.",
       "updated": "Updated",
@@ -1208,7 +1208,7 @@ const properEnglish = {
       "feature": "Feature Request",
       "featureDescShort": "Suggest an improvement",
       "features": "Features & How-To",
-      "featuresDesc": "Learn how to use all Paymint features",
+      "featuresDesc": "Learn how to use all PayMint features",
       "gettingStarted": "Getting Started",
       "gettingStartedDesc": "Everything you need to set up and get running",
       "gettingStartedDescShort": "Setup & first steps",
@@ -1232,7 +1232,7 @@ const properEnglish = {
     "hero": {
       "badge": "Help Center",
       "searchPlaceholder": "Search for help articles...",
-      "subtitle": "Find answers, guides, and support for all things Paymint",
+      "subtitle": "Find answers, guides, and support for all things PayMint",
       "titleHighlight": "help",
       "titlePart1": "How can we",
       "titlePart2": "you?"

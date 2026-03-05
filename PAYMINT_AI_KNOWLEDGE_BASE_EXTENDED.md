@@ -1,6 +1,6 @@
-# Paymint AI Knowledge Base (Extended)
+# PayMint AI Knowledge Base (Extended)
 
-This document is the **definitive source of truth** for the Paymint AI Chatbot. It contains deep technical details, feature specifications, data models, and operational logic derived from the codebase and test suites.
+This document is the **definitive source of truth** for the PayMint AI Chatbot. It contains deep technical details, feature specifications, data models, and operational logic derived from the codebase and test suites.
 
 ---
 
@@ -157,9 +157,9 @@ The system uses a flexible Role-Based Access Control (RBAC) system.
 - **Scanners:** Standard Bluetooth/USB barcode scanners.
 
 ### 6.2 Widget Integration
-- **Code:** `<script src="https://sa3d100-paymint-test.hf.space/widget.js"></script>`
+- **Code:** `<script src="https://sa3d100-PayMint-test.hf.space/widget.js"></script>`
 - **Placement:** Before closing `</body>` tag.
-- **Function:** Embeds a subset of Paymint functionality into external sites.
+- **Function:** Embeds a subset of PayMint functionality into external sites.
 
 ---
 
@@ -171,5 +171,5 @@ The system uses a flexible Role-Based Access Control (RBAC) system.
 - **"Sync Failed":** Network interruption. Data queues for retry.
 
 ### 7.2 Resources
-- **Manual:** `public/docs/paymint-user-manual.md` (PDF available).
-- **Contact:** support@paymint.io or in-app "Contact Support".
+- **Manual:** `public/docs/PayMint-user-manual.md` (PDF available).
+- **Contact:** support@PayMint.io or in-app "Contact Support".

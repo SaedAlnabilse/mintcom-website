@@ -8,8 +8,8 @@ const SplitText = ({ text, className = "" }: { text: string; className?: string 
       {text.split(' ').map((word, i) => {
         const isPaymint = word.toLowerCase().includes('paymint');
         return (
-          <span 
-            key={i} 
+          <span
+            key={i}
             className={isPaymint ? 'text-paymint-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-paymint-green')}
           >
             {word}{' '}
@@ -45,7 +45,7 @@ export const DownloadApp = () => {
               <span>{t('landing.download.badge')}</span>
             </div>
 
-            <h2 className="text-4xl lg:text-6xl font-bold font-magilio mb-5 leading-[1.3] rtl:leading-tight tracking-tight">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
               <SplitText text={t('landing.download.title') + ' ' + t('landing.download.titleHighlight')} />
             </h2>
 

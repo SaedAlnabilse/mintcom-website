@@ -10,7 +10,7 @@ export const FAQ_DATA: FAQItem[] = [
   // Getting Started
   {
     category: 'general',
-    question: 'How do I get started with Paymint?',
+    question: 'How do I get started with PayMint?',
     questionAr: 'كيف أبدأ مع بيمنت؟',
     answer: 'Sign up for an account, verify your email, complete the onboarding wizard to set up your first establishment, then start adding products and you\'re ready to sell!',
     answerAr: 'أنشئ حساباً، أكد بريدك الإلكتروني، أكمل معالج الإعداد لتهيئة أول منشأة لك، ثم ابدأ بإضافة المنتجات وستكون جاهزاً للبيع!'
@@ -106,14 +106,14 @@ export const FAQ_DATA: FAQItem[] = [
     category: 'technical',
     question: 'The POS is offline, what do I do?',
     questionAr: 'نقاط البيع غير متصلة، ماذا أفعل؟',
-    answer: 'Paymint works offline for basic cash sales. Your data will sync automatically when you reconnect. Check your internet connection if issues persist.',
+    answer: 'PayMint works offline for basic cash sales. Your data will sync automatically when you reconnect. Check your internet connection if issues persist.',
     answerAr: 'بيمنت يعمل بدون اتصال للمبيعات النقدية الأساسية. بياناتك ستتزامن تلقائياً عند إعادة الاتصال. تحقق من اتصال الإنترنت إذا استمرت المشكلة.'
   },
   {
     category: 'technical',
-    question: 'What hardware does Paymint support?',
+    question: 'What hardware does PayMint support?',
     questionAr: 'ما الأجهزة التي يدعمها بيمنت؟',
-    answer: 'Paymint works with popular receipt printers (Epson, Star), barcode scanners, cash drawers, and payment terminals. Check our hardware page for specific models.',
+    answer: 'PayMint works with popular receipt printers (Epson, Star), barcode scanners, cash drawers, and payment terminals. Check our hardware page for specific models.',
     answerAr: 'بيمنت يعمل مع طابعات الإيصالات الشائعة (Epson, Star)، ماسحات الباركود، أدراج النقد، وأجهزة الدفع. راجع صفحة الأجهزة للموديلات المحددة.'
   },
   {

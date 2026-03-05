@@ -89,7 +89,7 @@ export const CommunityHubPage = () => {
             id: 3,
             title: "⚠️ Scheduled Maintenance: Sunday Feb 15th, 2 AM EST",
             category: "announcements",
-            author: "Paymint Team",
+            author: "PayMint Team",
             authorBadges: ["Admin", "Staff"],
             replies: 0,
             views: 5000,
@@ -150,7 +150,7 @@ export const CommunityHubPage = () => {
                                     key={cat.id}
                                     onClick={() => setSelectedCategory(cat.id)}
                                     className={`w-full flex items-center gap-3 px-4 py-2 rounded-xl text-sm transition-colors ${selectedCategory === cat.id
-                                        ? 'text-paymint-green font-bold bg-paymint-green/5'
+                                        ? 'text-PayMint-green font-bold bg-PayMint-green/5'
                                         : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
                                         }`}
                                 >
@@ -169,7 +169,7 @@ export const CommunityHubPage = () => {
                             Check Out
                         </button>
                     ) : (
-                        <Link to="/login" className="w-full flex items-center gap-3 px-4 py-2 text-paymint-green font-bold text-sm hover:underline">
+                        <Link to="/login" className="w-full flex items-center gap-3 px-4 py-2 text-PayMint-green font-bold text-sm hover:underline">
                             <User size={16} />
                             Log In
                         </Link>
@@ -194,7 +194,7 @@ export const CommunityHubPage = () => {
                             <input
                                 type="text"
                                 placeholder="Search topics, posts, or users..."
-                                className="w-full bg-gray-100 dark:bg-white/5 border-none rounded-xl py-2.5 pl-11 pr-4 font-medium focus:ring-2 focus:ring-paymint-green/50 transition-all"
+                                className="w-full bg-gray-100 dark:bg-white/5 border-none rounded-xl py-2.5 pl-11 pr-4 font-medium focus:ring-2 focus:ring-PayMint-green/50 transition-all"
                             />
                         </div>
                     </div>
@@ -207,14 +207,14 @@ export const CommunityHubPage = () => {
                                     <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-black"></span>
                                 </button>
                                 <div className="hidden md:flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-white/10">
-                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center text-white font-bold text-xs">
+                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-PayMint-green to-emerald-600 flex items-center justify-center text-white font-bold text-xs">
                                         {account?.firstName?.charAt(0) || 'U'}
                                     </div>
                                 </div>
                             </>
                         ) : (
                             <div className="flex items-center gap-4">
-                                <Link to="/login" className="text-sm font-bold text-gray-900 dark:text-white hover:text-paymint-green transition-colors">Log In</Link>
+                                <Link to="/login" className="text-sm font-bold text-gray-900 dark:text-white hover:text-PayMint-green transition-colors">Log In</Link>
                                 <Link to="/signup" className="px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-black rounded-lg text-sm font-bold">Sign Up</Link>
                             </div>
                         )}
@@ -270,7 +270,7 @@ export const CommunityHubPage = () => {
                             >
                                 <Link
                                     to={`/community/discussions/${topic.id}`}
-                                    className="block group bg-white dark:bg-[#0a0a0a] border border-gray-100 dark:border-white/5 rounded-2xl p-5 hover:border-paymint-green/30 hover:shadow-lg transition-all"
+                                    className="block group bg-white dark:bg-[#0a0a0a] border border-gray-100 dark:border-white/5 rounded-2xl p-5 hover:border-PayMint-green/30 hover:shadow-lg transition-all"
                                 >
                                     <div className="flex items-start gap-4">
                                         <div className="flex-1">
@@ -285,13 +285,13 @@ export const CommunityHubPage = () => {
                                                 {/* Voting UI for Feature Requests */}
                                                 {topic.category === 'feature-requests' && (
                                                     <div className="flex flex-col items-center justify-center bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-2 min-w-[60px]">
-                                                        <div className="text-paymint-green"><ThumbsUp size={16} /></div>
+                                                        <div className="text-PayMint-green"><ThumbsUp size={16} /></div>
                                                         <span className="text-sm font-black mt-1">{topic.votes}</span>
                                                     </div>
                                                 )}
 
                                                 <div>
-                                                    <h3 className="text-lg font-bold mb-2 group-hover:text-paymint-green transition-colors">{topic.title}</h3>
+                                                    <h3 className="text-lg font-bold mb-2 group-hover:text-PayMint-green transition-colors">{topic.title}</h3>
                                                     <div className="flex items-center gap-2 mb-3">
                                                         {topic.tags.map(tag => (
                                                             <span key={tag} className="px-2 py-0.5 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-md text-xs font-bold">#{tag}</span>

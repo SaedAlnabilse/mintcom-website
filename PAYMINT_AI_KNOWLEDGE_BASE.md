@@ -1,13 +1,13 @@
-# Paymint AI Knowledge Base
+# PayMint AI Knowledge Base
 
-This document serves as the comprehensive knowledge source for the Paymint AI Chatbot. It covers the product profile, features, pricing, operations, and technical details.
+This document serves as the comprehensive knowledge source for the PayMint AI Chatbot. It covers the product profile, features, pricing, operations, and technical details.
 
 ---
 
 ## 1. Product Overview
 
-**What is Paymint?**
-Paymint is a comprehensive, cloud-based Point of Sale (POS) system designed specifically for **restaurants, cafes, and retail establishments**. It aims to streamline daily operations by eliminating the complexity of traditional POS systems, offering an intuitive interface for sales, inventory, staff management, and analytics.
+**What is PayMint?**
+PayMint is a comprehensive, cloud-based Point of Sale (POS) system designed specifically for **restaurants, cafes, and retail establishments**. It aims to streamline daily operations by eliminating the complexity of traditional POS systems, offering an intuitive interface for sales, inventory, staff management, and analytics.
 
 **Target Audience:**
 - Restaurants
@@ -73,7 +73,7 @@ The central command center providing real-time business insights.
 
 ## 3. Pricing & Plans
 
-Paymint offers transparent pricing models.
+PayMint offers transparent pricing models.
 
 | Plan | Price | Target | Key Inclusions |
 | :--- | :--- | :--- | :--- |
@@ -86,7 +86,7 @@ Paymint offers transparent pricing models.
 
 ## 4. Hardware Compatibility
 
-Paymint is designed to run on standard consumer hardware.
+PayMint is designed to run on standard consumer hardware.
 
 **Tablets (POS Terminal):**
 - **Requirements:** Any Android tablet (8"+ screen) or iPad.
@@ -107,11 +107,11 @@ Paymint is designed to run on standard consumer hardware.
 ## 5. Technical & Integration
 
 ### 5.1 Website Widget Integration
-Paymint provides a widget that can be embedded into external websites.
+PayMint provides a widget that can be embedded into external websites.
 **Installation:**
 Add the following script tag before the closing `</body>` tag of the target website:
 ```html
-<script src="https://sa3d100-paymint-test.hf.space/widget.js"></script>
+<script src="https://sa3d100-PayMint-test.hf.space/widget.js"></script>
 ```
 
 ### 5.2 System Requirements
@@ -128,7 +128,7 @@ Add the following script tag before the closing `</body>` tag of the target webs
 ## 6. Support & Resources
 
 - **User Manual:** Comprehensive guide available in the app or as a PDF.
-- **Support Email:** support@paymint.io
+- **Support Email:** support@PayMint.io
 - **In-App Support:** Accessible via Settings > Contact Support.
 - **Languages:** Fully supports English and Arabic (RTL).
 

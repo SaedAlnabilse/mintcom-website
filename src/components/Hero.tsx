@@ -8,8 +8,8 @@ const SplitText = ({ text, className = "" }: { text: string; className?: string 
       {text.split(' ').map((word, i) => {
         const isPaymint = word.toLowerCase().includes('paymint');
         return (
-          <span 
-            key={i} 
+          <span
+            key={i}
             className={isPaymint ? 'text-paymint-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-paymint-green')}
           >
             {word}{' '}
@@ -24,7 +24,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
   const { t } = useTranslation();
 
   return (
-    <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-white dark:bg-[#0f0f0f]" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+    <section className="relative pt-32 pb-16 lg:pt-48 lg:pb-20 overflow-hidden bg-white dark:bg-[#0f0f0f]" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -69,7 +69,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               <span>{t('landing.hero.badge')}</span>
             </motion.div>
 
-            <h1 className="text-4xl lg:text-6xl font-bold font-magilio mb-8 leading-[1.3] rtl:leading-tight tracking-tight">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold font-magilio mb-8 leading-[1.1] rtl:leading-[1.2] tracking-tight">
               <SplitText text={t('landing.hero.title1')} /> <br />
               <SplitText text={t('landing.hero.title2')} /> <br />
               <SplitText text={t('landing.hero.title3')} />
@@ -114,7 +114,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               <motion.div
                 animate={{ y: [0, -20, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="relative z-20 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl shadow-2xl shadow-gray-200/50 dark:shadow-none p-6 overflow-hidden transition-colors duration-300"
+                className="relative z-20 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-3xl shadow-xl shadow-gray-200/40 dark:shadow-none p-6 overflow-hidden transition-colors duration-300"
               >
                 {/* Mock Header */}
                 <div className="flex items-center justify-between mb-8 border-b border-gray-100 dark:border-gray-800 pb-4">

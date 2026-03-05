@@ -19,7 +19,7 @@ function deepMerge(target, source) {
 const addToEn = {
   about: {
     story: {
-      description: 'Paymint was founded with a mission to simplify business operations for merchants everywhere.'
+      description: 'PayMint was founded with a mission to simplify business operations for merchants everywhere.'
     }
   },
   landing: {

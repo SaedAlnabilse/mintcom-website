@@ -3,24 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { CreditCard, Package, Users, BarChart3, TrendingUp } from 'lucide-react';
 import { useMemo } from 'react';
 
-const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
-  return (
-    <span className={className}>
-      {text.split(' ').map((word, i) => {
-        const isPaymint = word.toLowerCase().includes('paymint');
-        return (
-          <span 
-            key={i} 
-            className={isPaymint ? 'text-paymint-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-paymint-green')}
-          >
-            {word}{' '}
-          </span>
-        );
-      })}
-    </span>
-  );
-};
-
 export const WorkflowSupport = () => {
   const { t } = useTranslation();
 
@@ -61,7 +43,7 @@ export const WorkflowSupport = () => {
 
   return (
     <>
-      <section className="pt-24 lg:pt-32 pb-12 lg:pb-16 bg-white dark:bg-[#0f0f0f] overflow-hidden relative" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+      <section className="py-16 lg:py-20 bg-white dark:bg-[#0f0f0f] overflow-hidden relative" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
         {/* Background Decor */}
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-paymint-green/5 rounded-full blur-[120px] -z-10" />
         <div className="absolute top-20 right-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px] -z-10" />
@@ -84,8 +66,9 @@ export const WorkflowSupport = () => {
                 transition={{ duration: 0.6 }}
                 className="mb-12"
               >
-                <h2 className="text-4xl lg:text-6xl font-bold font-magilio mb-5 leading-[1.3] rtl:leading-tight tracking-tight">
-                  <SplitText text={t('landing.workflow.title') + ' ' + t('landing.workflow.titleHighlight')} />
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
+                  <span className="text-gray-900 dark:text-white">{t('landing.workflow.title')} </span>
+                  <span className="text-paymint-green">{t('landing.workflow.titleHighlight')}</span>
                 </h2>
                 <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed font-light">
                   {t('landing.workflow.subtitle')}
@@ -108,7 +91,7 @@ export const WorkflowSupport = () => {
                       <feature.icon size={20} className="text-paymint-green group-hover:text-white transition-colors" />
                     </div>
                     <div>
-                      <h3 className="text-gray-900 dark:text-white font-bold font-magilio text-base mb-1 group-hover:text-paymint-green transition-colors">{feature.title}</h3>
+                      <h3 className="text-gray-900 dark:text-white font-bold text-base mb-1 group-hover:text-paymint-green transition-colors">{feature.title}</h3>
                       <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">{feature.description}</p>
                     </div>
                   </motion.div>

@@ -51,7 +51,7 @@ type SortOption = 'name' | 'role' | 'locations';
 const MAX_EMPLOYEES_PER_ACCOUNT = 50;
 const EMPLOYEE_LIMIT_POPUP_MESSAGE =
     `Maximum is ${MAX_EMPLOYEES_PER_ACCOUNT} employees.\n` +
-    `To add more than ${MAX_EMPLOYEES_PER_ACCOUNT} employees, contact Paymint support at support@paymint.app with your account email and password.`;
+    `To add more than ${MAX_EMPLOYEES_PER_ACCOUNT} employees, contact PayMint support at support@PayMint.app with your account email and password.`;
 
 export function BrandTeamPage() {
     const { t } = useTranslation();
@@ -290,7 +290,7 @@ export function BrandTeamPage() {
     const getRoleBadgeStyle = (role: string) => {
         const base = "px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border";
         if (role.toUpperCase() === 'ADMIN') {
-            return `${base} bg-paymint-green/10 text-paymint-green border-paymint-green/20`;
+            return `${base} bg-PayMint-green/10 text-PayMint-green border-PayMint-green/20`;
         }
         return `${base} bg-blue-500/10 text-blue-500 border-blue-500/20`;
     };
@@ -309,8 +309,8 @@ export function BrandTeamPage() {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
                 <div className="relative">
-                    <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
-                    <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
+                    <div className="w-16 h-16 border-4 border-PayMint-green/20 rounded-full" />
+                    <div className="w-16 h-16 border-4 border-PayMint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
                 </div>
                 <p className="text-sm font-bold text-gray-400 tracking-widest">{t('owner.staff.loading')}</p>
             </div>
@@ -336,7 +336,7 @@ export function BrandTeamPage() {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={handleAddEmployee}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-PayMint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
                     >
                         <UserPlus size={18} />
                         <span>{t('staff.newEmployee')}</span>
@@ -349,7 +349,7 @@ export function BrandTeamPage() {
                 {[
                     { label: t('owner.staff.totalUsers'), value: stats.total, icon: Users, color: 'text-gray-900 dark:text-white', bg: 'bg-gray-100 dark:bg-white/5' },
                     { label: t('staff.form.standardUsers'), value: stats.users, icon: UserCheck, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: t('owner.staff.admins'), value: stats.admins, icon: Shield, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
+                    { label: t('owner.staff.admins'), value: stats.admins, icon: Shield, color: 'text-PayMint-green', bg: 'bg-PayMint-green/10' },
                 ].map((stat, i) => (
                     <div
                         key={i}
@@ -380,7 +380,7 @@ export function BrandTeamPage() {
                             placeholder={t('owner.staff.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm focus:shadow-lg"
+                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-PayMint-green/10 focus:border-PayMint-green/50 dark:focus:border-PayMint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm focus:shadow-lg"
                         />
                     </div>
 
@@ -430,13 +430,13 @@ export function BrandTeamPage() {
                         <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[52px]">
                             <button
                                 onClick={() => setViewMode('grid')}
-                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-PayMint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                             >
                                 <Grid3X3 size={18} />
                             </button>
                             <button
                                 onClick={() => setViewMode('list')}
-                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-PayMint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                             >
                                 <List size={18} />
                             </button>
@@ -446,7 +446,7 @@ export function BrandTeamPage() {
                         {hasActiveFilters && (
                             <button
                                 onClick={clearFilters}
-                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-paymint-red/10 text-paymint-red text-xs font-black tracking-widest hover:bg-paymint-red/20 transition-all"
+                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-PayMint-red/10 text-PayMint-red text-xs font-black tracking-widest hover:bg-PayMint-red/20 transition-all"
                             >
                                 <X size={14} />
                                 {t('attributes.filters.reset')}
@@ -496,7 +496,7 @@ export function BrandTeamPage() {
                     {hasActiveFilters && (
                         <button
                             onClick={clearFilters}
-                            className="mt-4 px-6 py-2 rounded-xl bg-paymint-green text-black text-sm font-bold hover:bg-emerald-400 transition-all"
+                            className="mt-4 px-6 py-2 rounded-xl bg-PayMint-green text-black text-sm font-bold hover:bg-emerald-400 transition-all"
                         >
                             {t('attributes.filters.reset')}
                         </button>
@@ -508,9 +508,9 @@ export function BrandTeamPage() {
                     {paginatedEmployees.map((emp) => (
                         <div
                             key={emp.id}
-                            className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 p-6 transition-all shadow-sm hover:shadow-lg overflow-hidden"
+                            className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-PayMint-green/50 p-6 transition-all shadow-sm hover:shadow-lg overflow-hidden"
                         >
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-PayMint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                             {/* Header */}
                             {/* Header */}

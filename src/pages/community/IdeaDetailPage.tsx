@@ -84,7 +84,7 @@ export const IdeaDetailPage = () => {
                     },
                     {
                         id: 2,
-                        author: 'Paymint Team',
+                        author: 'PayMint Team',
                         content: "Great suggestion, Alex! We've added this to our upcoming roadmap. We're currently exploring different color palettes to ensure high accessibility.",
                         createdAt: '5 days ago',
                         likes: 45,
@@ -156,7 +156,7 @@ export const IdeaDetailPage = () => {
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-50 dark:bg-[#050505] flex items-center justify-center">
-                <div className="w-10 h-10 border-4 border-paymint-green border-t-transparent rounded-full animate-spin" />
+                <div className="w-10 h-10 border-4 border-PayMint-green border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
@@ -178,7 +178,7 @@ export const IdeaDetailPage = () => {
                         {/* Back Link */}
                         <Link
                             to="/community/ideas"
-                            className="inline-flex items-center gap-2 text-gray-500 hover:text-paymint-green font-bold mb-8 transition-colors group"
+                            className="inline-flex items-center gap-2 text-gray-500 hover:text-PayMint-green font-bold mb-8 transition-colors group"
                         >
                             <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                             {t('community.ideas.backToList', 'Back to Ideas')}
@@ -194,8 +194,8 @@ export const IdeaDetailPage = () => {
                                             <button
                                                 onClick={handleVote}
                                                 className={`w-16 h-20 rounded-2xl flex flex-col items-center justify-center gap-1 transition-all ${idea.hasVoted
-                                                    ? 'bg-paymint-green text-black scale-105 shadow-lg shadow-paymint-green/20'
-                                                    : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-paymint-green/20 hover:text-paymint-green'
+                                                    ? 'bg-PayMint-green text-black scale-105 shadow-lg shadow-PayMint-green/20'
+                                                    : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-PayMint-green/20 hover:text-PayMint-green'
                                                     }`}
                                             >
                                                 <ChevronUp size={28} />
@@ -242,7 +242,7 @@ export const IdeaDetailPage = () => {
                                         </div>
 
                                         <div className="flex gap-2">
-                                            <button className="p-3 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-colors text-gray-400 hover:text-paymint-green">
+                                            <button className="p-3 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-colors text-gray-400 hover:text-PayMint-green">
                                                 <Share2 size={20} />
                                             </button>
                                             <button className="p-3 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-colors text-gray-400">
@@ -255,12 +255,12 @@ export const IdeaDetailPage = () => {
                                 {/* Comments Section */}
                                 <section>
                                     <div className="flex items-center gap-3 mb-6">
-                                        <MessageSquare size={24} className="text-paymint-green" />
+                                        <MessageSquare size={24} className="text-PayMint-green" />
                                         <h2 className="text-2xl font-black">{idea.commentsCount} {t('community.labels.comments', 'Comments')}</h2>
                                     </div>
 
                                     {/* Post Comment */}
-                                    <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-3xl p-6 mb-10 shadow-sm transition-all focus-within:border-paymint-green/50">
+                                    <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-3xl p-6 mb-10 shadow-sm transition-all focus-within:border-PayMint-green/50">
                                         <form onSubmit={handlePostComment} className="relative">
                                             <textarea
                                                 value={commentText}
@@ -276,7 +276,7 @@ export const IdeaDetailPage = () => {
                                                 </p>
                                                 <button
                                                     type="submit"
-                                                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-paymint-green text-black rounded-xl font-black hover:opacity-90 transition-all disabled:opacity-50"
+                                                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-PayMint-green text-black rounded-xl font-black hover:opacity-90 transition-all disabled:opacity-50"
                                                     disabled={!isAuthenticated || !commentText.trim()}
                                                 >
                                                     <Send size={18} />
@@ -290,7 +290,7 @@ export const IdeaDetailPage = () => {
                                                     <button
                                                         type="button"
                                                         onClick={() => navigate('/login')}
-                                                        className="text-xs font-black text-paymint-green hover:underline uppercase tracking-widest"
+                                                        className="text-xs font-black text-PayMint-green hover:underline uppercase tracking-widest"
                                                     >
                                                         Sign in to join the conversation
                                                     </button>
@@ -307,20 +307,20 @@ export const IdeaDetailPage = () => {
                                                 initial={{ opacity: 0, y: 10 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                                 className={`p-6 rounded-3xl border ${comment.isOfficial
-                                                    ? 'bg-paymint-green/[0.03] border-paymint-green/20'
+                                                    ? 'bg-PayMint-green/[0.03] border-PayMint-green/20'
                                                     : 'bg-white dark:bg-white/5 border-gray-100 dark:border-white/10'
                                                     }`}
                                             >
                                                 <div className="flex items-center justify-between mb-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className={`w-9 h-9 rounded-full flex items-center justify-center ${comment.isOfficial ? 'bg-paymint-green text-black' : 'bg-gray-100 dark:bg-white/10'}`}>
+                                                        <div className={`w-9 h-9 rounded-full flex items-center justify-center ${comment.isOfficial ? 'bg-PayMint-green text-black' : 'bg-gray-100 dark:bg-white/10'}`}>
                                                             <User size={16} />
                                                         </div>
                                                         <div>
                                                             <div className="flex items-center gap-2">
                                                                 <span className="font-black text-sm">{comment.author}</span>
                                                                 {comment.isOfficial && (
-                                                                    <span className="px-1.5 py-0.5 bg-paymint-green/20 text-paymint-green text-[10px] font-black uppercase tracking-widest rounded-md">
+                                                                    <span className="px-1.5 py-0.5 bg-PayMint-green/20 text-PayMint-green text-[10px] font-black uppercase tracking-widest rounded-md">
                                                                         Official
                                                                     </span>
                                                                 )}
@@ -328,7 +328,7 @@ export const IdeaDetailPage = () => {
                                                             <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">{comment.createdAt}</span>
                                                         </div>
                                                     </div>
-                                                    <button className="flex items-center gap-1.5 text-xs font-bold text-gray-400 hover:text-paymint-green transition-colors">
+                                                    <button className="flex items-center gap-1.5 text-xs font-bold text-gray-400 hover:text-PayMint-green transition-colors">
                                                         <Heart size={14} />
                                                         {comment.likes}
                                                     </button>
@@ -381,7 +381,7 @@ export const IdeaDetailPage = () => {
                                         <button
                                             onClick={handleVote}
                                             className={`w-full mt-8 py-4 rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-2 ${idea.hasVoted
-                                                ? 'bg-paymint-green text-black hover:opacity-90'
+                                                ? 'bg-PayMint-green text-black hover:opacity-90'
                                                 : 'bg-gray-900 dark:bg-white text-white dark:text-black hover:scale-[1.02]'
                                                 }`}
                                         >
@@ -396,7 +396,7 @@ export const IdeaDetailPage = () => {
                                         <div className="space-y-4">
                                             {[1, 2].map(i => (
                                                 <Link key={i} to="/community/ideas" className="block group">
-                                                    <p className="text-sm font-bold group-hover:text-paymint-green transition-colors mb-2 line-clamp-2">
+                                                    <p className="text-sm font-bold group-hover:text-PayMint-green transition-colors mb-2 line-clamp-2">
                                                         {i === 1 ? 'Customer-facing display support' : 'QR code ordering for tables'}
                                                     </p>
                                                     <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-gray-400">

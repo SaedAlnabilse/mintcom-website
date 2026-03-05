@@ -30,20 +30,20 @@ export const QAPage = () => {
         {
             id: '1',
             category: 'General',
-            question: t('support.qa.q1.question', 'What is Paymint?'),
-            answer: t('support.qa.q1.answer', 'Paymint is a comprehensive digital payment solution designed to help businesses of all sizes accept payments, manage finances, and grow. We offer a suite of tools including a payment gateway, point-of-sale systems, and detailed analytics.')
+            question: t('support.qa.q1.question', 'What is PayMint?'),
+            answer: t('support.qa.q1.answer', 'PayMint is a comprehensive digital payment solution designed to help businesses of all sizes accept payments, manage finances, and grow. We offer a suite of tools including a payment gateway, point-of-sale systems, and detailed analytics.')
         },
         {
             id: '2',
             category: 'General',
-            question: t('support.qa.q2.question', 'Is Paymint available in my country?'),
-            answer: t('support.qa.q2.answer', 'Paymint is currently available in over 30 countries across North America, Europe, and Asia. We are rapidly expanding to new regions. Please check our supported countries list on our pricing page for the most up-to-date information.')
+            question: t('support.qa.q2.question', 'Is PayMint available in my country?'),
+            answer: t('support.qa.q2.answer', 'PayMint is currently available in over 30 countries across North America, Europe, and Asia. We are rapidly expanding to new regions. Please check our supported countries list on our pricing page for the most up-to-date information.')
         },
         {
             id: '3',
             category: 'Payments',
             question: t('support.qa.q3.question', 'What payment methods can I accept?'),
-            answer: t('support.qa.q3.answer', 'With Paymint, you can accept all major credit and debit cards (Visa, Mastercard, Amex), digital wallets (Apple Pay, Google Pay), and local payment methods specific to your region.')
+            answer: t('support.qa.q3.answer', 'With PayMint, you can accept all major credit and debit cards (Visa, Mastercard, Amex), digital wallets (Apple Pay, Google Pay), and local payment methods specific to your region.')
         },
         {
             id: '4',
@@ -54,7 +54,7 @@ export const QAPage = () => {
         {
             id: '5',
             category: 'Security',
-            question: t('support.qa.q5.question', 'Is Paymint secure?'),
+            question: t('support.qa.q5.question', 'Is PayMint secure?'),
             answer: t('support.qa.q5.answer', 'Yes, security is our top priority. We are PCI DSS Level 1 compliant, which is the highest standard of payment security. All data is encrypted using advanced encryption standards (AES-256), and we employ 24/7 fraud monitoring.')
         },
         {
@@ -111,7 +111,7 @@ export const QAPage = () => {
                             placeholder={t('support.qa.search_placeholder', 'Search for questions...')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-4 bg-gray-100 dark:bg-black/20 border border-transparent focus:bg-white dark:focus:bg-[#0F172A] border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all shadow-sm"
+                            className="w-full pl-12 pr-4 py-4 bg-gray-100 dark:bg-black/20 border border-transparent focus:bg-white dark:focus:bg-[#0F172A] border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all shadow-sm"
                         />
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                     </motion.div>
@@ -132,7 +132,7 @@ export const QAPage = () => {
                                 onClick={() => setActiveCategory(cat.id)}
                                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
                                     activeCategory === cat.id
-                                    ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                                    ? 'bg-PayMint-green text-black shadow-lg shadow-PayMint-green/20'
                                     : 'text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'
                                 }`}
                             >
@@ -158,7 +158,7 @@ export const QAPage = () => {
                                         <motion.div
                                             key={item.id}
                                             layout
-                                            className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden transition-all hover:border-paymint-green/30"
+                                            className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden transition-all hover:border-PayMint-green/30"
                                         >
                                             <button
                                                 onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
@@ -170,13 +170,13 @@ export const QAPage = () => {
                                                             {item.category}
                                                         </span>
                                                     </div>
-                                                    <h3 className={`text-base font-bold transition-colors ${expandedId === item.id ? 'text-paymint-green' : 'text-gray-900 dark:text-white'}`}>
+                                                    <h3 className={`text-base font-bold transition-colors ${expandedId === item.id ? 'text-PayMint-green' : 'text-gray-900 dark:text-white'}`}>
                                                         {item.question}
                                                     </h3>
                                                 </div>
                                                 <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
                                                     expandedId === item.id 
-                                                    ? 'bg-paymint-green text-black rotate-180' 
+                                                    ? 'bg-PayMint-green text-black rotate-180' 
                                                     : 'bg-gray-100 dark:bg-white/5 text-gray-500'
                                                 }`}>
                                                     {expandedId === item.id ? <Minus size={18} /> : <Plus size={18} />}

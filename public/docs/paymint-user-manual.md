@@ -1,4 +1,4 @@
-﻿# Paymint POS System
+# PayMint POS System
 ## User Manual
 
 **Version:** 6.0  
@@ -25,9 +25,9 @@
 
 ## 1. Introduction
 
-### What is Paymint?
+### What is PayMint?
 
-Paymint is a comprehensive Point of Sale (POS) system designed specifically for restaurants, cafes, and retail establishments. It streamlines your daily operations by providing an intuitive interface for processing sales, managing inventory, tracking employee performance, and generating detailed business reports.
+PayMint is a comprehensive Point of Sale (POS) system designed specifically for restaurants, cafes, and retail establishments. It streamlines your daily operations by providing an intuitive interface for processing sales, managing inventory, tracking employee performance, and generating detailed business reports.
 
 ### Key Features
 
@@ -58,7 +58,7 @@ Before using the POS, you must first connect the app to your restaurant account.
 
 *[Insert Screenshot of Connect Restaurant Screen]*
 
-1. **Launch** the Paymint app on your device.
+1. **Launch** the PayMint app on your device.
 2. **Enter Restaurant ID** in the designated field (e.g., `cafe-aroma`).
 3. **Enter Restaurant Password** provided by your administrator.
 4. **Tap "Connect Restaurant"** to verify and establish connection.
@@ -67,7 +67,7 @@ Before using the POS, you must first connect the app to your restaurant account.
 
 ### 2.2 Logging In
 
-Paymint offers two login methods:
+PayMint offers two login methods:
 
 #### Option A: Staff Selection (Recommended)
 
@@ -590,7 +590,7 @@ The Z-Report summarizes all transactions for the shift and reconciles the cash d
 | **Deficit** | Less cash than expected | Report to manager immediately |
 | **Balanced** | Cash matches expected amount | Shift closes normally |
 
-> **Important:** Cash discrepancies are logged and reported to owners via the Paymint Backoffice app.
+> **Important:** Cash discrepancies are logged and reported to owners via the PayMint Backoffice app.
 
 #### Printing the Z-Report
 
@@ -716,14 +716,14 @@ Navigate to **Settings > Your Restaurant**.
 
 1. Check device is connected to Wi-Fi.
 2. Verify internet is working (try loading a website).
-3. Restart the Paymint app.
+3. Restart the PayMint app.
 4. Restart your Wi-Fi router if needed.
 5. Contact support if issue persists.
 
 **Slow Performance:**
 
 1. Close unused apps running in background.
-2. Clear Paymint app cache (Settings > Apps > Paymint > Clear Cache).
+2. Clear PayMint app cache (Settings > Apps > PayMint > Clear Cache).
 3. Restart the device.
 4. Ensure sufficient device storage available.
 
@@ -770,7 +770,7 @@ If issues persist after troubleshooting:
 4. Submit the support request.
 
 **Support Contact:**
-- Email: support@paymint.io
+- Email: support@PayMint.io
 - In-App: Settings > Contact Support
 
 ---
@@ -834,15 +834,15 @@ Standard receipts include:
 | Field | Value |
 |-------|-------|
 | **Document Version** | 6.0 |
-| **Product Version** | Paymint 5.0.0 |
-| **License** | Paymint Enterprise |
+| **Product Version** | PayMint 5.0.0 |
+| **License** | PayMint Enterprise |
 | **Last Updated** | January 2026 |
 
 ---
 
-*This manual is intended for authorized Paymint users. For additional support, please contact your system administrator or Paymint support team.*
+*This manual is intended for authorized PayMint users. For additional support, please contact your system administrator or PayMint support team.*
 
-*Generated for Paymint Inc.*
+*Generated for PayMint Inc.*
 
 
 

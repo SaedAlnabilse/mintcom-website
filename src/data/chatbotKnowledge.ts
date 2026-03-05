@@ -1,5 +1,5 @@
 /**
- * Paymint AI Chatbot Knowledge Base
+ * PayMint AI Chatbot Knowledge Base
  * Comprehensive information from User Manual v6.1 and application structure
  * This creates a friendly, helpful AI assistant named Minto
  */
@@ -21,9 +21,9 @@ export const PAYMINT_KNOWLEDGE: KnowledgeEntry[] = [
   {
     id: 'welcome',
     keywords: ['start', 'begin', 'new', 'first', 'getting started', 'how to use', 'introduction', 'hello', 'hi', 'help', 'بدء', 'جديد', 'أول', 'كيف أبدأ', 'كيف ابدا', 'مقدمة', 'مساعدة', 'ابدأ'],
-    question: 'How do I get started with Paymint?',
+    question: 'How do I get started with PayMint?',
     questionAr: 'كيف أبدأ مع بيمنت؟',
-    answer: `Great question! Getting started with Paymint is easy. Here's what you need to do:
+    answer: `Great question! Getting started with PayMint is easy. Here's what you need to do:
 
 1. **Sign Up** - Create your account on our website
 2. **Verify Email** - Check your inbox and click the verification link
@@ -46,11 +46,11 @@ The whole process takes just a few minutes. What would you like help with first?
     relatedTopics: ['signup', 'onboarding', 'products']
   },
   {
-    id: 'what-is-paymint',
-    keywords: ['what is paymint', 'about paymint', 'paymint features', 'what does paymint do', 'explain paymint', 'ما هو بيمنت', 'عن بيمنت', 'ميزات بيمنت', 'ماذا يفعل بيمنت', 'ايش بيمنت'],
-    question: 'What is Paymint?',
+    id: 'what-is-PayMint',
+    keywords: ['what is PayMint', 'about PayMint', 'PayMint features', 'what does PayMint do', 'explain PayMint', 'ما هو بيمنت', 'عن بيمنت', 'ميزات بيمنت', 'ماذا يفعل بيمنت', 'ايش بيمنت'],
+    question: 'What is PayMint?',
     questionAr: 'ما هو بيمنت؟',
-    answer: `Paymint is a comprehensive Point of Sale (POS) system designed for restaurants, cafes, and retail establishments!
+    answer: `PayMint is a comprehensive Point of Sale (POS) system designed for restaurants, cafes, and retail establishments!
 
 **Key Features:**
 - Multi-device support - connect multiple devices to one account
@@ -82,9 +82,9 @@ It's designed to make your daily operations smooth and efficient!`,
   {
     id: 'signup',
     keywords: ['sign up', 'signup', 'register', 'create account', 'new account', 'join', 'تسجيل', 'إنشاء حساب', 'حساب جديد', 'انضمام', 'اشتراك'],
-    question: 'How do I create a Paymint account?',
+    question: 'How do I create a PayMint account?',
     questionAr: 'كيف أنشئ حساب بيمنت؟',
-    answer: `Creating your Paymint account is quick and easy!
+    answer: `Creating your PayMint account is quick and easy!
 
 1. Click **"Sign Up"** or visit the signup page
 2. Enter your **email address** and create a strong password
@@ -357,7 +357,7 @@ Your product is now ready to sell!`,
     keywords: ['inventory', 'stock', 'track stock', 'low stock', 'out of stock', 'quantity', 'stock levels', 'مخزون', 'تتبع المخزون', 'مخزون منخفض', 'نفاد المخزون', 'كمية', 'جرد'],
     question: 'How do I track inventory?',
     questionAr: 'كيف أتتبع المخزون؟',
-    answer: `Paymint makes inventory tracking automatic!
+    answer: `PayMint makes inventory tracking automatic!
 
 **Enabling Stock Tracking:**
 1. Go to **Products** and edit a product
@@ -479,7 +479,7 @@ Go to **Dashboard > Materials** and **Dashboard > Recipes** to get started!`,
     keywords: ['split payment', 'split bill', 'multiple payments', 'share bill', 'pay separately', 'تقسيم الدفع', 'دفع مشترك', 'دفعات متعددة', 'تقسيم الفاتورة'],
     question: 'How do I handle split payments?',
     questionAr: 'كيف أتعامل مع الدفع المقسم؟',
-    answer: `Paymint makes split payments easy!
+    answer: `PayMint makes split payments easy!
 
 1. During checkout, tap **"Split Payment"**
 2. Choose split type: **By Amount** or **By Item**
@@ -594,7 +594,7 @@ You can also apply item-level discounts!`,
     keywords: ['loyalty', 'rewards', 'points', 'loyalty program', 'customer rewards', 'enroll customer', 'ولاء', 'مكافآت', 'نقاط', 'برنامج ولاء', 'نقاط العملاء', 'مكافأة'],
     question: 'How does the loyalty program work?',
     questionAr: 'كيف يعمل برنامج الولاء؟',
-    answer: `Paymint has a built-in loyalty program!
+    answer: `PayMint has a built-in loyalty program!
 
 **Setup:** Go to Dashboard > Loyalty, enable, set earning rules and rewards.
 **Enroll:** Tap "Loyalty" on sales screen, add new customer with name and phone.
@@ -679,7 +679,7 @@ Their data is preserved but they can no longer log in. Can be reactivated later.
     keywords: ['report', 'reports', 'analytics', 'data', 'statistics', 'insights', 'sales report', 'تقرير', 'تقارير', 'تحليلات', 'بيانات', 'إحصائيات', 'تقرير مبيعات'],
     question: 'What reports are available?',
     questionAr: 'ما التقارير المتاحة؟',
-    answer: `Paymint offers comprehensive reporting!
+    answer: `PayMint offers comprehensive reporting!
 
 **Types:** General Reports, Item Reports, Order History, Staff Reports, Shift Reports, Peak Hours, Discount Reports, Tax Reports.
 
@@ -796,7 +796,7 @@ Supports: Epson TM series, Star TSP series, Bluetooth thermal printers.`,
     questionAr: 'التطبيق يقول "فشل الاتصال". ماذا أفعل؟',
     answer: `Quick fixes: Check Wi-Fi, restart the app, restart router. Still not working? Clear app cache, close other apps, try mobile data.
 
-**Offline Mode:** Paymint can work offline for basic cash sales! Data syncs when you reconnect.`,
+**Offline Mode:** PayMint can work offline for basic cash sales! Data syncs when you reconnect.`,
     answerAr: `حلول سريعة: تحقق من الواي فاي، أعد تشغيل التطبيق، أعد تشغيل الراوتر. لا يزال لا يعمل؟ امسح ذاكرة التطبيق المؤقتة، أغلق التطبيقات الأخرى، جرب بيانات الجوال.
 
 **وضع عدم الاتصال:** بيمنت يعمل بدون إنترنت للمبيعات النقدية الأساسية! البيانات تتزامن عند الاتصال مجدداً.`,
@@ -873,8 +873,8 @@ Supports: Epson TM series, Star TSP series, Bluetooth thermal printers.`,
     keywords: ['support', 'help', 'contact', 'customer service', 'issue', 'problem', 'email support', 'دعم', 'مساعدة', 'تواصل', 'خدمة عملاء', 'مشكلة'],
     question: 'How do I contact support?',
     questionAr: 'كيف أتواصل مع الدعم؟',
-    answer: `Email us at **support@paymint.io**. Include: error message, steps taken, device info, screenshots. We respond within 24 hours!`,
-    answerAr: `راسلنا على **support@paymint.io**. أرفق: رسالة الخطأ، الخطوات المتخذة، معلومات الجهاز، لقطات شاشة. نرد خلال 24 ساعة!`,
+    answer: `Email us at **support@PayMint.io**. Include: error message, steps taken, device info, screenshots. We respond within 24 hours!`,
+    answerAr: `راسلنا على **support@PayMint.io**. أرفق: رسالة الخطأ، الخطوات المتخذة، معلومات الجهاز، لقطات شاشة. نرد خلال 24 ساعة!`,
     category: 'technical'
   },
   {
@@ -909,10 +909,10 @@ Supports: Epson TM series, Star TSP series, Bluetooth thermal printers.`,
 
 // Friendly greeting responses - varied and warm
 export const GREETINGS = [
-  "Hey there! 👋 I'm Minto, your Paymint assistant. What can I help you with today?",
-  "Hi! Welcome! I'm Minto, here to help you get the most out of Paymint. What's on your mind?",
-  "Hello! 👋 Great to see you! I'm Minto - ask me anything about Paymint!",
-  "Hey! I'm Minto, your friendly Paymint guide. How can I make your day easier?",
+  "Hey there! 👋 I'm Minto, your PayMint assistant. What can I help you with today?",
+  "Hi! Welcome! I'm Minto, here to help you get the most out of PayMint. What's on your mind?",
+  "Hello! 👋 Great to see you! I'm Minto - ask me anything about PayMint!",
+  "Hey! I'm Minto, your friendly PayMint guide. How can I make your day easier?",
   "Hi there! 😊 I'm Minto. Whether it's products, orders, or settings - I've got you covered!",
 ];
 
@@ -930,7 +930,7 @@ export const FALLBACK_RESPONSES = [
   "Hmm, I'm not quite sure about that one! Could you try rephrasing? Or ask me about things like products, orders, staff, reports, or settings - I know a lot about those! 😊",
   "That's a good question! I don't have specific info on that, but I'd love to help with something else. What about adding products, processing sales, or managing your team?",
   "I couldn't find an exact answer for that. Try asking things like 'How do I add a product?' or 'How do I process a refund?' - I'm great with those!",
-  "Interesting question! I might need more context. Could you be more specific? In the meantime, feel free to ask about any Paymint features!",
+  "Interesting question! I might need more context. Could you be more specific? In the meantime, feel free to ask about any PayMint features!",
   "I'm still learning! 🤓 I don't have info on that specific topic, but I can help with sales, inventory, reports, staff management, and more!",
 ];
 

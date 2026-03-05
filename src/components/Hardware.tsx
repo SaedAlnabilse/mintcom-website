@@ -9,8 +9,8 @@ const SplitText = ({ text, className = "" }: { text: string; className?: string 
       {text.split(' ').map((word, i) => {
         const isPaymint = word.toLowerCase().includes('paymint');
         return (
-          <span 
-            key={i} 
+          <span
+            key={i}
             className={isPaymint ? 'text-paymint-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-paymint-green')}
           >
             {word}{' '}
@@ -86,7 +86,7 @@ export const Hardware = () => {
 
   return (
     <>
-      <section id="hardware" className="py-24 lg:py-32 bg-gray-50 dark:bg-[#0a0a0a] overflow-hidden relative">
+      <section id="hardware" className="py-16 lg:py-20 bg-gray-50 dark:bg-[#0a0a0a] overflow-hidden relative">
         {/* Background Decor */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-paymint-green/5 rounded-full blur-[120px] -z-10" />
 
@@ -97,7 +97,7 @@ export const Hardware = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl lg:text-6xl font-bold font-magilio mb-5 leading-[1.3] rtl:leading-tight tracking-tight">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
               <SplitText text={t('landing.hardware.title') + ' ' + t('landing.hardware.titleHighlight')} />
             </h2>
             <p className="text-lg lg:text-xl text-gray-600 dark:text-gray-400 leading-relaxed max-w-2xl mx-auto font-light">
@@ -121,7 +121,7 @@ export const Hardware = () => {
                     <item.icon size={28} className="text-paymint-green" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold font-magilio text-gray-900 dark:text-white">{item.name}</h3>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">{item.name}</h3>
                     <p className="text-gray-500 dark:text-gray-400 text-sm">{item.description}</p>
                   </div>
                 </div>
@@ -190,7 +190,7 @@ export const Hardware = () => {
                     <selectedHardware.icon size={24} className="text-white" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold font-magilio text-gray-900 dark:text-white">{selectedHardware.name}</h3>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">{selectedHardware.name}</h3>
                     <p className="text-gray-500 dark:text-gray-400 text-sm">{selectedHardware.description}</p>
                   </div>
                 </div>
@@ -211,8 +211,8 @@ export const Hardware = () => {
                       key={item.id}
                       onClick={() => setSelectedHardware(item)}
                       className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm transition-all ${selectedHardware.id === item.id
-                          ? 'bg-paymint-green text-black'
-                          : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10'
+                        ? 'bg-paymint-green text-black'
+                        : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10'
                         }`}
                     >
                       <item.icon size={16} />

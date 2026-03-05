@@ -85,8 +85,8 @@ export const Pricing = () => {
             <button
               onClick={() => setIsYearly(false)}
               className={`px-5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all duration-300 ${!isYearly
-                  ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
             >
               Monthly
@@ -94,8 +94,8 @@ export const Pricing = () => {
             <button
               onClick={() => setIsYearly(true)}
               className={`px-5 py-2.5 rounded-xl text-sm font-bold tracking-wide transition-all duration-300 relative ${isYearly
-                  ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
             >
               Yearly
@@ -124,7 +124,7 @@ export const Pricing = () => {
               )}
 
               <div className="mb-6">
-                <h3 className="text-xl font-bold font-magilio text-gray-900 dark:text-white mb-2">{plan.name}</h3>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{plan.name}</h3>
                 <p className="text-gray-600 dark:text-gray-400 text-sm h-10">{plan.description}</p>
               </div>
 
@@ -191,7 +191,7 @@ export const Pricing = () => {
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-2">
                 <MapPin size={20} className="text-blue-500" />
-                <h3 className="text-xl font-bold font-magilio text-gray-900 dark:text-white">Additional Locations</h3>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Additional Locations</h3>
               </div>
               <p className="text-gray-600 dark:text-gray-400 text-sm h-10">Each extra location after your first one</p>
             </div>
@@ -265,7 +265,7 @@ export const Pricing = () => {
               className="bg-white dark:bg-[#1a1a1a] w-full max-w-lg rounded-3xl shadow-2xl relative z-10 overflow-hidden border border-gray-100 dark:border-white/5 transition-colors duration-300"
             >
               <div className="p-6 border-b border-gray-100 dark:border-white/5 flex justify-between items-center bg-gray-50/50 dark:bg-transparent">
-                <h3 className="text-xl font-bold font-magilio text-gray-900 dark:text-white">{t('pricing.planDetails')}</h3>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('pricing.planDetails')}</h3>
                 <button
                   onClick={() => setSelectedPlan(null)}
                   className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
@@ -276,7 +276,7 @@ export const Pricing = () => {
 
               <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
                 <div className="text-center mb-8">
-                  <h2 className="text-2xl sm:text-3xl font-bold font-magilio text-gray-900 dark:text-white mb-2">{selectedPlan.name}</h2>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">{selectedPlan.name}</h2>
                   <div className="flex items-baseline justify-center gap-1 mb-2">
                     <span className="text-4xl font-bold text-paymint-green">${currentPrice}</span>
                     <span className="text-gray-500 dark:text-gray-400">{currentPeriod}</span>

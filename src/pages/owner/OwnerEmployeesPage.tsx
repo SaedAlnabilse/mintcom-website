@@ -54,7 +54,7 @@ type SortKey = 'name' | 'role' | 'status' | 'access';
 const MAX_EMPLOYEES_PER_ACCOUNT = 50;
 const EMPLOYEE_LIMIT_POPUP_MESSAGE =
     `Maximum is ${MAX_EMPLOYEES_PER_ACCOUNT} employees.\n` +
-    `To add more than ${MAX_EMPLOYEES_PER_ACCOUNT} employees, contact Paymint support at support@paymint.app with your account email and password.`;
+    `To add more than ${MAX_EMPLOYEES_PER_ACCOUNT} employees, contact PayMint support at support@PayMint.app with your account email and password.`;
 
 export function OwnerEmployeesPage() {
     const { t } = useTranslation();
@@ -264,7 +264,7 @@ export function OwnerEmployeesPage() {
         const base = "px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border";
         switch (role?.toUpperCase()) {
             case 'ADMIN':
-                return <span className={`${base} bg-paymint-green/10 text-paymint-green border-paymint-green/20`}>{t('staff.roles.admin')}</span>;
+                return <span className={`${base} bg-PayMint-green/10 text-PayMint-green border-PayMint-green/20`}>{t('staff.roles.admin')}</span>;
             case 'MANAGER':
                 return <span className={`${base} bg-purple-500/10 text-purple-500 border-purple-500/20`}>{t('staff.roles.manager')}</span>;
             case 'USER':
@@ -284,8 +284,8 @@ export function OwnerEmployeesPage() {
             );
         }
         return (
-            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-paymint-red/10 text-paymint-red border border-paymint-red/20 text-xs font-bold tracking-wide w-fit mx-auto">
-                <span className="w-1.5 h-1.5 rounded-full bg-paymint-red" />
+            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-PayMint-red/10 text-PayMint-red border border-PayMint-red/20 text-xs font-bold tracking-wide w-fit mx-auto">
+                <span className="w-1.5 h-1.5 rounded-full bg-PayMint-red" />
                 {t('common.status.inactive')}
             </span>
         );
@@ -306,7 +306,7 @@ export function OwnerEmployeesPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                        <span className="px-3 py-1 rounded-lg bg-PayMint-green/10 text-PayMint-green text-xs font-black tracking-widest border border-PayMint-green/20">
                             {t('owner.staff.badge')}
                         </span>
                     </div>
@@ -321,7 +321,7 @@ export function OwnerEmployeesPage() {
                     <button
                         id="tour-add-employee-btn"
                         onClick={handleOpenAddEmployeeModal}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20"
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-PayMint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-PayMint-green/20"
                     >
                         <UserPlus size={18} />
                         <span>{t('staff.newEmployee')}</span>
@@ -366,14 +366,14 @@ export function OwnerEmployeesPage() {
                     <div id="tour-search-input" className="relative flex-1 min-w-[300px]">
                         <Search
                             size={18}
-                            className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-300 ${searchQuery ? 'text-paymint-green' : 'text-gray-400'}`}
+                            className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-300 ${searchQuery ? 'text-PayMint-green' : 'text-gray-400'}`}
                         />
                         <input
                             type="text"
                             placeholder={t('owner.staff.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm focus:shadow-lg"
+                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-PayMint-green/10 focus:border-PayMint-green/50 dark:focus:border-PayMint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm focus:shadow-lg"
                         />
                     </div>
 
@@ -408,13 +408,13 @@ export function OwnerEmployeesPage() {
                         <div id="tour-view-toggle" className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[52px]">
                             <button
                                 onClick={() => setViewMode('grid')}
-                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-PayMint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                             >
                                 <Grid3X3 size={18} />
                             </button>
                             <button
                                 onClick={() => setViewMode('list')}
-                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-PayMint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                             >
                                 <List size={18} />
                             </button>
@@ -426,7 +426,7 @@ export function OwnerEmployeesPage() {
             {/* Employee List */}
             {isLoading ? (
                 <div className="flex flex-col items-center justify-center py-20 space-y-4">
-                    <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin" />
+                    <div className="w-12 h-12 border-4 border-PayMint-green/30 border-t-PayMint-green rounded-full animate-spin" />
                     <p className="text-sm font-bold text-gray-400 tracking-widest">{t('owner.staff.loading')}</p>
                 </div>
             ) : filteredEmployees.length === 0 ? (
@@ -538,28 +538,28 @@ export function OwnerEmployeesPage() {
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
                     <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest">
                         <div
-                            className="col-span-4 cursor-pointer hover:text-paymint-green transition-colors flex items-center gap-1"
+                            className="col-span-4 cursor-pointer hover:text-PayMint-green transition-colors flex items-center gap-1"
                             onClick={() => handleSort('name')}
                         >
                             {t('common.name')}
                             {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
                         <div
-                            className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
+                            className="col-span-2 text-center cursor-pointer hover:text-PayMint-green transition-colors flex items-center justify-center gap-1"
                             onClick={() => handleSort('role')}
                         >
                             {t('common.role')}
                             {sortConfig?.key === 'role' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
                         <div
-                            className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
+                            className="col-span-2 text-center cursor-pointer hover:text-PayMint-green transition-colors flex items-center justify-center gap-1"
                             onClick={() => handleSort('status')}
                         >
                             {t('common.status.label')}
                             {sortConfig?.key === 'status' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
                         <div
-                            className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
+                            className="col-span-2 text-center cursor-pointer hover:text-PayMint-green transition-colors flex items-center justify-center gap-1"
                             onClick={() => handleSort('access')}
                         >
                             {t('owner.staff.access')}

@@ -4,21 +4,21 @@ import { Check, ArrowRight, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
-  return (
-    <span className={className}>
-      {text.split(' ').map((word, i) => {
-        const isPaymint = word.toLowerCase().includes('paymint');
-        return (
-          <span 
-            key={i} 
-            className={isPaymint ? 'text-paymint-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-paymint-green')}
-          >
-            {word}{' '}
-          </span>
-        );
-      })}
-    </span>
-  );
+    return (
+        <span className={className}>
+            {text.split(' ').map((word, i) => {
+                const isPaymint = word.toLowerCase().includes('paymint');
+                return (
+                    <span
+                        key={i}
+                        className={isPaymint ? 'text-paymint-green' : (i % 2 === 0 ? 'text-gray-900 dark:text-white' : 'text-paymint-green')}
+                    >
+                        {word}{' '}
+                    </span>
+                );
+            })}
+        </span>
+    );
 };
 
 export const PricingDownload = () => {
@@ -58,7 +58,7 @@ export const PricingDownload = () => {
     };
 
     return (
-        <section id="pricing" className="py-24 lg:py-32 bg-gray-50 dark:bg-[#080808] relative overflow-hidden transition-colors duration-500">
+        <section id="pricing" className="py-16 lg:py-20 bg-gray-50 dark:bg-[#080808] relative overflow-hidden transition-colors duration-500">
             {/* Dynamic Background Elements */}
             <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-paymint-green/5 rounded-full blur-[120px] -z-10" />
             <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-[120px] -z-10" />
@@ -66,7 +66,7 @@ export const PricingDownload = () => {
             <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl">
                 {/* Header Section */}
                 <div className="text-center mb-16 lg:mb-20">
-                    <h2 className="text-4xl lg:text-6xl font-bold font-magilio mb-6 tracking-tighter leading-[1.3]">
+                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold font-magilio mb-6 leading-[1.2] rtl:leading-[1.3] tracking-tight">
                         <SplitText text={t('landing.pricing.title')} />
                     </h2>
                     <p className="text-2xl lg:text-3xl text-gray-500 dark:text-gray-400 max-w-3xl mx-auto font-black leading-tight mb-10">
@@ -87,8 +87,8 @@ export const PricingDownload = () => {
                         <button
                             onClick={() => setIsYearly(false)}
                             className={`px-6 py-3 rounded-xl text-sm font-black tracking-wider transition-all duration-300 ${!isYearly
-                                    ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
-                                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                                ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                                : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                                 }`}
                         >
                             MONTHLY
@@ -96,14 +96,14 @@ export const PricingDownload = () => {
                         <button
                             onClick={() => setIsYearly(true)}
                             className={`px-6 py-3 rounded-xl text-sm font-black tracking-wider transition-all duration-300 relative ${isYearly
-                                    ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
-                                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                                ? 'bg-paymint-green text-black shadow-lg shadow-paymint-green/20'
+                                : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                                 }`}
                         >
                             YEARLY
                             <span className={`absolute -top-2 -right-2 px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider ${isYearly
-                                    ? 'bg-black text-paymint-green'
-                                    : 'bg-paymint-green text-black'
+                                ? 'bg-black text-paymint-green'
+                                : 'bg-paymint-green text-black'
                                 } shadow-lg`}>
                                 SAVE
                             </span>
@@ -122,16 +122,15 @@ export const PricingDownload = () => {
                         className="w-full lg:w-[480px] flex-shrink-0"
                     >
                         <div className="relative group h-full">
-                            {/* Animated Glow Backdrop */}
-                            <div className="absolute -inset-2 bg-gradient-to-r from-paymint-green via-emerald-400 to-blue-500 rounded-[3rem] blur-2xl opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                            {/* Card Content */}
 
-                            <div className="relative h-full bg-white dark:bg-[#0c0c0c] border border-gray-100 dark:border-white/10 rounded-[2.5rem] p-8 lg:p-12 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] dark:shadow-none transition-all duration-500 group-hover:translate-y-[-8px] flex flex-col">
+                            <div className="relative h-full bg-white dark:bg-[#0c0c0c] border border-gray-100 dark:border-white/10 rounded-[2.5rem] p-8 lg:p-12 shadow-xl shadow-gray-200/40 dark:shadow-none transition-all duration-500 group-hover:translate-y-[-8px] flex flex-col">
 
                                 {/* Plan Identity */}
                                 <div className="flex justify-between items-start mb-8">
                                     <div>
                                         <div className="text-paymint-green text-xs font-black uppercase tracking-widest mb-1 italic">FULL ACCESS</div>
-                                        <h3 className="text-2xl font-bold font-magilio text-gray-900 dark:text-white tracking-tight">
+                                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                                             {isYearly ? 'Yearly' : 'Monthly'} Plan
                                         </h3>
                                     </div>
@@ -148,7 +147,7 @@ export const PricingDownload = () => {
                                             transition={{ duration: 0.3 }}
                                             className="flex items-baseline gap-2"
                                         >
-                                            <span className="text-7xl lg:text-8xl font-black text-gray-900 dark:text-white tracking-tighter transition-all group-hover:text-paymint-green">
+                                            <span className="text-7xl lg:text-8xl font-black text-paymint-green tracking-tighter transition-all">
                                                 ${currentPrice}
                                             </span>
                                             <span className="text-gray-400 dark:text-gray-500 font-black text-xl lg:text-2xl uppercase tracking-tighter">
@@ -240,7 +239,7 @@ export const PricingDownload = () => {
                                     <div className="inline-block bg-paymint-green/20 text-paymint-green px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase mb-4">
                                         Detailed View
                                     </div>
-                                    <h2 className="text-4xl font-bold font-magilio text-gray-900 dark:text-white mb-4 tracking-tighter">{plan.name}</h2>
+                                    <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 tracking-tighter">{plan.name}</h2>
                                     <div className="flex items-baseline justify-center gap-1">
                                         <span className="text-5xl font-black text-paymint-green">{plan.price}</span>
                                         <span className="text-gray-500 font-bold">{plan.period}</span>
@@ -248,7 +247,7 @@ export const PricingDownload = () => {
                                 </div>
 
                                 <div className="bg-gray-50 dark:bg-white/5 rounded-3xl p-8 mb-10 border border-gray-100 dark:border-white/5">
-                                    <h4 className="font-bold font-magilio text-gray-900 dark:text-white mb-6 text-xs uppercase tracking-[0.2em]">{t('pricing.whatsIncluded')}</h4>
+                                    <h4 className="font-bold text-gray-900 dark:text-white mb-6 text-xs uppercase tracking-[0.2em]">{t('pricing.whatsIncluded')}</h4>
                                     <ul className="grid grid-cols-1 gap-4">
                                         {[...plan.features, ...plan.detailedFeatures].map((feature, i) => (
                                             <li key={i} className="flex items-start gap-4 text-gray-700 dark:text-gray-300">

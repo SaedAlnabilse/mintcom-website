@@ -7,7 +7,7 @@
       "p4": "PayMint also supports multi-branch operations. Owners and account managers can add, merge, or separate establishments as needed, all from a single universal dashboard. This allows centralized control over sales, staff, products, and performance across multiple locations, with discounted pricing for additional branches."
     },
     "story": {
-      "description": "Paymint was founded with a mission to simplify business operations for merchants everywhere.",
+      "description": "PayMint was founded with a mission to simplify business operations for merchants everywhere.",
       "p1": "PayMint LLC is a Jordanian company operating globally. The platform officially launched in 2025, built on insights gathered from years of research into the POS and retail technology space.",
       "p2": "Development spanned more than three years, with a strong focus on security, performance, and scalability. Every feature was designed to meet real-world business needs and compete confidently with leading global POS solutions. Today, PayMint stands as a modern, secure, and scalable system built to support businesses of all sizes—anywhere in the world.",
       "title": "Our Story"
@@ -527,7 +527,7 @@
       "reports": "Reports",
       "tips": "Tips"
     },
-    "assistantTitle": "Your Paymint Assistant",
+    "assistantTitle": "Your PayMint Assistant",
     "botName": "Minto",
     "fallback": [
       "I'm sorry, I didn't quite catch that. Could you try rephrasing your question?",
@@ -547,14 +547,14 @@
       "needHelp": "Still need help?",
       "noResults": "No results found",
       "searchPlaceholder": "Search FAQs...",
-      "subtitle": "Find answers to common questions about Paymint",
+      "subtitle": "Find answers to common questions about PayMint",
       "title": "Frequently Asked Questions",
       "tryDifferent": "Try different keywords or browse categories"
     },
     "greetings": [
       "Hello! How can I help you today?",
-      "Hi there! I'm Minto, your Paymint assistant. What's on your mind?",
-      "Welcome to Paymint! Feel free to ask me anything about managing your business."
+      "Hi there! I'm Minto, your PayMint assistant. What's on your mind?",
+      "Welcome to PayMint! Feel free to ask me anything about managing your business."
     ],
     "inputPlaceholder": "Ask me anything...",
     "launcher": {
@@ -617,7 +617,7 @@
     "navigation": {
       "takeMe": "Take me there"
     },
-    "poweredBy": "Powered by Paymint AI",
+    "poweredBy": "Powered by PayMint AI",
     "queries": {
       "giveMeTips": "Give me tips to improve my business",
       "howToAddProduct": "How do I add a product?",
@@ -879,7 +879,7 @@
       "ui_ux": "UI/UX"
     },
     "cta": {
-      "subtitle": "Help others, earn badges, and get early access to new features. Join the Paymint community today!",
+      "subtitle": "Help others, earn badges, and get early access to new features. Join the PayMint community today!",
       "title": "Become a Community Champion"
     },
     "difficulty": {
@@ -890,7 +890,7 @@
     },
     "discussions": {
       "browse": "Browse Discussions",
-      "description": "Ask questions, share experiences, and connect with other Paymint users.",
+      "description": "Ask questions, share experiences, and connect with other PayMint users.",
       "featured_1": {
         "title": "Best practices for managing multiple locations"
       },
@@ -898,7 +898,7 @@
         "title": "How we reduced checkout time by 40%"
       },
       "featured_3": {
-        "title": "Integrating Paymint with our inventory system"
+        "title": "Integrating PayMint with our inventory system"
       },
       "item_1": {
         "excerpt": "I recently expanded to 3 locations and looking for tips on how to manage inventory and staff across all of them efficiently...",
@@ -909,8 +909,8 @@
         "title": "How we reduced checkout time by 40%"
       },
       "item_3": {
-        "excerpt": "Has anyone successfully integrated Paymint with a third-party inventory management system? Looking for recommendations...",
-        "title": "Integrating Paymint with our inventory system"
+        "excerpt": "Has anyone successfully integrated PayMint with a third-party inventory management system? Looking for recommendations...",
+        "title": "Integrating PayMint with our inventory system"
       },
       "item_4": {
         "excerpt": "I want to add our logo and customize the footer of our receipts. Is this possible with the current version?",
@@ -950,7 +950,7 @@
       "popular_subtitle": "Most-read tutorials from the community",
       "search_placeholder": "Search guides...",
       "start": "Start Learning",
-      "subtitle": "Learn everything about Paymint with our comprehensive guides",
+      "subtitle": "Learn everything about PayMint with our comprehensive guides",
       "title": "Guides & Tutorials"
     },
     "hub": {
@@ -966,7 +966,7 @@
     },
     "ideas": {
       "all": "All Ideas",
-      "description": "Vote on feature requests and help shape the future of Paymint.",
+      "description": "Vote on feature requests and help shape the future of PayMint.",
       "empty_subtitle": "Try adjusting your search or filters",
       "empty_title": "No ideas found",
       "explore": "Explore Ideas",
@@ -998,7 +998,7 @@
       "see_all": "See all ideas",
       "submit": "Share an Idea",
       "submit_first": "Submit the First Idea",
-      "subtitle": "Vote and help shape the future of Paymint",
+      "subtitle": "Vote and help shape the future of PayMint",
       "title": "Feature Ideas",
       "top": "Top Feature Ideas",
       "top_subtitle": "Vote to help prioritize what we build next",
@@ -1437,7 +1437,7 @@
     "send": "Send Feedback",
     "sending": "Sending...",
     "sent": "Feedback Sent",
-    "subtitle": "Help us improve Paymint",
+    "subtitle": "Help us improve PayMint",
     "tab": "Feedback",
     "thanks": "Thanks for your feedback!",
     "title": "Send Feedback"
@@ -1459,7 +1459,7 @@
     "viewOnAmazon": "View on Amazon"
   },
   "hardware": {
-    "tip": "Pro Tip: All recommended hardware is plug-and-play with the Paymint POS app."
+    "tip": "Pro Tip: All recommended hardware is plug-and-play with the PayMint POS app."
   },
   "hero": {
     "activeRightNow": "Active right now",
@@ -1536,7 +1536,7 @@
   },
   "landing": {
     "admin": {
-      "adminApp": "Paymint Admin App",
+      "adminApp": "PayMint Admin App",
       "alerts": {
         "lowStock": "Low stock alert for {{item}}",
         "newOrder": "New order received #{{id}}",
@@ -1597,7 +1597,7 @@
       "badge": "Available Now",
       "comingSoon": "Coming Soon",
       "completed": "Completed",
-      "description": "Experience the power of Paymint on all your devices. Our apps are designed for speed, reliability, and ease of use.",
+      "description": "Experience the power of PayMint on all your devices. Our apps are designed for speed, reliability, and ease of use.",
       "downloadAPK": "Download APK",
       "downloadFor": "Download for",
       "getApp": "Get the App",
@@ -1637,9 +1637,11 @@
           "description": "Run one store or many—PayMint supports multiple merged branches or separate stores under one unified dashboard. Manage staff, products, sales, and performance across all locations from a single control panel."
         }
       },
+      "readMore": "Read more",
+      "readLess": "Read less",
       "liveDemo": "LIVE DEMO",
       "seamlessSync": "Seamless real-time synchronization across all devices",
-      "seeInAction": "See Paymint in Action",
+      "seeInAction": "See PayMint in Action",
       "subtitle": "At PayMint, we believe in keeping things simple: simple onboarding, simple installation, simple setup, and simple pricing.",
       "title": "Why",
       "titleHighlight": "PayMint?",
@@ -1679,7 +1681,7 @@
           "specs": "Premium 80mm High-Speed Printer"
         }
       },
-      "subtitle": "Paymint works with most standard tablets and thermal printers. Here are some models we recommend.",
+      "subtitle": "PayMint works with most standard tablets and thermal printers. Here are some models we recommend.",
       "tablets": {
         "description": "Powerful handheld devices for your staff",
         "name": "Tablets & Terminals",
@@ -1878,7 +1880,7 @@
         "fbDesc": "Used to measure the effectiveness of our advertising campaigns on Facebook and to deliver targeted ads.",
         "ga": "Google Analytics",
         "gaDesc": "Used to collect anonymous data about how visitors use our site, including pages visited, time spent, and traffic sources.",
-        "questionsDesc": "If you have any questions about our use of cookies, please contact us at support@paymint.app",
+        "questionsDesc": "If you have any questions about our use of cookies, please contact us at support@PayMint.app",
         "questionsTitle": "Questions About Cookies",
         "thirdParty_1": "We may use third-party cookies from services like Google Analytics and Facebook to help us analyze traffic and improve our services.",
         "thirdPartyTitle": "Third-Party Services",
@@ -1931,7 +1933,7 @@
       }
     },
     "privacy": {
-      "agreement": "By using Paymint, you agree to the collection and use of information in accordance with this Privacy Policy.",
+      "agreement": "By using PayMint, you agree to the collection and use of information in accordance with this Privacy Policy.",
       "branch": {
         "b1": "Amman, Jordan – Headquarters",
         "b2": "Dubai, UAE – Regional Office",
@@ -1944,7 +1946,7 @@
         "desc": "Our services are not directed to individuals under the age of 16. We do not knowingly collect personal information from children."
       },
       "contact": {
-        "desc": "If you have any questions about this Privacy Policy or our data practices, please contact us at privacy@paymint.app"
+        "desc": "If you have any questions about this Privacy Policy or our data practices, please contact us at privacy@PayMint.app"
       },
       "cookies": {
         "c1": "Essential cookies for site functionality and authentication",
@@ -1983,7 +1985,7 @@
         "r3": "Analytics data: Retained in anonymized form indefinitely"
       },
       "rights": {
-        "contact": "To exercise any of these rights, please contact us at privacy@paymint.app",
+        "contact": "To exercise any of these rights, please contact us at privacy@PayMint.app",
         "ri1": "Right to access your personal data and request a copy",
         "ri2": "Right to correct inaccurate or incomplete personal data",
         "ri3": "Right to request deletion of your personal data",
@@ -1998,7 +2000,7 @@
         "s1_2_desc": "We automatically collect certain information about your device and usage patterns when you interact with our services.",
         "s1_2_note": "We never sell your personal information to third parties.",
         "s1_3": "1.3 Business & Operational Data",
-        "s1_3_desc": "We may receive information about you from third-party services you connect to your Paymint account.",
+        "s1_3_desc": "We may receive information about you from third-party services you connect to your PayMint account.",
         "s1_4": "1.4 Technical & Usage Data",
         "s1_4_desc": "We collect transaction data processed through our point-of-sale system to provide our services.",
         "s1_desc": "We collect several types of information to provide and improve our services.",
@@ -2018,7 +2020,7 @@
         "s7": "7. Your Rights",
         "s7_desc": "We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the updated policy on our website.",
         "s8": "8. Cookies & Tracking Technologies",
-        "s8_desc": "If you have any questions about this Privacy Policy, please contact us at privacy@paymint.app",
+        "s8_desc": "If you have any questions about this Privacy Policy, please contact us at privacy@PayMint.app",
         "s9": "9. International Operations",
         "subtitle": "How we protect your data",
         "title": "Privacy Policy"
@@ -2054,9 +2056,9 @@
         "desc": "We strive to maintain high availability but do not guarantee uninterrupted service. We may perform scheduled maintenance with advance notice."
       },
       "contact": {
-        "desc": "For questions about these Terms of Service, please contact us at legal@paymint.app"
+        "desc": "For questions about these Terms of Service, please contact us at legal@PayMint.app"
       },
-      "intro": "Welcome to Paymint. By accessing or using our services, you agree to be bound by these Terms of Service. Please read them carefully.",
+      "intro": "Welcome to PayMint. By accessing or using our services, you agree to be bound by these Terms of Service. Please read them carefully.",
       "ip": {
         "desc": "All content, trademarks, and intellectual property on our platform are owned by PayMint LLC or its licensors. You may not copy, modify, or distribute our content without written permission."
       },
@@ -2102,7 +2104,7 @@
       },
       "title": "Terms of Service",
       "use": {
-        "u1": "Paymint grants you a limited, non-exclusive, non-transferable license to use our services for your business operations.",
+        "u1": "PayMint grants you a limited, non-exclusive, non-transferable license to use our services for your business operations.",
         "u2": "You may not sublicense, sell, or redistribute access to our services without our written consent."
       }
     }
@@ -2335,7 +2337,7 @@
       "terms": "Terms",
       "userManual": "User Manual",
       "videoGuide": "Video Guide",
-      "welcomeTitle": "Welcome to Paymint!"
+      "welcomeTitle": "Welcome to PayMint!"
     },
     "tour": {
       "chatBotDesc": "Minto is always here to answer your questions and guide you through the system.",
@@ -2746,7 +2748,7 @@
         },
         "title": "Resources & Help",
         "userManual": {
-          "desc": "Complete guide to using Paymint",
+          "desc": "Complete guide to using PayMint",
           "title": "User Manual"
         },
         "videoTutorial": {
@@ -3997,8 +3999,8 @@
         "li9": "Invoices generated automatically each billing cycle",
         "note_desc": "Keep your payment method up to date to avoid service interruptions.",
         "note_label": "Important",
-        "p1": "This guide covers everything you need to know about billing, payments, and managing your Paymint subscription.",
-        "p2": "Paymint uses a simple, transparent pricing model with no hidden fees.",
+        "p1": "This guide covers everything you need to know about billing, payments, and managing your PayMint subscription.",
+        "p2": "PayMint uses a simple, transparent pricing model with no hidden fees.",
         "p3": "We accept all major payment methods for your convenience."
       },
       "bl2_excerpt": "A comprehensive guide to billing, invoicing, and managing your subscription payments.",
@@ -4047,7 +4049,7 @@
         "li7": "Manage ingredients and recipes for prepared items",
         "li8": "Import and export product catalogs easily",
         "li9": "Define roles with granular POS and back-office permissions",
-        "p1": "Paymint is a complete 360° point-of-sale solution built for modern businesses. This guide covers all the features available to you.",
+        "p1": "PayMint is a complete 360° point-of-sale solution built for modern businesses. This guide covers all the features available to you.",
         "p2": "The POS system is designed to be fast, reliable, and easy for your staff to learn.",
         "p3": "Keep track of every item in your inventory with real-time updates.",
         "p4": "Manage your team with flexible roles and detailed performance tracking.",
@@ -4066,9 +4068,9 @@
         "type6_desc": "Configure your store settings, tax rates, receipt layout, and more.",
         "type6_label": "Settings & Config"
       },
-      "ft1_excerpt": "A comprehensive guide to understanding and using all Paymint features.",
+      "ft1_excerpt": "A comprehensive guide to understanding and using all PayMint features.",
       "ft10": "Offline Mode & Data Sync",
-      "ft10_excerpt": "How Paymint handles offline transactions and syncs data when back online.",
+      "ft10_excerpt": "How PayMint handles offline transactions and syncs data when back online.",
       "ft2": "Inventory Management Guide",
       "ft2_excerpt": "Learn how to track stock, set alerts, and manage your inventory efficiently.",
       "ft3": "Staff Roles & Permissions",
@@ -4086,14 +4088,14 @@
       "ft9": "Add-ons & Modifiers Guide",
       "ft9_excerpt": "Create product add-ons and modifiers for customizable orders.",
       "gs1": {
-        "h1": "Getting Started with Paymint",
+        "h1": "Getting Started with PayMint",
         "h2": "Creating Your Account",
         "h3": "Setting Up Your First Location",
         "h4": "Adding Products",
         "h5": "Configuring Payment Methods",
         "h6": "Inviting Staff",
         "h7": "Going Live",
-        "li1_desc": "Visit paymint.app and click \"Get Started\" to begin your registration.",
+        "li1_desc": "Visit PayMint.app and click \"Get Started\" to begin your registration.",
         "li1_label": "Sign Up",
         "li2_desc": "Check your inbox for a verification email and click the link to activate your account.",
         "li2_label": "Verify Email",
@@ -4101,7 +4103,7 @@
         "li3_label": "Business Details",
         "li4_desc": "Create a unique login ID and password for your POS terminal.",
         "li4_label": "POS Credentials",
-        "p1": "Welcome to Paymint! This guide will walk you through everything you need to get your business up and running.",
+        "p1": "Welcome to PayMint! This guide will walk you through everything you need to get your business up and running.",
         "p2": "Start by creating your account and verifying your email address.",
         "p3": "Next, set up your first business location with all the essential details.",
         "p4": "Add your products, set prices, and organize them into categories.",
@@ -4109,7 +4111,7 @@
         "p6": "Invite your team members and assign them appropriate roles and permissions.",
         "p7": "Once everything is set up, download the POS app and start processing orders!"
       },
-      "gs1_excerpt": "Step-by-step guide to setting up your first Paymint location and getting started.",
+      "gs1_excerpt": "Step-by-step guide to setting up your first PayMint location and getting started.",
       "gs2": {
         "h1": "Navigating Your Dashboard",
         "h2": "Dashboard Overview",
@@ -4142,14 +4144,14 @@
         "li8_label": "Shift Reports",
         "li9_desc": "View all transactions grouped by payment channel.",
         "li9_label": "Payment Reports",
-        "p1": "Your Paymint dashboard is your command center for managing your business.",
+        "p1": "Your PayMint dashboard is your command center for managing your business.",
         "p2": "The main dashboard gives you a real-time overview of your business performance.",
         "p3": "Access comprehensive reports to understand your sales trends and performance.",
         "p4": "Manage all your orders from a single, unified view.",
         "p5": "Build and manage your team with flexible roles and permissions.",
         "p6": "Configure every aspect of your business from the settings panel."
       },
-      "gs2_excerpt": "Learn how to navigate the Paymint dashboard and use its key features.",
+      "gs2_excerpt": "Learn how to navigate the PayMint dashboard and use its key features.",
       "gs3": "Adding Your First Product",
       "gs3_excerpt": "Learn how to create products, set prices, and organize your menu.",
       "gs4": "Setting Up Payment Methods",
@@ -4159,7 +4161,7 @@
       "gs6": "Understanding Roles & Permissions",
       "gs6_excerpt": "Learn how to create custom roles with specific POS and back-office access.",
       "gs7": "Downloading the POS App",
-      "gs7_excerpt": "Get the Paymint POS app on your tablet and connect to your location.",
+      "gs7_excerpt": "Get the PayMint POS app on your tablet and connect to your location.",
       "gs8": "Starting Your First Shift",
       "gs8_excerpt": "Learn how to open a shift, process orders, and close out at the end of the day.",
       "helpfulNo": "No",
@@ -4187,7 +4189,7 @@
         "a1_3": "If none of these steps work, contact our support team with details about the error you're seeing.",
         "a2_1": "Ensure your printer is powered on and connected to the same network as your POS device. Check that the correct printer is selected in Settings > Receipts.",
         "a2_2": "Try printing a test page from the printer settings. If that works but POS printing doesn't, reinstall the printer driver.",
-        "a3_1": "Paymint automatically syncs data when your connection is restored. You can continue processing orders in offline mode.",
+        "a3_1": "PayMint automatically syncs data when your connection is restored. You can continue processing orders in offline mode.",
         "a3_2": "Once back online, go to Settings > Sync to manually trigger a sync if needed.",
         "a3_3": "All offline transactions are securely stored on your device and will be uploaded when connectivity returns.",
         "h1": "Troubleshooting Common Issues",
@@ -4199,29 +4201,29 @@
         "li2": "Clear your browser cache and cookies",
         "li3": "Try using a different browser (Chrome recommended)",
         "li4": "Restart your device and try again",
-        "li5": "Ensure your firewall isn't blocking Paymint",
+        "li5": "Ensure your firewall isn't blocking PayMint",
         "li6": "Update your browser to the latest version",
         "li7": "Contact support if issues persist after trying all steps",
-        "p1": "This guide helps you troubleshoot the most common technical issues you may encounter with Paymint.",
+        "p1": "This guide helps you troubleshoot the most common technical issues you may encounter with PayMint.",
         "p2": "Most issues can be resolved with these simple steps. If you need further assistance, our support team is available 24/7.",
         "p3": "Follow this diagnostic process to identify and resolve technical issues.",
-        "q1": "Why can't I access the Paymint dashboard?",
+        "q1": "Why can't I access the PayMint dashboard?",
         "q2": "My receipt printer isn't working. What should I do?",
         "q3": "What happens to my data during an internet outage?",
         "step1_desc": "Ensure your device is connected to the internet and the connection is stable.",
         "step1_label": "Check Connection",
-        "step2_desc": "Close and reopen the Paymint app or refresh your browser.",
+        "step2_desc": "Close and reopen the PayMint app or refresh your browser.",
         "step2_label": "Restart Application",
         "step3_desc": "Remove temporary files that might cause issues.",
         "step3_label": "Clear Cache",
-        "step4_desc": "Make sure you're running the latest version of Paymint.",
+        "step4_desc": "Make sure you're running the latest version of PayMint.",
         "step4_label": "Update Software",
         "step5_desc": "If the issue persists, reach out to our support team with error details.",
         "step5_label": "Contact Support"
       },
       "tc1_excerpt": "Step-by-step guide to resolving common technical issues with the POS system.",
       "tc10": "API Integration Guide",
-      "tc10_excerpt": "Technical guide for integrating with the Paymint API.",
+      "tc10_excerpt": "Technical guide for integrating with the PayMint API.",
       "tc2": "Network & Connectivity Setup",
       "tc2_excerpt": "Optimize your network setup for reliable POS operations.",
       "tc3": "Printer Setup & Configuration",
@@ -4229,13 +4231,13 @@
       "tc4": "App Performance Optimization",
       "tc4_excerpt": "Tips and tricks to keep your POS app running smoothly.",
       "tc5": "Data Backup & Recovery",
-      "tc5_excerpt": "Understand how Paymint backs up your data and how to recover it.",
+      "tc5_excerpt": "Understand how PayMint backs up your data and how to recover it.",
       "tc6": "Browser Compatibility Guide",
       "tc6_excerpt": "Supported browsers and recommendations for the best experience.",
       "tc7": "Security Best Practices",
-      "tc7_excerpt": "Keep your Paymint account and data secure with these tips.",
+      "tc7_excerpt": "Keep your PayMint account and data secure with these tips.",
       "tc8": "Device Requirements",
-      "tc8_excerpt": "Minimum hardware and software requirements for running Paymint.",
+      "tc8_excerpt": "Minimum hardware and software requirements for running PayMint.",
       "tc9": "Error Codes Reference",
       "tc9_excerpt": "A reference guide for common error codes and their solutions.",
       "updated": "Updated",
@@ -4252,7 +4254,7 @@
       "feature": "Feature Request",
       "featureDescShort": "Suggest an improvement",
       "features": "Features & How-To",
-      "featuresDesc": "Learn how to use all Paymint features",
+      "featuresDesc": "Learn how to use all PayMint features",
       "gettingStarted": "Getting Started",
       "gettingStartedDesc": "Everything you need to set up and get running",
       "gettingStartedDescShort": "Setup & first steps",
@@ -4277,7 +4279,7 @@
     "hero": {
       "badge": "Help Center",
       "searchPlaceholder": "Search for help articles...",
-      "subtitle": "Find answers, guides, and support for all things Paymint",
+      "subtitle": "Find answers, guides, and support for all things PayMint",
       "titleHighlight": "help",
       "titlePart1": "How can we",
       "titlePart2": "you?"
@@ -4330,15 +4332,15 @@
       "needMoreHelp": "Need more help? Contact our support team.",
       "noResults": "No results found",
       "q1": {
-        "answer": "Paymint is a comprehensive digital payment solution designed to help businesses of all sizes accept payments, manage finances, and grow. We offer a suite of tools including a payment gateway, point-of-sale systems, and detailed analytics.",
-        "question": "What is Paymint?"
+        "answer": "PayMint is a comprehensive digital payment solution designed to help businesses of all sizes accept payments, manage finances, and grow. We offer a suite of tools including a payment gateway, point-of-sale systems, and detailed analytics.",
+        "question": "What is PayMint?"
       },
       "q2": {
-        "answer": "Paymint is currently available in over 30 countries across North America, Europe, and Asia. We are rapidly expanding to new regions. Please check our supported countries list on our pricing page for the most up-to-date information.",
-        "question": "Is Paymint available in my country?"
+        "answer": "PayMint is currently available in over 30 countries across North America, Europe, and Asia. We are rapidly expanding to new regions. Please check our supported countries list on our pricing page for the most up-to-date information.",
+        "question": "Is PayMint available in my country?"
       },
       "q3": {
-        "answer": "With Paymint, you can accept all major credit and debit cards (Visa, Mastercard, Amex), digital wallets (Apple Pay, Google Pay), and local payment methods specific to your region.",
+        "answer": "With PayMint, you can accept all major credit and debit cards (Visa, Mastercard, Amex), digital wallets (Apple Pay, Google Pay), and local payment methods specific to your region.",
         "question": "What payment methods can I accept?"
       },
       "q4": {
@@ -4347,7 +4349,7 @@
       },
       "q5": {
         "answer": "Yes, security is our top priority. We are PCI DSS Level 1 compliant, which is the highest standard of payment security. All data is encrypted using advanced encryption standards (AES-256), and we employ 24/7 fraud monitoring.",
-        "question": "Is Paymint secure?"
+        "question": "Is PayMint secure?"
       },
       "q6": {
         "answer": "You can reset your password by clicking on the \"Forgot Password\" link on the login page. Follow the instructions sent to your registered email address to create a new password. If you are logged in, you can change it from your Account Settings.",

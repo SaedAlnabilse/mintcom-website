@@ -11,7 +11,7 @@ import { GoogleAuthButton, AuthDivider } from '../components/GoogleAuthButton';
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
 
-// Paymint Logo imports
+// PayMint Logo imports
 import PaymintLogoGreen from '../assets/green-full-logo.svg';
 import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
 
@@ -174,7 +174,7 @@ export function LoginPage() {
                   aria-describedby={errors.email ? 'email-error' : undefined}
                   autoComplete="email"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 pl-10 pr-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    } rounded-lg py-3 pl-10 pr-4 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
                   placeholder={t('auth.login.emailPlaceholder')}
                 />
               </div>
@@ -197,7 +197,7 @@ export function LoginPage() {
                   aria-describedby={errors.password ? 'password-error' : undefined}
                   autoComplete="current-password"
                   className={`w-full bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-accent' : 'border-gray-200 dark:border-gray-600'
-                    } rounded-lg py-3 pl-10 pr-12 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green focus:border-transparent transition-colors`}
+                    } rounded-lg py-3 pl-10 pr-12 text-base sm:text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green focus:border-transparent transition-colors`}
                   placeholder={t('auth.login.passwordPlaceholder')}
                 />
                 <button
@@ -219,11 +219,11 @@ export function LoginPage() {
                 <input
                   type="checkbox"
                   aria-label={t('auth.login.ariaKeepLoggedIn')}
-                  className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-paymint-green focus:ring-paymint-green bg-gray-50 dark:bg-gray-700"
+                  className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-PayMint-green focus:ring-PayMint-green bg-gray-50 dark:bg-gray-700"
                 />
                 <span className="ml-2 text-sm font-bold text-gray-600 dark:text-gray-300">{t('auth.login.keepLoggedIn')}</span>
               </label>
-              <Link to="/forgot-password" className="text-sm font-bold text-paymint-green hover:underline">
+              <Link to="/forgot-password" className="text-sm font-bold text-PayMint-green hover:underline">
                 {t('auth.login.forgotPassword')}
               </Link>
             </div>
@@ -231,7 +231,7 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-paymint-green text-black text-xs font-black tracking-widest hover:bg-paymint-green/90 disabled:opacity-50 disabled:cursor-paymint-wait py-3 px-4 rounded-lg transition-colors shadow-lg shadow-paymint-green/20"
+              className="w-full bg-PayMint-green text-black text-xs font-black tracking-widest hover:bg-PayMint-green/90 disabled:opacity-50 disabled:cursor-PayMint-wait py-3 px-4 rounded-lg transition-colors shadow-lg shadow-PayMint-green/20"
             >
               {isSubmitting ? t('auth.login.loggingIn') : t('auth.login.loginButton')}
             </button>
@@ -240,7 +240,7 @@ export function LoginPage() {
           <div className="mt-6 text-center">
             <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
               {t('auth.login.noAccount')}{' '}
-              <Link to="/signup" className="text-sm font-bold text-paymint-green hover:underline">
+              <Link to="/signup" className="text-sm font-bold text-PayMint-green hover:underline">
                 {t('auth.login.signUp')}
               </Link>
             </p>
@@ -285,7 +285,7 @@ export function LoginPage() {
                 <button
                   onClick={handleResendVerification}
                   disabled={isResending}
-                  className="w-full flex items-center justify-center bg-paymint-green text-black text-xs font-black tracking-widest py-3 px-4 rounded-lg hover:bg-paymint-green/90 transition-colors disabled:opacity-50"
+                  className="w-full flex items-center justify-center bg-PayMint-green text-black text-xs font-black tracking-widest py-3 px-4 rounded-lg hover:bg-PayMint-green/90 transition-colors disabled:opacity-50"
                 >
                   {isResending ? (
                     t('auth.verifyEmail.sending')
