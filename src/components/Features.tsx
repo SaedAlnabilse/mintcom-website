@@ -33,7 +33,7 @@ const FeatureCard = ({ feature, index, t }: { feature: any, index: number, t: an
       viewport={{ once: true }}
       transition={{ delay: index * 0.1, duration: 0.5 }}
       whileHover={{ y: -8, scale: 1.02 }}
-      className="flex flex-col p-8 rounded-[2rem] bg-white dark:bg-[#121212] border border-gray-100 dark:border-white/5 hover:border-paymint-green/30 shadow-xl shadow-gray-200/20 dark:shadow-none hover:shadow-2xl hover:shadow-paymint-green/10 transition-all duration-500 group relative overflow-hidden h-full"
+      className="flex flex-col p-8 rounded-[2rem] bg-white dark:bg-[#121212] border border-gray-100 dark:border-white/5 hover:border-paymint-green/30 shadow-xl shadow-gray-200/20 dark:shadow-none hover:shadow-2xl hover:shadow-paymint-green/10 transition-all duration-500 group relative overflow-hidden"
     >
       <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
@@ -151,7 +151,7 @@ export const Features = () => {
         <div className="flex flex-col gap-16 lg:gap-24">
 
           {/* Feature Cards Grid - Spans full width 4 columns */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
             {features.map((feature, index) => (
               <FeatureCard key={index} feature={feature} index={index} t={t} />
             ))}
