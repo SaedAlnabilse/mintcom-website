@@ -47,7 +47,7 @@ export const Navbar = () => {
       <div className="container mx-auto px-8 md:px-16 lg:px-24 flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="flex items-center group">
-          <Logo size="lg" className={`transition-transform duration-500 ${t('common.locale') === 'ar' ? 'scale-x-[-1]' : ''}`} />
+          <Logo size="lg" className="transition-transform duration-500" />
         </Link>
 
         {/* Desktop Navigation */}
