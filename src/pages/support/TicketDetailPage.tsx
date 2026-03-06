@@ -24,6 +24,7 @@ import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
+import api from '../../config/api';
 import {
   getTicketById,
   updateTicket,
@@ -67,25 +68,60 @@ export const TicketDetailPage = () => {
   const [isSending, setIsSending] = useState(false);
   const [showStatusMenu, setShowStatusMenu] = useState(false);
   const [copiedId, setCopiedId] = useState(false);
+  const [loadingDetail, setLoadingDetail] = useState(true);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const statusMenuRef = useRef<HTMLDivElement>(null);
 
-  // Load ticket
+  // Load ticket from API, fallback to localStorage
   useEffect(() => {
     if (!ticketId) return;
-    const found = getTicketById(ticketId);
-    if (found) {
-      // Mark as read
-      if (found.unreadReplies > 0) {
-        found.unreadReplies = 0;
-        updateTicket(found);
+
+    const fetchTicket = async () => {
+      setLoadingDetail(true);
+      try {
+        const res = await api.get(`/api/support/tickets/${ticketId}`);
+        const data = res.data;
+        // Map API response to local Ticket shape
+        const mapped: Ticket = {
+          id: data.id,
+          subject: data.subject,
+          category: data.category,
+          status: data.status as TicketStatus,
+          priority: data.priority,
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt,
+          description: data.description,
+          messages: (data.messages || []).map((m: Record<string, unknown>) => ({
+            id: m.id as string,
+            sender: (m.senderType as string) === 'support' ? 'support' : 'user',
+            senderName: m.senderName as string,
+            content: m.content as string,
+            timestamp: m.createdAt as string,
+            attachments: [],
+          } as TicketMessage)),
+          unreadReplies: 0,
+        };
+        setTicket(mapped);
+      } catch {
+        // Fallback to localStorage
+        const found = getTicketById(ticketId);
+        if (found) {
+          if (found.unreadReplies > 0) {
+            found.unreadReplies = 0;
+            updateTicket(found);
+          }
+          setTicket(found);
+        } else {
+          setNotFound(true);
+        }
+      } finally {
+        setLoadingDetail(false);
       }
-      setTicket(found);
-    } else {
-      setNotFound(true);
-    }
+    };
+
+    fetchTicket();
   }, [ticketId]);
 
   // Scroll to bottom when messages change
@@ -111,59 +147,72 @@ export const TicketDetailPage = () => {
 
     setIsSending(true);
 
-    // Simulate tiny delay for UX
-    await new Promise((r) => setTimeout(r, 400));
+    try {
+      // Send via API
+      const res = await api.post(`/api/support/tickets/${ticket.id}/messages`, {
+        content: newMessage.trim(),
+      });
 
-    const msg: TicketMessage = {
-      id: generateMsgId(),
-      sender: 'user',
-      senderName: account?.firstName ? `${account.firstName} ${account.lastName || ''}`.trim() : t('support.tickets.you'),
-      content: newMessage.trim(),
-      timestamp: new Date().toISOString(),
-    };
+      const apiMessage = res.data.message;
+      const msg: TicketMessage = {
+        id: apiMessage.id,
+        sender: 'user',
+        senderName: apiMessage.senderName || (account?.firstName ? `${account.firstName} ${account.lastName || ''}`.trim() : 'You'),
+        content: apiMessage.content,
+        timestamp: apiMessage.createdAt,
+      };
 
-    const updated: Ticket = {
-      ...ticket,
-      messages: [...ticket.messages, msg],
-      updatedAt: new Date().toISOString(),
-      status: ticket.status === 'resolved' || ticket.status === 'closed' ? 'open' : ticket.status,
-    };
+      const updated: Ticket = {
+        ...ticket,
+        messages: [...ticket.messages, msg],
+        updatedAt: new Date().toISOString(),
+        status: ticket.status === 'resolved' || ticket.status === 'closed' ? 'open' : ticket.status,
+      };
 
-    updateTicket(updated);
-    setTicket(updated);
-    setNewMessage('');
-    setIsSending(false);
-    toast.success('Reply sent');
-
-    // Auto-simulate support reply after 2 seconds (for demo feel)
-    setTimeout(() => {
-      const autoReply: TicketMessage = {
+      setTicket(updated);
+      setNewMessage('');
+      toast.success('Reply sent');
+    } catch {
+      // Fallback: save locally
+      const msg: TicketMessage = {
         id: generateMsgId(),
-        sender: 'support',
-        senderName: 'Support Team',
-        content: 'Thank you for your message. A support agent will review your ticket and respond shortly. Our typical response time is within 24 hours.',
+        sender: 'user',
+        senderName: account?.firstName ? `${account.firstName} ${account.lastName || ''}`.trim() : t('support.tickets.you'),
+        content: newMessage.trim(),
         timestamp: new Date().toISOString(),
       };
 
-      const withReply: Ticket = {
-        ...updated,
-        messages: [...updated.messages, autoReply],
+      const updated: Ticket = {
+        ...ticket,
+        messages: [...ticket.messages, msg],
         updatedAt: new Date().toISOString(),
-        status: 'in_progress',
-        unreadReplies: 0,
+        status: ticket.status === 'resolved' || ticket.status === 'closed' ? 'open' : ticket.status,
       };
 
-      updateTicket(withReply);
-      setTicket(withReply);
-    }, 2500);
+      updateTicket(updated);
+      setTicket(updated);
+      setNewMessage('');
+      toast.success('Reply sent (saved locally)');
+    } finally {
+      setIsSending(false);
+    }
   };
 
-  const handleChangeStatus = (newStatus: TicketStatus) => {
+  const handleChangeStatus = async (newStatus: TicketStatus) => {
     if (!ticket) return;
+    setShowStatusMenu(false);
+
+    try {
+      await api.patch(`/api/support/tickets/${ticket.id}/status`, {
+        status: newStatus.toUpperCase(),
+      });
+    } catch {
+      // Best effort — still update locally
+    }
+
     const updated = { ...ticket, status: newStatus, updatedAt: new Date().toISOString() };
     updateTicket(updated);
     setTicket(updated);
-    setShowStatusMenu(false);
     toast.success(`Ticket ${newStatus === 'resolved' ? 'marked as resolved' : newStatus === 'closed' ? 'closed' : 'reopened'}`);
   };
 
@@ -209,6 +258,24 @@ export const TicketDetailPage = () => {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: `/support/tickets/${ticketId}` }} />;
+  }
+
+  // ─── Loading ticket ────────────────────────────────────────────────────────
+  if (loadingDetail) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-[#050505] font-sans text-gray-900 dark:text-white">
+        <Navbar />
+        <main className="pt-28 pb-20">
+          <div className="container mx-auto px-8 md:px-16 lg:px-24">
+            <div className="max-w-4xl mx-auto bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-12 text-center">
+              <Loader2 size={32} className="animate-spin mx-auto mb-4 text-paymint-green" />
+              <p className="text-gray-500 dark:text-gray-400 font-medium">Loading ticket...</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
   // ─── Not found ─────────────────────────────────────────────────────────────

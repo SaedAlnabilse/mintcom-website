@@ -274,7 +274,9 @@
       "welcomeBack": "Welcome Back"
     },
     "logout": {
-      "message": "You have been logged out successfully"
+      "message": "You have been logged out successfully",
+      "loggingOut": "Logging out...",
+      "seeYou": "See you next time!"
     },
     "passwordReset": {
       "form": {
@@ -4424,7 +4426,8 @@
       "stats": {
         "inProgress": "In Progress",
         "open": "Open",
-        "resolved": "Resolved"
+        "resolved": "Resolved",
+        "total": "Total"
       },
       "status": {
         "closed": "Closed",

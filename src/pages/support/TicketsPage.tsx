@@ -21,6 +21,7 @@ import {
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
+import api from '../../config/api';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 export type TicketStatus = 'open' | 'in_progress' | 'resolved' | 'closed';
@@ -48,7 +49,7 @@ export interface Ticket {
   unreadReplies: number;
 }
 
-// ─── Storage helpers ─────────────────────────────────────────────────────────
+// ─── Storage helpers (fallback) ──────────────────────────────────────────────
 const TICKETS_STORAGE_KEY = 'paymint_support_tickets';
 
 export function loadTickets(): Ticket[] {
@@ -126,11 +127,40 @@ export const TicketsPage = () => {
   const [priorityFilter, setPriorityFilter] = useState<TicketPriority | 'all'>('all');
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'priority'>('newest');
+  const [loadingTickets, setLoadingTickets] = useState(true);
 
-  // Load tickets
+  // Load tickets from API, fallback to localStorage
   useEffect(() => {
-    setTickets(loadTickets());
-  }, []);
+    const fetchTickets = async () => {
+      setLoadingTickets(true);
+      try {
+        const res = await api.get('/api/support/tickets/mine');
+        // Map API response to local Ticket shape
+        const apiTickets: Ticket[] = (res.data || []).map((t: Record<string, unknown>) => ({
+          id: t.id as string,
+          subject: t.subject as string,
+          category: t.category as string,
+          status: (t.status as string || 'open').replace(/_/g, '_') as TicketStatus,
+          priority: t.priority as TicketPriority,
+          createdAt: t.createdAt as string,
+          updatedAt: t.updatedAt as string,
+          description: '',
+          messages: [],
+          unreadReplies: 0,
+        }));
+        setTickets(apiTickets);
+      } catch {
+        // Fallback to localStorage
+        setTickets(loadTickets());
+      } finally {
+        setLoadingTickets(false);
+      }
+    };
+
+    if (isAuthenticated) {
+      fetchTickets();
+    }
+  }, [isAuthenticated]);
 
   const statusConfig: Record<TicketStatus, { label: string; color: string; bg: string; icon: React.ElementType; dotColor: string }> = {
     open: { label: t('support.tickets.status.open'), color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/15', icon: Inbox, dotColor: 'bg-blue-500' },
@@ -246,7 +276,7 @@ export const TicketsPage = () => {
               { key: 'open' as const, icon: Inbox, value: stats.open, label: t('support.tickets.stats.open'), iconColor: 'text-blue-500', bgColor: 'bg-blue-50 dark:bg-blue-500/10' },
               { key: 'inProgress' as const, icon: Clock, value: stats.inProgress, label: t('support.tickets.stats.inProgress'), iconColor: 'text-amber-500', bgColor: 'bg-amber-50 dark:bg-amber-500/10' },
               { key: 'resolved' as const, icon: CheckCircle2, value: stats.resolved, label: t('support.tickets.stats.resolved'), iconColor: 'text-emerald-500', bgColor: 'bg-emerald-50 dark:bg-emerald-500/10' },
-              { key: 'total' as const, icon: BarChart3, value: stats.total, label: 'Total', iconColor: 'text-purple-500', bgColor: 'bg-purple-50 dark:bg-purple-500/10' },
+              { key: 'total' as const, icon: BarChart3, value: stats.total, label: t('support.tickets.stats.total'), iconColor: 'text-purple-500', bgColor: 'bg-purple-50 dark:bg-purple-500/10' },
             ].map((stat) => (
               <motion.div
                 key={stat.key}
@@ -384,7 +414,12 @@ export const TicketsPage = () => {
 
           {/* ──── Tickets List ──── */}
           <div className="space-y-3">
-            {filteredTickets.length === 0 ? (
+            {loadingTickets ? (
+              <div className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-16 text-center">
+                <Loader2 size={32} className="animate-spin mx-auto mb-4 text-paymint-green" />
+                <p className="text-gray-500 dark:text-gray-400 font-medium">Loading tickets...</p>
+              </div>
+            ) : filteredTickets.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}

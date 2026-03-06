@@ -31,7 +31,7 @@ interface Attachment {
 export const NewTicketPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { isAuthenticated, isLoading, establishments, currentEstablishment, account } = useAuth();
+  const { isAuthenticated, isLoading, account } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const categories = [
@@ -92,12 +92,6 @@ export const NewTicketPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!currentEstablishment) {
-      toast.error('Please select a location before creating a ticket.');
-      navigate('/select-establishment');
-      return;
-    }
 
     if (!validateForm()) return;
 
@@ -191,14 +185,6 @@ export const NewTicketPage = () => {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: '/support/tickets/new' }} />;
-  }
-
-  if (establishments.length === 0) {
-    return <Navigate to="/onboarding" replace />;
-  }
-
-  if (!currentEstablishment) {
-    return <Navigate to="/select-establishment" replace />;
   }
 
   return (
