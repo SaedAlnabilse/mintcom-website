@@ -4316,7 +4316,7 @@
       "errors": {
         "category": "يرجى اختيار تصنيف",
         "description": "الوصف مطلوب",
-        "descriptionLength": "الوصف يجب أن يكون 20 حرفاً على الأقل",
+        "descriptionLength": "الوصف يجب أن يكون 5 أحرف على الأقل",
         "subject": "الموضوع مطلوب",
         "subjectLength": "الموضوع يجب أن يكون 5 أحرف على الأقل"
       },

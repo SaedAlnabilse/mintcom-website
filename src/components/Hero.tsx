@@ -45,7 +45,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
             y: [0, -50, 0]
           }}
           transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px]"
+          className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-paymint-green/10 rounded-full blur-[100px]"
         />
       </div>
 
@@ -227,7 +227,7 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
               <motion.div
                 animate={{ rotate: [0, 5, 0] }}
                 transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute top-[-20px] right-[-20px] w-full h-full bg-gradient-to-br from-paymint-green/20 to-blue-500/20 rounded-xl -z-10 blur-xl opacity-50"
+                className="absolute top-[-20px] right-[-20px] w-full h-full bg-gradient-to-br from-paymint-green/20 to-paymint-green/10 rounded-xl -z-10 blur-xl opacity-50"
               />
             </div>
           </motion.div>

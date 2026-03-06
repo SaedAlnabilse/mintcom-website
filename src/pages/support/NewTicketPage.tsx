@@ -84,7 +84,7 @@ export const NewTicketPage = () => {
     if (!formData.subject.trim()) newErrors.subject = t('support.newTicket.errors.subject');
     if (formData.subject.length > 100) newErrors.subject = t('support.newTicket.errors.subjectLength');
     if (!formData.description.trim()) newErrors.description = t('support.newTicket.errors.description');
-    if (formData.description.length < 20) newErrors.description = t('support.newTicket.errors.descriptionLength');
+    if (formData.description.length < 5) newErrors.description = t('support.newTicket.errors.descriptionLength');
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -97,20 +97,33 @@ export const NewTicketPage = () => {
 
     setIsSubmitting(true);
 
-    const payload = {
-      category: formData.category,
-      priority: formData.priority,
-      subject: formData.subject.trim(),
-      description: formData.description.trim(),
-      pageUrl: window.location.href,
-      attachments: attachments.map((attachment) => ({
-        name: attachment.name,
-        sizeBytes: attachment.file.size,
-        type: attachment.file.type || undefined,
-      })),
-    };
-
     try {
+      // Step 1: Upload attachment files (if any)
+      let uploadedAttachments: { name: string; url: string; sizeBytes: number; type: string }[] = [];
+      if (attachments.length > 0) {
+        const formDataUpload = new FormData();
+        attachments.forEach((a) => formDataUpload.append('files', a.file));
+        const uploadRes = await api.post('/api/support/tickets/upload', formDataUpload, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        uploadedAttachments = uploadRes.data?.attachments || [];
+      }
+
+      // Step 2: Create ticket with file URLs
+      const payload = {
+        category: formData.category,
+        priority: formData.priority,
+        subject: formData.subject.trim(),
+        description: formData.description.trim(),
+        pageUrl: window.location.href,
+        attachments: uploadedAttachments.map((a) => ({
+          name: a.name,
+          url: a.url,
+          sizeBytes: a.sizeBytes,
+          type: a.type,
+        })),
+      };
+
       // Primary: save to database via API
       const response = await api.post('/api/support/tickets', payload);
       const ticketId = response.data?.ticketId || response.data?.id;
@@ -119,8 +132,26 @@ export const NewTicketPage = () => {
       toast.success(`${t('support.newTicket.success')} (${ticketNumber})`);
       setIsSubmitting(false);
       navigate(`/support/tickets/${ticketId}`);
-    } catch {
-      // Fallback: save locally if API is unavailable
+    } catch (err: unknown) {
+      // Log the real error so we can diagnose
+      const axiosErr = err as { response?: { status?: number; data?: { message?: string } }; message?: string };
+      console.error('[NewTicket] API Error:', axiosErr?.response?.status, axiosErr?.response?.data || axiosErr?.message);
+
+      // If it was a 401 (auth issue), don't fallback — the user needs to log in again
+      if (axiosErr?.response?.status === 401) {
+        toast.error('Session expired. Please log in again.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // If it was a validation or server error, show the real error
+      if (axiosErr?.response?.status && axiosErr.response.status >= 400) {
+        toast.error(axiosErr?.response?.data?.message || 'Failed to create ticket. Please try again.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Only fallback to localStorage if the API is truly unreachable (network error)
       const timestamp = Date.now().toString().slice(-8);
       const random = Math.random().toString(36).slice(2, 6).toUpperCase();
       const localTicketId = `TKT-${timestamp}-${random}`;
@@ -157,7 +188,7 @@ export const NewTicketPage = () => {
         unreadReplies: 0,
       });
 
-      toast.success(`${t('support.newTicket.success')} (${localTicketId})`);
+      toast.success(`${t('support.newTicket.success')} (${localTicketId}) — saved locally`);
       setIsSubmitting(false);
       navigate('/support/tickets');
     }

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   ArrowLeft,
   Send,
@@ -14,7 +14,7 @@ import {
   Download,
   Image as ImageIcon,
   XCircle,
-  ChevronDown,
+
   Copy,
   Check,
   Inbox,
@@ -66,13 +66,13 @@ export const TicketDetailPage = () => {
   const [notFound, setNotFound] = useState(false);
   const [newMessage, setNewMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
-  const [showStatusMenu, setShowStatusMenu] = useState(false);
+
   const [copiedId, setCopiedId] = useState(false);
   const [loadingDetail, setLoadingDetail] = useState(true);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const statusMenuRef = useRef<HTMLDivElement>(null);
+
 
   // Load ticket from API, fallback to localStorage
   useEffect(() => {
@@ -93,14 +93,24 @@ export const TicketDetailPage = () => {
           createdAt: data.createdAt,
           updatedAt: data.updatedAt,
           description: data.description,
-          messages: (data.messages || []).map((m: Record<string, unknown>) => ({
-            id: m.id as string,
-            sender: (m.senderType as string) === 'support' ? 'support' : 'user',
-            senderName: m.senderName as string,
-            content: m.content as string,
-            timestamp: m.createdAt as string,
-            attachments: [],
-          } as TicketMessage)),
+          messages: (data.messages || []).map((m: Record<string, unknown>) => {
+            // Parse attachments from API (stored as JSON)
+            const rawAtts = (m.attachments as Array<{ name?: string; url?: string; sizeBytes?: number; type?: string }>) || [];
+            const parsedAtts = Array.isArray(rawAtts) ? rawAtts.map((a) => ({
+              name: a.name || 'file',
+              url: a.url || '',
+              size: a.sizeBytes ? (a.sizeBytes > 1024 * 1024 ? `${(a.sizeBytes / 1024 / 1024).toFixed(1)} MB` : `${Math.round(a.sizeBytes / 1024)} KB`) : '',
+              type: a.type || 'file',
+            })) : [];
+            return {
+              id: m.id as string,
+              sender: (m.senderType as string) === 'support' ? 'support' : 'user',
+              senderName: m.senderName as string,
+              content: m.content as string,
+              timestamp: m.createdAt as string,
+              attachments: parsedAtts,
+            } as TicketMessage;
+          }),
           unreadReplies: 0,
         };
         setTicket(mapped);
@@ -129,16 +139,7 @@ export const TicketDetailPage = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [ticket?.messages.length]);
 
-  // Close status menu on outside click
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (statusMenuRef.current && !statusMenuRef.current.contains(e.target as Node)) {
-        setShowStatusMenu(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, []);
+
 
   // ─── Handlers ────────────────────────────────────────────────────────────
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -198,29 +199,29 @@ export const TicketDetailPage = () => {
     }
   };
 
-  const handleChangeStatus = async (newStatus: TicketStatus) => {
-    if (!ticket) return;
-    setShowStatusMenu(false);
 
-    try {
-      await api.patch(`/api/support/tickets/${ticket.id}/status`, {
-        status: newStatus.toUpperCase(),
-      });
-    } catch {
-      // Best effort — still update locally
-    }
-
-    const updated = { ...ticket, status: newStatus, updatedAt: new Date().toISOString() };
-    updateTicket(updated);
-    setTicket(updated);
-    toast.success(`Ticket ${newStatus === 'resolved' ? 'marked as resolved' : newStatus === 'closed' ? 'closed' : 'reopened'}`);
-  };
 
   const handleCopyId = () => {
     if (!ticket) return;
     navigator.clipboard.writeText(ticket.id);
     setCopiedId(true);
     setTimeout(() => setCopiedId(false), 2000);
+  };
+
+  // Users can only mark as resolved or reopen — not change to other statuses
+  const handleChangeStatus = async (newStatus: TicketStatus) => {
+    if (!ticket) return;
+    try {
+      await api.patch(`/api/support/tickets/${ticket.id}/status`, {
+        status: newStatus.toUpperCase(),
+      });
+    } catch {
+      // Best effort
+    }
+    const updated = { ...ticket, status: newStatus, updatedAt: new Date().toISOString() };
+    updateTicket(updated);
+    setTicket(updated);
+    toast.success(newStatus === 'resolved' ? t('support.tickets.markResolved') : 'Ticket reopened');
   };
 
   // ─── Status configs ──────────────────────────────────────────────────────
@@ -361,47 +362,7 @@ export const TicketDetailPage = () => {
                 </div>
               </div>
 
-              {/* Actions */}
-              <div className="relative" ref={statusMenuRef}>
-                <button
-                  onClick={() => setShowStatusMenu(!showStatusMenu)}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-gray-100 dark:bg-white/10 rounded-xl font-bold text-sm hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
-                >
-                  Change Status
-                  <ChevronDown size={16} className={`transition-transform ${showStatusMenu ? 'rotate-180' : ''}`} />
-                </button>
-
-                <AnimatePresence>
-                  {showStatusMenu && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                      className="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden z-50"
-                    >
-                      {(['open', 'in_progress', 'resolved', 'closed'] as TicketStatus[]).map((s) => {
-                        const cfg = statusConfig[s];
-
-                        return (
-                          <button
-                            key={s}
-                            onClick={() => handleChangeStatus(s)}
-                            disabled={ticket.status === s}
-                            className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-bold transition-colors ${ticket.status === s
-                              ? 'bg-gray-50 dark:bg-white/5 text-gray-400 cursor-not-allowed'
-                              : 'hover:bg-gray-50 dark:hover:bg-white/10'
-                              }`}
-                          >
-                            <div className={`w-2 h-2 rounded-full ${cfg.dotColor}`} />
-                            {cfg.label}
-                            {ticket.status === s && <Check size={14} className="ml-auto text-paymint-green" />}
-                          </button>
-                        );
-                      })}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+              {/* Status change is admin-only — customers use "Mark as Resolved" below */}
             </div>
           </div>
 
@@ -486,17 +447,24 @@ export const TicketDetailPage = () => {
                         <div className="mt-3 pt-3 border-t border-gray-200 dark:border-white/10">
                           <p className="text-xs font-bold text-gray-400 mb-2">{t('support.tickets.attachments')}</p>
                           <div className="flex flex-wrap gap-2">
-                            {message.attachments.map((att, i) => (
-                              <a
-                                key={i}
-                                href="#"
-                                className="inline-flex items-center gap-2 px-3 py-2 bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-lg text-sm font-medium hover:border-paymint-green/30 transition-colors"
-                              >
-                                {att.type === 'image' ? <ImageIcon size={14} /> : <Download size={14} />}
-                                <span className="truncate max-w-[150px]">{att.name}</span>
-                                <span className="text-gray-400">({att.size})</span>
-                              </a>
-                            ))}
+                            {message.attachments.map((att, i) => {
+                              const isImage = att.type === 'image' || att.type?.startsWith('image/');
+                              const fileUrl = att.url || '#';
+                              return (
+                                <a
+                                  key={i}
+                                  href={fileUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  download={!isImage ? att.name : undefined}
+                                  className="inline-flex items-center gap-2 px-3 py-2 bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-lg text-sm font-medium hover:border-paymint-green/30 transition-colors"
+                                >
+                                  {isImage ? <ImageIcon size={14} /> : <Download size={14} />}
+                                  <span className="truncate max-w-[150px]">{att.name}</span>
+                                  {att.size && <span className="text-gray-400">({att.size})</span>}
+                                </a>
+                              );
+                            })}
                           </div>
                         </div>
                       )}

@@ -1,6 +1,7 @@
-import { useEffect, useCallback, useState, forwardRef, useImperativeHandle } from 'react';
+import { useEffect, useCallback, useState, forwardRef, useImperativeHandle, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
 
 // Google Icon SVG Component
 const GoogleIcon = () => (
@@ -29,6 +30,7 @@ interface GoogleAuthButtonProps {
   onError?: (error: string) => void;
   text?: 'signin_with' | 'signup_with' | 'continue_with' | 'signin';
   disabled?: boolean;
+  isOverlay?: boolean;
 }
 
 declare global {
@@ -53,6 +55,7 @@ declare global {
               shape?: 'rectangular' | 'pill' | 'circle' | 'square';
               logo_alignment?: 'left' | 'center';
               width?: number;
+              locale?: string;
             }
           ) => void;
           disableAutoSelect: () => void;
@@ -70,10 +73,11 @@ export interface GoogleAuthButtonHandle {
 }
 
 export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthButtonProps>(
-  ({ onSuccess, onError, text = 'continue_with', disabled = false }, ref) => {
-    const { t } = useTranslation();
+  ({ onSuccess, onError, text = 'continue_with', disabled = false, isOverlay = false }, ref) => {
+    const { t, i18n } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
     const [isScriptLoaded, setIsScriptLoaded] = useState(false);
+    const buttonRef = useRef<HTMLDivElement>(null);
 
     // Load Google Identity Services script
     useEffect(() => {
@@ -121,18 +125,39 @@ export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthBut
           client_id: GOOGLE_CLIENT_ID,
           callback: (response) => {
             if (response.credential) {
+              setIsLoading(false);
               onSuccess(response.credential);
             }
           },
           auto_select: false,
           cancel_on_tap_outside: true,
         });
+
+        // Use renderButton for correct incognito/strict cookie support
+        if (buttonRef.current) {
+          window.google.accounts.id.renderButton(
+            buttonRef.current,
+            {
+              type: 'standard',
+              theme: document.documentElement.classList.contains('dark') ? 'filled_black' : 'outline',
+              size: 'large',
+              text: text, // 'signin_with', 'signup_with', 'continue_with', 'signin'
+              shape: 'rectangular',
+              logo_alignment: 'center',
+              width: buttonRef.current.parentElement?.offsetWidth || undefined,
+              locale: i18n.language,
+            }
+          );
+        }
       } catch (error) {
         console.error('[GoogleAuth] Failed to initialize:', error);
         onError?.(t('auth.errors.googleInitFailed'));
       }
-    }, [isScriptLoaded, onSuccess, onError, t]);
+    }, [isScriptLoaded, onSuccess, onError, t, text, i18n.language]);
 
+    // We can no longer trigger the popup programmatically with standard GIS.
+    // If triggerPrompt is called, we can only try prompt() which may fail in incognito,
+    // so we advise the user to interact with the rendered button directly if blocked.
     const handleClick = useCallback(() => {
       if (!window.google || !GOOGLE_CLIENT_ID || disabled || isLoading) return;
 
@@ -147,6 +172,8 @@ export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthBut
 
             if (reason === 'opt_out_or_no_session') {
               onError?.(t('auth.errors.googleNoSession'));
+              // Instruct user since programmatic popup is blocked
+              toast.error(t('auth.errors.clickGoogleDirectly', 'Please click the "Sign in with Google" button directly to continue.'));
             } else if (reason === 'suppressed_by_user') {
               onError?.(t('auth.errors.googleCancelled'));
             } else {
@@ -178,22 +205,39 @@ export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthBut
       signin: t('auth.google.signIn'),
     }[text];
 
+    if (isOverlay) {
+      return (
+        <div className={`absolute inset-0 z-20 overflow-hidden opacity-[0.01] ${disabled || isLoading ? 'pointer-events-none' : ''}`}>
+          <div ref={buttonRef} className="w-full h-full flex items-center justify-center transform scale-y-[1.5] scale-x-[1.02] [&>div]:w-full [&_iframe]:w-full" />
+        </div>
+      );
+    }
+
     return (
-      <motion.button
-        type="button"
-        onClick={handleClick}
-        disabled={disabled || isLoading || !isScriptLoaded}
-        whileHover={{ scale: disabled ? 1 : 1.01 }}
-        whileTap={{ scale: disabled ? 1 : 0.99 }}
-        className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg py-3 px-4 text-sm font-bold text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
-      >
-        {isLoading ? (
-          <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
-        ) : (
-          <GoogleIcon />
+      <div className={`relative w-full ${disabled || isLoading ? 'opacity-50 pointer-events-none' : ''}`}>
+        {/* Custom Visual Button */}
+        <motion.button
+          type="button"
+          disabled={disabled || isLoading || !isScriptLoaded}
+          whileHover={{ scale: disabled ? 1 : 1.01 }}
+          whileTap={{ scale: disabled ? 1 : 0.99 }}
+          className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg py-3 px-4 text-sm font-bold text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600 transition-all shadow-sm"
+        >
+          {isLoading ? (
+            <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+          ) : (
+            <GoogleIcon />
+          )}
+          <span>{isLoading ? t('common.connecting') : buttonText}</span>
+        </motion.button>
+
+        {/* Invisible Google Button Overlay targeting strictly the button area */}
+        {!disabled && !isLoading && isScriptLoaded && (
+          <div className="absolute inset-0 z-10 w-full h-full overflow-hidden opacity-[0.01]">
+            <div ref={buttonRef} className="w-full h-full flex items-center justify-center [&>div]:w-full [&_iframe]:w-full" />
+          </div>
         )}
-        <span>{isLoading ? t('common.connecting') : buttonText}</span>
-      </motion.button>
+      </div>
     );
   }
 );

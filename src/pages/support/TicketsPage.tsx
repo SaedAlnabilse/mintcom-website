@@ -33,7 +33,7 @@ export interface TicketMessage {
   senderName: string;
   content: string;
   timestamp: string;
-  attachments?: { name: string; size: string; type: string }[];
+  attachments?: { name: string; size: string; type: string; url?: string }[];
 }
 
 export interface Ticket {

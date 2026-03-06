@@ -83,14 +83,12 @@ export function SignUpPage() {
   };
 
   const handleModalContinue = () => {
-    if (modalAgreed) {
+    // This is a fallback in case they click it before the Google iframe loads or if it fails
+    if (modalAgreed && !isSubmitting) {
       setValue('agreeToTerms', true);
       setSubscribeToNews(modalSubscribeToNews);
       setShowGoogleTermsModal(false);
-      // Small delay to ensure state update and then trigger Google
-      setTimeout(() => {
-        googleAuthRef.current?.triggerPrompt();
-      }, 100);
+      toast.success(t('auth.signup.clickGoogleAgain', "Terms agreed. Please click 'Sign in with Google' again."));
     }
   };
 
@@ -414,7 +412,7 @@ export function SignUpPage() {
                 <AuthDivider />
 
                 {/* Google Sign-Up Button */}
-                <div className="w-full" onClickCapture={handleGoogleAuthClick}>
+                <div className="w-full relative">
                   <GoogleAuthButton
                     ref={googleAuthRef}
                     onSuccess={handleGoogleSuccess}
@@ -422,6 +420,12 @@ export function SignUpPage() {
                     text="signup_with"
                     disabled={isSubmitting}
                   />
+                  {!agreed && (
+                    <div
+                      className="absolute top-0 right-0 bottom-0 left-0 z-20 cursor-pointer"
+                      onClick={handleGoogleAuthClick}
+                    />
+                  )}
                 </div>
               </>
             )}
@@ -545,14 +549,44 @@ export function SignUpPage() {
                   </div>
                 </div>
 
-                <button
-                  onClick={handleModalContinue}
-                  disabled={!modalAgreed}
-                  className="w-full py-5 bg-paymint-green text-black font-black text-xs tracking-widest rounded-xl hover:bg-paymint-green/90 transition-all shadow-md shadow-paymint-green/20 disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-2"
-                >
-                  {t('common.continue').toUpperCase()}
-                  <Check size={18} strokeWidth={3} />
-                </button>
+                <div className="relative w-full">
+                  <button
+                    onClick={handleModalContinue}
+                    disabled={!modalAgreed || isSubmitting}
+                    className="w-full py-5 bg-paymint-green text-black font-black text-xs tracking-widest rounded-xl hover:bg-paymint-green/90 transition-all shadow-md shadow-paymint-green/20 disabled:opacity-50 disabled:grayscale flex items-center justify-center gap-2"
+                  >
+                    {t('common.continue').toUpperCase()}
+                    <Check size={18} strokeWidth={3} />
+                  </button>
+
+                  {modalAgreed && (
+                    <GoogleAuthButton
+                      onSuccess={async (credential) => {
+                        setValue('agreeToTerms', true);
+                        setShowGoogleTermsModal(false);
+                        try {
+                          const result = await loginWithGoogle(credential, modalSubscribeToNews);
+                          if (result.success) {
+                            toast.success(result.message || t('auth.signup.success'));
+                            if (result.isSecondaryAdmin) {
+                              navigate('/dashboard');
+                            } else {
+                              navigate('/owner');
+                            }
+                          } else {
+                            toast.error(result.error || t('auth.signup.failed'));
+                          }
+                        } catch {
+                          toast.error(t('common.error'));
+                        }
+                      }}
+                      onError={handleGoogleError}
+                      text="signup_with"
+                      disabled={isSubmitting}
+                      isOverlay={true}
+                    />
+                  )}
+                </div>
 
                 <button
                   onClick={() => setShowGoogleTermsModal(false)}

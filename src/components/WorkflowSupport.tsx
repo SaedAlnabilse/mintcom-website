@@ -46,7 +46,7 @@ export const WorkflowSupport = () => {
       <section className="py-16 lg:py-20 bg-white dark:bg-[#0f0f0f] overflow-hidden relative" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
         {/* Background Decor */}
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-paymint-green/5 rounded-full blur-[120px] -z-10" />
-        <div className="absolute top-20 right-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px] -z-10" />
+        <div className="absolute top-20 right-0 w-[400px] h-[400px] bg-paymint-green/5 rounded-full blur-[100px] -z-10" />
 
         <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl">
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
@@ -107,7 +107,7 @@ export const WorkflowSupport = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="w-full lg:w-1/2 relative"
             >
-              <div className="absolute -inset-4 bg-gradient-to-r from-paymint-green/20 to-blue-500/20 rounded-xl blur-2xl opacity-50" />
+              <div className="absolute -inset-4 bg-gradient-to-r from-paymint-green/20 to-paymint-green/10 rounded-xl blur-2xl opacity-50" />
               <div className="relative bg-[#0a0a0a] rounded-xl overflow-hidden shadow-2xl border border-white/10 p-5">
                 {/* Dashboard Header */}
                 <div className="flex items-center justify-between mb-5">

@@ -18,6 +18,8 @@ import {
     Tag,
     Mail,
     MessageSquare,
+    Download,
+    Image as ImageIcon,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Navbar } from '../../components/Navbar';
@@ -34,6 +36,7 @@ interface Message {
     senderEmail: string | null;
     content: string;
     createdAt: string;
+    attachments?: { name: string; url?: string; sizeBytes?: number; type?: string }[];
 }
 
 interface Ticket {
@@ -365,6 +368,33 @@ export const SupportAdminDetailPage = () => {
                                                     <span className="text-[10px] text-gray-400">{formatDate(msg.createdAt)}</span>
                                                 </div>
                                                 <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{msg.content}</p>
+                                                {/* Attachments */}
+                                                {msg.attachments && Array.isArray(msg.attachments) && msg.attachments.length > 0 && (
+                                                    <div className="mt-2 pt-2 border-t border-gray-200 dark:border-white/10">
+                                                        <p className="text-[10px] font-bold text-gray-400 mb-1">Attachments</p>
+                                                        <div className="flex flex-wrap gap-1.5">
+                                                            {msg.attachments.map((att, i) => {
+                                                                const isImage = att.type?.startsWith('image/');
+                                                                const fileUrl = att.url || '#';
+                                                                const sizeStr = att.sizeBytes ? (att.sizeBytes > 1024 * 1024 ? `${(att.sizeBytes / 1024 / 1024).toFixed(1)} MB` : `${Math.round(att.sizeBytes / 1024)} KB`) : '';
+                                                                return (
+                                                                    <a
+                                                                        key={i}
+                                                                        href={fileUrl}
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        download={!isImage ? att.name : undefined}
+                                                                        className="inline-flex items-center gap-1.5 px-2 py-1 bg-white dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded-lg text-xs font-medium hover:border-paymint-green/30 transition-colors"
+                                                                    >
+                                                                        {isImage ? <ImageIcon size={12} /> : <Download size={12} />}
+                                                                        <span className="truncate max-w-[120px]">{att.name}</span>
+                                                                        {sizeStr && <span className="text-gray-400">({sizeStr})</span>}
+                                                                    </a>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </motion.div>

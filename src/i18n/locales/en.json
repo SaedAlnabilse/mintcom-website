@@ -4306,7 +4306,7 @@
       "errors": {
         "category": "Please select a category",
         "description": "Please provide a description",
-        "descriptionLength": "Description must be at least 20 characters",
+        "descriptionLength": "Description must be at least 5 characters",
         "subject": "Please enter a subject",
         "subjectLength": "Subject must be at least 5 characters"
       },
