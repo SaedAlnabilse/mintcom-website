@@ -4440,6 +4440,25 @@
       "toClose": "Close Ticket",
       "updated": "Updated",
       "you": "You"
+    },
+    "admin": {
+      "title": "Support Admin Portal",
+      "subtitle": "Manage all customer support tickets",
+      "refresh": "Refresh",
+      "filters": "Filters",
+      "all": "All",
+      "closed": "Closed",
+      "searchPlaceholder": "Search by ticket ID, subject, name, or email...",
+      "noTickets": "No tickets found",
+      "noTicketsYet": "No support tickets have been submitted yet.",
+      "adjustSearch": "Try adjusting your search or filters.",
+      "needsReply": "Needs Reply",
+      "unknown": "Unknown",
+      "supportLabel": "Support",
+      "customerLabel": "Customer",
+      "accessDenied": "Access Denied",
+      "accessDeniedDesc": "This area is restricted to the Paymint support team. If you believe this is an error, please contact the administrator.",
+      "goToSupport": "Go to Support"
     }
   },
   "theme": {

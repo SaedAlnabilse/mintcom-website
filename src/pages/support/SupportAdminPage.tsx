@@ -17,6 +17,7 @@ import {
     BarChart3,
     Tag,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
@@ -87,6 +88,7 @@ function timeAgo(dateStr: string): string {
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export const SupportAdminPage = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { isAuthenticated, isLoading: authLoading, account } = useAuth();
 
@@ -169,15 +171,15 @@ export const SupportAdminPage = () => {
                         <div className="w-20 h-20 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
                             <Shield className="w-10 h-10 text-red-500" />
                         </div>
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">Access Denied</h1>
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">{t('support.admin.accessDenied')}</h1>
                         <p className="text-gray-500 dark:text-gray-400 mb-6">
-                            This area is restricted to the Paymint support team. If you believe this is an error, please contact the administrator.
+                            {t('support.admin.accessDeniedDesc')}
                         </p>
                         <Link
                             to="/support"
                             className="inline-flex items-center px-6 py-3 bg-paymint-green text-black font-bold rounded-xl hover:opacity-90 transition-all"
                         >
-                            Go to Support
+                            {t('support.admin.goToSupport')}
                         </Link>
                     </div>
                 </div>
@@ -200,11 +202,11 @@ export const SupportAdminPage = () => {
                             <div className="flex items-center gap-3 mb-1">
                                 <Shield className="w-6 h-6 text-paymint-green" />
                                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                                    Support Admin Portal
+                                    {t('support.admin.title')}
                                 </h1>
                             </div>
                             <p className="text-sm text-gray-500 dark:text-gray-400">
-                                Manage all customer support tickets
+                                {t('support.admin.subtitle')}
                             </p>
                         </div>
                         <button
@@ -213,7 +215,7 @@ export const SupportAdminPage = () => {
                             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold text-gray-700 dark:text-gray-300 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl hover:bg-gray-50 dark:hover:bg-white/10 transition-all disabled:opacity-50"
                         >
                             <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-                            Refresh
+                            {t('support.admin.refresh')}
                         </button>
                     </div>
 
@@ -221,11 +223,11 @@ export const SupportAdminPage = () => {
                     {stats && (
                         <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
                             {[
-                                { label: 'Open', value: stats.open, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20', icon: Inbox },
-                                { label: 'In Progress', value: stats.inProgress, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20', icon: Clock },
-                                { label: 'Resolved', value: stats.resolved, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20', icon: CheckCircle2 },
-                                { label: 'Closed', value: stats.closed, color: 'text-gray-500', bg: 'bg-gray-50 dark:bg-gray-800', icon: XCircle },
-                                { label: 'Total', value: stats.total, color: 'text-gray-900 dark:text-white', bg: 'bg-white dark:bg-white/5', icon: BarChart3 },
+                                { label: t('support.tickets.stats.open'), value: stats.open, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20', icon: Inbox },
+                                { label: t('support.tickets.stats.inProgress'), value: stats.inProgress, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-900/20', icon: Clock },
+                                { label: t('support.tickets.stats.resolved'), value: stats.resolved, color: 'text-emerald-600', bg: 'bg-emerald-50 dark:bg-emerald-900/20', icon: CheckCircle2 },
+                                { label: t('support.admin.closed'), value: stats.closed, color: 'text-gray-500', bg: 'bg-gray-50 dark:bg-gray-800', icon: XCircle },
+                                { label: t('support.tickets.stats.total'), value: stats.total, color: 'text-gray-900 dark:text-white', bg: 'bg-white dark:bg-white/5', icon: BarChart3 },
                             ].map((stat) => {
                                 const Icon = stat.icon;
                                 return (
@@ -250,7 +252,7 @@ export const SupportAdminPage = () => {
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                             <input
                                 type="text"
-                                placeholder="Search by ticket ID, subject, name, or email..."
+                                placeholder={t('support.admin.searchPlaceholder')}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="w-full pl-10 pr-4 py-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/30"
@@ -264,7 +266,7 @@ export const SupportAdminPage = () => {
                                 }`}
                         >
                             <Filter className="w-4 h-4" />
-                            Filters
+                            {t('support.admin.filters')}
                         </button>
                     </div>
 
@@ -279,7 +281,7 @@ export const SupportAdminPage = () => {
                             >
                                 <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-4 flex flex-wrap gap-4">
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-500 mb-2">Status</label>
+                                        <label className="block text-xs font-bold text-gray-500 mb-2">{t('support.tickets.statusLabel')}</label>
                                         <div className="flex flex-wrap gap-2">
                                             {['all', 'open', 'in_progress', 'resolved', 'closed'].map((s) => (
                                                 <button
@@ -290,13 +292,13 @@ export const SupportAdminPage = () => {
                                                         : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/15'
                                                         }`}
                                                 >
-                                                    {s === 'all' ? 'All' : s === 'in_progress' ? 'In Progress' : s.charAt(0).toUpperCase() + s.slice(1)}
+                                                    {s === 'all' ? t('support.admin.all') : s === 'in_progress' ? t('support.tickets.status.inProgress') : s === 'open' ? t('support.tickets.status.open') : s === 'resolved' ? t('support.tickets.status.resolved') : t('support.admin.closed')}
                                                 </button>
                                             ))}
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-500 mb-2">Priority</label>
+                                        <label className="block text-xs font-bold text-gray-500 mb-2">{t('support.tickets.priorityLabel')}</label>
                                         <div className="flex flex-wrap gap-2">
                                             {['all', 'low', 'medium', 'high', 'urgent'].map((p) => (
                                                 <button
@@ -307,7 +309,7 @@ export const SupportAdminPage = () => {
                                                         : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/15'
                                                         }`}
                                                 >
-                                                    {p === 'all' ? 'All' : p.charAt(0).toUpperCase() + p.slice(1)}
+                                                    {p === 'all' ? t('support.admin.all') : p === 'low' ? t('support.tickets.priority.low') : p === 'medium' ? t('support.tickets.priority.medium') : p === 'high' ? t('support.tickets.priority.high') : t('support.tickets.priority.urgent')}
                                                 </button>
                                             ))}
                                         </div>
@@ -325,11 +327,11 @@ export const SupportAdminPage = () => {
                     ) : filteredTickets.length === 0 ? (
                         <div className="text-center py-20">
                             <Inbox className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No tickets found</h3>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{t('support.admin.noTickets')}</h3>
                             <p className="text-sm text-gray-500 dark:text-gray-400">
                                 {searchQuery || statusFilter !== 'all' || priorityFilter !== 'all'
-                                    ? 'Try adjusting your search or filters.'
-                                    : 'No support tickets have been submitted yet.'}
+                                    ? t('support.admin.adjustSearch')
+                                    : t('support.admin.noTicketsYet')}
                             </p>
                         </div>
                     ) : (
@@ -367,7 +369,7 @@ export const SupportAdminPage = () => {
                                                         {needsAttention && (
                                                             <span className="flex items-center gap-1 text-[10px] font-bold text-amber-600 bg-amber-100 dark:bg-amber-900/30 px-2 py-0.5 rounded-full">
                                                                 <AlertTriangle className="w-3 h-3" />
-                                                                Needs Reply
+                                                                {t('support.admin.needsReply')}
                                                             </span>
                                                         )}
                                                     </div>
@@ -375,7 +377,7 @@ export const SupportAdminPage = () => {
                                                         {ticket.subject}
                                                     </h3>
                                                     <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 flex-wrap">
-                                                        <span className="font-bold">{ticket.requesterName || 'Unknown'}</span>
+                                                        <span className="font-bold">{ticket.requesterName || t('support.admin.unknown')}</span>
                                                         {ticket.requesterEmail && (
                                                             <span className="hidden sm:inline">({ticket.requesterEmail})</span>
                                                         )}
@@ -389,7 +391,7 @@ export const SupportAdminPage = () => {
                                                     {ticket.lastMessage && (
                                                         <p className="mt-2 text-xs text-gray-500 dark:text-gray-400 truncate">
                                                             <span className={`font-bold ${ticket.lastMessage.senderType === 'support' ? 'text-paymint-green' : 'text-gray-600 dark:text-gray-300'}`}>
-                                                                {ticket.lastMessage.senderType === 'support' ? 'Support: ' : 'Customer: '}
+                                                                {ticket.lastMessage.senderType === 'support' ? t('support.admin.supportLabel') + ': ' : t('support.admin.customerLabel') + ': '}
                                                             </span>
                                                             {ticket.lastMessage.content}
                                                         </p>
