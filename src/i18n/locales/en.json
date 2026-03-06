@@ -2171,10 +2171,13 @@
   "nav": {
     "community": "Community",
     "createAccount": "Create Account",
+    "dashboard": "Dashboard",
     "features": "Features",
     "getStarted": "Get Started",
     "hardware": "Hardware",
     "login": "Log In",
+    "logout": "Log Out",
+    "owner": "Owner Portal",
     "pricing": "Pricing",
     "support": "Support"
   },

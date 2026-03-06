@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Menu, X, Laptop } from 'lucide-react';
+import { Menu, X, Laptop, LogOut, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './Logo';
 import { ThemeToggle } from './ThemeToggle';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { useAuth } from '../context/AuthContext';
 
 export const Navbar = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -23,6 +26,15 @@ export const Navbar = () => {
     { name: t('nav.pricing'), href: '/#pricing' },
     { name: t('nav.support'), href: '/support' },
   ];
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+    } catch {
+      // Ignore errors
+    }
+  };
 
   return (
     <nav
@@ -67,22 +79,39 @@ export const Navbar = () => {
           <div className="h-6 w-px bg-gray-200 dark:bg-white/10" />
 
           <div className="flex items-center gap-6">
-            <Link
-              to="/login"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm font-bold text-gray-900 dark:text-white hover:text-paymint-green dark:hover:text-paymint-green transition-colors"
-            >
-              {t('nav.login')}
-            </Link>
-            <Link
-              to="/signup"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-gray-900 dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all active:scale-95 shadow-lg shadow-gray-900/20 dark:shadow-white/10"
-            >
-              {t('nav.getStarted')}
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to="/owner"
+                  className="inline-flex items-center gap-2 bg-paymint-green text-black px-6 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all active:scale-95 shadow-lg shadow-paymint-green/20 hover:opacity-90"
+                >
+                  <User size={14} />
+                  {t('nav.owner')}
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all active:scale-95 shadow-lg shadow-red-500/20"
+                >
+                  <LogOut size={14} />
+                  {t('nav.logout')}
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="text-sm font-bold text-gray-900 dark:text-white hover:text-paymint-green dark:hover:text-paymint-green transition-colors"
+                >
+                  {t('nav.login')}
+                </Link>
+                <Link
+                  to="/signup"
+                  className="bg-gray-900 dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all active:scale-95 shadow-lg shadow-gray-900/20 dark:shadow-white/10"
+                >
+                  {t('nav.getStarted')}
+                </Link>
+              </>
+            )}
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
@@ -143,24 +172,45 @@ export const Navbar = () => {
               <div className="h-px w-full bg-gray-100 dark:bg-white/5" />
 
               <div className="flex flex-col gap-4">
-                <Link
-                  to="/login"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full py-5 border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white rounded-[2rem] text-xl font-black tracking-tight text-center"
-                >
-                  {t('nav.login')}
-                </Link>
-                <Link
-                  to="/signup"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full py-5 bg-paymint-green text-black rounded-[2rem] text-xl font-black tracking-tight text-center shadow-xl shadow-paymint-green/20"
-                >
-                  {t('nav.createAccount')}
-                </Link>
+                {isAuthenticated ? (
+                  <>
+                    <Link
+                      to="/owner"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="w-full py-5 bg-paymint-green text-black rounded-[2rem] text-xl font-black tracking-tight text-center flex items-center justify-center gap-3 shadow-xl shadow-paymint-green/20"
+                    >
+                      <User size={20} />
+                      {t('nav.owner')}
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        handleLogout();
+                      }}
+                      className="w-full py-5 bg-red-500 hover:bg-red-600 text-white rounded-[2rem] text-xl font-black tracking-tight text-center flex items-center justify-center gap-3 shadow-xl shadow-red-500/20"
+                    >
+                      <LogOut size={20} />
+                      {t('nav.logout')}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/login"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="w-full py-5 border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white rounded-[2rem] text-xl font-black tracking-tight text-center"
+                    >
+                      {t('nav.login')}
+                    </Link>
+                    <Link
+                      to="/signup"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="w-full py-5 bg-paymint-green text-black rounded-[2rem] text-xl font-black tracking-tight text-center shadow-xl shadow-paymint-green/20"
+                    >
+                      {t('nav.createAccount')}
+                    </Link>
+                  </>
+                )}
               </div>
 
               {/* Mobile Footer Info */}

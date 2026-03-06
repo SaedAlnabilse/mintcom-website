@@ -2183,10 +2183,13 @@
   "nav": {
     "community": "المجتمع",
     "createAccount": "إنشاء حساب",
+    "dashboard": "لوحة التحكم",
     "features": "المميزات",
     "getStarted": "ابدأ الآن",
     "hardware": "الأجهزة",
     "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "owner": "بوابة المالك",
     "pricing": "الأسعار",
     "support": "الدعم"
   },

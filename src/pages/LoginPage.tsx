@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -31,7 +31,11 @@ export function LoginPage() {
   const [unverifiedEmail, setUnverifiedEmail] = useState('');
   const [isResending, setIsResending] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, loginWithGoogle, resendVerification } = useAuth();
+
+  // If the user was redirected here from a protected page, redirect back after login
+  const redirectTo = (location.state as { from?: string })?.from;
 
   const handleGoogleSuccess = async (credential: string) => {
     try {
@@ -39,7 +43,9 @@ export function LoginPage() {
 
       if (result.success) {
         toast.success(result.message || t('common.welcome'));
-        if (result.isSecondaryAdmin) {
+        if (redirectTo) {
+          navigate(redirectTo);
+        } else if (result.isSecondaryAdmin) {
           navigate('/dashboard');
         } else {
           navigate('/owner');
@@ -72,8 +78,10 @@ export function LoginPage() {
 
       if (result.success) {
         toast.success(t('common.welcomeBack'));
-        // Redirect based on user type
-        if (result.isSecondaryAdmin) {
+        // Redirect back to the page they were trying to access, or default
+        if (redirectTo) {
+          navigate(redirectTo);
+        } else if (result.isSecondaryAdmin) {
           navigate('/dashboard');
         } else {
           navigate('/owner');

@@ -46,6 +46,8 @@ const NewTicketPage = lazy(() => import('./pages/support/NewTicketPage').then(m 
 const SupportCategoryPage = lazy(() => import('./pages/support/SupportCategoryPage').then(m => ({ default: m.SupportCategoryPage })));
 const ArticlePage = lazy(() => import('./pages/support/ArticlePage').then(m => ({ default: m.ArticlePage })));
 const AllArticlesPage = lazy(() => import('./pages/support/AllArticlesPage').then(m => ({ default: m.AllArticlesPage })));
+const SupportAdminPage = lazy(() => import('./pages/support/SupportAdminPage').then(m => ({ default: m.SupportAdminPage })));
+const SupportAdminDetailPage = lazy(() => import('./pages/support/SupportAdminDetailPage').then(m => ({ default: m.SupportAdminDetailPage })));
 
 // ============================================================================
 // Lazy Imports - Portal Pages
@@ -237,36 +239,12 @@ const router = createBrowserRouter([
         ),
       },
 
-      // ========== Support Routes (Public) ==========
+      // ========== Support Routes (Public Articles) ==========
       {
         path: "/support",
         element: (
           <PageSuspense>
             <SupportPage />
-          </PageSuspense>
-        ),
-      },
-      {
-        path: "/support/tickets",
-        element: (
-          <PageSuspense>
-            <TicketsPage />
-          </PageSuspense>
-        ),
-      },
-      {
-        path: "/support/tickets/new",
-        element: (
-          <PageSuspense>
-            <NewTicketPage />
-          </PageSuspense>
-        ),
-      },
-      {
-        path: "/support/tickets/:ticketId",
-        element: (
-          <PageSuspense>
-            <TicketDetailPage />
           </PageSuspense>
         ),
       },
@@ -295,6 +273,24 @@ const router = createBrowserRouter([
         ),
       },
 
+      // ========== Support Admin Portal (handles its own auth) ==========
+      {
+        path: "/support/admin",
+        element: (
+          <PageSuspense>
+            <SupportAdminPage />
+          </PageSuspense>
+        ),
+      },
+      {
+        path: "/support/admin/:ticketId",
+        element: (
+          <PageSuspense>
+            <SupportAdminDetailPage />
+          </PageSuspense>
+        ),
+      },
+
       // ========== Community Routes (Temporarily Disabled) ==========
       {
         path: "/community-hub",
@@ -309,6 +305,31 @@ const router = createBrowserRouter([
       {
         element: <ProtectedRoute />,
         children: [
+          // ========== Support Ticket Routes (Protected) ==========
+          {
+            path: "/support/tickets",
+            element: (
+              <PageSuspense>
+                <TicketsPage />
+              </PageSuspense>
+            ),
+          },
+          {
+            path: "/support/tickets/new",
+            element: (
+              <PageSuspense>
+                <NewTicketPage />
+              </PageSuspense>
+            ),
+          },
+          {
+            path: "/support/tickets/:ticketId",
+            element: (
+              <PageSuspense>
+                <TicketDetailPage />
+              </PageSuspense>
+            ),
+          },
           {
             path: "/portal",
             element: (
