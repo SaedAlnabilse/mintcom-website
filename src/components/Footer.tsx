@@ -100,7 +100,7 @@ export const Footer = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-20">
             {/* Brand */}
             <div className="space-y-8" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
-              <Logo size="lg" className={t('common.locale') === 'ar' ? 'scale-x-[-1]' : ''} />
+              <Logo size="lg" />
               <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed max-w-xs">
                 {t('brand.description')}
               </p>
