@@ -145,8 +145,8 @@ export function MultiSelect({
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder={t('common.searchPlaceholder')}
-                                className="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-white/5 border-none rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 placeholder-gray-400 outline-none focus:ring-1 focus:ring-paymint-green/30 transition-all"
-                            />
+                                className="w-full pl-9 pr-9 py-2 bg-gray-50 dark:bg-white/5 border-none rounded-lg text-sm font-bold text-gray-700 dark:text-gray-300 placeholder-gray-400 outline-none transition-all"
+                                />
                             {searchQuery && (
                                 <button
                                     onClick={() => setSearchQuery('')}

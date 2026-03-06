@@ -220,7 +220,7 @@ export function PasswordResetOtpModal({
                             <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center">
                                 <Shield className="w-5 h-5 text-paymint-green" />
                             </div>
-                            <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+                            <h2 className="text-2xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">
                                 {title}
                             </h2>
                         </div>
@@ -452,3 +452,4 @@ export function PasswordResetOtpModal({
         document.body
     );
 }
+

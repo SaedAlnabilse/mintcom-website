@@ -31,7 +31,9 @@ import {
   Smartphone,
   Heart,
   Award,
-  Scale
+  Scale,
+  Apple,
+  Play
 } from 'lucide-react';
 
 // Paymint Logo imports
@@ -362,7 +364,7 @@ export function DashboardLayout() {
                     size={24}
                     className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
                   />
-                  <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                  <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-outfit font-bold tracking-tight rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                     {t('dashboard.menu.openSidebar')}
                   </div>
                 </button>
@@ -423,7 +425,7 @@ export function DashboardLayout() {
               className="w-12 h-12 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all group relative"
             >
               <MapPin size={24} />
-              <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+              <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-outfit font-bold tracking-tight rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                 {t('dashboard.menu.switchLocation')}
               </div>
             </button>
@@ -569,7 +571,7 @@ export function DashboardLayout() {
                   )}
 
                   {!sidebarOpen && (
-                    <div className={`absolute ${isRTL ? 'right-full mr-4 -translate-x-1 group-hover:translate-x-0' : 'left-full ml-4 translate-x-1 group-hover:translate-x-0'} top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl`}>
+                    <div className={`absolute ${isRTL ? 'right-full mr-4 -translate-x-1 group-hover:translate-x-0' : 'left-full ml-4 translate-x-1 group-hover:translate-x-0'} top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-outfit font-bold tracking-tight rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl`}>
                       {item.label}
                     </div>
                   )}
@@ -665,11 +667,29 @@ export function DashboardLayout() {
                   </div>
                 </div>
 
-                {/* Text */}
-                <p className="text-center text-sm font-bold text-gray-900 dark:text-white leading-tight">
-                  {t('dashboard.menu.scanToDownload')}<br />
-                  <span className="text-paymint-green">{t('brand.name')} {t('common.app')}</span>
-                </p>
+                            {/* Text & Badges */}
+                            <div className="text-center mt-2">
+                              <p className="text-sm font-bold text-gray-900 dark:text-white leading-tight mb-3">
+                                {t('dashboard.menu.scanToDownload')}<br />
+                                <span className="text-paymint-green">{t('brand.name')} {t('common.app')}</span>
+                              </p>
+                              <div className="flex flex-col gap-2">
+                                  <button className="flex items-center justify-center gap-2.5 w-full py-2 bg-[#050505] dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-black rounded-xl transition-all shadow-sm border border-gray-800 dark:border-transparent">
+                                      <Apple size={20} />
+                                      <div className="flex flex-col items-start text-left rtl:text-right">
+                                          <span className="text-[8px] leading-[1] text-gray-400 dark:text-gray-500 tracking-wide">Download on the</span>
+                                          <span className="text-sm leading-[1] font-bold mt-0.5">App Store</span>
+                                      </div>
+                                  </button>
+                                  <button className="flex items-center justify-center gap-2.5 w-full py-2 bg-[#050505] dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-black rounded-xl transition-all shadow-sm border border-gray-800 dark:border-transparent">
+                                      <Play size={18} className="text-emerald-400 dark:text-emerald-500" />
+                                      <div className="flex flex-col items-start text-left rtl:text-right">
+                                          <span className="text-[8px] leading-[1] text-gray-400 dark:text-gray-500 tracking-wide uppercase">Get it on</span>
+                                          <span className="text-sm leading-[1] font-bold mt-0.5">Google Play</span>
+                                      </div>
+                                  </button>
+                              </div>
+                            </div>
               </div>
             </div>
           </div>
@@ -717,7 +737,7 @@ export function DashboardLayout() {
               >
                 <Settings size={24} />
                 {/* Tooltip */}
-                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-black tracking-widest rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-outfit font-bold tracking-tight rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                   {t('dashboard.menu.settings')}
                 </div>
               </button>
@@ -825,11 +845,29 @@ export function DashboardLayout() {
                                 </div>
                               </div>
                             </div>
-                            {/* Text */}
-                            <p className="text-center text-sm font-bold text-gray-900 dark:text-white leading-tight">
-                              {t('dashboard.menu.scanToDownload')}<br />
-                              <span className="text-paymint-green">{t('brand.name')} {t('common.app')}</span>
-                            </p>
+                            {/* Text & Badges */}
+                            <div className="text-center mt-2">
+                              <p className="text-sm font-bold text-gray-900 dark:text-white leading-tight mb-3">
+                                {t('dashboard.menu.scanToDownload')}<br />
+                                <span className="text-paymint-green">{t('brand.name')} {t('common.app')}</span>
+                              </p>
+                              <div className="flex flex-col gap-2">
+                                  <button className="flex items-center justify-center gap-2.5 w-full py-2 bg-[#050505] dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-black rounded-xl transition-all shadow-sm border border-gray-800 dark:border-transparent">
+                                      <Apple size={20} />
+                                      <div className="flex flex-col items-start text-left rtl:text-right">
+                                          <span className="text-[8px] leading-[1] text-gray-400 dark:text-gray-500 tracking-wide">Download on the</span>
+                                          <span className="text-sm leading-[1] font-bold mt-0.5">App Store</span>
+                                      </div>
+                                  </button>
+                                  <button className="flex items-center justify-center gap-2.5 w-full py-2 bg-[#050505] dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-black rounded-xl transition-all shadow-sm border border-gray-800 dark:border-transparent">
+                                      <Play size={18} className="text-emerald-400 dark:text-emerald-500" />
+                                      <div className="flex flex-col items-start text-left rtl:text-right">
+                                          <span className="text-[8px] leading-[1] text-gray-400 dark:text-gray-500 tracking-wide uppercase">Get it on</span>
+                                          <span className="text-sm leading-[1] font-bold mt-0.5">Google Play</span>
+                                      </div>
+                                  </button>
+                              </div>
+                            </div>
                           </div>
                         </div>
 
@@ -1021,3 +1059,4 @@ export function DashboardLayout() {
     </div>
   );
 }
+

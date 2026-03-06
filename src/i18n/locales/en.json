@@ -3151,7 +3151,7 @@
       "searchPlaceholder": "Filter by name, email or location...",
       "staffRemoved": "Staff member removed successfully",
       "standardInfo": "Standard users with restricted access.",
-      "standardUsers": "Users",
+      "standardUsers": "Standard User",
       "subtitle": "Manage staff across all locations",
       "syncError": "Failed to sync staff data",
       "title": "All Staff",
@@ -3858,7 +3858,7 @@
       "roleLabel": "Role",
       "selectLocation": "Select location...",
       "selectRole": "Select Role...",
-      "standardUsers": "Standard Users",
+      "standardUsers": "Standard User",
       "usernameLabel": "Username",
       "usernamePlaceholder": "E.g. johndoe"
     },
@@ -3953,7 +3953,7 @@
       "manager": "Manager",
       "owner": "Enterprise Owner",
       "staff": "Staff",
-      "standardUsers": "Standard Users",
+      "standardUsers": "Standard User",
       "user": "User",
       "cashier": "Cashier"
     },

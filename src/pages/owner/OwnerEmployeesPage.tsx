@@ -310,8 +310,8 @@ export function OwnerEmployeesPage() {
                             {t('owner.staff.badge')}
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.staff.title')}</h1>
-                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
+                    <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.staff.title')}</h1>
+                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
                         {t('owner.staff.subtitle')}
                     </p>
                 </div>
@@ -366,14 +366,14 @@ export function OwnerEmployeesPage() {
                     <div id="tour-search-input" className="relative flex-1 min-w-[300px]">
                         <Search
                             size={18}
-                            className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-300 ${searchQuery ? 'text-PayMint-green' : 'text-gray-400'}`}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
                         />
                         <input
                             type="text"
                             placeholder={t('owner.staff.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-PayMint-green/10 focus:border-PayMint-green/50 dark:focus:border-PayMint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm focus:shadow-lg"
+                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
                         />
                     </div>
 
@@ -386,8 +386,8 @@ export function OwnerEmployeesPage() {
                                     onChange={(val) => setRoleFilter(val as string)}
                                     options={[
                                         { label: t('owner.staff.allRoles'), value: 'all' },
-                                        { label: t('onboarding.step4.adminUsernamePlaceholder'), value: 'ADMIN' },
-                                        { label: t('staff.form.standardUsers'), value: 'USER' }
+                                        { label: t('staff.roles.admin'), value: 'ADMIN' },
+                                        { label: t('staff.roles.user'), value: 'USER' }
                                     ]}
                                 />
                             </div>
@@ -454,7 +454,7 @@ export function OwnerEmployeesPage() {
                                             <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white dark:border-[#0A0A0A]" />
                                         </div>
                                         <div>
-                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight group-hover:text-indigo-500 transition-colors">
+                                            <h3 className="text-lg font-outfit font-bold tracking-tight text-gray-900 dark:text-white leading-tight group-hover:text-indigo-500 transition-colors">
                                                 {emp.firstName} {emp.lastName}
                                             </h3>
                                             <p className="text-xs text-gray-500 mt-1">
@@ -478,27 +478,27 @@ export function OwnerEmployeesPage() {
                                             <div
                                                 className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
                                             >
-                                                    <button
-                                                        onClick={() => {
-                                                            setEditingEmployee(emp);
-                                                            setIsFormModalOpen(true);
-                                                            setActiveMenu(null);
-                                                        }}
-                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                                    >
-                                                        <Edit2 size={16} />
-                                                        {t('owner.staff.editDetails')}
-                                                    </button>
-                                                    <button
-                                                        onClick={() => {
-                                                            handleDeleteEmployee(emp.id);
-                                                            setActiveMenu(null);
-                                                        }}
-                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
-                                                    >
-                                                        <Trash2 size={16} />
-                                                        {t('owner.staff.remove')}
-                                                    </button>
+                                                <button
+                                                    onClick={() => {
+                                                        setEditingEmployee(emp);
+                                                        setIsFormModalOpen(true);
+                                                        setActiveMenu(null);
+                                                    }}
+                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                >
+                                                    <Edit2 size={16} />
+                                                    {t('owner.staff.editDetails')}
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        handleDeleteEmployee(emp.id);
+                                                        setActiveMenu(null);
+                                                    }}
+                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
+                                                >
+                                                    <Trash2 size={16} />
+                                                    {t('owner.staff.remove')}
+                                                </button>
                                             </div>
                                         )}
                                     </div>
@@ -578,7 +578,7 @@ export function OwnerEmployeesPage() {
                                         {emp.firstName.charAt(0).toUpperCase()}
                                     </div>
                                     <div>
-                                        <h3 className="text-sm font-bold text-gray-900 dark:text-white">{emp.firstName} {emp.lastName}</h3>
+                                        <h3 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{emp.firstName} {emp.lastName}</h3>
                                         <p className="text-xs font-bold text-gray-500">{emp.username}</p>
                                     </div>
                                 </div>
@@ -647,63 +647,63 @@ export function OwnerEmployeesPage() {
                     <div
                         className="bg-white dark:bg-[#1E293B] w-full max-w-md rounded-[2rem] overflow-hidden border border-gray-200 dark:border-white/10 shadow-2xl"
                     >
-                            <div className="p-8 pb-4">
-                                <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-6">
-                                    <AlertTriangle size={32} />
-                                </div>
-                                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">{t('owner.staff.removeStaffTitle')}</h3>
-                                <p className="text-gray-500 text-sm leading-relaxed">
-                                    {t('owner.staff.removeConfirm', { name: `${employeeToDelete.firstName} ${employeeToDelete.lastName}` })}
-                                </p>
+                        <div className="p-8 pb-4">
+                            <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-6">
+                                <AlertTriangle size={32} />
                             </div>
+                            <h3 className="text-2xl font-outfit font-black text-gray-900 dark:text-white tracking-tight mb-2">{t('owner.staff.removeStaffTitle')}</h3>
+                            <p className="text-gray-500 text-sm leading-relaxed">
+                                {t('owner.staff.removeConfirm', { name: `${employeeToDelete.firstName} ${employeeToDelete.lastName}` })}
+                            </p>
+                        </div>
 
-                            <div className="px-8 pb-6 space-y-4">
-                                <div>
-                                    <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
-                                        {t('owner.staff.verifyPassword')}
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            type={showDeletePassword ? 'text' : 'password'}
-                                            value={deletePassword}
-                                            onChange={(e) => { setDeletePassword(e.target.value); setDeleteError(''); }}
-                                            placeholder={t('owner.staff.passwordPlaceholder')}
-                                            className={`w-full bg-gray-50 dark:bg-white/5 border ${deleteError ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-red-500 transition-colors`}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowDeletePassword(!showDeletePassword)}
-                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-white"
-                                        >
-                                            {showDeletePassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                        </button>
-                                    </div>
-                                    {deleteError && <p className="mt-2 text-xs font-bold text-red-500">{deleteError}</p>}
+                        <div className="px-8 pb-6 space-y-4">
+                            <div>
+                                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
+                                    {t('owner.staff.verifyPassword')}
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type={showDeletePassword ? 'text' : 'password'}
+                                        value={deletePassword}
+                                        onChange={(e) => { setDeletePassword(e.target.value); setDeleteError(''); }}
+                                        placeholder={t('owner.staff.passwordPlaceholder')}
+                                        className={`w-full bg-gray-50 dark:bg-white/5 border ${deleteError ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-red-500 transition-colors`}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowDeletePassword(!showDeletePassword)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-white"
+                                    >
+                                        {showDeletePassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
                                 </div>
+                                {deleteError && <p className="mt-2 text-xs font-bold text-red-500">{deleteError}</p>}
                             </div>
+                        </div>
 
-                            <div className="p-6 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 bg-gray-50 dark:bg-white/[0.02]">
-                                <button
-                                    onClick={closeDeleteModal}
-                                    className="flex-1 py-3.5 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-bold text-xs tracking-wider hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
-                                >
-                                    {t('common.cancel')}
-                                </button>
-                                <button
-                                    onClick={confirmDelete}
-                                    disabled={isDeleting}
-                                    className="flex-1 py-3.5 rounded-xl bg-red-500 text-white font-bold text-xs tracking-wider hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-red-500/20"
-                                >
-                                    {isDeleting ? (
-                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                    ) : (
-                                        <>
-                                            <Trash2 size={16} />
-                                            {t('common.confirm')}
-                                        </>
-                                    )}
-                                </button>
-                            </div>
+                        <div className="p-6 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 bg-gray-50 dark:bg-white/[0.02]">
+                            <button
+                                onClick={closeDeleteModal}
+                                className="flex-1 py-3.5 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-bold text-xs tracking-wider hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            >
+                                {t('common.cancel')}
+                            </button>
+                            <button
+                                onClick={confirmDelete}
+                                disabled={isDeleting}
+                                className="flex-1 py-3.5 rounded-xl bg-red-500 text-white font-bold text-xs tracking-wider hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-red-500/20"
+                            >
+                                {isDeleting ? (
+                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                ) : (
+                                    <>
+                                        <Trash2 size={16} />
+                                        {t('common.confirm')}
+                                    </>
+                                )}
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

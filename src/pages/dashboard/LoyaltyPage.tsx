@@ -9,6 +9,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { RewardFormModal } from '../../components/forms/RewardFormModal';
 import { Pagination } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
+import { useAuth } from '../../context/AuthContext';
 
 interface ApiError {
     response?: {
@@ -44,6 +45,7 @@ interface LoyaltyReward {
 
 export function LoyaltyPage() {
     const { t } = useTranslation();
+    const { currentEstablishment } = useAuth();
     usePermissionGuard(['manage_loyalty_program', 'manage_discounts']);
     const [loyaltyConfig, setLoyaltyConfig] = useState<LoyaltyConfig | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -322,9 +324,14 @@ export function LoyaltyPage() {
                             {t('rewards.badge')}
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('rewards.title')}</h1>
-                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
-                        {t('rewards.subtitle')}
+                    <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('rewards.title')}</h1>
+                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
+                        <span>{t('rewards.subtitle')}</span>
+                        {currentEstablishment?.name && (
+                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                                {currentEstablishment.name}
+                            </span>
+                        )}
                     </p>
                 </div>
                 {hasChanges && (
@@ -510,3 +517,5 @@ export function LoyaltyPage() {
         </div>
     );
 }
+
+

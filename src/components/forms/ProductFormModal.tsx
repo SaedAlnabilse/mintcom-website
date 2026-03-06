@@ -525,7 +525,7 @@ export function ProductFormModal({
                   <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
                   <span className="text-xs font-black text-paymint-green tracking-widest">{t('common.active')}</span>
                 </div>
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+                <h2 className="text-2xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">
                   {initialData?.id ? t('products.editProduct') : t('products.newProduct')}
                 </h2>
               </div>
@@ -814,7 +814,7 @@ export function ProductFormModal({
                               value={categorySearchQuery}
                               onChange={(e) => setCategorySearchQuery(e.target.value)}
                               placeholder={t('products.form.filterCategories')}
-                              className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+                              className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none transition-all"
                               onClick={(e) => e.stopPropagation()}
                             />
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
@@ -1186,6 +1186,7 @@ export function ProductFormModal({
     document.body
   );
 }
+
 
 
 

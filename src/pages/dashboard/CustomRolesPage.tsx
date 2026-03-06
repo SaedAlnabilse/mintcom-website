@@ -1,3 +1,4 @@
+import { useAuth } from '../../context/AuthContext';
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -66,6 +67,7 @@ const getBackofficePermissionCount = (permissions: string[] | undefined): number
 
 export function CustomRolesPage() {
   const { t } = useTranslation();
+    const { currentEstablishment } = useAuth();
   // Permission guard - redirects if user lacks permission
   usePermissionGuard();
 
@@ -241,8 +243,15 @@ export function CustomRolesPage() {
               {t('dashboard.menu.team')}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('dashboard.roles.title')}</h1>
-          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">{t('dashboard.roles.subtitle')}</p>
+          <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('dashboard.roles.title')}</h1>
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
+                        <span>{t('dashboard.roles.subtitle')}</span>
+                        {currentEstablishment?.name && (
+                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                                {currentEstablishment.name}
+                            </span>
+                        )}
+                    </p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -265,7 +274,7 @@ export function CustomRolesPage() {
             placeholder={t('dashboard.roles.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
-            className="w-full pl-11 pr-4 py-2.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+            className="w-full pl-11 pr-4 py-2.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none transition-all"
           />
           {searchQuery && (
             <button
@@ -559,3 +568,5 @@ export function CustomRolesPage() {
     </div>
   );
 }
+
+

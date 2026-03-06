@@ -22,6 +22,7 @@ export interface Establishment {
   type: string;
   currency: string;
   subscriptionStatus: string;
+  createdAt?: string;
   establishmentLoginId?: string;
   address?: string;
   phone?: string;

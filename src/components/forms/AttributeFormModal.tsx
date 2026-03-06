@@ -103,7 +103,7 @@ export function AttributeFormModal({
                                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
                                 <span className="text-xs font-black text-paymint-green tracking-widest">{t('common.active')}</span>
                             </div>
-                            <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+                            <h2 className="text-2xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">
                                 {initialData ? t('attributes.editAttribute') : t('attributes.newAttribute')}
                             </h2>
                         </div>
@@ -256,3 +256,4 @@ export function AttributeFormModal({
         document.body
     );
 }
+

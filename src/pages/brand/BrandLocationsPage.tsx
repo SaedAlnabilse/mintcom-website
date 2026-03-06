@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useOutletContext } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +16,7 @@ import {
     MoreVertical,
     Eye,
     X,
+    Clock,
     Trash2
 } from 'lucide-react';
 import api from '../../config/api';
@@ -24,6 +25,11 @@ import { CustomSelect } from '../../components/CustomSelect';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 import { Pagination } from '../../components/ui';
+import { SingleSelect } from '../../components/SingleSelect';
+import { DateRangePicker } from '../../components/DateRangePicker';
+import { CustomTimePicker } from '../../components/CustomTimePicker';
+import { DATE_PERIOD_OPTIONS, calculateDateRange, formatDateForInput } from '../../utils/datePeriods';
+import type { DatePeriod } from '../../utils/datePeriods';
 
 interface LocationStats {
     id: string;
@@ -41,6 +47,7 @@ interface LocationStats {
 type ViewMode = 'grid' | 'list';
 type SortOption = 'name' | 'revenue' | 'orders' | 'employees';
 type StatusFilter = 'all' | 'ACTIVE' | 'INACTIVE' | 'TRIAL';
+type DateRangePreset = DatePeriod;
 
 export function BrandLocationsPage() {
     const { t } = useTranslation();
@@ -53,6 +60,13 @@ export function BrandLocationsPage() {
     const [statsData, setStatsData] = useState<any>(null);
     const [brandName, setBrandName] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const initialDateRange = useMemo(() => calculateDateRange('this_week'), []);
+    const [selectedDateRange, setSelectedDateRange] = useState<DateRangePreset>('this_week');
+    const [startDate, setStartDate] = useState<string>(formatDateForInput(initialDateRange.start));
+    const [endDate, setEndDate] = useState<string>(formatDateForInput(initialDateRange.end));
+    const [startTime, setStartTime] = useState<string>('00:00');
+    const [endTime, setEndTime] = useState<string>('23:59');
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [viewMode, setViewMode] = useState<ViewMode>('list');
     const [sortBy, setSortBy] = useState<SortOption>('name');
@@ -68,10 +82,30 @@ export function BrandLocationsPage() {
 
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 10;
+    const hasLoadedOnceRef = useRef(false);
+
+    const setQuickDate = (range: DateRangePreset) => {
+        setSelectedDateRange(range);
+        const { start, end } = calculateDateRange(range);
+        setStartDate(formatDateForInput(start));
+        setEndDate(formatDateForInput(end));
+        setStartTime('00:00');
+        setEndTime('23:59');
+    };
 
     const fetchLocations = useCallback(async () => {
         try {
-            setIsLoading(true);
+            if (hasLoadedOnceRef.current) {
+                setIsRefreshing(true);
+            } else {
+                setIsLoading(true);
+            }
+
+            const params: Record<string, string> = {
+                timeRange: 'custom',
+                startDate: `${startDate}T${startTime}:00`,
+                endDate: `${endDate}T${endTime}:00`,
+            };
 
             // Fetch brand details
             const brandResponse = await api.get(`/api/brands/${brandId}`);
@@ -79,7 +113,7 @@ export function BrandLocationsPage() {
             // Try to fetch stats, but don't block if it fails
             let statsResponse = { data: { stats: null, locationPerformance: [] } };
             try {
-                statsResponse = await api.get(`/api/brands/${brandId}/dashboard-stats`);
+                statsResponse = await api.get(`/api/brands/${brandId}/dashboard-stats`, { params });
             } catch (statsErr) {
                 console.warn('Failed to fetch dashboard stats:', statsErr);
             }
@@ -115,15 +149,28 @@ export function BrandLocationsPage() {
             console.error('Failed to fetch locations:', err);
             toast.error(`${t('brand.dashboard.failedToLoad')}: ${err.message || t('common.error')}`);
         } finally {
+            hasLoadedOnceRef.current = true;
             setIsLoading(false);
+            setIsRefreshing(false);
         }
-    }, [brandId, t]);
+    }, [brandId, endDate, endTime, startDate, startTime, t]);
 
     useEffect(() => {
         if (brandId) {
+            hasLoadedOnceRef.current = false;
+            fetchLocations();
+        }
+    }, [brandId]);
+
+    useEffect(() => {
+        if (brandId && hasLoadedOnceRef.current) {
             fetchLocations();
         }
     }, [brandId, fetchLocations]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, statusFilter, typeFilter, selectedDateRange, startDate, endDate, startTime, endTime]);
 
     // Get unique types for filter
     const locationTypes = useMemo(() => {
@@ -257,26 +304,98 @@ export function BrandLocationsPage() {
     return (
         <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8 pb-10">
             {/* Header */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-50">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
                             {t('owner.brands.badge')}
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('brand.menu.locations')}</h1>
-                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
-                        {t('brand.dashboard.manageLocationsDesc')} {brandName}
+                    <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('brand.menu.locations')}</h1>
+                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
+                        <span>{t('brand.dashboard.manageLocationsDesc')}</span>
+                        {brandName && (
+                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                                {brandName}
+                            </span>
+                        )}
                     </p>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 relative z-50">
+                    <div className="bg-white dark:bg-[#0B1120] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5">
+                        <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0 h-full">
+                            <div className={`flex-none w-[160px] rounded-xl border transition-all ${selectedDateRange !== 'custom' ? 'bg-paymint-green/5 border-paymint-green ring-1 ring-paymint-green shadow-lg shadow-paymint-green/10' : 'border-transparent'}`}>
+                                <SingleSelect
+                                    value={selectedDateRange === 'custom' ? null : selectedDateRange}
+                                    onChange={(val) => setQuickDate(val as DateRangePreset || 'today')}
+                                    options={DATE_PERIOD_OPTIONS}
+                                    showAllOption={false}
+                                    placeholder={t('owner.overview.selectPeriod')}
+                                    className="w-full"
+                                    buttonClassName={`!bg-gray-50 dark:!bg-white/5 !border-transparent hover:!bg-gray-100 dark:hover:!bg-white/10 !rounded-xl !p-2.5 !h-full !text-xs !font-bold ${selectedDateRange !== 'custom' ? '!text-paymint-green' : ''}`}
+                                />
+                            </div>
+
+                            <div className="hidden xl:block w-px h-8 bg-gray-100 dark:bg-white/10 mx-3" />
+
+                            {(() => {
+                                const isTimeFiltered = startTime !== '00:00' || endTime !== '23:59';
+
+                                return (
+                                    <div className="flex-1 flex flex-col md:flex-row gap-4 items-center">
+                                        <div className="flex-none min-w-[200px] sm:min-w-[240px] relative z-[60]">
+                                            <DateRangePicker
+                                                startDate={startDate}
+                                                endDate={endDate}
+                                                onRangeChange={(startDateValue, endDateValue) => {
+                                                    setStartDate(startDateValue);
+                                                    setEndDate(endDateValue);
+                                                    setSelectedDateRange('custom');
+                                                }}
+                                                onClear={() => setQuickDate('today')}
+                                                isActive={selectedDateRange === 'custom'}
+                                                align="left"
+                                            />
+                                        </div>
+
+                                        <div className="hidden md:block w-px h-6 bg-gray-100 dark:bg-white/10" />
+
+                                        <div className="flex-none w-auto min-w-[155px] sm:min-w-[180px] relative z-[55]">
+                                            <div className={`flex flex-col justify-center px-3 py-1.5 rounded-xl border transition-all ${isTimeFiltered ? '!bg-emerald-50 dark:!bg-[#064E3B] border-paymint-green ring-2 ring-paymint-green shadow-lg shadow-paymint-green/10' : '!bg-gray-50 dark:!bg-[#1E293B] border-transparent'}`}>
+                                                <div className="flex items-center gap-1.5 mb-0.5">
+                                                    <Clock size={12} className={isTimeFiltered ? 'text-[#7CC39F]' : 'text-gray-400'} />
+                                                    <span className={`text-[9px] font-black tracking-wider transition-colors ${isTimeFiltered ? 'text-[#7CC39F]' : 'text-gray-400'}`}>{t('owner.overview.activeHours')}</span>
+                                                </div>
+                                                <div className="flex items-center gap-2 justify-between relative">
+                                                    <CustomTimePicker
+                                                        value={startTime}
+                                                        onChange={(val) => { setStartTime(val); setSelectedDateRange('custom'); }}
+                                                        className="w-[85px] sm:w-[95px]"
+                                                        showIcon={true}
+                                                    />
+                                                    <span className={`text-xs font-bold transition-colors flex-shrink-0 ${isTimeFiltered ? 'text-[#7CC39F]/50' : 'text-gray-300 dark:text-white/10'}`}>-</span>
+                                                    <CustomTimePicker
+                                                        value={endTime}
+                                                        onChange={(val) => { setEndTime(val); setSelectedDateRange('custom'); }}
+                                                        className="w-[85px] sm:w-[95px]"
+                                                        showIcon={true}
+                                                        align="right"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })()}
+                        </div>
+                    </div>
                 </div>
             </div>
 
             {/* Stats Grid */}
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className={`grid grid-cols-2 lg:grid-cols-5 gap-4 transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
                 {[
                     { label: t('owner.locations.total'), value: stats.totalLocations, icon: Store, color: 'text-blue-500', bg: 'bg-blue-500/10' },
                     { label: t('owner.locations.active'), value: stats.activeLocations, icon: Activity, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
@@ -303,7 +422,7 @@ export function BrandLocationsPage() {
             </div>
 
             {/* Filters Bar */}
-            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm">
+            <div className={`bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm transition-opacity duration-200 ${isRefreshing ? 'opacity-85' : 'opacity-100'}`}>
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                     {/* Search */}
                     <div className="relative flex-1">
@@ -313,7 +432,7 @@ export function BrandLocationsPage() {
                             placeholder={t('owner.locations.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm focus:shadow-lg"
+                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
                         />
                     </div>
 
@@ -439,7 +558,7 @@ export function BrandLocationsPage() {
                 </div>
             ) : viewMode === 'grid' ? (
                 /* Grid View */
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
                     {paginatedLocations.map((loc) => {
                         const Icon = getBusinessTypeIcon(loc.type);
                         return (
@@ -557,14 +676,15 @@ export function BrandLocationsPage() {
                 </div>
             ) : (
                 /* List View */
-                <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-visible shadow-sm">
+                <div className={`bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-visible shadow-sm transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
                     {/* Table Header */}
                     <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
-                        <div className="col-span-4">{t('common.location')}</div>
+                        <div className="col-span-3">{t('common.location')}</div>
                         <div className="col-span-2">{t('common.status.label')}</div>
                         <div className="col-span-2 text-right">{t('brand.dashboard.revenue')}</div>
                         <div className="col-span-1 text-right">{t('brand.dashboard.orders')}</div>
                         <div className="col-span-1 text-right">{t('brand.dashboard.staff')}</div>
+                        <div className="col-span-1 text-right">{t('dashboard.menu.products')}</div>
                         <div className="col-span-2 text-right">{t('common.actions')}</div>
                     </div>
 
@@ -579,7 +699,7 @@ export function BrandLocationsPage() {
                                     onClick={() => handleLocationClick(loc)}
                                 >
                                     {/* Location Info */}
-                                    <div className="col-span-4 flex items-center gap-4">
+                                    <div className="col-span-3 flex items-center gap-4">
                                         <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green transition-colors">
                                             <Icon size={24} />
                                         </div>
@@ -619,6 +739,11 @@ export function BrandLocationsPage() {
                                         <span className="font-bold text-gray-900 dark:text-white">{loc.employeeCount}</span>
                                     </div>
 
+
+                                    {/* Products */}
+                                    <div className="col-span-1 flex items-center justify-end">
+                                        <span className="font-bold text-gray-900 dark:text-white">{loc.itemCount}</span>
+                                    </div>
                                     {/* Actions */}
                                     <div className="col-span-2 flex items-center justify-end relative">
                                         <button
@@ -687,3 +812,12 @@ export function BrandLocationsPage() {
         </div >
     );
 }
+
+
+
+
+
+
+
+
+

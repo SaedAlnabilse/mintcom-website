@@ -23,7 +23,7 @@ export function SearchInput({
 
   return (
     <div className={`relative group ${className}`}>
-      <div className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none z-10 group-focus-within:text-paymint-green transition-colors">
+      <div className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none z-10 transition-colors">
         <Search size={18} strokeWidth={2.5} />
       </div>
       <input
@@ -31,7 +31,7 @@ export function SearchInput({
         value={value}
         onChange={onChange}
         placeholder={defaultPlaceholder}
-        className="w-full h-12 pl-11 pr-10 py-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm"
+        className="w-full h-12 pl-11 pr-10 py-3 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none transition-all shadow-sm"
         {...props}
       />
       {value && onClear && (

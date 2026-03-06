@@ -119,6 +119,16 @@ export function OwnerEstablishmentsPage() {
         }
     };
 
+    const formatCreatedDate = (dateString?: string) => {
+        if (!dateString) return '-';
+
+        return new Date(dateString).toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    };
+
     // Auto-scroll to highlighted item
     useEffect(() => {
         if (highlightId && filteredEstablishments.some(e => e.id === highlightId)) {
@@ -140,8 +150,8 @@ export function OwnerEstablishmentsPage() {
                             {t('owner.locations.badge')}
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.locations.title')}</h1>
-                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
+                    <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.locations.title')}</h1>
+                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
                         {t('owner.locations.subtitle')}
                     </p>
                 </div>
@@ -223,14 +233,14 @@ export function OwnerEstablishmentsPage() {
                     <div className="relative flex-1 min-w-[300px]">
                         <Search
                             size={18}
-                            className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-300 ${searchQuery ? 'text-paymint-green' : 'text-gray-400'}`}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
                         />
                         <input
                             type="text"
                             placeholder={t('owner.locations.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm focus:shadow-lg"
+                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
                         />
                     </div>
 
@@ -313,7 +323,7 @@ export function OwnerEstablishmentsPage() {
                                             <div className="w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform duration-300">
                                                 <Icon size={28} />
                                             </div>
-                                            <div>                                                <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors truncate max-w-[180px]">
+                                            <div>                                                <h3 className="text-lg font-outfit font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors truncate max-w-[180px]">
                                                 {est.name}
                                             </h3>
                                                 <div className="flex items-center gap-2 mt-1">
@@ -425,7 +435,7 @@ export function OwnerEstablishmentsPage() {
                                                 <Icon size={20} />
                                             </div>
                                             <div>
-                                                <h3 className="font-bold text-gray-900 dark:text-white text-sm">{est.name}</h3>
+                                                <h3 className="font-outfit font-bold tracking-tight text-gray-900 dark:text-white text-sm">{est.name}</h3>
                                                 <div className="flex items-center gap-2 mt-1">
                                                     <span className="text-xs text-gray-500">{est.type ? est.type.charAt(0).toUpperCase() + est.type.slice(1).toLowerCase() : t('owner.locations.standard')}</span>
                                                     {est.id === highlightId && (
@@ -468,6 +478,9 @@ export function OwnerEstablishmentsPage() {
                                         </span>
                                         <span className="text-sm font-bold text-gray-900 dark:text-white">{est.currency || 'JOD'}</span>
                                     </div>
+                                    <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+                                        {t('owner.brands.created')}: <span className="font-semibold text-gray-700 dark:text-gray-200">{formatCreatedDate(est.createdAt)}</span>
+                                    </div>
                                 </div>
                             );
                         })}
@@ -475,10 +488,11 @@ export function OwnerEstablishmentsPage() {
 
                     {/* Desktop Table Header */}
                     <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest uppercase">
-                        <div className="col-span-4">{t('owner.locations.title')}</div>
+                        <div className="col-span-3">{t('owner.locations.title')}</div>
                         <div className="col-span-2">{t('owner.locations.type')}</div>
                         <div className="col-span-2">{t('owner.locations.status')}</div>
-                        <div className="col-span-2">{t('owner.locations.currency')}</div>
+                        <div className="col-span-1">{t('owner.locations.currency')}</div>
+                        <div className="col-span-2">{t('owner.brands.created')}</div>
                         <div className="col-span-2 text-center">{t('owner.locations.actions')}</div>
                     </div>
 
@@ -497,12 +511,12 @@ export function OwnerEstablishmentsPage() {
                                     onClick={() => handleEstablishmentClick(est)}
                                 >
                                     {/* Info */}
-                                    <div className="col-span-4 flex items-center gap-4">
+                                    <div className="col-span-3 flex items-center gap-4">
                                         <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green transition-colors">
                                             <Icon size={20} />
                                         </div>
                                         <div>
-                                            <h3 className="font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
+                                            <h3 className="font-outfit font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
                                                 {est.name}
                                             </h3>
                                             {est.id === highlightId && (
@@ -530,12 +544,19 @@ export function OwnerEstablishmentsPage() {
                                     </div>
 
                                     {/* Currency */}
-                                    <div className="col-span-2 flex items-center">
+                                    <div className="col-span-1 flex items-center">
                                         <span className="text-sm font-bold text-gray-900 dark:text-white">
                                             {est.currency || 'JOD'}
                                         </span>
                                     </div>
 
+
+                                    {/* Created */}
+                                    <div className="col-span-2 flex items-center">
+                                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                                            {formatCreatedDate(est.createdAt)}
+                                        </span>
+                                    </div>
                                     {/* Actions */}
                                     <div className="col-span-2 flex items-center justify-center gap-2">
                                         <button

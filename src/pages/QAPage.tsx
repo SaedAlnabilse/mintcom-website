@@ -111,7 +111,7 @@ export const QAPage = () => {
                             placeholder={t('support.qa.search_placeholder', 'Search for questions...')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-4 bg-gray-100 dark:bg-black/20 border border-transparent focus:bg-white dark:focus:bg-[#0F172A] border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all shadow-sm"
+                            className="w-full pl-12 pr-4 py-4 bg-gray-100 dark:bg-black/20 border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none transition-all shadow-sm"
                         />
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                     </motion.div>

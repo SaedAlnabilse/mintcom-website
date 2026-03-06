@@ -413,8 +413,15 @@ export function ReportsPage() {
               <span className="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wide">{t('dashboard.stats.live')}</span>
             </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('dashboard.menu.salesAndReporting')}</h1>
-          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">{t('dashboard.trackingPerformance')}</p>
+          <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('dashboard.menu.salesAndReporting')}</h1>
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
+                        <span>{t('dashboard.trackingPerformance')}</span>
+                        {currentEstablishment?.name && (
+                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                                {currentEstablishment.name}
+                            </span>
+                        )}
+                    </p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -715,3 +722,5 @@ export function ReportsPage() {
     </div>
   );
 }
+
+

@@ -39,7 +39,7 @@ interface AdminUser {
 
 export function AdminUsersPage() {
     const { t } = useTranslation();
-    const { establishments } = useAuth();
+    const { establishments , currentEstablishment } = useAuth();
     const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
@@ -197,8 +197,15 @@ export function AdminUsersPage() {
                             <Shield size={28} className="text-black" />
                         </div>
                         <div>
-                            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('adminUsers.title')}</h1>
-                            <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">{t('adminUsers.subtitle')}</p>
+                            <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('adminUsers.title')}</h1>
+                            <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
+                        <span>{t('adminUsers.subtitle')}</span>
+                        {currentEstablishment?.name && (
+                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                                {currentEstablishment.name}
+                            </span>
+                        )}
+                    </p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -551,3 +558,5 @@ export function AdminUsersPage() {
         </div>
     );
 }
+
+

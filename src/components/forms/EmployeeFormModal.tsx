@@ -817,7 +817,7 @@ export function EmployeeFormModal({
           {/* Header */}
           <div className="flex items-center justify-between p-4 sm:p-8 pb-4 border-b border-gray-100 dark:border-white/5">
             <div>
-              <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+              <h2 className="text-2xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">
                 {initialData ? t('staff.editEmployee') : t('staff.newEmployee')}
               </h2>
               <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">{t('staff.title')}</p>
@@ -1261,3 +1261,4 @@ export function EmployeeFormModal({
     document.body
   );
 }
+

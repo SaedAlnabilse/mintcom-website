@@ -442,10 +442,10 @@ export function OwnerAccountManagementPage() {
                         <KeyRound className="w-7 h-7 text-black" />
                     </div>
                     <div>
-                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+                        <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">
                             {t('owner.account.title')}
                         </h1>
-                        <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-0.5">
+                        <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
                             {t('owner.account.subtitle')}
                         </p>
                     </div>
@@ -461,7 +461,7 @@ export function OwnerAccountManagementPage() {
                 className="grid grid-cols-2 md:grid-cols-3 gap-4"
             >
                 {/* Locations Card */}
-                <div className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-5 shadow-sm hover:shadow-lg hover:border-blue-500/30 transition-all duration-300 overflow-hidden">
+                <div className="relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-5 shadow-sm transition-all duration-300 overflow-hidden">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                     <div className="relative z-10">
@@ -480,7 +480,7 @@ export function OwnerAccountManagementPage() {
                 </div>
 
                 {/* Brands Card */}
-                <div className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-5 shadow-sm hover:shadow-lg hover:border-purple-500/30 transition-all duration-300 overflow-hidden">
+                <div className="relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-5 shadow-sm transition-all duration-300 overflow-hidden">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                     <div className="relative z-10">
@@ -499,7 +499,7 @@ export function OwnerAccountManagementPage() {
                 </div>
 
                 {/* Admin Users Card */}
-                <div className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-5 shadow-sm hover:shadow-lg hover:border-amber-500/30 transition-all duration-300 overflow-hidden">
+                <div className="relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-5 shadow-sm transition-all duration-300 overflow-hidden">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                     <div className="relative z-10">
@@ -526,7 +526,7 @@ export function OwnerAccountManagementPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-6 shadow-sm hover:shadow-lg hover:border-paymint-green/30 transition-all duration-300 overflow-hidden"
+                        className="relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-6 shadow-sm transition-all duration-300 overflow-hidden"
                     >
                         <div className="absolute top-0 right-0 w-40 h-40 bg-paymint-green/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                         <div className="relative z-10">
@@ -535,7 +535,7 @@ export function OwnerAccountManagementPage() {
                                     <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center">
                                         <User className="w-5 h-5 text-paymint-green" />
                                     </div>
-                                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Account</h2>
+                                    <h2 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">Owner Account</h2>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {isEditing ? (
@@ -688,7 +688,7 @@ export function OwnerAccountManagementPage() {
                                     <Store className="w-5 h-5 text-blue-500" />
                                 </div>
                                 <div>
-                                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                                    <h2 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">
                                         {t('owner.account.locationLogins', { count: locationLoginEstablishments.length })}
                                     </h2>
                                     <p className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('owner.account.locationLoginsSubtitle')}</p>
@@ -706,7 +706,7 @@ export function OwnerAccountManagementPage() {
                                     return (
                                         <div
                                             key={est.id}
-                                            className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-5 shadow-sm hover:shadow-lg hover:border-blue-500/30 transition-all duration-300 overflow-hidden flex flex-col justify-between h-full"
+                                            className="relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-5 shadow-sm transition-all duration-300 overflow-hidden flex flex-col justify-between h-full"
                                         >
                                             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
@@ -718,14 +718,23 @@ export function OwnerAccountManagementPage() {
                                                             <Icon className="w-5 h-5 text-blue-500" />
                                                         </div>
                                                         <div className="min-w-0">
-                                                            <h3 className="text-sm font-bold text-gray-900 dark:text-white truncate pr-1" title={est.name}>
+                                                            <h3 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white truncate pr-1" title={est.name}>
                                                                 {est.name}
                                                             </h3>
-                                                            <div className="flex flex-wrap gap-1.5 mt-1">
+                                                            <div className="flex items-center flex-wrap gap-x-2 gap-y-1 mt-1.5">
                                                                 {getStatusBadge(est.subscriptionStatus)}
                                                                 <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-gray-100 dark:bg-white/[0.05] border border-gray-200 dark:border-white/[0.05] text-[10px] uppercase font-bold text-gray-500 dark:text-gray-400">
                                                                     {est.currency}
                                                                 </span>
+                                                                {est.createdAt && (
+                                                                    <>
+                                                                        <span className="text-gray-300 dark:text-gray-600 text-[10px]">•</span>
+                                                                        <span className="flex items-center gap-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+                                                                            <Calendar size={12} className="opacity-70" />
+                                                                            {t('owner.account.createdDate', { date: formatDate(est.createdAt) })}
+                                                                        </span>
+                                                                    </>
+                                                                )}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -795,7 +804,7 @@ export function OwnerAccountManagementPage() {
                                     <Building2 className="w-5 h-5 text-purple-500" />
                                 </div>
                                 <div>
-                                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                                    <h2 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">
                                         {t('owner.account.brandLogins', { count: brands.length })}
                                     </h2>
                                     <p className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('owner.account.brandLoginsSubtitle')}</p>
@@ -821,7 +830,7 @@ export function OwnerAccountManagementPage() {
                                     return (
                                         <div
                                             key={brand.id}
-                                            className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-5 shadow-sm hover:shadow-lg hover:border-purple-500/30 transition-all duration-300 overflow-hidden"
+                                            className="relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-5 shadow-sm transition-all duration-300 overflow-hidden"
                                         >
                                             <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                                             <div className="relative z-10 space-y-5">
@@ -831,19 +840,21 @@ export function OwnerAccountManagementPage() {
                                                             <Building2 className="w-6 h-6 text-purple-500" />
                                                         </div>
                                                         <div>
-                                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">{brand.name}</h3>
-                                                            <div className="flex items-center gap-2 mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                                                            <h3 className="text-lg font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{brand.name}</h3>
+                                                            <div className="flex items-center flex-wrap gap-x-3 gap-y-1 mt-1.5 text-xs text-gray-500 dark:text-gray-400">
                                                                 <span className="font-medium bg-gray-100 dark:bg-white/[0.05] px-2 py-0.5 rounded-md border border-gray-200 dark:border-white/[0.05]">
                                                                     {t('owner.account.locationsCount', { count })}
                                                                 </span>
-                                                                <span>•</span>
+                                                                <span className="text-gray-300 dark:text-gray-600">•</span>
                                                                 <span className={`font-bold ${brand.isActive ? 'text-emerald-500' : 'text-gray-400'}`}>
                                                                     {brand.isActive ? t('common.status.active') : t('common.status.inactive')}
                                                                 </span>
+                                                                <span className="text-gray-300 dark:text-gray-600">•</span>
+                                                                <span className="flex items-center gap-1.5 font-medium">
+                                                                    <Calendar size={12} className="opacity-70" />
+                                                                    {t('owner.account.createdDate', { date: formatDate(brand.createdAt) })}
+                                                                </span>
                                                             </div>
-                                                            <p className="text-xs text-gray-400 mt-1">
-                                                                {t('owner.account.createdDate', { date: formatDate(brand.createdAt) })}
-                                                            </p>
                                                         </div>
                                                     </div>
 
@@ -890,7 +901,7 @@ export function OwnerAccountManagementPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-6 shadow-sm hover:shadow-lg hover:border-paymint-green/30 transition-all duration-300 overflow-hidden"
+                        className="relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-6 shadow-sm transition-all duration-300 overflow-hidden"
                     >
                         <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                         <div className="relative z-10">
@@ -899,7 +910,7 @@ export function OwnerAccountManagementPage() {
                                     <BookOpen className="w-5 h-5 text-blue-500" />
                                 </div>
                                 <div>
-                                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('owner.account.resources.title')}</h2>
+                                    <h2 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.title')}</h2>
                                     <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.subtitle')}</p>
                                 </div>
                             </div>
@@ -909,14 +920,14 @@ export function OwnerAccountManagementPage() {
                                 <a
                                     href="/docs/paymint-user-manual.pdf"
                                     download="Paymint_User_Manual.pdf"
-                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 hover:bg-gray-100 dark:hover:bg-white/[0.05] border border-gray-100 dark:border-white/[0.05] transition-all group/item"
+                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/[0.05] transition-all"
                                 >
                                     <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
                                         <BookOpen size={20} className="text-blue-500 group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-lg font-bold text-gray-900 dark:text-white">{t('owner.account.resources.userManual.title')}</h4>
-                                        <p className="text-sm font-bold text-gray-500">{t('owner.account.resources.userManual.desc')}</p>
+                                        <h4 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.userManual.title')}</h4>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.userManual.desc')}</p>
                                     </div>
                                     <Download size={16} className="text-gray-400 group-hover/item:text-blue-500 transition-colors" />
                                 </a>
@@ -925,13 +936,13 @@ export function OwnerAccountManagementPage() {
                                 <a
                                     href="/docs/paymint-setup-manual.pdf"
                                     download="Paymint_Setup_Manual.pdf"
-                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 hover:bg-gray-100 dark:hover:bg-white/[0.05] border border-gray-100 dark:border-white/[0.05] transition-all group/item"
+                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/[0.05] transition-all"
                                 >
                                     <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
                                         <Settings size={20} className="text-amber-500 group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white">{t('owner.account.resources.setupManual.title')}</h4>
+                                        <h4 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.setupManual.title')}</h4>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.setupManual.desc')}</p>
                                     </div>
                                     <Download size={16} className="text-gray-400 group-hover/item:text-amber-500 transition-colors" />
@@ -942,13 +953,13 @@ export function OwnerAccountManagementPage() {
                                     href="https://vimeo.com/1158972798"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 hover:bg-gray-100 dark:hover:bg-white/[0.05] border border-gray-100 dark:border-white/[0.05] transition-all group/item"
+                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/[0.05] transition-all"
                                 >
                                     <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
                                         <PlayCircle size={20} className="text-red-500 group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white">{t('owner.account.resources.videoTutorial.title')}</h4>
+                                        <h4 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.videoTutorial.title')}</h4>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.videoTutorial.desc')}</p>
                                     </div>
                                     <ExternalLink size={16} className="text-gray-400 group-hover/item:text-red-500 transition-colors" />
@@ -959,13 +970,13 @@ export function OwnerAccountManagementPage() {
                                     href="/qa"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 hover:bg-gray-100 dark:hover:bg-white/[0.05] border border-gray-100 dark:border-white/[0.05] transition-all group/item"
+                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/[0.05] transition-all"
                                 >
                                     <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
                                         <BookOpen size={20} className="text-purple-500 group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white">{t('owner.account.resources.qa.title')}</h4>
+                                        <h4 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.qa.title')}</h4>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.qa.desc')}</p>
                                     </div>
                                     <ExternalLink size={16} className="text-gray-400 group-hover/item:text-purple-500 transition-colors" />
@@ -976,13 +987,13 @@ export function OwnerAccountManagementPage() {
                                     href="/legal/privacy"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 hover:bg-gray-100 dark:hover:bg-white/[0.05] border border-gray-100 dark:border-white/[0.05] transition-all group/item"
+                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/[0.05] transition-all"
                                 >
                                     <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
                                         <Shield size={20} className="text-emerald-500 group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white">{t('owner.account.resources.privacyPolicy.title')}</h4>
+                                        <h4 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.privacyPolicy.title')}</h4>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.privacyPolicy.desc')}</p>
                                     </div>
                                     <ExternalLink size={16} className="text-gray-400 group-hover/item:text-emerald-500 transition-colors" />
@@ -993,13 +1004,13 @@ export function OwnerAccountManagementPage() {
                                     href="/legal/terms"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 hover:bg-gray-100 dark:hover:bg-white/[0.05] border border-gray-100 dark:border-white/[0.05] transition-all group/item"
+                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/[0.05] transition-all"
                                 >
                                     <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
                                         <Scale size={20} className="text-blue-500 group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white">{t('owner.account.resources.termsOfUse.title')}</h4>
+                                        <h4 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.termsOfUse.title')}</h4>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.termsOfUse.desc')}</p>
                                     </div>
                                     <ExternalLink size={16} className="text-gray-400 group-hover/item:text-blue-500 transition-colors" />
@@ -1010,13 +1021,13 @@ export function OwnerAccountManagementPage() {
                                     href="/about"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 hover:bg-gray-100 dark:hover:bg-white/[0.05] border border-gray-100 dark:border-white/[0.05] transition-all group/item"
+                                    className="flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/[0.05] transition-all"
                                 >
                                     <div className="w-10 h-10 rounded-lg bg-white dark:bg-white/[0.05] flex items-center justify-center shadow-sm border border-gray-100 dark:border-white/[0.05]">
                                         <Info size={20} className="text-paymint-green group-hover/item:scale-110 transition-transform" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white">{t('owner.account.resources.aboutUs.title')}</h4>
+                                        <h4 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.resources.aboutUs.title')}</h4>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">{t('owner.account.resources.aboutUs.desc')}</p>
                                     </div>
                                     <ExternalLink size={16} className="text-gray-400 group-hover/item:text-paymint-green transition-colors" />
@@ -1033,7 +1044,7 @@ export function OwnerAccountManagementPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.25 }}
-                        className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-6 shadow-sm hover:shadow-lg hover:border-paymint-green/30 transition-all duration-300 overflow-hidden"
+                        className="relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-6 shadow-sm transition-all duration-300 overflow-hidden"
                     >
                         <div className="absolute top-0 right-0 w-40 h-40 bg-paymint-green/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                         <div className="relative z-10">
@@ -1041,7 +1052,7 @@ export function OwnerAccountManagementPage() {
                                 <div className="w-10 h-10 rounded-xl bg-paymint-green/20 flex items-center justify-center">
                                     <Info className="w-5 h-5 text-paymint-green" />
                                 </div>
-                                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('owner.account.securityTips.title')}</h2>
+                                <h2 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.account.securityTips.title')}</h2>
                             </div>
 
                             <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-300">
@@ -1066,7 +1077,7 @@ export function OwnerAccountManagementPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl border p-6 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden ${accountDetails?.deletionRequestedAt ? 'border-paymint-green/20 hover:border-paymint-green/50' : 'border-red-500/20 hover:border-red-500/50'}`}
+                        className={`relative bg-white dark:bg-[#1E293B] rounded-2xl border p-6 shadow-sm transition-all duration-300 overflow-hidden ${accountDetails?.deletionRequestedAt ? 'border-paymint-green/20' : 'border-red-500/20'}`}
                     >
                         <div className={`absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${accountDetails?.deletionRequestedAt ? 'bg-paymint-green/10' : 'bg-red-500/10'}`} />
                         <div className="relative z-10">
@@ -1078,7 +1089,7 @@ export function OwnerAccountManagementPage() {
                                         <AlertCircle className="w-5 h-5 text-red-500" />
                                     )}
                                 </div>
-                                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                                <h2 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">
                                     {accountDetails?.deletionRequestedAt ? t('owner.account.restoreAccount') : t('owner.account.dangerZone')}
                                 </h2>
                             </div>
@@ -1131,7 +1142,7 @@ export function OwnerAccountManagementPage() {
                     <div className="w-20 h-20 rounded-2xl bg-gray-100 dark:bg-white/[0.05] flex items-center justify-center mx-auto mb-4">
                         <Store className="w-10 h-10 text-gray-400" />
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-lg font-outfit font-bold tracking-tight text-gray-900 dark:text-white mb-2">
                         {t('owner.account.noLocationsOrBrands')}
                     </h3>
                     <p className="text-gray-500 dark:text-gray-400 text-sm max-w-md mx-auto">
@@ -1165,7 +1176,7 @@ export function OwnerAccountManagementPage() {
                                 <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center">
                                     <AlertTriangle className="w-5 h-5 text-red-500" />
                                 </div>
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                                <h3 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">
                                     {t('owner.account.deleteAccountModal.title')}
                                 </h3>
                             </div>
@@ -1313,7 +1324,7 @@ export function OwnerAccountManagementPage() {
                                     <AlertCircle className="w-6 h-6 text-amber-500" />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white leading-tight">
+                                    <h3 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white leading-tight">
                                         {t('owner.account.activeEstBlockModal.title')}
                                     </h3>
                                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">

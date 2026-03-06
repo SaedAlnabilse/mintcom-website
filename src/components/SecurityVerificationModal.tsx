@@ -220,7 +220,7 @@ export function SecurityVerificationModal({
                                         <ShieldCheck size={12} className="text-paymint-green" />
                                         <span className="text-xs font-black text-paymint-green tracking-widest">{t('security.highImpact')}</span>
                                     </div>
-                                    <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+                                    <h3 className="text-2xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">
                                         {config.title}
                                     </h3>
                                 </div>
@@ -331,3 +331,4 @@ export function SecurityVerificationModal({
         document.body
     );
 }
+

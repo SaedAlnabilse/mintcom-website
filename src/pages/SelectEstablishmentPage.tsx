@@ -116,10 +116,10 @@ export function SelectEstablishmentPage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white mb-4 tracking-tight">
               {t('onboarding.select')} <span className="text-PayMint-green underline decoration-PayMint-green/30">{t('onboarding.location')}</span>
             </h1>
-            <p className="text-sm font-bold text-gray-600 dark:text-gray-300">{t('establishments.subtitle')}</p>
+            <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">{t('establishments.subtitle')}</p>
           </motion.div>
         </div>
 
@@ -231,3 +231,4 @@ export function SelectEstablishmentPage() {
     </div>
   );
 }
+

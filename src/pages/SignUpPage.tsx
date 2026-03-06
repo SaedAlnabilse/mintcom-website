@@ -473,7 +473,7 @@ export function SignUpPage() {
                     <Check className="w-7 h-7 text-PayMint-green" />
                   </div>
                   <div>
-                    <h3 className="text-gray-900 dark:text-white font-black text-xl leading-tight mb-1">{item.title}</h3>
+                    <h3 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white leading-tight mb-1">{item.title}</h3>
                     <p className="text-gray-600 dark:text-gray-400 text-sm font-bold leading-relaxed">{item.desc}</p>
                   </div>
                 </div>

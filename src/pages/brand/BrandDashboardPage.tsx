@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -63,6 +63,14 @@ interface RevenueDataPoint {
     orders: number;
 }
 
+interface CategoryDataPoint {
+    name: string;
+    value: number;
+    quantity: number;
+    color: string;
+    share: number;
+    [key: string]: string | number;
+}
 // Ported State Logic from OwnerOverviewPage for Unified Filter
 type DateRangePreset = DatePeriod;
 
@@ -80,14 +88,18 @@ export function BrandDashboardPage() {
     const [brandName, setBrandName] = useState(t('brand.dashboard.title'));
     const [stats, setStats] = useState<BrandStats | null>(null);
     const [locations, setLocations] = useState<LocationPerformance[]>([]);
+    const initialDateRange = useMemo(() => calculateDateRange('this_week'), []);
     const [selectedDateRange, setSelectedDateRange] = useState<DateRangePreset>('this_week');
-    const [startDate, setStartDate] = useState<string>(new Date().toISOString().split('T')[0]);
-    const [endDate, setEndDate] = useState<string>(new Date().toISOString().split('T')[0]);
+    const [startDate, setStartDate] = useState<string>(formatDateForInput(initialDateRange.start));
+    const [endDate, setEndDate] = useState<string>(formatDateForInput(initialDateRange.end));
     const [startTime, setStartTime] = useState<string>('00:00');
     const [endTime, setEndTime] = useState<string>('23:59');
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     // Remove old state mapping
     const [revenueData, setRevenueData] = useState<RevenueDataPoint[]>([]);
+    const [categoryBreakdown, setCategoryBreakdown] = useState<Array<{ name: string; value: number; quantity: number }>>([]);
+    const hasLoadedOnceRef = useRef(false);
 
     const setQuickDate = (range: DateRangePreset) => {
         setSelectedDateRange(range);
@@ -98,18 +110,11 @@ export function BrandDashboardPage() {
         setEndTime('23:59');
     };
 
-    useEffect(() => {
-        // Initialize default range
-        setQuickDate('this_week');
-    }, []);
-
-    useEffect(() => {
-        fetchBrandData();
-    }, [brandId, startDate, endDate, startTime, endTime, selectedDateRange]);
-
-    const fetchBrandData = async (refresh = false) => {
+    const fetchBrandData = useCallback(async () => {
         try {
-            if (!refresh) {
+            if (hasLoadedOnceRef.current) {
+                setIsRefreshing(true);
+            } else {
                 setIsLoading(true);
             }
 
@@ -172,13 +177,41 @@ export function BrandDashboardPage() {
             const chartData = generateChartData(selectedDateRange, totalRevenue, totalOrders, startDate, endDate);
             setRevenueData(chartData);
 
+            const categoryStats = Array.isArray(dashboardData.categoryBreakdown)
+                ? dashboardData.categoryBreakdown
+                : [];
+            const processedCategoryBreakdown = categoryStats
+                .map((category: any) => ({
+                    name: category.categoryName || category.name || t('common.unknown'),
+                    value: Number(category.totalSales ?? category.value ?? category.revenue ?? 0),
+                    quantity: Number(category.quantity ?? category.count ?? 0),
+                }))
+                .filter((category: { value: number }) => category.value > 0)
+                .sort((a: { value: number }, b: { value: number }) => b.value - a.value);
+            setCategoryBreakdown(processedCategoryBreakdown);
+
         } catch (error) {
             console.error('Failed to fetch brand data:', error);
             toast.error(t('brand.dashboard.failedToLoad'));
         } finally {
+            hasLoadedOnceRef.current = true;
             setIsLoading(false);
+            setIsRefreshing(false);
         }
-    };
+    }, [brandId, endDate, endTime, selectedDateRange, startDate, startTime, t]);
+
+    useEffect(() => {
+        if (brandId) {
+            hasLoadedOnceRef.current = false;
+            fetchBrandData();
+        }
+    }, [brandId]);
+
+    useEffect(() => {
+        if (brandId && hasLoadedOnceRef.current) {
+            fetchBrandData();
+        }
+    }, [brandId, fetchBrandData]);
 
     const generateChartData = (range: DateRangePreset, totalRevenue: number, totalOrders: number, startStr: string, endStr: string): RevenueDataPoint[] => {
         const data: RevenueDataPoint[] = [];
@@ -238,15 +271,16 @@ export function BrandDashboardPage() {
     };
 
     // Category distribution for pie chart
-    const categoryData = useMemo(() => {
-        return [
-            { name: t('onboarding.step1.businessTypes.restaurant'), value: 45, color: CHART_COLORS[0] },
-            { name: t('common.system'), value: 25, color: CHART_COLORS[1] },
-            { name: t('onboarding.step1.businessTypes.bakery'), value: 15, color: CHART_COLORS[2] },
-            { name: t('common.language'), value: 15, color: CHART_COLORS[3] },
-        ];
-    }, [t]);
+    const categoryData = useMemo<CategoryDataPoint[]>(() => {
+        const topCategories = categoryBreakdown.slice(0, 6);
+        const totalCategoryRevenue = topCategories.reduce((sum, category) => sum + category.value, 0);
 
+        return topCategories.map((category, index) => ({
+            ...category,
+            color: CHART_COLORS[index % CHART_COLORS.length],
+            share: totalCategoryRevenue > 0 ? Math.round((category.value / totalCategoryRevenue) * 100) : 0,
+        }));
+    }, [categoryBreakdown]);
     const formatCurrency = (value: number) => {
         const symbol = t('common.currencySymbol') || '$';
         const locale = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
@@ -291,7 +325,7 @@ export function BrandDashboardPage() {
             )}
 
             {/* Header */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-10">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-50">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
                         <span className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
@@ -300,9 +334,9 @@ export function BrandDashboardPage() {
                         </span>
                     </div>
                     <div className="flex items-center gap-4">
-                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{brandName}</h1>
+                        <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{brandName}</h1>
                     </div>
-                    <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400 text-sm mt-2">
+                    <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400 text-sm sm:text-base mt-2">
                         <div className="flex items-center gap-1.5">
                             <Store size={16} />
                             <span>{locations.length} {t('brand.dashboard.locations')}</span>
@@ -315,7 +349,7 @@ export function BrandDashboardPage() {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 relative z-50">
                     {/* Unified Filter Control Deck */}
                     <div className="bg-white dark:bg-[#0B1120] rounded-[20px] shadow-sm shadow-indigo-500/5 dark:shadow-black/20 border border-gray-100 dark:border-white/[0.05] p-1.5 ">
                         <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-0 h-full">
@@ -394,7 +428,7 @@ export function BrandDashboardPage() {
             </div>
 
             {/* Kpi Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className={`grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
                 {[
                     {
                         label: t('brand.dashboard.totalRevenue'),
@@ -434,12 +468,12 @@ export function BrandDashboardPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className={`group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border transition-all duration-500 shadow-sm hover:shadow-xl overflow-hidden ${isTopBrand
+                        className={`relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border shadow-sm overflow-hidden ${isTopBrand
                             ? 'border-paymint-green/30 shadow-paymint-green/5'
                             : 'border-gray-200 dark:border-white/5'
                             }`}
                     >
-                        <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
+                        
                         <div className="relative z-10">
                             <div className="flex items-center justify-between mb-4">
                                 <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center ${isTopBrand ? 'shadow-lg shadow-current/10' : ''
@@ -468,7 +502,7 @@ export function BrandDashboardPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm overflow-hidden"
+                className={`bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm overflow-hidden transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
             >
                 <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-white/5">
                     <div>
@@ -563,7 +597,7 @@ export function BrandDashboardPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="xl:col-span-2 p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm"
+                    className={`xl:col-span-2 p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
                 >
                     <div className="flex items-center justify-between mb-6">
                         <div>
@@ -662,7 +696,7 @@ export function BrandDashboardPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm"
+                    className={`p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
                 >
                     <div className="flex items-center justify-between mb-6">
                         <div>
@@ -672,42 +706,54 @@ export function BrandDashboardPage() {
                     </div>
 
                     <div className="h-[200px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <RechartsPieChart>
-                                <Pie
-                                    data={categoryData}
-                                    cx="50%"
-                                    cy="50%"
-                                    innerRadius={50}
-                                    outerRadius={80}
-                                    paddingAngle={4}
-                                    dataKey="value"
-                                >
-                                    {categoryData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.color} />
-                                    ))}
-                                </Pie>
-                                <Tooltip
-                                    contentStyle={{
-                                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                                        borderColor: '#E5E7EB',
-                                        borderRadius: '12px',
-                                        fontSize: '12px',
-                                    }}
-                                    formatter={(value) => [`${value}%`, t('brand.dashboard.share')]}
-                                />
-                            </RechartsPieChart>
-                        </ResponsiveContainer>
+                        {categoryData.length > 0 ? (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <RechartsPieChart>
+                                    <Pie
+                                        data={categoryData as unknown as Array<Record<string, string | number>>}
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={50}
+                                        outerRadius={80}
+                                        paddingAngle={4}
+                                        dataKey="value"
+                                    >
+                                        {categoryData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip
+                                        contentStyle={{
+                                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                            borderColor: '#E5E7EB',
+                                            borderRadius: '12px',
+                                            fontSize: '12px',
+                                        }}
+                                        formatter={(value: number | string | undefined, _name: string | undefined, item: any) => [formatCurrency(Number(value ?? 0)), `${item?.payload?.share ?? 0}% ${t('brand.dashboard.share')}`]}
+                                    />
+                                </RechartsPieChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <div className="h-full w-full flex flex-col items-center justify-center space-y-4 bg-gray-50/50 dark:bg-white/[0.02] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
+                                <div className="p-4 rounded-full bg-gray-100 dark:bg-white/5">
+                                    <BarChart3 size={32} className="text-gray-400 dark:text-gray-600" />
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('owner.overview.noRevenueData')}</p>
+                                    <p className="text-xs text-gray-500 mt-1">{t('owner.overview.noSalesRecorded')}</p>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     <div className="space-y-3 mt-4">
                         {categoryData.map((cat, i) => (
-                            <div key={i} className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: cat.color }} />
-                                    <span className="text-sm font-bold text-gray-900 dark:text-white">{cat.name}</span>
+                            <div key={i} className="flex items-center justify-between gap-3">
+                                <div className="flex items-center gap-2 min-w-0">
+                                    <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: cat.color }} />
+                                    <span className="text-sm font-bold text-gray-900 dark:text-white truncate">{cat.name}</span>
                                 </div>
-                                <span className="text-sm font-bold text-gray-900 dark:text-white">{cat.value}%</span>
+                                <span className="text-sm font-bold text-gray-900 dark:text-white shrink-0">{cat.share}%</span>
                             </div>
                         ))}
                     </div>
@@ -715,7 +761,7 @@ export function BrandDashboardPage() {
             </div>
 
             {/* Quick Actions */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
                 {[
                     {
                         title: t('brand.dashboard.viewAllLocations'),
@@ -740,16 +786,16 @@ export function BrandDashboardPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 + i * 0.1 }}
                         onClick={action.action}
-                        className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 shadow-sm transition-all text-left group"
+                        className={`p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm text-left transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
                     >
-                                    <div className={`w-12 h-12 rounded-xl ${action.bg} ${action.color} flex items-center justify-center mb-4 transition-transform`}>
+                                    <div className={`w-12 h-12 rounded-xl ${action.bg} ${action.color} flex items-center justify-center mb-4`}>
                                       <action.icon size={24} />
-                                    </div>                        <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-paymint-green transition-colors">
+                                    </div>                        <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
                             {action.title}
                         </h4>
                         <p className="text-sm font-bold text-gray-500">{action.description}</p>
-                        <div className="flex items-center gap-1 mt-4 text-xs font-bold text-paymint-green opacity-0 group-hover:opacity-100 transition-opacity">
-                            <span>{t('brand.dashboard.goTo')}</span>
+                        <div className="flex items-center gap-1 mt-4 text-xs font-bold text-paymint-green">
+                            <span>{t('brand.dashboard.goTo', { name: action.title })}</span>
                             <ArrowRight size={14} />
                         </div>
                     </motion.button>
@@ -758,3 +804,15 @@ export function BrandDashboardPage() {
         </div>
     );
 }
+
+
+
+
+
+
+
+
+
+
+
+

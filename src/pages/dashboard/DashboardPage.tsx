@@ -493,12 +493,18 @@ export const DashboardPage = () => {
                   </div>
                 )}
               </div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{getGreeting()}</h1>
-              <div className="flex items-center gap-2 sm:gap-3 mt-2 text-gray-500 dark:text-gray-400 font-medium text-xs sm:text-sm flex-wrap">
+              <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{getGreeting()}</h1>
+              <div className="flex items-center gap-2 sm:gap-3 mt-2 text-gray-500 dark:text-gray-400 text-sm sm:text-base flex-wrap">
                 <Calendar size={14} className="sm:w-4 sm:h-4" />
                 <span>{formatDate()}</span>
-                <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20 hidden sm:block" />
-                <span className="text-paymint-green font-bold">{currentEstablishment?.name}</span>
+                {currentEstablishment?.name && (
+                    <>
+                        <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20 hidden sm:block" />
+                        <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                            {currentEstablishment.name}
+                        </span>
+                    </>
+                )}
               </div>
             </div>
 
@@ -707,3 +713,5 @@ export const DashboardPage = () => {
     </AnimatePresence>
   );
 };
+
+

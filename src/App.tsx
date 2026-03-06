@@ -84,7 +84,7 @@ const OwnerAccountManagementPage = lazy(() => import('./pages/owner/OwnerAccount
 // ============================================================================
 const BrandDashboardPage = lazy(() => import('./pages/brand/BrandDashboardPage').then(m => ({ default: m.BrandDashboardPage })));
 const BrandLocationsPage = lazy(() => import('./pages/brand/BrandLocationsPage').then(m => ({ default: m.BrandLocationsPage })));
-const BrandTeamPage = lazy(() => import('./pages/brand/BrandTeamPage').then(m => ({ default: m.BrandTeamPage })));
+const BrandTeamPage = lazy(() => import('./pages/brand/BrandTeamPage'));
 
 // ============================================================================
 // Lazy Imports - Dashboard Pages (Largest chunk - most features)
@@ -707,3 +707,4 @@ function App() {
 }
 
 export default App;
+

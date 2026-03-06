@@ -396,7 +396,7 @@ export function OwnerBrandsPage() {
                             {t('owner.brands.badge')}
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.brands.title')}</h1>
+                    <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.brands.title')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
                         {t('owner.brands.subtitle')}
                     </p>
@@ -447,14 +447,14 @@ export function OwnerBrandsPage() {
                     <div className="relative flex-1 min-w-[300px]">
                         <Search
                             size={18}
-                            className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors duration-300 ${searchQuery ? 'text-paymint-green' : 'text-gray-400'}`}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
                         />
                         <input
                             type="text"
                             placeholder={t('owner.brands.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-paymint-green/10 focus:border-paymint-green/50 dark:focus:border-paymint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm focus:shadow-lg"
+                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
                         />
                     </div>
 
@@ -547,7 +547,7 @@ export function OwnerBrandsPage() {
                                         </div>
                                         <div>
                                             <div className="flex items-center gap-2 mb-1">
-                                                <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-purple-500 transition-colors">
+                                                <h3 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-purple-500 transition-colors">
                                                     {brand.name}
                                                 </h3>
                                             </div>
@@ -685,7 +685,7 @@ export function OwnerBrandsPage() {
                                             <Building2 size={24} />
                                         </div>
                                         <div>
-                                            <h3 className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-paymint-green transition-colors">
+                                            <h3 className="font-outfit font-bold tracking-tight text-gray-900 dark:text-white text-sm group-hover:text-paymint-green transition-colors">
                                                 {brand.name}
                                             </h3>
                                             <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-[10px] font-black tracking-widest mt-1 inline-block">
@@ -793,7 +793,7 @@ export function OwnerBrandsPage() {
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-2 mb-0.5">
-                                            <h3 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
+                                            <h3 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
                                                 {brand.name}
                                             </h3>
 
@@ -905,7 +905,7 @@ export function OwnerBrandsPage() {
                                             <Building2 size={20} />
                                         </div>
                                         <div>
-                                            <h2 className="text-lg font-bold text-gray-900 dark:text-white">{t('owner.brands.createBrandTitle')}</h2>
+                                            <h2 className="text-lg font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.brands.createBrandTitle')}</h2>
                                             <p className="text-xs text-gray-500">{t('owner.brands.createBrandSubtitle')}</p>
                                         </div>
                                     </div>
@@ -955,7 +955,9 @@ export function OwnerBrandsPage() {
                                                             placeholder={t('owner.brands.adminLoginIdPlaceholder')}
                                                         />
                                                     </div>
-                                                    <p className="text-xs font-bold text-gray-500 mt-1">{t('owner.brands.adminLoginIdHint')}</p>
+                                                    <p className="text-xs font-bold text-gray-500 mt-1">
+                                                        {t('owner.brands.adminLoginIdHint')} {t('owner.brands.validation.loginIdTakenHint', 'It must be unique across all locations and brands.')}
+                                                    </p>
                                                     {errors.establishmentLoginId && <p className="text-[#ef4444] text-xs mt-1 font-bold">{errors.establishmentLoginId.message}</p>}
                                                 </div>
 
@@ -979,7 +981,7 @@ export function OwnerBrandsPage() {
                                     {wizardStep === 2 && (
                                         <div className="space-y-6">
                                             <div className="flex items-center justify-between">
-                                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('owner.brands.selectLocationsToLink')}</h3>
+                                                <h3 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.brands.selectLocationsToLink')}</h3>
                                                 <span className="text-xs font-bold text-paymint-green bg-paymint-green/10 px-3 py-1 rounded-full">
                                                     {t('owner.brands.selectedCount', { count: selectedEstablishments.length })}
                                                 </span>
@@ -1154,3 +1156,5 @@ export function OwnerBrandsPage() {
         </div>
     );
 }
+
+

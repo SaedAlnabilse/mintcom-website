@@ -104,7 +104,7 @@ export function DiscountFormModal({
 
           {/* Header */}
           <div className="flex items-center justify-between p-4 sm:p-6 pb-2">
-            <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+            <h2 className="text-2xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">
               {initialData ? t('discounts.editDiscount') : t('discounts.newDiscount')}
             </h2>
             <button
@@ -229,6 +229,7 @@ export function DiscountFormModal({
     document.body
   );
 }
+
 
 
 

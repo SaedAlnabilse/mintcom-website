@@ -151,7 +151,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                         {/* Header */}
                         <div className="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between shrink-0 bg-white dark:bg-[#1E293B] z-10">
                             <div>
-                                <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+                                <h2 className="text-xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">
                                     {t('orders.reports.sales.cashManagementLog')}
                                 </h2>
                                 <div className="flex items-center gap-2 mt-1">
@@ -203,7 +203,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
                                             </div>
                                             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('orders.reports.sales.payOut')}</span>
                                         </div>
-                                        <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+                                        <p className="text-xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">
                                             {formatCurrency(totals.payOut)}
                                         </p>
                                     </div>
@@ -290,4 +290,5 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
         document.body
     );
 };
+
 

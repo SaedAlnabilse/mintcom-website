@@ -53,7 +53,7 @@ const EMPLOYEE_LIMIT_POPUP_MESSAGE =
     `Maximum is ${MAX_EMPLOYEES_PER_ACCOUNT} employees.\n` +
     `To add more than ${MAX_EMPLOYEES_PER_ACCOUNT} employees, contact PayMint support at support@PayMint.app with your account email and password.`;
 
-export function BrandTeamPage() {
+export default function BrandTeamPage() {
     const { t } = useTranslation();
     const { brandId: paramBrandId } = useParams<{ brandId: string }>();
     const context = useOutletContext<{ brand: any }>() || {};
@@ -284,7 +284,7 @@ export function BrandTeamPage() {
 
     const getRoleDisplay = (role: string) => {
         // Map all roles to Admin or User
-        return role.toUpperCase() === 'ADMIN' ? t('onboarding.step4.adminUsernamePlaceholder') : t('staff.form.standardUsers');
+        return role.toUpperCase() === 'ADMIN' ? t('staff.roles.admin') : t('staff.roles.user');
     };
 
     const getRoleBadgeStyle = (role: string) => {
@@ -327,9 +327,14 @@ export function BrandTeamPage() {
                             {t('owner.staff.badge')}
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.staff.title')}</h1>
-                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
-                        {t('owner.staff.subtitle')} {brandName}
+                    <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.staff.title')}</h1>
+                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
+                        <span>{t('owner.staff.subtitle')}</span>
+                        {brandName && (
+                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                                {brandName}
+                            </span>
+                        )}
                     </p>
                 </div>
 
@@ -348,7 +353,7 @@ export function BrandTeamPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
                     { label: t('owner.staff.totalUsers'), value: stats.total, icon: Users, color: 'text-gray-900 dark:text-white', bg: 'bg-gray-100 dark:bg-white/5' },
-                    { label: t('staff.form.standardUsers'), value: stats.users, icon: UserCheck, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                    { label: t('staff.roles.user'), value: stats.users, icon: UserCheck, color: 'text-blue-500', bg: 'bg-blue-500/10' },
                     { label: t('owner.staff.admins'), value: stats.admins, icon: Shield, color: 'text-PayMint-green', bg: 'bg-PayMint-green/10' },
                 ].map((stat, i) => (
                     <div
@@ -380,7 +385,7 @@ export function BrandTeamPage() {
                             placeholder={t('owner.staff.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none focus:ring-4 focus:ring-PayMint-green/10 focus:border-PayMint-green/50 dark:focus:border-PayMint-green/50 focus:bg-white dark:focus:bg-white/10 transition-all h-[52px] shadow-sm focus:shadow-lg"
+                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
                         />
                     </div>
 
@@ -393,8 +398,8 @@ export function BrandTeamPage() {
                                 onChange={(val) => setRoleFilter(val as RoleFilter)}
                                 options={[
                                     { label: t('owner.staff.allRoles'), value: 'all' },
-                                    { label: t('onboarding.step4.adminUsernamePlaceholder'), value: 'ADMIN' },
-                                    { label: t('staff.form.standardUsers'), value: 'CASHIER' },
+                                    { label: t('staff.roles.admin'), value: 'ADMIN' },
+                                    { label: t('staff.roles.user'), value: 'CASHIER' },
                                 ]}
                             />
                         </div>
@@ -446,7 +451,7 @@ export function BrandTeamPage() {
                         {hasActiveFilters && (
                             <button
                                 onClick={clearFilters}
-                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-PayMint-red/10 text-PayMint-red text-xs font-black tracking-widest hover:bg-PayMint-red/20 transition-all"
+                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-paymint-red/10 text-paymint-red text-xs font-black tracking-widest hover:bg-paymint-red/20 transition-all"
                             >
                                 <X size={14} />
                                 {t('attributes.filters.reset')}
@@ -467,7 +472,7 @@ export function BrandTeamPage() {
                             )}
                             {roleFilter !== 'all' && (
                                 <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
-                                    {t('common.role')}: {roleFilter === 'CASHIER' ? t('staff.form.standardUsers') : roleFilter === 'ADMIN' ? t('onboarding.step4.adminUsernamePlaceholder') : t('common.all')}
+                                    {t('common.role')}: {roleFilter === 'CASHIER' ? t('staff.roles.user') : roleFilter === 'ADMIN' ? t('staff.roles.admin') : t('common.all')}
                                 </span>
                             )}
                             {locationFilter !== 'all' && (
@@ -490,13 +495,15 @@ export function BrandTeamPage() {
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
                     <p className="text-xl font-bold text-gray-900 dark:text-white">{t('owner.staff.noStaffFound')}</p>
-                    <p className="text-sm font-bold text-gray-500 mt-1">
-                        {hasActiveFilters ? t('brand.dashboard.adjustFilters') : t('owner.staff.addStaffDesc')}
-                    </p>
+                    {!hasActiveFilters && (
+                        <p className="text-sm font-bold text-gray-500 mt-1">
+                            {t('owner.staff.addStaffDesc')}
+                        </p>
+                    )}
                     {hasActiveFilters && (
                         <button
                             onClick={clearFilters}
-                            className="mt-4 px-6 py-2 rounded-xl bg-PayMint-green text-black text-sm font-bold hover:bg-emerald-400 transition-all"
+                            className="mt-4 px-6 py-2.5 rounded-xl text-sm font-bold text-paymint-red hover:bg-paymint-red/10 transition-colors"
                         >
                             {t('attributes.filters.reset')}
                         </button>
@@ -549,20 +556,20 @@ export function BrandTeamPage() {
                                     {activeMenu === emp.id && (
                                         <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
                                         >
-                                                <button
-                                                    onClick={() => handleEditEmployee(emp)}
-                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                                >
-                                                    <Edit2 size={16} />
-                                                    {t('common.edit')}
-                                                </button>
-                                                <button
-                                                    onClick={() => openDeleteModal(emp)}
-                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
-                                                >
-                                                    <Trash2 size={16} />
-                                                    {t('common.remove')}
-                                                </button>
+                                            <button
+                                                onClick={() => handleEditEmployee(emp)}
+                                                className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                            >
+                                                <Edit2 size={16} />
+                                                {t('common.edit')}
+                                            </button>
+                                            <button
+                                                onClick={() => openDeleteModal(emp)}
+                                                className="w-full px-4 py-3 text-left text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-3 transition-colors"
+                                            >
+                                                <Trash2 size={16} />
+                                                {t('common.remove')}
+                                            </button>
                                         </div>
                                     )}
                                 </div>
@@ -813,66 +820,69 @@ export function BrandTeamPage() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
                     <div className="bg-white dark:bg-[#1E293B] w-full max-w-md rounded-[2rem] overflow-hidden border border-gray-200 dark:border-white/10 shadow-2xl"
                     >
-                            <div className="p-8 pb-4">
-                                <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-6">
-                                    <AlertTriangle size={32} />
-                                </div>
-                                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">{t('owner.staff.removeStaff')}</h3>
-                                <p className="text-gray-500 text-sm leading-relaxed">
-                                    {t('owner.staff.removeStaffConfirm')} <span className="font-bold text-gray-900 dark:text-white">{employeeToDelete.firstName} {employeeToDelete.lastName}</span>? {t('owner.staff.undoneWarning')}
-                                </p>
+                        <div className="p-8 pb-4">
+                            <div className="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-6">
+                                <AlertTriangle size={32} />
                             </div>
+                            <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-2">{t('owner.staff.removeStaff')}</h3>
+                            <p className="text-gray-500 text-sm leading-relaxed">
+                                {t('owner.staff.removeStaffConfirm')} <span className="font-bold text-gray-900 dark:text-white">{employeeToDelete.firstName} {employeeToDelete.lastName}</span>? {t('owner.staff.undoneWarning')}
+                            </p>
+                        </div>
 
-                            <div className="px-8 pb-6 space-y-4">
-                                <div>
-                                    <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
-                                        {t('common.password')}
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            type={showDeletePassword ? 'text' : 'password'}
-                                            value={deletePassword}
-                                            onChange={(e) => { setDeletePassword(e.target.value); setDeleteError(''); }}
-                                            placeholder={t('owner.staff.enterPasswordPlaceholder')}
-                                            className={`w-full bg-gray-50 dark:bg-white/5 border ${deleteError ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-red-500 transition-colors`}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowDeletePassword(!showDeletePassword)}
-                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-white"
-                                        >
-                                            {showDeletePassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                        </button>
-                                    </div>
-                                    {deleteError && <p className="mt-2 text-xs font-bold text-red-500">{deleteError}</p>}
+                        <div className="px-8 pb-6 space-y-4">
+                            <div>
+                                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
+                                    {t('common.password')}
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type={showDeletePassword ? 'text' : 'password'}
+                                        value={deletePassword}
+                                        onChange={(e) => { setDeletePassword(e.target.value); setDeleteError(''); }}
+                                        placeholder={t('owner.staff.enterPasswordPlaceholder')}
+                                        className={`w-full bg-gray-50 dark:bg-white/5 border ${deleteError ? 'border-red-500 ring-2 ring-red-500/20' : 'border-gray-200 dark:border-white/10'} rounded-xl px-4 py-3 pr-12 text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:border-red-500 transition-colors`}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowDeletePassword(!showDeletePassword)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-white"
+                                    >
+                                        {showDeletePassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
                                 </div>
+                                {deleteError && <p className="mt-2 text-xs font-bold text-red-500">{deleteError}</p>}
                             </div>
+                        </div>
 
-                            <div className="p-6 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 bg-gray-50 dark:bg-white/[0.02]">
-                                <button
-                                    onClick={closeDeleteModal}
-                                    className="flex-1 py-3.5 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-bold text-xs tracking-wider hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
-                                >
-                                    {t('common.cancel')}
-                                </button>
-                                <button
-                                    onClick={confirmDelete}
-                                    disabled={isDeleting}
-                                    className="flex-1 py-3.5 rounded-xl bg-red-500 text-white font-bold text-xs tracking-wider hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-red-500/20"
-                                >
-                                    {isDeleting ? (
-                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                    ) : (
-                                        <>
-                                            <Trash2 size={16} />
-                                            {t('common.confirm')}
-                                        </>
-                                    )}
-                                </button>
-                            </div>
+                        <div className="p-6 border-t border-gray-100 dark:border-white/5 flex items-center gap-3 bg-gray-50 dark:bg-white/[0.02]">
+                            <button
+                                onClick={closeDeleteModal}
+                                className="flex-1 py-3.5 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 font-bold text-xs tracking-wider hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                            >
+                                {t('common.cancel')}
+                            </button>
+                            <button
+                                onClick={confirmDelete}
+                                disabled={isDeleting}
+                                className="flex-1 py-3.5 rounded-xl bg-red-500 text-white font-bold text-xs tracking-wider hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-red-500/20"
+                            >
+                                {isDeleting ? (
+                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                ) : (
+                                    <>
+                                        <Trash2 size={16} />
+                                        {t('common.confirm')}
+                                    </>
+                                )}
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
         </div >
     );
 }
+
+
+

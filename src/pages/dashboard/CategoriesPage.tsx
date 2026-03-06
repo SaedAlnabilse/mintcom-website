@@ -1,3 +1,4 @@
+import { useAuth } from '../../context/AuthContext';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -50,6 +51,7 @@ interface Product {
 
 export function CategoriesPage() {
   const { t } = useTranslation();
+    const { currentEstablishment } = useAuth();
   usePermissionGuard(['manage_inventory']);
   const { currencySymbol } = useCurrency();
   const { locationSlug } = useParams();
@@ -359,10 +361,15 @@ export function CategoriesPage() {
               {t('dashboard.menu.categories')}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('categories.title')}</h1>
-          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
-            {t('categories.subtitle')}
-          </p>
+          <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('categories.title')}</h1>
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
+                        <span>{t('categories.subtitle')}</span>
+                        {currentEstablishment?.name && (
+                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                                {currentEstablishment.name}
+                            </span>
+                        )}
+                    </p>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
@@ -817,3 +824,5 @@ export function CategoriesPage() {
     </div>
   );
 }
+
+

@@ -3162,7 +3162,7 @@
       "searchPlaceholder": "تصفية حسب الاسم أو البريد الإلكتروني أو الموقع...",
       "staffRemoved": "تم إزالة عضو الفريق",
       "standardInfo": "المستخدمون العاديون ذوو الوصول المحدود.",
-      "standardUsers": "المستخدمين",
+      "standardUsers": "مستخدم عادي",
       "subtitle": "إدارة الموظفين في جميع المواقع",
       "syncError": "فشل في مزامنة بيانات الموظفين",
       "title": "كل الموظفين",
@@ -3868,7 +3868,7 @@
       "roleLabel": "الدور",
       "selectLocation": "اختر موقعاً...",
       "selectRole": "اختر دوراً...",
-      "standardUsers": "مستخدمون عاديون",
+      "standardUsers": "مستخدم عادي",
       "usernameLabel": "اسم المستخدم",
       "usernamePlaceholder": "مثال: ahmed123"
     },
@@ -3963,7 +3963,7 @@
       "manager": "مدير",
       "owner": "مالك المؤسسة",
       "staff": "موظف",
-      "standardUsers": "مستخدمون عاديون",
+      "standardUsers": "مستخدم عادي",
       "user": "مستخدم",
       "cashier": "أمين صندوق"
     },

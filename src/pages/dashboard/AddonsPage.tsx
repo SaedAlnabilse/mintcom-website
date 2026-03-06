@@ -1,3 +1,4 @@
+import { useAuth } from '../../context/AuthContext';
 import { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -40,6 +41,7 @@ interface Attribute {
 
 export function AddonsPage() {
   const { t } = useTranslation();
+    const { currentEstablishment } = useAuth();
   usePermissionGuard(['manage_inventory']);
   const { formatAmount, currencySymbol } = useCurrency();
   const location = useLocation();
@@ -337,10 +339,15 @@ export function AddonsPage() {
               {t('dashboard.menu.itemsMenu')}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('attributes.title')}</h1>
-          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
-            {t('attributes.subtitle')}
-          </p>
+          <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('attributes.title')}</h1>
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
+                        <span>{t('attributes.subtitle')}</span>
+                        {currentEstablishment?.name && (
+                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                                {currentEstablishment.name}
+                            </span>
+                        )}
+                    </p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -786,3 +793,5 @@ export function AddonsPage() {
     </div>
   );
 }
+
+

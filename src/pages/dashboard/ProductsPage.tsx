@@ -59,7 +59,7 @@ export function ProductsPage() {
     const { t } = useTranslation();
     usePermissionGuard(['manage_inventory']);
     const { currencySymbol } = useCurrency();
-    const { account } = useAuth();
+    const { account , currentEstablishment } = useAuth();
     const location = useLocation();
     const [products, setProducts] = useState<Product[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
@@ -614,8 +614,15 @@ export function ProductsPage() {
                             {t('products.title')}
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('products.title')}</h1>
-                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">{t('products.subtitle')}</p>
+                    <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('products.title')}</h1>
+                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
+                        <span>{t('products.subtitle')}</span>
+                        {currentEstablishment?.name && (
+                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                                {currentEstablishment.name}
+                            </span>
+                        )}
+                    </p>
                 </div>
 
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -1070,3 +1077,5 @@ export function ProductsPage() {
 
     );
 }
+
+

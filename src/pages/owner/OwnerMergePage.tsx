@@ -69,10 +69,10 @@ export function OwnerMergePage() {
                         </div>
 
                         <div>
-                            <h1 className="text-5xl xl:text-6xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-4">
+                            <h1 className="text-5xl xl:text-6xl font-outfit font-black text-gray-900 dark:text-white tracking-tight leading-none mb-4">
                                 {t('owner.merge.create')} <span className="text-paymint-green">{t('owner.merge.brand')}</span>
                             </h1>
-                            <p className="text-lg font-medium text-gray-500 dark:text-gray-400 max-w-xl">
+                            <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 max-w-xl">
                                 {t('owner.merge.subtitle')}
                             </p>
                         </div>
@@ -124,7 +124,7 @@ export function OwnerMergePage() {
                     >
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                             <div className="lg:col-span-2 space-y-6">
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight px-2 flex items-center gap-3">
+                                <h3 className="text-xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight px-2 flex items-center gap-3">
                                     <Store className="text-paymint-green" size={20} /> {t('owner.merge.availableLocations')}
                                 </h3>
 
@@ -152,7 +152,7 @@ export function OwnerMergePage() {
                                                         <Store size={24} />
                                                     </div>
                                                     <div className="flex-1">
-                                                        <h4 className={`text-sm font-black tracking-tight ${isSelected ? 'text-gray-900 dark:text-white' : 'text-gray-500'}`}>
+                                                        <h4 className={`text-sm font-outfit font-black tracking-tight ${isSelected ? 'text-gray-900 dark:text-white' : 'text-gray-500'}`}>
                                                             {est.name}
                                                         </h4>
                                                         <p className="text-xs font-black text-gray-400 tracking-widestst">{est.type}</p>
@@ -175,7 +175,7 @@ export function OwnerMergePage() {
 
                             <div className="lg:col-span-1 space-y-6">
                                 <div className="p-8 rounded-[3rem] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 sticky top-8">
-                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">{t('owner.merge.whyMerge')}</h3>
+                                    <h3 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white mb-6">{t('owner.merge.whyMerge')}</h3>
 
                                     <div className="space-y-6">
                                         <div className="flex items-start gap-4">
@@ -224,7 +224,7 @@ export function OwnerMergePage() {
                         {/* Config Form */}
                         <div className="p-10 rounded-[3rem] bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 shadow-2xl space-y-8">
                             <div>
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('owner.merge.brandDetails')}</h3>
+                                <h3 className="text-xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('owner.merge.brandDetails')}</h3>
                                 <p className="text-xs font-black text-gray-400 tracking-widest uppercasest">{t('owner.merge.brandDetailsSubtitle')}</p>
                             </div>
 
@@ -249,7 +249,7 @@ export function OwnerMergePage() {
                                     <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-500">
                                         <ShieldCheck size={18} />
                                     </div>
-                                    <h4 className="text-xl font-bold text-indigo-900 dark:text-indigo-200">{t('common.security')}</h4>
+                                    <h4 className="text-xl font-outfit font-bold tracking-tight text-indigo-900 dark:text-indigo-200">{t('common.security')}</h4>
                                 </div>
                                 <p className="text-xs font-bold text-indigo-500 leading-relaxed px-1">
                                     {t('owner.merge.securityInfo', { name: firstSelectedEst?.name })}

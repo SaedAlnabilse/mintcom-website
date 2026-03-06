@@ -335,8 +335,8 @@ export function OwnerBillingPage() {
                             {t('dashboard.menu.billing')}
                         </span>
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.billing.title')}</h1>
-                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">
+                    <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.billing.title')}</h1>
+                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
                         {t('owner.billing.subtitle')}
                     </p>
                 </div>
@@ -411,7 +411,7 @@ export function OwnerBillingPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Saved Cards Section */}
                 <div className="lg:col-span-1 space-y-6">
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <h2 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
                         <CreditCard size={18} className="text-paymint-green" />
                         {t('owner.billing.cards')}
                     </h2>
@@ -517,7 +517,7 @@ export function OwnerBillingPage() {
 
                 {/* Subscriptions Section */}
                 <div className="lg:col-span-2 space-y-6">
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <h2 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
                         <DollarSign size={18} className="text-paymint-green" />
                         {t('owner.billing.plans')}
                     </h2>
@@ -565,7 +565,7 @@ export function OwnerBillingPage() {
                                                 {est.name.charAt(0)}
                                             </div>
                                             <div>
-                                                <h3 className="text-sm font-bold text-gray-900 dark:text-white">{est.name}</h3>
+                                                <h3 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{est.name}</h3>
                                                 <p className="text-xs font-bold text-gray-500">
                                                     {est.billingCycle === 'yearly' ? t('owner.billing.yearlyPlan') : t('owner.billing.monthlyPlan')}
                                                 </p>

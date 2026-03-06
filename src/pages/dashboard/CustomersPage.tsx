@@ -1,3 +1,4 @@
+import { useAuth } from '../../context/AuthContext';
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -62,6 +63,7 @@ interface Customer {
 
 export function CustomersPage() {
   const { t } = useTranslation();
+    const { currentEstablishment } = useAuth();
   // Permission guard - redirects if user lacks permission
   usePermissionGuard();
 
@@ -256,8 +258,15 @@ export function CustomersPage() {
               <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
             </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('customers.title')}</h1>
-          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">{t('customers.subtitle')}</p>
+          <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('customers.title')}</h1>
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
+                        <span>{t('customers.subtitle')}</span>
+                        {currentEstablishment?.name && (
+                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                                {currentEstablishment.name}
+                            </span>
+                        )}
+                    </p>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
@@ -848,3 +857,5 @@ export function CustomersPage() {
     </div>
   );
 }
+
+

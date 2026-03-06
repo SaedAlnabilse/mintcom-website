@@ -1,3 +1,4 @@
+import { useAuth } from '../../context/AuthContext';
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
@@ -56,6 +57,7 @@ const EMPLOYEE_LIMIT_POPUP_MESSAGE =
 
 export function StaffPage() {
   const { t } = useTranslation();
+    const { currentEstablishment } = useAuth();
   const location = useLocation();
   // Permission guard - redirects if user lacks permission
   usePermissionGuard();
@@ -351,8 +353,15 @@ export function StaffPage() {
               <span className="text-xs font-bold text-PayMint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
             </div>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">{t('staff.title')}</h1>
-          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mt-2">{t('staff.subtitle')}</p>
+          <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('staff.title')}</h1>
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
+                        <span>{t('staff.subtitle')}</span>
+                        {currentEstablishment?.name && (
+                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                                {currentEstablishment.name}
+                            </span>
+                        )}
+                    </p>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
@@ -412,8 +421,8 @@ export function StaffPage() {
               setCurrentPage(1);
             }}
             options={[
-              { label: t('owner.staff.admins'), value: 'ADMIN' },
-              { label: t('owner.staff.standardUsers'), value: 'USER' },
+              { label: t('staff.roles.admin'), value: 'ADMIN' },
+              { label: t('staff.roles.user'), value: 'USER' },
             ]}
             allOptionLabel={t('owner.employees.allRoles')}
             placeholder={t('owner.employees.allRoles')}
@@ -456,82 +465,82 @@ export function StaffPage() {
                   data-member-id={member.id}
                   className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
                 >
-                    {/* Card Header */}
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-PayMint-green/10 text-PayMint-green flex items-center justify-center font-black text-sm">
-                          {member.username.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <p className="font-bold text-gray-900 dark:text-white text-sm">{member.username}</p>
-                          <p className="text-xs text-gray-500">{member.name}</p>
-                        </div>
-                      </div>
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getRoleStyle(member.role)}`}>
-                        <Shield size={10} />
-                        {t(`staff.roles.${member.role.toLowerCase()}`) !== `staff.roles.${member.role.toLowerCase()}`
-                          ? t(`staff.roles.${member.role.toLowerCase()}`)
-                          : member.role.charAt(0) + member.role.slice(1).toLowerCase()}
-                      </span>
-                    </div>
-
-                    {/* Card Details */}
-                    <div className="grid grid-cols-2 gap-3 mb-3 pt-3 border-t border-gray-100 dark:border-white/5">
-                      <div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('staff.form.emailLabel')}</p>
-                        <div className="flex items-center gap-1.5 text-sm font-bold text-gray-900 dark:text-white truncate">
-                          <Mail size={12} className="text-gray-400 flex-shrink-0" />
-                          <span className="truncate">{member.email || t('common.notAvailable')}</span>
-                        </div>
+                  {/* Card Header */}
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-PayMint-green/10 text-PayMint-green flex items-center justify-center font-black text-sm">
+                        {member.username.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('staff.table.status')}</p>
-                        <div className={`flex items-center gap-2 font-bold text-xs ${!member.isActive
-                          ? 'text-PayMint-red'
-                          : member.isClockedIn
-                            ? 'text-PayMint-green'
-                            : 'text-gray-400'
-                          }`}>
-                          {!member.isActive ? (
-                            <>
-                              <XCircle size={12} />
-                              <span>{t('staff.status.suspended')}</span>
-                            </>
-                          ) : member.isClockedIn ? (
-                            <>
-                              <div className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-PayMint-green opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-PayMint-green"></span>
-                              </div>
-                              <span>{t('staff.status.online')}</span>
-                            </>
-                          ) : (
-                            <>
-                              <div className="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-600" />
-                              <span>{t('staff.status.offline')}</span>
-                            </>
-                          )}
-                        </div>
+                        <p className="font-bold text-gray-900 dark:text-white text-sm">{member.username}</p>
+                        <p className="text-xs text-gray-500">{member.name}</p>
                       </div>
                     </div>
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getRoleStyle(member.role)}`}>
+                      <Shield size={10} />
+                      {t(`staff.roles.${member.role.toLowerCase()}`) !== `staff.roles.${member.role.toLowerCase()}`
+                        ? t(`staff.roles.${member.role.toLowerCase()}`)
+                        : member.role.charAt(0) + member.role.slice(1).toLowerCase()}
+                    </span>
+                  </div>
 
-                    {/* Card Actions */}
-                    <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 dark:border-white/5">
-                      <button
-                        onClick={() => openEditModal(member)}
-                        className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all text-xs font-bold touch-target"
-                      >
-                        <Edit2 size={14} />
-                        {t('common.edit')}
-                      </button>
-                      <button
-                        onClick={() => handleDelete(member.id, member.username)}
-                        className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 dark:border-red-500/20 text-PayMint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-all text-xs font-bold touch-target"
-                      >
-                        <Trash2 size={14} />
-                        {t('common.delete')}
-                      </button>
+                  {/* Card Details */}
+                  <div className="grid grid-cols-2 gap-3 mb-3 pt-3 border-t border-gray-100 dark:border-white/5">
+                    <div>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('staff.form.emailLabel')}</p>
+                      <div className="flex items-center gap-1.5 text-sm font-bold text-gray-900 dark:text-white truncate">
+                        <Mail size={12} className="text-gray-400 flex-shrink-0" />
+                        <span className="truncate">{member.email || t('common.notAvailable')}</span>
+                      </div>
                     </div>
+                    <div>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('staff.table.status')}</p>
+                      <div className={`flex items-center gap-2 font-bold text-xs ${!member.isActive
+                        ? 'text-PayMint-red'
+                        : member.isClockedIn
+                          ? 'text-PayMint-green'
+                          : 'text-gray-400'
+                        }`}>
+                        {!member.isActive ? (
+                          <>
+                            <XCircle size={12} />
+                            <span>{t('staff.status.suspended')}</span>
+                          </>
+                        ) : member.isClockedIn ? (
+                          <>
+                            <div className="relative flex h-2 w-2">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-PayMint-green opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-PayMint-green"></span>
+                            </div>
+                            <span>{t('staff.status.online')}</span>
+                          </>
+                        ) : (
+                          <>
+                            <div className="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-600" />
+                            <span>{t('staff.status.offline')}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card Actions */}
+                  <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 dark:border-white/5">
+                    <button
+                      onClick={() => openEditModal(member)}
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all text-xs font-bold touch-target"
+                    >
+                      <Edit2 size={14} />
+                      {t('common.edit')}
+                    </button>
+                    <button
+                      onClick={() => handleDelete(member.id, member.username)}
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 dark:border-red-500/20 text-PayMint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-all text-xs font-bold touch-target"
+                    >
+                      <Trash2 size={14} />
+                      {t('common.delete')}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -579,108 +588,108 @@ export function StaffPage() {
                       data-member-id={member.id}
                       className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
                     >
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-PayMint-green/10 text-PayMint-green flex items-center justify-center font-black text-sm group-hover:scale-110 transition-transform duration-300">
-                              {member.username.charAt(0).toUpperCase()}
-                            </div>
-                            <div>
-                              <p className="font-bold text-gray-900 dark:text-white text-sm">{member.username}</p>
-                              <p className="text-xs text-gray-500">{member.name}</p>
-                            </div>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-xl bg-PayMint-green/10 text-PayMint-green flex items-center justify-center font-black text-sm group-hover:scale-110 transition-transform duration-300">
+                            {member.username.charAt(0).toUpperCase()}
                           </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getRoleStyle(member.role)}`}>
-                            <Shield size={10} />
-                            {t(`staff.roles.${member.role.toLowerCase()}`) !== `staff.roles.${member.role.toLowerCase()}`
-                              ? t(`staff.roles.${member.role.toLowerCase()}`)
-                              : member.role.charAt(0) + member.role.slice(1).toLowerCase()}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2 text-xs text-gray-500">
-                              <Mail size={12} className="text-gray-400" />
-                              <span className="font-medium">{member.email || t('owner.staff.noEmail')}</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-xs text-gray-500">
-                              <Phone size={12} className="text-gray-400" />
-                              <span className="font-medium">{member.phone || t('owner.staff.noPhone')}</span>
-                            </div>
+                          <div>
+                            <p className="font-bold text-gray-900 dark:text-white text-sm">{member.username}</p>
+                            <p className="text-xs text-gray-500">{member.name}</p>
                           </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className={`flex items-center gap-2 font-black text-xs tracking-wide ${!member.isActive
-                            ? 'text-PayMint-red'
-                            : member.isClockedIn
-                              ? 'text-PayMint-green'
-                              : 'text-gray-400'
-                            }`}>
-                            {!member.isActive ? (
-                              <>
-                                <XCircle size={14} />
-                                <span>{t('staff.status.suspended')}</span>
-                              </>
-                            ) : member.isClockedIn ? (
-                              <>
-                                <div className="relative flex h-2 w-2">
-                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-PayMint-green opacity-75"></span>
-                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-PayMint-green"></span>
-                                </div>
-                                <span>{t('staff.status.online')}</span>
-                              </>
-                            ) : (
-                              <>
-                                <div className="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-600" />
-                                <span>{t('staff.status.offline')}</span>
-                              </>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getRoleStyle(member.role)}`}>
+                          <Shield size={10} />
+                          {t(`staff.roles.${member.role.toLowerCase()}`) !== `staff.roles.${member.role.toLowerCase()}`
+                            ? t(`staff.roles.${member.role.toLowerCase()}`)
+                            : member.role.charAt(0) + member.role.slice(1).toLowerCase()}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 text-xs text-gray-500">
+                            <Mail size={12} className="text-gray-400" />
+                            <span className="font-medium">{member.email || t('owner.staff.noEmail')}</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-gray-500">
+                            <Phone size={12} className="text-gray-400" />
+                            <span className="font-medium">{member.phone || t('owner.staff.noPhone')}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className={`flex items-center gap-2 font-black text-xs tracking-wide ${!member.isActive
+                          ? 'text-PayMint-red'
+                          : member.isClockedIn
+                            ? 'text-PayMint-green'
+                            : 'text-gray-400'
+                          }`}>
+                          {!member.isActive ? (
+                            <>
+                              <XCircle size={14} />
+                              <span>{t('staff.status.suspended')}</span>
+                            </>
+                          ) : member.isClockedIn ? (
+                            <>
+                              <div className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-PayMint-green opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-PayMint-green"></span>
+                              </div>
+                              <span>{t('staff.status.online')}</span>
+                            </>
+                          ) : (
+                            <>
+                              <div className="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-600" />
+                              <span>{t('staff.status.offline')}</span>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-8 py-5 text-center">
+                        <div className="flex items-center justify-center gap-1 sm:gap-2">
+                          <button
+                            onClick={() => openEditModal(member)}
+                            aria-label={t('staff.editEmployee')}
+                            className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-90"
+                          >
+                            <Edit2 size={18} />
+                          </button>
+                          <div className="relative dropdown-container">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveDropdown(activeDropdown === member.id ? null : member.id);
+                              }}
+                              aria-label={t('common.actions')}
+                              aria-expanded={activeDropdown === member.id}
+                              className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border transition-all active:scale-90 shadow-sm ${activeDropdown === member.id ? 'bg-PayMint-green text-black border-PayMint-green' : 'bg-white dark:bg-white/5 border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/10'}`}
+                            >
+                              <MoreVertical size={18} />
+                            </button>
+
+                            {activeDropdown === member.id && (
+                              <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl shadow-2xl border border-gray-100 dark:border-white/10 z-50 overflow-hidden py-1.5">
+                                <button
+                                  onClick={() => { setActiveDropdown(null); toast.success(t('staff.messages.resetSuccess')); }}
+                                  className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black tracking-widest text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
+                                >
+                                  <Key size={14} className="text-PayMint-green" />
+                                  <span>{t('staff.actions.resetPassword')}</span>
+                                </button>
+                                <button
+                                  onClick={() => { setActiveDropdown(null); handleDelete(member.id, member.username); }}
+                                  className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black tracking-widest text-PayMint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
+                                >
+                                  <Trash2 size={14} />
+                                  <span>{t('common.delete')}</span>
+                                </button>
+                              </div>
                             )}
                           </div>
-                        </td>
-                        <td className="px-8 py-5 text-center">
-                          <div className="flex items-center justify-center gap-1 sm:gap-2">
-                            <button
-                              onClick={() => openEditModal(member)}
-                              aria-label={t('staff.editEmployee')}
-                              className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-90"
-                            >
-                              <Edit2 size={18} />
-                            </button>
-                            <div className="relative dropdown-container">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setActiveDropdown(activeDropdown === member.id ? null : member.id);
-                                }}
-                                aria-label={t('common.actions')}
-                                aria-expanded={activeDropdown === member.id}
-                                className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border transition-all active:scale-90 shadow-sm ${activeDropdown === member.id ? 'bg-PayMint-green text-black border-PayMint-green' : 'bg-white dark:bg-white/5 border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/10'}`}
-                              >
-                                <MoreVertical size={18} />
-                              </button>
-
-                                {activeDropdown === member.id && (
-                                  <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl shadow-2xl border border-gray-100 dark:border-white/10 z-50 overflow-hidden py-1.5">
-                                    <button
-                                      onClick={() => { setActiveDropdown(null); toast.success(t('staff.messages.resetSuccess')); }}
-                                      className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black tracking-widest text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
-                                    >
-                                      <Key size={14} className="text-PayMint-green" />
-                                      <span>{t('staff.actions.resetPassword')}</span>
-                                    </button>
-                                    <button
-                                      onClick={() => { setActiveDropdown(null); handleDelete(member.id, member.username); }}
-                                      className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black tracking-widest text-PayMint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
-                                    >
-                                      <Trash2 size={14} />
-                                      <span>{t('common.delete')}</span>
-                                    </button>
-                                  </div>
-                                )}
-                            </div>
-                          </div>
-                        </td>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -732,3 +741,5 @@ export function StaffPage() {
     </div >
   );
 }
+
+
