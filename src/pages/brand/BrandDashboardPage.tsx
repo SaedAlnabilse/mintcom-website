@@ -303,6 +303,11 @@ export function BrandDashboardPage() {
         return value.toLocaleString(locale);
     };
 
+    const getNumericTooltipValue = (value: number | string | ReadonlyArray<number | string> | undefined) => {
+        const normalizedValue = Array.isArray(value) ? value[0] : value;
+        return typeof normalizedValue === 'number' ? normalizedValue : Number(normalizedValue ?? 0);
+    };
+
     const isTopBrand = brandId === 'cmkek5eme0001vjjqvfm3wjwa';
 
     if (isLoading) {
@@ -729,7 +734,7 @@ export function BrandDashboardPage() {
                                             borderRadius: '12px',
                                             fontSize: '12px',
                                         }}
-                                        formatter={(value: number | string | undefined, _name: string | undefined, item: any) => [formatCurrency(Number(value ?? 0)), `${item?.payload?.share ?? 0}% ${t('brand.dashboard.share')}`]}
+                                        formatter={(value, _name, item) => [formatCurrency(getNumericTooltipValue(value)), `${item?.payload?.share ?? 0}% ${t('brand.dashboard.share')}`]}
                                     />
                                 </RechartsPieChart>
                             </ResponsiveContainer>

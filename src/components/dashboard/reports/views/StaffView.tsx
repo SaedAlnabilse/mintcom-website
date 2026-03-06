@@ -24,6 +24,10 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
   const itemsPerPage = 10;
 
   const formatCurrency = (value: number) => formatAmount(value);
+  const getNumericTooltipValue = (value: number | string | ReadonlyArray<number | string> | undefined) => {
+    const normalizedValue = Array.isArray(value) ? value[0] : value;
+    return typeof normalizedValue === 'number' ? normalizedValue : Number(normalizedValue ?? 0);
+  };
 
   // If no shifts, return empty state early
   if (shifts.length === 0) {
@@ -200,7 +204,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                       ))}
                     </Pie>
                     <Tooltip
-                      formatter={(value: number | undefined) => formatCurrency(value || 0)}
+                      formatter={(value) => formatCurrency(getNumericTooltipValue(value))}
                       contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                     />
                   </PieChart>

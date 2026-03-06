@@ -117,6 +117,12 @@ export const SupportPage = () => {
                 <Ticket size={16} />
                 {t('support.quickLinks.submitTicket')}
               </Link>
+              <Link
+                to="/support/tickets"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-white/10 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold hover:bg-gray-50 dark:hover:bg-white/20 transition-all"
+              >
+                {t('support.tickets.myTickets')}
+              </Link>
             </div>
           </motion.div>
         </div>
@@ -213,43 +219,6 @@ export const SupportPage = () => {
                   </Link>
                 </motion.div>
               ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact CTA */}
-      <section className="py-20">
-        <div className="container mx-auto px-8 md:px-16 lg:px-24">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-gradient-to-br from-gray-900 to-gray-800 dark:from-white/10 dark:to-white/5 rounded-3xl p-10 md:p-16 text-center relative overflow-hidden">
-              {/* Decorative elements */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/20 rounded-full blur-[80px]" />
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-paymint-green/20 rounded-full blur-[60px]" />
-
-              <div className="relative z-10">
-                <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-                  {t('support.cta.title')}
-                </h2>
-                <p className="text-gray-400 font-medium mb-8 max-w-lg mx-auto">
-                  {t('support.cta.subtitle')}
-                </p>
-                <div className="flex flex-wrap justify-center gap-4">
-                  <Link
-                    to="/support/tickets/new"
-                    className="inline-flex items-center gap-2 px-8 py-4 bg-paymint-green text-black rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-paymint-green/20"
-                  >
-                    <Ticket size={18} />
-                    {t('support.quickLinks.submitTicket')}
-                  </Link>
-                  <Link
-                    to="/support/tickets"
-                    className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-all border border-white/10"
-                  >
-                    {t('support.tickets.myTickets')}
-                  </Link>
-                </div>
-              </div>
             </div>
           </div>
         </div>
