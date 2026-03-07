@@ -14,7 +14,6 @@ import {
     UserPlus
 } from 'lucide-react';
 import {
-    AreaChart,
     Area,
     ComposedChart,
     Bar,

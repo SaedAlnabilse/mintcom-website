@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { getDateLocale } from '../../../utils/dateLocale';
 
 interface RevenueChartProps {
-  dailyBreakdown: { date: string; revenue: number }[];
+  dailyBreakdown: { date: string; revenue: number; count?: number }[];
   viewMode: 'current_shift' | 'previous_shift' | 'last_24_hours';
   selectedDateRange?: string;
 }

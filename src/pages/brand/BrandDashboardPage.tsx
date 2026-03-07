@@ -18,7 +18,6 @@ import {
     ChevronRight,
 } from 'lucide-react';
 import {
-    AreaChart,
     Area,
     ComposedChart,
     Bar,
