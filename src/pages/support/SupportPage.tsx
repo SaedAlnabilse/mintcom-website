@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
   Ticket,
@@ -13,7 +13,9 @@ import {
   ChevronRight,
   ArrowRight,
   Clock,
-  Eye
+  Eye,
+  FileText,
+  Download
 } from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
@@ -21,6 +23,19 @@ import { Footer } from '../../components/Footer';
 export const SupportPage = () => {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setIsSearchFocused(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const categories = [
     {
@@ -57,6 +72,43 @@ export const SupportPage = () => {
     }
   ];
 
+  // All articles for the search functionality
+  const allArticles = [
+    // Getting Started
+    { id: 'gs-1', title: t('support.popularArticles.account'), category: t('support.categories.gettingStarted'), categoryId: 'getting-started' },
+    { id: 'gs-2', title: t('support.popularArticles.establishment'), category: t('support.categories.gettingStarted'), categoryId: 'getting-started' },
+    { id: 'gs-3', title: t('support.articles.gs3'), category: t('support.categories.gettingStarted'), categoryId: 'getting-started' },
+    { id: 'gs-4', title: t('support.articles.gs4'), category: t('support.categories.gettingStarted'), categoryId: 'getting-started' },
+    { id: 'gs-5', title: t('support.articles.gs5'), category: t('support.categories.gettingStarted'), categoryId: 'getting-started' },
+    { id: 'gs-6', title: t('support.articles.gs6'), category: t('support.categories.gettingStarted'), categoryId: 'getting-started' },
+    // Billing
+    { id: 'bl-1', title: t('support.articles.bl1'), category: t('support.categories.billing'), categoryId: 'billing' },
+    { id: 'bl-2', title: t('support.popularArticles.payment'), category: t('support.categories.billing'), categoryId: 'billing' },
+    { id: 'bl-3', title: t('support.articles.bl3'), category: t('support.categories.billing'), categoryId: 'billing' },
+    { id: 'bl-4', title: t('support.articles.bl4'), category: t('support.categories.billing'), categoryId: 'billing' },
+    // Technical
+    { id: 'tc-1', title: t('support.popularArticles.printer'), category: t('support.categories.technical'), categoryId: 'technical' },
+    { id: 'tc-2', title: t('support.articles.tc2'), category: t('support.categories.technical'), categoryId: 'technical' },
+    { id: 'tc-3', title: t('support.articles.tc3'), category: t('support.categories.technical'), categoryId: 'technical' },
+    { id: 'tc-4', title: t('support.articles.tc4'), category: t('support.categories.technical'), categoryId: 'technical' },
+    { id: 'tc-5', title: t('support.articles.tc5'), category: t('support.categories.technical'), categoryId: 'technical' },
+    // Features
+    { id: 'ft-1', title: t('support.popularArticles.reports'), category: t('support.categories.features'), categoryId: 'features' },
+    { id: 'ft-2', title: t('support.articles.ft2'), category: t('support.categories.features'), categoryId: 'features' },
+    { id: 'ft-3', title: t('support.articles.ft3'), category: t('support.categories.features'), categoryId: 'features' },
+    { id: 'ft-4', title: t('support.articles.ft4'), category: t('support.categories.features'), categoryId: 'features' },
+    { id: 'ft-5', title: t('support.articles.ft5'), category: t('support.categories.features'), categoryId: 'features' },
+  ];
+
+  const searchResults = searchQuery.trim() === ''
+    ? []
+    : allArticles
+        .filter(article =>
+          article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          article.category.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        .slice(0, 5); // Limit to top 5 matches
+
   const popularArticles = [
     { id: 'tc-1', title: t('support.popularArticles.printer'), category: t('support.categories.technical'), categoryId: 'technical', views: '5.6k', readTime: '8 min' },
     { id: 'gs-1', title: t('support.popularArticles.account'), category: t('support.categories.gettingStarted'), categoryId: 'getting-started', views: '8.2k', readTime: '5 min' },
@@ -70,7 +122,7 @@ export const SupportPage = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-to-b from-gray-50 to-white dark:from-[#0a0a0a] dark:to-[#050505] relative overflow-hidden">
+      <section className="pt-32 pb-20 bg-gradient-to-b from-gray-50 to-white dark:from-[#0a0a0a] dark:to-[#050505] relative">
         {/* Background decoration */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 left-1/4 w-96 h-96 bg-paymint-green/10 rounded-full blur-[100px]" />
@@ -96,16 +148,63 @@ export const SupportPage = () => {
               {t('support.hero.subtitle')}
             </p>
 
-            {/* Search Bar */}
-            <div className="relative max-w-2xl mx-auto">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400" size={22} />
+            {/* Search Bar with Dropdown */}
+            <div className="relative max-w-2xl mx-auto" ref={searchContainerRef}>
+              <Search className={`absolute left-6 top-1/2 -translate-y-1/2 transition-colors ${isSearchFocused ? 'text-paymint-green' : 'text-gray-400'}`} size={22} />
               <input
                 type="text"
                 value={searchQuery}
+                onFocus={() => setIsSearchFocused(true)}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('support.hero.searchPlaceholder')}
                 className="w-full pl-16 pr-6 py-5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-lg font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 shadow-xl shadow-gray-200/50 dark:shadow-none transition-all"
               />
+              
+              {/* Search Suggestions Dropdown */}
+              <AnimatePresence>
+                {isSearchFocused && searchQuery.trim() !== '' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-full mt-2 left-0 right-0 bg-white dark:bg-[#111] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 text-left"
+                  >
+                    {searchResults.length > 0 ? (
+                      <div className="py-2">
+                        {searchResults.map((article) => (
+                          <Link
+                            key={article.id}
+                            to={`/support/article/${article.id}`}
+                            className="flex items-center gap-4 px-6 py-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group"
+                            onClick={() => setIsSearchFocused(false)}
+                          >
+                            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-paymint-green/10 text-paymint-green group-hover:scale-110 transition-transform">
+                              <BookOpen size={16} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-bold text-gray-900 dark:text-white truncate group-hover:text-paymint-green transition-colors">
+                                {article.title}
+                              </h4>
+                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                {article.category}
+                              </p>
+                            </div>
+                            <ChevronRight size={16} className="text-gray-300 dark:text-gray-600 group-hover:text-paymint-green group-hover:translate-x-1 transition-all" />
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="px-6 py-10 text-center">
+                        <Search className="mx-auto text-gray-300 dark:text-gray-600 mb-3" size={32} />
+                        <p className="text-gray-500 dark:text-gray-400 font-medium">
+                          {t('support.articles.notFoundDesc', 'No articles found matching your search.')}
+                        </p>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Quick Links */}
@@ -164,6 +263,53 @@ export const SupportPage = () => {
                 </Link>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* User Manual Download Section */}
+      <section className="py-12">
+        <div className="container mx-auto px-8 md:px-16 lg:px-24">
+          <div className="bg-paymint-green/5 dark:bg-paymint-green/10 border border-paymint-green/20 rounded-3xl p-8 md:p-12 overflow-hidden relative">
+            {/* Decoration */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-paymint-green/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
+            
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10">
+              <div className="flex-1 text-center lg:text-left">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-paymint-green/20 rounded-lg text-paymint-green text-xs font-bold mb-4 uppercase tracking-wider">
+                  <FileText size={14} />
+                  {t('support.manual.subtitle')}
+                </div>
+                <h2 className="text-3xl md:text-4xl font-black mb-4">
+                  {t('support.manual.title')}
+                </h2>
+                <p className="text-lg text-gray-600 dark:text-gray-400 font-medium mb-8 max-w-2xl">
+                  {t('support.manual.description')}
+                </p>
+                <div className="flex flex-wrap justify-center lg:justify-start gap-4 text-sm text-gray-500 font-bold">
+                  <span className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-white/5 rounded-lg border border-gray-100 dark:border-white/10">
+                    PDF
+                  </span>
+                  <span className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-white/5 rounded-lg border border-gray-100 dark:border-white/10">
+                    {t('support.manual.fileSize')}
+                  </span>
+                  <span className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-white/5 rounded-lg border border-gray-100 dark:border-white/10">
+                    {t('support.manual.updated')}
+                  </span>
+                </div>
+              </div>
+
+              <div className="shrink-0">
+                <a
+                  href="/docs/paymint-user-manual.pdf"
+                  download
+                  className="inline-flex items-center gap-3 px-8 py-5 bg-paymint-green text-white rounded-2xl text-lg font-black shadow-lg shadow-paymint-green/25 hover:shadow-xl hover:shadow-paymint-green/40 hover:-translate-y-1 transition-all"
+                >
+                  <Download size={24} />
+                  {t('support.manual.downloadButton')}
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>

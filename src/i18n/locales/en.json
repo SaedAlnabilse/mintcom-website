@@ -4298,6 +4298,14 @@
       "titlePart1": "How can we",
       "titlePart2": "you?"
     },
+    "manual": {
+      "title": "User Manual",
+      "subtitle": "Download the complete guide",
+      "description": "Our comprehensive user manual covers everything from initial setup to advanced reporting and staff management.",
+      "downloadButton": "Download PDF Manual",
+      "fileSize": "57 KB",
+      "updated": "Updated March 2024"
+    },
     "newTicket": {
       "addFiles": "Add Files",
       "attachmentLimit": "Max 5 files, 10MB each",

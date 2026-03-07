@@ -290,7 +290,7 @@ export default function BrandTeamPage() {
     const getRoleBadgeStyle = (role: string) => {
         const base = "px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border";
         if (role.toUpperCase() === 'ADMIN') {
-            return `${base} bg-PayMint-green/10 text-PayMint-green border-PayMint-green/20`;
+            return `${base} bg-paymint-green/10 text-paymint-green border-paymint-green/20`;
         }
         return `${base} bg-blue-500/10 text-blue-500 border-blue-500/20`;
     };
@@ -309,8 +309,8 @@ export default function BrandTeamPage() {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
                 <div className="relative">
-                    <div className="w-16 h-16 border-4 border-PayMint-green/20 rounded-full" />
-                    <div className="w-16 h-16 border-4 border-PayMint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
+                    <div className="w-16 h-16 border-4 border-paymint-green/20 rounded-full" />
+                    <div className="w-16 h-16 border-4 border-paymint-green border-t-transparent rounded-full animate-spin absolute inset-0" />
                 </div>
                 <p className="text-sm font-bold text-gray-400 tracking-widest">{t('owner.staff.loading')}</p>
             </div>
@@ -323,7 +323,7 @@ export default function BrandTeamPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-purple-500/10 text-purple-500 text-xs font-black tracking-widest border border-purple-500/20">
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
                             {t('owner.staff.badge')}
                         </span>
                     </div>
@@ -341,7 +341,7 @@ export default function BrandTeamPage() {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={handleAddEmployee}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-PayMint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
                     >
                         <UserPlus size={18} />
                         <span>{t('staff.newEmployee')}</span>
@@ -354,7 +354,7 @@ export default function BrandTeamPage() {
                 {[
                     { label: t('owner.staff.totalUsers'), value: stats.total, icon: Users, color: 'text-gray-900 dark:text-white', bg: 'bg-gray-100 dark:bg-white/5' },
                     { label: t('staff.roles.user'), value: stats.users, icon: UserCheck, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: t('owner.staff.admins'), value: stats.admins, icon: Shield, color: 'text-PayMint-green', bg: 'bg-PayMint-green/10' },
+                    { label: t('owner.staff.admins'), value: stats.admins, icon: Shield, color: 'text-paymint-green', bg: 'bg-paymint-green/10' },
                 ].map((stat, i) => (
                     <div
                         key={i}
@@ -435,13 +435,13 @@ export default function BrandTeamPage() {
                         <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[52px]">
                             <button
                                 onClick={() => setViewMode('grid')}
-                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-PayMint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                             >
                                 <Grid3X3 size={18} />
                             </button>
                             <button
                                 onClick={() => setViewMode('list')}
-                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-PayMint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                             >
                                 <List size={18} />
                             </button>
@@ -515,9 +515,9 @@ export default function BrandTeamPage() {
                     {paginatedEmployees.map((emp) => (
                         <div
                             key={emp.id}
-                            className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-PayMint-green/50 p-6 transition-all shadow-sm hover:shadow-lg overflow-hidden"
+                            className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-paymint-green/50 p-6 transition-all shadow-sm hover:shadow-lg overflow-hidden"
                         >
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-PayMint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                             {/* Header */}
                             {/* Header */}

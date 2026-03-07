@@ -83,16 +83,16 @@ export const Navbar = () => {
               <>
                 <Link
                   to="/owner"
-                  className="inline-flex items-center gap-2 bg-paymint-green text-black px-6 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all active:scale-95 shadow-lg shadow-paymint-green/20 hover:opacity-90"
+                  className="inline-flex items-center gap-2.5 bg-paymint-green dark:bg-paymint-green text-black px-6 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-paymint-green/30 active:scale-95 shadow-lg shadow-paymint-green/10 group"
                 >
-                  <User size={14} />
+                  <User size={14} className="group-hover:scale-110 transition-transform" />
                   {t('nav.owner')}
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all active:scale-95 shadow-lg shadow-red-500/20"
+                  className="inline-flex items-center gap-2.5 bg-rose-500 hover:bg-rose-600 text-white px-5 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-rose-500/30 active:scale-95 shadow-lg shadow-rose-500/10 group"
                 >
-                  <LogOut size={14} />
+                  <LogOut size={14} className="group-hover:translate-x-0.5 transition-transform" />
                   {t('nav.logout')}
                 </button>
               </>
@@ -177,7 +177,7 @@ export const Navbar = () => {
                     <Link
                       to="/owner"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="w-full py-5 bg-paymint-green text-black rounded-[2rem] text-xl font-black tracking-tight text-center flex items-center justify-center gap-3 shadow-xl shadow-paymint-green/20"
+                      className="w-full py-5 bg-paymint-green text-black rounded-[2rem] text-xl font-black tracking-tight text-center flex items-center justify-center gap-3 shadow-xl shadow-paymint-green/30 hover:scale-[1.02] transition-transform active:scale-95"
                     >
                       <User size={20} />
                       {t('nav.owner')}
@@ -187,7 +187,7 @@ export const Navbar = () => {
                         setIsMobileMenuOpen(false);
                         handleLogout();
                       }}
-                      className="w-full py-5 bg-red-500 hover:bg-red-600 text-white rounded-[2rem] text-xl font-black tracking-tight text-center flex items-center justify-center gap-3 shadow-xl shadow-red-500/20"
+                      className="w-full py-5 bg-rose-500 hover:bg-rose-600 text-white rounded-[2rem] text-xl font-black tracking-tight text-center flex items-center justify-center gap-3 shadow-xl shadow-rose-500/30 hover:scale-[1.02] transition-transform active:scale-95"
                     >
                       <LogOut size={20} />
                       {t('nav.logout')}

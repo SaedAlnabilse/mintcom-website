@@ -264,7 +264,7 @@ export function OwnerEmployeesPage() {
         const base = "px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border";
         switch (role?.toUpperCase()) {
             case 'ADMIN':
-                return <span className={`${base} bg-PayMint-green/10 text-PayMint-green border-PayMint-green/20`}>{t('staff.roles.admin')}</span>;
+                return <span className={`${base} bg-paymint-green/10 text-paymint-green border-paymint-green/20`}>{t('staff.roles.admin')}</span>;
             case 'MANAGER':
                 return <span className={`${base} bg-purple-500/10 text-purple-500 border-purple-500/20`}>{t('staff.roles.manager')}</span>;
             case 'USER':
@@ -306,8 +306,8 @@ export function OwnerEmployeesPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-PayMint-green/10 text-PayMint-green text-xs font-black tracking-widest border border-PayMint-green/20">
-                            {t('owner.staff.badge')}
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                            {t('dashboard.menu.team')}
                         </span>
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.staff.title')}</h1>
@@ -321,7 +321,7 @@ export function OwnerEmployeesPage() {
                     <button
                         id="tour-add-employee-btn"
                         onClick={handleOpenAddEmployeeModal}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-PayMint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-PayMint-green/20"
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20"
                     >
                         <UserPlus size={18} />
                         <span>{t('staff.newEmployee')}</span>
@@ -408,13 +408,13 @@ export function OwnerEmployeesPage() {
                         <div id="tour-view-toggle" className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[52px]">
                             <button
                                 onClick={() => setViewMode('grid')}
-                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-PayMint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                             >
                                 <Grid3X3 size={18} />
                             </button>
                             <button
                                 onClick={() => setViewMode('list')}
-                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-PayMint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-paymint-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                             >
                                 <List size={18} />
                             </button>
@@ -426,7 +426,7 @@ export function OwnerEmployeesPage() {
             {/* Employee List */}
             {isLoading ? (
                 <div className="flex flex-col items-center justify-center py-20 space-y-4">
-                    <div className="w-12 h-12 border-4 border-PayMint-green/30 border-t-PayMint-green rounded-full animate-spin" />
+                    <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin" />
                     <p className="text-sm font-bold text-gray-400 tracking-widest">{t('owner.staff.loading')}</p>
                 </div>
             ) : filteredEmployees.length === 0 ? (
@@ -538,28 +538,28 @@ export function OwnerEmployeesPage() {
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
                     <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest">
                         <div
-                            className="col-span-4 cursor-pointer hover:text-PayMint-green transition-colors flex items-center gap-1"
+                            className="col-span-4 cursor-pointer hover:text-paymint-green transition-colors flex items-center gap-1"
                             onClick={() => handleSort('name')}
                         >
                             {t('common.name')}
                             {sortConfig?.key === 'name' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
                         <div
-                            className="col-span-2 text-center cursor-pointer hover:text-PayMint-green transition-colors flex items-center justify-center gap-1"
+                            className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
                             onClick={() => handleSort('role')}
                         >
                             {t('common.role')}
                             {sortConfig?.key === 'role' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
                         <div
-                            className="col-span-2 text-center cursor-pointer hover:text-PayMint-green transition-colors flex items-center justify-center gap-1"
+                            className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
                             onClick={() => handleSort('status')}
                         >
                             {t('common.status.label')}
                             {sortConfig?.key === 'status' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                         </div>
                         <div
-                            className="col-span-2 text-center cursor-pointer hover:text-PayMint-green transition-colors flex items-center justify-center gap-1"
+                            className="col-span-2 text-center cursor-pointer hover:text-paymint-green transition-colors flex items-center justify-center gap-1"
                             onClick={() => handleSort('access')}
                         >
                             {t('owner.staff.access')}

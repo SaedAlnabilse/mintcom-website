@@ -11,7 +11,6 @@ import {
     TrendingUp,
     TrendingDown,
     BarChart3,
-    Activity,
     Target,
     Award,
     ArrowRight,
@@ -334,9 +333,8 @@ export function BrandDashboardPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-50">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
-                            <Activity size={14} className="text-emerald-500" />
-                            {t('brand.dashboard.liveData')}
+                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                            {t('brand.menu.overview')}
                         </span>
                     </div>
                     <div className="flex items-center gap-4">
@@ -479,7 +477,7 @@ export function BrandDashboardPage() {
                             : 'border-gray-200 dark:border-white/5'
                             }`}
                     >
-                        
+
                         <div className="relative z-10">
                             <div className="flex items-center justify-between mb-4">
                                 <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center ${isTopBrand ? 'shadow-lg shadow-current/10' : ''
@@ -668,19 +666,19 @@ export function BrandDashboardPage() {
                                     />
                                     {revenueData.length === 1 ? (
                                         <>
-                                            <Bar 
-                                                dataKey="value" 
-                                                fill="url(#brandRevenue)" 
-                                                barSize={40} 
-                                                radius={[8, 8, 0, 0]} 
-                                                animationDuration={1500} 
+                                            <Bar
+                                                dataKey="value"
+                                                fill="url(#brandRevenue)"
+                                                barSize={40}
+                                                radius={[8, 8, 0, 0]}
+                                                animationDuration={1500}
                                             />
-                                            <Bar 
-                                                dataKey="orders" 
-                                                fill="url(#brandOrders)" 
-                                                barSize={40} 
-                                                radius={[8, 8, 0, 0]} 
-                                                animationDuration={1500} 
+                                            <Bar
+                                                dataKey="orders"
+                                                fill="url(#brandOrders)"
+                                                barSize={40}
+                                                radius={[8, 8, 0, 0]}
+                                                animationDuration={1500}
                                             />
                                         </>
                                     ) : (
@@ -816,9 +814,9 @@ export function BrandDashboardPage() {
                         onClick={action.action}
                         className={`p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm text-left transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
                     >
-                                    <div className={`w-12 h-12 rounded-xl ${action.bg} ${action.color} flex items-center justify-center mb-4`}>
-                                      <action.icon size={24} />
-                                    </div>                        <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+                        <div className={`w-12 h-12 rounded-xl ${action.bg} ${action.color} flex items-center justify-center mb-4`}>
+                            <action.icon size={24} />
+                        </div>                        <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
                             {action.title}
                         </h4>
                         <p className="text-sm font-bold text-gray-500">{action.description}</p>
