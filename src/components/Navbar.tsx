@@ -102,6 +102,8 @@ export const Navbar = () => {
                 </Link>
                 <Link
                   to="/owner"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-2.5 bg-paymint-green dark:bg-paymint-green text-black px-6 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-paymint-green/30 active:scale-95 shadow-lg shadow-paymint-green/10 group"
                 >
                   <User size={14} className="group-hover:scale-110 transition-transform" />
@@ -215,6 +217,8 @@ export const Navbar = () => {
                     </Link>
                     <Link
                       to="/owner"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       onClick={() => setIsMobileMenuOpen(false)}
                       className="w-full py-5 bg-paymint-green text-black rounded-[2rem] text-xl font-black tracking-tight text-center flex items-center justify-center gap-3 shadow-xl shadow-paymint-green/30 hover:scale-[1.02] transition-transform active:scale-95"
                     >

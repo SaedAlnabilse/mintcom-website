@@ -22,7 +22,8 @@ import {
     Menu,
     X,
     Apple,
-    Play
+    Play,
+    ArrowLeft
 } from 'lucide-react';
 
 // Paymint Logo imports
@@ -30,16 +31,11 @@ import PaymintLogoGreen from '../assets/green-full-logo.svg';
 import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
 import PaymintLeafIcon from '../assets/small-logo.svg';
 
-const PortalIcon = ({ size, className }: any) => (
-    <img src={PaymintLeafIcon} style={{ width: size, height: size }} className={`object-contain ${className || ''}`} alt="Home" />
-);
-
 export function OwnerLayout() {
     const { t } = useTranslation();
     const { account, logout } = useAuth();
 
     const menuItems = useMemo(() => [
-        { path: '/portal', label: t('nav.home', 'Home'), icon: PortalIcon },
         { path: '/owner', label: t('owner.menu.overview'), icon: LayoutDashboard },
         { path: '/owner/establishments', label: t('owner.menu.locations'), icon: Store },
         { path: '/owner/brands', label: t('owner.menu.brands'), icon: Building2 },
@@ -120,8 +116,9 @@ export function OwnerLayout() {
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -10 }}
                                 className="flex items-center cursor-pointer group"
-                                onClick={() => navigate('/owner')}
+                                onClick={() => navigate('/portal')}
                             >
+                                <ArrowLeft size={16} className="text-gray-400 mr-2 group-hover:-translate-x-1 transition-transform" />
                                 <img
                                     src={PaymintLogoGreen}
                                     alt={t('brand.name')}
@@ -140,6 +137,9 @@ export function OwnerLayout() {
                                     decoding="async"
                                     className="h-10 w-auto object-contain hidden dark:block transition-transform"
                                 />
+                                <div className="absolute left-full ml-4 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-gray-900/90 text-white text-xs px-2 py-1 rounded">
+                                    {t('nav.home', 'Home')}
+                                </div>
                             </motion.div>
                         ) : (
                             <motion.div

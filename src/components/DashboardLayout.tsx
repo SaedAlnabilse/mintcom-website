@@ -33,7 +33,8 @@ import {
   Award,
   Scale,
   Apple,
-  Play
+  Play,
+  ArrowLeft
 } from 'lucide-react';
 
 // Paymint Logo imports
@@ -42,10 +43,6 @@ import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
 import PaymintLeafIcon from '../assets/small-logo.svg';
 import { ConfirmModal } from './ConfirmModal';
 import { getBusinessTypeIcon } from '../utils/businessTypeIcons';
-
-const PortalIcon = ({ size, className }: any) => (
-  <img src={PaymintLeafIcon} style={{ width: size, height: size }} className={`object-contain ${className || ''}`} alt="Home" />
-);
 
 interface MenuItem {
   path: string;
@@ -108,7 +105,6 @@ export function DashboardLayout() {
   const filteredMenu = useMemo(() => {
     // Translate menu structure dynamically
     const translatedMenuStructure: MenuItemOrGroup[] = [
-      { path: '/portal', label: t('nav.home', 'Home'), icon: PortalIcon },
       { path: '.', label: t('dashboard.menu.dashboard'), icon: LayoutDashboard },
       {
         label: t('dashboard.menu.salesAndReporting'),
@@ -331,8 +327,9 @@ export function DashboardLayout() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
                 className="flex items-center cursor-pointer group"
-                onClick={() => navigate('.')}
+                onClick={() => navigate('/portal')}
               >
+                <ArrowLeft size={16} className="text-gray-400 mr-2 group-hover:-translate-x-1 transition-transform" />
                 <img
                   src={PaymintLogoGreen}
                   alt={t('brand.name')}
@@ -351,6 +348,9 @@ export function DashboardLayout() {
                   decoding="async"
                   className="h-10 w-auto object-contain hidden dark:block transition-transform"
                 />
+                <div className="absolute left-full ml-4 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-gray-900/90 text-white text-xs px-2 py-1 rounded">
+                  {t('nav.home', 'Home')}
+                </div>
               </motion.div>
             ) : (
               <motion.div

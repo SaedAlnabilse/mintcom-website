@@ -158,6 +158,8 @@ export const PortalPage = () => {
               <div className="relative z-10 mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Link
                   to="/owner"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="group relative overflow-hidden bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 rounded-3xl p-8 transition-all duration-300 backdrop-blur-sm shadow-xl"
                 >
                   <div className="absolute -right-6 -top-6 w-32 h-32 bg-paymint-green/10 rounded-full blur-2xl group-hover:bg-paymint-green/20 transition-colors" />
