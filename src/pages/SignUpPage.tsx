@@ -105,11 +105,7 @@ export function SignUpPage() {
 
       if (result.success) {
         toast.success(result.message || t('auth.signup.success'));
-        if (result.isSecondaryAdmin) {
-          navigate('/dashboard');
-        } else {
-          navigate('/owner');
-        }
+        navigate('/');
       } else {
         toast.error(result.error || t('auth.signup.failed'));
       }
@@ -568,11 +564,7 @@ export function SignUpPage() {
                           const result = await loginWithGoogle(credential, modalSubscribeToNews);
                           if (result.success) {
                             toast.success(result.message || t('auth.signup.success'));
-                            if (result.isSecondaryAdmin) {
-                              navigate('/dashboard');
-                            } else {
-                              navigate('/owner');
-                            }
+                            navigate('/');
                           } else {
                             toast.error(result.error || t('auth.signup.failed'));
                           }

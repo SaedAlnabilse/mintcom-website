@@ -4306,6 +4306,26 @@
       "fileSize": "57 KB",
       "updated": "Updated March 2024"
     },
+    "genericArticle": {
+      "overview": "Overview",
+      "p1": "This comprehensive guide will walk you through the necessary steps and best practices.",
+      "p2": "This article provides detailed instructions and insights to help you optimize your PayMint experience.",
+      "stepsTitle": "Step-by-Step Instructions",
+      "stepsDesc": "Follow these core steps to get started:",
+      "step1Label": "Step 1: Access the Module",
+      "step1Desc": "Log into your PayMint dashboard and navigate to the relevant section from the main menu.",
+      "step2Label": "Step 2: Configure Settings",
+      "step2Desc": "Review the available options and adjust the configurations according to your business needs.",
+      "step3Label": "Step 3: Save and Verify",
+      "step3Desc": "Always ensure you save your changes and run a quick test to confirm everything operates smoothly.",
+      "bestPracticesTitle": "Best Practices",
+      "bestPracticesDesc": "To get the most out of this feature, we recommend keeping your data updated regularly and training your staff on the new processes. Monitor the analytics dashboard to measure impact over time.",
+      "faqTitle": "Troubleshooting & FAQ",
+      "q1": "What if I encounter an error?",
+      "a1": "If you run into any issues during setup, first double-check your internet connection and ensure your app is updated to the latest version. If the problem persists, please reach out to our 24/7 support team.",
+      "q2": "Can I revert my changes?",
+      "a2": "Yes, most configurations can be easily reverted by returning to the settings page and restoring the default values."
+    },
     "newTicket": {
       "addFiles": "Add Files",
       "attachmentLimit": "Max 5 files, 10MB each",

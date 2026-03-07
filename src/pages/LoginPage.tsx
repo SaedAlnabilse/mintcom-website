@@ -45,10 +45,8 @@ export function LoginPage() {
         toast.success(result.message || t('common.welcome'));
         if (redirectTo) {
           navigate(redirectTo);
-        } else if (result.isSecondaryAdmin) {
-          navigate('/dashboard');
         } else {
-          navigate('/owner');
+          navigate('/');
         }
       } else {
         toast.error(result.error || t('auth.login.failed'));
@@ -78,13 +76,11 @@ export function LoginPage() {
 
       if (result.success) {
         toast.success(t('common.welcomeBack'));
-        // Redirect back to the page they were trying to access, or default
+        // Redirect back to the page they were trying to access, or default to home
         if (redirectTo) {
           navigate(redirectTo);
-        } else if (result.isSecondaryAdmin) {
-          navigate('/dashboard');
         } else {
-          navigate('/owner');
+          navigate('/');
         }
       } else {
         if (result.error === 'Email not verified') {
