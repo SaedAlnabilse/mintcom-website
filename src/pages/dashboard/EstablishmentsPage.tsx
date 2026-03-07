@@ -114,10 +114,17 @@ export function EstablishmentsPage() {
               <Store size={28} className="text-black" />
             </div>
             <div>
-              <div className="flex items-center gap-3 mb-1">
+              <div className="flex items-center gap-2 sm:gap-3 mb-1">
                 <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
                   {t('establishments.network')}
                 </span>
+                <div className="flex items-center gap-2">
+                  <div className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
+                  </div>
+                  <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
+                </div>
               </div>
               <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('establishments.title')}</h1>
               <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">

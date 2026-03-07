@@ -493,11 +493,11 @@ export const DashboardPage = () => {
                 {/* Live indicator for active shift */}
                 {shiftStatus?.shiftStatus === 'ACTIVE' && (
                   <div className="flex items-center gap-2">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
-                    </span>
-                    <span className="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-wide">{t('dashboard.shiftStatus.live')}</span>
+                    <div className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
+                    </div>
+                    <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
                   </div>
                 )}
               </div>

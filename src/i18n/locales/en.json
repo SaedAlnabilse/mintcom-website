@@ -3801,7 +3801,7 @@
       "resetPassword": "Reset Password"
     },
     "addMember": "Add Staff Member",
-    "badge": "Management",
+    "badge": "TEAM",
     "editEmployee": "Edit Employee",
     "errors": {
       "emailRequired": "Required",

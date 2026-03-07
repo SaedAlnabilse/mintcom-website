@@ -311,22 +311,22 @@ export function PaymentMethodsPage() {
               {t('paymentMethods.title')}
             </span>
             <div className="flex items-center gap-2">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
-              </span>
-              <span className="text-xs font-bold text-gray-400 tracking-widest">{t('common.active')}</span>
+              <div className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
+              </div>
+              <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
             </div>
           </div>
           <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-                        <span>{t('paymentMethods.subtitle')}</span>
-                        {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                                {currentEstablishment.name}
-                            </span>
-                        )}
-                    </p>
+            <span>{t('paymentMethods.subtitle')}</span>
+            {currentEstablishment?.name && (
+              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                {currentEstablishment.name}
+              </span>
+            )}
+          </p>
         </div>
       </div>
 
@@ -397,7 +397,7 @@ export function PaymentMethodsPage() {
       {/* Main Section */}
       <section className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
         <div className="flex items-start gap-4 mb-10">
-          <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 flex-shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green flex-shrink-0">
             <Wallet size={24} />
           </div>
           <div className="flex flex-col gap-1">
@@ -417,14 +417,14 @@ export function PaymentMethodsPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {Array.isArray(paymentMethods) && paymentMethods.map((method) => (
-            <motion.div
-              layout
-              key={method.id}
-              className={`group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center min-h-[200px] ${method.isActive
-                ? 'border-paymint-green/20 hover:border-paymint-green/50'
-                : 'border-gray-100 dark:border-white/5 opacity-60'
-                }`}
-            >
+              <motion.div
+                layout
+                key={method.id}
+                className={`group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border transition-all duration-300 flex flex-col items-center justify-center min-h-[200px] ${method.isActive
+                  ? 'border-paymint-green/20 hover:border-paymint-green/50'
+                  : 'border-gray-100 dark:border-white/5 opacity-60'
+                  }`}
+              >
                 <div className="absolute top-3 right-3 flex gap-1 z-10">
                   {!method.isDefault && (
                     <>

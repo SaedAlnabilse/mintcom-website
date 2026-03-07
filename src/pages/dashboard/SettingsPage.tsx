@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBlocker, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, DollarSign } from 'lucide-react';
+import { Store, Save, CreditCard, Receipt, Trash2, AlertTriangle, DollarSign, Copy, Key } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
@@ -25,6 +25,7 @@ interface ApiError {
 
 interface AppSettings {
   id?: string;
+  loginId?: string;
   restaurantName: string;
   restaurantDescription?: string;
   restaurantAddress?: string;
@@ -659,11 +660,11 @@ export function SettingsPage() {
               {t('settings.badge')}
             </span>
             <div className="flex items-center gap-2">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green" />
-              </span>
-              <span className="text-xs font-bold text-gray-400 tracking-widest">{t('common.live')}</span>
+              <div className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
+              </div>
+              <span className="text-xs font-bold text-paymint-green tracking-widest">{t('dashboard.shiftStatus.live')}</span>
             </div>
           </div>
           <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('settings.title')}</h1>
@@ -769,9 +770,43 @@ export function SettingsPage() {
           });
         }
       })} className="space-y-8">
-        {activeTab === 'profile' && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('settings.tabs.profile')}</h3>
+        {activeTab === 'profile' && (() => {
+          const estLoginId = settings?.loginId || currentEstablishment?.establishmentLoginId || (currentEstablishment as any)?.loginId || (currentEstablishment as any)?.locationLoginId || '';
+          return (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8 rounded-2xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('settings.tabs.profile')}</h3>
+              
+              {/* Login ID Section */}
+              <div className="flex items-center gap-4 p-3 bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 group-hover:border-blue-500/20 transition-colors">
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5 mb-1">
+                    <Key size={12} className="text-gray-400" />
+                    {t('owner.account.loginId') || 'LOGIN ID'}
+                  </label>
+                  <code className="block text-sm font-mono font-bold text-gray-900 dark:text-white truncate select-all">
+                    {estLoginId || t('common.na')}
+                  </code>
+                </div>
+                <div className="pl-4 border-l border-gray-200 dark:border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (estLoginId) {
+                        navigator.clipboard.writeText(estLoginId);
+                        toast.success(t('common.copied') || 'Copied to clipboard');
+                      }
+                    }}
+                    disabled={!estLoginId}
+                    className="text-xs font-bold text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-1.5 px-2 py-1 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-500/10"
+                  >
+                    <Copy size={14} /> 
+                    {t('common.copy')}
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <div>
               <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('settings.profile.logo')}</label>
               <div className="flex items-center gap-8">
