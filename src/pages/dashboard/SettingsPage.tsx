@@ -81,7 +81,7 @@ interface EstablishmentInfo {
 export function SettingsPage() {
   const { t } = useTranslation();
   const location = useLocation();
-  const { account, currentEstablishment, setCurrentEstablishment, refreshEstablishments } = useAuth();
+  const { account, currentEstablishment, establishments, setCurrentEstablishment, refreshEstablishments } = useAuth();
   usePermissionGuard([
     'manage_settings',
     'manage_taxes_backoffice',
@@ -150,7 +150,7 @@ export function SettingsPage() {
     }
   }, [location.state, location.search, tabs]);
 
-  const [, setSettings] = useState<AppSettings | null>(null);
+  const [settings, setSettings] = useState<AppSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -771,7 +771,24 @@ export function SettingsPage() {
         }
       })} className="space-y-8">
         {activeTab === 'profile' && (() => {
-          const estLoginId = settings?.loginId || currentEstablishment?.establishmentLoginId || (currentEstablishment as any)?.loginId || (currentEstablishment as any)?.locationLoginId || '';
+          const profileEstablishments = (account as any)?.establishments || [];
+          const contextEstablishments = establishments || [];
+          
+          let estLoginId = settings?.loginId || currentEstablishment?.establishmentLoginId || (currentEstablishment as any)?.loginId || (currentEstablishment as any)?.locationLoginId || '';
+          
+          if (!estLoginId && currentEstablishment?.id) {
+             const profileMatch = profileEstablishments.find((e: any) => e.id === currentEstablishment.id);
+             if (profileMatch) {
+                 estLoginId = profileMatch.establishmentLoginId || profileMatch.loginId || profileMatch.locationLoginId || '';
+             }
+             if (!estLoginId) {
+                 const contextMatch = contextEstablishments.find((e: any) => e.id === currentEstablishment.id);
+                 if (contextMatch) {
+                     estLoginId = (contextMatch as any).establishmentLoginId || (contextMatch as any).loginId || (contextMatch as any).locationLoginId || '';
+                 }
+             }
+          }
+          
           return (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#0B1120] border border-gray-200 dark:border-white/[0.03] p-8 space-y-8 rounded-2xl">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -907,7 +924,8 @@ export function SettingsPage() {
             </div>
 
           </motion.div>
-        )}
+          );
+        })()}
 
         {activeTab === 'sales' && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
