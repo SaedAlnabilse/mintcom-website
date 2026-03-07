@@ -46,7 +46,7 @@ export function LoginPage() {
         if (redirectTo) {
           navigate(redirectTo);
         } else {
-          navigate('/');
+          navigate('/portal');
         }
       } else {
         toast.error(result.error || t('auth.login.failed'));
@@ -76,11 +76,11 @@ export function LoginPage() {
 
       if (result.success) {
         toast.success(t('common.welcomeBack'));
-        // Redirect back to the page they were trying to access, or default to home
+        // Redirect back to the page they were trying to access, or default to portal
         if (redirectTo) {
           navigate(redirectTo);
         } else {
-          navigate('/');
+          navigate('/portal');
         }
       } else {
         if (result.error === 'Email not verified') {

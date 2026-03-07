@@ -105,7 +105,7 @@ export function SignUpPage() {
 
       if (result.success) {
         toast.success(result.message || t('auth.signup.success'));
-        navigate('/');
+        navigate('/portal');
       } else {
         toast.error(result.error || t('auth.signup.failed'));
       }
@@ -564,7 +564,7 @@ export function SignUpPage() {
                           const result = await loginWithGoogle(credential, modalSubscribeToNews);
                           if (result.success) {
                             toast.success(result.message || t('auth.signup.success'));
-                            navigate('/');
+                            navigate('/portal');
                           } else {
                             toast.error(result.error || t('auth.signup.failed'));
                           }

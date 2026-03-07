@@ -43,6 +43,10 @@ import PaymintLeafIcon from '../assets/small-logo.svg';
 import { ConfirmModal } from './ConfirmModal';
 import { getBusinessTypeIcon } from '../utils/businessTypeIcons';
 
+const PortalIcon = ({ size, className }: any) => (
+  <img src={PaymintLeafIcon} style={{ width: size, height: size }} className={`object-contain ${className || ''}`} alt="Home" />
+);
+
 interface MenuItem {
   path: string;
   label: string;
@@ -104,6 +108,7 @@ export function DashboardLayout() {
   const filteredMenu = useMemo(() => {
     // Translate menu structure dynamically
     const translatedMenuStructure: MenuItemOrGroup[] = [
+      { path: '/portal', label: t('nav.home', 'Home'), icon: PortalIcon },
       { path: '.', label: t('dashboard.menu.dashboard'), icon: LayoutDashboard },
       {
         label: t('dashboard.menu.salesAndReporting'),
@@ -667,29 +672,29 @@ export function DashboardLayout() {
                   </div>
                 </div>
 
-                            {/* Text & Badges */}
-                            <div className="text-center mt-2">
-                              <p className="text-sm font-bold text-gray-900 dark:text-white leading-tight mb-3">
-                                {t('dashboard.menu.scanToDownload')}<br />
-                                <span className="text-paymint-green">{t('brand.name')} {t('common.app')}</span>
-                              </p>
-                              <div className="flex flex-col gap-2">
-                                  <button className="flex items-center justify-center gap-2.5 w-full py-2 bg-[#050505] dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-black rounded-xl transition-all shadow-sm border border-gray-800 dark:border-transparent">
-                                      <Apple size={20} />
-                                      <div className="flex flex-col items-start text-left rtl:text-right">
-                                          <span className="text-[8px] leading-[1] text-gray-400 dark:text-gray-500 tracking-wide">Download on the</span>
-                                          <span className="text-sm leading-[1] font-bold mt-0.5">App Store</span>
-                                      </div>
-                                  </button>
-                                  <button className="flex items-center justify-center gap-2.5 w-full py-2 bg-[#050505] dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-black rounded-xl transition-all shadow-sm border border-gray-800 dark:border-transparent">
-                                      <Play size={18} className="text-emerald-400 dark:text-emerald-500" />
-                                      <div className="flex flex-col items-start text-left rtl:text-right">
-                                          <span className="text-[8px] leading-[1] text-gray-400 dark:text-gray-500 tracking-wide uppercase">Get it on</span>
-                                          <span className="text-sm leading-[1] font-bold mt-0.5">Google Play</span>
-                                      </div>
-                                  </button>
-                              </div>
-                            </div>
+                {/* Text & Badges */}
+                <div className="text-center mt-2">
+                  <p className="text-sm font-bold text-gray-900 dark:text-white leading-tight mb-3">
+                    {t('dashboard.menu.scanToDownload')}<br />
+                    <span className="text-paymint-green">{t('brand.name')} {t('common.app')}</span>
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    <button className="flex items-center justify-center gap-2.5 w-full py-2 bg-[#050505] dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-black rounded-xl transition-all shadow-sm border border-gray-800 dark:border-transparent">
+                      <Apple size={20} />
+                      <div className="flex flex-col items-start text-left rtl:text-right">
+                        <span className="text-[8px] leading-[1] text-gray-400 dark:text-gray-500 tracking-wide">Download on the</span>
+                        <span className="text-sm leading-[1] font-bold mt-0.5">App Store</span>
+                      </div>
+                    </button>
+                    <button className="flex items-center justify-center gap-2.5 w-full py-2 bg-[#050505] dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-black rounded-xl transition-all shadow-sm border border-gray-800 dark:border-transparent">
+                      <Play size={18} className="text-emerald-400 dark:text-emerald-500" />
+                      <div className="flex flex-col items-start text-left rtl:text-right">
+                        <span className="text-[8px] leading-[1] text-gray-400 dark:text-gray-500 tracking-wide uppercase">Get it on</span>
+                        <span className="text-sm leading-[1] font-bold mt-0.5">Google Play</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -852,20 +857,20 @@ export function DashboardLayout() {
                                 <span className="text-paymint-green">{t('brand.name')} {t('common.app')}</span>
                               </p>
                               <div className="flex flex-col gap-2">
-                                  <button className="flex items-center justify-center gap-2.5 w-full py-2 bg-[#050505] dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-black rounded-xl transition-all shadow-sm border border-gray-800 dark:border-transparent">
-                                      <Apple size={20} />
-                                      <div className="flex flex-col items-start text-left rtl:text-right">
-                                          <span className="text-[8px] leading-[1] text-gray-400 dark:text-gray-500 tracking-wide">Download on the</span>
-                                          <span className="text-sm leading-[1] font-bold mt-0.5">App Store</span>
-                                      </div>
-                                  </button>
-                                  <button className="flex items-center justify-center gap-2.5 w-full py-2 bg-[#050505] dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-black rounded-xl transition-all shadow-sm border border-gray-800 dark:border-transparent">
-                                      <Play size={18} className="text-emerald-400 dark:text-emerald-500" />
-                                      <div className="flex flex-col items-start text-left rtl:text-right">
-                                          <span className="text-[8px] leading-[1] text-gray-400 dark:text-gray-500 tracking-wide uppercase">Get it on</span>
-                                          <span className="text-sm leading-[1] font-bold mt-0.5">Google Play</span>
-                                      </div>
-                                  </button>
+                                <button className="flex items-center justify-center gap-2.5 w-full py-2 bg-[#050505] dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-black rounded-xl transition-all shadow-sm border border-gray-800 dark:border-transparent">
+                                  <Apple size={20} />
+                                  <div className="flex flex-col items-start text-left rtl:text-right">
+                                    <span className="text-[8px] leading-[1] text-gray-400 dark:text-gray-500 tracking-wide">Download on the</span>
+                                    <span className="text-sm leading-[1] font-bold mt-0.5">App Store</span>
+                                  </div>
+                                </button>
+                                <button className="flex items-center justify-center gap-2.5 w-full py-2 bg-[#050505] dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-black rounded-xl transition-all shadow-sm border border-gray-800 dark:border-transparent">
+                                  <Play size={18} className="text-emerald-400 dark:text-emerald-500" />
+                                  <div className="flex flex-col items-start text-left rtl:text-right">
+                                    <span className="text-[8px] leading-[1] text-gray-400 dark:text-gray-500 tracking-wide uppercase">Get it on</span>
+                                    <span className="text-sm leading-[1] font-bold mt-0.5">Google Play</span>
+                                  </div>
+                                </button>
                               </div>
                             </div>
                           </div>

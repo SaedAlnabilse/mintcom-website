@@ -30,11 +30,16 @@ import PaymintLogoGreen from '../assets/green-full-logo.svg';
 import PaymintLogoWhite from '../assets/white-green-full-logo.svg';
 import PaymintLeafIcon from '../assets/small-logo.svg';
 
+const PortalIcon = ({ size, className }: any) => (
+    <img src={PaymintLeafIcon} style={{ width: size, height: size }} className={`object-contain ${className || ''}`} alt="Home" />
+);
+
 export function OwnerLayout() {
     const { t } = useTranslation();
     const { account, logout } = useAuth();
-    
+
     const menuItems = useMemo(() => [
+        { path: '/portal', label: t('nav.home', 'Home'), icon: PortalIcon },
         { path: '/owner', label: t('owner.menu.overview'), icon: LayoutDashboard },
         { path: '/owner/establishments', label: t('owner.menu.locations'), icon: Store },
         { path: '/owner/brands', label: t('owner.menu.brands'), icon: Building2 },

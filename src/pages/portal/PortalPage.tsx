@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
   User,
-  Building2,
   CreditCard,
   Ticket,
   Bell,
@@ -21,7 +20,10 @@ import {
   Lightbulb,
   BookOpen,
   Shield,
-  Smartphone
+  Smartphone,
+  Sparkles,
+  LayoutDashboard,
+  Headset
 } from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
@@ -109,32 +111,89 @@ export const PortalPage = () => {
 
       <main className="pt-28 pb-20">
         <div className="container mx-auto px-8 md:px-16 lg:px-24">
-          {/* Header */}
-          <div className="mb-10">
+          {/* Creative Header & Launchpad */}
+          <div className="mb-12">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col md:flex-row md:items-center justify-between gap-6"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="relative overflow-hidden rounded-[2.5rem] bg-gray-100 dark:bg-[#0a0a0a] border border-gray-200 dark:border-gray-800 p-8 md:p-14 shadow-xl"
             >
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-paymint-green/20 rounded-2xl flex items-center justify-center">
-                  <User size={32} className="text-paymint-green" />
-                </div>
-                <div>
-                  <h1 className="text-3xl font-black tracking-tight">{t('portal.welcomeUser', { name: user.name.split(' ')[0] })}</h1>
-                  <p className="text-gray-500 dark:text-gray-400 font-medium">
-                    {user.email} · {user.plan} {t('portal.overview.plan')}
-                  </p>
+              {/* Decorative Background Elements */}
+              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-paymint-green/20 blur-[120px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/3" />
+              <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-paymint-green/10 blur-[100px] rounded-full pointer-events-none translate-y-1/2 -translate-x-1/3" />
+
+              <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+                <div className="flex items-center gap-6">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-paymint-green blur-md opacity-20 dark:opacity-40 rounded-full" />
+                    <div className="relative w-24 h-24 bg-white dark:bg-gradient-to-br dark:from-gray-800 dark:to-gray-900 border-2 border-paymint-green/30 dark:border-paymint-green/50 rounded-full flex items-center justify-center overflow-hidden">
+                      {user.avatar ? (
+                        <img src={user.avatar} className="w-full h-full object-cover" alt="User Avatar" />
+                      ) : (
+                        <User size={40} className="text-paymint-green" />
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/20 text-gray-700 dark:text-white text-[10px] font-black tracking-widest uppercase mb-3"
+                    >
+                      <Sparkles size={12} className="text-paymint-green" />
+                      {t('common.welcome')} Back
+                    </motion.div>
+                    <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">
+                      {t('portal.welcomeUser', { name: user.name.split(' ')[0] })}
+                    </h1>
+                    <p className="text-gray-500 dark:text-gray-400 mt-2 font-medium text-lg">
+                      {user.email} · <span className="text-paymint-green">{user.plan} {t('portal.overview.plan')}</span>
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              <Link
-                to="/owner"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-black rounded-xl font-bold hover:opacity-90 transition-all"
-              >
-                <Building2 size={18} />
-                {t('portal.goToDashboard')}
-              </Link>
+              {/* Massive Action Cards inside the header for immediate navigation */}
+              <div className="relative z-10 mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Link
+                  to="/owner"
+                  className="group relative overflow-hidden bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 rounded-3xl p-8 transition-all duration-300 backdrop-blur-sm shadow-xl"
+                >
+                  <div className="absolute -right-6 -top-6 w-32 h-32 bg-paymint-green/10 rounded-full blur-2xl group-hover:bg-paymint-green/20 transition-colors" />
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="w-14 h-14 bg-paymint-green/20 rounded-2xl flex items-center justify-center mb-6 ring-1 ring-paymint-green/30 group-hover:scale-110 transition-transform">
+                        <LayoutDashboard size={28} className="text-paymint-green" />
+                      </div>
+                      <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">{t('portal.goToDashboard', 'Owner Portal')}</h3>
+                      <p className="text-gray-500 dark:text-gray-400 font-medium">Manage your establishments, team, and settings</p>
+                    </div>
+                    <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center group-hover:bg-paymint-green group-hover:text-black text-gray-900 dark:text-white transition-all transform group-hover:translate-x-2">
+                      <ArrowRight size={24} />
+                    </div>
+                  </div>
+                </Link>
+
+                <Link
+                  to="/support"
+                  className="group relative overflow-hidden bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 rounded-3xl p-8 transition-all duration-300 backdrop-blur-sm shadow-xl"
+                >
+                  <div className="absolute -left-6 -bottom-6 w-32 h-32 bg-paymint-green/10 rounded-full blur-2xl group-hover:bg-paymint-green/20 transition-colors" />
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="w-14 h-14 bg-paymint-green/10 dark:bg-paymint-green/20 rounded-2xl flex items-center justify-center mb-6 ring-1 ring-paymint-green/30 group-hover:scale-110 transition-transform">
+                        <Headset size={28} className="text-paymint-green" />
+                      </div>
+                      <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">{t('nav.support', 'Support Center')}</h3>
+                      <p className="text-gray-500 dark:text-gray-400 font-medium">Get help, view tickets, and access resources</p>
+                    </div>
+                    <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center group-hover:bg-paymint-green group-hover:text-black text-gray-900 dark:text-white transition-all transform group-hover:translate-x-2">
+                      <ArrowRight size={24} />
+                    </div>
+                  </div>
+                </Link>
+              </div>
             </motion.div>
           </div>
 
@@ -281,14 +340,13 @@ export const PortalPage = () => {
                   {announcements.map((announcement) => (
                     <div key={announcement.id} className="p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                       <div className="flex items-start gap-4">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                          announcement.type === 'feature' ? 'bg-paymint-green/20 text-paymint-green' :
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${announcement.type === 'feature' ? 'bg-paymint-green/20 text-paymint-green' :
                           announcement.type === 'maintenance' ? 'bg-yellow-100 dark:bg-yellow-500/20 text-yellow-600' :
-                          'bg-blue-100 dark:bg-blue-500/20 text-blue-600'
-                        }`}>
+                            'bg-blue-100 dark:bg-blue-500/20 text-blue-600'
+                          }`}>
                           {announcement.type === 'feature' ? <TrendingUp size={18} /> :
-                           announcement.type === 'maintenance' ? <Clock size={18} /> :
-                           <CreditCard size={18} />}
+                            announcement.type === 'maintenance' ? <Clock size={18} /> :
+                              <CreditCard size={18} />}
                         </div>
                         <div className="flex-1">
                           <h4 className="font-bold mb-1">{announcement.title}</h4>
@@ -311,10 +369,10 @@ export const PortalPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="bg-gradient-to-br from-gray-900 to-gray-800 dark:from-white/10 dark:to-white/5 rounded-2xl p-6 text-white"
+                className="bg-white dark:bg-gradient-to-br dark:from-[#1E293B] dark:to-[#0F172A] border border-gray-100 dark:border-white/10 rounded-2xl p-6"
               >
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-bold">{t('portal.plan.title')}</h3>
+                  <h3 className="font-bold text-gray-900 dark:text-white">{t('portal.plan.title')}</h3>
                   <span className="px-2 py-1 bg-paymint-green text-black rounded-md text-xs font-bold">
                     {user.plan}
                   </span>
@@ -322,23 +380,23 @@ export const PortalPage = () => {
 
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">{t('portal.plan.nextBilling')}</span>
-                    <span className="font-bold">Mar 1, 2025</span>
+                    <span className="text-gray-500 dark:text-gray-400">{t('portal.plan.nextBilling')}</span>
+                    <span className="font-bold text-gray-900 dark:text-white">Mar 1, 2025</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-400">{t('portal.plan.amount')}</span>
-                    <span className="font-bold">$49/month</span>
+                    <span className="text-gray-500 dark:text-gray-400">{t('portal.plan.amount')}</span>
+                    <span className="font-bold text-gray-900 dark:text-white">$49/month</span>
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <Link
                     to="/owner/billing"
-                    className="block w-full py-3 bg-white text-black rounded-xl font-bold text-center text-sm hover:opacity-90 transition-all"
+                    className="block w-full py-3 bg-gray-900 dark:bg-white text-white dark:text-black rounded-xl font-bold text-center text-sm hover:opacity-90 transition-all shadow-md"
                   >
                     {t('portal.plan.manage')}
                   </Link>
-                  <button className="w-full py-3 bg-white/10 text-white rounded-xl font-bold text-sm hover:bg-white/20 transition-all">
+                  <button className="w-full py-3 bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white rounded-xl font-bold text-sm hover:bg-gray-200 dark:hover:bg-white/20 transition-all">
                     {t('portal.plan.upgrade')}
                   </button>
                 </div>
@@ -379,7 +437,7 @@ export const PortalPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="bg-gradient-to-br from-paymint-green/20 to-blue-500/10 border border-paymint-green/20 rounded-2xl p-6"
+                className="bg-gradient-to-br from-paymint-green/20 to-paymint-green/5 border border-paymint-green/20 rounded-2xl p-6"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <Smartphone size={24} className="text-paymint-green" />

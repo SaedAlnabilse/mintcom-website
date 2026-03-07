@@ -271,19 +271,36 @@ export const ArticlePage = () => {
         'ft': { name: t('support.categories.features'), id: 'features' }
       };
       const cat = categoryMap[prefix];
+      const articleKey = id.replace('-', '');
+      const translatedTitle = t(`support.articles.${articleKey}`, { defaultValue: '' });
+      const translatedExcerpt = t(`support.articles.${articleKey}_excerpt`, { defaultValue: '' });
+      
+      const realTitle = translatedTitle || `${t('support.articles.stubTitle')} ${id}`;
+      
       allArticles[id] = {
         id,
-        title: `${t('support.articles.stubTitle')} ${id}`,
+        title: realTitle,
         category: cat.name,
         categoryId: cat.id,
-        readTime: '5 min',
-        views: '1.0k',
+        readTime: '4 min',
+        views: `${(Math.random() * 5 + 1).toFixed(1)}k`,
         lastUpdated: 'February 2025',
         content: [
-          `## ${t('support.articles.stubContentH1')}`,
-          t('support.articles.stubContentP1'),
-          `### ${t('support.articles.stubContentH2')}`,
-          t('support.articles.stubContentP2')
+          `## ${t('support.genericArticle.overview')}`,
+          translatedExcerpt || t('support.genericArticle.p1'),
+          t('support.genericArticle.p2'),
+          `### ${t('support.genericArticle.stepsTitle')}`,
+          t('support.genericArticle.stepsDesc'),
+          `- **${t('support.genericArticle.step1Label')}**: ${t('support.genericArticle.step1Desc')}`,
+          `- **${t('support.genericArticle.step2Label')}**: ${t('support.genericArticle.step2Desc')}`,
+          `- **${t('support.genericArticle.step3Label')}**: ${t('support.genericArticle.step3Desc')}`,
+          `### ${t('support.genericArticle.bestPracticesTitle')}`,
+          t('support.genericArticle.bestPracticesDesc'),
+          `### ${t('support.genericArticle.faqTitle')}`,
+          `**${t('support.genericArticle.q1')}**`,
+          t('support.genericArticle.a1'),
+          `**${t('support.genericArticle.q2')}**`,
+          t('support.genericArticle.a2')
         ],
         relatedArticles: []
       };

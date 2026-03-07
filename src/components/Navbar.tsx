@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Menu, X, Laptop, LogOut, User, Headset } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './Logo';
+import PaymintLeafIcon from '../assets/small-logo.svg';
 import { ThemeToggle } from './ThemeToggle';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useAuth } from '../context/AuthContext';
@@ -46,7 +47,7 @@ export const Navbar = () => {
     >
       <div className="container mx-auto px-8 md:px-16 lg:px-24 flex justify-between items-center">
         {/* Logo */}
-        <Link to="/" className="flex items-center group">
+        <Link to={isAuthenticated ? "/portal" : "/"} className="flex items-center group">
           <Logo size="lg" className="transition-transform duration-500" />
         </Link>
 
@@ -85,6 +86,13 @@ export const Navbar = () => {
           <div className="flex items-center gap-6">
             {isAuthenticated ? (
               <>
+                <Link
+                  to="/portal"
+                  className="inline-flex items-center gap-2.5 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white px-6 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-none active:scale-95 shadow-sm group"
+                >
+                  <img src={PaymintLeafIcon} className="w-3.5 h-3.5 object-contain group-hover:scale-110 transition-transform" alt="Home" />
+                  {t('nav.home', 'Home')}
+                </Link>
                 <Link
                   to="/support"
                   className="inline-flex items-center gap-2.5 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white px-6 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-none active:scale-95 shadow-sm group"
@@ -189,6 +197,14 @@ export const Navbar = () => {
               <div className="flex flex-col gap-4">
                 {isAuthenticated ? (
                   <>
+                    <Link
+                      to="/portal"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="w-full py-5 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white rounded-[2rem] text-xl font-black tracking-tight text-center flex items-center justify-center gap-3 transition-transform active:scale-95 shadow-sm"
+                    >
+                      <img src={PaymintLeafIcon} className="w-5 h-5 object-contain" alt="Home" />
+                      {t('nav.home', 'Home')}
+                    </Link>
                     <Link
                       to="/support"
                       onClick={() => setIsMobileMenuOpen(false)}
