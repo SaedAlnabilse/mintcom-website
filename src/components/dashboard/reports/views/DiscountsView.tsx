@@ -67,7 +67,7 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
           </div>
         </div>
         <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+          <div className="w-12 h-12 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
             <Tag size={24} />
           </div>
           <div>
@@ -95,13 +95,13 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
                   {t('orders.reports.discounts.name')}
                 </th>
                 <th
-                  className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                   onClick={() => requestSort('count')}
                 >
                   {t('orders.reports.discounts.count')}
                 </th>
                 <th
-                  className="px-6 py-4 text-end text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                   onClick={() => requestSort('value')}
                 >
                   {t('orders.reports.discounts.value')}
@@ -120,13 +120,13 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
                       transition={{ delay: idx * 0.05 }}
                       className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
                     >
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-4 text-start">
                         <span className="font-bold text-gray-900 dark:text-white text-sm">{item.name}</span>
                       </td>
-                      <td className="px-6 py-4 text-end font-bold text-gray-700 dark:text-gray-300">
+                      <td className="px-6 py-4 text-center font-bold text-gray-700 dark:text-gray-300">
                         {item.count.toLocaleString(t('common.locale'))}
                       </td>
-                      <td className="px-6 py-4 text-end font-black text-orange-500">
+                      <td className="px-6 py-4 text-center font-black text-orange-500">
                         {formatCurrency(item.value)}
                       </td>
                     </motion.tr>

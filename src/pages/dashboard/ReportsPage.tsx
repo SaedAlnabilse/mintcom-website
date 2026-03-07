@@ -51,6 +51,14 @@ export function ReportsPage() {
 
   const canExport = useMemo(() => checkPermission(account, ['export_data']), [account]);
 
+  const browserTimeZone = useMemo(() => {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+    } catch {
+      return 'UTC';
+    }
+  }, []);
+
   const location = useLocation();
   const navigate = useNavigate();
   const params = useParams();
@@ -290,7 +298,7 @@ export function ReportsPage() {
           break;
         }
         case 'peak-hours': {
-          const peakRes = await api.get('/reports/peak-hours', { params: commonParams });
+          const peakRes = await api.get('/reports/peak-hours', { params: { ...commonParams, timezone: browserTimeZone } });
           setPeakHours(peakRes.data || []);
           break;
         }
@@ -722,5 +730,4 @@ export function ReportsPage() {
     </div>
   );
 }
-
 

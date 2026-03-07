@@ -16,6 +16,8 @@ import {
 import {
     AreaChart,
     Area,
+    ComposedChart,
+    Bar,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -341,7 +343,7 @@ export function OwnerOverviewPage() {
                     <div className="h-[450px] w-full relative flex-1">
                         {chartData.length > 0 && chartData.some(d => d.value > 0) ? (
                             <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={chartData}>
+                                <ComposedChart data={chartData}>
                                     <defs>
                                         <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="5%" stopColor="#7CC39F" stopOpacity={0.2} />
@@ -365,6 +367,7 @@ export function OwnerOverviewPage() {
                                         dx={-5}
                                     />
                                     <Tooltip
+                                        cursor={chartData.length > 1 ? { stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' } : false}
                                         contentStyle={{
                                             backgroundColor: 'rgba(255, 255, 255, 0.95)',
                                             borderColor: '#E5E7EB',
@@ -375,15 +378,25 @@ export function OwnerOverviewPage() {
                                         itemStyle={{ color: '#111827' }}
                                         formatter={(value) => [formatCurrency(value as number), t('owner.overview.revenue')]}
                                     />
-                                    <Area
-                                        type="monotone"
-                                        dataKey="value"
-                                        stroke="#7CC39F"
-                                        strokeWidth={2.5}
-                                        fillOpacity={1}
-                                        fill="url(#revenueGradient)"
-                                    />
-                                </AreaChart>
+                                    {chartData.length === 1 ? (
+                                        <Bar 
+                                            dataKey="value" 
+                                            fill="url(#revenueGradient)" 
+                                            barSize={60} 
+                                            radius={[8, 8, 0, 0]} 
+                                            animationDuration={1500} 
+                                        />
+                                    ) : (
+                                        <Area
+                                            type="monotone"
+                                            dataKey="value"
+                                            stroke="#7CC39F"
+                                            strokeWidth={2.5}
+                                            fillOpacity={1}
+                                            fill="url(#revenueGradient)"
+                                        />
+                                    )}
+                                </ComposedChart>
                             </ResponsiveContainer>
                         ) : (
                             <div className="h-full w-full flex flex-col items-center justify-center">

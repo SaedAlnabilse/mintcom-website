@@ -152,7 +152,7 @@ export interface SalesSummary {
 }
 
 export interface PeakHour {
-  hour: number;
+  hour: number | string;
   total: number;
   count: number;
 }
@@ -261,3 +261,4 @@ export interface TopSellingItem {
   quantity: number;
   revenue: number;
 }
+

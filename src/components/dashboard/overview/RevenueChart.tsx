@@ -1,6 +1,6 @@
 import React from 'react';
 import { TrendingUp, Activity, Zap } from 'lucide-react';
-import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import { ComposedChart, Area, Bar, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { format } from 'date-fns';
 import { useTheme } from '../../../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
@@ -23,26 +23,33 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
   // Determine if we need daily aggregation (for week/month views)
   const needsDailyAggregation = ['this_week', 'this_month', 'last_30'].includes(selectedDateRange || '');
 
-  // If it's "Yesterday" and we have hourly data, fill in the missing hours to show a full 24h timeline
-  if (selectedDateRange === 'yesterday' && isHourly) {
+  // If it's a shift or yesterday and we have hourly data, fill in the missing hours to show a full 24h timeline
+  if (['yesterday', 'current_shift', 'previous_shift'].includes(viewMode === 'last_24_hours' ? selectedDateRange || '' : viewMode) && isHourly && chartData.length > 0) {
     const allHours = Array.from({ length: 24 }, (_, i) => {
       const hourStr = `${String(i).padStart(2, '0')}:00`;
-      const existing = chartData.find((d: any) => {
-        // Direct match
+      // Aggregate all sales within this hour
+      const hourItems = chartData.filter((d: any) => {
         if (d.date === hourStr) return true;
-
-        // Parse date string to check hour match
         const date = new Date(d.date);
         if (!isNaN(date.getTime())) {
-          const h = String(date.getHours()).padStart(2, '0');
-          const m = String(date.getMinutes()).padStart(2, '0');
-          return `${h}:${m}` === hourStr;
+          return date.getHours() === i;
+        }
+        // For "10:30" format that might not be full date
+        if (d.date.includes(':')) {
+          const h = parseInt(d.date.split(':')[0]);
+          return h === i;
         }
         return false;
       });
 
-      // Preserve the original date if found (for tooltips), otherwise use hourStr
-      return existing ? { ...existing, date: hourStr } : { date: hourStr, revenue: 0, count: 0 };
+      if (hourItems.length > 0) {
+        return {
+          date: hourStr,
+          revenue: hourItems.reduce((sum, d) => sum + (Number(d.revenue) || 0), 0),
+          count: hourItems.reduce((sum, d) => sum + (Number(d.count) || 0), 0)
+        };
+      }
+      return { date: hourStr, revenue: 0, count: 0 };
     });
     chartData = allHours;
   }
@@ -110,7 +117,7 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
                 {/* Fixed Y-Axis Container */}
                 <div className="absolute start-0 top-0 bottom-0 w-[50px] z-20 pointer-events-none" style={{ background: 'linear-gradient(to right, ' + (isDark ? '#0B1120 80%, transparent' : '#FFFFFF 80%, transparent') + ')' }}>
                 <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart
+                    <ComposedChart
                     data={chartData}
                     margin={{ top: 10, right: 0, left: 0, bottom: 20 }}
                     >
@@ -126,17 +133,21 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
                     />
                     {/* Dummy Area to force render */}
                     <Area dataKey="revenue" stroke="none" fill="none" />
-                    </AreaChart>
+                    </ComposedChart>
                 </ResponsiveContainer>
                 </div>
 
                 {/* Scrollable Chart Area */}
-                <div className="flex-1 overflow-x-auto overflow-y-hidden ps-[50px] scrollbar-none scroll-smooth">
+                <div className="flex-1 overflow-x-auto overflow-y-hidden ps-[50px] scrollbar-none scroll-smooth" ref={(el) => {
+                  // Auto-scroll to the end (latest hours) so recent sales are visible
+                  if (el && isHourly && !needsDailyAggregation) {
+                    el.scrollLeft = el.scrollWidth;
+                  }
+                }}>
                 {isHourly && !needsDailyAggregation ? (
-                    <div style={{ width: `${Math.max(800, chartData.length * 85)}px`, height: '100%' }}>
-                    <AreaChart
-                        width={Math.max(800, chartData.length * 85)}
-                        height={300}
+                    <div style={{ width: `${Math.max(800, chartData.length * 65)}px`, height: '100%' }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                    <ComposedChart
                         data={chartData}
                         margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
                     >
@@ -172,7 +183,7 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
                         />
                         <YAxis hide domain={[0, maxY]} />
                         <Tooltip
-                        cursor={{ stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' }}
+                        cursor={chartData.length > 1 ? { stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' } : false}
                         formatter={(val: any) => [Number(val).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }), t('dashboard.revenueChart.revenue')]}
                         contentStyle={{
                             backgroundColor: isDark ? '#0B1120' : '#fff',
@@ -196,21 +207,39 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
                             return !isNaN(date.getTime()) ? format(date, 'MMM d, HH:00', { locale: dateLocale }) : val;
                         }}
                         />
-                        <Area
-                        type="monotone"
-                        dataKey="revenue"
-                        stroke="#7CC39F"
-                        strokeWidth={6}
-                        fillOpacity={1}
-                        fill="url(#colorRevenuePremium)"
-                        animationDuration={1500}
-                        strokeLinecap="round"
-                        />
-                    </AreaChart>
-                    </div>
-                ) : (
-                    <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart
+                        {isHourly && !needsDailyAggregation ? (
+                          <Bar 
+                            dataKey="revenue" 
+                            fill="url(#colorRevenuePremium)" 
+                            barSize={chartData.length > 24 ? 20 : 40} 
+                            radius={[8, 8, 0, 0]} 
+                            animationDuration={1500} 
+                          />
+                        ) : chartData.length === 1 ? (
+                          <Bar 
+                            dataKey="revenue" 
+                            fill="url(#colorRevenuePremium)" 
+                            barSize={60} 
+                            radius={[8, 8, 0, 0]} 
+                            animationDuration={1500} 
+                          />
+                        ) : (
+                          <Area
+                            type="monotone"
+                            dataKey="revenue"
+                            stroke="#7CC39F"
+                            strokeWidth={6}
+                            fillOpacity={1}
+                            fill="url(#colorRevenuePremium)"
+                            animationDuration={1500} 
+                            strokeLinecap="round"
+                            />
+                            )}
+                            </ComposedChart>
+                            </ResponsiveContainer>
+                            </div>
+                            ) : (                    <ResponsiveContainer width="100%" height="100%">
+                    <ComposedChart
                         data={chartData}
                         margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
                     >
@@ -242,7 +271,7 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
                         />
                         <YAxis hide domain={[0, maxY]} />
                         <Tooltip
-                        cursor={{ stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' }}
+                        cursor={chartData.length > 1 ? { stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' } : false}
                         formatter={(val: any) => [Number(val).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }), t('dashboard.revenueChart.revenue')]}
                         contentStyle={{
                             backgroundColor: isDark ? '#0B1120' : '#fff',
@@ -267,17 +296,35 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
                             return !isNaN(date.getTime()) ? format(date, 'MMM d, yyyy', { locale: dateLocale }) : val;
                         }}
                         />
-                        <Area
-                        type="monotone"
-                        dataKey="revenue"
-                        stroke="#7CC39F"
-                        strokeWidth={6}
-                        fillOpacity={1}
-                        fill="url(#colorRevenuePremium)"
-                        animationDuration={1500}
-                        strokeLinecap="round"
-                        />
-                    </AreaChart>
+                        {isHourly && !needsDailyAggregation ? (
+                          <Bar 
+                            dataKey="revenue" 
+                            fill="url(#colorRevenuePremium)" 
+                            barSize={chartData.length > 24 ? 20 : 40} 
+                            radius={[8, 8, 0, 0]} 
+                            animationDuration={1500} 
+                          />
+                        ) : chartData.length === 1 ? (
+                          <Bar 
+                            dataKey="revenue" 
+                            fill="url(#colorRevenuePremium)" 
+                            barSize={60} 
+                            radius={[8, 8, 0, 0]} 
+                            animationDuration={1500} 
+                          />
+                        ) : (
+                          <Area
+                            type="monotone"
+                            dataKey="revenue"
+                            stroke="#7CC39F"
+                            strokeWidth={6}
+                            fillOpacity={1}
+                            fill="url(#colorRevenuePremium)"
+                            animationDuration={1500}
+                            strokeLinecap="round"
+                          />
+                        )}
+                    </ComposedChart>
                     </ResponsiveContainer>
                 )}
                 </div>

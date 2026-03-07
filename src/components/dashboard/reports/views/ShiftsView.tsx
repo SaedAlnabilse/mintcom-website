@@ -1,4 +1,4 @@
-import { Activity, Clock, Wallet } from 'lucide-react';
+import { Activity, Clock } from 'lucide-react';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import type { Shift } from '../../../../types';
 import { motion } from 'framer-motion';
@@ -38,7 +38,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
   return (
     <div className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Audit Oversight Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
           <div className="flex items-center gap-3 mb-4 text-orange-500">
             <Activity size={20} />
@@ -51,20 +51,12 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
           <p className="text-xs font-bold text-gray-500 mt-2">{t('orders.reports.shifts.totalOverShort')}</p>
         </div>
         <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
-          <div className="flex items-center gap-3 mb-4 text-blue-500">
+          <div className="flex items-center gap-3 mb-4 text-paymint-green">
             <Clock size={20} />
             <h4 className="text-xs font-black tracking-widest text-gray-400">{t('dashboard.menu.shiftsReports')}</h4>
           </div>
           <p className="text-3xl font-black text-gray-900 dark:text-white">{shifts.length.toLocaleString(t('common.locale'))}</p>
           <p className="text-xs font-bold text-gray-500 mt-2">{t('orders.reports.shifts.activeShifts', { count: activeShifts })}</p>
-        </div>
-        <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-100 dark:border-white/[0.05] shadow-sm">
-          <div className="flex items-center gap-3 mb-4 text-paymint-green">
-            <Wallet size={20} />
-            <h4 className="text-xs font-black tracking-widest text-gray-400">{t('orders.reports.shifts.audited')}</h4>
-          </div>
-          <p className="text-3xl font-black text-paymint-green">{(1).toLocaleString(t('common.locale'), { style: 'percent' })}</p>
-          <p className="text-xs font-bold text-gray-500 mt-2">{t('orders.reports.shifts.shiftsClosed')}</p>
         </div>
       </div>
 
@@ -94,7 +86,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                 >
                   <td className="px-5 py-5">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center font-black text-xs">
+                      <div className="w-8 h-8 rounded-lg bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-xs">
                         {shift.user?.username?.charAt(0).toUpperCase()}
                       </div>
                       <span className="font-bold text-gray-900 dark:text-white text-sm">{shift.user?.username || t('common.unknown')}</span>
@@ -118,7 +110,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts }: ShiftsViewP
                   </td>
                   <td className="px-5 py-5 text-end">
                     {shift.status === 'CLOSED' ? (
-                      <span className="font-bold text-blue-500">
+                      <span className="font-bold text-paymint-green">
                         {shift.closingBalance !== null && shift.closingBalance !== undefined
                           ? formatCurrency(shift.closingBalance)
                           : '—'}

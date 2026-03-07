@@ -37,7 +37,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
             </p>
             <p className="text-xs text-gray-500 mt-2">{t('orders.reports.taxes.taxableSalesDesc')}</p>
           </div>
-          <div className="absolute end-0 top-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -me-10 -mt-10" />
+          <div className="absolute end-0 top-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl -me-10 -mt-10" />
         </div>
 
         <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">

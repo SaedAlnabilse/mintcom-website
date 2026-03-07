@@ -169,7 +169,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
           className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/10 shadow-sm"
         >
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center">
               <AlertCircle size={20} />
             </div>
             <span className="text-xs font-black text-gray-500 tracking-widest uppercase">{t('orders.reports.cashGap.accuracyRate')}</span>
@@ -261,7 +261,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
                       >
                         <td className="px-5 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center font-black text-xs">
+                            <div className="w-8 h-8 rounded-lg bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-xs">
                               <User size={14} />
                             </div>
                             <span className="font-bold text-gray-900 dark:text-white text-sm">
@@ -347,11 +347,11 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
       </div>
 
       {/* Summary Note */}
-      <div className="bg-blue-50 dark:bg-blue-500/5 border border-blue-200 dark:border-blue-500/10 rounded-xl p-4 flex items-start gap-3">
-        <AlertCircle size={20} className="text-blue-500 flex-shrink-0 mt-0.5" />
+      <div className="bg-paymint-green/5 dark:bg-paymint-green/5 border border-paymint-green/20 dark:border-paymint-green/10 rounded-xl p-4 flex items-start gap-3">
+        <AlertCircle size={20} className="text-paymint-green flex-shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm font-bold text-blue-900 dark:text-blue-400">{t('orders.reports.cashGap.understandingTitle')}</p>
-          <p className="text-xs text-blue-700 dark:text-blue-300/70 mt-1">
+          <p className="text-sm font-bold text-paymint-green dark:text-paymint-green">{t('orders.reports.cashGap.understandingTitle')}</p>
+          <p className="text-xs text-paymint-green dark:text-paymint-green/70 mt-1">
             {t('orders.reports.cashGap.understandingDesc')}
           </p>
         </div>

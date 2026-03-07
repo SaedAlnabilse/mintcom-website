@@ -1152,7 +1152,7 @@
       "spent": "Total Revenue",
       "total": "Total Customers"
     },
-    "subtitle": "Manage your customer database and loyalty",
+    "subtitle": "Manage your customers",
     "title": "Customers"
   },
   "dashboard": {
@@ -1382,6 +1382,7 @@
       "updated": "Discount updated successfully"
     },
     "newDiscount": "New Discount",
+    "subtitle": "Manage your discounts",
     "title": "Discounts"
   },
   "errors": {
@@ -3264,7 +3265,8 @@
     },
     "newType": "New Type",
     "noCardBrands": "No card brands added yet.",
-    "paymentTypes": "Payment Types",
+    "paymentTypes": "Digital Wallets & Apps",
+    "paymentTypesSubtitle": "Manage non-card payments such as Apple Pay, Uber, and Talabat.",
     "showLogo": "Show Logo",
     "subtitle": "Manage how you accept payments",
     "system": "System",

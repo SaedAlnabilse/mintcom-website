@@ -12,7 +12,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell } from 'recharts';
+import { AreaChart, Area, ComposedChart, Bar, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell } from 'recharts';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { getDateLocale } from '../../../../utils/dateLocale';
@@ -48,8 +48,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             label: t('orders.reports.sales.totalSales'),
             value: ((salesData.totalRevenue || 0) + (salesData.taxCollected || 0)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
             icon: Wallet,
-            color: 'text-blue-500',
-            bg: 'bg-blue-500/10',
+            color: 'text-paymint-green',
+            bg: 'bg-paymint-green/10',
             sub: t('orders.reports.sales.totalIncTax')
           },
           {
@@ -64,16 +64,16 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             label: t('orders.reports.sales.profit'),
             value: (salesData.grossProfit || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
             icon: DollarSign,
-            color: (salesData.grossProfit || 0) >= 0 ? 'text-emerald-500' : 'text-red-500',
-            bg: (salesData.grossProfit || 0) >= 0 ? 'bg-emerald-500/10' : 'bg-red-500/10',
+            color: (salesData.grossProfit || 0) >= 0 ? 'text-paymint-green' : 'text-red-500',
+            bg: (salesData.grossProfit || 0) >= 0 ? 'bg-paymint-green/10' : 'bg-red-500/10',
             sub: t('orders.reports.sales.netSalesCost')
           },
           {
             label: t('orders.reports.sales.totalTax'),
             value: (salesData.taxCollected || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
             icon: Percent,
-            color: 'text-orange-500',
-            bg: 'bg-orange-500/10',
+            color: 'text-paymint-green',
+            bg: 'bg-paymint-green/10',
             sub: t('orders.reports.sales.taxAmount')
           },
           {
@@ -81,8 +81,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             value: (salesData.totalOrders || 0).toLocaleString(t('common.locale')),
             suffix: t('dashboard.stats.orders'),
             icon: ShoppingBag,
-            color: 'text-indigo-500',
-            bg: 'bg-indigo-500/10',
+            color: 'text-paymint-green',
+            bg: 'bg-paymint-green/10',
             sub: t('orders.reports.sales.completed')
           },
           {
@@ -98,8 +98,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             value: (salesData.totalHoursWorked || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
             suffix: t('orders.reports.sales.hours'),
             icon: Clock,
-            color: 'text-orange-500',
-            bg: 'bg-orange-500/10',
+            color: 'text-paymint-green',
+            bg: 'bg-paymint-green/10',
             sub: t('orders.reports.sales.staffHours'),
             onClick: () => {
               window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -110,8 +110,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             label: t('orders.reports.sales.nonSales'),
             value: null,
             icon: ArrowUpRight,
-            color: 'text-cyan-500',
-            bg: 'bg-cyan-500/10',
+            color: 'text-paymint-green',
+            bg: 'bg-paymint-green/10',
             sub: null,
             customContent: (
               <div className="w-full mt-6 space-y-2">
@@ -193,21 +193,33 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                 // Determine if we need daily aggregation (for week/month views)
                 const needsDailyAggregation = ['this_week', 'this_month', 'last_30'].includes(selectedDateRange) && isHourly;
 
-                // If it's "Yesterday" and we have hourly data, fill in the missing hours to show a full 24h timeline
-                if (selectedDateRange === 'yesterday' && isHourly) {
+                // If it's "Yesterday" or "Today" and we have hourly data, fill in the missing hours to show a full 24h timeline
+                if (['yesterday', 'today'].includes(selectedDateRange) && isHourly && chartData.length > 0) {
                   const allHours = Array.from({ length: 24 }, (_, i) => {
                     const hourStr = `${String(i).padStart(2, '0')}:00`;
-                    const existing = chartData.find((d: any) => {
+                    // Aggregate all sales within this hour
+                    const hourItems = chartData.filter((d: any) => {
                       if (d.date === hourStr) return true;
                       const date = new Date(d.date);
                       if (!isNaN(date.getTime())) {
-                        const h = String(date.getHours()).padStart(2, '0');
-                        const m = String(date.getMinutes()).padStart(2, '0');
-                        return `${h}:${m}` === hourStr;
+                        return date.getHours() === i;
+                      }
+                      // For "10:30" format that might not be full date
+                      if (d.date.includes(':')) {
+                        const h = parseInt(d.date.split(':')[0]);
+                        return h === i;
                       }
                       return false;
                     });
-                    return existing ? { ...existing, date: hourStr } : { date: hourStr, revenue: 0, count: 0 };
+
+                    if (hourItems.length > 0) {
+                      return {
+                        date: hourStr,
+                        revenue: hourItems.reduce((sum, d) => sum + (Number(d.revenue) || 0), 0),
+                        count: hourItems.reduce((sum, d) => sum + (Number(d.count) || 0), 0)
+                      };
+                    }
+                    return { date: hourStr, revenue: 0, count: 0 };
                   });
                   chartData = allHours;
                 }
@@ -262,7 +274,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                   <>
                     <div className="absolute start-0 top-0 bottom-0 w-[50px] z-20 pointer-events-none" style={{ background: 'linear-gradient(to ' + (t('common.locale') === 'ar' ? 'left' : 'right') + ', ' + (isDark ? '#0B1120 80%, transparent' : '#FFFFFF 80%, transparent') + ')' }}>
                       <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={chartData} margin={{ top: 10, right: 0, left: 0, bottom: 20 }}>
+                        <ComposedChart data={chartData} margin={{ top: 10, right: 0, left: 0, bottom: 20 }}>
                           <YAxis
                             stroke="#94a3b8"
                             fontSize={10}
@@ -274,13 +286,18 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                             width={40}
                           />
                           <Area dataKey="revenue" stroke="none" fill="none" />
-                        </AreaChart>
+                        </ComposedChart>
                       </ResponsiveContainer>
                     </div>
-                    <div className="flex-1 overflow-x-auto overflow-y-hidden ps-[50px] scrollbar-none scroll-smooth">
-                      <div style={{ width: isHourly && !needsDailyAggregation ? `${Math.max(800, chartData.length * 85)}px` : '100%', height: '100%' }}>
+                    <div className="flex-1 overflow-x-auto overflow-y-hidden ps-[50px] scrollbar-none scroll-smooth" ref={(el) => {
+                      // Auto-scroll to the end (latest hours) so recent sales are visible
+                      if (el && isHourly && !needsDailyAggregation) {
+                        el.scrollLeft = el.scrollWidth;
+                      }
+                    }}>
+                      <div style={{ width: isHourly && !needsDailyAggregation ? `${Math.max(800, chartData.length * 65)}px` : chartData.length > 1 ? `${Math.max(800, chartData.length * 85)}px` : '100%', height: '100%' }}>
                         <ResponsiveContainer width="100%" height="100%">
-                          <AreaChart
+                          <ComposedChart
                             data={chartData}
                             margin={{ top: 10, right: 30, left: 0, bottom: 20 }}
                           >
@@ -311,7 +328,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                             />
                             <YAxis hide domain={[0, maxY]} />
                             <Tooltip
-                              cursor={{ stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' }}
+                              cursor={chartData.length > 1 ? { stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' } : false}
                               formatter={(val: any) => [Number(val).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }), t('dashboard.revenueChart.revenue')]}
                               contentStyle={{
                                 backgroundColor: isDark ? '#0B1120' : '#fff',
@@ -333,17 +350,35 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                                 return !isNaN(date.getTime()) ? format(date, 'MMM d, yyyy HH:mm', { locale: dateLocale }) : val;
                               }}
                             />
-                            <Area
-                              type="monotone"
-                              dataKey="revenue"
-                              stroke="#7CC39F"
-                              strokeWidth={6}
-                              fillOpacity={1}
-                              fill="url(#colorRevenuePremium)"
-                              animationDuration={1500}
-                              strokeLinecap="round"
-                            />
-                          </AreaChart>
+                            {isHourly && !needsDailyAggregation ? (
+                              <Bar 
+                                dataKey="revenue" 
+                                fill="url(#colorRevenuePremium)" 
+                                barSize={chartData.length > 24 ? 20 : 40} 
+                                radius={[8, 8, 0, 0]} 
+                                animationDuration={1500} 
+                              />
+                            ) : chartData.length === 1 ? (
+                              <Bar 
+                                dataKey="revenue" 
+                                fill="url(#colorRevenuePremium)" 
+                                barSize={60} 
+                                radius={[8, 8, 0, 0]} 
+                                animationDuration={1500} 
+                              />
+                            ) : (
+                              <Area
+                                type="monotone"
+                                dataKey="revenue"
+                                stroke="#7CC39F"
+                                strokeWidth={6}
+                                fillOpacity={1}
+                                fill="url(#colorRevenuePremium)"
+                                animationDuration={1500}
+                                strokeLinecap="round"
+                              />
+                            )}
+                          </ComposedChart>
                         </ResponsiveContainer>
                       </div>
                     </div>
@@ -358,7 +393,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
         <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+              <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green">
                 <Wallet size={20} />
               </div>
               <div>
@@ -368,7 +403,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             </div>
             <button
               onClick={() => navigate(`/dashboard/${locationSlug}/reports/payments`)}
-              className="text-xs font-bold text-blue-500 hover:underline tracking-wide"
+              className="text-xs font-bold text-paymint-green hover:underline tracking-wide"
             >
               {t('orders.reports.sales.viewAll')}
             </button>

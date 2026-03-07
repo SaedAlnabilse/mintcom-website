@@ -33,7 +33,24 @@ export const PeakHoursView = React.memo(function PeakHoursView({ peakHours }: Pe
       <div className="h-[400px]" dir="ltr">
         {peakHours.length > 0 && peakHours.some((h: any) => Number(h.total) > 0) ? (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={peakHours.map(h => ({ ...h, hourFormatted: `${h.hour}:00` }))} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <BarChart data={[...peakHours].sort((a, b) => {
+              const hA = typeof a.hour === 'number' ? a.hour : parseInt(String(a.hour).replace(/[^\d]/g, '')) + (String(a.hour).toLowerCase().includes('pm') && parseInt(String(a.hour)) < 12 ? 12 : 0);
+              const hB = typeof b.hour === 'number' ? b.hour : parseInt(String(b.hour).replace(/[^\d]/g, '')) + (String(b.hour).toLowerCase().includes('pm') && parseInt(String(b.hour)) < 12 ? 12 : 0);
+              return hA - hB;
+            }).map(h => {
+              let displayHour = String(h.hour);
+              if (typeof h.hour === 'string' && (h.hour.includes('AM') || h.hour.includes('PM'))) {
+                displayHour = h.hour.replace(/(AM|PM)/i, ' $1').trim();
+              } else {
+                const hourNum = Number(h.hour);
+                if (!isNaN(hourNum)) {
+                  const ampm = hourNum >= 12 ? 'PM' : 'AM';
+                  const h12 = hourNum % 12 || 12;
+                  displayHour = `${h12} ${ampm}`;
+                }
+              }
+              return { ...h, hourFormatted: displayHour };
+            })} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <defs>
                 <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#f97316" stopOpacity={1} />
@@ -48,10 +65,12 @@ export const PeakHoursView = React.memo(function PeakHoursView({ peakHours }: Pe
                 tickLine={false}
                 axisLine={false}
                 dy={10}
+                interval={0}
                 tickFormatter={(val) => {
                   if (t('common.locale') === 'ar') {
-                    const [h] = val.split(':');
-                    return `${Number(h).toLocaleString('ar-EG')}:00`;
+                    const hMatch = val.match(/\d+/);
+                    const h = hMatch ? hMatch[0] : val;
+                    return `${Number(h).toLocaleString('ar-EG')}:٠٠`;
                   }
                   return val;
                 }}

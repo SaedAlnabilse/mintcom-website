@@ -59,7 +59,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
             </p>
             <p className="text-xs text-gray-500 mt-2">{t('orders.reports.payments.topMethodDesc')}</p>
           </div>
-          <div className="absolute right-0 top-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -mr-10 -mt-10" />
+          <div className="absolute right-0 top-0 w-32 h-32 bg-paymint-green/10 rounded-full blur-3xl -mr-10 -mt-10" />
         </div>
 
         <div className="p-6 bg-white dark:bg-[#0B1120] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm relative overflow-hidden">
@@ -142,7 +142,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
           <div className="p-6 border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 flex-shrink-0">
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <Activity size={20} className="text-blue-500" />
+                <Activity size={20} className="text-paymint-green" />
                 {t('orders.reports.payments.details')}
               </h3>
               <p className="text-xs text-gray-500 mt-1">{t('orders.reports.payments.detailsDesc')}</p>

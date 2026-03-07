@@ -225,12 +225,12 @@ export function DiscountsPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              {t('dashboard.menu.discountsAndLoyalty')}
+              {t('dashboard.menu.discounts')}
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('discounts.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-                        <span>{t('dashboard.menu.discounts')}</span>
+                        <span>{t('discounts.subtitle')}</span>
                         {currentEstablishment?.name && (
                             <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
                                 {currentEstablishment.name}
@@ -358,12 +358,13 @@ export function DiscountsPage() {
                     <p className="text-3xl font-black text-paymint-green mb-4 tracking-tight">{formatValue(discount)} <span className="text-xs font-bold text-gray-500 tracking-widest ml-1">{t('common.active')}</span></p>
 
                     <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100 dark:border-white/5">
-                      <span className="px-2.5 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-xs text-gray-600 dark:text-gray-400 font-bold tracking-wider">
-                        {discount.type === 'percentage' ? t('attributes.filters.multi') : t('attributes.filters.single')}
-                      </span>
-                      {discount.adminOnly && (
+                      {discount.adminOnly ? (
                         <span className="px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-yellow-500/10 border border-amber-200 dark:border-yellow-500/20 text-xs text-amber-700 dark:text-yellow-500 font-bold tracking-wider">
                           {t('discounts.form.managerOnly')}
+                        </span>
+                      ) : (
+                        <span className="px-2.5 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs text-gray-500 font-bold tracking-wider">
+                          {t('common.all')}
                         </span>
                       )}
                     </div>
@@ -398,15 +399,6 @@ export function DiscountsPage() {
                       </th>
                       <th
                         className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
-                        onClick={() => handleSort('type')}
-                      >
-                        <div className="flex items-center gap-1">
-                          {t('attributes.form.typeLabel')}
-                          {sortConfig?.key === 'type' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
-                        </div>
-                      </th>
-                      <th
-                        className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
                         onClick={() => handleSort('adminOnly')}
                       >
                         <div className="flex items-center gap-1">
@@ -435,11 +427,6 @@ export function DiscountsPage() {
                           </td>
                           <td className="px-6 py-4">
                             <span className="text-lg font-black text-paymint-green">{formatValue(discount)}</span>
-                          </td>
-                          <td className="px-6 py-4">
-                            <span className="px-2.5 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-xs text-gray-600 dark:text-gray-400 font-bold tracking-wider">
-                              {discount.type === 'percentage' ? t('attributes.filters.multi') : t('attributes.filters.single')}
-                            </span>
                           </td>
                           <td className="px-6 py-4">
                             {discount.adminOnly ? (

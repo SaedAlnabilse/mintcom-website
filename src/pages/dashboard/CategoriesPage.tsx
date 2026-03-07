@@ -615,7 +615,13 @@ export function CategoriesPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 100 }}
                 transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-                className="bg-white dark:bg-[#1E293B] w-full sm:max-w-4xl rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh] border border-gray-200 dark:border-white/10 shadow-2xl"
+                className={`bg-white dark:bg-[#1E293B] w-full ${
+                  categoryProducts.length === 0 
+                    ? 'sm:max-w-md' 
+                    : categoryProducts.length === 1 
+                      ? 'sm:max-w-2xl' 
+                      : 'sm:max-w-4xl'
+                } rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh] border border-gray-200 dark:border-white/10 shadow-2xl`}
                 onClick={e => e.stopPropagation()}
               >
                 {/* Mobile drag handle */}
@@ -669,7 +675,9 @@ export function CategoriesPage() {
                       </button>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className={`grid grid-cols-1 ${
+                      categoryProducts.length === 1 ? 'sm:grid-cols-2' : 'md:grid-cols-2 lg:grid-cols-3'
+                    } gap-4`}>
                       {categoryProducts.map((p) => (
                         <div
                           key={p.id}

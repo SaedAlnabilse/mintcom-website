@@ -374,7 +374,14 @@ export function CustomersPage() {
               <User size={32} className="sm:w-10 sm:h-10 text-gray-300" />
             </div>
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('customers.messages.noCustomers')}</h3>
-            <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto">{t('customers.messages.noCustomersDesc')}</p>
+            <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto mb-8">{t('customers.messages.noCustomersDesc')}</p>
+            <button
+              onClick={() => { setEditingCustomer(null); reset({ name: '', phone: '', email: '', address: '', notes: '' }); setShowModal(true); }}
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20"
+            >
+              <Plus size={18} />
+              <span>{t('customers.addCustomer')}</span>
+            </button>
           </div>
         ) : (
           <>

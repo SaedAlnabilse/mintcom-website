@@ -20,6 +20,8 @@ import {
 import {
     AreaChart,
     Area,
+    ComposedChart,
+    Bar,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -624,7 +626,7 @@ export function BrandDashboardPage() {
                     <div className="h-[300px] w-full">
                         {revenueData.length > 0 && revenueData.some(d => d.value > 0 || d.orders > 0) ? (
                             <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={revenueData}>
+                                <ComposedChart data={revenueData}>
                                     <defs>
                                         <linearGradient id="brandRevenue" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="5%" stopColor="#7CC39F" stopOpacity={0.2} />
@@ -652,6 +654,7 @@ export function BrandDashboardPage() {
                                         dx={-10}
                                     />
                                     <Tooltip
+                                        cursor={revenueData.length > 1 ? { stroke: '#7CC39F', strokeWidth: 2, strokeDasharray: '6 6' } : false}
                                         contentStyle={{
                                             backgroundColor: 'rgba(255, 255, 255, 0.95)',
                                             borderColor: '#E5E7EB',
@@ -664,23 +667,44 @@ export function BrandDashboardPage() {
                                             name === 'value' ? t('brand.dashboard.revenue') : t('brand.dashboard.orders')
                                         ]}
                                     />
-                                    <Area
-                                        type="monotone"
-                                        dataKey="value"
-                                        stroke="#7CC39F"
-                                        strokeWidth={2.5}
-                                        fillOpacity={1}
-                                        fill="url(#brandRevenue)"
-                                    />
-                                    <Area
-                                        type="monotone"
-                                        dataKey="orders"
-                                        stroke="#3B82F6"
-                                        strokeWidth={2}
-                                        fillOpacity={1}
-                                        fill="url(#brandOrders)"
-                                    />
-                                </AreaChart>
+                                    {revenueData.length === 1 ? (
+                                        <>
+                                            <Bar 
+                                                dataKey="value" 
+                                                fill="url(#brandRevenue)" 
+                                                barSize={40} 
+                                                radius={[8, 8, 0, 0]} 
+                                                animationDuration={1500} 
+                                            />
+                                            <Bar 
+                                                dataKey="orders" 
+                                                fill="url(#brandOrders)" 
+                                                barSize={40} 
+                                                radius={[8, 8, 0, 0]} 
+                                                animationDuration={1500} 
+                                            />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Area
+                                                type="monotone"
+                                                dataKey="value"
+                                                stroke="#7CC39F"
+                                                strokeWidth={2.5}
+                                                fillOpacity={1}
+                                                fill="url(#brandRevenue)"
+                                            />
+                                            <Area
+                                                type="monotone"
+                                                dataKey="orders"
+                                                stroke="#3B82F6"
+                                                strokeWidth={2}
+                                                fillOpacity={1}
+                                                fill="url(#brandOrders)"
+                                            />
+                                        </>
+                                    )}
+                                </ComposedChart>
                             </ResponsiveContainer>
                         ) : (
                             <div className="h-full w-full flex flex-col items-center justify-center space-y-4 bg-gray-50/50 dark:bg-white/[0.02] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">

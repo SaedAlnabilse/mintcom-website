@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { useNavigate , useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Upload, Trash2, ChevronDown, Check, Wand2, Plus, Search, AlertCircle } from 'lucide-react';
@@ -142,7 +142,7 @@ export function ProductFormModal({
       if (message.includes('Unique constraint failed') && message.includes('name')) {
         message = t('categories.messages.exists');
       }
-      
+
       setCategoryError(message);
     } finally {
       setIsCategorySubmitting(false);
@@ -299,8 +299,8 @@ export function ProductFormModal({
         if (initialData.image) {
           // Use relative path by default to leverage Vite proxy
           // Only use absolute URL if strictly necessary
-          const baseUrl = ''; 
-          
+          const baseUrl = '';
+
           // Fix: Remove /public prefix to match POS behavior and correct serving path
           const cleanPath = initialData.image.replace('/public', '').replace('public/', '');
 
@@ -548,11 +548,29 @@ export function ProductFormModal({
                   </div>
                 )}
 
+                {/* Name */}
+                <div className="space-y-3">
+                  <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+                    {t('products.form.nameLabel')} <span className="text-paymint-red">*</span>
+                    <QuickInfo text={t('products.form.nameTip')} />
+                  </label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder={t('products.form.namePlaceholder')}
+                    className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
+                  />
+                  {errors.name && (
+                    <p className="mt-1.5 px-1 text-xs font-bold text-paymint-red">{errors.name}</p>
+                  )}
+                </div>
+
                 {/* Image Picker */}
-                <div className="flex flex-col items-center justify-center py-6 bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/5 shadow-inner mb-2">
+                <div className="flex flex-col items-center justify-center py-4 bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/5 shadow-inner mb-2">
                   <div className="relative group">
                     <div
-                      className="w-40 h-40 rounded-2xl border-2 border-dashed border-gray-300 dark:border-white/10 flex flex-col items-center justify-center overflow-hidden bg-white dark:bg-[#1E293B] cursor-pointer hover:border-paymint-green transition-all shadow-sm"
+                      className="w-32 h-32 rounded-2xl border-2 border-dashed border-gray-300 dark:border-white/10 flex flex-col items-center justify-center overflow-hidden bg-white dark:bg-[#1E293B] cursor-pointer hover:border-paymint-green transition-all shadow-sm"
                     >
                       {imagePreview ? (
                         <img
@@ -578,8 +596,8 @@ export function ProductFormModal({
                         />
                       ) : (
                         <div className="flex flex-col items-center text-gray-400 group-hover:text-paymint-green transition-colors">
-                          <Upload size={32} strokeWidth={1.5} className="mb-2" />
-                          <span className="text-xs font-bold tracking-widest">{t('products.upload')}</span>
+                          <Upload size={24} strokeWidth={1.5} className="mb-1.5" />
+                          <span className="text-[10px] font-bold tracking-widest">{t('products.upload')}</span>
                         </div>
                       )}
                       <input
@@ -616,7 +634,7 @@ export function ProductFormModal({
                     type="button"
                     onClick={handleGenerateImage}
                     disabled={isGeneratingImage || !name.trim()}
-                    className="mt-6 flex items-center gap-2 text-xs font-black tracking-widest text-paymint-green bg-paymint-green/10 px-5 py-2.5 rounded-xl hover:bg-paymint-green/20 transition-all border border-paymint-green/20 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm active:scale-95"
+                    className="mt-4 flex items-center gap-2 text-xs font-black tracking-widest text-paymint-green bg-paymint-green/10 px-4 py-2 rounded-xl hover:bg-paymint-green/20 transition-all border border-paymint-green/20 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm active:scale-95"
                   >
                     {isGeneratingImage ? (
                       <div className="w-3.5 h-3.5 border-2 border-paymint-green/20 border-t-paymint-green rounded-full animate-spin" />
@@ -625,24 +643,6 @@ export function ProductFormModal({
                     )}
                     <span>{isGeneratingImage ? t('products.generating') : t('products.generateImage')}</span>
                   </button>
-                </div>
-
-                {/* Name */}
-                <div className="space-y-3">
-                  <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                    {t('products.form.nameLabel')} <span className="text-paymint-red">*</span>
-                    <QuickInfo text={t('products.form.nameTip')} />
-                  </label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder={t('products.form.namePlaceholder')}
-                    className={`w-full bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
-                  />
-                  {errors.name && (
-                    <p className="mt-1.5 px-1 text-xs font-bold text-paymint-red">{errors.name}</p>
-                  )}
                 </div>
 
                 {/* Prices Grid */}
@@ -1065,8 +1065,8 @@ export function ProductFormModal({
                       </div>
 
                       <div className="space-y-3">
-                        <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                          {t('products.form.inventory.quantity')}
+                        <label className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center justify-center gap-1">
+                          <span className="text-paymint-green text-sm">●</span> {t('products.form.inventory.quantity')}
                           <QuickInfo text={t('products.form.inventory.quantityTip')} />
                         </label>
                         <input
@@ -1083,8 +1083,8 @@ export function ProductFormModal({
 
                       <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-3">
-                          <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
-                            <span className="text-yellow-500 text-lg">●</span> {t('products.form.inventory.low')}
+                          <label className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center justify-center gap-1">
+                            <span className="text-yellow-500 text-sm">●</span> {t('products.form.inventory.low')}
                           </label>
                           <input
                             type="number"
@@ -1095,8 +1095,8 @@ export function ProductFormModal({
                           />
                         </div>
                         <div className="space-y-3">
-                          <label className="block text-xs font-black text-gray-400 tracking-widest px-1 flex items-center">
-                            <span className="text-paymint-red mr-2 text-lg">●</span> {t('products.form.inventory.veryLow')}
+                          <label className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center justify-center gap-1">
+                            <span className="text-paymint-red text-sm">●</span> {t('products.form.inventory.veryLow')}
                           </label>
                           <input
                             type="number"

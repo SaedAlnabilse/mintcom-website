@@ -57,7 +57,7 @@ const EMPLOYEE_LIMIT_POPUP_MESSAGE =
 
 export function StaffPage() {
   const { t } = useTranslation();
-    const { currentEstablishment } = useAuth();
+  const { currentEstablishment } = useAuth();
   const location = useLocation();
   // Permission guard - redirects if user lacks permission
   usePermissionGuard();
@@ -355,13 +355,13 @@ export function StaffPage() {
           </div>
           <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('staff.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-                        <span>{t('staff.subtitle')}</span>
-                        {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                                {currentEstablishment.name}
-                            </span>
-                        )}
-                    </p>
+            <span>{t('staff.subtitle')}</span>
+            {currentEstablishment?.name && (
+              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                {currentEstablishment.name}
+              </span>
+            )}
+          </p>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
@@ -413,6 +413,16 @@ export function StaffPage() {
 
       {/* Filters & Search */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="relative flex-1 sm:max-w-md">
+          <SearchInput
+            value={searchQuery}
+            onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+            onClear={() => setSearchQuery('')}
+            placeholder={t('staff.searchPlaceholder')}
+            className="w-full"
+          />
+        </div>
+
         <div className="w-full sm:w-48">
           <SelectInput
             value={filterRole === 'ALL' ? null : filterRole}
@@ -426,16 +436,6 @@ export function StaffPage() {
             ]}
             allOptionLabel={t('owner.employees.allRoles')}
             placeholder={t('owner.employees.allRoles')}
-          />
-        </div>
-
-        <div className="relative flex-1 sm:max-w-md">
-          <SearchInput
-            value={searchQuery}
-            onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
-            onClear={() => setSearchQuery('')}
-            placeholder={t('staff.searchPlaceholder')}
-            className="w-full"
           />
         </div>
       </div>
@@ -741,5 +741,3 @@ export function StaffPage() {
     </div >
   );
 }
-
-

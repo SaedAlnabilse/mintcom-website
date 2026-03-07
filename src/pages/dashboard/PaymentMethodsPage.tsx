@@ -337,7 +337,7 @@ export function PaymentMethodsPage() {
             <CreditCard size={24} />
           </div>
           <div className="flex flex-col gap-1">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('paymentMethods.cardBrands')}</h2>
+            <h2 className="text-xl sm:text-2xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('paymentMethods.cardBrands')}</h2>
             <p className="text-sm font-bold text-gray-500 dark:text-gray-400">{t('paymentMethods.cardBrandsSubtitle')}</p>
           </div>
         </div>
@@ -390,21 +390,21 @@ export function PaymentMethodsPage() {
               <Plus size={24} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
             </div>
             <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('paymentMethods.addBrand')}</h3>
-            <p className="text-gray-500 text-xs font-black tracking-widest mt-1">{t('paymentMethods.showLogo')}</p>
           </motion.div>
         </div>
       </section>
 
       {/* Main Section */}
-      <section className="space-y-6">
-        <div className="flex items-center justify-between px-2">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
-              <Wallet size={20} />
-            </div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+      <section className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
+        <div className="flex items-start gap-4 mb-10">
+          <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 flex-shrink-0">
+            <Wallet size={24} />
+          </div>
+          <div className="flex flex-col gap-1">
+            <h2 className="text-xl sm:text-2xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">
               {t('paymentMethods.paymentTypes')}
             </h2>
+            <p className="text-sm font-bold text-gray-500 dark:text-gray-400">{t('paymentMethods.paymentTypesSubtitle')}</p>
           </div>
         </div>
 
@@ -465,7 +465,6 @@ export function PaymentMethodsPage() {
                 <Plus size={24} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
               </div>
               <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('paymentMethods.addPayment')}</h3>
-              <p className="text-gray-500 text-xs font-black tracking-widest mt-1">{t('paymentMethods.newType')}</p>
             </motion.div>
           </div>
         )}
@@ -477,7 +476,7 @@ export function PaymentMethodsPage() {
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-md overflow-hidden shadow-2xl">
               <div className="p-8 border-b border-gray-50 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                <h2 className="text-xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">
                   {editingMethod ? t('paymentMethods.editPayment') : t('paymentMethods.addPayment')}
                 </h2>
                 <button
@@ -545,7 +544,7 @@ export function PaymentMethodsPage() {
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-100 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl">
               <div className="p-8 border-b border-gray-50 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                <h2 className="text-2xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">
                   {editingCard ? t('paymentMethods.editBrand') : t('paymentMethods.addBrand')}
                 </h2>
                 <button onClick={() => setShowCardModal(false)} className="p-2 text-gray-400 hover:text-white transition-colors">

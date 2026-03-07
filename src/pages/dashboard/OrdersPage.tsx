@@ -442,15 +442,15 @@ export function OrdersPage() {
   // Sync date range when selectedDateRange changes (for non-custom, non-shift ranges)
   useEffect(() => {
     // Only sync for standard date ranges (not custom or shift-based)
-    if (selectedDateRange && 
-        selectedDateRange !== 'custom' && 
-        selectedDateRange !== 'current_shift' && 
-        selectedDateRange !== 'previous_shift' &&
-        selectedDateRange !== 'all') {
+    if (selectedDateRange &&
+      selectedDateRange !== 'custom' &&
+      selectedDateRange !== 'current_shift' &&
+      selectedDateRange !== 'previous_shift' &&
+      selectedDateRange !== 'all') {
       const { start, end } = calculateDateRange(selectedDateRange as DatePeriod);
       const newStartDate = formatDateForInput(start);
       const newEndDate = formatDateForInput(end);
-      
+
       // Only update if dates actually changed to avoid infinite loops
       if (newStartDate !== startDate || newEndDate !== endDate) {
         setStartDate(newStartDate);
@@ -523,11 +523,11 @@ export function OrdersPage() {
       };
       const overallPromise = needsOverallTotalsRequest
         ? api
-            .get('/reports/orders-history', { params: overallParams })
-            .catch((e) => {
-              console.error('Failed total count', e);
-              return { data: { totalOrders: 0 } };
-            })
+          .get('/reports/orders-history', { params: overallParams })
+          .catch((e) => {
+            console.error('Failed total count', e);
+            return { data: { totalOrders: 0 } };
+          })
         : Promise.resolve(null);
 
       // 3. Main Data (Held or Regular)
@@ -599,20 +599,15 @@ export function OrdersPage() {
         return;
       }
 
-      // Process Held Orders (for KPI and potentially for list)
+      // Process Held Orders – always show ALL held orders regardless of filters
       let heldOrdersList: Order[] = [];
-      let filteredHeldCount = 0;
-      
+      let heldCount = 0;
+
       if (heldRes?.data && Array.isArray(heldRes.data)) {
-        heldOrdersList = heldRes.data
-          .map(mapHeldOrder)
-          .filter((h: Order) => {
-            const hDate = new Date(h.createdAt);
-            return hDate >= start && hDate <= end;
-          });
+        heldOrdersList = heldRes.data.map(mapHeldOrder);
         heldOrdersList.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        filteredHeldCount = heldOrdersList.length;
-        setTotalHeldCount(filteredHeldCount);
+        heldCount = heldOrdersList.length;
+        setTotalHeldCount(heldCount);
         setHeldOrders(heldOrdersList);
       } else {
         setHeldOrders([]);
@@ -630,7 +625,7 @@ export function OrdersPage() {
       const regularTotalForPeriod = needsOverallTotalsRequest
         ? (overallRes?.data?.totalOrders || overallRes?.data?.total || 0)
         : fallbackMainTotal;
-      setOverallTotalCount(Number(regularTotalForPeriod) + filteredHeldCount);
+      setOverallTotalCount(Number(regularTotalForPeriod) + heldCount);
 
       // Process Main Display Data
       if (effectiveStatusFilter === 'HELD') {
@@ -647,30 +642,20 @@ export function OrdersPage() {
         let totalOrders = responseData.totalOrders || responseData.total || fetchedOrders.length;
         let serverTotalPages = responseData.totalPages || Math.ceil(totalOrders / 10) || 1;
 
-        // Mix held orders at the beginning of page 1 if showing 'all' status
-        if (page === 1 && filteredHeldCount > 0 && effectiveStatusFilter === 'all' && paymentFilter === 'all' && !debouncedSearchQuery) {
-           const combined = [...heldOrdersList, ...fetchedOrders];
-           combined.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-           fetchedOrders = combined;
-           
-           if (fetchedOrders.length > 10) {
-             fetchedOrders = fetchedOrders.slice(0, 10);
-           }
-           totalOrders = Number(totalOrders) + filteredHeldCount;
-           serverTotalPages = Math.ceil(totalOrders / 10) || 1;
-        }
+        // Held orders are always shown in their own dedicated section above,
+        // so we no longer mix them into the main orders table.
 
         if (Array.isArray(mainRes?.data)) {
-           // Fallback for array response
-           const total = fetchedOrders.length;
-           setTotalCount(total);
-           setTotalPages(Math.ceil(total / 10) || 1);
-           const startIndex = (page - 1) * 10;
-           setOrders(fetchedOrders.slice(startIndex, startIndex + 10));
+          // Fallback for array response
+          const total = fetchedOrders.length;
+          setTotalCount(total);
+          setTotalPages(Math.ceil(total / 10) || 1);
+          const startIndex = (page - 1) * 10;
+          setOrders(fetchedOrders.slice(startIndex, startIndex + 10));
         } else {
-           setTotalCount(totalOrders);
-           setTotalPages(serverTotalPages);
-           setOrders(fetchedOrders);
+          setTotalCount(totalOrders);
+          setTotalPages(serverTotalPages);
+          setOrders(fetchedOrders);
         }
       }
 
@@ -771,15 +756,15 @@ export function OrdersPage() {
   useEffect(() => {
     const unsubscribe = onRefresh((eventType) => {
       if (eventType === DataChangeEventTypes.ORDER_CREATED ||
-          eventType === DataChangeEventTypes.ORDER_REFUNDED ||
-          eventType === DataChangeEventTypes.ORDER_UPDATED) {
+        eventType === DataChangeEventTypes.ORDER_REFUNDED ||
+        eventType === DataChangeEventTypes.ORDER_UPDATED) {
         // Coalesce bursts of events into one refresh.
         scheduleOrdersRefresh(80);
       }
 
       // Refresh when held order events occur
       if (eventType === DataChangeEventTypes.HELD_ORDER_CREATED ||
-          eventType === DataChangeEventTypes.HELD_ORDER_DELETED) {
+        eventType === DataChangeEventTypes.HELD_ORDER_DELETED) {
         // Refresh if the current view can show held orders.
         if (statusFilter === 'HELD' || statusFilter === 'all') {
           scheduleOrdersRefresh(80);
@@ -788,7 +773,7 @@ export function OrdersPage() {
 
       // Refresh shift status when shift events occur
       if (eventType === DataChangeEventTypes.SHIFT_STARTED ||
-          eventType === DataChangeEventTypes.SHIFT_ENDED) {
+        eventType === DataChangeEventTypes.SHIFT_ENDED) {
         checkShiftStatus(false);
       }
     });
@@ -951,13 +936,13 @@ export function OrdersPage() {
           </div>
           <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('orders.title')}</h1>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
-                        <span>{t('orders.subtitle')}</span>
-                        {currentEstablishment?.name && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                                {currentEstablishment.name}
-                            </span>
-                        )}
-                    </p>
+            <span>{t('orders.subtitle')}</span>
+            {currentEstablishment?.name && (
+              <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                {currentEstablishment.name}
+              </span>
+            )}
+          </p>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
@@ -974,18 +959,18 @@ export function OrdersPage() {
                   }
                 }}
                 options={[
-                   ...(shiftStatus?.shiftStatus === 'ACTIVE' ? [{
-                       label: t('dashboard.viewMode.currentShift'),
-                       value: 'current_shift',
-                       icon: <PlayCircle size={18} className="text-paymint-green" />,
-                       subtitle: shiftStatus?.activeShift?.startTime ? t('dashboard.shiftStatus.started', { time: format(new Date(shiftStatus.activeShift.startTime), 'h:mm a') }) : t('dashboard.shiftStatus.live')
-                   }] : []),
-                   ...(lastShiftSnapshot ? [{
-                       label: t('dashboard.viewMode.previousShift'),
-                       value: 'previous_shift',
-                       icon: <History size={18} />,
-                       subtitle: t('dashboard.shiftStatus.lastCompleted')
-                   }] : [])
+                  ...(shiftStatus?.shiftStatus === 'ACTIVE' ? [{
+                    label: t('dashboard.viewMode.currentShift'),
+                    value: 'current_shift',
+                    icon: <PlayCircle size={18} className="text-paymint-green" />,
+                    subtitle: shiftStatus?.activeShift?.startTime ? t('dashboard.shiftStatus.started', { time: format(new Date(shiftStatus.activeShift.startTime), 'h:mm a') }) : t('dashboard.shiftStatus.live')
+                  }] : []),
+                  ...(lastShiftSnapshot ? [{
+                    label: t('dashboard.viewMode.previousShift'),
+                    value: 'previous_shift',
+                    icon: <History size={18} />,
+                    subtitle: t('dashboard.shiftStatus.lastCompleted')
+                  }] : [])
                 ]}
                 placeholder={t('orders.checkShift')}
                 showAllOption={false}
@@ -993,7 +978,7 @@ export function OrdersPage() {
               />
             </div>
           )}
-          
+
           {canExport && (
             <button
               onClick={handleExport}
@@ -1156,8 +1141,8 @@ export function OrdersPage() {
             onClick={stat.onClick}
             className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink 
               ${stat.onClick ? 'cursor-pointer' : 'cursor-default'} 
-              ${stat.active 
-                ? 'border-paymint-green ring-1 ring-paymint-green/30 bg-paymint-green/[0.02]' 
+              ${stat.active
+                ? 'border-paymint-green ring-1 ring-paymint-green/30 bg-paymint-green/[0.02]'
                 : 'border-gray-200 dark:border-white/5 hover:border-paymint-green/30'}`}
           >
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg} ${stat.active ? 'opacity-20' : 'group-hover:opacity-10'}`} />
@@ -1170,7 +1155,7 @@ export function OrdersPage() {
                 <p className="text-lg sm:text-xl font-black text-gray-900 dark:text-white">{stat.value}</p>
               </div>
             </div>
-            
+
             {/* Active Indicator Dot */}
             {stat.active && (
               <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-paymint-green animate-pulse" />
@@ -1180,15 +1165,15 @@ export function OrdersPage() {
       </div>
 
       {/* Held Orders Section */}
-      {heldOrders.length > 0 && (statusFilter === 'all' || statusFilter === 'HELD') && (
+      {heldOrders.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-black text-gray-900 dark:text-white tracking-widest flex items-center gap-2 uppercase">
+            <h2 className="text-lg sm:text-xl font-outfit font-bold text-gray-900 dark:text-white flex items-center gap-2 tracking-tight">
               <Clock size={16} className="text-orange-500" />
               {t('orders.status.onHold')} ({heldOrders.length})
             </h2>
           </div>
-          
+
           <div className="relative">
             {canScrollHeldLeft && (
               <div
@@ -1245,7 +1230,7 @@ export function OrdersPage() {
               className="flex flex-nowrap gap-4 overflow-x-auto scrollbar-none pb-2"
             >
               {heldOrders.map((order) => (
-                <div 
+                <div
                   key={order.id}
                   onClick={() => {
                     if (Date.now() - lastHeldArrowClickRef.current < 450) return;
@@ -1254,7 +1239,7 @@ export function OrdersPage() {
                   className="group flex-none basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4 bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-orange-200 dark:border-orange-500/20 shadow-sm hover:shadow-md transition-all cursor-pointer relative overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 w-20 h-20 bg-orange-500/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
-                  
+
                   <div className="relative z-10 space-y-4">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
@@ -1269,9 +1254,11 @@ export function OrdersPage() {
                     </div>
 
                     <div className="space-y-1">
-                      <p className="text-sm font-bold text-gray-800 dark:text-gray-200 truncate">
-                        {order.customer?.name || t('orders.table.walkIn')}
-                      </p>
+                      {order.customer?.name && (
+                        <p className="text-sm font-bold text-gray-800 dark:text-gray-200 truncate">
+                          {order.customer.name}
+                        </p>
+                      )}
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold text-gray-500">{order.items.length} {t('hero.items')}</span>
                         <span className="text-lg font-black text-gray-900 dark:text-white">{formatAmount(order.total)}</span>
@@ -1320,89 +1307,88 @@ export function OrdersPage() {
         {/* Mobile Card View (visible on small screens) */}
         {sortedOrders.length > 0 && (
           <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
-              {sortedOrders.map((order) => (
-                <div
-                  key={order.id}
-                  data-order-id={order.id}
-                  onClick={() => setSelectedOrder(order)}
-                  className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all cursor-pointer active:bg-gray-100 dark:active:bg-white/[0.04]"
-                >
-                  {/* Card Header: Order # and Status */}
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500">
-                        <ShoppingCart size={16} />
-                      </div>
-                      <div>
-                        <p className="font-bold text-gray-900 dark:text-white text-sm">#{order.orderNumber}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide">
-                          {formatDate(order.createdAt)}
-                        </p>
-                      </div>
+            {sortedOrders.map((order) => (
+              <div
+                key={order.id}
+                data-order-id={order.id}
+                onClick={() => setSelectedOrder(order)}
+                className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all cursor-pointer active:bg-gray-100 dark:active:bg-white/[0.04]"
+              >
+                {/* Card Header: Order # and Status */}
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500">
+                      <ShoppingCart size={16} />
                     </div>
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
-                      {getOrderStatusLabel(order)}
-                    </span>
-                  </div>
-
-                  {/* Card Body: Customer and Amount */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1 min-w-0">
-                      <p className="font-bold text-gray-800 dark:text-gray-300 text-sm truncate">
-                        {order.customer?.name || t('orders.table.walkIn')}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {order.user?.username ? `${t('orders.table.staff')}: ${order.user.username}` : t('common.pos')} • {formatPaymentMethod(order)}
+                    <div>
+                      <p className="font-bold text-gray-900 dark:text-white text-sm">#{order.orderNumber}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide">
+                        {formatDate(order.createdAt)}
                       </p>
                     </div>
-                    <div className="text-right ml-4 flex-shrink-0">
-                      <p className="font-bold text-gray-900 dark:text-white text-lg">{formatAmount(order.total)}</p>
-                    </div>
                   </div>
+                  <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
+                    {getOrderStatusLabel(order)}
+                  </span>
+                </div>
 
-                  {/* Card Footer: Actions */}
-                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100 dark:border-white/5">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedOrder(order);
-                      }}
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
-                    >
-                      <Eye size={14} />
-                      {t('orders.actions.viewDetails')}
-                    </button>
-
-                    {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
-                      <div className="flex flex-col items-end">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (!canCancelReceipts) return;
-                            handleRefund(order);
-                          }}
-                          disabled={!canCancelReceipts}
-                          className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition-colors ${
-                            canCancelReceipts
-                              ? 'text-paymint-red hover:bg-paymint-red/10'
-                              : 'text-gray-400 bg-gray-100 dark:bg-white/5 cursor-not-allowed'
-                          }`}
-                        >
-                          <Undo2 size={14} />
-                          {t('orders.actions.refund')}
-                        </button>
-                        {!canCancelReceipts && (
-                          <p className="mt-1 text-[11px] font-semibold text-red-600">
-                            {t('orders.messages.noRefundPermission')}
-                          </p>
-                        )}
-                      </div>
-                    )}
-
-                    <ChevronRight size={16} className="text-gray-400" />
+                {/* Card Body: Customer and Amount */}
+                <div className="flex items-center justify-between">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-gray-800 dark:text-gray-300 text-sm truncate">
+                      {order.customer?.name || t('orders.table.walkIn')}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {order.user?.username ? `${t('orders.table.staff')}: ${order.user.username}` : t('common.pos')} • {formatPaymentMethod(order)}
+                    </p>
+                  </div>
+                  <div className="text-right ml-4 flex-shrink-0">
+                    <p className="font-bold text-gray-900 dark:text-white text-lg">{formatAmount(order.total)}</p>
                   </div>
                 </div>
-              ))}
+
+                {/* Card Footer: Actions */}
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100 dark:border-white/5">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedOrder(order);
+                    }}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                  >
+                    <Eye size={14} />
+                    {t('orders.actions.viewDetails')}
+                  </button>
+
+                  {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
+                    <div className="flex flex-col items-end">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!canCancelReceipts) return;
+                          handleRefund(order);
+                        }}
+                        disabled={!canCancelReceipts}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition-colors ${canCancelReceipts
+                            ? 'text-paymint-red hover:bg-paymint-red/10'
+                            : 'text-gray-400 bg-gray-100 dark:bg-white/5 cursor-not-allowed'
+                          }`}
+                      >
+                        <Undo2 size={14} />
+                        {t('orders.actions.refund')}
+                      </button>
+                      {!canCancelReceipts && (
+                        <p className="mt-1 text-[11px] font-semibold text-red-600">
+                          {t('orders.messages.noRefundPermission')}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  <ChevronRight size={16} className="text-gray-400" />
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
@@ -1425,7 +1411,7 @@ export function OrdersPage() {
                     className={`px-6 py-4 text-left text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'customer' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                     onClick={() => requestSort('customer')}
                   >
-                     <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
                       {t('orders.table.customer')}
                       <ArrowUpDown size={14} className={`transition-all ${sortConfig?.key === 'customer' ? 'opacity-100 scale-110' : 'opacity-20 group-hover:opacity-100'}`} />
                     </div>
@@ -1434,16 +1420,16 @@ export function OrdersPage() {
                     className={`px-6 py-4 text-left text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'total' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
                     onClick={() => requestSort('total')}
                   >
-                     <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
                       {t('orders.table.amount')}
                       <ArrowUpDown size={14} className={`transition-all ${sortConfig?.key === 'total' ? 'opacity-100 scale-110' : 'opacity-20 group-hover:opacity-100'}`} />
                     </div>
                   </th>
                   <th
-                     className={`px-6 py-4 text-left text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'status' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
-                     onClick={() => requestSort('status')}
+                    className={`px-6 py-4 text-left text-xs font-black tracking-widest cursor-pointer select-none transition-colors group ${sortConfig?.key === 'status' ? 'text-paymint-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                    onClick={() => requestSort('status')}
                   >
-                     <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
                       {t('orders.table.status')}
                       <ArrowUpDown size={14} className={`transition-all ${sortConfig?.key === 'status' ? 'opacity-100 scale-110' : 'opacity-20 group-hover:opacity-100'}`} />
                     </div>
@@ -1452,107 +1438,106 @@ export function OrdersPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-                  {sortedOrders.map((order) => (
-                    <tr
-                      key={order.id}
-                      data-order-id={order.id}
-                      onClick={() => setSelectedOrder(order)}
-                      className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all cursor-pointer"
-                    >
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 group-hover:text-paymint-green transition-colors">
-                            <ShoppingCart size={16} />
-                          </div>
-                          <div>
-                            <p className="font-bold text-gray-900 dark:text-white text-sm">#{order.orderNumber}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide">{formatDate(order.createdAt)}</p>
-                          </div>
+                {sortedOrders.map((order) => (
+                  <tr
+                    key={order.id}
+                    data-order-id={order.id}
+                    onClick={() => setSelectedOrder(order)}
+                    className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all cursor-pointer"
+                  >
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 group-hover:text-paymint-green transition-colors">
+                          <ShoppingCart size={16} />
                         </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <p className="font-bold text-gray-800 dark:text-gray-300 text-sm">{order.customer?.name || t('orders.table.walkIn')}</p>
-                        <p className="text-xs text-gray-500">{order.user?.username ? `${t('orders.table.staff')}: ${order.user.username}` : t('common.pos')}</p>
-                      </td>
-                      <td className="px-6 py-4">
-                        <p className="font-bold text-gray-900 dark:text-white">{formatAmount(order.total)}</p>
-                        <p className="text-xs text-gray-500 font-bold tracking-wider">{formatPaymentMethod(order)}</p>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
-                          {getOrderStatusLabel(order)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-2 relative">
-                          <div className="relative" data-action-menu>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setActiveActionMenu(activeActionMenu === order.id ? null : order.id);
-                              }}
-                              aria-label="Order actions"
-                              aria-expanded={activeActionMenu === order.id}
-                              className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-colors ${activeActionMenu === order.id
-                                ? 'text-paymint-green bg-gray-100 dark:bg-white/5'
-                                : 'text-gray-400 hover:text-paymint-green hover:bg-gray-100 dark:hover:bg-white/5'
-                                }`}
+                        <div>
+                          <p className="font-bold text-gray-900 dark:text-white text-sm">#{order.orderNumber}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide">{formatDate(order.createdAt)}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="font-bold text-gray-800 dark:text-gray-300 text-sm">{order.customer?.name || t('orders.table.walkIn')}</p>
+                      <p className="text-xs text-gray-500">{order.user?.username ? `${t('orders.table.staff')}: ${order.user.username}` : t('common.pos')}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="font-bold text-gray-900 dark:text-white">{formatAmount(order.total)}</p>
+                      <p className="text-xs text-gray-500 font-bold tracking-wider">{formatPaymentMethod(order)}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
+                        {getOrderStatusLabel(order)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2 relative">
+                        <div className="relative" data-action-menu>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveActionMenu(activeActionMenu === order.id ? null : order.id);
+                            }}
+                            aria-label="Order actions"
+                            aria-expanded={activeActionMenu === order.id}
+                            className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-colors ${activeActionMenu === order.id
+                              ? 'text-paymint-green bg-gray-100 dark:bg-white/5'
+                              : 'text-gray-400 hover:text-paymint-green hover:bg-gray-100 dark:hover:bg-white/5'
+                              }`}
+                          >
+                            <MoreVertical size={18} />
+                          </button>
+
+                          {activeActionMenu === order.id && (
+                            <div
+                              className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
                             >
-                              <MoreVertical size={18} />
-                            </button>
-
-                              {activeActionMenu === order.id && (
-                                <div
-                                  className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                              <div className="p-1">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedOrder(order);
+                                    setActiveActionMenu(null);
+                                  }}
+                                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                                 >
-                                  <div className="p-1">
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setSelectedOrder(order);
-                                        setActiveActionMenu(null);
-                                      }}
-                                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
-                                    >
-                                      <Eye size={14} />
-                                      {t('orders.actions.viewDetails')}
-                                    </button>
+                                  <Eye size={14} />
+                                  {t('orders.actions.viewDetails')}
+                                </button>
 
-                                    {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
-                                      <button
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          if (!canCancelReceipts) return;
-                                          handleRefund(order);
-                                          setActiveActionMenu(null);
-                                        }}
-                                        disabled={!canCancelReceipts}
-                                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors ${
-                                          canCancelReceipts
-                                            ? 'text-paymint-red hover:bg-paymint-red/10'
-                                            : 'text-gray-400 bg-gray-100 dark:bg-white/5 cursor-not-allowed'
-                                        }`}
-                                      >
-                                        <Undo2 size={14} />
-                                        {t('orders.actions.refundOrder')}
-                                      </button>
-                                    )}
-                                    {!canCancelReceipts && (order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
-                                      <p className="px-3 py-1 text-[11px] font-semibold text-red-600">
-                                        {t('orders.messages.noRefundPermission')}
-                                      </p>
-                                    )}
-                                  </div>
-                                </div>
-                              )}
-                          </div>
-                          <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green group-hover:border-paymint-green/30 transition-all">
-                            <ChevronRight size={14} />
-                          </div>
+                                {(order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (!canCancelReceipts) return;
+                                      handleRefund(order);
+                                      setActiveActionMenu(null);
+                                    }}
+                                    disabled={!canCancelReceipts}
+                                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors ${canCancelReceipts
+                                        ? 'text-paymint-red hover:bg-paymint-red/10'
+                                        : 'text-gray-400 bg-gray-100 dark:bg-white/5 cursor-not-allowed'
+                                      }`}
+                                  >
+                                    <Undo2 size={14} />
+                                    {t('orders.actions.refundOrder')}
+                                  </button>
+                                )}
+                                {!canCancelReceipts && (order.paymentStatus === 'COMPLETED' || order.status === 'COMPLETED') && (
+                                  <p className="px-3 py-1 text-[11px] font-semibold text-red-600">
+                                    {t('orders.messages.noRefundPermission')}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          )}
                         </div>
-                      </td>
-                    </tr>
-                  ))}
+                        <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green group-hover:border-paymint-green/30 transition-all">
+                          <ChevronRight size={14} />
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -1568,14 +1553,14 @@ export function OrdersPage() {
         className="mt-6"
       />
 
-        {selectedOrder && (
-          <OrderDetailModal
-            order={selectedOrder}
-            onClose={() => setSelectedOrder(null)}
-            onRefundSuccess={fetchOrders}
-            canRefund={canCancelReceipts}
-          />
-        )}
+      {selectedOrder && (
+        <OrderDetailModal
+          order={selectedOrder}
+          onClose={() => setSelectedOrder(null)}
+          onRefundSuccess={fetchOrders}
+          canRefund={canCancelReceipts}
+        />
+      )}
 
       <ConfirmModal
         isOpen={confirmConfig.isOpen}

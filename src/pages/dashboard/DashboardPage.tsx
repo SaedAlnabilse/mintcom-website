@@ -125,6 +125,14 @@ export const DashboardPage = () => {
     [account?.permissions, isPrivilegedAccount],
   );
 
+  const browserTimeZone = useMemo(() => {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+    } catch {
+      return 'UTC';
+    }
+  }, []);
+
   // Ref for click outside handling
   const viewModeRef = useRef<HTMLDivElement>(null);
 
@@ -246,7 +254,7 @@ export const DashboardPage = () => {
       const [summaryRes, topItemsRes, peakRes, categoryRes, pendingOrdersRes] = await Promise.all([
         api.get('/reports/historical-summary', { params: { startDate: start, endDate: end } }).catch((err) => { hasError = true; console.error('Summary API error:', err); return { data: null }; }),
         api.get('/reports/top-selling-items', { params: { startDate: start, endDate: end, limit: 5 } }).catch((err) => { hasError = true; console.error('Top items API error:', err); return { data: [] }; }),
-        api.get('/reports/peak-hours', { params: { startDate: start, endDate: end } }).catch((err) => { hasError = true; console.error('Peak hours API error:', err); return { data: [] }; }),
+        api.get('/reports/peak-hours', { params: { startDate: start, endDate: end, timezone: browserTimeZone } }).catch((err) => { hasError = true; console.error('Peak hours API error:', err); return { data: [] }; }),
         api.get('/reports/category-report', { params: { startDate: start, endDate: end } }).catch((err) => { hasError = true; console.error('Category API error:', err); return { data: { breakdown: [] } }; }),
         api.get('/reports/historical-summary', { params: { startDate: pendingOrdersStart, endDate: pendingOrdersEnd } }).catch((err) => { hasError = true; console.error('Pending orders API error:', err); return { data: null }; })
       ]);
@@ -302,7 +310,7 @@ export const DashboardPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [canViewDashboardAnalytics, t, viewMode, shiftStatus]);
+  }, [browserTimeZone, canViewDashboardAnalytics, t, viewMode, shiftStatus]);
 
   // Initial load: fetch shift status first
   useEffect(() => {
@@ -713,5 +721,4 @@ export const DashboardPage = () => {
     </AnimatePresence>
   );
 };
-
 

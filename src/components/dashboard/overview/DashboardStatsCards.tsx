@@ -55,8 +55,8 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
       value: ((stats?.totalRevenue || 0) + (stats?.taxCollected || 0)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       sub: t('dashboard.stats.includingTax'),
       icon: Wallet,
-      color: 'text-blue-500',
-      bg: 'bg-blue-500/10'
+      color: 'text-paymint-green',
+      bg: 'bg-paymint-green/10'
     },
     {
       label: t('dashboard.stats.netSales'),
@@ -71,24 +71,24 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
       value: (stats?.grossProfit || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       sub: t('dashboard.stats.netSalesCosts'),
       icon: TrendingUp,
-      color: 'text-purple-500',
-      bg: 'bg-purple-500/10'
+      color: 'text-paymint-green',
+      bg: 'bg-paymint-green/10'
     },
     {
       label: t('dashboard.stats.tax'),
       value: (stats?.taxCollected || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       sub: t('dashboard.stats.totalTax'),
       icon: Percent,
-      color: 'text-orange-500',
-      bg: 'bg-orange-500/10'
+      color: 'text-paymint-green',
+      bg: 'bg-paymint-green/10'
     },
     {
       label: t('dashboard.stats.totalOrders'),
       value: (stats?.totalOrders || 0).toLocaleString(t('common.locale')),
       sub: viewMode === 'current_shift' ? t('dashboard.stats.thisShift') : viewMode === 'previous_shift' ? t('dashboard.stats.previousShift') : t('dashboard.stats.last24h'),
       icon: Receipt,
-      color: 'text-indigo-500',
-      bg: 'bg-indigo-500/10',
+      color: 'text-paymint-green',
+      bg: 'bg-paymint-green/10',
       onClick: () => {
         const state: any = { statusFilter: 'all' };
         if (viewMode === 'current_shift') state.selectedDateRange = 'current_shift';
@@ -101,8 +101,8 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
       value: (stats?.pendingOrders || 0).toLocaleString(t('common.locale')),
       sub: `${t('dashboard.stats.pendingOrders')} (${t('dashboard.stats.last24h')})`,
       icon: ShoppingBag,
-      color: 'text-orange-500',
-      bg: 'bg-orange-500/10',
+      color: 'text-paymint-green',
+      bg: 'bg-paymint-green/10',
       onClick: () => {
         const state: any = { statusFilter: 'HELD', selectedDateRange: 'last_24_hours' };
         navigate(`/dashboard/${locationSlug}/orders`, { state });
@@ -116,24 +116,24 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
       value: (stats?.averageOrderValue || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       sub: t('dashboard.stats.averageValue'),
       icon: Scale,
-      color: 'text-pink-500',
-      bg: 'bg-pink-500/10'
+      color: 'text-paymint-green',
+      bg: 'bg-paymint-green/10'
     },
     {
       label: t('dashboard.stats.refunds'),
       value: (stats?.totalRefunds || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       sub: viewMode === 'current_shift' ? t('dashboard.stats.thisShift') : viewMode === 'previous_shift' ? t('dashboard.stats.previousShift') : t('dashboard.stats.last24h'),
       icon: ArrowDownRight,
-      color: 'text-orange-500',
-      bg: 'bg-orange-500/10'
+      color: 'text-paymint-green',
+      bg: 'bg-paymint-green/10'
     },
     {
       label: t('dashboard.stats.nonSales'),
       value: null, // Custom content
       sub: null,
       icon: ArrowUpRight,
-      color: 'text-cyan-500',
-      bg: 'bg-cyan-500/10',
+      color: 'text-paymint-green',
+      bg: 'bg-paymint-green/10',
       customContent: (
         <div className="space-y-3 mt-6">
           <div className="flex items-center justify-between">
@@ -168,7 +168,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
           <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.actual')}</span>
-            <span className="text-sm font-bold text-blue-500 tracking-tight">{ (previousShiftSnapshot.closingBalance || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }</span>
+            <span className="text-sm font-bold text-paymint-green tracking-tight">{ (previousShiftSnapshot.closingBalance || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }</span>
           </div>
           <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
           <div className="flex items-center justify-between">
@@ -190,7 +190,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
   return (
     <div id="tour-kpi-cards" className="space-y-3">
       <div className="flex items-center gap-2">
-        <span className="px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-500 text-xs font-bold tracking-wide border border-blue-500/20">
+        <span className="px-2.5 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-bold tracking-wide border border-paymint-green/20">
           {t('dashboard.stats.overview')}
         </span>
       </div>
@@ -211,7 +211,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
                 <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300`}>
                   <stat.icon size={20} />
                 </div>
-                {stat.customContent && stat.onClick && (
+                {stat.onClick && (
                   <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-paymint-green transition-colors">
                     <ExternalLink size={14} />
                   </div>

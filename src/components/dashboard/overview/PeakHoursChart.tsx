@@ -38,7 +38,25 @@ export const PeakHoursChart = React.memo(function PeakHoursChart({ peakHours }: 
           {peakHours.length > 0 && peakHours.some((h: any) => Number(h.total) > 0) ? (
             <div className="h-[250px]" dir="ltr">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={peakHours.map(h => ({ ...h, hour: `${h.hour}:00` }))}>
+                <BarChart data={[...peakHours].sort((a, b) => {
+                  const hA = typeof a.hour === 'number' ? a.hour : parseInt(String(a.hour).replace(/[^\d]/g, '')) + (String(a.hour).toLowerCase().includes('pm') && parseInt(String(a.hour)) < 12 ? 12 : 0);
+                  const hB = typeof b.hour === 'number' ? b.hour : parseInt(String(b.hour).replace(/[^\d]/g, '')) + (String(b.hour).toLowerCase().includes('pm') && parseInt(String(b.hour)) < 12 ? 12 : 0);
+                  return hA - hB;
+                }).map(h => {
+                  let displayHour = String(h.hour);
+                  // Handle cases where backend might already send formatted strings like "9AM"
+                  if (typeof h.hour === 'string' && (h.hour.includes('AM') || h.hour.includes('PM'))) {
+                    displayHour = h.hour.replace(/(AM|PM)/i, ' $1').trim();
+                  } else {
+                    const hourNum = Number(h.hour);
+                    if (!isNaN(hourNum)) {
+                      const ampm = hourNum >= 12 ? 'PM' : 'AM';
+                      const h12 = hourNum % 12 || 12;
+                      displayHour = `${h12} ${ampm}`;
+                    }
+                  }
+                  return { ...h, displayHour };
+                })}>
                   <defs>
                     <linearGradient id="barGradientDash" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="#7CC39F" stopOpacity={1} />
@@ -47,15 +65,18 @@ export const PeakHoursChart = React.memo(function PeakHoursChart({ peakHours }: 
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#ffffff05" : "#00000005"} vertical={false} />
                   <XAxis
-                    dataKey="hour"
+                    dataKey="displayHour"
                     stroke="#94a3b8"
                     fontSize={10}
                     tickLine={false}
                     axisLine={false}
                     dy={10}
+                    interval={0}
                     tickFormatter={(val) => {
                       if (t('common.locale') === 'ar') {
-                        const [h] = val.split(':');
+                        // Extract number from "9 AM" or similar
+                        const hMatch = val.match(/\d+/);
+                        const h = hMatch ? hMatch[0] : val;
                         return `${Number(h).toLocaleString('ar-EG')}:٠٠`;
                       }
                       return val;

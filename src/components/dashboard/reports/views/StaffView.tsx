@@ -1,4 +1,4 @@
-import { Users, Activity } from 'lucide-react';
+import { Users, Activity, TrendingUp, ShoppingBag } from 'lucide-react';
 import { useCurrency } from '../../../../context/CurrencyContext';
 import type { Shift, ShiftOption } from '../../../../types';
 import { motion } from 'framer-motion';
@@ -19,7 +19,7 @@ const COLORS = ['#7CC39F', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899'
 
 export const StaffView = React.memo(function StaffView({ shifts, selectedEmployeeId, employees, employeeShifts }: StaffViewProps) {
   const { t } = useTranslation();
-  const { formatAmount } = useCurrency();
+  const { formatAmount, currencySymbol } = useCurrency();
   const [staffPage, setStaffPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -46,8 +46,10 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
 
   // Calculate Aggregates
   const selectedEmp = selectedEmployeeId ? employees.find(e => e.value === selectedEmployeeId) : null;
-  const empName = selectedEmp?.label || t('orders.reports.staff.byStaff');
+  const empName = selectedEmp?.label || '';
   const isSpecificEmployee = !!selectedEmployeeId;
+  const footerText = isSpecificEmployee ? `${t('orders.reports.staff.byStaff')} ${empName}` : (t('common.allStaff') || 'All Staff');
+  const footerIssuedText = isSpecificEmployee ? (t('orders.reports.staff.issuedBy', { name: empName }) || `Issued by ${empName}`) : (t('common.allStaff') || 'All Staff');
 
   // Use employee shifts if employee selected, otherwise use all shifts
   const dataSource = isSpecificEmployee ? employeeShifts : shifts;
@@ -99,7 +101,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
     return acc;
   }, {});
 
-  const sortedEmployees = Object.values(employeeStats).sort((a: any, b: any) => b.totalSales - a.totalSales);
+  const sortedEmployees: any[] = Object.values(employeeStats).sort((a: any, b: any) => b.totalSales - a.totalSales);
   const totalStoreSales = sortedEmployees.reduce((acc: number, curr: any) => acc + curr.totalSales, 0);
 
   // Prepare Pie Chart Data (Top 4 + Others)
@@ -137,40 +139,51 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('orders.reports.staff.totalHours')}</p>
-            <p className="text-xl font-bold text-gray-900 dark:text-white">{totalHours.toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</p>
-            <p className="text-xs text-gray-500">{t('orders.reports.staff.byStaff')} {empName}</p>
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+          {/* Total Hours */}
+          <div className="p-5 rounded-[20px] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.05] flex flex-col hover:border-gray-200 dark:hover:border-white/10 transition-colors shadow-sm">
+            <p className="h-8 text-[11px] font-black text-gray-400 tracking-widest mb-3 uppercase overflow-hidden">{t('orders.reports.staff.totalHours')}</p>
+            <p className="text-2xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-4">{totalHours.toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</p>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate mt-auto">{footerText}</p>
           </div>
-          <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('orders.reports.staff.totalOrders')}</p>
-            <p className="text-xl font-bold text-gray-900 dark:text-white">{totalOrders.toLocaleString(t('common.locale'))}</p>
-            <p className="text-xs text-gray-500">{t('orders.reports.staff.byStaff')} {empName}</p>
+
+          {/* Total Orders */}
+          <div className="p-5 rounded-[20px] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.05] flex flex-col hover:border-gray-200 dark:hover:border-white/10 transition-colors shadow-sm">
+            <p className="h-8 text-[11px] font-black text-gray-400 tracking-widest mb-3 uppercase overflow-hidden">{t('orders.reports.staff.totalOrders')}</p>
+            <p className="text-2xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-4">{totalOrders.toLocaleString(t('common.locale'))}</p>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate mt-auto">{footerText}</p>
           </div>
-          <div className="p-4 rounded-xl bg-paymint-green/10 border border-paymint-green/20">
-            <p className="text-xs font-black text-paymint-green tracking-widest mb-1">{t('orders.reports.staff.totalSales')}</p>
-            <p className="text-xl font-bold text-paymint-green">{formatCurrency(totalSales)}</p>
-            <p className="text-xs text-paymint-green/70">{t('orders.reports.staff.byStaff')} {empName}</p>
+
+          {/* Total Sales */}
+          <div className="p-5 rounded-[20px] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.05] flex flex-col hover:border-gray-200 dark:hover:border-white/10 transition-colors shadow-sm">
+            <p className="h-8 text-[11px] font-black text-gray-400 tracking-widest mb-3 uppercase overflow-hidden">{t('orders.reports.staff.totalSales')}</p>
+            <p className="text-2xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-4">{formatCurrency(totalSales)}</p>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate mt-auto">{footerText}</p>
           </div>
-          <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('orders.reports.staff.totalDiscounts')}</p>
-            <p className="text-xl font-bold text-orange-500">{formatCurrency(totalDiscounts)}</p>
-            <p className="text-xs text-gray-500">{t('orders.reports.staff.issuedBy', { name: empName })}</p>
+
+          {/* Total Discounts */}
+          <div className="p-5 rounded-[20px] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.05] flex flex-col hover:border-gray-200 dark:hover:border-white/10 transition-colors shadow-sm">
+            <p className="h-8 text-[11px] font-black text-gray-400 tracking-widest mb-3 uppercase overflow-hidden">{t('orders.reports.staff.totalDiscounts')}</p>
+            <p className="text-2xl font-black text-orange-500 tracking-tight leading-none mb-4">{formatCurrency(totalDiscounts)}</p>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate mt-auto">{footerIssuedText}</p>
           </div>
-          <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('orders.reports.staff.totalRefunds')}</p>
-            <p className="text-xl font-bold text-red-500">{formatCurrency(totalRefunds)}</p>
-            <p className="text-xs text-gray-500">{t('orders.reports.staff.byStaff')} {empName}</p>
+
+          {/* Total Refunds */}
+          <div className="p-5 rounded-[20px] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.05] flex flex-col hover:border-gray-200 dark:hover:border-white/10 transition-colors shadow-sm">
+            <p className="h-8 text-[11px] font-black text-gray-400 tracking-widest mb-3 uppercase overflow-hidden">{t('orders.reports.staff.totalRefunds')}</p>
+            <p className="text-2xl font-black text-red-500 tracking-tight leading-none mb-4">{formatCurrency(totalRefunds)}</p>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate mt-auto">{footerText}</p>
           </div>
-          <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('orders.reports.staff.totalVariances')}</p>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-emerald-500">+{positiveVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-              <span className="text-gray-300">/</span>
-              <span className="text-sm font-bold text-red-500">-{negativeVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+
+          {/* Variances */}
+          <div className="p-5 rounded-[20px] bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.05] flex flex-col hover:border-gray-200 dark:hover:border-white/10 transition-colors shadow-sm">
+            <p className="h-8 text-[11px] font-black text-gray-400 tracking-widest mb-3 uppercase overflow-hidden">{t('orders.reports.staff.totalVariances')}</p>
+            <div className="flex flex-wrap items-center gap-1.5 mb-4 leading-none">
+              <span className="text-xl font-black text-emerald-500 tracking-tight leading-none">+{positiveVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <span className="text-gray-300 dark:text-white/20 font-light text-xl leading-none">/</span>
+              <span className="text-xl font-black text-red-500 tracking-tight leading-none">-{negativeVariance.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
-            <p className="text-xs text-gray-500">{t('orders.reports.staff.byStaff')} {empName}</p>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate mt-auto">{footerText}</p>
           </div>
         </div>
       </div>
@@ -178,15 +191,15 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
       <div className="space-y-6">
         {/* Visual Analytics Row - Hide when filtered by specific employee */}
         {!selectedEmployeeId && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             {/* 1. Revenue Share Chart (The "Slice" View) */}
-            <div className="bg-white dark:bg-[#0B1120] p-6 rounded-[24px] border border-gray-100 dark:border-white/[0.05] shadow-sm flex flex-col">
-              <div className="mb-4">
+            <div className="bg-white dark:bg-[#0B1120] p-5 rounded-[24px] border border-gray-100 dark:border-white/[0.05] shadow-sm flex flex-col">
+              <div className="mb-3">
                 <h3 className="text-lg font-black text-gray-900 dark:text-white">{t('orders.reports.staff.salesShare')}</h3>
                 <p className="text-xs font-black text-gray-400 tracking-widest">{t('orders.reports.staff.byStaff')}</p>
               </div>
-              <div className="flex-1 min-h-[200px] relative" dir="ltr">
+              <div className="flex-1 min-h-[160px] relative" dir="ltr">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
@@ -198,6 +211,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                       paddingAngle={5}
                       dataKey="value"
                       stroke="none"
+                      cornerRadius={8}
                     >
                       {pieData.map((entry: any, index: number) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
@@ -205,71 +219,84 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                     </Pie>
                     <Tooltip
                       formatter={(value) => formatCurrency(getNumericTooltipValue(value))}
-                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                      contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 40px -10px rgba(0,0,0,0.15)', backgroundColor: '#fff', color: '#000', fontWeight: 'bold' }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
                 {/* Center Stat */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="text-center">
-                    <p className="text-xs font-black text-gray-400">{t('owner.overview.total')}</p>
-                    <p className="text-sm font-black text-gray-900 dark:text-white">{totalStoreSales.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                  <div className="text-center bg-white dark:bg-[#0B1120] w-20 h-20 rounded-full flex flex-col items-center justify-center shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)] border border-gray-50 dark:border-white/5">
+                    <p className="text-[10px] font-black tracking-widest text-gray-400 uppercase">{t('owner.overview.total')}</p>
+                    <p className="text-sm font-black text-gray-900 dark:text-white mt-0.5">{totalStoreSales.toLocaleString(t('common.locale'), { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</p>
                   </div>
                 </div>
               </div>
-              <div className="mt-4 grid grid-cols-2 gap-2">
+              <div className="mt-4 flex flex-wrap justify-center gap-2">
                 {pieData.map((entry: any) => (
-                  <div key={entry.name} className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
-                    <p className="text-xs font-bold text-gray-500 truncate">{entry.name}</p>
+                  <div key={entry.name} className="flex items-center gap-2 bg-gray-50 dark:bg-white/5 px-3 py-1.5 rounded-full border border-gray-100 dark:border-white/5">
+                    <div className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: entry.color }} />
+                    <p className="text-[13px] font-bold text-gray-600 dark:text-gray-300 truncate max-w-[120px]">{entry.name}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* 2. Top Performer Spotlight (The "Star" View) */}
-            <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-              {sortedEmployees.slice(0, 2).map((emp: any, idx: number) => (
-                <motion.div
-                  key={emp.username}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: idx * 0.1 }}
-                  className={`relative overflow-hidden p-6 rounded-[24px] border shadow-lg flex flex-col justify-between ${idx === 0
-                    ? 'bg-gradient-to-br from-[#7CC39F] to-[#5FAF87] text-black border-transparent'
-                    : 'bg-white dark:bg-[#0B1120] border-gray-100 dark:border-white/[0.05]'
-                    }`}
-                >
-                  <div className="relative z-10">
-                    <div className="flex justify-between items-start mb-4">
-                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-lg ${idx === 0 ? 'bg-black/10' : 'bg-paymint-green/10 text-paymint-green'}`}>
-                        {emp.username.charAt(0).toUpperCase()}
-                      </div>
-                      <div className={`px-3 py-1 rounded-full text-xs font-black tracking-widest ${idx === 0 ? 'bg-black/10 text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
-                        {idx === 0 ? `#${(1).toLocaleString(t('common.locale'))} ${t('common.top')}` : `#${(idx + 1).toLocaleString(t('common.locale'))}`}
-                      </div>
-                    </div>
+            {sortedEmployees.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="relative overflow-hidden p-5 rounded-[24px] border border-transparent shadow-xl flex flex-col justify-between bg-gradient-to-br from-[#7CC39F] via-[#5FAF87] to-[#3A8A61]"
+              >
+                {/* Decorative Elements */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/4" />
+                <Activity className="absolute -right-4 -bottom-4 w-32 h-32 text-black/5 rotate-12" />
 
-                    <div>
-                      <h3 className={`text-xl font-black mb-1 ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>{emp.username}</h3>
-                      <div className="flex gap-4 mt-4">
-                        <div>
-                          <p className={`text-xs font-black tracking-widest mb-1 ${idx === 0 ? 'text-black/60' : 'text-gray-400'}`}>{t('orders.reports.staff.revenue')}</p>
-                          <p className={`text-2xl font-black ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>{emp.totalSales.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                <div className="relative z-10 flex-1 flex flex-col">
+                  {/* Header Row */}
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-md shadow-inner flex items-center justify-center font-black text-xl text-white border border-white/30">
+                        {sortedEmployees[0].username.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[10px] font-black tracking-widest text-white border border-white/20 mb-1 shadow-sm uppercase">
+                          <span className="text-yellow-300">★</span> {t('common.top')} #1
                         </div>
-                        <div>
-                          <p className={`text-xs font-black tracking-widest mb-1 ${idx === 0 ? 'text-black/60' : 'text-gray-400'}`}>{t('orders.reports.staff.avgTicket')}</p>
-                          <p className={`text-2xl font-black ${idx === 0 ? 'text-black' : 'text-gray-900 dark:text-white'}`}>
-                            {(emp.totalSales / (emp.transactionCount || 1)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                          </p>
-                        </div>
+                        <h3 className="text-xl font-black text-white drop-shadow-sm tracking-tight">{sortedEmployees[0].username}</h3>
                       </div>
                     </div>
                   </div>
-                  {idx === 0 && <Activity className="absolute -end-6 -bottom-6 w-40 h-40 text-black/5 rotate-12" />}
-                </motion.div>
-              ))}
-            </div>
+
+                  {/* Stats Row */}
+                  <div className="mt-auto grid grid-cols-2 gap-3">
+                    <div className="bg-black/10 backdrop-blur-sm rounded-xl p-4 border border-white/10 relative overflow-hidden group hover:bg-black/20 transition-colors">
+                      <div className="absolute top-0 right-0 p-3 opacity-20 group-hover:opacity-40 transition-opacity">
+                        <TrendingUp size={20} className="text-white" />
+                      </div>
+                      <p className="text-[10px] font-black tracking-widest mb-1 text-white/70 uppercase">{t('orders.reports.staff.revenue')}</p>
+                      <div className="flex items-baseline gap-1">
+                        <p className="text-2xl font-black text-white tracking-tight">{sortedEmployees[0].totalSales.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                        <span className="text-xs font-bold text-white/80">{currencySymbol}</span>
+                      </div>
+                    </div>
+                    <div className="bg-black/10 backdrop-blur-sm rounded-xl p-4 border border-white/10 relative overflow-hidden group hover:bg-black/20 transition-colors">
+                      <div className="absolute top-0 right-0 p-3 opacity-20 group-hover:opacity-40 transition-opacity">
+                        <ShoppingBag size={20} className="text-white" />
+                      </div>
+                      <p className="text-[10px] font-black tracking-widest mb-1 text-white/70 uppercase">{t('orders.reports.staff.avgTicket')}</p>
+                      <div className="flex items-baseline gap-1">
+                        <p className="text-2xl font-black text-white tracking-tight">
+                          {(sortedEmployees[0].totalSales / (sortedEmployees[0].transactionCount || 1)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </p>
+                        <span className="text-xs font-bold text-white/80">{currencySymbol}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
           </div>
         )}
 
@@ -318,7 +345,7 @@ export const StaffView = React.memo(function StaffView({ shifts, selectedEmploye
                         <td className="px-6 py-4 text-end">
                           <div className="flex items-center justify-end gap-2">
                             <div className="w-16 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
-                              <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${sharePercent}%` }} />
+                              <div className="h-full bg-paymint-green rounded-full" style={{ width: `${sharePercent}%` }} />
                             </div>
                             <span className="text-xs font-bold text-gray-500">
                               {shareRatio.toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })}
