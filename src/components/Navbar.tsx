@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Menu, X, Laptop, LogOut, User } from 'lucide-react';
+import { Menu, X, Laptop, LogOut, User, Headset } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './Logo';
 import { ThemeToggle } from './ThemeToggle';
@@ -21,7 +21,7 @@ export const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
+  const navLinks = isAuthenticated ? [] : [
     { name: t('nav.features'), href: '/#features' },
     { name: t('nav.pricing'), href: '/#pricing' },
     { name: t('nav.support'), href: '/support' },
@@ -52,35 +52,46 @@ export const Navbar = () => {
 
         {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center gap-10">
-          <div className="flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.href}
-                target={link.href.includes('community-hub') ? '_blank' : undefined}
-                rel={link.href.includes('community-hub') ? 'noopener noreferrer' : undefined}
-                className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green dark:hover:text-paymint-green transition-colors"
-                onClick={(e) => {
-                  // Direct smooth scroll if already on homepage
-                  if (link.href.startsWith('/#') && window.location.pathname === '/') {
-                    const el = document.getElementById(link.href.slice(2));
-                    if (el) {
-                      e.preventDefault();
-                      el.scrollIntoView({ behavior: 'smooth' });
-                    }
-                  }
-                }}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
+          {!isAuthenticated && (
+            <>
+              <div className="flex items-center gap-8">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    target={link.href.includes('community-hub') ? '_blank' : undefined}
+                    rel={link.href.includes('community-hub') ? 'noopener noreferrer' : undefined}
+                    className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green dark:hover:text-paymint-green transition-colors"
+                    onClick={(e) => {
+                      // Direct smooth scroll if already on homepage
+                      if (link.href.startsWith('/#') && window.location.pathname === '/') {
+                        const el = document.getElementById(link.href.slice(2));
+                        if (el) {
+                          e.preventDefault();
+                          el.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }
+                    }}
+                  >
+                    {link.name}
+                  </Link>
+                ))}
+              </div>
 
-          <div className="h-6 w-px bg-gray-200 dark:bg-white/10" />
+              <div className="h-6 w-px bg-gray-200 dark:bg-white/10" />
+            </>
+          )}
 
           <div className="flex items-center gap-6">
             {isAuthenticated ? (
               <>
+                <Link
+                  to="/support"
+                  className="inline-flex items-center gap-2.5 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white px-6 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-none active:scale-95 shadow-sm group"
+                >
+                  <Headset size={14} className="group-hover:scale-110 transition-transform" />
+                  {t('nav.support')}
+                </Link>
                 <Link
                   to="/owner"
                   className="inline-flex items-center gap-2.5 bg-paymint-green dark:bg-paymint-green text-black px-6 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-paymint-green/30 active:scale-95 shadow-lg shadow-paymint-green/10 group"
@@ -145,35 +156,47 @@ export const Navbar = () => {
             className="fixed inset-0 z-[40] bg-white dark:bg-[#050505] pt-32 px-6 sm:px-10 lg:hidden flex flex-col items-center overflow-y-auto"
           >
             <div className="w-full max-w-sm space-y-10">
-              <div className="flex flex-col items-center gap-8">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.name}
-                    to={link.href}
-                    target={link.href.includes('community-hub') ? '_blank' : undefined}
-                    rel={link.href.includes('community-hub') ? 'noopener noreferrer' : undefined}
-                    onClick={(e) => {
-                      setIsMobileMenuOpen(false);
-                      if (link.href.startsWith('/#') && window.location.pathname === '/') {
-                        const el = document.getElementById(link.href.slice(2));
-                        if (el) {
-                          e.preventDefault();
-                          el.scrollIntoView({ behavior: 'smooth' });
-                        }
-                      }
-                    }}
-                    className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white hover:text-paymint-green transition-colors tracking-tight"
-                  >
-                    {link.name}
-                  </Link>
-                ))}
-              </div>
+              {!isAuthenticated && (
+                <>
+                  <div className="flex flex-col items-center gap-8">
+                    {navLinks.map((link) => (
+                      <Link
+                        key={link.name}
+                        to={link.href}
+                        target={link.href.includes('community-hub') ? '_blank' : undefined}
+                        rel={link.href.includes('community-hub') ? 'noopener noreferrer' : undefined}
+                        onClick={(e) => {
+                          setIsMobileMenuOpen(false);
+                          if (link.href.startsWith('/#') && window.location.pathname === '/') {
+                            const el = document.getElementById(link.href.slice(2));
+                            if (el) {
+                              e.preventDefault();
+                              el.scrollIntoView({ behavior: 'smooth' });
+                            }
+                          }
+                        }}
+                        className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white hover:text-paymint-green transition-colors tracking-tight"
+                      >
+                        {link.name}
+                      </Link>
+                    ))}
+                  </div>
 
-              <div className="h-px w-full bg-gray-100 dark:bg-white/5" />
+                  <div className="h-px w-full bg-gray-100 dark:bg-white/5" />
+                </>
+              )}
 
               <div className="flex flex-col gap-4">
                 {isAuthenticated ? (
                   <>
+                    <Link
+                      to="/support"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="w-full py-5 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white rounded-[2rem] text-xl font-black tracking-tight text-center flex items-center justify-center gap-3 transition-transform active:scale-95 shadow-sm"
+                    >
+                      <Headset size={20} />
+                      {t('nav.support')}
+                    </Link>
                     <Link
                       to="/owner"
                       onClick={() => setIsMobileMenuOpen(false)}
