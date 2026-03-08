@@ -17,7 +17,7 @@ import {
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
-import { Logo } from '../../components/Logo';
+import PaymintLeafIcon from '../../assets/small-logo.svg';
 import api from '../../config/api';
 import { loadTickets } from '../support/TicketsPage';
 
@@ -98,25 +98,11 @@ export const PortalPage = () => {
                 <div className="relative shrink-0">
                   <div className="absolute inset-0 bg-paymint-green blur-lg opacity-25 rounded-[12px]" />
                   <div className="relative w-20 h-20 bg-white dark:bg-gray-800 border-2 border-paymint-green/30 dark:border-paymint-green/50 rounded-[12px] flex items-center justify-center overflow-hidden">
-                    {account?.avatar ? (
-                      <img
-                        src={account.avatar}
-                        className="w-full h-full object-cover avatar-img"
-                        alt=""
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
-                          const fallback = target.parentElement?.querySelector('.fallback-logo') as HTMLElement;
-                          if (fallback) fallback.style.display = 'flex';
-                        }}
-                      />
-                    ) : null}
-                    <div
-                      className="fallback-logo w-full h-full flex items-center justify-center"
-                      style={{ display: account?.avatar ? 'none' : 'flex' }}
-                    >
-                      <Logo variant="icon" size="lg" />
-                    </div>
+                    <img
+                      src={PaymintLeafIcon}
+                      className="w-12 h-12 object-contain"
+                      alt="Paymint"
+                    />
                   </div>
                 </div>
                 <div>
