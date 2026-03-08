@@ -451,7 +451,10 @@
       "updatedNow": "تم التحديث الآن",
       "viewAll": "عرض الكل",
       "viewAllLocations": "عرض جميع المواقع",
-      "viewDashboard": "عرض لوحة التحكم"
+      "viewDashboard": "عرض لوحة التحكم",
+      "standardizedInUSD": "موحّد بالدولار",
+      "convertedNote": "محوّل من عملات متعددة",
+      "localRevenue": "محلي"
     },
     "description": "حل متكامل لنقاط البيع بنطاق 360 درجة مصمم للأعمال الحديثة المتنامية.",
     "menu": {

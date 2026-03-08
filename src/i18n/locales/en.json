@@ -451,7 +451,10 @@
       "updatedNow": "Updated just now",
       "viewAll": "View All",
       "viewAllLocations": "View All Locations",
-      "viewDashboard": "View Dashboard"
+      "viewDashboard": "View Dashboard",
+      "standardizedInUSD": "Standardized in USD",
+      "convertedNote": "Converted from multiple currencies",
+      "localRevenue": "Local"
     },
     "description": "The ultimate 360° point-of-sale solution designed for modern growing businesses.",
     "menu": {

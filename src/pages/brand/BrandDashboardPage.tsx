@@ -15,6 +15,7 @@ import {
     Award,
     ArrowRight,
     ChevronRight,
+    Globe,
 } from 'lucide-react';
 import {
     Area,
@@ -55,6 +56,8 @@ interface LocationPerformance {
     orders: number;
     growth: number;
     employees: number;
+    currency?: string;
+    originalRevenue?: number;
 }
 
 interface RevenueDataPoint {
@@ -100,6 +103,7 @@ export function BrandDashboardPage() {
     const [revenueData, setRevenueData] = useState<RevenueDataPoint[]>([]);
     const [categoryBreakdown, setCategoryBreakdown] = useState<Array<{ name: string; value: number; quantity: number }>>([]);
     const hasLoadedOnceRef = useRef(false);
+    const [hasMixedCurrencies, setHasMixedCurrencies] = useState(false);
 
     const setQuickDate = (range: DateRangePreset) => {
         setSelectedDateRange(range);
@@ -143,6 +147,9 @@ export function BrandDashboardPage() {
             const dashboardData = statsResponse.data;
             const establishments = brandResponse.data?.establishments || [];
 
+            // Read backend currency metadata
+            setHasMixedCurrencies(dashboardData.hasMixedCurrencies || false);
+
             // Set real stats from backend
             const totalRevenue = dashboardData.stats?.totalRevenue || 0;
             const totalOrders = dashboardData.stats?.totalOrders || 0;
@@ -167,6 +174,8 @@ export function BrandDashboardPage() {
                 orders: loc.orders || 0,
                 growth: 0, // Backend doesn't provide growth yet
                 employees: loc.employees || 0,
+                currency: loc.currency || 'USD',
+                originalRevenue: loc.originalRevenue ?? loc.revenue ?? 0,
             }));
 
             // Sort by revenue descending
@@ -282,7 +291,7 @@ export function BrandDashboardPage() {
         }));
     }, [categoryBreakdown]);
     const formatCurrency = (value: number) => {
-        const symbol = t('common.currencySymbol') || '$';
+        const symbol = '$';
         const locale = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
 
         if (value >= 1000000) {
@@ -291,6 +300,12 @@ export function BrandDashboardPage() {
             return `${symbol}${(value / 1000).toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}K`;
         }
         return `${symbol}${value.toLocaleString(locale, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+    };
+
+    // Format in a location's original (local) currency
+    const formatLocalCurrency = (value: number, currencyCode: string) => {
+        const locale = t('common.locale') === 'ar' ? 'ar-EG' : 'en-US';
+        return `${value.toLocaleString(locale, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} ${currencyCode}`;
     };
 
     const formatNumber = (value: number) => {
@@ -345,6 +360,15 @@ export function BrandDashboardPage() {
                             <Clock size={16} />
                             <span>{t('brand.dashboard.updatedNow')}</span>
                         </div>
+                        {hasMixedCurrencies && (
+                            <>
+                                <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
+                                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold">
+                                    <Globe size={13} />
+                                    <span>{t('brand.dashboard.standardizedInUSD')}</span>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
 
@@ -447,7 +471,7 @@ export function BrandDashboardPage() {
                     },
                     {
                         label: t('brand.dashboard.avgOrderValue'),
-                        value: `${t('common.currencySymbol') || '$'}${(stats?.avgOrderValue || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+                        value: `$${(stats?.avgOrderValue || 0).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
                         change: null,
                         icon: Target,
                         color: 'text-purple-500',
@@ -565,6 +589,11 @@ export function BrandDashboardPage() {
                                     <p className="text-lg font-bold text-gray-900 dark:text-white">
                                         {formatCurrency(loc.revenue)}
                                     </p>
+                                    {loc.currency && loc.currency !== 'USD' && loc.originalRevenue !== undefined && (
+                                        <p className="text-[11px] text-amber-600 dark:text-amber-400 font-bold mt-0.5">
+                                            {t('brand.dashboard.localRevenue')}: {formatLocalCurrency(loc.originalRevenue, loc.currency)}
+                                        </p>
+                                    )}
                                     <p className="text-xs text-gray-500">
                                         {(loc.revenue / (stats?.totalRevenue || 1)).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })} {t('brand.dashboard.ofTotal')}
                                     </p>
