@@ -121,8 +121,7 @@ export function CategoriesPage() {
     setFormError(null);
     setShowModal(true);
   };
-
-  // ─── CSV Import Configuration ──────────────────────────────
+  // CSV Import Configuration
   const categoryCsvColumns: CsvColumn[] = [
     { key: 'name', label: 'Name', required: true, type: 'string' },
   ];
@@ -357,9 +356,6 @@ export function CategoriesPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              {t('dashboard.menu.categories')}
-            </span>
             <div className="flex items-center gap-2">
               <div className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
@@ -420,8 +416,8 @@ export function CategoriesPage() {
                 <stat.icon size={20} />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
-                <p className="text-xl font-black text-gray-900 dark:text-white truncate">
+                <p className="dashboard-card-label mb-0.5">{stat.label}</p>
+                <p className="dashboard-card-value truncate">
                   {typeof stat.value === 'number' ? stat.value.toLocaleString(t('common.locale')) : stat.value}
                 </p>
                 {stat.sub && (
@@ -470,7 +466,7 @@ export function CategoriesPage() {
           <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
             <Layers className="w-10 h-10 text-gray-300" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+          <h3 className="dashboard-card-value mb-2">
             {searchQuery ? t('categories.messages.noResults') : t('categories.messages.noCategories')}
           </h3>
           <p className="text-sm font-bold text-gray-500 max-w-xs">
@@ -528,7 +524,7 @@ export function CategoriesPage() {
                     <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between relative z-10">
                       <div className="flex items-center gap-2">
                         <Package size={14} className="text-gray-400 group-hover:text-paymint-green transition-colors" />
-                        <span className="text-xs font-bold text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">{t('categories.itemsCount', { count: category._count?.items || 0 })}</span>
+                        <span className="dashboard-card-meta group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">{t('categories.itemsCount', { count: category._count?.items || 0 })}</span>
                       </div>
                       <ChevronRight size={16} className="text-gray-300 group-hover:text-paymint-green group-hover:translate-x-1 transition-all" />
                     </div>
@@ -542,10 +538,10 @@ export function CategoriesPage() {
                 <table className="w-full">
                   <thead className="bg-gray-50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
                     <tr>
-                      <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest w-16">{t('categories.table.icon')}</th>
-                      <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('categories.table.name')}</th>
-                      <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('categories.table.items')}</th>
-                      <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest w-32">{t('owner.locations.actions')}</th>
+                      <th className="px-6 py-4 text-left dashboard-card-label w-16">{t('categories.table.icon')}</th>
+                      <th className="px-6 py-4 text-left dashboard-card-label">{t('categories.table.name')}</th>
+                      <th className="px-6 py-4 text-left dashboard-card-label">{t('categories.table.items')}</th>
+                      <th className="px-6 py-4 text-center dashboard-card-label w-32">{t('owner.locations.actions')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -566,7 +562,7 @@ export function CategoriesPage() {
                             <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">{category.name}</p>
                           </td>
                           <td className="px-6 py-4">
-                            <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-500">
+                            <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 dashboard-card-meta">
                               <Package size={12} />
                               {category._count?.items || 0}
                             </span>
@@ -614,7 +610,7 @@ export function CategoriesPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className={`fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm transition-all duration-300 ${sidebarOpen ? 'lg:pl-[300px]' : 'lg:pl-[100px]'}`}
+              className={`fixed inset-0 z-[100] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm transition-all duration-300 ${sidebarOpen ? 'lg:pl-[300px]' : 'lg:pl-[100px]'}`}
               onClick={() => setViewingCategory(null)}
             >
               <motion.div
@@ -644,7 +640,7 @@ export function CategoriesPage() {
                       <ViewingIcon size={24} />
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold text-gray-900 dark:text-white">{viewingCategory.name}</h2>
+                      <h2 className="dashboard-card-value">{viewingCategory.name}</h2>
                       <p className="text-xs font-black text-paymint-green tracking-widest">{t('categories.itemsCount', { count: categoryProducts.length })}</p>
                     </div>
                   </div>
@@ -671,7 +667,7 @@ export function CategoriesPage() {
                       <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 shadow-sm">
                         <Package size={40} strokeWidth={1.5} className="text-gray-300" />
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('products.messages.noProducts')}</h3>
+                      <h3 className="dashboard-card-value mb-2">{t('products.messages.noProducts')}</h3>
                       <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto mb-6">{t('products.messages.noProductsDesc')}</p>
                       <button
                         onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
@@ -765,7 +761,7 @@ export function CategoriesPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className={`fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-all duration-300 ${sidebarOpen ? 'lg:pl-[300px]' : 'lg:pl-[100px]'}`}
+              className={`fixed inset-0 z-[100] popup-surface flex items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-all duration-300 ${sidebarOpen ? 'lg:pl-[300px]' : 'lg:pl-[100px]'}`}
               onClick={() => setDeleteBlockedCategory(null)}
             >
               <motion.div
@@ -786,7 +782,7 @@ export function CategoriesPage() {
                       })()}
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{deleteBlockedCategory.name}</h2>
+                      <h2 className="dashboard-card-value tracking-tight">{deleteBlockedCategory.name}</h2>
                       <p className="text-xs font-black text-red-500 tracking-widest">{t('categories.itemsCount', { count: categoryProducts.length })}</p>
                     </div>
                   </div>

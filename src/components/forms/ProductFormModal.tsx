@@ -308,7 +308,7 @@ export function ProductFormModal({
             ? initialData.image
             : `${baseUrl}${cleanPath.startsWith('/') ? '' : '/'}${cleanPath}`;
 
-          console.log('🖼️ ProductFormModal Image URL:', imgUrl);
+          console.log('[ProductFormModal] Image URL:', imgUrl);
           setImagePreview(imgUrl);
         } else {
           setImagePreview(null);
@@ -502,7 +502,7 @@ export function ProductFormModal({
         <div
           key="product-form-modal-overlay"
           dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-          className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
+          className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
         >
           <motion.div
             initial={{ opacity: 0, y: 100 }}
@@ -587,7 +587,7 @@ export function ProductFormModal({
                             // If it's a relative path and we're on localhost, try fallback to production backend explicitly
                             const prodUrl = 'https://grateful-liberation-production-d036.up.railway.app';
                             if (target.src.includes('/uploads/images/') && !target.src.includes(prodUrl)) {
-                              console.log('🔄 Attempting fallback to production backend...');
+                              console.log('Attempting fallback to production backend...');
                               target.dataset.failed = 'true';
                               const path = target.src.split('/uploads/')[1];
                               target.src = `${prodUrl}/uploads/${path}`;
@@ -1066,7 +1066,7 @@ export function ProductFormModal({
 
                       <div className="space-y-3">
                         <label className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center justify-center gap-1">
-                          <span className="text-paymint-green text-sm">●</span> {t('products.form.inventory.quantity')}
+                          <span className="text-paymint-green text-sm">&bull;</span> {t('products.form.inventory.quantity')}
                           <QuickInfo text={t('products.form.inventory.quantityTip')} />
                         </label>
                         <input
@@ -1084,7 +1084,7 @@ export function ProductFormModal({
                       <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-3">
                           <label className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center justify-center gap-1">
-                            <span className="text-yellow-500 text-sm">●</span> {t('products.form.inventory.low')}
+                            <span className="text-yellow-500 text-sm">&bull;</span> {t('products.form.inventory.low')}
                           </label>
                           <input
                             type="number"
@@ -1096,7 +1096,7 @@ export function ProductFormModal({
                         </div>
                         <div className="space-y-3">
                           <label className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center justify-center gap-1">
-                            <span className="text-paymint-red text-sm">●</span> {t('products.form.inventory.veryLow')}
+                            <span className="text-paymint-red text-sm">&bull;</span> {t('products.form.inventory.veryLow')}
                           </label>
                           <input
                             type="number"

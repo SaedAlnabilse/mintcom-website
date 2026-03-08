@@ -155,7 +155,7 @@ export function OwnerMergePage() {
                                                         <h4 className={`text-sm font-outfit font-black tracking-tight ${isSelected ? 'text-gray-900 dark:text-white' : 'text-gray-500'}`}>
                                                             {est.name}
                                                         </h4>
-                                                        <p className="text-xs font-black text-gray-400 tracking-widestst">{est.type}</p>
+                                                        <p className="text-xs font-black text-gray-400 tracking-widest">{est.type}</p>
                                                     </div>
                                                     <div className={`
                                                         w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all
@@ -225,7 +225,7 @@ export function OwnerMergePage() {
                         <div className="p-10 rounded-[3rem] bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 shadow-2xl space-y-8">
                             <div>
                                 <h3 className="text-xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('owner.merge.brandDetails')}</h3>
-                                <p className="text-xs font-black text-gray-400 tracking-widest uppercasest">{t('owner.merge.brandDetailsSubtitle')}</p>
+                                <p className="text-xs font-black text-gray-400 tracking-widest uppercase">{t('owner.merge.brandDetailsSubtitle')}</p>
                             </div>
 
                             <div className="space-y-2">

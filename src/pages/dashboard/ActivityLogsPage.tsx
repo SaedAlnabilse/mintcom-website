@@ -245,9 +245,6 @@ export function ActivityLogsPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              {t('activity.history')}
-            </span>
             <div className="flex items-center gap-2">
               <div className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
@@ -511,7 +508,7 @@ export function ActivityLogsPage() {
                             <FileText size={16} />
                           </button>
                         ) : (
-                          <span className="text-xs font-black text-gray-200 dark:text-white/5 tracking-widest">—</span>
+                          <span className="text-xs font-black text-gray-200 dark:text-white/5 tracking-widest">-</span>
                         )}
                       </td>
                     </tr>
@@ -526,7 +523,7 @@ export function ActivityLogsPage() {
 
       {/* Detail Modal */}
         {selectedLog && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <div
               className="bg-white dark:bg-[#1E293B] rounded-[2.5rem] border border-gray-200 dark:border-white/5 w-full max-w-2xl overflow-hidden flex flex-col max-h-[85vh] shadow-2xl"
             >

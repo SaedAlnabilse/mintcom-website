@@ -332,7 +332,7 @@ export function StaffPage() {
       case 'MANAGER':
         return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
       default:
-        return 'bg-PayMint-green/10 text-PayMint-green border-PayMint-green/20';
+        return 'bg-paymint-green/10 text-paymint-green border-paymint-green/20';
     }
   };
 
@@ -342,9 +342,6 @@ export function StaffPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
-            <span className="px-2.5 sm:px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              {t('staff.badge')}
-            </span>
             <div className="flex items-center gap-2">
               <div className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
@@ -374,7 +371,7 @@ export function StaffPage() {
           </button>
           <button
             onClick={handleOpenAddEmployeeModal}
-            className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20 touch-target"
+            className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm touch-target"
           >
             <Plus size={18} />
             <span className="hidden xs:inline">{t('staff.addMember')}</span>
@@ -402,9 +399,9 @@ export function StaffPage() {
                 </div>
               </div>
               <div>
-                <p className="text-xs sm:text-base font-bold text-gray-500 dark:text-gray-400 mb-1">{stat.label}</p>
-                <p className="text-2xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight leading-none mb-1 sm:mb-2">{stat.value.toLocaleString(t('common.locale'))}</p>
-                <p className="hidden sm:block text-xs font-medium text-gray-500 dark:text-gray-400">{stat.info}</p>
+                <p className="dashboard-card-label mb-1">{stat.label}</p>
+                <p className="dashboard-card-value leading-none mb-1 sm:mb-2">{stat.value.toLocaleString(t('common.locale'))}</p>
+                <p className="hidden sm:block dashboard-card-meta">{stat.info}</p>
               </div>
             </div>
           </div>
@@ -444,7 +441,7 @@ export function StaffPage() {
       <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-h-[250px] lg:min-h-[350px] flex flex-col">
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32">
-            <div className="w-12 h-12 border-4 border-PayMint-green/30 border-t-PayMint-green rounded-full animate-spin mb-4" />
+            <div className="w-12 h-12 border-4 border-paymint-green/30 border-t-paymint-green rounded-full animate-spin mb-4" />
             <p className="text-xs font-black tracking-widest text-gray-400">{t('staff.messages.loading')}</p>
           </div>
         ) : filteredStaff.length === 0 ? (
@@ -452,7 +449,7 @@ export function StaffPage() {
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
               <Users size={32} className="sm:w-10 sm:h-10 text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('staff.messages.noStaff')}</h3>
+            <h3 className="dashboard-card-value mb-2">{t('staff.messages.noStaff')}</h3>
             <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto">{t('staff.messages.noStaffDesc')}</p>
           </div>
         ) : (
@@ -468,7 +465,7 @@ export function StaffPage() {
                   {/* Card Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-PayMint-green/10 text-PayMint-green flex items-center justify-center font-black text-sm">
+                      <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-sm">
                         {member.username.charAt(0).toUpperCase()}
                       </div>
                       <div>
@@ -496,9 +493,9 @@ export function StaffPage() {
                     <div>
                       <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('staff.table.status')}</p>
                       <div className={`flex items-center gap-2 font-bold text-xs ${!member.isActive
-                        ? 'text-PayMint-red'
+                        ? 'text-paymint-red'
                         : member.isClockedIn
-                          ? 'text-PayMint-green'
+                          ? 'text-paymint-green'
                           : 'text-gray-400'
                         }`}>
                         {!member.isActive ? (
@@ -509,8 +506,8 @@ export function StaffPage() {
                         ) : member.isClockedIn ? (
                           <>
                             <div className="relative flex h-2 w-2">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-PayMint-green opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-2 w-2 bg-PayMint-green"></span>
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
                             </div>
                             <span>{t('staff.status.online')}</span>
                           </>
@@ -535,7 +532,7 @@ export function StaffPage() {
                     </button>
                     <button
                       onClick={() => handleDelete(member.id, member.username)}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 dark:border-red-500/20 text-PayMint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-all text-xs font-bold touch-target"
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 dark:border-red-500/20 text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-all text-xs font-bold touch-target"
                     >
                       <Trash2 size={14} />
                       {t('common.delete')}
@@ -551,7 +548,7 @@ export function StaffPage() {
                 <thead className="bg-gray-50 dark:bg-white/[0.02]">
                   <tr className="border-b border-gray-200 dark:border-white/5">
                     <th
-                      className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-PayMint-green transition-colors"
+                      className="px-6 py-4 text-left dashboard-card-label cursor-pointer hover:text-paymint-green transition-colors"
                       onClick={() => handleSort('username')}
                     >
                       <div className="flex items-center gap-1">
@@ -560,7 +557,7 @@ export function StaffPage() {
                       </div>
                     </th>
                     <th
-                      className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-PayMint-green transition-colors"
+                      className="px-6 py-4 text-left dashboard-card-label cursor-pointer hover:text-paymint-green transition-colors"
                       onClick={() => handleSort('role')}
                     >
                       <div className="flex items-center gap-1">
@@ -568,9 +565,9 @@ export function StaffPage() {
                         {sortConfig?.key === 'role' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('staff.table.contact')}</th>
+                    <th className="px-6 py-4 text-left dashboard-card-label">{t('staff.table.contact')}</th>
                     <th
-                      className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-PayMint-green transition-colors"
+                      className="px-6 py-4 text-left dashboard-card-label cursor-pointer hover:text-paymint-green transition-colors"
                       onClick={() => handleSort('status')}
                     >
                       <div className="flex items-center gap-1">
@@ -578,7 +575,7 @@ export function StaffPage() {
                         {sortConfig?.key === 'status' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('owner.locations.actions')}</th>
+                    <th className="px-6 py-4 text-center dashboard-card-label">{t('owner.locations.actions')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -590,7 +587,7 @@ export function StaffPage() {
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-xl bg-PayMint-green/10 text-PayMint-green flex items-center justify-center font-black text-sm group-hover:scale-110 transition-transform duration-300">
+                          <div className="w-10 h-10 rounded-xl bg-paymint-green/10 text-paymint-green flex items-center justify-center font-black text-sm group-hover:scale-110 transition-transform duration-300">
                             {member.username.charAt(0).toUpperCase()}
                           </div>
                           <div>
@@ -621,9 +618,9 @@ export function StaffPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div className={`flex items-center gap-2 font-black text-xs tracking-wide ${!member.isActive
-                          ? 'text-PayMint-red'
+                          ? 'text-paymint-red'
                           : member.isClockedIn
-                            ? 'text-PayMint-green'
+                            ? 'text-paymint-green'
                             : 'text-gray-400'
                           }`}>
                           {!member.isActive ? (
@@ -634,8 +631,8 @@ export function StaffPage() {
                           ) : member.isClockedIn ? (
                             <>
                               <div className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-PayMint-green opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-PayMint-green"></span>
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-paymint-green"></span>
                               </div>
                               <span>{t('staff.status.online')}</span>
                             </>
@@ -664,7 +661,7 @@ export function StaffPage() {
                               }}
                               aria-label={t('common.actions')}
                               aria-expanded={activeDropdown === member.id}
-                              className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border transition-all active:scale-90 shadow-sm ${activeDropdown === member.id ? 'bg-PayMint-green text-black border-PayMint-green' : 'bg-white dark:bg-white/5 border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/10'}`}
+                              className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border transition-all active:scale-90 shadow-sm ${activeDropdown === member.id ? 'bg-paymint-green text-black border-paymint-green' : 'bg-white dark:bg-white/5 border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/10'}`}
                             >
                               <MoreVertical size={18} />
                             </button>
@@ -675,12 +672,12 @@ export function StaffPage() {
                                   onClick={() => { setActiveDropdown(null); toast.success(t('staff.messages.resetSuccess')); }}
                                   className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black tracking-widest text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
                                 >
-                                  <Key size={14} className="text-PayMint-green" />
+                                  <Key size={14} className="text-paymint-green" />
                                   <span>{t('staff.actions.resetPassword')}</span>
                                 </button>
                                 <button
                                   onClick={() => { setActiveDropdown(null); handleDelete(member.id, member.username); }}
-                                  className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black tracking-widest text-PayMint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
+                                  className="w-full flex items-center gap-3 px-4 py-3 text-xs font-black tracking-widest text-paymint-red hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-left border-t border-gray-100 dark:border-white/5"
                                 >
                                   <Trash2 size={14} />
                                   <span>{t('common.delete')}</span>

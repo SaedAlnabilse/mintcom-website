@@ -284,8 +284,8 @@ export function OwnerEmployeesPage() {
             );
         }
         return (
-            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-PayMint-red/10 text-PayMint-red border border-PayMint-red/20 text-xs font-bold tracking-wide w-fit mx-auto">
-                <span className="w-1.5 h-1.5 rounded-full bg-PayMint-red" />
+            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-paymint-red/10 text-paymint-red border border-paymint-red/20 text-xs font-bold tracking-wide w-fit mx-auto">
+                <span className="w-1.5 h-1.5 rounded-full bg-paymint-red" />
                 {t('common.status.inactive')}
             </span>
         );
@@ -305,11 +305,6 @@ export function OwnerEmployeesPage() {
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
-                    <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                            {t('dashboard.menu.team')}
-                        </span>
-                    </div>
                     <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.staff.title')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
                         {t('owner.staff.subtitle')}
@@ -321,7 +316,7 @@ export function OwnerEmployeesPage() {
                     <button
                         id="tour-add-employee-btn"
                         onClick={handleOpenAddEmployeeModal}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20"
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
                     >
                         <UserPlus size={18} />
                         <span>{t('staff.newEmployee')}</span>
@@ -349,9 +344,9 @@ export function OwnerEmployeesPage() {
                                 </div>
                             </div>
                             <div>
-                                <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{stat.label}</p>
-                                <p className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{stat.value}</p>
-                                <p className="text-xs font-bold text-gray-500">{stat.info}</p>
+                                <p className="dashboard-card-label mb-1">{stat.label}</p>
+                                <p className="dashboard-card-value mb-2">{stat.value}</p>
+                                <p className="dashboard-card-meta">{stat.info}</p>
                             </div>
                         </div>
                     </div>
@@ -432,7 +427,7 @@ export function OwnerEmployeesPage() {
             ) : filteredEmployees.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="text-xl font-bold text-gray-900 dark:text-white">{t('owner.staff.noStaffFound')}</p>
+                    <p className="dashboard-card-value">{t('owner.staff.noStaffFound')}</p>
                     <p className="text-sm font-bold text-gray-500 mt-1">{t('owner.staff.noStaffDesc')}</p>
                 </div>
             ) : viewMode === 'grid' ? (
@@ -509,7 +504,7 @@ export function OwnerEmployeesPage() {
                                 </div>
 
                                 <div className="space-y-3 pt-4 border-t border-gray-100 dark:border-white/5">
-                                    <div className="flex items-center gap-2 text-xs font-black text-gray-400 tracking-widest uppercase">
+                                    <div className="flex items-center gap-2 dashboard-card-label uppercase">
                                         <MapPin size={12} />
                                         {t('owner.staff.accessLocations')}
                                     </div>
@@ -521,10 +516,10 @@ export function OwnerEmployeesPage() {
                                                 </span>
                                             ))
                                         ) : (
-                                            <span className="text-xs font-bold text-gray-500 italic">{t('owner.staff.noLocationsAssigned')}</span>
+                                            <span className="dashboard-card-meta italic">{t('owner.staff.noLocationsAssigned')}</span>
                                         )}
                                         {emp.assignments?.length > 3 && (
-                                            <span className="px-2 py-1 bg-gray-50 dark:bg-white/5 rounded text-xs font-medium text-gray-500">
+                                            <span className="px-2 py-1 bg-gray-50 dark:bg-white/5 rounded dashboard-card-meta">
                                                 +{emp.assignments.length - 3} {t('common.more')}
                                             </span>
                                         )}
@@ -536,7 +531,7 @@ export function OwnerEmployeesPage() {
                 </div>
             ) : (
                 <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest">
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 dashboard-card-label">
                         <div
                             className="col-span-4 cursor-pointer hover:text-paymint-green transition-colors flex items-center gap-1"
                             onClick={() => handleSort('name')}
@@ -579,7 +574,7 @@ export function OwnerEmployeesPage() {
                                     </div>
                                     <div>
                                         <h3 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{emp.firstName} {emp.lastName}</h3>
-                                        <p className="text-xs font-bold text-gray-500">{emp.username}</p>
+                                        <p className="dashboard-card-meta">{emp.username}</p>
                                     </div>
                                 </div>
                                 <div className="col-span-2 flex justify-center">
@@ -643,7 +638,7 @@ export function OwnerEmployeesPage() {
 
             {/* Delete Confirmation Modal */}
             {deleteModalOpen && employeeToDelete && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                <div className="fixed inset-0 z-50 popup-surface flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
                     <div
                         className="bg-white dark:bg-[#1E293B] w-full max-w-md rounded-[2rem] overflow-hidden border border-gray-200 dark:border-white/10 shadow-2xl"
                     >
@@ -659,7 +654,7 @@ export function OwnerEmployeesPage() {
 
                         <div className="px-8 pb-6 space-y-4">
                             <div>
-                                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
+                                <label className="dashboard-card-label mb-2 block">
                                     {t('owner.staff.verifyPassword')}
                                 </label>
                                 <div className="relative">
@@ -712,4 +707,5 @@ export function OwnerEmployeesPage() {
         </div>
     );
 }
+
 

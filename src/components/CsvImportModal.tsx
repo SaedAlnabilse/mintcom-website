@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useScrollLock } from '../hooks/useScrollLock';
 
-// ─── Types ────────────────────────────────────────────────────────
+// Types
 export interface CsvColumn {
     key: string;
     label: string;
@@ -35,7 +35,7 @@ interface CsvImportModalProps {
     maxRows?: number;
 }
 
-// ─── CSV Helpers ──────────────────────────────────────────────────
+// CSV Helpers
 function parseCSVLine(line: string): string[] {
     const result: string[] = [];
     let current = '';
@@ -108,7 +108,7 @@ function generateCSV(columns: CsvColumn[], sampleData: Record<string, string>[])
     return [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
 }
 
-// ─── Component ────────────────────────────────────────────────────
+// Component
 export function CsvImportModal({
     isOpen,
     onClose,
@@ -148,8 +148,7 @@ export function CsvImportModal({
         resetState();
         onClose();
     };
-
-    // ─── Column Matching ─────────────────────────────────────────
+    // Column Matching
     const matchColumns = useCallback((csvHeaders: string[]): { mapping: Record<string, string>; errors: string[] } => {
         const mapping: Record<string, string> = {};
         const errors: string[] = [];
@@ -173,8 +172,7 @@ export function CsvImportModal({
 
         return { mapping, errors };
     }, [columns]);
-
-    // ─── File Processing ──────────────────────────────────────────
+    // File Processing
     const processFile = useCallback((file: File) => {
         setParseErrors([]);
         setFileName(file.name);
@@ -293,8 +291,7 @@ export function CsvImportModal({
 
         reader.readAsText(file);
     }, [columns, maxRows, matchColumns]);
-
-    // ─── Drag & Drop ──────────────────────────────────────────────
+    // Drag & Drop
     const handleDragOver = (e: React.DragEvent) => {
         e.preventDefault();
         e.stopPropagation();
@@ -320,8 +317,7 @@ export function CsvImportModal({
         const files = e.target.files;
         if (files && files.length > 0) processFile(files[0]);
     };
-
-    // ─── Download Sample ──────────────────────────────────────────
+    // Download Sample
     const downloadSample = () => {
         const csv = generateCSV(columns, sampleData);
         // Add BOM for Excel compatibility
@@ -336,8 +332,7 @@ export function CsvImportModal({
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
     };
-
-    // ─── Import ───────────────────────────────────────────────────
+    // Import
     const handleImport = async () => {
         if (parsedData.length === 0) return;
 
@@ -365,7 +360,7 @@ export function CsvImportModal({
         <AnimatePresence>
             <div
                 dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 dark:bg-black/80 backdrop-blur-sm font-sans"
+                className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 dark:bg-black/80 backdrop-blur-sm font-sans"
                 onClick={handleClose}
             >
                 <motion.div

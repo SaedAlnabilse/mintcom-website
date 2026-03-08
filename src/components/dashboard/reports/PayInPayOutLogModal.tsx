@@ -139,7 +139,7 @@ export const PayInPayOutLogModal: React.FC<PayInPayOutLogModalProps> = ({
             {isOpen && (
                 <div
                     dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                    className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-[padding] duration-300 ease-in-out font-sans"
+                    className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-[padding] duration-300 ease-in-out font-sans"
                     style={{ paddingLeft: t('common.locale') === 'ar' ? '1rem' : `calc(1rem + ${sidebarOffset}px)`, paddingRight: t('common.locale') === 'ar' ? `calc(1rem + ${sidebarOffset}px)` : '1rem' }}
                 >
                     <motion.div

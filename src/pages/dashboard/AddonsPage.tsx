@@ -335,9 +335,6 @@ export function AddonsPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              {t('dashboard.menu.itemsMenu')}
-            </span>
             <div className="flex items-center gap-2">
               <div className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
@@ -408,8 +405,8 @@ export function AddonsPage() {
                 <stat.icon size={20} />
               </div>
               <div>
-                <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
-                <p className="text-xl font-black text-gray-900 dark:text-white">{stat.value.toLocaleString(t('common.locale'))}</p>
+                <p className="dashboard-card-label mb-0.5">{stat.label}</p>
+                <p className="dashboard-card-value">{stat.value.toLocaleString(t('common.locale'))}</p>
                 {stat.sub && <p className="text-xs font-bold text-paymint-green tracking-wide mt-1">{stat.sub}</p>}
               </div>
             </div>
@@ -516,7 +513,7 @@ export function AddonsPage() {
           <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
             <Package size={32} className="text-gray-300" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('attributes.list.noAddons')}</h3>
+          <h3 className="dashboard-card-value mb-2">{t('attributes.list.noAddons')}</h3>
           <p className="text-sm font-bold text-gray-500 max-w-xs">{t('attributes.list.noAddonsDesc')}</p>
         </div>
       ) : (
@@ -546,7 +543,7 @@ export function AddonsPage() {
                       )}
                     </div>
                     <p className="text-xs font-bold text-gray-400 tracking-widest mt-1">
-                      {attr.inputType === 'SINGLE_SELECT' ? t('attributes.list.singleChoice') : t('attributes.list.multipleChoice')} • {attr.subAttributes?.length || 0} {t('attributes.list.options')}
+                      {attr.inputType === 'SINGLE_SELECT' ? t('attributes.list.singleChoice') : t('attributes.list.multipleChoice')} &bull; {attr.subAttributes?.length || 0} {t('attributes.list.options')}
                     </p>
                   </div>
                 </div>
@@ -621,7 +618,7 @@ export function AddonsPage() {
 
       {/* Add-on Group Modal */}
         {showAttributeModal && (
-          <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm font-sans">
+          <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm font-sans">
             <div className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md overflow-hidden shadow-2xl h-[92vh] sm:h-auto flex flex-col">
               {/* Mobile drag handle */}
               <div className="sm:hidden flex justify-center pt-3 pb-1">
@@ -718,7 +715,7 @@ export function AddonsPage() {
 
       {/* Add-on Option Modal */}
         {showSubAttributeModal && (
-          <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm font-sans">
+          <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm font-sans">
             <div className="bg-white dark:bg-[#1E293B] rounded-t-3xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full max-w-sm overflow-hidden shadow-2xl h-[92vh] sm:h-auto flex flex-col">
               {/* Mobile drag handle */}
               <div className="sm:hidden flex justify-center pt-3 pb-1">

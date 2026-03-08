@@ -186,7 +186,7 @@ export function SecurityVerificationModal({
             {isOpen && (
                 <div
                     dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                    className="fixed inset-0 z-[9999] flex items-center justify-center p-4 font-sans"
+                    className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center p-4 font-sans"
                 >
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -275,7 +275,7 @@ export function SecurityVerificationModal({
                                                 setPassword(e.target.value);
                                                 if (errors.password) setErrors({ ...errors, password: '' });
                                             }}
-                                            placeholder="••••••••"
+                                            placeholder="********"
                                             className={`w-full bg-gray-50 dark:bg-white/[0.03] border ${errors.password ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-xl py-3 pl-12 pr-10 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-paymint-green/10 transition-all placeholder-gray-300 dark:placeholder-gray-700`}
                                             disabled={isSubmitting}
                                         />

@@ -20,7 +20,8 @@ import {
   History,
   Eye,
   Undo2,
-  ArrowUpDown
+  ArrowUpDown,
+  ExternalLink
 } from 'lucide-react';
 import api from '../../config/api';
 import { ConfirmModal } from '../../components/ConfirmModal';
@@ -598,8 +599,7 @@ export function OrdersPage() {
       if (requestId !== fetchRequestIdRef.current) {
         return;
       }
-
-      // Process Held Orders – always show ALL held orders regardless of filters
+      // Process Held Orders - always show ALL held orders regardless of filters
       let heldOrdersList: Order[] = [];
       let heldCount = 0;
 
@@ -930,9 +930,6 @@ export function OrdersPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
-            <span className="px-2.5 sm:px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              {t('orders.badge')}
-            </span>
             <div className="flex items-center gap-2">
               <div className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
@@ -1158,8 +1155,8 @@ export function OrdersPage() {
                 <stat.icon size={18} className="sm:w-5 sm:h-5" />
               </div>
               <div>
-                <p className="text-xs font-black text-gray-500 dark:text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
-                <p className="text-lg sm:text-xl font-black text-gray-900 dark:text-white">{stat.value}</p>
+                <p className="dashboard-card-label mb-0.5">{stat.label}</p>
+                <p className="dashboard-card-value text-lg sm:text-2xl">{stat.value}</p>
               </div>
             </div>
 
@@ -1167,12 +1164,19 @@ export function OrdersPage() {
             {stat.active && (
               <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-paymint-green animate-pulse" />
             )}
+
+            {/* Clickable Indicator Icon */}
+            {stat.onClick && !stat.active && (
+              <div className="absolute top-3 right-3 text-gray-400 group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-300 transition-colors">
+                <ExternalLink size={16} />
+              </div>
+            )}
           </div>
         ))}
       </div>
 
       {/* Held Orders Section */}
-      {heldOrders.length > 0 && (
+      {heldOrders.length > 0 && statusFilter !== 'HELD' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-lg sm:text-xl font-outfit font-bold text-gray-900 dark:text-white flex items-center gap-2 tracking-tight">
@@ -1236,7 +1240,7 @@ export function OrdersPage() {
               onScroll={updateHeldOrdersScrollIndicators}
               className="flex flex-nowrap gap-4 overflow-x-auto scrollbar-none pb-2"
             >
-              {heldOrders.map((order) => (
+              {heldOrders.slice(0, 3).map((order) => (
                 <div
                   key={order.id}
                   onClick={() => {
@@ -1255,7 +1259,6 @@ export function OrdersPage() {
                         </div>
                         <div>
                           <p className="font-black text-gray-900 dark:text-white text-sm">#{order.orderNumber}</p>
-                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{formatDate(order.createdAt)}</p>
                         </div>
                       </div>
                     </div>
@@ -1267,8 +1270,8 @@ export function OrdersPage() {
                         </p>
                       )}
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-gray-500">{order.items.length} {t('hero.items')}</span>
-                        <span className="text-lg font-black text-gray-900 dark:text-white">{formatAmount(order.total)}</span>
+                        <span className="dashboard-card-meta">{order.items.length} {t('hero.items')}</span>
+                        <span className="dashboard-card-value">{formatAmount(order.total)}</span>
                       </div>
                     </div>
 
@@ -1281,6 +1284,24 @@ export function OrdersPage() {
                   </div>
                 </div>
               ))}
+
+              {heldOrders.length > 3 && (
+                <div
+                  onClick={() => {
+                    setStatusFilter('HELD');
+                    setPaymentFilter('all');
+                    setPage(1);
+                  }}
+                  className="group flex-none basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4 bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-dashed border-orange-300 dark:border-orange-500/30 shadow-sm hover:shadow-md hover:border-orange-500/50 hover:bg-orange-500/5 transition-all cursor-pointer relative overflow-hidden flex flex-col items-center justify-center min-h-[140px]"
+                >
+                  <div className="w-12 h-12 rounded-full bg-orange-50 dark:bg-orange-500/10 flex items-center justify-center text-orange-400 group-hover:text-orange-500 group-hover:bg-orange-500/20 transition-colors mb-3">
+                    <ChevronRight size={24} />
+                  </div>
+                  <p className="font-bold text-gray-600 dark:text-gray-300 group-hover:text-orange-500 transition-colors">
+                    {t('common.more')} ({heldOrders.length - 3})
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -1306,7 +1327,7 @@ export function OrdersPage() {
               <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4">
                 <ShoppingCart className="w-8 h-8 text-gray-300" />
               </div>
-              <p className="text-xl font-bold text-gray-900 dark:text-white">{t('orders.messages.noOrders')}</p>
+              <p className="dashboard-card-value">{t('orders.messages.noOrders')}</p>
             </div>
           </div>
         )}
@@ -1346,7 +1367,7 @@ export function OrdersPage() {
                       {order.customer?.name || t('orders.table.walkIn')}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {order.user?.username ? `${t('orders.table.staff')}: ${order.user.username}` : t('common.pos')} • {formatPaymentMethod(order)}
+                      {order.user?.username ? `${t('orders.table.staff')}: ${order.user.username}` : t('common.pos')} &bull; {formatPaymentMethod(order)}
                     </p>
                   </div>
                   <div className="text-right ml-4 flex-shrink-0">
@@ -1377,8 +1398,8 @@ export function OrdersPage() {
                         }}
                         disabled={!canCancelReceipts}
                         className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition-colors ${canCancelReceipts
-                            ? 'text-paymint-red hover:bg-paymint-red/10'
-                            : 'text-gray-400 bg-gray-100 dark:bg-white/5 cursor-not-allowed'
+                          ? 'text-paymint-red hover:bg-paymint-red/10'
+                          : 'text-gray-400 bg-gray-100 dark:bg-white/5 cursor-not-allowed'
                           }`}
                       >
                         <Undo2 size={14} />
@@ -1441,7 +1462,7 @@ export function OrdersPage() {
                       <ArrowUpDown size={14} className={`transition-all ${sortConfig?.key === 'status' ? 'opacity-100 scale-110' : 'opacity-20 group-hover:opacity-100'}`} />
                     </div>
                   </th>
-                  <th className="px-6 py-4 text-right text-xs font-black text-gray-400 tracking-widest">{t('orders.table.actions')}</th>
+                  <th className="px-6 py-4 text-right dashboard-card-label">{t('orders.table.actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -1521,8 +1542,8 @@ export function OrdersPage() {
                                     }}
                                     disabled={!canCancelReceipts}
                                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors ${canCancelReceipts
-                                        ? 'text-paymint-red hover:bg-paymint-red/10'
-                                        : 'text-gray-400 bg-gray-100 dark:bg-white/5 cursor-not-allowed'
+                                      ? 'text-paymint-red hover:bg-paymint-red/10'
+                                      : 'text-gray-400 bg-gray-100 dark:bg-white/5 cursor-not-allowed'
                                       }`}
                                   >
                                     <Undo2 size={14} />
@@ -1581,7 +1602,7 @@ export function OrdersPage() {
       />
 
       {isRefundReasonModalOpen && (
-        <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/50 p-4">
+        <div className="fixed inset-0 z-[10000] popup-surface flex items-center justify-center bg-black/50 p-4">
           <div
             className="w-full max-w-md rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 p-5 sm:p-6 shadow-2xl"
             dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
@@ -1641,5 +1662,6 @@ export function OrdersPage() {
     </div>
   );
 }
+
 
 

@@ -83,6 +83,13 @@ export function DashboardLayout() {
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
 
+  useEffect(() => {
+    document.body.classList.add('dashboard-font-unified');
+    return () => {
+      document.body.classList.remove('dashboard-font-unified');
+    };
+  }, []);
+
   const getRelativePathFromUrl = useCallback((pathname: string): string => {
     // /dashboard/:slug/rest -> rest
     const parts = pathname.split('/');
@@ -369,7 +376,7 @@ export function DashboardLayout() {
                     size={24}
                     className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
                   />
-                  <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-outfit font-bold tracking-tight rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                  <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                     {t('dashboard.menu.openSidebar')}
                   </div>
                 </button>
@@ -430,7 +437,7 @@ export function DashboardLayout() {
               className="w-12 h-12 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all group relative"
             >
               <MapPin size={24} />
-              <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-outfit font-bold tracking-tight rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+              <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                 {t('dashboard.menu.switchLocation')}
               </div>
             </button>
@@ -443,7 +450,7 @@ export function DashboardLayout() {
           className={`flex-1 px-3 space-y-1.5 scrollbar-none pb-4 ${sidebarOpen ? 'overflow-y-auto' : 'overflow-visible'}`}
         >
           {sidebarOpen && (
-            <p className="px-3 py-2 text-xs font-black text-gray-400 tracking-widest">{t('dashboard.menu.mainMenu')}</p>
+            <p className="px-3 py-2 text-xs font-semibold text-gray-500 tracking-normal">{t('dashboard.menu.mainMenu')}</p>
           )}
 
           {filteredMenu.map((item, index) => {
@@ -473,7 +480,7 @@ export function DashboardLayout() {
 
                     {sidebarOpen && (
                       <>
-                        <span className="flex-1 text-left text-sm font-bold">{item.label}</span>
+                        <span className="flex-1 text-left text-sm font-semibold tracking-normal">{item.label}</span>
                         <ChevronRight size={16} className={`text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-90' : (t('common.locale') === 'ar' ? 'rotate-180' : '')}`} />
                       </>
                     )}
@@ -482,7 +489,7 @@ export function DashboardLayout() {
                       <div className={`absolute ${isRTL ? 'right-[calc(100%+8px)]' : 'left-[calc(100%+8px)]'} ${isBottomItem ? 'bottom-0' : 'top-0'} opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] pointer-events-none group-hover:pointer-events-auto ${isRTL ? '-translate-x-1 group-hover:translate-x-0' : 'translate-x-1 group-hover:translate-x-0'}`}>
                         <div className="bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden min-w-[200px] py-2">
                           <div className="px-4 py-2 border-b border-gray-100 dark:border-white/5 mb-1 bg-gray-50/50 dark:bg-white/[0.02]">
-                            <p className="text-xs font-black text-paymint-green tracking-widest">{item.label}</p>
+                            <p className="text-xs font-semibold text-paymint-green tracking-normal">{item.label}</p>
                           </div>
                           <div className="px-2 space-y-1">
                             {item.items.map((subItem) => (
@@ -491,7 +498,7 @@ export function DashboardLayout() {
                                 to={subItem.path}
                                 onClick={() => setSidebarOpen(false)}
                                 className={({ isActive }) =>
-                                  `flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition-all ${isActive
+                                  `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive
                                     ? 'bg-paymint-green text-black shadow-md shadow-paymint-green/20 active-menu-item'
                                     : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
                                   }`
@@ -529,7 +536,7 @@ export function DashboardLayout() {
                               to={subItem.path}
                               onClick={() => setSidebarOpen(false)}
                               className={({ isActive }) =>
-                                `flex items-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold transition-all ${isActive
+                                `flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive
                                   ? 'bg-paymint-green text-black shadow-md shadow-paymint-green/20 active-menu-item'
                                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'
                                 }`
@@ -564,7 +571,7 @@ export function DashboardLayout() {
                   className={({ isActive }) =>
                     `relative flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group
                     ${isActive
-                      ? 'bg-paymint-green text-black font-bold shadow-lg shadow-paymint-green/20 active-menu-item'
+                      ? 'bg-paymint-green text-black font-semibold shadow-lg shadow-paymint-green/20 active-menu-item'
                       : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}
                     ${!sidebarOpen ? 'justify-center w-12 h-12 mx-auto' : ''}`
                   }
@@ -572,11 +579,11 @@ export function DashboardLayout() {
                   <Icon size={!sidebarOpen ? 24 : 20} />
 
                   {sidebarOpen && (
-                    <span className="text-sm font-bold">{item.label}</span>
+                    <span className="text-sm font-semibold tracking-normal">{item.label}</span>
                   )}
 
                   {!sidebarOpen && (
-                    <div className={`absolute ${isRTL ? 'right-full mr-4 -translate-x-1 group-hover:translate-x-0' : 'left-full ml-4 translate-x-1 group-hover:translate-x-0'} top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-outfit font-bold tracking-tight rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl`}>
+                    <div className={`absolute ${isRTL ? 'right-full mr-4 -translate-x-1 group-hover:translate-x-0' : 'left-full ml-4 translate-x-1 group-hover:translate-x-0'} top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl`}>
                       {item.label}
                     </div>
                   )}
@@ -742,7 +749,7 @@ export function DashboardLayout() {
               >
                 <Settings size={24} />
                 {/* Tooltip */}
-                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-outfit font-bold tracking-tight rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                   {t('dashboard.menu.settings')}
                 </div>
               </button>
@@ -976,7 +983,7 @@ export function DashboardLayout() {
                   // Simplified mobile menu for groups: just list items
                   return (
                     <div key={index} className="mb-2">
-                      <p className="px-3 py-2 text-xs font-black text-gray-400 tracking-widest">{item.label}</p>
+                      <p className="px-3 py-2 text-xs font-semibold text-gray-500 tracking-normal">{item.label}</p>
                       <div className="pl-2 space-y-1">
                         {item.items.map((subItem) => (
                           <NavLink
@@ -1010,13 +1017,13 @@ export function DashboardLayout() {
                       onClick={() => setMobileMenuOpen(false)}
                       className={({ isActive }) =>
                         `flex items-center gap-3 p-3.5 rounded-xl transition-all ${isActive
-                          ? 'bg-paymint-green text-black font-bold shadow-lg shadow-paymint-green/20'
+                          ? 'bg-paymint-green text-black font-semibold shadow-lg shadow-paymint-green/20'
                           : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'
                         }`
                       }
                     >
                       <Icon size={20} />
-                      <span className="text-sm font-bold">{item.label}</span>
+                      <span className="text-sm font-semibold tracking-normal">{item.label}</span>
                     </NavLink>
                   );
                 }

@@ -52,6 +52,19 @@
     accent-color: #7CC39F;
   }
 
+  /* Enforce a single font family across dashboard surfaces and popups */
+  body.dashboard-font-unified {
+    font-family: 'Outfit', 'Inter', 'Barlow', system-ui, sans-serif;
+  }
+
+  html[dir="rtl"] body.dashboard-font-unified {
+    font-family: 'Noto Sans Arabic', 'Outfit', 'Inter', sans-serif;
+  }
+
+  body.dashboard-font-unified :where(*, *::before, *::after) {
+    font-family: inherit !important;
+  }
+
   ::selection {
     background-color: #7CC39F;
     color: #000000;
@@ -150,12 +163,14 @@
   .label-strong {
     @apply text-label text-gray-400 font-black tracking-widest uppercase;
   }
-
   /* Standardized Subtitle */
   .text-subtitle {
     @apply text-sm text-gray-500 dark:text-gray-400 font-medium;
   }
 
+  .dashboard-subtitle {
+    @apply text-sm sm:text-base text-gray-500 dark:text-gray-400 font-medium;
+  }
   /* Card Labels - Used for stat card labels */
   .card-label {
     @apply text-label-xs uppercase tracking-widest text-text-muted dark:text-paymint-gray;
@@ -172,6 +187,26 @@
 
   .card-value-xl {
     @apply text-value-xl font-bold text-text-primary dark:text-paymint-text tracking-tight;
+  }
+
+  /* Unified stat-card typography across dashboard, owner, and brand portals */
+  .dashboard-card-label {
+    @apply text-sm font-semibold leading-tight text-gray-500 dark:text-gray-400 tracking-tight;
+  }
+
+  .dashboard-card-value {
+    @apply text-2xl font-bold leading-none text-gray-900 dark:text-white tracking-tight;
+  }
+
+  .dashboard-card-meta {
+    @apply text-xs font-medium text-gray-500 dark:text-gray-400;
+  }
+
+  /* Fallback for legacy over-spaced labels still used in older dashboard/owner/brand cards */
+  body.dashboard-font-unified [class*="text-xs"][class*="text-gray-400"][class*="tracking-widest"][class*="font-black"],
+  body.dashboard-font-unified [class*="text-xs"][class*="text-gray-400"][class*="tracking-widest"][class*="font-bold"] {
+    letter-spacing: 0.02em;
+    font-weight: 600;
   }
 
   /* Primary card (green bg) - white text */
@@ -242,16 +277,54 @@
   .tooltip-text {
     @apply text-body-sm font-medium;
   }
-
   /* Modal titles */
   .modal-title {
-    @apply text-heading-3 text-text-primary dark:text-paymint-text;
+    @apply font-outfit text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 dark:text-white;
   }
 
   .modal-subtitle {
-    @apply text-body text-text-secondary dark:text-paymint-textSecondary;
+    @apply text-sm sm:text-base text-gray-500 dark:text-gray-400 font-medium;
   }
 
+  .popup-surface {
+    @apply font-sans text-text-primary dark:text-paymint-text;
+  }
+
+  .popup-surface button {
+    font-family: inherit;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    letter-spacing: normal !important;
+    line-height: 1.5;
+  }
+
+  .popup-surface button :where(span, p, strong, small, div) {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    letter-spacing: inherit !important;
+    line-height: inherit;
+  }
+
+  @media (min-width: 640px) {
+    .popup-surface button {
+      font-size: 1rem !important;
+    }
+  }
+
+  .popup-surface h1,
+  .popup-surface h2,
+  .popup-surface h3,
+  .popup-surface h4 {
+    @apply font-outfit tracking-tight text-gray-900 dark:text-white;
+  }
+
+  .popup-surface h1 + p[class*="text-gray-"],
+  .popup-surface h2 + p[class*="text-gray-"],
+  .popup-surface h3 + p[class*="text-gray-"],
+  .popup-surface h4 + p[class*="text-gray-"] {
+    @apply text-sm sm:text-base text-gray-500 dark:text-gray-400 font-medium tracking-normal;
+  }
   /* Nav items */
   .nav-item {
     @apply text-body font-semibold text-text-secondary dark:text-paymint-textSecondary;
@@ -577,3 +650,7 @@ body.app-loading #global-blocking-overlay {
 .animate-bounce-subtle {
   animation: bounce-subtle 3s ease-in-out infinite;
 }
+
+
+
+

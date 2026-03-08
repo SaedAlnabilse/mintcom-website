@@ -85,7 +85,7 @@ export function ConfirmModal({
       {isOpen && (
         <div
           dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-          className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans selection:bg-paymint-green selection:text-black"
+          className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans selection:bg-paymint-green selection:text-black"
         >
           {/* Backdrop */}
           <motion.div

@@ -88,32 +88,32 @@ export const Navbar = () => {
               <>
                 <Link
                   to="/portal"
-                  className="inline-flex items-center gap-2.5 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white px-6 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-none active:scale-95 shadow-sm group"
+                  className="inline-flex items-center gap-2 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white px-4 py-2 rounded-xl text-sm font-bold hover:text-gray-900 dark:hover:text-white"
                 >
-                  <img src={PaymintLeafIcon} className="w-3.5 h-3.5 object-contain group-hover:scale-110 transition-transform" alt="Home" />
+                  <img src={PaymintLeafIcon} className="w-4 h-4 object-contain" alt="Home" />
                   {t('nav.home', 'Home')}
                 </Link>
                 <Link
                   to="/support"
-                  className="inline-flex items-center gap-2.5 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white px-6 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-none active:scale-95 shadow-sm group"
+                  className="inline-flex items-center gap-2 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white px-4 py-2 rounded-xl text-sm font-bold hover:text-gray-900 dark:hover:text-white"
                 >
-                  <Headset size={14} className="group-hover:scale-110 transition-transform" />
+                  <Headset size={16} />
                   {t('nav.support')}
                 </Link>
                 <Link
                   to="/owner"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2.5 bg-paymint-green dark:bg-paymint-green text-black px-6 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-paymint-green/30 active:scale-95 shadow-lg shadow-paymint-green/10 group"
+                  className="inline-flex items-center gap-2 bg-paymint-green dark:bg-paymint-green text-black px-4 py-2 rounded-xl text-sm font-bold hover:text-black dark:hover:text-black"
                 >
-                  <User size={14} className="group-hover:scale-110 transition-transform" />
+                  <User size={16} />
                   {t('nav.owner')}
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="inline-flex items-center gap-2.5 bg-rose-500 hover:bg-rose-600 text-white px-5 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-rose-500/30 active:scale-95 shadow-lg shadow-rose-500/10 group"
+                  className="inline-flex items-center gap-2 bg-rose-500 text-white px-4 py-2 rounded-xl text-sm font-bold hover:text-white"
                 >
-                  <LogOut size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                  <LogOut size={16} />
                   {t('nav.logout')}
                 </button>
               </>

@@ -391,11 +391,6 @@ export function OwnerBrandsPage() {
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
-                    <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                            {t('owner.brands.badge')}
-                        </span>
-                    </div>
                     <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.brands.title')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
                         {t('owner.brands.subtitle')}
@@ -406,7 +401,7 @@ export function OwnerBrandsPage() {
                     {availableEstablishments.length >= 2 && (
                         <button
                             onClick={() => setShowCreateModal(true)}
-                            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20"
+                            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
                         >
                             <Plus size={18} />
                             <span>{t('owner.brands.createBrand')}</span>
@@ -432,8 +427,8 @@ export function OwnerBrandsPage() {
                                 <stat.icon size={24} />
                             </div>
                             <div>
-                                <p className="text-xs font-black text-gray-400 tracking-widest">{stat.label}</p>
-                                <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
+                                <p className="dashboard-card-label">{stat.label}</p>
+                                <p className="dashboard-card-value">{stat.value}</p>
                             </div>
                         </div>
                     </div>
@@ -493,7 +488,7 @@ export function OwnerBrandsPage() {
 
                 {hasActiveFilters && (
                     <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
-                        <span className="text-xs font-black text-gray-400 tracking-widest uppercase">{t('owner.brands.activeFilters')}</span>
+                        <span className="dashboard-card-label uppercase">{t('owner.brands.activeFilters')}</span>
                         <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
                             {t('owner.brands.searchFilter', { query: searchQuery })}
                         </span>
@@ -517,7 +512,7 @@ export function OwnerBrandsPage() {
                     {!hasActiveFilters && availableEstablishments.length >= 2 && (
                         <button
                             onClick={() => setShowCreateModal(true)}
-                            className="mt-6 px-6 py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20 flex items-center gap-2 mx-auto"
+                            className="mt-6 px-6 py-3 bg-paymint-green text-black font-bold rounded-xl hover:bg-emerald-400 transition-all shadow-sm flex items-center gap-2 mx-auto"
                         >
                             <Link2 size={18} />
                             {t('owner.brands.createFirstBrand')}
@@ -555,7 +550,7 @@ export function OwnerBrandsPage() {
                                                 <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest">
                                                     {t('common.status.active')}
                                                 </span>
-                                                <span className="text-xs font-black text-gray-400 tracking-widest uppercase">
+                                                <span className="dashboard-card-label uppercase">
                                                     {t('owner.brands.locationsCount', { count: brand.establishmentCount })}
                                                 </span>
                                             </div>
@@ -612,7 +607,7 @@ export function OwnerBrandsPage() {
                                     <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
                                         <div className="flex items-center gap-2 mb-2">
                                             <Hash size={14} className="text-purple-500" />
-                                            <span className="text-xs font-black text-gray-400 tracking-widest uppercase">{t('owner.brands.loginId')}</span>
+                                            <span className="dashboard-card-label uppercase">{t('owner.brands.loginId')}</span>
                                         </div>
                                         <p className="text-sm font-mono font-bold text-gray-900 dark:text-white truncate">
                                             {brand.establishmentLoginId}
@@ -621,7 +616,7 @@ export function OwnerBrandsPage() {
                                     <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-purple-500/10 transition-colors">
                                         <div className="flex items-center gap-2 mb-2">
                                             <Calendar size={14} className="text-blue-500" />
-                                            <span className="text-xs font-black text-gray-400 tracking-widest uppercase">{t('owner.brands.created')}</span>
+                                            <span className="dashboard-card-label uppercase">{t('owner.brands.created')}</span>
                                         </div>
                                         <p className="text-sm font-bold text-gray-900 dark:text-white">
                                             {formatDate(brand.createdAt)}
@@ -632,7 +627,7 @@ export function OwnerBrandsPage() {
                                 {/* Locations */}
                                 <div className="space-y-3 relative z-10">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-xs font-black text-gray-400 tracking-widest uppercase">{t('owner.brands.locations')}</span>
+                                        <span className="dashboard-card-label uppercase">{t('owner.brands.locations')}</span>
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         {brand.establishments.slice(0, 4).map((est) => {
@@ -646,7 +641,7 @@ export function OwnerBrandsPage() {
                                         })}
                                         {brand.establishments.length > 4 && (
                                             <div className="px-3 py-2 bg-gray-100 dark:bg-white/5 rounded-lg">
-                                                <span className="text-xs font-bold text-gray-500">
+                                                <span className="dashboard-card-meta">
                                                     +{brand.establishments.length - 4} {t('common.more')}
                                                 </span>
                                             </div>
@@ -749,7 +744,7 @@ export function OwnerBrandsPage() {
                     </div>
 
                     {/* Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest">
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 dashboard-card-label">
                         <div
                             className="col-span-4 cursor-pointer hover:text-paymint-green transition-colors flex items-center gap-1"
                             onClick={() => handleSort('name')}
@@ -882,7 +877,7 @@ export function OwnerBrandsPage() {
             {/* Create Brand Modal */}
             <AnimatePresence>
                 {showCreateModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-12">
+                    <div className="fixed inset-0 z-50 popup-surface flex items-center justify-center p-4 sm:p-6 lg:p-12">
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -933,7 +928,7 @@ export function OwnerBrandsPage() {
                                         <div className="space-y-6 max-w-lg mx-auto py-4">
                                             <div className="space-y-4">
                                                 <div>
-                                                    <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">{t('owner.brands.brandName')}</label>
+                                                    <label className="block dashboard-card-label mb-2">{t('owner.brands.brandName')}</label>
                                                     <div className="relative">
                                                         <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                                                         <input
@@ -946,7 +941,7 @@ export function OwnerBrandsPage() {
                                                 </div>
 
                                                 <div>
-                                                    <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">{t('owner.brands.adminLoginId')}</label>
+                                                    <label className="block dashboard-card-label mb-2">{t('owner.brands.adminLoginId')}</label>
                                                     <div className="relative">
                                                         <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                                                         <input
@@ -955,21 +950,21 @@ export function OwnerBrandsPage() {
                                                             placeholder={t('owner.brands.adminLoginIdPlaceholder')}
                                                         />
                                                     </div>
-                                                    <p className="text-xs font-bold text-gray-500 mt-1">
+                                                    <p className="dashboard-card-meta mt-1">
                                                         {t('owner.brands.adminLoginIdHint')} {t('owner.brands.validation.loginIdTakenHint', 'It must be unique across all locations and brands.')}
                                                     </p>
                                                     {errors.establishmentLoginId && <p className="text-[#ef4444] text-xs mt-1 font-bold">{errors.establishmentLoginId.message}</p>}
                                                 </div>
 
                                                 <div>
-                                                    <label className="block text-xs font-black text-gray-400 tracking-widest mb-2">{t('owner.brands.adminPassword')}</label>
+                                                    <label className="block dashboard-card-label mb-2">{t('owner.brands.adminPassword')}</label>
                                                     <div className="relative">
                                                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                                                         <input
                                                             {...register('establishmentPassword')}
                                                             type="password"
                                                             className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
-                                                            placeholder="••••••••"
+                                                            placeholder="********"
                                                         />
                                                     </div>
                                                     {errors.establishmentPassword && <p className="text-[#ef4444] text-xs mt-1 font-bold">{errors.establishmentPassword.message}</p>}
@@ -1006,7 +1001,7 @@ export function OwnerBrandsPage() {
                                                             </div>
                                                             <div className="flex-1 min-w-0">
                                                                 <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{est.name || est.establishmentName}</p>
-                                                                <p className="text-xs font-bold text-gray-500 truncate">{est.type || t('owner.brands.location')}</p>
+                                                                <p className="dashboard-card-meta truncate">{est.type || t('owner.brands.location')}</p>
                                                             </div>
                                                             <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-paymint-green border-paymint-green' : 'border-gray-300 dark:border-white/10'}`}>
                                                                 {isSelected && <Check size={14} className="text-black" strokeWidth={3} />}
@@ -1022,7 +1017,7 @@ export function OwnerBrandsPage() {
                                         <div className="space-y-6">
                                             <div className="bg-paymint-green/5 border border-paymint-green/20 rounded-2xl p-4 flex gap-3">
                                                 <Shield className="text-paymint-green shrink-0" size={20} />
-                                                <p className="text-xs font-bold text-gray-500">
+                                                <p className="dashboard-card-meta">
                                                     {t('owner.brands.wizard.finalStepDesc')}
                                                 </p>
                                             </div>
@@ -1037,7 +1032,7 @@ export function OwnerBrandsPage() {
                                                     {employeesForMerging.map((group) => (
                                                         <div key={group.establishmentId} className="space-y-4">
                                                             <div className="flex items-center justify-between sticky top-0 bg-white dark:bg-[#0F172A] z-10 py-2">
-                                                                <h4 className="text-xs font-black text-gray-400 tracking-widest uppercase flex items-center gap-2">
+                                                                <h4 className="dashboard-card-label uppercase flex items-center gap-2">
                                                                     <Store size={14} />
                                                                     {group.establishmentName}
                                                                 </h4>
@@ -1118,7 +1113,7 @@ export function OwnerBrandsPage() {
                                                 type="button"
                                                 onClick={wizardStep === 3 ? handleSubmit(onCreateBrand) : handleNextStep}
                                                 disabled={isCreating}
-                                                className="flex-1 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                                className="flex-1 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                             >
                                             {isCreating ? (
                                                 <>

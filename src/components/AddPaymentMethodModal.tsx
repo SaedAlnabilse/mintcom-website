@@ -132,7 +132,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess }: AddPayment
             {isOpen && (
                 <div
                     dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                    className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans"
+                    className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans"
                 >
                     <motion.div
                         initial={{ opacity: 0 }}

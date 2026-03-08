@@ -306,11 +306,6 @@ export function BrandLocationsPage() {
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-50">
                 <div>
-                    <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                            {t('owner.brands.badge')}
-                        </span>
-                    </div>
                     <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('brand.menu.locations')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('brand.dashboard.manageLocationsDesc')}</span>
@@ -414,8 +409,8 @@ export function BrandLocationsPage() {
                                     <stat.icon size={20} />
                                 </div>
                             </div>
-                            <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">{stat.label}</p>
-                            <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
+                            <p className="dashboard-card-label mb-1">{stat.label}</p>
+                            <p className="dashboard-card-value">{stat.value}</p>
                         </div>
                     </div>
                 ))}
@@ -580,9 +575,9 @@ export function BrandLocationsPage() {
                                                 {loc.name}
                                             </h3>
                                             <div className="flex items-center gap-2 mt-1">
-                                                <span className="text-xs font-medium text-gray-500">{loc.type ? loc.type.charAt(0).toUpperCase() + loc.type.slice(1).toLowerCase() : t('onboarding.step1.businessTypes.restaurant')}</span>
+                                                <span className="dashboard-card-meta">{loc.type ? loc.type.charAt(0).toUpperCase() + loc.type.slice(1).toLowerCase() : t('onboarding.step1.businessTypes.restaurant')}</span>
                                                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                                                <span className="text-xs font-medium text-gray-500">{loc.currency ? loc.currency.toUpperCase() : 'USD'}</span>
+                                                <span className="dashboard-card-meta">{loc.currency ? loc.currency.toUpperCase() : 'USD'}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -645,19 +640,19 @@ export function BrandLocationsPage() {
                                 {/* Stats Grid */}
                                 <div className="grid grid-cols-2 gap-3 mb-6">
                                     <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">{t('brand.dashboard.revenue')}</p>
+                                        <p className="dashboard-card-label mb-1">{t('brand.dashboard.revenue')}</p>
                                         <p className="text-base font-bold text-gray-900 dark:text-white">{formatCurrency(loc.totalRevenue || 0)}</p>
                                     </div>
                                     <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">{t('brand.dashboard.orders')}</p>
+                                        <p className="dashboard-card-label mb-1">{t('brand.dashboard.orders')}</p>
                                         <p className="text-base font-bold text-gray-900 dark:text-white">{loc.orderCount}</p>
                                     </div>
                                     <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">{t('brand.dashboard.staff')}</p>
+                                        <p className="dashboard-card-label mb-1">{t('brand.dashboard.staff')}</p>
                                         <p className="text-base font-bold text-gray-900 dark:text-white">{loc.employeeCount}</p>
                                     </div>
                                     <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
-                                        <p className="text-xs font-bold text-gray-400 tracking-wide mb-1">{t('dashboard.menu.products')}</p>
+                                        <p className="dashboard-card-label mb-1">{t('dashboard.menu.products')}</p>
                                         <p className="text-base font-bold text-gray-900 dark:text-white">{loc.itemCount}</p>
                                     </div>
                                 </div>
@@ -678,7 +673,7 @@ export function BrandLocationsPage() {
                 /* List View */
                 <div className={`bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-visible shadow-sm transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
                     {/* Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-bold text-gray-500 tracking-wide">
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 dashboard-card-meta tracking-wide">
                         <div className="col-span-3">{t('common.location')}</div>
                         <div className="col-span-2">{t('common.status.label')}</div>
                         <div className="col-span-2 text-right">{t('brand.dashboard.revenue')}</div>

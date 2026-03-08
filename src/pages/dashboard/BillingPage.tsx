@@ -159,9 +159,6 @@ export function BillingPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
-            <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              {t('dashboard.menu.billing')}
-            </span>
             <div className="flex items-center gap-2">
               <div className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
@@ -203,7 +200,7 @@ export function BillingPage() {
                 <div>
                   <h3 className="text-xl font-bold text-white">{t('owner.billing.plan')}</h3>
                   <p className="text-gray-400 text-sm font-bold tracking-widest mt-1">
-                    {isYearly ? 'YEARLY' : 'MONTHLY'} • {t('owner.billing.enterprise')}
+                    {isYearly ? 'YEARLY' : 'MONTHLY'} &bull; {t('owner.billing.enterprise')}
                   </p>
                 </div>
               </div>
@@ -216,7 +213,7 @@ export function BillingPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 relative z-10">
               <div className="p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-colors">
-                <p className="text-xs font-black text-gray-400 tracking-widest mb-2">{t('owner.billing.cost')}</p>
+                <p className="dashboard-card-label mb-2">{t('owner.billing.cost')}</p>
                 <div className="flex items-baseline gap-2">
                   <span className="text-sm font-bold text-paymint-green">{currencySymbol}</span>
                   <span className="text-4xl font-black text-white">
@@ -225,11 +222,11 @@ export function BillingPage() {
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
                   {isYearly ? 'Billed annually' : 'Billed monthly'}
-                  {isYearly && ` • ~$${effectiveMonthlyRate.toFixed(2)}/mo`}
+                  {isYearly && ` &bull; ~${effectiveMonthlyRate.toFixed(2)}/mo`}
                 </p>
               </div>
               <div className="p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-colors">
-                <p className="text-xs font-black text-gray-400 tracking-widest mb-2">{t('owner.billing.location')}</p>
+                <p className="dashboard-card-label mb-2">{t('owner.billing.location')}</p>
                 <p className="text-xl font-bold text-white truncate max-w-[200px]">{currentEstablishment?.name}</p>
                 <p className="text-xs text-gray-500 mt-1 tracking-wide">{t('owner.billing.main')}</p>
               </div>
@@ -242,7 +239,7 @@ export function BillingPage() {
                   <Sparkles size={18} className="text-paymint-green" />
                   <div>
                     <p className="text-sm font-bold text-white">Switch to Yearly & Save ${yearlySavings}/yr</p>
-                    <p className="text-xs text-gray-400">Pay $210/year instead of $240 — that's $17.50/mo</p>
+                    <p className="text-xs text-gray-400">Pay $210/year instead of $240 - that's $17.50/mo</p>
                   </div>
                 </div>
                 <button
@@ -380,7 +377,7 @@ export function BillingPage() {
               {isYearly && (
                 <div className="p-2 rounded-lg bg-paymint-green/10 flex items-center gap-2">
                   <Sparkles size={12} className="text-paymint-green" />
-                  <span className="text-[10px] font-bold text-paymint-green">Yearly plan active — saving ${yearlySavings}/yr</span>
+                  <span className="text-[10px] font-bold text-paymint-green">Yearly plan active - saving ${yearlySavings}/yr</span>
                 </div>
               )}
             </div>
@@ -396,7 +393,7 @@ export function BillingPage() {
                     <CreditCard className="w-5 h-5 text-gray-400" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-gray-900 dark:text-white">•••• 4242</p>
+                    <p className="text-sm font-bold text-gray-900 dark:text-white">&bull;&bull;&bull;&bull; 4242</p>
                     <p className="text--[10px] font-bold text-gray-500 dark:text-gray-400 tracking-wide">{t('owner.billing.expires')} 12/26</p>
                   </div>
                 </div>
@@ -428,7 +425,7 @@ export function BillingPage() {
       {/* Upgrade to Yearly Modal */}
       <AnimatePresence>
         {showUpgradeModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 popup-surface flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -505,5 +502,6 @@ export function BillingPage() {
     </div>
   );
 }
+
 
 

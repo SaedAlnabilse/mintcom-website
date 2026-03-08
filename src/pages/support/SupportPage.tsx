@@ -257,7 +257,7 @@ export const SupportPage = () => {
                     {category.description}
                   </p>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-gray-400">{category.articles} {t('support.articles.count')}</span>
+                    <span className="text-xs font-bold text-gray-400">{t('support.articles.count', { count: category.articles })}</span>
                     <ChevronRight size={16} className="text-gray-400 group-hover:text-paymint-green group-hover:translate-x-1 transition-all" />
                   </div>
                 </Link>

@@ -322,11 +322,6 @@ export default function BrandTeamPage() {
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
-                    <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                            {t('owner.staff.badge')}
-                        </span>
-                    </div>
                     <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.staff.title')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('owner.staff.subtitle')}</span>
@@ -367,8 +362,8 @@ export default function BrandTeamPage() {
                                     <stat.icon size={20} />
                                 </div>
                             </div>
-                            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{stat.label}</p>
-                            <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
+                            <p className="dashboard-card-label mb-1">{stat.label}</p>
+                            <p className="dashboard-card-value">{stat.value}</p>
                         </div>
                     </div>
                 ))}
@@ -463,7 +458,7 @@ export default function BrandTeamPage() {
                 {/* Active Filters Display */}
                 {hasActiveFilters && (
                     <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
-                        <span className="text-xs font-black text-gray-400 tracking-widest">{t('attributes.filters.activeFilters')}:</span>
+                        <span className="dashboard-card-label">{t('attributes.filters.activeFilters')}:</span>
                         <div className="flex items-center gap-2 flex-wrap">
                             {searchQuery && (
                                 <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
@@ -494,7 +489,7 @@ export default function BrandTeamPage() {
             {filteredEmployees.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="text-xl font-bold text-gray-900 dark:text-white">{t('owner.staff.noStaffFound')}</p>
+                    <p className="dashboard-card-value">{t('owner.staff.noStaffFound')}</p>
                     {!hasActiveFilters && (
                         <p className="text-sm font-bold text-gray-500 mt-1">
                             {t('owner.staff.addStaffDesc')}
@@ -599,7 +594,7 @@ export default function BrandTeamPage() {
                             {/* Access Rights */}
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <p className="text-xs font-black text-gray-400 tracking-widest uppercase">{t('owner.staff.accessRights')}</p>
+                                    <p className="dashboard-card-label uppercase">{t('owner.staff.accessRights')}</p>
                                     <span className="text-sm font-bold text-gray-900 dark:text-white">{emp.establishments.length} {emp.establishments.length !== 1 ? t('common.locations') : t('common.location')}</span>
                                 </div>
                                 <div className="space-y-2">
@@ -621,7 +616,7 @@ export default function BrandTeamPage() {
                                     ))}
                                     {emp.establishments.length > 2 && (
                                         <div className="text-center py-1">
-                                            <span className="text-xs font-bold text-gray-500">+ {emp.establishments.length - 2} more locations</span>
+                                            <span className="dashboard-card-meta">+ {emp.establishments.length - 2} more locations</span>
                                         </div>
                                     )}
                                 </div>
@@ -669,7 +664,7 @@ export default function BrandTeamPage() {
                                         <h3 className="text-sm font-bold text-gray-900 dark:text-white">
                                             {emp.firstName} {emp.lastName}
                                         </h3>
-                                        <p className="text-xs font-bold text-gray-500 mt-0.5">@{emp.username}</p>
+                                        <p className="dashboard-card-meta mt-0.5">@{emp.username}</p>
                                     </div>
                                     <div className="ml-auto flex gap-2">
                                         <button
@@ -706,7 +701,7 @@ export default function BrandTeamPage() {
                     </div>
 
                     {/* Desktop Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest uppercase">
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 dashboard-card-label uppercase">
                         <div className="col-span-4">{t('common.name')}</div>
                         <div className="col-span-2">{t('common.status.label')}</div>
                         <div className="col-span-2">{t('common.role')}</div>
@@ -737,7 +732,7 @@ export default function BrandTeamPage() {
                                         <h3 className="text-sm font-bold text-gray-900 dark:text-white">
                                             {emp.firstName} {emp.lastName}
                                         </h3>
-                                        <p className="text-xs font-bold text-gray-500 mt-0.5">@{emp.username}</p>
+                                        <p className="dashboard-card-meta mt-0.5">@{emp.username}</p>
                                     </div>
                                 </div>
 
@@ -832,7 +827,7 @@ export default function BrandTeamPage() {
 
                         <div className="px-8 pb-6 space-y-4">
                             <div>
-                                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">
+                                <label className="dashboard-card-label mb-2 block">
                                     {t('common.password')}
                                 </label>
                                 <div className="relative">

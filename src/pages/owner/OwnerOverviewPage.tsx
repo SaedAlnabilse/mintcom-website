@@ -149,12 +149,9 @@ export function OwnerOverviewPage() {
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                            {t('owner.overview.badge')}
-                        </span>
-                        <span className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
+                        <span className="flex items-center gap-1.5 dashboard-card-meta">
                             <Activity size={14} className="text-emerald-500" />
-                            {t('owner.overview.online')}
+                            {t('owner.overview.liveSystem')}
                         </span>
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.overview.title')}</h1>
@@ -310,10 +307,10 @@ export function OwnerOverviewPage() {
                                     </div>
                                 )}
                             </div>
-                            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{stat.label}</p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
+                            <p className="dashboard-card-label mb-1">{stat.label}</p>
+                            <p className="dashboard-card-value">{stat.value}</p>
                             {stat.sub && (
-                                <p className="text-xs font-medium text-gray-500 mt-1">{stat.sub}</p>
+                                <p className="dashboard-card-meta mt-1">{stat.sub}</p>
                             )}
                         </div>
                     </motion.div>
@@ -431,7 +428,7 @@ export function OwnerOverviewPage() {
                             <div className="space-y-3">
                                 <button
                                     onClick={() => navigate('/onboarding')}
-                                    className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl text-sm active:scale-95 transition-all shadow-sm"
+                                    className="w-full py-3 bg-paymint-green text-black font-bold rounded-xl text-sm hover:bg-emerald-400 transition-all shadow-sm"
                                 >
                                     {t('owner.overview.addLocation')}
                                 </button>

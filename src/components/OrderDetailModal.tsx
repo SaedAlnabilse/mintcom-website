@@ -155,7 +155,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
         <AnimatePresence>
             <div
                 dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 z-[9999] transition-colors duration-300 font-sans"
+                className="fixed inset-0 bg-black/40 backdrop-blur-sm popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 z-[9999] transition-colors duration-300 font-sans"
             >
                 <motion.div
                     initial={{ opacity: 0, y: 100 }}
@@ -281,7 +281,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                             <div>
                                                 <p className="text-gray-900 dark:text-white font-bold text-sm">{item.name}</p>
                                                 <p className="text-xs font-black text-gray-400 tracking-widest mt-0.5">
-                                                    {t('orders.details.qty')}: {item.quantity.toLocaleString(t('common.locale'))} × {formatCurrency(item.price || item.basePrice || 0)}
+                                                    {t('orders.details.qty')}: {item.quantity.toLocaleString(t('common.locale'))} x {formatCurrency(item.price || item.basePrice || 0)}
                                                 </p>
                                             </div>
                                             <p className="text-sm font-bold text-gray-900 dark:text-white">{formatCurrency(item.total || item.finalPrice || 0)}</p>

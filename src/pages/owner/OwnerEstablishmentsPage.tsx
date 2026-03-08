@@ -145,11 +145,6 @@ export function OwnerEstablishmentsPage() {
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
-                    <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                            {t('owner.locations.badge')}
-                        </span>
-                    </div>
                     <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.locations.title')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
                         {t('owner.locations.subtitle')}
@@ -166,7 +161,7 @@ export function OwnerEstablishmentsPage() {
                     </button>
                     <button
                         onClick={handleAddEstablishment}
-                        className="px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-lg shadow-paymint-green/20 flex items-center gap-2"
+                        className="px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm flex items-center gap-2"
                     >
                         <Plus size={18} />
                         <span>{t('owner.overview.addLocation')}</span>
@@ -185,8 +180,8 @@ export function OwnerEstablishmentsPage() {
                             <Store size={24} />
                         </div>
                         <div>
-                            <p className="text-xs font-black text-gray-400 tracking-widest">{t('owner.locations.total')}</p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white">{establishments.length}</p>
+                            <p className="dashboard-card-label">{t('owner.locations.total')}</p>
+                            <p className="dashboard-card-value">{establishments.length}</p>
                         </div>
                     </div>
                 </div>
@@ -200,8 +195,8 @@ export function OwnerEstablishmentsPage() {
                             <Zap size={24} />
                         </div>
                         <div>
-                            <p className="text-xs font-black text-gray-400 tracking-widest">{t('owner.locations.active')}</p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                            <p className="dashboard-card-label">{t('owner.locations.active')}</p>
+                            <p className="dashboard-card-value">
                                 {establishments.filter(e => e.subscriptionStatus === 'ACTIVE').length}
                             </p>
                         </div>
@@ -217,8 +212,8 @@ export function OwnerEstablishmentsPage() {
                             <Settings size={24} />
                         </div>
                         <div>
-                            <p className="text-xs font-black text-gray-400 tracking-widest">{t('owner.locations.trial')}</p>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                            <p className="dashboard-card-label">{t('owner.locations.trial')}</p>
+                            <p className="dashboard-card-value">
                                 {establishments.filter(e => e.subscriptionStatus === 'TRIAL').length}
                             </p>
                         </div>
@@ -516,7 +511,7 @@ export function OwnerEstablishmentsPage() {
                                             <Icon size={20} />
                                         </div>
                                         <div>
-                                            <h3 className="font-outfit font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
+                                            <h3 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-paymint-green transition-colors">
                                                 {est.name}
                                             </h3>
                                             {est.id === highlightId && (
@@ -586,3 +581,5 @@ export function OwnerEstablishmentsPage() {
         </div>
     );
 }
+
+

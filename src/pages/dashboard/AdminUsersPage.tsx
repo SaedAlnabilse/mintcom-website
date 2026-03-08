@@ -198,9 +198,6 @@ export function AdminUsersPage() {
                         </div>
                         <div>
                             <div className="flex items-center gap-2 sm:gap-3 mb-1">
-                                <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                                    {t('dashboard.menu.system')}
-                                </span>
                                 <div className="flex items-center gap-2">
                                   <div className="relative flex h-2 w-2">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
@@ -226,7 +223,7 @@ export function AdminUsersPage() {
                                 resetForm();
                                 setShowModal(true);
                             }}
-                            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-md shadow-paymint-green/10"
+                            className="flex items-center gap-2 px-5 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
                         >
                             <Plus size={18} />
                             <span>{t('adminUsers.newAdmin')}</span>
@@ -416,7 +413,7 @@ export function AdminUsersPage() {
             {/* Modal */}
             {showModal && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+                    className="fixed inset-0 z-50 popup-surface flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
                     onClick={() => setShowModal(false)}
                 >
                     <div

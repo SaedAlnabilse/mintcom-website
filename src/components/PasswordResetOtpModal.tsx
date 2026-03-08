@@ -204,7 +204,7 @@ export function PasswordResetOtpModal({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 font-sans"
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] popup-surface flex items-center justify-center p-4 font-sans"
                 onClick={handleClose}
             >
                 <motion.div

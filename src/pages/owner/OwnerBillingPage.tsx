@@ -330,11 +330,6 @@ export function OwnerBillingPage() {
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
-                    <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                            {t('dashboard.menu.billing')}
-                        </span>
-                    </div>
                     <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{t('owner.billing.title')}</h1>
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2">
                         {t('owner.billing.subtitle')}
@@ -343,9 +338,9 @@ export function OwnerBillingPage() {
 
                 <div className="flex items-center gap-6">
                     <div className="text-right hidden sm:block">
-                        <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('owner.billing.monthlyCost')}</p>
+                        <p className="dashboard-card-label mb-1">{t('owner.billing.monthlyCost')}</p>
                         <div className="flex items-baseline justify-end gap-1">
-                            <span className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">${totalMonthlyCost.toFixed(2)}</span>
+                            <span className="dashboard-card-value">${totalMonthlyCost.toFixed(2)}</span>
                             <span className="text-xs font-bold text-gray-400">/{t('common.monthly')}</span>
                         </div>
                     </div>
@@ -353,9 +348,9 @@ export function OwnerBillingPage() {
                         <>
                             <div className="w-px h-10 bg-gray-200 dark:bg-white/10 hidden sm:block" />
                             <div className="text-right hidden sm:block">
-                                <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{t('owner.billing.yearlyCost')}</p>
+                                <p className="dashboard-card-label mb-1">{t('owner.billing.yearlyCost')}</p>
                                 <div className="flex items-baseline justify-end gap-1">
-                                    <span className="text-2xl font-black text-paymint-green tracking-tight">${totalYearlyCost.toFixed(2)}</span>
+                                    <span className="dashboard-card-value text-paymint-green">${totalYearlyCost.toFixed(2)}</span>
                                     <span className="text-xs font-bold text-gray-400">/{t('common.yearly')}</span>
                                 </div>
                             </div>
@@ -400,8 +395,8 @@ export function OwnerBillingPage() {
                                 <stat.icon size={20} />
                             </div>
                             <div>
-                                <p className="text-xs font-black text-gray-400 tracking-widest mb-0.5">{stat.label}</p>
-                                <p className="text-xl font-bold text-gray-900 dark:text-white">{stat.value}</p>
+                                <p className="dashboard-card-label mb-0.5">{stat.label}</p>
+                                <p className="dashboard-card-value">{stat.value}</p>
                             </div>
                         </div>
                     </motion.div>
@@ -452,7 +447,7 @@ export function OwnerBillingPage() {
 
                                     <div className="relative z-10 flex justify-between items-start">
                                         <div className="space-y-1.5">
-                                            <p className="text-xs font-black text-gray-400 tracking-widest">{t('owner.billing.addCard')}</p>
+                                            <p className="dashboard-card-label">{t('owner.billing.addCard')}</p>
                                             <p className="text-xl font-bold tracking-[0.15em] text-gray-900 dark:text-white">
                                                 <span className="opacity-30">••••</span> {card.last4}
                                             </p>
@@ -475,11 +470,11 @@ export function OwnerBillingPage() {
 
                                     <div className="relative z-10 flex justify-between items-end">
                                         <div className="space-y-1">
-                                            <p className="text-xs font-black text-gray-400 tracking-widest">{t('categories.form.nameLabel')}</p>
+                                            <p className="dashboard-card-label">{t('categories.form.nameLabel')}</p>
                                             <p className="font-bold tracking-wider text-xs text-gray-800 dark:text-gray-200">{card.cardholderName || 'User'}</p>
                                         </div>
                                         <div className="text-right space-y-1">
-                                            <p className="text-xs font-black text-gray-400 tracking-widest">{t('owner.billing.expires')}</p>
+                                            <p className="dashboard-card-label">{t('owner.billing.expires')}</p>
                                             <p className="font-bold text-xs text-gray-800 dark:text-gray-200">{card.expMonth}/{card.expYear.toString().slice(-2)}</p>
                                         </div>
                                     </div>
@@ -566,7 +561,7 @@ export function OwnerBillingPage() {
                                             </div>
                                             <div>
                                                 <h3 className="text-sm font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{est.name}</h3>
-                                                <p className="text-xs font-bold text-gray-500">
+                                                <p className="dashboard-card-meta">
                                                     {est.billingCycle === 'yearly' ? t('owner.billing.yearlyPlan') : t('owner.billing.monthlyPlan')}
                                                 </p>
                                             </div>
@@ -603,7 +598,7 @@ export function OwnerBillingPage() {
                                         {/* Next Bill */}
                                         <div className="col-span-2">
                                             {formatBillingDate(est.nextBillDate) ? (
-                                                <p className="text-xs font-bold text-gray-500 dark:text-gray-400">
+                                                <p className="dashboard-card-meta">
                                                     {formatBillingDate(est.nextBillDate)}
                                                 </p>
                                             ) : (
@@ -613,7 +608,7 @@ export function OwnerBillingPage() {
 
                                         {/* Payment & Actions */}
                                         <div className="col-span-3 flex items-center justify-center relative">
-                                            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
+                                            <span className="dashboard-card-meta">
                                                 {est.paymentCard ? `•••• ${est.paymentCard.last4}` : t('owner.billing.noCard')}
                                             </span>
 
@@ -713,3 +708,5 @@ export function OwnerBillingPage() {
         </div>
     );
 };
+
+

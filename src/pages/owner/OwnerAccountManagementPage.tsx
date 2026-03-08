@@ -469,10 +469,10 @@ export function OwnerAccountManagementPage() {
                             <Store className="w-6 h-6 text-blue-500" />
                         </div>
                         <div>
-                            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">
+                            <p className="dashboard-card-label mb-1">
                                 {t('owner.account.stats.locations')}
                             </p>
-                            <p className="text-3xl font-black text-gray-900 dark:text-white">
+                            <p className="dashboard-card-value text-3xl">
                                 {establishments?.length || 0}
                             </p>
                         </div>
@@ -488,10 +488,10 @@ export function OwnerAccountManagementPage() {
                             <Building2 className="w-6 h-6 text-purple-500" />
                         </div>
                         <div>
-                            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">
+                            <p className="dashboard-card-label mb-1">
                                 {t('owner.account.stats.brands')}
                             </p>
-                            <p className="text-3xl font-black text-gray-900 dark:text-white">
+                            <p className="dashboard-card-value text-3xl">
                                 {brands.length}
                             </p>
                         </div>
@@ -507,10 +507,10 @@ export function OwnerAccountManagementPage() {
                             <Users className="w-6 h-6 text-amber-500" />
                         </div>
                         <div>
-                            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">
+                            <p className="dashboard-card-label mb-1">
                                 {t('owner.account.stats.admins')}
                             </p>
-                            <p className="text-3xl font-black text-gray-900 dark:text-white">
+                            <p className="dashboard-card-value text-3xl">
                                 {adminUsers.length}
                             </p>
                         </div>
@@ -728,7 +728,7 @@ export function OwnerAccountManagementPage() {
                                                                 </span>
                                                                 {est.createdAt && (
                                                                     <>
-                                                                        <span className="text-gray-300 dark:text-gray-600 text-[10px]">•</span>
+                                                                        <span className="text-gray-300 dark:text-gray-600 text-[10px]">&bull;</span>
                                                                         <span className="flex items-center gap-1 text-xs font-medium text-gray-500 dark:text-gray-400">
                                                                             <Calendar size={12} className="opacity-70" />
                                                                             {t('owner.account.createdDate', { date: formatDate(est.createdAt) })}
@@ -845,11 +845,11 @@ export function OwnerAccountManagementPage() {
                                                                 <span className="font-medium bg-gray-100 dark:bg-white/[0.05] px-2 py-0.5 rounded-md border border-gray-200 dark:border-white/[0.05]">
                                                                     {t('owner.account.locationsCount', { count })}
                                                                 </span>
-                                                                <span className="text-gray-300 dark:text-gray-600">•</span>
+                                                                <span className="text-gray-300 dark:text-gray-600">&bull;</span>
                                                                 <span className={`font-bold ${brand.isActive ? 'text-emerald-500' : 'text-gray-400'}`}>
                                                                     {brand.isActive ? t('common.status.active') : t('common.status.inactive')}
                                                                 </span>
-                                                                <span className="text-gray-300 dark:text-gray-600">•</span>
+                                                                <span className="text-gray-300 dark:text-gray-600">&bull;</span>
                                                                 <span className="flex items-center gap-1.5 font-medium">
                                                                     <Calendar size={12} className="opacity-70" />
                                                                     {t('owner.account.createdDate', { date: formatDate(brand.createdAt) })}
@@ -1165,7 +1165,7 @@ export function OwnerAccountManagementPage() {
 
             {/* Delete Account Confirmation Modal */}
             {showDeleteConfirm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                <div className="fixed inset-0 z-50 popup-surface flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -1312,7 +1312,7 @@ export function OwnerAccountManagementPage() {
             {/* Active Establishments Block Modal */}
             <AnimatePresence>
                 {showActiveEstBlockModal && (
-                    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -1382,3 +1382,5 @@ export function OwnerAccountManagementPage() {
         </div>
     );
 }
+
+

@@ -109,7 +109,7 @@ export function CategoryFormModal({
     <AnimatePresence>
       <div
         dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-        className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
+        className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
       >
         <motion.div
           initial={{ opacity: 0, y: 100 }}
@@ -152,7 +152,7 @@ export function CategoryFormModal({
               >
                 <SelectedIconComponent size={48} className="text-black" strokeWidth={2.5} />
               </div>
-              <span className="text-xs font-black text-gray-400 tracking-[0.3em]">{t('categories.iconPreview')}</span>
+              <span className="text-sm font-medium text-gray-500 dark:text-gray-400 tracking-normal">{t('categories.iconPreview')}</span>
             </div>
 
             <form id="category-form" onSubmit={handleSubmit} className="space-y-8">

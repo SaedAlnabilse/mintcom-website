@@ -1,108 +1,81 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
   User,
-  CreditCard,
   Ticket,
-  Bell,
   ChevronRight,
   ArrowRight,
-  Download,
-  Clock,
   CheckCircle2,
   AlertCircle,
   Loader2,
-  TrendingUp,
-  HelpCircle,
-  MessageSquare,
-  Lightbulb,
-  BookOpen,
-  Shield,
   Smartphone,
   Sparkles,
   LayoutDashboard,
-  Headset
+  Headset,
+  Users
 } from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
+import { useAuth } from '../../context/AuthContext';
+import api from '../../config/api';
+import { loadTickets } from '../support/TicketsPage';
 
-// Mock user data
-const mockUser = {
-  name: 'John Doe',
-  email: 'john@acmecafe.com',
-  avatar: null,
-  plan: 'Pro',
-  planStatus: 'active',
-  memberSince: 'January 2024',
-  establishments: 3,
-  employees: 12
-};
-
-const mockAnnouncements = [
-  {
-    id: 1,
-    title: 'New Feature: Dark Mode for POS App',
-    description: 'We\'ve added dark mode to the POS tablet app based on your feedback!',
-    date: 'Feb 8, 2025',
-    type: 'feature'
-  },
-  {
-    id: 2,
-    title: 'Scheduled Maintenance: Feb 15',
-    description: 'Brief maintenance window from 2-4 AM EST. Service may be intermittent.',
-    date: 'Feb 5, 2025',
-    type: 'maintenance'
-  },
-  {
-    id: 3,
-    title: 'Pro Plan Price Update',
-    description: 'Starting March 1st, Pro plan pricing will be updated. Existing customers locked in.',
-    date: 'Feb 1, 2025',
-    type: 'billing'
+function timeAgo(iso: string): string {
+  try {
+    const now = Date.now();
+    const then = new Date(iso).getTime();
+    const diff = now - then;
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'Just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    const days = Math.floor(hrs / 24);
+    if (days < 7) return `${days}d ago`;
+    return new Date(iso).toLocaleDateString();
+  } catch {
+    return iso;
   }
-];
+}
 
-const mockTickets = [
-  {
-    id: 'TKT-001',
-    subject: 'Receipt printer not connecting',
-    status: 'in_progress',
-    updatedAt: '2 hours ago'
-  },
-  {
-    id: 'TKT-002',
-    subject: 'Question about upgrading plan',
-    status: 'open',
-    updatedAt: '1 day ago'
-  }
-];
+
 
 export const PortalPage = () => {
   const { t } = useTranslation();
-  const [user] = useState(mockUser);
-  const [announcements] = useState(mockAnnouncements);
-  const [tickets] = useState(mockTickets);
+  const { account } = useAuth();
+  const [tickets, setTickets] = useState<any[]>([]);
+  const [loadingTickets, setLoadingTickets] = useState(true);
 
-  const quickActions = [
-    { label: t('portal.quickActions.downloadInvoice'), icon: Download, href: '#' },
-    { label: t('portal.quickActions.updatePayment'), icon: CreditCard, href: '#' },
-    { label: t('portal.quickActions.manageTeam'), icon: User, href: '/owner/employees' },
-    { label: t('portal.quickActions.securitySettings'), icon: Shield, href: '#' }
-  ];
+  useEffect(() => {
+    const fetchTickets = async () => {
+      setLoadingTickets(true);
+      try {
+        const res = await api.get('/api/support/tickets/mine');
+        const apiTickets = (res.data || []).map((t: any) => ({
+          id: t.id as string,
+          subject: t.subject as string,
+          status: (t.status as string || 'open').replace(/_/g, '_'),
+          updatedAt: t.updatedAt as string,
+        }));
+        setTickets(apiTickets.slice(0, 3));
+      } catch {
+        const fallback = loadTickets();
+        setTickets(fallback.slice(0, 3));
+      } finally {
+        setLoadingTickets(false);
+      }
+    };
 
-  const resources = [
-    { label: t('portal.resources.helpCenter'), icon: HelpCircle, href: '/support', description: t('portal.resources.helpCenterDesc') },
-    { label: t('portal.resources.community'), icon: MessageSquare, href: '/community', description: t('portal.resources.communityDesc') },
-    { label: t('portal.resources.featureIdeas'), icon: Lightbulb, href: '/community/ideas', description: t('portal.resources.featureIdeasDesc') },
-    { label: t('portal.resources.guides'), icon: BookOpen, href: '/community/guides', description: t('portal.resources.guidesDesc') }
-  ];
+    fetchTickets();
+  }, []);
 
-  const statusConfig = {
+  const statusConfig: Record<string, any> = {
     open: { label: t('portal.status.open'), color: 'text-blue-600', bg: 'bg-blue-100 dark:bg-blue-500/20', icon: AlertCircle },
     in_progress: { label: t('portal.status.inProgress'), color: 'text-yellow-600', bg: 'bg-yellow-100 dark:bg-yellow-500/20', icon: Loader2 },
-    resolved: { label: t('portal.status.resolved'), color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-500/20', icon: CheckCircle2 }
+    resolved: { label: t('portal.status.resolved'), color: 'text-green-600', bg: 'bg-green-100 dark:bg-green-500/20', icon: CheckCircle2 },
+    closed: { label: t('portal.status.closed', 'Closed'), color: 'text-gray-500', bg: 'bg-gray-100 dark:bg-gray-500/20', icon: CheckCircle2 }
   };
 
   return (
@@ -127,8 +100,8 @@ export const PortalPage = () => {
                   <div className="relative">
                     <div className="absolute inset-0 bg-paymint-green blur-md opacity-20 dark:opacity-40 rounded-full" />
                     <div className="relative w-24 h-24 bg-white dark:bg-gradient-to-br dark:from-gray-800 dark:to-gray-900 border-2 border-paymint-green/30 dark:border-paymint-green/50 rounded-full flex items-center justify-center overflow-hidden">
-                      {user.avatar ? (
-                        <img src={user.avatar} className="w-full h-full object-cover" alt="User Avatar" />
+                      {account?.avatar ? (
+                        <img src={account.avatar} className="w-full h-full object-cover" alt="User Avatar" />
                       ) : (
                         <User size={40} className="text-paymint-green" />
                       )}
@@ -145,56 +118,76 @@ export const PortalPage = () => {
                       {t('common.welcome')} Back
                     </motion.div>
                     <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">
-                      {t('portal.welcomeUser', { name: user.name.split(' ')[0] })}
+                      {t('portal.welcomeUser', { name: account?.firstName || 'User' })}
                     </h1>
                     <p className="text-gray-500 dark:text-gray-400 mt-2 font-medium text-lg">
-                      {user.email} · <span className="text-paymint-green">{user.plan} {t('portal.overview.plan')}</span>
+                      {account?.email || ''}
                     </p>
                   </div>
                 </div>
               </div>
 
               {/* Massive Action Cards inside the header for immediate navigation */}
-              <div className="relative z-10 mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="relative z-10 mt-12 flex flex-col gap-6">
+                {/* 1. Go to Dashboard (Prominent) */}
                 <Link
                   to="/owner"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group relative overflow-hidden bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 rounded-3xl p-8 transition-all duration-300 backdrop-blur-sm shadow-xl"
+                  className="group relative overflow-hidden bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 rounded-3xl p-8 md:p-12 transition-all duration-300 backdrop-blur-sm shadow-xl flex flex-col items-center text-center justify-center"
                 >
-                  <div className="absolute -right-6 -top-6 w-32 h-32 bg-paymint-green/10 rounded-full blur-2xl group-hover:bg-paymint-green/20 transition-colors" />
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <div className="w-14 h-14 bg-paymint-green/20 rounded-2xl flex items-center justify-center mb-6 ring-1 ring-paymint-green/30 group-hover:scale-110 transition-transform">
-                        <LayoutDashboard size={28} className="text-paymint-green" />
-                      </div>
-                      <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">{t('portal.goToDashboard', 'Owner Portal')}</h3>
-                      <p className="text-gray-500 dark:text-gray-400 font-medium">Manage your establishments, team, and settings</p>
-                    </div>
-                    <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center group-hover:bg-paymint-green group-hover:text-black text-gray-900 dark:text-white transition-all transform group-hover:translate-x-2">
-                      <ArrowRight size={24} />
-                    </div>
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-paymint-green/10 rounded-full blur-3xl group-hover:bg-paymint-green/20 transition-colors pointer-events-none" />
+
+                  <div className="relative w-16 h-16 bg-paymint-green/10 dark:bg-paymint-green/20 rounded-2xl flex items-center justify-center mb-6 ring-1 ring-paymint-green/30 group-hover:scale-110 transition-transform">
+                    <LayoutDashboard size={32} className="text-paymint-green" />
                   </div>
+                  <h3 className="relative text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-3">{t('portal.goToDashboard', 'Go to Dashboard')}</h3>
+                  <p className="relative text-lg text-gray-500 dark:text-gray-400 font-medium">Manage your establishments, team, and settings</p>
                 </Link>
 
-                <Link
-                  to="/support"
-                  className="group relative overflow-hidden bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 rounded-3xl p-8 transition-all duration-300 backdrop-blur-sm shadow-xl"
-                >
-                  <div className="absolute -left-6 -bottom-6 w-32 h-32 bg-paymint-green/10 rounded-full blur-2xl group-hover:bg-paymint-green/20 transition-colors" />
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <div className="w-14 h-14 bg-paymint-green/10 dark:bg-paymint-green/20 rounded-2xl flex items-center justify-center mb-6 ring-1 ring-paymint-green/30 group-hover:scale-110 transition-transform">
-                        <Headset size={28} className="text-paymint-green" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Support */}
+                  <Link
+                    to="/support"
+                    className="group relative overflow-hidden bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 rounded-3xl p-8 transition-all duration-300 backdrop-blur-sm shadow-xl"
+                  >
+                    <div className="absolute -left-6 -bottom-6 w-32 h-32 bg-paymint-green/10 rounded-full blur-2xl group-hover:bg-paymint-green/20 transition-colors" />
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <div className="w-14 h-14 bg-paymint-green/10 dark:bg-paymint-green/20 rounded-2xl flex items-center justify-center mb-6 ring-1 ring-paymint-green/30 group-hover:scale-110 transition-transform">
+                          <Headset size={28} className="text-paymint-green" />
+                        </div>
+                        <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">{t('nav.support', 'Support')}</h3>
+                        <p className="text-gray-500 dark:text-gray-400 font-medium">Get help, view tickets, and access resources</p>
                       </div>
-                      <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">{t('nav.support', 'Support Center')}</h3>
-                      <p className="text-gray-500 dark:text-gray-400 font-medium">Get help, view tickets, and access resources</p>
+                      <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center group-hover:bg-paymint-green group-hover:text-black text-gray-900 dark:text-white transition-all transform group-hover:translate-x-2">
+                        <ArrowRight size={24} />
+                      </div>
                     </div>
-                    <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center group-hover:bg-paymint-green group-hover:text-black text-gray-900 dark:text-white transition-all transform group-hover:translate-x-2">
-                      <ArrowRight size={24} />
+                  </Link>
+
+                  {/* Community */}
+                  <Link
+                    to="https://community.paymint.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative overflow-hidden bg-white/80 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 rounded-3xl p-8 transition-all duration-300 backdrop-blur-sm shadow-xl"
+                  >
+                    <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-paymint-green/10 rounded-full blur-2xl group-hover:bg-paymint-green/20 transition-colors" />
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <div className="w-14 h-14 bg-paymint-green/10 dark:bg-paymint-green/20 rounded-2xl flex items-center justify-center mb-6 ring-1 ring-paymint-green/30 group-hover:scale-110 transition-transform">
+                          <Users size={28} className="text-paymint-green" />
+                        </div>
+                        <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">{t('nav.community', 'Community')}</h3>
+                        <p className="text-gray-500 dark:text-gray-400 font-medium">Join the discussion with other users</p>
+                      </div>
+                      <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center group-hover:bg-paymint-green group-hover:text-black text-gray-900 dark:text-white transition-all transform group-hover:translate-x-2">
+                        <ArrowRight size={24} />
+                      </div>
                     </div>
-                  </div>
-                </Link>
+                  </Link>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -202,55 +195,6 @@ export const PortalPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
-              {/* Account Overview */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl overflow-hidden"
-              >
-                <div className="p-6 border-b border-gray-100 dark:border-white/10">
-                  <h2 className="text-lg font-bold">{t('portal.overview.title')}</h2>
-                </div>
-                <div className="p-6">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('portal.overview.plan')}</p>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl font-black">{user.plan}</span>
-                        <span className="px-2 py-0.5 bg-green-100 dark:bg-green-500/20 text-green-600 rounded text-xs font-bold">{t('common.active')}</span>
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('portal.overview.establishments')}</p>
-                      <p className="text-xl font-black">{user.establishments}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('portal.overview.teamMembers')}</p>
-                      <p className="text-xl font-black">{user.employees}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('portal.overview.memberSince')}</p>
-                      <p className="text-xl font-black">{user.memberSince}</p>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 pt-6 border-t border-gray-100 dark:border-white/10">
-                    <div className="flex flex-wrap gap-3">
-                      {quickActions.map((action) => (
-                        <a
-                          key={action.label}
-                          href={action.href}
-                          className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-white/10 rounded-lg text-sm font-bold hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
-                        >
-                          <action.icon size={16} />
-                          {action.label}
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
 
               {/* Recent Tickets */}
               <motion.div
@@ -269,7 +213,12 @@ export const PortalPage = () => {
                   </Link>
                 </div>
                 <div className="divide-y divide-gray-100 dark:divide-white/10">
-                  {tickets.length === 0 ? (
+                  {loadingTickets ? (
+                    <div className="p-8 text-center">
+                      <Loader2 size={24} className="animate-spin mx-auto mb-3 text-paymint-green" />
+                      <p className="text-gray-500">Loading tickets...</p>
+                    </div>
+                  ) : tickets.length === 0 ? (
                     <div className="p-8 text-center">
                       <div className="w-12 h-12 bg-gray-100 dark:bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-3">
                         <Ticket size={24} className="text-gray-400" />
@@ -278,7 +227,7 @@ export const PortalPage = () => {
                     </div>
                   ) : (
                     tickets.map((ticket) => {
-                      const status = statusConfig[ticket.status as keyof typeof statusConfig];
+                      const status = statusConfig[ticket.status] || statusConfig.open;
                       const StatusIcon = status.icon;
 
                       return (
@@ -298,7 +247,7 @@ export const PortalPage = () => {
                               <div className="flex items-center gap-2 text-sm text-gray-400">
                                 <span>{ticket.id}</span>
                                 <span>·</span>
-                                <span>{ticket.updatedAt}</span>
+                                <span>{timeAgo(ticket.updatedAt)}</span>
                               </div>
                             </div>
                           </div>
@@ -325,114 +274,11 @@ export const PortalPage = () => {
                 </div>
               </motion.div>
 
-              {/* Announcements */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl overflow-hidden"
-              >
-                <div className="p-6 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Bell size={20} className="text-paymint-green" />
-                    <h2 className="text-lg font-bold">{t('portal.announcements.title')}</h2>
-                  </div>
-                </div>
-                <div className="divide-y divide-gray-100 dark:divide-white/10">
-                  {announcements.map((announcement) => (
-                    <div key={announcement.id} className="p-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-                      <div className="flex items-start gap-4">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${announcement.type === 'feature' ? 'bg-paymint-green/20 text-paymint-green' :
-                          announcement.type === 'maintenance' ? 'bg-yellow-100 dark:bg-yellow-500/20 text-yellow-600' :
-                            'bg-blue-100 dark:bg-blue-500/20 text-blue-600'
-                          }`}>
-                          {announcement.type === 'feature' ? <TrendingUp size={18} /> :
-                            announcement.type === 'maintenance' ? <Clock size={18} /> :
-                              <CreditCard size={18} />}
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="font-bold mb-1">{announcement.title}</h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                            {announcement.description}
-                          </p>
-                          <span className="text-xs font-medium text-gray-400">{announcement.date}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
             </div>
 
             {/* Sidebar */}
             <div className="space-y-6">
-              {/* Subscription Card */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="bg-white dark:bg-gradient-to-br dark:from-[#1E293B] dark:to-[#0F172A] border border-gray-100 dark:border-white/10 rounded-2xl p-6"
-              >
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-bold text-gray-900 dark:text-white">{t('portal.plan.title')}</h3>
-                  <span className="px-2 py-1 bg-paymint-green text-black rounded-md text-xs font-bold">
-                    {user.plan}
-                  </span>
-                </div>
 
-                <div className="space-y-4 mb-6">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500 dark:text-gray-400">{t('portal.plan.nextBilling')}</span>
-                    <span className="font-bold text-gray-900 dark:text-white">Mar 1, 2025</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500 dark:text-gray-400">{t('portal.plan.amount')}</span>
-                    <span className="font-bold text-gray-900 dark:text-white">$49/month</span>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Link
-                    to="/owner/billing"
-                    className="block w-full py-3 bg-gray-900 dark:bg-white text-white dark:text-black rounded-xl font-bold text-center text-sm hover:opacity-90 transition-all shadow-md"
-                  >
-                    {t('portal.plan.manage')}
-                  </Link>
-                  <button className="w-full py-3 bg-gray-100 dark:bg-white/10 text-gray-900 dark:text-white rounded-xl font-bold text-sm hover:bg-gray-200 dark:hover:bg-white/20 transition-all">
-                    {t('portal.plan.upgrade')}
-                  </button>
-                </div>
-              </motion.div>
-
-              {/* Resources */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl p-6"
-              >
-                <h3 className="font-bold mb-4">{t('portal.resources.title')}</h3>
-                <div className="space-y-3">
-                  {resources.map((resource) => (
-                    <Link
-                      key={resource.label}
-                      to={resource.href}
-                      className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/5 rounded-xl hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group"
-                    >
-                      <div className="w-10 h-10 bg-paymint-green/10 rounded-lg flex items-center justify-center">
-                        <resource.icon size={18} className="text-paymint-green" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-bold text-sm group-hover:text-paymint-green transition-colors">
-                          {resource.label}
-                        </p>
-                        <p className="text-xs text-gray-500">{resource.description}</p>
-                      </div>
-                      <ChevronRight size={16} className="text-gray-400 group-hover:text-paymint-green group-hover:translate-x-1 transition-all" />
-                    </Link>
-                  ))}
-                </div>
-              </motion.div>
 
               {/* Mobile App */}
               <motion.div
@@ -462,7 +308,7 @@ export const PortalPage = () => {
         </div>
       </main>
 
-      <Footer />
+      <Footer minimal={true} />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Star, CheckCircle2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +16,12 @@ export const FeedbackWidget = () => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
+
+    useEffect(() => {
+        const handleOpen = () => setIsOpen(true);
+        window.addEventListener('open-feedback', handleOpen);
+        return () => window.removeEventListener('open-feedback', handleOpen);
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -83,7 +89,7 @@ export const FeedbackWidget = () => {
                             Let's use a clear backdrop that closes on click but lets you see.
                         */}
                         <div className="fixed inset-0 z-[9999]" onClick={() => setIsOpen(false)} />
-                        
+
                         <motion.div
                             initial={{ x: isRTL ? '-100%' : '100%', opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
@@ -130,11 +136,10 @@ export const FeedbackWidget = () => {
                                                         key={s}
                                                         type="button"
                                                         onClick={() => setRating(s)}
-                                                        className={`flex-1 aspect-square rounded-xl flex items-center justify-center transition-all duration-200 ${
-                                                            rating >= s
-                                                            ? 'bg-paymint-green text-black shadow-md shadow-paymint-green/20'
-                                                            : 'bg-gray-50 dark:bg-[#1E293B] text-gray-300 hover:bg-gray-100 dark:hover:bg-[#334155]'
-                                                        }`}
+                                                        className={`flex-1 aspect-square rounded-xl flex items-center justify-center transition-all duration-200 ${rating >= s
+                                                                ? 'bg-paymint-green text-black shadow-md shadow-paymint-green/20'
+                                                                : 'bg-gray-50 dark:bg-[#1E293B] text-gray-300 hover:bg-gray-100 dark:hover:bg-[#334155]'
+                                                            }`}
                                                     >
                                                         <Star size={20} fill={rating >= s ? "currentColor" : "none"} strokeWidth={2.5} />
                                                     </button>

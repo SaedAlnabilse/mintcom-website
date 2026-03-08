@@ -247,9 +247,6 @@ export function CustomersPage() {
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-2 sm:gap-3 mb-2">
-            <span className="px-2.5 sm:px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-              {t('customers.badge')}
-            </span>
             <div className="flex items-center gap-2">
               <div className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-paymint-green opacity-75"></span>
@@ -279,7 +276,7 @@ export function CustomersPage() {
           </button>
           <button
             onClick={() => { setEditingCustomer(null); reset({ name: '', phone: '', email: '', address: '', notes: '' }); setShowModal(true); }}
-            className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20 touch-target"
+            className="flex items-center gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm touch-target"
           >
             <Plus size={18} />
             <span className="hidden xs:inline">{t('customers.addCustomer')}</span>
@@ -292,7 +289,7 @@ export function CustomersPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm hover:shadow-lg transition-all min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
+          className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-paymint-green/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
           <div className="flex items-center gap-3 sm:gap-4 relative z-10">
@@ -300,8 +297,8 @@ export function CustomersPage() {
               <User size={20} className="sm:w-6 sm:h-6" />
             </div>
             <div>
-              <p className="text-xs font-black text-gray-400 tracking-widest">{t('customers.stats.total')}</p>
-              <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mt-0.5">{(Array.isArray(customers) ? customers : []).length.toLocaleString(t('common.locale'))}</p>
+              <p className="dashboard-card-label">{t('customers.stats.total')}</p>
+              <p className="dashboard-card-value text-xl sm:text-2xl mt-0.5">{(Array.isArray(customers) ? customers : []).length.toLocaleString(t('common.locale'))}</p>
             </div>
           </div>
         </motion.div>
@@ -310,7 +307,7 @@ export function CustomersPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm hover:shadow-lg transition-all min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
+          className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
           <div className="flex items-center gap-3 sm:gap-4 relative z-10">
@@ -318,8 +315,8 @@ export function CustomersPage() {
               <Award size={20} className="sm:w-6 sm:h-6" />
             </div>
             <div>
-              <p className="text-xs font-black text-gray-400 tracking-widest">{t('customers.stats.points')}</p>
-              <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mt-0.5">
+              <p className="dashboard-card-label">{t('customers.stats.points')}</p>
+              <p className="dashboard-card-value text-xl sm:text-2xl mt-0.5">
                 {(Array.isArray(customers) ? customers : []).reduce((acc, curr) => acc + (curr.points || 0), 0).toLocaleString(t('common.locale'))}
               </p>
             </div>
@@ -330,7 +327,7 @@ export function CustomersPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm hover:shadow-lg transition-all min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
+          className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
           <div className="flex items-center gap-3 sm:gap-4 relative z-10">
@@ -338,8 +335,8 @@ export function CustomersPage() {
               <ShoppingBag size={20} className="sm:w-6 sm:h-6" />
             </div>
             <div>
-              <p className="text-xs font-black text-gray-400 tracking-widest">{t('customers.stats.spent')}</p>
-              <p className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mt-0.5">
+              <p className="dashboard-card-label">{t('customers.stats.spent')}</p>
+              <p className="dashboard-card-value text-xl sm:text-2xl mt-0.5">
                 {formatCurrency((Array.isArray(customers) ? customers : []).reduce((acc, curr) => acc + (Number(curr.totalSpent) || 0), 0))}
               </p>
             </div>
@@ -373,11 +370,11 @@ export function CustomersPage() {
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
               <User size={32} className="sm:w-10 sm:h-10 text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('customers.messages.noCustomers')}</h3>
+            <h3 className="dashboard-card-value mb-2">{t('customers.messages.noCustomers')}</h3>
             <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto mb-8">{t('customers.messages.noCustomersDesc')}</p>
             <button
               onClick={() => { setEditingCustomer(null); reset({ name: '', phone: '', email: '', address: '', notes: '' }); setShowModal(true); }}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-paymint-green/20"
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
             >
               <Plus size={18} />
               <span>{t('customers.addCustomer')}</span>
@@ -461,11 +458,11 @@ export function CustomersPage() {
               <table className="w-full">
                 <thead className="bg-gray-50 dark:bg-white/[0.02]">
                   <tr className="border-b border-gray-200 dark:border-white/5">
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('customers.form.name')}</th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('customers.details.points')}</th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('staff.table.contact')}</th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('customers.details.spent')}</th>
-                    <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('owner.locations.actions')}</th>
+                    <th className="px-6 py-4 text-left dashboard-card-label">{t('customers.form.name')}</th>
+                    <th className="px-6 py-4 text-left dashboard-card-label">{t('customers.details.points')}</th>
+                    <th className="px-6 py-4 text-left dashboard-card-label">{t('staff.table.contact')}</th>
+                    <th className="px-6 py-4 text-left dashboard-card-label">{t('customers.details.spent')}</th>
+                    <th className="px-6 py-4 text-center dashboard-card-label">{t('owner.locations.actions')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">
@@ -485,14 +482,14 @@ export function CustomersPage() {
                           </div>
                           <div>
                             <p className="font-bold text-gray-900 dark:text-white text-sm">{customer.name}</p>
-                            <p className="text-xs font-black text-gray-400 tracking-widest">{customer.totalVisits} {t('customers.details.visits')}</p>
+                            <p className="dashboard-card-label">{customer.totalVisits} {t('customers.details.visits')}</p>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex flex-col gap-1">
                           <p className="text-sm font-black text-paymint-green">{customer.points}</p>
-                          <p className="text-xs font-black text-gray-400 tracking-widest">{t('rewards.points')}</p>
+                          <p className="dashboard-card-label">{t('rewards.points')}</p>
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -583,7 +580,7 @@ export function CustomersPage() {
       {/* Customer Form Modal */}
       <AnimatePresence>
         {showModal && (
-          <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm">
+          <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
@@ -591,7 +588,7 @@ export function CustomersPage() {
               className="bg-white dark:bg-[#1E293B] rounded-t-2xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-md max-h-[90vh] overflow-y-auto shadow-2xl relative"
             >
               <div className="p-8 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                <h2 className="dashboard-card-value">
                   {editingCustomer ? t('customers.editCustomer') : t('customers.newCustomer')}
                 </h2>
                 <button
@@ -679,7 +676,7 @@ export function CustomersPage() {
       {/* Points Adjustment Modal */}
       <AnimatePresence>
         {showPointsModal && selectedCustomer && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowPointsModal(false)}>
+          <div className="fixed inset-0 z-[60] popup-surface flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowPointsModal(false)}>
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -701,7 +698,7 @@ export function CustomersPage() {
                 <div className="w-20 h-20 bg-paymint-green/10 text-paymint-green rounded-[2rem] flex items-center justify-center mx-auto mb-6">
                   <Award size={40} />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('customers.details.adjustLoyalty')}</h2>
+                <h2 className="dashboard-card-value">{t('customers.details.adjustLoyalty')}</h2>
                 <p className="text-gray-500 font-bold mt-1 text-xs tracking-widest">{t('customers.details.partner')}: {selectedCustomer.name}</p>
               </div>
               <div className="p-8 space-y-8">
@@ -750,7 +747,7 @@ export function CustomersPage() {
                           key="label"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          className="text-center text-xs font-black text-gray-400 tracking-widest"
+                          className="text-center dashboard-card-label"
                         >
                           {t('customers.details.pointsAllocation')}
                         </motion.p>
@@ -770,7 +767,7 @@ export function CustomersPage() {
       {/* Customer Detail View */}
       <AnimatePresence>
         {showDetailModal && selectedCustomer && (
-          <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowDetailModal(false)}>
+          <div className="fixed inset-0 z-[60] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm" onClick={() => setShowDetailModal(false)}>
             <motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} className="bg-white dark:bg-[#1E293B] rounded-t-2xl sm:rounded-2xl border border-gray-200 dark:border-white/5 w-full sm:max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
               <div className="p-10 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-transparent">
                 <div className="flex justify-between items-start mb-10">
@@ -779,7 +776,7 @@ export function CustomersPage() {
                       {selectedCustomer.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{selectedCustomer.name}</h2>
+                      <h2 className="dashboard-card-value">{selectedCustomer.name}</h2>
                       <div className="mt-2 flex items-center gap-2 text-paymint-green">
                         <Award size={14} className="animate-pulse" />
                         <p className="text-lg font-black tracking-tight">{selectedCustomer.points} {t('rewards.points')}</p>
@@ -798,8 +795,8 @@ export function CustomersPage() {
                     { label: t('customers.details.points'), value: `${selectedCustomer.points.toLocaleString(t('common.locale'))} ${t('rewards.points')}`, icon: Award },
                   ].map((stat, i) => (
                     <div key={i} className="p-5 bg-white dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/5 shadow-sm">
-                      <p className="text-xs font-black text-gray-400 tracking-widest mb-3">{stat.label}</p>
-                      <p className="text-lg font-black text-gray-900 dark:text-white">{stat.value}</p>
+                      <p className="dashboard-card-label mb-3">{stat.label}</p>
+                      <p className="dashboard-card-value">{stat.value}</p>
                     </div>
                   ))}
                 </div>
@@ -864,5 +861,6 @@ export function CustomersPage() {
     </div>
   );
 }
+
 
 

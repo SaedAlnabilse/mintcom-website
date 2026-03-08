@@ -52,6 +52,13 @@ export function OwnerLayout() {
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const mainContentRef = useRef<HTMLDivElement>(null);
 
+    useEffect(() => {
+        document.body.classList.add('dashboard-font-unified');
+        return () => {
+            document.body.classList.remove('dashboard-font-unified');
+        };
+    }, []);
+
     // Scroll to top on route change
     useEffect(() => {
         if (mainContentRef.current) {
@@ -158,7 +165,7 @@ export function OwnerLayout() {
                                         size={24}
                                         className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
                                     />
-                                    <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-outfit font-bold tracking-tight rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                                    <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                                         {t('owner.menu.openSidebar')}
                                     </div>
                                 </button>
@@ -178,7 +185,7 @@ export function OwnerLayout() {
 
                 {/* Navigation Section */}
                 <div className={`flex-1 ${sidebarOpen ? 'overflow-y-auto' : 'overflow-visible'} px-3 space-y-1.5 scrollbar-none scroll-smooth pb-4 relative z-10`}>
-                    {sidebarOpen && <p className="px-3 py-2 text-xs font-black text-gray-400 tracking-widest mb-4 mt-2">{t('owner.menu.mainMenu')}</p>}
+                    {sidebarOpen && <p className="px-3 py-2 text-xs font-semibold text-gray-500 tracking-normal mb-4 mt-2">{t('owner.menu.mainMenu')}</p>}
                     {menuItems.map((item) => {
                         const Icon = item.icon;
 
@@ -191,7 +198,7 @@ export function OwnerLayout() {
                                 className={({ isActive }) =>
                                     `relative flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group
                                     ${isActive
-                                        ? 'bg-paymint-green text-black font-bold shadow-lg shadow-paymint-green/20 active-menu-item'
+                                        ? 'bg-paymint-green text-black font-semibold shadow-lg shadow-paymint-green/20 active-menu-item'
                                         : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'}
                                     ${!sidebarOpen ? 'justify-center w-12 h-12 mx-auto' : ''}`
                                 }
@@ -199,11 +206,11 @@ export function OwnerLayout() {
                                 <Icon size={!sidebarOpen ? 24 : 20} />
 
                                 {sidebarOpen && (
-                                    <span className="text-sm font-bold">{item.label}</span>
+                                    <span className="text-sm font-semibold tracking-normal">{item.label}</span>
                                 )}
 
                                 {!sidebarOpen && (
-                                    <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-outfit font-bold tracking-tight rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                                    <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                                         {item.label}
                                     </div>
                                 )}
@@ -471,7 +478,7 @@ export function OwnerLayout() {
                             >
                                 <LogOut size={24} />
                                 {/* Tooltip */}
-                                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-outfit font-bold tracking-tight rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                                     {t('dashboard.menu.logout')}
                                 </div>
                             </button>
@@ -558,12 +565,12 @@ export function OwnerLayout() {
                                         className={`
                                             flex items-center gap-3 p-3.5 rounded-xl transition-all
                                             ${isActive
-                                                ? 'bg-paymint-green text-black font-bold shadow-lg shadow-paymint-green/20'
+                                                ? 'bg-paymint-green text-black font-semibold shadow-lg shadow-paymint-green/20'
                                                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5'}
                                         `}
                                     >
                                         <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
-                                        <span className="text-sm font-bold">{item.label}</span>
+                                        <span className="text-sm font-semibold tracking-normal">{item.label}</span>
                                     </NavLink>
                                 );
                             })}

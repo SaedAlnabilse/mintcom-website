@@ -332,11 +332,6 @@ export function BrandDashboardPage() {
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 relative z-50">
                 <div>
-                    <div className="flex items-center gap-3 mb-2">
-                        <span className="px-3 py-1 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
-                            {t('brand.menu.overview')}
-                        </span>
-                    </div>
                     <div className="flex items-center gap-4">
                         <h1 className="text-2xl sm:text-3xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">{brandName}</h1>
                     </div>
@@ -494,8 +489,8 @@ export function BrandDashboardPage() {
                                     </div>
                                 )}
                             </div>
-                            <p className="text-xs font-black text-gray-400 tracking-widest mb-1">{stat.label}</p>
-                            <p className={`text-2xl font-bold text-gray-900 dark:text-white ${isTopBrand ? 'tracking-tight' : ''}`}>{stat.value}</p>
+                            <p className="dashboard-card-label mb-1">{stat.label}</p>
+                            <p className="dashboard-card-value">{stat.value}</p>
                         </div>
                     </motion.div>
                 ))}
@@ -525,7 +520,7 @@ export function BrandDashboardPage() {
                 {locations.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-16 text-center">
                         <Store size={48} className="text-gray-300 dark:text-gray-700 mb-4" />
-                        <p className="text-xl font-bold text-gray-900 dark:text-white">{t('brand.dashboard.noLocations')}</p>
+                        <p className="dashboard-card-value">{t('brand.dashboard.noLocations')}</p>
                         <p className="text-sm font-bold text-gray-500 mt-1">{t('brand.dashboard.addLocationsDesc')}</p>
                     </div>
                 ) : (
@@ -605,7 +600,7 @@ export function BrandDashboardPage() {
                 >
                     <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('brand.dashboard.revenueTrend')}</h3>
+                            <h3 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('brand.dashboard.revenueTrend')}</h3>
                             <p className="text-xs text-gray-500 mt-1">{t('brand.dashboard.consolidatedPerformance')}</p>
                         </div>
                         <div className="flex items-center gap-4">
@@ -726,7 +721,7 @@ export function BrandDashboardPage() {
                 >
                     <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('brand.dashboard.salesByCategory')}</h3>
+                            <h3 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('brand.dashboard.salesByCategory')}</h3>
                             <p className="text-xs text-gray-500 mt-1">{t('brand.dashboard.revenueDistribution')}</p>
                         </div>
                     </div>
@@ -816,7 +811,8 @@ export function BrandDashboardPage() {
                     >
                         <div className={`w-12 h-12 rounded-xl ${action.bg} ${action.color} flex items-center justify-center mb-4`}>
                             <action.icon size={24} />
-                        </div>                        <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+                        </div>
+                        <h4 className="text-lg font-outfit font-bold tracking-tight text-gray-900 dark:text-white mb-1">
                             {action.title}
                         </h4>
                         <p className="text-sm font-bold text-gray-500">{action.description}</p>
@@ -830,6 +826,9 @@ export function BrandDashboardPage() {
         </div>
     );
 }
+
+
+
 
 
 

@@ -81,7 +81,7 @@ export const Contact = () => {
                     { icon: Phone, label: t('common.phone'), value: '+962 7XXXXXXXX', color: 'text-paymint-green' },
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-4 group">
-                      <div className="w-12 h-12 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center transition-transform duration-500 shadow-sm dark:shadow-none">
+                      <div className="w-12 h-12 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center transition-transform duration-500 shadow-sm dark:shadow-none shrink-0 aspect-square">
                         <item.icon size={20} className={item.color} />
                       </div>
                       <div>
