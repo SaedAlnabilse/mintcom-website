@@ -3,12 +3,10 @@ import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
-  Search,
   Plus,
   Shield,
   Edit2,
   Trash2,
-  XCircle,
   UserCheck,
   ArrowUpDown,
   Grid3X3,
@@ -18,7 +16,7 @@ import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { CustomRoleFormModal } from '../../components/CustomRoleFormModal';
-import { Pagination } from '../../components/ui';
+import { Pagination, SearchInput } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { getLocalizedRoleName } from '../../utils/roleNames';
 
@@ -272,24 +270,13 @@ export function CustomRolesPage() {
       {/* Filters & Search */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="relative flex-1 max-w-md">
-          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder={t('dashboard.roles.searchPlaceholder')}
+          <SearchInput
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
-            className="w-full pl-11 pr-4 py-2.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none transition-all"
+            onClear={() => { setSearchQuery(''); setCurrentPage(1); }}
+            placeholder={t('dashboard.roles.searchPlaceholder')}
           />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 dark:hover:bg-white/10 rounded-md transition-colors"
-            >
-              <XCircle size={14} className="text-gray-400" />
-            </button>
-          )}
         </div>
-
         {/* View Mode Toggle */}
         <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[44px]">
           <button

@@ -530,7 +530,7 @@ export function BrandDashboardPage() {
                 <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-white/5">
                     <div>
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('brand.dashboard.locationPerformance')}</h3>
-                        <p className="text-xs text-gray-500 mt-1">{t('brand.dashboard.rankedByRevenue')}</p>
+                        <p className="card-subtitle">{t('brand.dashboard.rankedByRevenue')}</p>
                     </div>
                     <button
                         onClick={() => navigate(`/brand/${brandId}/locations`)}
@@ -545,7 +545,7 @@ export function BrandDashboardPage() {
                     <div className="flex flex-col items-center justify-center py-16 text-center">
                         <Store size={48} className="text-gray-300 dark:text-gray-700 mb-4" />
                         <p className="dashboard-card-value">{t('brand.dashboard.noLocations')}</p>
-                        <p className="text-sm font-bold text-gray-500 mt-1">{t('brand.dashboard.addLocationsDesc')}</p>
+                        <p className="card-subtitle">{t('brand.dashboard.addLocationsDesc')}</p>
                     </div>
                 ) : (
                     <div className="divide-y divide-gray-100 dark:divide-white/5">
@@ -630,7 +630,7 @@ export function BrandDashboardPage() {
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h3 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('brand.dashboard.revenueTrend')}</h3>
-                            <p className="text-xs text-gray-500 mt-1">{t('brand.dashboard.consolidatedPerformance')}</p>
+                            <p className="card-subtitle">{t('brand.dashboard.consolidatedPerformance')}</p>
                         </div>
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-2">
@@ -734,7 +734,7 @@ export function BrandDashboardPage() {
                                 </div>
                                 <div className="text-center">
                                     <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('owner.overview.noRevenueData')}</p>
-                                    <p className="text-xs text-gray-500 mt-1">{t('owner.overview.noSalesRecorded')}</p>
+                                    <p className="card-subtitle">{t('owner.overview.noSalesRecorded')}</p>
                                 </div>
                             </div>
                         )}
@@ -751,7 +751,7 @@ export function BrandDashboardPage() {
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h3 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('brand.dashboard.salesByCategory')}</h3>
-                            <p className="text-xs text-gray-500 mt-1">{t('brand.dashboard.revenueDistribution')}</p>
+                            <p className="card-subtitle">{t('brand.dashboard.revenueDistribution')}</p>
                         </div>
                     </div>
 
@@ -790,7 +790,7 @@ export function BrandDashboardPage() {
                                 </div>
                                 <div className="text-center">
                                     <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('owner.overview.noRevenueData')}</p>
-                                    <p className="text-xs text-gray-500 mt-1">{t('owner.overview.noSalesRecorded')}</p>
+                                    <p className="card-subtitle">{t('owner.overview.noSalesRecorded')}</p>
                                 </div>
                             </div>
                         )}
@@ -855,6 +855,7 @@ export function BrandDashboardPage() {
         </div>
     );
 }
+
 
 
 

@@ -16,7 +16,8 @@ import {
     List,
     MoreVertical,
     UserCheck,
-    ArrowUpDown
+    ArrowUpDown,
+  X
 } from 'lucide-react';
 import api from '../../config/api';
 import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
@@ -368,8 +369,18 @@ export function OwnerEmployeesPage() {
                             placeholder={t('owner.staff.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
+                            className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
                         />
+                        {searchQuery && (
+                          <button
+                            type="button"
+                            onClick={() => setSearchQuery('')}
+                            aria-label={t('common.clearSearch', 'Clear search')}
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                          >
+                            <X size={12} strokeWidth={2.75} />
+                          </button>
+                        )}
                     </div>
 
                     {/* Filter Controls */}
@@ -427,8 +438,8 @@ export function OwnerEmployeesPage() {
             ) : filteredEmployees.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="dashboard-card-value">{t('owner.staff.noStaffFound')}</p>
-                    <p className="text-sm font-bold text-gray-500 mt-1">{t('owner.staff.noStaffDesc')}</p>
+                    <p className="dashboard-card-value">{searchQuery.trim() ? t('common.noResults') : t('owner.staff.noStaffFound')}</p>
+                    <p className="text-sm font-bold text-gray-500 mt-1">{searchQuery.trim() ? t('common.noMatchingResults', { entity: 'staff', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('owner.staff.noStaffDesc')}</p>
                 </div>
             ) : viewMode === 'grid' ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

@@ -449,8 +449,8 @@ export function StaffPage() {
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
               <Users size={32} className="sm:w-10 sm:h-10 text-gray-300" />
             </div>
-            <h3 className="dashboard-card-value mb-2">{t('staff.messages.noStaff')}</h3>
-            <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto">{t('staff.messages.noStaffDesc')}</p>
+            <h3 className="dashboard-card-value mb-2">{searchQuery.trim() ? t('common.noResults') : t('staff.messages.noStaff')}</h3>
+            <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto">{searchQuery.trim() ? t('common.noMatchingResults', { entity: 'staff', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('staff.messages.noStaffDesc')}</p>
           </div>
         ) : (
           <>
@@ -738,3 +738,4 @@ export function StaffPage() {
     </div >
   );
 }
+

@@ -21,7 +21,8 @@ import {
     MoreVertical,
     Eye,
     Trash2,
-    ArrowUpDown
+    ArrowUpDown,
+  X
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -449,8 +450,18 @@ export function OwnerBrandsPage() {
                             placeholder={t('owner.brands.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
+                            className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
                         />
+                        {searchQuery && (
+                          <button
+                            type="button"
+                            onClick={() => setSearchQuery('')}
+                            aria-label={t('common.clearSearch', 'Clear search')}
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                          >
+                            <X size={12} strokeWidth={2.75} />
+                          </button>
+                        )}
                     </div>
 
                     {/* Filter Controls */}
@@ -485,18 +496,6 @@ export function OwnerBrandsPage() {
                         </div>
                     </div>
                 </div>
-
-                {hasActiveFilters && (
-                    <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
-                        <span className="dashboard-card-label uppercase">{t('owner.brands.activeFilters')}</span>
-                        <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
-                            {t('owner.brands.searchFilter', { query: searchQuery })}
-                        </span>
-                        <span className="text-xs font-medium text-gray-400 ml-auto">
-                            {t('owner.brands.countSummary', { filtered: filteredBrands.length, total: brands.length })}
-                        </span>
-                    </div>
-                )}
             </div>
 
             {/* Brands Display */}
@@ -504,10 +503,10 @@ export function OwnerBrandsPage() {
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Building2 size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
                     <p className="text-lg font-medium text-gray-900 dark:text-white">
-                        {hasActiveFilters ? t('owner.brands.noBrandsFound') : t('owner.brands.noBrands')}
+                        {hasActiveFilters ? t('common.noResults') : t('owner.brands.noBrands')}
                     </p>
                     <p className="text-sm text-gray-500 mt-1">
-                        {hasActiveFilters ? t('owner.brands.tryAdjustingSearch') : t('owner.brands.createBrandHint')}
+                        {hasActiveFilters ? t('common.noMatchingResults', { entity: 'brands', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('owner.brands.createBrandHint')}
                     </p>
                     {!hasActiveFilters && availableEstablishments.length >= 2 && (
                         <button
@@ -547,7 +546,7 @@ export function OwnerBrandsPage() {
                                                 </h3>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest">
+                                                <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green label-strong">
                                                     {t('common.status.active')}
                                                 </span>
                                                 <span className="dashboard-card-label uppercase">
@@ -653,7 +652,7 @@ export function OwnerBrandsPage() {
                                 <div className="mt-6 pt-6 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
                                     <button
                                         onClick={() => window.open(`/brand/${brand.establishmentLoginId}`, '_blank')}
-                                        className="flex-1 py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-black tracking-widest uppercase hover:bg-purple-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-purple-500 shadow-sm"
+                                        className="flex-1 py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 label-strong uppercase hover:bg-purple-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-purple-500 shadow-sm"
                                     >
                                         <span>{t('owner.brands.openDashboard')}</span>
                                         <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
@@ -793,7 +792,7 @@ export function OwnerBrandsPage() {
                                             </h3>
 
                                         </div>
-                                        <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest">
+                                        <span className="px-2 py-0.5 rounded bg-paymint-green/10 text-paymint-green label-strong">
                                             {t('common.status.active')}
                                         </span>
                                     </div>
@@ -827,7 +826,7 @@ export function OwnerBrandsPage() {
                                             e.stopPropagation();
                                             window.open(`/brand/${brand.establishmentLoginId}`, '_blank');
                                         }}
-                                        className="px-4 py-2 rounded-lg bg-paymint-green text-black text-xs font-black tracking-widest uppercase hover:bg-emerald-400 transition-all flex items-center gap-2"
+                                        className="px-4 py-2 rounded-lg bg-paymint-green text-black label-strong uppercase hover:bg-emerald-400 transition-all flex items-center gap-2"
                                     >
                                         <Eye size={14} />
                                         {t('common.view')}

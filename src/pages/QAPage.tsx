@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Plus, Minus, MessageCircle, CreditCard, Shield, Settings, HelpCircle, ChevronRight } from 'lucide-react';
+import { Search, Plus, Minus, MessageCircle, CreditCard, Shield, Settings, HelpCircle, ChevronRight,
+  X
+} from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 
@@ -111,8 +113,18 @@ export const QAPage = () => {
                             placeholder={t('support.qa.search_placeholder', 'Search for questions...')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-4 bg-gray-100 dark:bg-black/20 border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none transition-all shadow-sm"
+                            className="w-full pl-12 pr-11 py-4 bg-gray-100 dark:bg-black/20 border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none transition-all shadow-sm"
                         />
+                        {searchQuery && (
+                          <button
+                            type="button"
+                            onClick={() => setSearchQuery('')}
+                            aria-label={t('common.clearSearch', 'Clear search')}
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                          >
+                            <X size={12} strokeWidth={2.75} />
+                          </button>
+                        )}
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                     </motion.div>
                 </div>
@@ -217,7 +229,7 @@ export const QAPage = () => {
                                         {t('support.qa.empty_title', 'No results found')}
                                     </h3>
                                     <p className="text-xs font-bold text-gray-500">
-                                        {t('support.qa.empty_subtitle', 'Try adjusting your search or category filter.')}
+                                        {searchQuery.trim() ? t('common.noMatchingResults', { entity: 'questions', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('support.qa.empty_subtitle', 'Try adjusting your search or category filter.')}
                                     </p>
                                 </motion.div>
                             )}

@@ -328,7 +328,7 @@ export function OwnerOverviewPage() {
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h3 className="text-xl font-outfit font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.overview.salesTrends')}</h3>
-                            <p className="text-xs text-gray-500 mt-1">{t('owner.overview.period')}: {selectedFilterLabel}</p>
+                            <p className="card-subtitle">{t('owner.overview.period')}: {selectedFilterLabel}</p>
                         </div>
                         <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-white/5">
                             <div className="w-2 h-2 rounded-full bg-paymint-green" />
@@ -479,3 +479,4 @@ export function OwnerOverviewPage() {
         </div>
     );
 }
+

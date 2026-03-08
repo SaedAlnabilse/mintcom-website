@@ -249,7 +249,24 @@ export function EstablishmentsPage() {
           </motion.div>
         ))}
 
+        {searchQuery.trim() && paginatedEstablishments.length === 0 && (
+          <div className="col-span-full py-20 text-center bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
+            <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Store size={28} className="text-gray-300" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('common.noResults')}</h3>
+            <p className="text-sm font-bold text-gray-500">
+              {t('common.noMatchingResults', {
+                entity: 'locations',
+                query: searchQuery.trim(),
+                defaultValue: 'No {{entity}} matching "{{query}}"',
+              })}
+            </p>
+          </div>
+        )}
+
         {/* Add New Establishment Card */}
+        {!searchQuery.trim() && (
         <motion.button
           onClick={() => navigate('/onboarding')}
           className="bg-white dark:bg-[#1E293B] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl p-10 flex flex-col items-center justify-center gap-8 hover:border-paymint-green dark:hover:border-paymint-green hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all min-h-[250px] lg:min-h-[350px] group shadow-sm"
@@ -262,6 +279,7 @@ export function EstablishmentsPage() {
             <p className="text-xs font-black text-gray-400 tracking-widest max-w-[200px]">{t('establishments.details.create')}</p>
           </div>
         </motion.button>
+        )}
       </div>
 
       <Pagination
@@ -311,5 +329,6 @@ export function EstablishmentsPage() {
     </div>
   );
 }
+
 
 

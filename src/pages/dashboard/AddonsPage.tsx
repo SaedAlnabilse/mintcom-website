@@ -424,8 +424,18 @@ export function AddonsPage() {
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
             placeholder={t('attributes.filters.searchPlaceholder')}
-            className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+            className="w-full pl-11 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
           />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => { setSearchQuery(''); setPage(1); }}
+              aria-label={t('common.clearSearch', 'Clear search')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+            >
+              <X size={12} strokeWidth={2.75} />
+            </button>
+          )}
         </div>
 
         <div className="pt-4 border-t border-gray-100 dark:border-white/5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -513,8 +523,8 @@ export function AddonsPage() {
           <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
             <Package size={32} className="text-gray-300" />
           </div>
-          <h3 className="dashboard-card-value mb-2">{t('attributes.list.noAddons')}</h3>
-          <p className="text-sm font-bold text-gray-500 max-w-xs">{t('attributes.list.noAddonsDesc')}</p>
+          <h3 className="dashboard-card-value mb-2">{searchQuery.trim() ? t('common.noResults') : t('attributes.list.noAddons')}</h3>
+          <p className="text-sm font-bold text-gray-500 max-w-xs">{searchQuery.trim() ? t('common.noMatchingResults', { entity: 'add-ons', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('attributes.list.noAddonsDesc')}</p>
         </div>
       ) : (
         <div className="space-y-4">

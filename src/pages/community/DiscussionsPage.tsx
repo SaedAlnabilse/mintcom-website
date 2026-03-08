@@ -14,7 +14,8 @@ import {
   TrendingUp,
   CheckCircle2,
   User,
-  ChevronRight
+  ChevronRight,
+  X
 } from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
@@ -177,7 +178,7 @@ export const DiscussionsPage = () => {
             ) : (
               <button
                 onClick={() => {
-                  toast.error('Please log in to start a discussion', { icon: '🔒' });
+                  toast.error('Please log in to start a discussion', { icon: 'Ã°Å¸â€â€™' });
                   navigate('/login');
                 }}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 dark:bg-white/10 text-gray-500 dark:text-gray-400 rounded-xl font-bold hover:bg-gray-300 dark:hover:bg-white/20 transition-all"
@@ -226,8 +227,18 @@ export const DiscussionsPage = () => {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder={t('community.discussions.search_placeholder', 'Search discussions...')}
-                      className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all"
+                      className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all"
                     />
+                    {searchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setSearchQuery('')}
+                        aria-label={t('common.clearSearch', 'Clear search')}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                      >
+                        <X size={12} strokeWidth={2.75} />
+                      </button>
+                    )}
                   </div>
 
                   <div className="flex gap-2">

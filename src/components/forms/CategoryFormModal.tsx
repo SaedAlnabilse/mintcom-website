@@ -103,8 +103,6 @@ export function CategoryFormModal({
 
   if (!isOpen) return null;
 
-  const SelectedIconComponent = ICON_MAP[selectedIcon] || Tag;
-
   return createPortal(
     <AnimatePresence>
       <div
@@ -116,7 +114,7 @@ export function CategoryFormModal({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 100 }}
           transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
-          className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-xl rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh] transition-colors duration-300 border border-gray-200 dark:border-white/5 shadow-2xl"
+          className="bg-white dark:bg-[#1E293B] w-full sm:w-[90vw] sm:max-w-md rounded-t-3xl sm:rounded-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[85vh] transition-colors duration-300 border border-gray-200 dark:border-white/5 shadow-2xl"
         >
           {/* Mobile drag handle */}
           <div className="sm:hidden flex justify-center pt-3 pb-1">
@@ -124,11 +122,11 @@ export function CategoryFormModal({
           </div>
 
           {/* Header */}
-          <div className="flex items-center justify-between p-4 sm:p-8 pb-4 relative isolate">
+          <div className="flex items-center justify-between p-4 pb-4 sm:p-8 sm:pb-4 relative isolate">
             <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-black text-gray-400 tracking-widest">{t('categories.title')}</span>
+                <span className="label-strong">{t('categories.title')}</span>
                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
                 <span className="text-xs font-black text-paymint-green tracking-widest">{t('common.active')}</span>
               </div>
@@ -144,16 +142,8 @@ export function CategoryFormModal({
             </button>
           </div>
 
-          <div className="overflow-y-auto p-4 sm:p-8 pt-2 custom-scrollbar flex-1 pb-safe">
-            {/* Preview */}
-            <div className="flex flex-col items-center mb-10 py-6 bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/5 shadow-inner">
-              <div
-                className="w-24 h-24 rounded-2xl flex items-center justify-center mb-3 transition-all duration-500 bg-paymint-green shadow-lg shadow-paymint-green/20 group-hover:scale-105"
-              >
-                <SelectedIconComponent size={48} className="text-black" strokeWidth={2.5} />
-              </div>
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400 tracking-normal">{t('categories.iconPreview')}</span>
-            </div>
+          <div className="overflow-y-auto p-4 pt-2 sm:p-8 sm:pt-2 custom-scrollbar flex-1 pb-safe">
+
 
             <form id="category-form" onSubmit={handleSubmit} className="space-y-8">
               {/* Error Banner */}
@@ -165,8 +155,8 @@ export function CategoryFormModal({
               )}
 
               {/* Name */}
-              <div className="space-y-3">
-                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+              <div className="space-y-2">
+                <label className="label-strong block flex items-center gap-1">
                   {t('categories.form.nameLabel')} <span className="text-paymint-red">*</span>
                   <QuickInfo text={t('categories.form.nameTip')} />
                 </label>
@@ -181,8 +171,8 @@ export function CategoryFormModal({
               </div>
 
               {/* Icon Grid */}
-              <div className="space-y-4">
-                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+              <div className="space-y-2">
+                <label className="label-strong block flex items-center gap-1">
                   {t('categories.form.iconLabel')}
                   <QuickInfo text={t('categories.form.iconTip')} />
                 </label>

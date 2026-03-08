@@ -36,10 +36,12 @@ export function SearchInput({
       />
       {value && onClear && (
         <button
+          type="button"
           onClick={onClear}
-          className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-all"
+          aria-label={t('common.clearSearch', 'Clear search')}
+          className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
         >
-          <X size={14} strokeWidth={3} />
+          <X size={12} strokeWidth={2.75} />
         </button>
       )}
     </div>

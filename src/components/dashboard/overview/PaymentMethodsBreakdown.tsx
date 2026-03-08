@@ -30,7 +30,7 @@ export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdo
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('dashboard.paymentMethods.title')}</h3>
-              <p className="text-xs font-bold text-gray-500 tracking-wide">
+              <p className="card-subtitle">
                 {viewMode === 'current_shift' ? t('dashboard.stats.thisShift') : viewMode === 'previous_shift' ? t('dashboard.stats.previousShift') : t('dashboard.stats.last24h')} {t('dashboard.paymentMethods.distribution')}
               </p>
             </div>

@@ -101,8 +101,18 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
                 placeholder={t('support.qa.searchPlaceholder')}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className={`w-full ${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'} py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm focus:outline-none transition-all`}
+                className={`w-full ${isRTL ? 'pr-10 pl-11' : 'pl-10 pr-11'} py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm focus:outline-none transition-all`}
               />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch('')}
+                  aria-label={t('common.clearSearch', 'Clear search')}
+                  className={`absolute ${isRTL ? 'left-2.5' : 'right-2.5'} top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors`}
+                >
+                  <X size={12} strokeWidth={2.75} />
+                </button>
+              )}
             </div>
           </div>
 
@@ -238,3 +248,4 @@ export function FAQModal({ isOpen, onClose }: FAQModalProps) {
     </AnimatePresence>
   );
 }
+

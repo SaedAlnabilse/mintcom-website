@@ -272,10 +272,16 @@ export function AdminUsersPage() {
                             <UserPlus className="w-12 h-12 text-gray-400" />
                         </div>
                         <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                            {searchQuery ? t('categories.messages.noResults') : t('adminUsers.noAdmins')}
+                            {searchQuery.trim() ? t('common.noResults') : t('adminUsers.noAdmins')}
                         </h3>
                         <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto">
-                            {searchQuery ? t('categories.messages.noResultsDesc', { query: searchQuery }) : t('adminUsers.noAdminsDesc')}
+                            {searchQuery.trim()
+                                ? t('common.noMatchingResults', {
+                                    entity: 'admins',
+                                    query: searchQuery.trim(),
+                                    defaultValue: 'No {{entity}} matching "{{query}}"',
+                                })
+                                : t('adminUsers.noAdminsDesc')}
                         </p>
                     </div>
                 ) : (
@@ -567,5 +573,6 @@ export function AdminUsersPage() {
         </div>
     );
 }
+
 
 

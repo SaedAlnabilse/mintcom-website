@@ -38,7 +38,7 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({
             </div>
             <div>
               <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('dashboard.stats.bestSellers')}</h3>
-              <p className="text-xs font-bold text-gray-500 tracking-wide">
+              <p className="card-subtitle">
                 {viewMode === 'current_shift' ? t('dashboard.stats.thisShift') : viewMode === 'previous_shift' ? t('dashboard.stats.previousShift') : t('dashboard.stats.last24h')}
               </p>
             </div>
@@ -121,3 +121,4 @@ export const TopSellingProducts = React.memo(function TopSellingProducts({
     </div>
   );
 });
+

@@ -1327,7 +1327,18 @@ export function OrdersPage() {
               <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4">
                 <ShoppingCart className="w-8 h-8 text-gray-300" />
               </div>
-              <p className="dashboard-card-value">{t('orders.messages.noOrders')}</p>
+              <h3 className="dashboard-card-value mb-2">
+                {searchQuery.trim() ? t('common.noResults') : t('orders.messages.noOrders')}
+              </h3>
+              {searchQuery.trim() && (
+                <p className="text-sm font-bold text-gray-500">
+                  {t('common.noMatchingResults', {
+                    entity: 'orders',
+                    query: searchQuery.trim(),
+                    defaultValue: 'No {{entity}} matching "{{query}}"',
+                  })}
+                </p>
+              )}
             </div>
           </div>
         )}
@@ -1662,6 +1673,7 @@ export function OrdersPage() {
     </div>
   );
 }
+
 
 
 

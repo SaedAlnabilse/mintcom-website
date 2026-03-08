@@ -1,4 +1,4 @@
-import { Search, ArrowUpDown } from 'lucide-react';
+import { Search, ArrowUpDown, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useCurrency } from '../../../../context/CurrencyContext';
@@ -96,8 +96,18 @@ export const ItemsView = React.memo(function ItemsView({
             placeholder={t('orders.reports.items.searchPlaceholder', { type: t(`orders.reports.items.types.${itemReportTab}`) })}
             value={itemSearchQuery}
             onChange={(e) => setItemSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none transition-all"
+            className="w-full pl-12 pr-11 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none transition-all"
           />
+          {itemSearchQuery && (
+            <button
+              type="button"
+              onClick={() => setItemSearchQuery('')}
+              aria-label={t('common.clearSearch', 'Clear search')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+            >
+              <X size={12} strokeWidth={2.75} />
+            </button>
+          )}
         </div>
 
         {/* Sub-tabs based on mode */}

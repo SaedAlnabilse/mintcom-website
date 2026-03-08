@@ -13,7 +13,8 @@ import {
   Settings,
   HelpCircle,
   Star,
-  Eye
+  Eye,
+  X
 } from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
@@ -360,7 +361,7 @@ export const SupportCategoryPage = () => {
             <h1 className="text-3xl font-black mb-4">{t('support.categories.notFound')}</h1>
             <p className="text-gray-500 mb-8">{t('support.categories.notFoundDesc')}</p>
             <Link to="/support" className="text-paymint-green font-bold hover:underline">
-              ← {t('support.articles.backToHelp')}
+              Ã¢â€ Â {t('support.articles.backToHelp')}
             </Link>
           </div>
         </main>
@@ -404,8 +405,18 @@ export const SupportCategoryPage = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('support.categories.searchInCategory', { category: category.title })}
-              className="w-full pl-12 pr-4 py-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
+              className="w-full pl-12 pr-11 py-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 transition-all"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                aria-label={t('common.clearSearch', 'Clear search')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+              >
+                <X size={12} strokeWidth={2.75} />
+              </button>
+            )}
           </div>
 
           {/* Featured Articles */}
@@ -506,9 +517,9 @@ export const SupportCategoryPage = () => {
                 <div className="w-16 h-16 bg-gray-100 dark:bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <HelpCircle size={32} className="text-gray-400" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">{t('support.articles.notFound')}</h3>
+                <h3 className="text-xl font-bold mb-2">{searchQuery.trim() ? t('common.noResults') : t('support.articles.notFound')}</h3>
                 <p className="text-gray-500 dark:text-gray-400 mb-6">
-                  {t('support.articles.notFoundDesc')}
+                  {searchQuery.trim() ? t('common.noMatchingResults', { entity: 'articles', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('support.articles.notFoundDesc')}
                 </p>
                 <button
                   onClick={() => setSearchQuery('')}

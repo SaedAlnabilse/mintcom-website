@@ -25,7 +25,7 @@ export const PeakHoursView = React.memo(function PeakHoursView({ peakHours }: Pe
           </div>
           <div>
             <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('orders.reports.peakHours.title')}</h3>
-            <p className="text-xs font-bold text-gray-500 tracking-widest">{t('orders.reports.peakHours.subtitle')}</p>
+            <p className="card-subtitle">{t('orders.reports.peakHours.subtitle')}</p>
           </div>
         </div>
       </div>
@@ -98,7 +98,7 @@ export const PeakHoursView = React.memo(function PeakHoursView({ peakHours }: Pe
             </div>
             <div className="text-center">
               <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('orders.reports.peakHours.noData')}</p>
-              <p className="text-xs text-gray-500 mt-1">{t('orders.reports.peakHours.noDataDesc')}</p>
+              <p className="card-subtitle">{t('orders.reports.peakHours.noDataDesc')}</p>
             </div>
           </div>
         )}

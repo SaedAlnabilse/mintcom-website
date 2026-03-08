@@ -411,8 +411,8 @@ export function RecipesPage() {
             <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center mb-6">
               <Pizza size={32} className="text-gray-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('manufacturing.noRecipes')}</h3>
-            <p className="text-sm font-bold text-gray-500 max-w-xs">{t('manufacturing.noRecipesDesc')}</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{searchQuery.trim() ? t('common.noResults') : t('manufacturing.noRecipes')}</h3>
+            <p className="text-sm font-bold text-gray-500 max-w-xs">{searchQuery.trim() ? t('common.noMatchingResults', { entity: 'recipes', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('manufacturing.noRecipesDesc')}</p>
           </div>
         ) : (
           <div className="space-y-8">
@@ -958,5 +958,6 @@ export function RecipesPage() {
     </div>
   );
 }
+
 
 

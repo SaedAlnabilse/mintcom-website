@@ -304,6 +304,7 @@ export default function BrandTeamPage() {
     };
 
     const hasActiveFilters = searchQuery || roleFilter !== 'all' || locationFilter !== 'all';
+    const hasFilters = roleFilter !== 'all' || locationFilter !== 'all';
 
     if (isLoading) {
         return (
@@ -326,7 +327,7 @@ export default function BrandTeamPage() {
                     <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
                         <span>{t('owner.staff.subtitle')}</span>
                         {brandName && (
-                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green text-xs font-black tracking-widest border border-paymint-green/20">
+                            <span className="px-2.5 py-0.5 rounded-lg bg-paymint-green/10 text-paymint-green label-strong border border-paymint-green/20">
                                 {brandName}
                             </span>
                         )}
@@ -380,8 +381,18 @@ export default function BrandTeamPage() {
                             placeholder={t('owner.staff.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
+                            className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
                         />
+                        {searchQuery && (
+                          <button
+                            type="button"
+                            onClick={() => setSearchQuery('')}
+                            aria-label={t('common.clearSearch', 'Clear search')}
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                          >
+                            <X size={12} strokeWidth={2.75} />
+                          </button>
+                        )}
                     </div>
 
                     {/* Filter Controls */}
@@ -443,67 +454,43 @@ export default function BrandTeamPage() {
                         </div>
 
                         {/* Clear Filters */}
-                        {hasActiveFilters && (
+                        {hasFilters && (
                             <button
                                 onClick={clearFilters}
-                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-paymint-red/10 text-paymint-red text-xs font-black tracking-widest hover:bg-paymint-red/20 transition-all"
+                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-paymint-red/10 text-paymint-red label-strong hover:bg-paymint-red/20 transition-all"
                             >
                                 <X size={14} />
                                 {t('attributes.filters.reset')}
                             </button>
                         )}
-                    </div>
-                </div>
-
-                {/* Active Filters Display */}
-                {hasActiveFilters && (
-                    <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
-                        <span className="dashboard-card-label">{t('attributes.filters.activeFilters')}:</span>
-                        <div className="flex items-center gap-2 flex-wrap">
-                            {searchQuery && (
-                                <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
-                                    {t('common.search')}: "{searchQuery}"
-                                </span>
-                            )}
-                            {roleFilter !== 'all' && (
-                                <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
-                                    {t('common.role')}: {roleFilter === 'CASHIER' ? t('staff.roles.user') : roleFilter === 'ADMIN' ? t('staff.roles.admin') : t('common.all')}
-                                </span>
-                            )}
-                            {locationFilter !== 'all' && (
-                                <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
-                                    {t('common.location')}: {locations.find(l => l.id === locationFilter)?.name}
-                                </span>
-                            )}
                         </div>
-                        <span className="text-xs font-medium text-gray-400 ml-auto">
-                            {filteredEmployees.length} {t('brand.dashboard.staff')}
-                        </span>
-                    </div>
-                )}
-            </div>
+                        </div>
+                        </div>
 
-
-
-            {/* Team Display */}
-            {filteredEmployees.length === 0 ? (
-                <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
-                    <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="dashboard-card-value">{t('owner.staff.noStaffFound')}</p>
-                    {!hasActiveFilters && (
+                        {/* Team Display */}
+                        {filteredEmployees.length === 0 ? (
+                        <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
+                        <Users size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
+                        <p className="dashboard-card-value">{searchQuery.trim() ? t('common.noResults') : t('owner.staff.noStaffFound')}</p>
+                        {searchQuery.trim() && (
+                        <p className="text-sm font-bold text-gray-500 mt-1">
+                            {t('common.noMatchingResults', { entity: 'staff', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })}
+                        </p>
+                        )}
+                        {!hasActiveFilters && (
                         <p className="text-sm font-bold text-gray-500 mt-1">
                             {t('owner.staff.addStaffDesc')}
                         </p>
-                    )}
-                    {hasActiveFilters && (
+                        )}
+                        {hasFilters && (
                         <button
                             onClick={clearFilters}
                             className="mt-4 px-6 py-2.5 rounded-xl text-sm font-bold text-paymint-red hover:bg-paymint-red/10 transition-colors"
                         >
                             {t('attributes.filters.reset')}
                         </button>
-                    )}
-                </div>
+                        )}
+                        </div>
             ) : viewMode === 'grid' ? (
                 /* Grid View */
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -626,7 +613,7 @@ export default function BrandTeamPage() {
                             <div className="flex items-center gap-3 pt-6 mt-6 border-t border-gray-100 dark:border-white/5">
                                 <button
                                     onClick={() => handleEditEmployee(emp)}
-                                    className="flex-1 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-black tracking-widest hover:bg-gray-100 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-2 border border-gray-200 dark:border-white/5"
+                                    className="flex-1 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 label-strong hover:bg-gray-100 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-2 border border-gray-200 dark:border-white/5"
                                 >
                                     <Edit2 size={14} />
                                     {t('common.edit')}

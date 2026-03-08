@@ -99,10 +99,13 @@ export function DiscountsPage() {
     setSortConfig({ key, direction });
   };
 
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+
   const filteredDiscounts = useMemo(() => {
-    const result = (Array.isArray(discounts) ? discounts : []).filter(discount =>
-      discount.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const result = (Array.isArray(discounts) ? discounts : []).filter(discount => {
+      if (!normalizedSearchQuery) return true;
+      return discount.name.toLowerCase().includes(normalizedSearchQuery);
+    });
 
     // Sorting
     if (sortConfig) {
@@ -137,8 +140,7 @@ export function DiscountsPage() {
     }
 
     return result;
-  }, [discounts, searchQuery, sortConfig]);
-
+  }, [discounts, normalizedSearchQuery, sortConfig]);
   const totalPages = Math.ceil((Array.isArray(filteredDiscounts) ? filteredDiscounts : []).length / ITEMS_PER_PAGE);
 
   const paginatedDiscounts = useMemo(() => {
@@ -322,6 +324,16 @@ export function DiscountsPage() {
             <Tag className="w-10 h-10 text-gray-300 dark:text-gray-600" />
           </div>
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('common.none')}</h3>
+        </div>
+      ) : filteredDiscounts.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-24 text-center bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
+          <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-[2rem] flex items-center justify-center mb-6">
+            <Tag className="w-10 h-10 text-gray-300 dark:text-gray-600" />
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('discounts.messages.noResults', 'No results found')}</h3>
+          <p className="text-sm font-bold text-gray-500 max-w-xs">
+            {t('discounts.messages.noResultsDesc', { query: searchQuery.trim(), defaultValue: 'No discounts matching "{{query}}"' })}
+          </p>
         </div>
       ) : (
         <div className="space-y-8">

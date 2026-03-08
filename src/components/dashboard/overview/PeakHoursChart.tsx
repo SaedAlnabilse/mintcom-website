@@ -30,7 +30,7 @@ export const PeakHoursChart = React.memo(function PeakHoursChart({ peakHours }: 
             </div>
             <div>
               <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('dashboard.peakHours.title')}</h3>
-              <p className="text-xs font-bold text-gray-500 tracking-wide">{t('dashboard.peakHours.subtitle')}</p>
+              <p className="card-subtitle">{t('dashboard.peakHours.subtitle')}</p>
             </div>
           </div>
         </div>
@@ -100,7 +100,7 @@ export const PeakHoursChart = React.memo(function PeakHoursChart({ peakHours }: 
               </div>
               <div className="text-center">
                 <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('dashboard.peakHours.noData')}</p>
-                <p className="text-xs text-gray-500 mt-1">{t('dashboard.peakHours.noDataDesc')}</p>
+                <p className="card-subtitle">{t('dashboard.peakHours.noDataDesc')}</p>
               </div>
             </div>
           )}
@@ -109,3 +109,4 @@ export const PeakHoursChart = React.memo(function PeakHoursChart({ peakHours }: 
     </div>
   );
 });
+

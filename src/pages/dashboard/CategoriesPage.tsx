@@ -229,13 +229,15 @@ export function CategoriesPage() {
     return { success, failed, errors };
   }, [categories]);
 
-  const filteredCategories = useMemo(() => {
-    return (Array.isArray(categories) ? categories : []).filter(cat =>
-      cat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      cat.description?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [categories, searchQuery]);
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
 
+  const filteredCategories = useMemo(() => {
+    return (Array.isArray(categories) ? categories : []).filter(cat => {
+      if (!normalizedSearchQuery) return true;
+      return cat.name.toLowerCase().includes(normalizedSearchQuery) ||
+        cat.description?.toLowerCase().includes(normalizedSearchQuery);
+    });
+  }, [categories, normalizedSearchQuery]);
   const totalPages = Math.ceil((Array.isArray(filteredCategories) ? filteredCategories : []).length / ITEMS_PER_PAGE);
 
   const paginatedCategories = useMemo(() => {
@@ -467,10 +469,10 @@ export function CategoriesPage() {
             <Layers className="w-10 h-10 text-gray-300" />
           </div>
           <h3 className="dashboard-card-value mb-2">
-            {searchQuery ? t('categories.messages.noResults') : t('categories.messages.noCategories')}
+            {normalizedSearchQuery ? t('categories.messages.noResults') : t('categories.messages.noCategories')}
           </h3>
           <p className="text-sm font-bold text-gray-500 max-w-xs">
-            {searchQuery ? t('categories.messages.noResultsDesc', { query: searchQuery }) : t('categories.messages.noCategoriesDesc')}
+            {normalizedSearchQuery ? t('categories.messages.noResultsDesc', { query: searchQuery.trim() }) : t('categories.messages.noCategoriesDesc')}
           </p>
         </div>
       ) : (

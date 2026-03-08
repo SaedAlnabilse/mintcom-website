@@ -99,7 +99,7 @@ export function AttributeFormModal({
                         <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
                         <div>
                             <div className="flex items-center gap-2 mb-1">
-                                <span className="text-xs font-black text-gray-400 tracking-widest">{t('attributes.title')}</span>
+                                <span className="label-strong">{t('attributes.title')}</span>
                                 <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
                                 <span className="text-xs font-black text-paymint-green tracking-widest">{t('common.active')}</span>
                             </div>
@@ -126,8 +126,8 @@ export function AttributeFormModal({
                             )}
 
                             {/* Name */}
-                            <div className="space-y-3">
-                                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+                            <div className="space-y-2">
+                                <label className="label-strong block flex items-center gap-1">
                                     {t('attributes.form.nameLabel')} <span className="text-paymint-red">*</span>
                                     <QuickInfo text={t('attributes.form.nameTip')} />
                                 </label>
@@ -142,8 +142,8 @@ export function AttributeFormModal({
                             </div>
 
                             {/* Input Type Selection */}
-                            <div className="space-y-4">
-                                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+                            <div className="space-y-2">
+                                <label className="label-strong block flex items-center gap-1">
                                     {t('attributes.form.typeLabel')}
                                     <QuickInfo text={t('attributes.form.typeTip')} />
                                 </label>

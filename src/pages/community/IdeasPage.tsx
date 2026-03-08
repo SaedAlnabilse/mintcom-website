@@ -14,7 +14,8 @@ import {
   Lightbulb,
   Zap,
   Rocket,
-  Eye
+  Eye,
+  X
 } from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
@@ -149,7 +150,7 @@ export const IdeasPage = () => {
 
   const handleVote = (ideaId: number) => {
     if (!isAuthenticated) {
-      toast.error('Please log in to vote on ideas', { icon: '🔒' });
+      toast.error('Please log in to vote on ideas', { icon: 'Ã°Å¸â€â€™' });
       navigate('/login');
       return;
     }
@@ -210,7 +211,7 @@ export const IdeasPage = () => {
             ) : (
               <button
                 onClick={() => {
-                  toast.error('Please log in to submit a feature idea', { icon: '🔒' });
+                  toast.error('Please log in to submit a feature idea', { icon: 'Ã°Å¸â€â€™' });
                   navigate('/login');
                 }}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 dark:bg-white/10 text-gray-500 dark:text-gray-400 rounded-xl font-bold hover:bg-gray-300 dark:hover:bg-white/20 transition-all"
@@ -287,8 +288,18 @@ export const IdeasPage = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t('community.ideas.search_placeholder', 'Search ideas...')}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all"
+                  className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 transition-all"
                 />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    aria-label={t('common.clearSearch', 'Clear search')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                  >
+                    <X size={12} strokeWidth={2.75} />
+                  </button>
+                )}
               </div>
 
               <div className="flex gap-2 overflow-x-auto">
@@ -397,10 +408,10 @@ export const IdeasPage = () => {
                 <Lightbulb size={32} className="text-gray-400" />
               </div>
               <h3 className="text-xl font-bold mb-2">
-                {t('community.ideas.empty_title', 'No ideas found')}
+                {searchQuery.trim() ? t('common.noResults') : t('community.ideas.empty_title', 'No ideas found')}
               </h3>
               <p className="text-gray-500 dark:text-gray-400 mb-6">
-                {t('community.ideas.empty_subtitle', 'Try adjusting your search or filters')}
+                {searchQuery.trim() ? t('common.noMatchingResults', { entity: 'ideas', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('community.ideas.empty_subtitle', 'Try adjusting your search or filters')}
               </p>
               {isAuthenticated ? (
                 <Link
@@ -413,7 +424,7 @@ export const IdeasPage = () => {
               ) : (
                 <button
                   onClick={() => {
-                    toast.error('Please log in to submit a feature idea', { icon: '🔒' });
+                    toast.error('Please log in to submit a feature idea', { icon: 'Ã°Å¸â€â€™' });
                     navigate('/login');
                   }}
                   className="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 dark:bg-white/10 text-gray-500 dark:text-gray-400 rounded-xl font-bold hover:bg-gray-300 dark:hover:bg-white/20 transition-all"

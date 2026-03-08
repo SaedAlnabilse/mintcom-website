@@ -288,6 +288,7 @@ export function BrandLocationsPage() {
     };
 
     const hasActiveFilters = searchQuery || statusFilter !== 'all' || typeFilter !== 'all';
+    const hasFilters = statusFilter !== 'all' || typeFilter !== 'all';
 
     if (isLoading) {
         return (
@@ -427,8 +428,18 @@ export function BrandLocationsPage() {
                             placeholder={t('owner.locations.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
+                            className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
                         />
+                        {searchQuery && (
+                          <button
+                            type="button"
+                            onClick={() => setSearchQuery('')}
+                            aria-label={t('common.clearSearch', 'Clear search')}
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                          >
+                            <X size={12} strokeWidth={2.75} />
+                          </button>
+                        )}
                     </div>
 
                     {/* Filter Buttons */}
@@ -494,7 +505,7 @@ export function BrandLocationsPage() {
                         </div>
 
                         {/* Clear Filters */}
-                        {hasActiveFilters && (
+                        {hasFilters && (
                             <button
                                 onClick={clearFilters}
                                 className="flex items-center gap-2 px-4 py-3 rounded-xl bg-paymint-red/10 text-paymint-red text-xs font-bold tracking-wide hover:bg-paymint-red/20 transition-all"
@@ -505,44 +516,21 @@ export function BrandLocationsPage() {
                         )}
                     </div>
                 </div>
-
-                {/* Active Filters Display */}
-                {hasActiveFilters && (
-                    <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100 dark:border-white/5">
-                        <span className="text-xs font-bold text-gray-400 tracking-wide">{t('owner.staff.badge')}:</span>
-                        <div className="flex items-center gap-2 flex-wrap">
-                            {searchQuery && (
-                                <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
-                                    {t('common.search')}: "{searchQuery}"
-                                </span>
-                            )}
-                            {statusFilter !== 'all' && (
-                                <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
-                                    {t('owner.locations.status')}: {statusFilter}
-                                </span>
-                            )}
-                            {typeFilter !== 'all' && (
-                                <span className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-600 dark:text-gray-400">
-                                    {t('owner.locations.type')}: {typeFilter}
-                                </span>
-                            )}
-                        </div>
-                        <span className="text-xs font-medium text-gray-400 ml-auto">
-                            {filteredLocations.length} {t('common.of')} {locations.length} {t('brand.dashboard.locations')}
-                        </span>
-                    </div>
-                )}
             </div>
 
             {/* Locations Display */}
             {filteredLocations.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Store size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="text-lg font-medium text-gray-900 dark:text-white">{t('owner.locations.noLocations')}</p>
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">{searchQuery.trim() ? t('common.noResults') : t('owner.locations.noLocations')}</p>
                     <p className="text-sm text-gray-500 mt-1">
-                        {hasActiveFilters ? t('brand.dashboard.adjustFilters') : t('brand.dashboard.addLocationsDesc')}
+                        {searchQuery.trim()
+                            ? t('common.noMatchingResults', { entity: 'locations', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })
+                            : hasActiveFilters
+                                ? t('brand.dashboard.adjustFilters')
+                                : t('brand.dashboard.addLocationsDesc')}
                     </p>
-                    {hasActiveFilters && (
+                    {hasFilters && (
                         <button
                             onClick={clearFilters}
                             className="mt-4 px-6 py-2 rounded-xl bg-paymint-green text-black text-sm font-bold hover:bg-emerald-400 transition-all"

@@ -287,8 +287,18 @@ export function ActivityLogsPage() {
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
               placeholder={t('activity.searchPlaceholder')}
-              className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+              className="w-full pl-11 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => { setSearchQuery(''); setPage(1); }}
+                aria-label={t('common.clearSearch', 'Clear search')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+              >
+                <X size={12} strokeWidth={2.75} />
+              </button>
+            )}
           </div>
 
           <div className="flex flex-col md:flex-row items-center gap-4 w-full xl:w-auto">
@@ -378,7 +388,20 @@ export function ActivityLogsPage() {
                   <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center">
                     <History size={24} className="text-gray-300" />
                   </div>
-                  <p className="text-gray-500 font-bold text-xs tracking-widest">{t('activity.noLogs')}</p>
+                  {searchQuery.trim() ? (
+                    <>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('common.noResults')}</h3>
+                      <p className="text-sm font-bold text-gray-500">
+                        {t('common.noMatchingResults', {
+                          entity: 'logs',
+                          query: searchQuery.trim(),
+                          defaultValue: 'No {{entity}} matching "{{query}}"',
+                        })}
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-gray-500 font-bold text-xs tracking-widest">{t('activity.noLogs')}</p>
+                  )}
                 </div>
               </div>
             ) : (
@@ -458,7 +481,20 @@ export function ActivityLogsPage() {
                         <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center">
                           <History size={24} className="text-gray-300" />
                         </div>
-                        <p className="text-gray-500 font-bold text-xs tracking-widest">{t('activity.noLogs')}</p>
+                        {searchQuery.trim() ? (
+                    <>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('common.noResults')}</h3>
+                      <p className="text-sm font-bold text-gray-500">
+                        {t('common.noMatchingResults', {
+                          entity: 'logs',
+                          query: searchQuery.trim(),
+                          defaultValue: 'No {{entity}} matching "{{query}}"',
+                        })}
+                      </p>
+                    </>
+                  ) : (
+                    <p className="text-gray-500 font-bold text-xs tracking-widest">{t('activity.noLogs')}</p>
+                  )}
                       </div>
                     </td>
                   </tr>

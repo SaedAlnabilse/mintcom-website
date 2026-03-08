@@ -14,7 +14,8 @@ import {
     ExternalLink,
     Settings,
     Eye,
-    List
+    List,
+  X
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { CustomSelect } from '../../components/CustomSelect';
@@ -235,8 +236,18 @@ export function OwnerEstablishmentsPage() {
                             placeholder={t('owner.locations.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
+                            className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
                         />
+                        {searchQuery && (
+                          <button
+                            type="button"
+                            onClick={() => setSearchQuery('')}
+                            aria-label={t('common.clearSearch', 'Clear search')}
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                          >
+                            <X size={12} strokeWidth={2.75} />
+                          </button>
+                        )}
                     </div>
 
                     {/* Filter Controls */}
@@ -281,9 +292,9 @@ export function OwnerEstablishmentsPage() {
             {filteredEstablishments.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1E293B] rounded-2xl border border-dashed border-gray-200 dark:border-white/10">
                     <Store size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
-                    <p className="text-xl font-bold text-gray-900 dark:text-white">{t('owner.locations.noLocations')}</p>
+                    <p className="text-xl font-bold text-gray-900 dark:text-white">{searchQuery.trim() ? t('common.noResults') : t('owner.locations.noLocations')}</p>
                     <p className="text-sm font-bold text-gray-500 mt-1">
-                        {t('owner.locations.addFirstLocation')}
+                        {searchQuery.trim() ? t('common.noMatchingResults', { entity: 'locations', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' }) : t('owner.locations.addFirstLocation')}
                     </p>
                 </div>
             ) : viewMode === 'grid' ? (
@@ -482,7 +493,7 @@ export function OwnerEstablishmentsPage() {
                     </div>
 
                     {/* Desktop Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 text-xs font-black text-gray-400 tracking-widest uppercase">
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 label-strong uppercase">
                         <div className="col-span-3">{t('owner.locations.title')}</div>
                         <div className="col-span-2">{t('owner.locations.type')}</div>
                         <div className="col-span-2">{t('owner.locations.status')}</div>

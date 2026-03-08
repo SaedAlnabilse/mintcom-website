@@ -517,15 +517,15 @@ export function ProductFormModal({
             </div>
 
             {/* Header */}
-            <div className="flex items-center justify-between p-6 sm:p-8 pb-4 relative isolate">
+            <div className="flex items-center justify-between px-6 sm:px-8 pt-6 sm:pt-8 pb-0 sm:pb-0 relative isolate">
               <div className="absolute top-0 right-0 w-48 h-48 bg-paymint-green/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-black text-gray-400 tracking-widest">{t('products.title')}</span>
+                  <span className="label-strong">{t('products.title')}</span>
                   <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
                   <span className="text-xs font-black text-paymint-green tracking-widest">{t('common.active')}</span>
                 </div>
-                <h2 className="text-2xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight">
+                <h2 className="text-2xl font-outfit font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
                   {initialData?.id ? t('products.editProduct') : t('products.newProduct')}
                 </h2>
               </div>
@@ -538,8 +538,8 @@ export function ProductFormModal({
               </button>
             </div>
 
-            <div className="overflow-y-auto p-4 sm:p-8 pt-2 custom-scrollbar flex-1 pb-safe" ref={scrollRef}>
-              <form id="product-form" onSubmit={handleSubmit} className="space-y-8">
+            <div className="overflow-y-auto px-4 sm:px-8 pt-6 sm:pt-6 custom-scrollbar flex-1 pb-safe" ref={scrollRef}>
+              <form id="product-form" onSubmit={handleSubmit} className="space-y-6">
                 {/* Error Banner */}
                 {Object.keys(errors).length > 0 && (
                   <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
@@ -549,8 +549,8 @@ export function ProductFormModal({
                 )}
 
                 {/* Name */}
-                <div className="space-y-3">
-                  <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+                <div className="space-y-2">
+                  <label className="label-strong block flex items-center gap-1">
                     {t('products.form.nameLabel')} <span className="text-paymint-red">*</span>
                     <QuickInfo text={t('products.form.nameTip')} />
                   </label>
@@ -650,8 +650,8 @@ export function ProductFormModal({
                   <div className={`grid grid-cols-1 ${canViewCosts ? 'md:grid-cols-2' : ''} gap-6`}>
                     {/* Cost Price */}
                     {canViewCosts && (
-                      <div className="space-y-3">
-                        <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+                      <div className="space-y-2">
+                        <label className="label-strong block flex items-center gap-1">
                           {t('products.form.costLabel')}
                           <QuickInfo text={t('products.form.costTip')} />
                         </label>
@@ -671,8 +671,8 @@ export function ProductFormModal({
                     )}
 
                     {/* Retail Price (Total) */}
-                    <div className="space-y-3">
-                      <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+                    <div className="space-y-2">
+                      <label className="label-strong block flex items-center gap-1">
                         {t('products.form.priceLabel')} <span className="text-paymint-red">*</span>
                         <QuickInfo text={t('products.form.priceTip')} />
                       </label>
@@ -755,9 +755,9 @@ export function ProductFormModal({
                 </div>
 
                 {/* Description */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <div className="flex items-center justify-between px-1">
-                    <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+                    <label className="label-strong block flex items-center gap-1">
                       {t('products.form.descriptionLabel')}
                       <QuickInfo text={t('products.form.descriptionTip')} />
                     </label>
@@ -775,8 +775,8 @@ export function ProductFormModal({
                 </div>
 
                 {/* Category */}
-                <div className="relative space-y-3" ref={categoryRef}>
-                  <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+                <div className="relative space-y-2" ref={categoryRef}>
+                  <label className="label-strong block flex items-center gap-1">
                     {t('products.form.categoryLabel')} <span className="text-paymint-red">*</span>
                     <QuickInfo text={t('products.form.categoryTip')} />
                   </label>
@@ -814,9 +814,20 @@ export function ProductFormModal({
                               value={categorySearchQuery}
                               onChange={(e) => setCategorySearchQuery(e.target.value)}
                               placeholder={t('products.form.filterCategories')}
-                              className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none transition-all"
+                              className="w-full pl-9 pr-11 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none transition-all"
                               onClick={(e) => e.stopPropagation()}
                             />
+                            {categorySearchQuery && (
+                              <button
+                                type="button"
+                                onClick={() => setCategorySearchQuery('')}
+                                aria-label={t('common.clearSearch', 'Clear search')}
+                                className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                              >
+                                <X size={12} strokeWidth={2.75} />
+                              </button>
+                            )}
+
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
                           </div>
                         </div>
@@ -880,8 +891,8 @@ export function ProductFormModal({
                 </div>
 
                 {/* Add-ons (Attributes) */}
-                <div className="relative space-y-3" ref={addonsRef}>
-                  <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+                <div className="relative space-y-2" ref={addonsRef}>
+                  <label className="label-strong block flex items-center gap-1">
                     {t('products.form.addonsLabel')}
                     <QuickInfo text={t('products.form.addonsTip')} />
                   </label>
@@ -940,9 +951,20 @@ export function ProductFormModal({
                               value={addonsSearchQuery}
                               onChange={(e) => setAddonsSearchQuery(e.target.value)}
                               placeholder={t('products.form.searchAddons')}
-                              className="w-full pl-9 pr-4 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+                              className="w-full pl-9 pr-11 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
                               onClick={(e) => e.stopPropagation()}
                             />
+                            {addonsSearchQuery && (
+                              <button
+                                type="button"
+                                onClick={() => setAddonsSearchQuery('')}
+                                aria-label={t('common.clearSearch', 'Clear search')}
+                                className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                              >
+                                <X size={12} strokeWidth={2.75} />
+                              </button>
+                            )}
+
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
                           </div>
                         </div>
@@ -1064,8 +1086,8 @@ export function ProductFormModal({
                         </label>
                       </div>
 
-                      <div className="space-y-3">
-                        <label className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center justify-center gap-1">
+                      <div className="space-y-2">
+                        <label className="label-strong flex items-center justify-center gap-1">
                           <span className="text-paymint-green text-sm">&bull;</span> {t('products.form.inventory.quantity')}
                           <QuickInfo text={t('products.form.inventory.quantityTip')} />
                         </label>
@@ -1082,8 +1104,8 @@ export function ProductFormModal({
                       </div>
 
                       <div className="grid grid-cols-2 gap-6">
-                        <div className="space-y-3">
-                          <label className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center justify-center gap-1">
+                        <div className="space-y-2">
+                          <label className="label-strong flex items-center justify-center gap-1">
                             <span className="text-yellow-500 text-sm">&bull;</span> {t('products.form.inventory.low')}
                           </label>
                           <input
@@ -1094,8 +1116,8 @@ export function ProductFormModal({
                             className={`w-full bg-white dark:bg-black/20 border ${errors.lowStockYellow ? 'border-paymint-red ring-2 ring-paymint-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl px-5 py-3 text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-600 text-center focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all shadow-sm`}
                           />
                         </div>
-                        <div className="space-y-3">
-                          <label className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center justify-center gap-1">
+                        <div className="space-y-2">
+                          <label className="label-strong flex items-center justify-center gap-1">
                             <span className="text-paymint-red text-sm">&bull;</span> {t('products.form.inventory.veryLow')}
                           </label>
                           <input
@@ -1186,7 +1208,4 @@ export function ProductFormModal({
     document.body
   );
 }
-
-
-
 

@@ -16,7 +16,8 @@ import {
   Award,
   ChevronRight,
   Heart,
-  MessageSquare
+  MessageSquare,
+  X
 } from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
@@ -123,8 +124,18 @@ export const CommunityPage = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('community.hub.search_placeholder', 'Search discussions, ideas, or guides...')}
-                className="w-full pl-16 pr-6 py-5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-lg font-medium focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 shadow-xl shadow-gray-200/50 dark:shadow-none transition-all"
+                className="w-full pl-16 pr-14 py-5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-lg font-medium focus:outline-none focus:ring-2 focus:ring-PayMint-green/50 shadow-xl shadow-gray-200/50 dark:shadow-none transition-all"
               />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  aria-label={t('common.clearSearch', 'Clear search')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                >
+                  <X size={12} strokeWidth={2.75} />
+                </button>
+              )}
             </div>
           </motion.div>
         </div>
@@ -427,7 +438,7 @@ export const CommunityPage = () => {
                     <>
                       <button
                         onClick={() => {
-                          toast.error('Please log in to start a discussion', { icon: '🔒' });
+                          toast.error('Please log in to start a discussion', { icon: 'Ã°Å¸â€â€™' });
                           navigate('/login');
                         }}
                         className="inline-flex items-center gap-2 px-8 py-4 bg-white text-purple-600 rounded-xl font-bold hover:opacity-90 transition-all"
@@ -437,7 +448,7 @@ export const CommunityPage = () => {
                       </button>
                       <button
                         onClick={() => {
-                          toast.error('Please log in to share an idea', { icon: '🔒' });
+                          toast.error('Please log in to share an idea', { icon: 'Ã°Å¸â€â€™' });
                           navigate('/login');
                         }}
                         className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-all border border-white/20"

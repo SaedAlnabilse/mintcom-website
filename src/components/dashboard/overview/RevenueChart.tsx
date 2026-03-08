@@ -98,12 +98,14 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
       <div className="absolute top-0 end-0 w-64 h-64 bg-paymint-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-6">
-          <div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <TrendingUp className="text-paymint-green" size={20} />
-              {viewMode === 'current_shift' ? t('dashboard.revenueChart.currentTitle') : viewMode === 'previous_shift' ? t('dashboard.revenueChart.previousTitle') : t('dashboard.revenueChart.last24hTitle')}
-            </h3>
-            <p className="text-xs text-gray-500 mt-1">{t('dashboard.revenueChart.subtitle')}</p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-paymint-green/10 flex items-center justify-center text-paymint-green transition-transform duration-300">
+              <TrendingUp size={20} />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">{viewMode === 'current_shift' ? t('dashboard.revenueChart.currentTitle') : viewMode === 'previous_shift' ? t('dashboard.revenueChart.previousTitle') : t('dashboard.revenueChart.last24hTitle')}</h3>
+              <p className="card-subtitle">{t('dashboard.revenueChart.subtitle')}</p>
+            </div>
           </div>
           <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
             <Activity size={12} className="text-paymint-green" />

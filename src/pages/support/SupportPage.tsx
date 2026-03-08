@@ -15,7 +15,8 @@ import {
   Clock,
   Eye,
   FileText,
-  Download
+  Download,
+  X
 } from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
@@ -157,8 +158,18 @@ export const SupportPage = () => {
                 onFocus={() => setIsSearchFocused(true)}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('support.hero.searchPlaceholder')}
-                className="w-full pl-16 pr-6 py-5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-lg font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 shadow-xl shadow-gray-200/50 dark:shadow-none transition-all"
+                className="w-full pl-16 pr-14 py-5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-lg font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/50 shadow-xl shadow-gray-200/50 dark:shadow-none transition-all"
               />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  aria-label={t('common.clearSearch', 'Clear search')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                >
+                  <X size={12} strokeWidth={2.75} />
+                </button>
+              )}
               
               {/* Search Suggestions Dropdown */}
               <AnimatePresence>
@@ -198,7 +209,7 @@ export const SupportPage = () => {
                       <div className="px-6 py-10 text-center">
                         <Search className="mx-auto text-gray-300 dark:text-gray-600 mb-3" size={32} />
                         <p className="text-gray-500 dark:text-gray-400 font-medium">
-                          {t('support.articles.notFoundDesc', 'No articles found matching your search.')}
+                          {t('common.noMatchingResults', { entity: 'articles', query: searchQuery.trim(), defaultValue: 'No {{entity}} matching "{{query}}"' })}
                         </p>
                       </div>
                     )}

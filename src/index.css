@@ -15,6 +15,10 @@
    Matched to POS App Design System
    ============================================ */
 
+:root {
+  --label-font-size: 13px;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -161,7 +165,8 @@
 
   /* Standardized Label Strong - Replaces "text-xs font-black tracking-widest" */
   .label-strong {
-    @apply text-label text-gray-400 font-black tracking-widest uppercase;
+    font-size: var(--label-font-size);
+    @apply text-gray-400 font-black tracking-widest uppercase;
   }
   /* Standardized Subtitle */
   .text-subtitle {
@@ -170,6 +175,10 @@
 
   .dashboard-subtitle {
     @apply text-sm sm:text-base text-gray-500 dark:text-gray-400 font-medium;
+  }
+
+  .card-subtitle {
+    @apply text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed;
   }
   /* Card Labels - Used for stat card labels */
   .card-label {
@@ -288,6 +297,30 @@
 
   .popup-surface {
     @apply font-sans text-text-primary dark:text-paymint-text;
+  }
+  .popup-surface :where(
+    button,
+    label,
+    p,
+    span,
+    div,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    small,
+    strong,
+    th,
+    td,
+    a
+  ) {
+    text-transform: none !important;
+  }
+
+  .popup-surface [class*="tracking-"] {
+    letter-spacing: normal !important;
   }
 
   .popup-surface button {
@@ -650,6 +683,10 @@ body.app-loading #global-blocking-overlay {
 .animate-bounce-subtle {
   animation: bounce-subtle 3s ease-in-out infinite;
 }
+
+
+
+
 
 
 

@@ -31,6 +31,7 @@ export const CommunityHubPage = () => {
     const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
+    const [searchQuery, setSearchQuery] = useState('');
 
     const handleAuthRequired = (action: string) => {
         if (!isAuthenticated) {
@@ -194,8 +195,20 @@ export const CommunityHubPage = () => {
                             <input
                                 type="text"
                                 placeholder="Search topics, posts, or users..."
-                                className="w-full bg-gray-100 dark:bg-white/5 border-none rounded-xl py-2.5 pl-11 pr-4 font-medium focus:ring-2 focus:ring-PayMint-green/50 transition-all"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full bg-gray-100 dark:bg-white/5 border-none rounded-xl py-2.5 pl-11 pr-12 font-medium focus:ring-2 focus:ring-PayMint-green/50 transition-all"
                             />
+                            {searchQuery && (
+                                <button
+                                    type="button"
+                                    onClick={() => setSearchQuery('')}
+                                    aria-label={t('common.clearSearch', 'Clear search')}
+                                    className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                >
+                                    <X size={12} strokeWidth={2.75} />
+                                </button>
+                            )}
                         </div>
                     </div>
 
@@ -394,3 +407,4 @@ export const CommunityHubPage = () => {
         </div>
     );
 };
+

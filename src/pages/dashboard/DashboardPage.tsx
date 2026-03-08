@@ -578,7 +578,7 @@ export const DashboardPage = () => {
           </div>
 
           {/* View Mode Info Bar */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-sm shadow-gray-200/70 dark:shadow-black/20 ring-1 ring-gray-200/60 dark:ring-white/5">
             <div className="flex items-center gap-3">
               {currentViewModeInfo?.icon && (
                 <span className="text-paymint-green">{currentViewModeInfo.icon}</span>

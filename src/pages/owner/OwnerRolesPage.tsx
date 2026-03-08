@@ -2,12 +2,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
-  Search,
   Plus,
   Shield,
   Edit2,
   Trash2,
-  XCircle,
   UserCheck,
   Globe,
   ArrowUpDown,
@@ -18,7 +16,7 @@ import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { CustomRoleFormModal } from '../../components/CustomRoleFormModal';
-import { Pagination } from '../../components/ui';
+import { Pagination, SearchInput } from '../../components/ui';
 import { getLocalizedRoleName } from '../../utils/roleNames';
 
 interface CustomRole {
@@ -240,24 +238,13 @@ export function OwnerRolesPage() {
       {/* Filters & Search */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="relative flex-1 max-w-md">
-          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder={t('owner.roles.searchPlaceholder')}
+          <SearchInput
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
-            className="w-full pl-11 pr-4 py-2.5 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green transition-all"
+            onClear={() => { setSearchQuery(''); setCurrentPage(1); }}
+            placeholder={t('owner.roles.searchPlaceholder')}
           />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 dark:hover:bg-white/10 rounded-md transition-colors"
-            >
-              <XCircle size={14} className="text-gray-400" />
-            </button>
-          )}
         </div>
-
         {/* View Mode Toggle */}
         <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[44px]">
           <button
@@ -337,7 +324,7 @@ export function OwnerRolesPage() {
                   {/* Stats */}
                   <div className="grid grid-cols-2 gap-3 mb-6 relative z-10">
                     <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl">
-                      <span className="text-xs font-black text-gray-400 tracking-widest block mb-2">{t('owner.roles.permissions')}</span>
+                      <span className="label-strong block mb-2">{t('owner.roles.permissions')}</span>
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-paymint-green"></span>
@@ -350,7 +337,7 @@ export function OwnerRolesPage() {
                       </div>
                     </div>
                     <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl">
-                      <span className="text-xs font-black text-gray-400 tracking-widest block mb-2">{t('owner.roles.scope')}</span>
+                      <span className="label-strong block mb-2">{t('owner.roles.scope')}</span>
                       <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 border border-gray-200 dark:border-white/10 text-xs font-black tracking-wide">
                         <Globe size={10} />
                         {t('owner.roles.global')}
@@ -431,7 +418,7 @@ export function OwnerRolesPage() {
                 <thead className="bg-gray-50 dark:bg-white/[0.02]">
                   <tr className="border-b border-gray-200 dark:border-white/5">
                     <th
-                      className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                      className="px-6 py-4 text-left label-strong cursor-pointer hover:text-paymint-green transition-colors"
                       onClick={() => handleSort('name')}
                     >
                       <div className="flex items-center gap-1">
@@ -440,7 +427,7 @@ export function OwnerRolesPage() {
                       </div>
                     </th>
                     <th
-                      className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                      className="px-6 py-4 text-left label-strong cursor-pointer hover:text-paymint-green transition-colors"
                       onClick={() => handleSort('baseRole')}
                     >
                       <div className="flex items-center gap-1">
@@ -448,9 +435,9 @@ export function OwnerRolesPage() {
                         {sortConfig?.key === 'baseRole' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest">{t('staff.form.accessLabel')}</th>
+                    <th className="px-6 py-4 text-left label-strong">{t('staff.form.accessLabel')}</th>
                     <th
-                      className="px-6 py-4 text-left text-xs font-black text-gray-400 tracking-widest cursor-pointer hover:text-paymint-green transition-colors"
+                      className="px-6 py-4 text-left label-strong cursor-pointer hover:text-paymint-green transition-colors"
                       onClick={() => handleSort('createdAt')}
                     >
                       <div className="flex items-center gap-1">
@@ -458,7 +445,7 @@ export function OwnerRolesPage() {
                         {sortConfig?.key === 'createdAt' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                       </div>
                     </th>
-                    <th className="px-6 py-4 text-center text-xs font-black text-gray-400 tracking-widest">{t('common.actions')}</th>
+                    <th className="px-6 py-4 text-center label-strong">{t('common.actions')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-white/5">

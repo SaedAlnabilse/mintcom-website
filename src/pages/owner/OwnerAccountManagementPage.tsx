@@ -587,7 +587,7 @@ export function OwnerAccountManagementPage() {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-gray-400 tracking-widest flex items-center gap-2">
+                                    <label className="label-strong flex items-center gap-2">
                                         <User size={12} />
                                         Full Name
                                     </label>
@@ -616,7 +616,7 @@ export function OwnerAccountManagementPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-gray-400 tracking-widest flex items-center gap-2">
+                                    <label className="label-strong flex items-center gap-2">
                                         <Mail size={12} />
                                         Email
                                     </label>
@@ -644,7 +644,7 @@ export function OwnerAccountManagementPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-xs font-black text-gray-400 tracking-widest flex items-center gap-2">
+                                    <label className="label-strong flex items-center gap-2">
                                         <Calendar size={12} />
                                         Joined
                                     </label>
@@ -658,7 +658,7 @@ export function OwnerAccountManagementPage() {
                             {profileCompletion < 100 && (
                                 <div className="mt-6 pt-6 border-t border-gray-100 dark:border-white/[0.05]">
                                     <div className="flex items-center justify-between mb-2">
-                                        <span className="text-xs font-black text-gray-400 tracking-widest">Profile Completion</span>
+                                        <span className="label-strong">Profile Completion</span>
                                         <span className="text-sm font-bold text-paymint-green">{profileCompletion}%</span>
                                     </div>
                                     <div className="h-2 bg-gray-100 dark:bg-white/[0.05] rounded-full overflow-hidden">
@@ -868,7 +868,7 @@ export function OwnerAccountManagementPage() {
                                                 </div>
 
                                                 <div className="mt-5 p-4 bg-white dark:bg-[#020617] rounded-xl border border-gray-200 dark:border-white/[0.05] group-hover:border-purple-500/20 transition-colors">
-                                                    <label className="text-xs font-black text-gray-400 tracking-widest mb-2 flex items-center gap-1.5">
+                                                    <label className="label-strong mb-2 flex items-center gap-1.5">
                                                         <Key size={10} />
                                                         {t('owner.account.brandLoginId')}
                                                     </label>
@@ -1340,7 +1340,7 @@ export function OwnerAccountManagementPage() {
 
                                 <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/[0.05] overflow-hidden">
                                     <div className="px-4 py-3 border-b border-gray-100 dark:border-white/[0.05] bg-gray-100/50 dark:bg-white/[0.02]">
-                                        <p className="text-xs font-black text-gray-400 tracking-widest">{t('owner.account.activeEstBlockModal.activeLocations')}</p>
+                                        <p className="label-strong">{t('owner.account.activeEstBlockModal.activeLocations')}</p>
                                     </div>
                                     <div className="max-h-40 overflow-y-auto p-2 space-y-1">
                                         {activeBlockingEsts.map((est) => {

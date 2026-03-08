@@ -177,7 +177,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                 <TrendingUp className="text-paymint-green" size={20} />
                 {t('orders.reports.sales.revenueStats')}
               </h3>
-              <p className="text-xs text-gray-500 mt-1">{t('orders.reports.sales.performance')}</p>
+              <p className="card-subtitle">{t('orders.reports.sales.performance')}</p>
             </div>
             <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
               <Activity size={12} className="text-paymint-green" />
@@ -264,7 +264,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                       </div>
                       <div className="text-center">
                         <p className="text-sm font-bold text-gray-900 dark:text-white tracking-wide">{t('orders.reports.sales.noRevenue')}</p>
-                        <p className="text-xs text-gray-500 mt-1">{t('orders.reports.sales.noRevenueDesc')}</p>
+                        <p className="card-subtitle">{t('orders.reports.sales.noRevenueDesc')}</p>
                       </div>
                     </div>
                   );
@@ -398,7 +398,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
               </div>
               <div>
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('orders.reports.sales.paymentMethods')}</h3>
-                <p className="text-xs font-bold text-gray-500 tracking-wide">{t('orders.reports.sales.breakdown')}</p>
+                <p className="card-subtitle">{t('orders.reports.sales.breakdown')}</p>
               </div>
             </div>
             <button

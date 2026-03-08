@@ -16,7 +16,8 @@ import {
     Upload,
     ArrowUpDown,
     AlertCircle,
-    Search
+    Search,
+    X
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -467,14 +468,14 @@ export function ProductsPage() {
         }
 
         // Filter by Search Query
-        if (searchQuery) {
-            const query = searchQuery.toLowerCase();
+        const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+        if (normalizedSearchQuery) {
+            const query = normalizedSearchQuery;
             result = result.filter(p =>
                 p.name.toLowerCase().includes(query) ||
                 (p.description && p.description.toLowerCase().includes(query))
             );
         }
-
         // Filter by Stock Status
         if (stockFilter !== 'all') {
             result = result.filter(p => {
@@ -709,9 +710,19 @@ export function ProductsPage() {
                                                 value={categorySearchQuery}
                                                 onChange={(e) => setCategorySearchQuery(e.target.value)}
                                                 onClick={(e) => e.stopPropagation()}
-                                                className="w-full pl-8 pr-3 py-1.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg text-xs font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green"
+                                                className="w-full pl-8 pr-9 py-1.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg text-xs font-medium focus:outline-none focus:ring-2 focus:ring-paymint-green/20 focus:border-paymint-green"
                                                 autoFocus
                                             />
+                                            {categorySearchQuery && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setCategorySearchQuery('')}
+                                                    aria-label={t('common.clearSearch', 'Clear search')}
+                                                    className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                                                >
+                                                    <X size={11} strokeWidth={2.75} />
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="max-h-60 overflow-y-auto custom-scrollbar p-1.5 space-y-1">
@@ -1081,5 +1092,4 @@ export function ProductsPage() {
 
     );
 }
-
 

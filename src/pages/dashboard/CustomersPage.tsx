@@ -370,15 +370,27 @@ export function CustomersPage() {
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
               <User size={32} className="sm:w-10 sm:h-10 text-gray-300" />
             </div>
-            <h3 className="dashboard-card-value mb-2">{t('customers.messages.noCustomers')}</h3>
-            <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto mb-8">{t('customers.messages.noCustomersDesc')}</p>
-            <button
-              onClick={() => { setEditingCustomer(null); reset({ name: '', phone: '', email: '', address: '', notes: '' }); setShowModal(true); }}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
-            >
-              <Plus size={18} />
-              <span>{t('customers.addCustomer')}</span>
-            </button>
+            <h3 className="dashboard-card-value mb-2">
+              {searchQuery.trim() ? t('common.noResults') : t('customers.messages.noCustomers')}
+            </h3>
+            <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto mb-8">
+              {searchQuery.trim()
+                ? t('common.noMatchingResults', {
+                    entity: 'customers',
+                    query: searchQuery.trim(),
+                    defaultValue: 'No {{entity}} matching "{{query}}"',
+                  })
+                : t('customers.messages.noCustomersDesc')}
+            </p>
+            {!searchQuery.trim() && (
+              <button
+                onClick={() => { setEditingCustomer(null); reset({ name: '', phone: '', email: '', address: '', notes: '' }); setShowModal(true); }}
+                className="flex items-center gap-2 px-6 py-3 rounded-xl bg-paymint-green text-black font-bold text-sm hover:bg-emerald-400 transition-all shadow-sm"
+              >
+                <Plus size={18} />
+                <span>{t('customers.addCustomer')}</span>
+              </button>
+            )}
           </div>
         ) : (
           <>
@@ -861,6 +873,7 @@ export function CustomersPage() {
     </div>
   );
 }
+
 
 
 

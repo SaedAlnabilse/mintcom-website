@@ -274,8 +274,8 @@
       "welcomeBack": "Welcome Back"
     },
     "logout": {
-      "message": "You have been logged out successfully",
       "loggingOut": "Logging out...",
+      "message": "You have been logged out successfully",
       "seeYou": "See you next time!"
     },
     "passwordReset": {
@@ -422,11 +422,13 @@
       "adjustFilters": "Adjust Filters",
       "avgOrderValue": "Avg. Order Value",
       "consolidatedPerformance": "Consolidated Performance",
+      "convertedNote": "Converted from multiple currencies",
       "dissolveLocation": "Remove Location",
       "failedToLoad": "Failed to load dashboard data",
       "goTo": "Go to {{name}}",
       "liveData": "Live Data",
       "loading": "Loading dashboard...",
+      "localRevenue": "Local",
       "locationPerformance": "Location Performance",
       "locations": "Locations",
       "manageLocationsDesc": "Manage your store locations and their settings.",
@@ -444,6 +446,7 @@
       "salesByCategory": "Sales by Category",
       "share": "Share",
       "staff": "Staff",
+      "standardizedInUSD": "Standardized in USD",
       "teamSize": "Team Size",
       "title": "Brand Dashboard",
       "totalOrders": "Total Orders",
@@ -451,10 +454,7 @@
       "updatedNow": "Updated just now",
       "viewAll": "View All",
       "viewAllLocations": "View All Locations",
-      "viewDashboard": "View Dashboard",
-      "standardizedInUSD": "Standardized in USD",
-      "convertedNote": "Converted from multiple currencies",
-      "localRevenue": "Local"
+      "viewDashboard": "View Dashboard"
     },
     "description": "The ultimate 360° point-of-sale solution designed for modern growing businesses.",
     "menu": {
@@ -503,6 +503,7 @@
       "loading": "Loading data...",
       "noCategories": "No categories found",
       "noCategoriesDesc": "Create a category to organize your menu.",
+      "noMatchingResults": "No {{entity}} matching \"{{query}}\"",
       "noResults": "No results found",
       "noResultsDesc": "No categories matching \"{{query}}\"",
       "saveFailed": "Failed to save category",
@@ -550,6 +551,7 @@
         "technical": "Technical"
       },
       "needHelp": "Still need help?",
+      "noMatchingResults": "No {{entity}} matching \"{{query}}\"",
       "noResults": "No results found",
       "searchPlaceholder": "Search FAQs...",
       "subtitle": "Find answers to common questions about PayMint",
@@ -566,58 +568,6 @@
       "ask": "Ask",
       "help": "Help",
       "tasks": "Tasks"
-    },
-    "tasks": {
-      "title": "Tasks",
-      "setupGuideTitle": "Setup Guide",
-      "setupGuideSubtitle": "Set up your location step by step, then run your first test sale with confidence.",
-      "stepsCount": "{{count}} steps",
-      "aboutMinutes": "About {{minutes}} minutes",
-      "progressText": "{{done}} of {{total}} completed",
-      "markAsCompleted": "Mark as completed",
-      "completed": "Completed",
-      "profile": {
-        "title": "Complete location profile",
-        "description": "Set your store name, address, and contact details so receipts and reports are correct.",
-        "action": "Open Profile"
-      },
-      "receipt": {
-        "title": "Configure receipt layout",
-        "description": "Set logo, header, address, tax ID, and footer message exactly how customers should see it.",
-        "action": "Receipt Settings"
-      },
-      "categories": {
-        "title": "Create your first category",
-        "description": "Add a clear category like Drinks, Food, or Services before adding products.",
-        "action": "New Category"
-      },
-      "products": {
-        "title": "Add your first product",
-        "description": "Create your first sellable item with price, tax behavior, and the right category.",
-        "action": "Add Product"
-      },
-      "payments": {
-        "title": "Set payment methods",
-        "description": "Enable the payment methods your staff will use at checkout (cash, card, wallet).",
-        "action": "Payment Methods"
-      },
-      "taxes": {
-        "title": "Set tax and currency",
-        "description": "Review tax rate and currency so totals, reports, and settlements are accurate.",
-        "action": "Tax Settings"
-      },
-      "staff": {
-        "title": "Add cashier or staff account",
-        "description": "Create at least one staff account with the right role so operations can start safely.",
-        "action": "Add Staff"
-      },
-      "goLive": {
-        "title": "Install POS app and run test sale",
-        "description": "Open the launch guide, sign in on POS, and complete one test order to verify your full setup.",
-        "action": "Open Launch Guide"
-      },
-      "allDoneTitle": "All Done! 🎉",
-      "allDoneSubtitle": "Your location is fully set up and ready to go."
     },
     "navigation": {
       "takeMe": "Take me there"
@@ -643,6 +593,58 @@
       "manage_staff": "Manage staff",
       "view_orders": "View orders",
       "view_reports": "View reports"
+    },
+    "tasks": {
+      "aboutMinutes": "About {{minutes}} minutes",
+      "allDoneSubtitle": "Your location is fully set up and ready to go.",
+      "allDoneTitle": "All Done! 🎉",
+      "categories": {
+        "action": "New Category",
+        "description": "Add a clear category like Drinks, Food, or Services before adding products.",
+        "title": "Create your first category"
+      },
+      "completed": "Completed",
+      "goLive": {
+        "action": "Open Launch Guide",
+        "description": "Open the launch guide, sign in on POS, and complete one test order to verify your full setup.",
+        "title": "Install POS app and run test sale"
+      },
+      "markAsCompleted": "Mark as completed",
+      "payments": {
+        "action": "Payment Methods",
+        "description": "Enable the payment methods your staff will use at checkout (cash, card, wallet).",
+        "title": "Set payment methods"
+      },
+      "products": {
+        "action": "Add Product",
+        "description": "Create your first sellable item with price, tax behavior, and the right category.",
+        "title": "Add your first product"
+      },
+      "profile": {
+        "action": "Open Profile",
+        "description": "Set your store name, address, and contact details so receipts and reports are correct.",
+        "title": "Complete location profile"
+      },
+      "progressText": "{{done}} of {{total}} completed",
+      "receipt": {
+        "action": "Receipt Settings",
+        "description": "Set logo, header, address, tax ID, and footer message exactly how customers should see it.",
+        "title": "Configure receipt layout"
+      },
+      "setupGuideSubtitle": "Set up your location step by step, then run your first test sale with confidence.",
+      "setupGuideTitle": "Setup Guide",
+      "staff": {
+        "action": "Add Staff",
+        "description": "Create at least one staff account with the right role so operations can start safely.",
+        "title": "Add cashier or staff account"
+      },
+      "stepsCount": "{{count}} steps",
+      "taxes": {
+        "action": "Tax Settings",
+        "description": "Review tax rate and currency so totals, reports, and settlements are accurate.",
+        "title": "Set tax and currency"
+      },
+      "title": "Tasks"
     }
   },
   "common": {
@@ -761,17 +763,15 @@
     "logoAlt": "PayMint Logo",
     "logout": "Logout",
     "mo": "/mo",
-    "yr": "/yr",
-    "year": "Year",
     "month": "Month",
     "monthly": "Monthly",
-    "yearly": "Yearly",
     "more": "More",
     "na": "N/A",
     "name": "Name",
     "next": "Next",
     "no": "No",
     "noData": "No data available",
+    "noMatchingResults": "No {{entity}} matching \"{{query}}\"",
     "none": "None",
     "noOptions": "No options available",
     "noRecordsFound": "No records found",
@@ -856,7 +856,10 @@
     "website": "Website",
     "welcome": "Welcome!",
     "welcomeBack": "Welcome back!",
+    "year": "Year",
+    "yearly": "Yearly",
     "yes": "Yes",
+    "yr": "/yr",
     "zero": "0",
     "zeroDecimal": "0.00"
   },
@@ -1336,21 +1339,17 @@
       "variance": "Variance"
     },
     "title": "Dashboard",
-    "trackingPerformance": "Tracking All Business Performance",
-    "welcome": {
-      "message": "Welcome to your new dashboard for {{location}}! Let's get your location set up and ready for business.",
-      "startGuide": "Start Setup Guide"
-    },
     "tour": {
-      "tasks": {
-        "title": "Setup Tasks",
-        "desc": "Here you can track your location's setup progress. Complete these tasks to get ready for business!"
-      },
       "taskItem": {
-        "title": "First Task",
-        "desc": "Click on a task to expand it, then follow the link to complete the setup step."
+        "desc": "Click on a task to expand it, then follow the link to complete the setup step.",
+        "title": "First Task"
+      },
+      "tasks": {
+        "desc": "Here you can track your location's setup progress. Complete these tasks to get ready for business!",
+        "title": "Setup Tasks"
       }
     },
+    "trackingPerformance": "Tracking All Business Performance",
     "viewMode": {
       "currentShift": "Current Shift",
       "last24Hours": "Last 24 Hours",
@@ -1358,6 +1357,10 @@
       "showingLast24h": "Showing activity from last 24h",
       "showingLastShift": "Showing last completed shift",
       "showingSince": "Showing since {{date}}"
+    },
+    "welcome": {
+      "message": "Welcome to your new dashboard for {{location}}! Let's get your location set up and ready for business.",
+      "startGuide": "Start Setup Guide"
     }
   },
   "discounts": {
@@ -1382,6 +1385,9 @@
       "deleteConfirm": "Are you sure you want to delete \"{{name}}\"?",
       "deleted": "Discount deleted successfully",
       "loadFailed": "Failed to load discounts",
+      "noMatchingResults": "No {{entity}} matching \"{{query}}\"",
+      "noResults": "No results found",
+      "noResultsDesc": "No discounts matching \"{{query}}\"",
       "updated": "Discount updated successfully"
     },
     "newDiscount": "New Discount",
@@ -1627,25 +1633,25 @@
       "badge": "Features",
       "cards": {
         "complete": {
-          "title": "A Complete Solution — No Hidden Costs",
-          "description": "PayMint is more than a checkout system. You get a powerful reporting engine with advanced filters, staff and role management, customer profiles and loyalty programs, discounts, raw material and stock tracking, and much more—all included in one fixed monthly plan."
-        },
-        "realUsers": {
-          "title": "Designed for Real Users",
-          "description": "PayMint is built for business owners, cashiers, and managers—not tech experts. We worked closely with real users to design an intuitive experience that minimizes training time. From login to first sale in under 10 minutes."
-        },
-        "security": {
-          "title": "Enterprise-Grade Security",
-          "description": "Your data is fully encrypted, securely stored, and automatically archived. We've invested heavily in top-tier security standards to ensure your business information is protected at all times."
+          "description": "PayMint is more than a checkout system. You get a powerful reporting engine with advanced filters, staff and role management, customer profiles and loyalty programs, discounts, raw material and stock tracking, and much more—all included in one fixed monthly plan.",
+          "title": "A Complete Solution — No Hidden Costs"
         },
         "multiBranch": {
-          "title": "Multi-Branch Management",
-          "description": "Run one store or many—PayMint supports multiple merged branches or separate stores under one unified dashboard. Manage staff, products, sales, and performance across all locations from a single control panel."
+          "description": "Run one store or many—PayMint supports multiple merged branches or separate stores under one unified dashboard. Manage staff, products, sales, and performance across all locations from a single control panel.",
+          "title": "Multi-Branch Management"
+        },
+        "realUsers": {
+          "description": "PayMint is built for business owners, cashiers, and managers—not tech experts. We worked closely with real users to design an intuitive experience that minimizes training time. From login to first sale in under 10 minutes.",
+          "title": "Designed for Real Users"
+        },
+        "security": {
+          "description": "Your data is fully encrypted, securely stored, and automatically archived. We've invested heavily in top-tier security standards to ensure your business information is protected at all times.",
+          "title": "Enterprise-Grade Security"
         }
       },
-      "readMore": "Read more",
-      "readLess": "Read less",
       "liveDemo": "LIVE DEMO",
+      "readLess": "Read less",
+      "readMore": "Read more",
       "seamlessSync": "Seamless real-time synchronization across all devices",
       "seeInAction": "See PayMint in Action",
       "subtitle": "At PayMint, we believe in keeping things simple: simple onboarding, simple installation, simple setup, and simple pricing.",
@@ -1735,18 +1741,7 @@
       "watchVideo": "See how it works"
     },
     "pricing": {
-      "monthly": "MONTHLY",
-      "yearly": "YEARLY",
-      "monthlyPlan": "Monthly Plan",
-      "yearlyPlan": "Yearly Plan",
-      "perMonth": "/MONTH",
-      "perYear": "/YEAR",
-      "fullAccess": "FULL ACCESS",
-      "save": "SAVE",
       "billedAnnually": "Billed annually.",
-      "noCommitment": "No commitment.",
-      "saveAmount": "SAVE ${{amount}}",
-      "planDescription": "",
       "features": {
         "adminApp": "Access to the Admin Mobile App",
         "advancedReporting": "Advanced Reporting",
@@ -1760,6 +1755,13 @@
         "support": "Dedicated customer support",
         "unlimitedStaff": "Unlimited staff accounts"
       },
+      "fullAccess": "FULL ACCESS",
+      "monthly": "MONTHLY",
+      "monthlyPlan": "Monthly Plan",
+      "noCommitment": "No commitment.",
+      "perMonth": "/MONTH",
+      "perYear": "/YEAR",
+      "planDescription": "",
       "plans": {
         "enterprise": {
           "description": "Tailored solutions for large-scale operations.",
@@ -1796,13 +1798,21 @@
         }
       },
       "popular": "Most Popular",
+      "save": "SAVE",
       "save20": "Save 20%",
+      "saveAmount": "SAVE ${{amount}}",
       "standardPrice": "20$",
       "startFreeTrial": "Start Free Trial",
       "subtitle": "Your \"aha\" moment is just minutes away.",
-      "title": "Get Started"
+      "title": "Get Started",
+      "yearly": "YEARLY",
+      "yearlyPlan": "Yearly Plan"
     },
     "workflow": {
+      "advancedReporting": {
+        "description": "Get real-time analytics and insights across every part of your business.",
+        "title": "Advanced Reporting"
+      },
       "cloudSync": {
         "description": "Your data is always safe and synced across all your devices.",
         "title": "Cloud Sync"
@@ -1812,16 +1822,28 @@
         "title": "Live Dashboards"
       },
       "inventory": {
-        "title": "Inventory Management",
-        "description": "Track stock levels, manage raw materials, and receive low-stock alerts."
+        "description": "Track stock levels, manage raw materials, and receive low-stock alerts.",
+        "title": "Inventory Management"
       },
       "multiLocation": {
         "description": "Manage all your branches from a single unified dashboard.",
         "title": "Multi-Location"
       },
+      "pointOfSale": {
+        "description": "Create products and categories, process sales quickly and easily.",
+        "title": "Point of Sale"
+      },
+      "production": {
+        "description": "Set recipes, calculate costs, and track profit margins accurately.",
+        "title": "Production & Cost Tracking"
+      },
       "sales": {
         "description": "Process transactions in seconds with our optimized POS interface.",
         "title": "Fast Checkout"
+      },
+      "staffManagement": {
+        "description": "Add unlimited staff, assign roles, and track shifts and performance.",
+        "title": "Staff Management"
       },
       "staffRoles": {
         "description": "Assign roles and permissions to keep your team organized.",
@@ -1849,23 +1871,7 @@
       },
       "subtitle": "",
       "title": "What Do You Get for",
-      "titleHighlight": "$20 / Month?",
-      "pointOfSale": {
-        "title": "Point of Sale",
-        "description": "Create products and categories, process sales quickly and easily."
-      },
-      "staffManagement": {
-        "title": "Staff Management",
-        "description": "Add unlimited staff, assign roles, and track shifts and performance."
-      },
-      "advancedReporting": {
-        "title": "Advanced Reporting",
-        "description": "Get real-time analytics and insights across every part of your business."
-      },
-      "production": {
-        "title": "Production & Cost Tracking",
-        "description": "Set recipes, calculate costs, and track profit margins accurately."
-      }
+      "titleHighlight": "$20 / Month?"
     }
   },
   "legal": {
@@ -2424,20 +2430,20 @@
     },
     "messages": {
       "checkShiftFailed": "Failed to check shift status",
+      "deleteHeldConfirm": "Are you sure you want to permanently delete this held order? This action cannot be undone.",
+      "deleteHeldFailed": "Failed to delete held order",
+      "deleteHeldSuccess": "Held order deleted successfully",
       "loadFailed": "Failed to load orders",
       "loading": "Loading orders...",
       "noOrders": "No orders found",
+      "noRefundPermission": "You do not have permission to refund orders.",
       "noShiftFound": "No active shift found. Please start a shift first.",
       "refundConfirmMessage": "Are you sure you want to refund this order? This action cannot be undone.",
       "refundConfirmTitle": "Confirm Refund",
       "refundFailed": "Failed to process refund",
-      "noRefundPermission": "You do not have permission to refund orders.",
       "refundReasonWeb": "Refunded via web dashboard",
       "refundSuccess": "Order refunded successfully",
-      "shiftFound": "Shift found",
-      "deleteHeldConfirm": "Are you sure you want to permanently delete this held order? This action cannot be undone.",
-      "deleteHeldSuccess": "Held order deleted successfully",
-      "deleteHeldFailed": "Failed to delete held order"
+      "shiftFound": "Shift found"
     },
     "payment": {
       "all": "All Payments",
@@ -2449,8 +2455,6 @@
     },
     "period": "Period",
     "reports": {
-      "restockItems": "Restock Items",
-      "restockDescription": "Add refunded items back to available inventory",
       "cashGap": {
         "accuracyRate": "Accuracy Rate",
         "balanced": "Balanced",
@@ -2544,6 +2548,8 @@
         "revenueSelected": "Revenue (Selected Period)",
         "searchReceiptPlaceholder": "Search by Receipt #..."
       },
+      "restockDescription": "Add refunded items back to available inventory",
+      "restockItems": "Restock Items",
       "sales": {
         "breakdown": "Breakdown Chart",
         "cashManagementLog": "Cash Management Log",
@@ -2652,8 +2658,8 @@
     "status": {
       "all": "All Status",
       "completed": "Completed",
-      "paidTaxChanged": "Paid (Tax Change)",
       "onHold": "On Hold",
+      "paidTaxChanged": "Paid (Tax Change)",
       "refunded": "Refunded"
     },
     "subtitle": "Manage orders",
@@ -2840,7 +2846,7 @@
       "main": "Main",
       "managePayments": "Manage payments for {{name}}",
       "monthlyCost": "Monthly Cost",
-      "yearlyCost": "Yearly Cost",
+      "monthlyPlan": "Monthly Plan",
       "needHelp": "Need Help?",
       "nextBill": "Next Bill",
       "noBill": "No bill",
@@ -2856,8 +2862,6 @@
       "service": "Service",
       "setDefault": "Set as Default",
       "standardPlan": "Standard Plan",
-      "monthlyPlan": "Monthly Plan",
-      "yearlyPlan": "Yearly Plan",
       "status": "Status",
       "stopTrial": "Stop Trial",
       "subtitle": "Manage subscriptions and payments",
@@ -2866,7 +2870,9 @@
       },
       "title": "Billing",
       "upgrade": "Upgrade",
-      "viewDashboard": "View Dashboard"
+      "viewDashboard": "View Dashboard",
+      "yearlyCost": "Yearly Cost",
+      "yearlyPlan": "Yearly Plan"
     },
     "brands": {
       "activeBrands": "Active Brands",
@@ -3045,6 +3051,7 @@
       "brands": "Brands",
       "growBusiness": "Grow Your Business",
       "growBusinessDesc": "Expand your reach by adding more locations or managing multiple brands.",
+      "liveSystem": "Live System",
       "manageBrands": "Manage Brands",
       "managed": "Managed",
       "manageLocations": "Manage Locations",
@@ -3406,6 +3413,7 @@
       "nameRequired": "Please enter a product name first",
       "noAddons": "No add-ons.",
       "noMatches": "No Matches Found",
+      "noMatchingResults": "No {{entity}} matching \"{{query}}\"",
       "noneSelected": "None Selected",
       "noProducts": "No products found",
       "noProductsDesc": "Your inventory is empty. Start by adding your first product.",
@@ -3579,15 +3587,15 @@
       "viewReceipts": "View Receipts",
       "viewReceiptsDesc": "View all receipts and transactions"
     },
-    "validation": {
-      "atLeastOnePermission": "Please select at least one permission"
-    },
     "systemNames": {
       "backOfficeAnalyst": "Back Office Analyst",
       "cashier": "Cashier",
       "inventoryManager": "Inventory Manager",
       "operationsManager": "Operations Manager",
       "shiftSupervisor": "Shift Supervisor"
+    },
+    "validation": {
+      "atLeastOnePermission": "Please select at least one permission"
     }
   },
   "security": {
@@ -3735,9 +3743,9 @@
       "address": "Address",
       "addressPlaceholder": "Enter your business address...",
       "changeLogo": "Change Logo",
-      "deleteLogo": "Delete Logo",
       "chooseDays": "Choose your operating days",
       "comingSoon": "Coming Soon",
+      "deleteLogo": "Delete Logo",
       "email": "Email",
       "logo": "Logo",
       "name": "Name",
@@ -3955,12 +3963,12 @@
     },
     "roles": {
       "admin": "Admin",
+      "cashier": "Cashier",
       "manager": "Manager",
       "owner": "Enterprise Owner",
       "staff": "Staff",
       "standardUsers": "Standard User",
-      "user": "User",
-      "cashier": "Cashier"
+      "user": "User"
     },
     "searchPlaceholder": "Search by name or username...",
     "status": {
@@ -3979,6 +3987,25 @@
     "title": "Staff"
   },
   "support": {
+    "admin": {
+      "accessDenied": "Access Denied",
+      "accessDeniedDesc": "This area is restricted to the Paymint support team. If you believe this is an error, please contact the administrator.",
+      "adjustSearch": "Try adjusting your search or filters.",
+      "all": "All",
+      "closed": "Closed",
+      "customerLabel": "Customer",
+      "filters": "Filters",
+      "goToSupport": "Go to Support",
+      "needsReply": "Needs Reply",
+      "noTickets": "No tickets found",
+      "noTicketsYet": "No support tickets have been submitted yet.",
+      "refresh": "Refresh",
+      "searchPlaceholder": "Search by ticket ID, subject, name, or email...",
+      "subtitle": "Manage all customer support tickets",
+      "supportLabel": "Support",
+      "title": "Support Admin Portal",
+      "unknown": "Unknown"
+    },
     "articles": {
       "allSubtitle": "Browse all help articles and guides",
       "allTitle": "All Articles",
@@ -4293,6 +4320,26 @@
       "subtitle": "Can't find what you're looking for? We're here to help.",
       "title": "Contact Support"
     },
+    "genericArticle": {
+      "a1": "If you run into any issues during setup, first double-check your internet connection and ensure your app is updated to the latest version. If the problem persists, please reach out to our 24/7 support team.",
+      "a2": "Yes, most configurations can be easily reverted by returning to the settings page and restoring the default values.",
+      "bestPracticesDesc": "To get the most out of this feature, we recommend keeping your data updated regularly and training your staff on the new processes. Monitor the analytics dashboard to measure impact over time.",
+      "bestPracticesTitle": "Best Practices",
+      "faqTitle": "Troubleshooting & FAQ",
+      "overview": "Overview",
+      "p1": "This comprehensive guide will walk you through the necessary steps and best practices.",
+      "p2": "This article provides detailed instructions and insights to help you optimize your PayMint experience.",
+      "q1": "What if I encounter an error?",
+      "q2": "Can I revert my changes?",
+      "step1Desc": "Log into your PayMint dashboard and navigate to the relevant section from the main menu.",
+      "step1Label": "Step 1: Access the Module",
+      "step2Desc": "Review the available options and adjust the configurations according to your business needs.",
+      "step2Label": "Step 2: Configure Settings",
+      "step3Desc": "Always ensure you save your changes and run a quick test to confirm everything operates smoothly.",
+      "step3Label": "Step 3: Save and Verify",
+      "stepsDesc": "Follow these core steps to get started:",
+      "stepsTitle": "Step-by-Step Instructions"
+    },
     "hero": {
       "badge": "Help Center",
       "searchPlaceholder": "Search for help articles...",
@@ -4302,32 +4349,12 @@
       "titlePart2": "you?"
     },
     "manual": {
-      "title": "User Manual",
-      "subtitle": "Download the complete guide",
       "description": "Our comprehensive user manual covers everything from initial setup to advanced reporting and staff management.",
       "downloadButton": "Download PDF Manual",
       "fileSize": "57 KB",
+      "subtitle": "Download the complete guide",
+      "title": "User Manual",
       "updated": "Updated March 2024"
-    },
-    "genericArticle": {
-      "overview": "Overview",
-      "p1": "This comprehensive guide will walk you through the necessary steps and best practices.",
-      "p2": "This article provides detailed instructions and insights to help you optimize your PayMint experience.",
-      "stepsTitle": "Step-by-Step Instructions",
-      "stepsDesc": "Follow these core steps to get started:",
-      "step1Label": "Step 1: Access the Module",
-      "step1Desc": "Log into your PayMint dashboard and navigate to the relevant section from the main menu.",
-      "step2Label": "Step 2: Configure Settings",
-      "step2Desc": "Review the available options and adjust the configurations according to your business needs.",
-      "step3Label": "Step 3: Save and Verify",
-      "step3Desc": "Always ensure you save your changes and run a quick test to confirm everything operates smoothly.",
-      "bestPracticesTitle": "Best Practices",
-      "bestPracticesDesc": "To get the most out of this feature, we recommend keeping your data updated regularly and training your staff on the new processes. Monitor the analytics dashboard to measure impact over time.",
-      "faqTitle": "Troubleshooting & FAQ",
-      "q1": "What if I encounter an error?",
-      "a1": "If you run into any issues during setup, first double-check your internet connection and ensure your app is updated to the latest version. If the problem persists, please reach out to our 24/7 support team.",
-      "q2": "Can I revert my changes?",
-      "a2": "Yes, most configurations can be easily reverted by returning to the settings page and restoring the default values."
     },
     "newTicket": {
       "addFiles": "Add Files",
@@ -4375,6 +4402,7 @@
       "empty_subtitle": "Try adjusting your search or category filter.",
       "empty_title": "No results found",
       "needMoreHelp": "Need more help? Contact our support team.",
+      "noMatchingResults": "No {{entity}} matching \"{{query}}\"",
       "noResults": "No results found",
       "q1": {
         "answer": "PayMint is a comprehensive digital payment solution designed to help businesses of all sizes accept payments, manage finances, and grow. We offer a suite of tools including a payment gateway, point-of-sale systems, and detailed analytics.",
@@ -4473,25 +4501,6 @@
       "toClose": "Close Ticket",
       "updated": "Updated",
       "you": "You"
-    },
-    "admin": {
-      "title": "Support Admin Portal",
-      "subtitle": "Manage all customer support tickets",
-      "refresh": "Refresh",
-      "filters": "Filters",
-      "all": "All",
-      "closed": "Closed",
-      "searchPlaceholder": "Search by ticket ID, subject, name, or email...",
-      "noTickets": "No tickets found",
-      "noTicketsYet": "No support tickets have been submitted yet.",
-      "adjustSearch": "Try adjusting your search or filters.",
-      "needsReply": "Needs Reply",
-      "unknown": "Unknown",
-      "supportLabel": "Support",
-      "customerLabel": "Customer",
-      "accessDenied": "Access Denied",
-      "accessDeniedDesc": "This area is restricted to the Paymint support team. If you believe this is an error, please contact the administrator.",
-      "goToSupport": "Go to Support"
     }
   },
   "theme": {

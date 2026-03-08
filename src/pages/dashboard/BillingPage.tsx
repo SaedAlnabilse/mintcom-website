@@ -228,7 +228,7 @@ export function BillingPage() {
               <div className="p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-colors">
                 <p className="dashboard-card-label mb-2">{t('owner.billing.location')}</p>
                 <p className="text-xl font-bold text-white truncate max-w-[200px]">{currentEstablishment?.name}</p>
-                <p className="text-xs text-gray-500 mt-1 tracking-wide">{t('owner.billing.main')}</p>
+                <p className="card-subtitle">{t('owner.billing.main')}</p>
               </div>
             </div>
 
@@ -502,6 +502,7 @@ export function BillingPage() {
     </div>
   );
 }
+
 
 
 

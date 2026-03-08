@@ -126,8 +126,8 @@ export function DiscountFormModal({
               )}
 
               {/* Name */}
-              <div>
-                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+              <div className="space-y-2">
+                <label className="label-strong block flex items-center gap-1">
                   {t('discounts.form.nameLabel')} <span className="text-paymint-red">*</span>
                   <QuickInfo text={t('discounts.form.nameTip')} />
                 </label>
@@ -142,8 +142,8 @@ export function DiscountFormModal({
               </div>
 
               {/* Percentage */}
-              <div>
-                <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center gap-1">
+              <div className="space-y-2">
+                <label className="label-strong block flex items-center gap-1">
                   {t('discounts.form.percentageLabel')} <span className="text-paymint-red">*</span>
                   <QuickInfo text={t('discounts.form.percentageTip')} />
                 </label>

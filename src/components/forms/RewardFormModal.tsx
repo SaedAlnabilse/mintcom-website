@@ -136,18 +136,18 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
             </button>
           </div>
 
-          <form id="reward-form" onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-5 flex-1 overflow-y-auto custom-scrollbar pb-safe">
+          <form id="reward-form" onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 flex-1 overflow-y-auto custom-scrollbar pb-safe">
             {/* Error Banner */}
             {Object.keys(errors).length > 0 && (
-              <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
+              <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
                 {t('common.validationError')}
               </div>
             )}
 
             {/* Reward Type */}
-            <div>
-              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('rewards.form.typeLabel')}</label>
+            <div className="space-y-2">
+              <label className="label-strong block">{t('rewards.form.typeLabel')}</label>
               <div className="flex p-1 bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/5 relative isolate">
                 <button
                   type="button"
@@ -175,8 +175,8 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
             </div>
 
             {/* Points Required */}
-            <div>
-              <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('rewards.form.pointsCostLabel')}</label>
+            <div className="space-y-2">
+              <label className="label-strong block">{t('rewards.form.pointsCostLabel')}</label>
               <div className="relative group">
                 <input
                   type="number"
@@ -198,8 +198,8 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
             {/* Dynamic Fields - Height Stabilized */}
             <div className="min-h-[90px]">
               {type === 'DISCOUNT' ? (
-                <motion.div key="discount" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                  <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block">{t('rewards.form.discountPercentageLabel')}</label>
+                <motion.div key="discount" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-2">
+                  <label className="label-strong block">{t('rewards.form.discountPercentageLabel')}</label>
                   <div className="relative group">
                     <input
                       type="number"
@@ -216,8 +216,8 @@ export function RewardFormModal({ isOpen, onClose, onSave, initialData, categori
                   {errors.discountPercentage && <p className="mt-1 px-1 text-xs font-bold text-paymint-red">{errors.discountPercentage}</p>}
                 </motion.div>
               ) : (
-                <motion.div key="category" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                  <label className="text-xs font-black text-gray-400 tracking-widest mb-2 block flex items-center justify-between gap-1">
+                <motion.div key="category" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-2">
+                  <label className="label-strong block flex items-center justify-between gap-1">
                     <span>{t('rewards.form.categoryLabel')}</span>
                     {errors.freeCategoryId && <span className="text-paymint-red normal-case tracking-normal font-bold text-[10px]">{errors.freeCategoryId}</span>}
                   </label>
