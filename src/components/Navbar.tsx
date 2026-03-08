@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Menu, X, Laptop, LogOut, User, Headset } from 'lucide-react';
+import { Menu, X, Laptop, LogOut, User, Headset, Globe } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './Logo';
 import PaymintLeafIcon from '../assets/small-logo.svg';
@@ -87,11 +87,11 @@ export const Navbar = () => {
             {isAuthenticated ? (
               <>
                 <Link
-                  to="/portal"
+                  to="/"
                   className="inline-flex items-center gap-2 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white px-4 py-2 rounded-xl text-sm font-bold hover:text-gray-900 dark:hover:text-white"
                 >
-                  <img src={PaymintLeafIcon} className="w-4 h-4 object-contain" alt="Home" />
-                  {t('nav.home', 'Home')}
+                  <Globe size={16} />
+                  {t('nav.website', 'Website')}
                 </Link>
                 <Link
                   to="/support"
@@ -101,17 +101,24 @@ export const Navbar = () => {
                   {t('nav.support')}
                 </Link>
                 <Link
+                  to="/portal"
+                  className="inline-flex items-center gap-2 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white px-4 py-2 rounded-xl text-sm font-bold hover:text-gray-900 dark:hover:text-white"
+                >
+                  <img src={PaymintLeafIcon} className="w-4 h-4 object-contain" alt="Home" />
+                  {t('nav.home', 'Home')}
+                </Link>
+                <Link
                   to="/owner"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-paymint-green dark:bg-paymint-green text-black px-4 py-2 rounded-xl text-sm font-bold hover:text-black dark:hover:text-black"
+                  className="inline-flex items-center gap-2 bg-paymint-green dark:bg-paymint-green text-white px-4 py-2 rounded-xl text-sm font-bold hover:text-white dark:hover:text-white"
                 >
                   <User size={16} />
-                  {t('nav.owner')}
+                  {t('nav.dashboard', 'Dashboard')}
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="inline-flex items-center gap-2 bg-rose-500 text-white px-4 py-2 rounded-xl text-sm font-bold hover:text-white"
+                  className="inline-flex items-center gap-2 bg-rose-50 dark:bg-rose-500/10 text-rose-500 px-4 py-2 rounded-xl text-sm font-bold hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-colors"
                 >
                   <LogOut size={16} />
                   {t('nav.logout')}
@@ -200,12 +207,12 @@ export const Navbar = () => {
                 {isAuthenticated ? (
                   <>
                     <Link
-                      to="/portal"
+                      to="/"
                       onClick={() => setIsMobileMenuOpen(false)}
                       className="w-full py-5 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white rounded-[2rem] text-xl font-black tracking-tight text-center flex items-center justify-center gap-3 transition-transform active:scale-95 shadow-sm"
                     >
-                      <img src={PaymintLeafIcon} className="w-5 h-5 object-contain" alt="Home" />
-                      {t('nav.home', 'Home')}
+                      <Globe size={20} />
+                      {t('nav.website', 'Website')}
                     </Link>
                     <Link
                       to="/support"
@@ -216,21 +223,29 @@ export const Navbar = () => {
                       {t('nav.support')}
                     </Link>
                     <Link
+                      to="/portal"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="w-full py-5 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white rounded-[2rem] text-xl font-black tracking-tight text-center flex items-center justify-center gap-3 transition-transform active:scale-95 shadow-sm"
+                    >
+                      <img src={PaymintLeafIcon} className="w-5 h-5 object-contain" alt="Home" />
+                      {t('nav.home', 'Home')}
+                    </Link>
+                    <Link
                       to="/owner"
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="w-full py-5 bg-paymint-green text-black rounded-[2rem] text-xl font-black tracking-tight text-center flex items-center justify-center gap-3 shadow-xl shadow-paymint-green/30 hover:scale-[1.02] transition-transform active:scale-95"
+                      className="w-full py-5 bg-paymint-green text-white rounded-[2rem] text-xl font-black tracking-tight text-center flex items-center justify-center gap-3 shadow-xl shadow-paymint-green/30 hover:scale-[1.02] transition-transform active:scale-95"
                     >
                       <User size={20} />
-                      {t('nav.owner')}
+                      {t('nav.dashboard', 'Dashboard')}
                     </Link>
                     <button
                       onClick={() => {
                         setIsMobileMenuOpen(false);
                         handleLogout();
                       }}
-                      className="w-full py-5 bg-rose-500 hover:bg-rose-600 text-white rounded-[2rem] text-xl font-black tracking-tight text-center flex items-center justify-center gap-3 shadow-xl shadow-rose-500/30 hover:scale-[1.02] transition-transform active:scale-95"
+                      className="w-full py-5 bg-rose-50 dark:bg-rose-500/10 hover:bg-rose-100 dark:hover:bg-rose-500/20 text-rose-500 rounded-[2rem] text-xl font-black tracking-tight text-center flex items-center justify-center gap-3 transition-colors active:scale-95"
                     >
                       <LogOut size={20} />
                       {t('nav.logout')}

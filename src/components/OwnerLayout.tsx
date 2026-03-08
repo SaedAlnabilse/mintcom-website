@@ -34,6 +34,7 @@ import PaymintLeafIcon from '../assets/small-logo.svg';
 export function OwnerLayout() {
     const { t } = useTranslation();
     const { account, logout } = useAuth();
+    const isRtl = t('common.locale') === 'ar';
 
     const menuItems = useMemo(() => [
         { path: '/owner', label: t('owner.menu.overview'), icon: LayoutDashboard },
@@ -51,6 +52,8 @@ export function OwnerLayout() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const mainContentRef = useRef<HTMLDivElement>(null);
+    const sidebarRef = useRef<HTMLElement>(null);
+    const [collapsedNavTooltip, setCollapsedNavTooltip] = useState<{ label: string; top: number; offset: number } | null>(null);
 
     useEffect(() => {
         document.body.classList.add('dashboard-font-unified');
@@ -71,6 +74,32 @@ export function OwnerLayout() {
         setMobileMenuOpen(false);
     }, [location.pathname]);
 
+    useEffect(() => {
+        setCollapsedNavTooltip(null);
+    }, [location.pathname, sidebarOpen]);
+
+    const showCollapsedNavTooltip = (target: HTMLElement, label: string) => {
+        if (sidebarOpen || !sidebarRef.current) {
+            return;
+        }
+
+        const itemRect = target.getBoundingClientRect();
+        const sidebarRect = sidebarRef.current.getBoundingClientRect();
+        const tooltipGap = 10;
+
+        setCollapsedNavTooltip({
+            label,
+            top: itemRect.top - sidebarRect.top + (itemRect.height / 2),
+            offset: isRtl
+                ? (sidebarRect.right - itemRect.left) + tooltipGap
+                : (itemRect.right - sidebarRect.left) + tooltipGap,
+        });
+    };
+
+    const hideCollapsedNavTooltip = () => {
+        setCollapsedNavTooltip(null);
+    };
+
     const handleLogout = () => {
         setIsLogoutModalOpen(true);
     };
@@ -82,7 +111,7 @@ export function OwnerLayout() {
 
     return (
         <div
-            dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+            dir={isRtl ? 'rtl' : 'ltr'}
             className="h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden selection:bg-paymint-green selection:text-black transition-colors duration-500"
         >
             {/* Mobile Menu Overlay */}
@@ -100,6 +129,7 @@ export function OwnerLayout() {
 
             {/* Sidebar Container */}
             <motion.aside
+                ref={sidebarRef}
                 initial={false}
                 animate={{
                     width: sidebarOpen ? 300 : 100,
@@ -144,7 +174,7 @@ export function OwnerLayout() {
                                     decoding="async"
                                     className="h-10 w-auto object-contain hidden dark:block transition-transform"
                                 />
-                                <div className="absolute left-full ml-4 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-gray-900/90 text-white text-xs px-2 py-1 rounded">
+                                <div className="absolute left-full ml-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-gray-900/90 text-white text-xs px-2 py-1 rounded">
                                     {t('nav.home', 'Home')}
                                 </div>
                             </motion.div>
@@ -165,7 +195,7 @@ export function OwnerLayout() {
                                         size={24}
                                         className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
                                     />
-                                    <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                                    <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                                         {t('owner.menu.openSidebar')}
                                     </div>
                                 </button>
@@ -184,7 +214,10 @@ export function OwnerLayout() {
                 </div>
 
                 {/* Navigation Section */}
-                <div className={`flex-1 ${sidebarOpen ? 'overflow-y-auto' : 'overflow-visible'} px-3 space-y-1.5 scrollbar-none scroll-smooth pb-4 relative z-10`}>
+                <div
+                    className="flex-1 min-h-0 overflow-y-auto overflow-x-visible px-3 space-y-1.5 scrollbar-none scroll-smooth pb-4 relative z-10"
+                    onScroll={hideCollapsedNavTooltip}
+                >
                     {sidebarOpen && <p className="px-3 py-2 text-xs font-semibold text-gray-500 tracking-normal mb-4 mt-2">{t('owner.menu.mainMenu')}</p>}
                     {menuItems.map((item) => {
                         const Icon = item.icon;
@@ -194,7 +227,15 @@ export function OwnerLayout() {
                                 key={item.path}
                                 to={item.path}
                                 end={item.path === '/owner'}
-                                onClick={() => setSidebarOpen(false)}
+                                onClick={() => {
+                                    setSidebarOpen(false);
+                                    setCollapsedNavTooltip(null);
+                                }}
+                                onMouseEnter={(event) => showCollapsedNavTooltip(event.currentTarget, item.label)}
+                                onMouseLeave={hideCollapsedNavTooltip}
+                                onFocus={(event) => showCollapsedNavTooltip(event.currentTarget, item.label)}
+                                onBlur={hideCollapsedNavTooltip}
+                                aria-label={!sidebarOpen ? item.label : undefined}
                                 className={({ isActive }) =>
                                     `relative flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group
                                     ${isActive
@@ -208,19 +249,28 @@ export function OwnerLayout() {
                                 {sidebarOpen && (
                                     <span className="text-sm font-semibold tracking-normal">{item.label}</span>
                                 )}
-
-                                {!sidebarOpen && (
-                                    <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
-                                        {item.label}
-                                    </div>
-                                )}
                             </NavLink>
                         );
                     })}
                 </div>
 
+                {!sidebarOpen && collapsedNavTooltip && (
+                    <div
+                        className="pointer-events-none absolute top-0 -translate-y-1/2 z-[80]"
+                        style={{
+                            top: collapsedNavTooltip.top,
+                            left: isRtl ? undefined : collapsedNavTooltip.offset,
+                            right: isRtl ? collapsedNavTooltip.offset : undefined,
+                        }}
+                    >
+                        <div className="px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg whitespace-nowrap border border-white/10 shadow-xl">
+                            {collapsedNavTooltip.label}
+                        </div>
+                    </div>
+                )}
+
                 {/* Footer User Profile */}
-                <div className="p-3 border-t border-gray-100 dark:border-white/5 relative">
+                <div className="p-3 border-t border-gray-100 dark:border-white/5 relative shrink-0">
                     {sidebarOpen ? (
                         <div className="space-y-1">
                             {/* Profile Header */}
@@ -464,12 +514,16 @@ export function OwnerLayout() {
                                     </div>
                                 </div>
                             </div>
-
-                            <ThemeToggle
-                                dropdownDirection="right"
-                                className="w-12 h-12 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all"
-                                iconSize={24}
-                            />
+                            <div className="relative group">
+                                <ThemeToggle
+                                    dropdownDirection="right"
+                                    className="w-12 h-12 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all"
+                                    iconSize={24}
+                                />
+                                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0 group-focus-within:translate-x-0">
+                                    {t('theme.switchTheme')}
+                                </div>
+                            </div>
 
                             {/* Logout Icon */}
                             <button
@@ -478,7 +532,7 @@ export function OwnerLayout() {
                             >
                                 <LogOut size={24} />
                                 {/* Tooltip */}
-                                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                                     {t('dashboard.menu.logout')}
                                 </div>
                             </button>
@@ -620,4 +674,5 @@ export function OwnerLayout() {
         </div >
     );
 }
+
 

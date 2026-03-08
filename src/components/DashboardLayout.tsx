@@ -241,6 +241,57 @@ export function DashboardLayout() {
   const sidebarNavRef = useRef<HTMLElement>(null);
   const mainContentRef = useRef<HTMLDivElement>(null);
   const prevSidebarOpen = useRef(sidebarOpen);
+  const sidebarRef = useRef<HTMLElement>(null);
+  const collapsedNavHideTimeoutRef = useRef<number | null>(null);
+  const [collapsedNavOverlay, setCollapsedNavOverlay] = useState<{ type: 'group' | 'item'; label: string; items?: MenuItem[]; top: number; offset: number } | null>(null);
+
+  const clearCollapsedNavOverlayHide = useCallback(() => {
+    if (collapsedNavHideTimeoutRef.current !== null) {
+      window.clearTimeout(collapsedNavHideTimeoutRef.current);
+      collapsedNavHideTimeoutRef.current = null;
+    }
+  }, []);
+
+  const hideCollapsedNavOverlay = useCallback(() => {
+    clearCollapsedNavOverlayHide();
+    setCollapsedNavOverlay(null);
+  }, [clearCollapsedNavOverlayHide]);
+
+  const scheduleHideCollapsedNavOverlay = useCallback(() => {
+    clearCollapsedNavOverlayHide();
+    collapsedNavHideTimeoutRef.current = window.setTimeout(() => {
+      setCollapsedNavOverlay(null);
+      collapsedNavHideTimeoutRef.current = null;
+    }, 120);
+  }, [clearCollapsedNavOverlayHide]);
+
+  const showCollapsedNavOverlay = useCallback((target: HTMLElement, overlay: { type: "group" | "item"; label: string; items?: MenuItem[] }) => {
+    if (sidebarOpen || !sidebarRef.current) {
+      return;
+    }
+
+    clearCollapsedNavOverlayHide();
+
+    const itemRect = target.getBoundingClientRect();
+    const sidebarRect = sidebarRef.current.getBoundingClientRect();
+    const overlayGap = 10;
+
+    setCollapsedNavOverlay({
+      ...overlay,
+      top: itemRect.top - sidebarRect.top + (itemRect.height / 2),
+      offset: isRTL
+        ? (sidebarRect.right - itemRect.left) + overlayGap
+        : (itemRect.right - sidebarRect.left) + overlayGap,
+    });
+  }, [clearCollapsedNavOverlayHide, isRTL, sidebarOpen]);
+
+  useEffect(() => () => {
+    clearCollapsedNavOverlayHide();
+  }, [clearCollapsedNavOverlayHide]);
+
+  useEffect(() => {
+    hideCollapsedNavOverlay();
+  }, [hideCollapsedNavOverlay, location.pathname, sidebarOpen]);
 
   // Scroll to top on route change
   useEffect(() => {
@@ -296,7 +347,7 @@ export function DashboardLayout() {
 
   return (
     <div
-      dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
+      dir={isRTL ? 'rtl' : 'ltr'}
       className="h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden transition-colors duration-500"
     >
       {/* Mobile Menu Overlay */}
@@ -314,6 +365,7 @@ export function DashboardLayout() {
 
       {/* Sidebar */}
       <motion.aside
+        ref={sidebarRef}
         initial={false}
         animate={{
           width: sidebarOpen ? 300 : 100,
@@ -355,7 +407,7 @@ export function DashboardLayout() {
                   decoding="async"
                   className="h-10 w-auto object-contain hidden dark:block transition-transform"
                 />
-                <div className="absolute left-full ml-4 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-gray-900/90 text-white text-xs px-2 py-1 rounded">
+                <div className="absolute left-full ml-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-gray-900/90 text-white text-xs px-2 py-1 rounded">
                   {t('nav.home', 'Home')}
                 </div>
               </motion.div>
@@ -376,7 +428,7 @@ export function DashboardLayout() {
                     size={24}
                     className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
                   />
-                  <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                  <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                     {t('dashboard.menu.openSidebar')}
                   </div>
                 </button>
@@ -437,7 +489,7 @@ export function DashboardLayout() {
               className="w-12 h-12 rounded-xl flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all group relative"
             >
               <MapPin size={24} />
-              <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+              <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                 {t('dashboard.menu.switchLocation')}
               </div>
             </button>
@@ -447,7 +499,8 @@ export function DashboardLayout() {
         {/* Navigation */}
         <nav
           ref={sidebarNavRef}
-          className={`flex-1 px-3 space-y-1.5 scrollbar-none pb-4 ${sidebarOpen ? 'overflow-y-auto' : 'overflow-visible'}`}
+          className="flex-1 min-h-0 overflow-y-auto overflow-x-visible px-3 space-y-1.5 scrollbar-none pb-4 relative z-10"
+          onScroll={hideCollapsedNavOverlay}
         >
           {sidebarOpen && (
             <p className="px-3 py-2 text-xs font-semibold text-gray-500 tracking-normal">{t('dashboard.menu.mainMenu')}</p>
@@ -457,16 +510,18 @@ export function DashboardLayout() {
             if (isMenuGroup(item)) {
               const isExpanded = expandedGroup === item.label;
               const isActive = isGroupActive(item.items);
-              const Icon = item.icon;
-              const isBottomItem = isMenuGroup(item) && item.items.some(subItem =>
-                ['staff', 'roles', 'discounts', 'loyalty', 'customers', 'settings', 'activity-logs'].includes(subItem.path)
-              );
+              const Icon = item.icon;
 
               return (
                 <div key={index} className="mb-1">
                   <button
                     data-group={item.label}
                     onClick={() => sidebarOpen && toggleGroup(item.label)}
+                    onMouseEnter={(event) => !sidebarOpen && showCollapsedNavOverlay(event.currentTarget, { type: "group", label: item.label, items: item.items })}
+                    onMouseLeave={() => !sidebarOpen && scheduleHideCollapsedNavOverlay()}
+                    onFocus={(event) => !sidebarOpen && showCollapsedNavOverlay(event.currentTarget, { type: "group", label: item.label, items: item.items })}
+                    onBlur={() => !sidebarOpen && scheduleHideCollapsedNavOverlay()}
+                    aria-label={!sidebarOpen ? item.label : undefined}
                     className={`
                       flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group relative
                       ${sidebarOpen ? 'w-full' : ''}
@@ -481,43 +536,8 @@ export function DashboardLayout() {
                     {sidebarOpen && (
                       <>
                         <span className="flex-1 text-left text-sm font-semibold tracking-normal">{item.label}</span>
-                        <ChevronRight size={16} className={`text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-90' : (t('common.locale') === 'ar' ? 'rotate-180' : '')}`} />
+                        <ChevronRight size={16} className={`text-gray-400 transition-transform duration-200 ${isExpanded ? "rotate-90" : (isRTL ? "rotate-180" : "")}`} />
                       </>
-                    )}
-
-                    {!sidebarOpen && (
-                      <div className={`absolute ${isRTL ? 'right-[calc(100%+8px)]' : 'left-[calc(100%+8px)]'} ${isBottomItem ? 'bottom-0' : 'top-0'} opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] pointer-events-none group-hover:pointer-events-auto ${isRTL ? '-translate-x-1 group-hover:translate-x-0' : 'translate-x-1 group-hover:translate-x-0'}`}>
-                        <div className="bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden min-w-[200px] py-2">
-                          <div className="px-4 py-2 border-b border-gray-100 dark:border-white/5 mb-1 bg-gray-50/50 dark:bg-white/[0.02]">
-                            <p className="text-xs font-semibold text-paymint-green tracking-normal">{item.label}</p>
-                          </div>
-                          <div className="px-2 space-y-1">
-                            {item.items.map((subItem) => (
-                              <NavLink
-                                key={subItem.path}
-                                to={subItem.path}
-                                onClick={() => setSidebarOpen(false)}
-                                className={({ isActive }) =>
-                                  `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive
-                                    ? 'bg-paymint-green text-black shadow-md shadow-paymint-green/20 active-menu-item'
-                                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
-                                  }`
-                                }
-                              >
-                                {({ isActive }) => (
-                                  <>
-                                    <span className={`w-1.5 h-1.5 rounded-full transition-colors ${isActive ? 'bg-black' : 'bg-gray-300 dark:bg-gray-600'
-                                      }`} />
-                                    <span>{subItem.label}</span>
-                                  </>
-                                )}
-                              </NavLink>
-                            ))}
-                          </div>
-                        </div>
-                        {/* Bridge hitbox to allow mouse movement to the popover */}
-                        <div className={`absolute ${isRTL ? '-right-4' : '-left-4'} w-4 bg-transparent ${isBottomItem ? 'bottom-0 h-full' : 'top-0 bottom-0'}`} />
-                      </div>
                     )}
                   </button>
 
@@ -567,7 +587,15 @@ export function DashboardLayout() {
                   key={item.path}
                   to={item.path}
                   end
-                  onClick={() => setSidebarOpen(false)}
+                  onClick={() => {
+                    setSidebarOpen(false);
+                    hideCollapsedNavOverlay();
+                  }}
+                  onMouseEnter={(event) => !sidebarOpen && showCollapsedNavOverlay(event.currentTarget, { type: "item", label: item.label })}
+                  onMouseLeave={() => !sidebarOpen && scheduleHideCollapsedNavOverlay()}
+                  onFocus={(event) => !sidebarOpen && showCollapsedNavOverlay(event.currentTarget, { type: "item", label: item.label })}
+                  onBlur={() => !sidebarOpen && scheduleHideCollapsedNavOverlay()}
+                  aria-label={!sidebarOpen ? item.label : undefined}
                   className={({ isActive }) =>
                     `relative flex items-center gap-3 p-3.5 rounded-xl transition-all duration-200 group
                     ${isActive
@@ -581,21 +609,67 @@ export function DashboardLayout() {
                   {sidebarOpen && (
                     <span className="text-sm font-semibold tracking-normal">{item.label}</span>
                   )}
-
-                  {!sidebarOpen && (
-                    <div className={`absolute ${isRTL ? 'right-full mr-4 -translate-x-1 group-hover:translate-x-0' : 'left-full ml-4 translate-x-1 group-hover:translate-x-0'} top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl`}>
-                      {item.label}
-                    </div>
-                  )}
                 </NavLink>
               );
             }
           })}
         </nav>
 
+        {!sidebarOpen && collapsedNavOverlay && (
+          <div
+            className="absolute top-0 -translate-y-1/2 z-[100]"
+            style={{
+              top: collapsedNavOverlay.top,
+              left: isRTL ? undefined : collapsedNavOverlay.offset,
+              right: isRTL ? collapsedNavOverlay.offset : undefined,
+            }}
+          >
+            {collapsedNavOverlay.type === "group" ? (
+              <div
+                className="min-w-[200px] max-h-[420px] overflow-y-auto bg-white dark:bg-[#0D0D0D] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl"
+                onMouseEnter={clearCollapsedNavOverlayHide}
+                onMouseLeave={scheduleHideCollapsedNavOverlay}
+              >
+                <div className="px-4 py-2 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
+                  <p className="text-xs font-semibold text-paymint-green tracking-normal">{collapsedNavOverlay.label}</p>
+                </div>
+                <div className="px-2 py-2 space-y-1">
+                  {collapsedNavOverlay.items?.map((subItem) => (
+                    <NavLink
+                      key={subItem.path}
+                      to={subItem.path}
+                      onClick={() => {
+                        setSidebarOpen(false);
+                        hideCollapsedNavOverlay();
+                      }}
+                      className={({ isActive }) =>
+                        `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${isActive
+                          ? 'bg-paymint-green text-black shadow-md shadow-paymint-green/20 active-menu-item'
+                          : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
+                        }`
+                      }
+                    >
+                      {({ isActive }) => (
+                        <>
+                          <span className={`w-1.5 h-1.5 rounded-full transition-colors ${isActive ? "bg-black" : "bg-gray-300 dark:bg-gray-600"}`} />
+                          <span>{subItem.label}</span>
+                        </>
+                      )}
+                    </NavLink>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="pointer-events-none px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg whitespace-nowrap border border-white/10 shadow-xl">
+                {collapsedNavOverlay.label}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Mobile App Download - With QR Code Popup */}
         {sidebarOpen && (
-          <div className="px-3 mt-auto mb-2">
+          <div className="px-3 mt-auto mb-2 shrink-0">
             <div className="relative group">
               <button className="w-full flex items-center gap-3 px-3 py-2.5 bg-gray-50 dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-all">
                 <Smartphone size={16} className="text-gray-400" />
@@ -709,7 +783,7 @@ export function DashboardLayout() {
 
 
         {/* Footer User Profile */}
-        <div className="p-3 border-t border-gray-100 dark:border-white/5 relative">
+        <div className="p-3 border-t border-gray-100 dark:border-white/5 relative shrink-0">
           {sidebarOpen ? (
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-full bg-gradient-to-br from-paymint-green to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-paymint-green/20 outline outline-2 outline-white dark:outline-black">
@@ -749,7 +823,7 @@ export function DashboardLayout() {
               >
                 <Settings size={24} />
                 {/* Tooltip */}
-                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-4 rtl:ml-0 rtl:mr-4 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[80] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                   {t('dashboard.menu.settings')}
                 </div>
               </button>
