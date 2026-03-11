@@ -502,7 +502,7 @@ export function ProductFormModal({
         <div
           key="product-form-modal-overlay"
           dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-          className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans"
+          className="fixed inset-0 z-[9999] popup-surface flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/30 dark:bg-black/80 backdrop-blur-sm font-outfit"
         >
           <motion.div
             initial={{ opacity: 0, y: 100 }}
@@ -539,7 +539,7 @@ export function ProductFormModal({
             </div>
 
             <div className="overflow-y-auto px-4 sm:px-8 pt-6 sm:pt-6 custom-scrollbar flex-1 pb-safe" ref={scrollRef}>
-              <form id="product-form" onSubmit={handleSubmit} className="space-y-6">
+              <form id="product-form" onSubmit={handleSubmit} className="space-y-6 pb-6 sm:pb-8">
                 {/* Error Banner */}
                 {Object.keys(errors).length > 0 && (
                   <div ref={errorBannerRef} className="p-4 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 text-sm font-bold flex items-center gap-2 animate-pulse">
@@ -552,7 +552,7 @@ export function ProductFormModal({
                 <div className="space-y-2">
                   <label className="label-strong block flex items-center gap-1">
                     {t('products.form.nameLabel')} <span className="text-paymint-red">*</span>
-                    <QuickInfo text={t('products.form.nameTip')} />
+                    <QuickInfo text="Names are used to generate images" />
                   </label>
                   <input
                     type="text"
@@ -653,7 +653,7 @@ export function ProductFormModal({
                       <div className="space-y-2">
                         <label className="label-strong block flex items-center gap-1">
                           {t('products.form.costLabel')}
-                          <QuickInfo text={t('products.form.costTip')} />
+                          <QuickInfo text="How much YOU spend on the product." />
                         </label>
                         <div className="relative group">
                           <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-lg shadow-sm">
@@ -674,7 +674,7 @@ export function ProductFormModal({
                     <div className="space-y-2">
                       <label className="label-strong block flex items-center gap-1">
                         {t('products.form.priceLabel')} <span className="text-paymint-red">*</span>
-                        <QuickInfo text={t('products.form.priceTip')} />
+                        <QuickInfo text="Shown for customers." />
                       </label>
                       <div className="relative group">
                         <div className="absolute left-4 top-1/2 -translate-y-1/2 px-2 py-1 bg-paymint-green/10 border border-paymint-green/20 rounded-lg shadow-sm">
@@ -696,7 +696,7 @@ export function ProductFormModal({
                     <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-4 border border-gray-100 dark:border-white/5 shadow-sm">
                       <div className="flex items-center mb-1.5 gap-1">
                         <p className="text-xs font-bold text-gray-500 tracking-widest leading-tight">{t('products.stats.taxRate')}</p>
-                        <QuickInfo text={t('products.stats.taxPercent')} />
+                        <QuickInfo text="Already decided from settings." />
                       </div>
                       <div className="flex items-baseline gap-1">
                         <p className="text-gray-900 dark:text-white font-bold text-lg">
@@ -759,7 +759,7 @@ export function ProductFormModal({
                   <div className="flex items-center justify-between px-1">
                     <label className="label-strong block flex items-center gap-1">
                       {t('products.form.descriptionLabel')}
-                      <QuickInfo text={t('products.form.descriptionTip')} />
+                      <QuickInfo text="Describe your product for customers and employees." />
                     </label>
                     <span className={`text-xs font-black tracking-widest ${description.length >= 30 ? 'text-paymint-red' : 'text-gray-400'}`}>
                       {description.length.toLocaleString(t('common.locale'))} / {(30).toLocaleString(t('common.locale'))}
@@ -778,7 +778,6 @@ export function ProductFormModal({
                 <div className="relative space-y-2" ref={categoryRef}>
                   <label className="label-strong block flex items-center gap-1">
                     {t('products.form.categoryLabel')} <span className="text-paymint-red">*</span>
-                    <QuickInfo text={t('products.form.categoryTip')} />
                   </label>
                   <button
                     ref={categoryTriggerRef}
@@ -894,7 +893,7 @@ export function ProductFormModal({
                 <div className="relative space-y-2" ref={addonsRef}>
                   <label className="label-strong block flex items-center gap-1">
                     {t('products.form.addonsLabel')}
-                    <QuickInfo text={t('products.form.addonsTip')} />
+                    <QuickInfo text="Modifier families applied to this product." />
                   </label>
 
                   {attributes.length === 0 && (
@@ -1050,7 +1049,7 @@ export function ProductFormModal({
                     <div>
                       <h4 className="text-gray-900 dark:text-white font-bold text-sm tracking-tight flex items-center gap-2">
                         {t('products.form.inventory.title')}
-                        <QuickInfo text={t('products.form.inventory.tip')} />
+                        <QuickInfo text="Set stock statuses for the product." />
                       </h4>
                       <p className="text-xs font-bold text-gray-500 tracking-widest mt-1">{t('products.form.inventory.subtitle')}</p>
                     </div>
@@ -1208,4 +1207,3 @@ export function ProductFormModal({
     document.body
   );
 }
-

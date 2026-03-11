@@ -842,7 +842,7 @@ export function EmployeeFormModal({
 
               {/* Name */}
               <div className="space-y-2">
-                <label className="label-strong block flex items-center gap-1">
+                <label className="block text-sm font-bold text-gray-400 dark:text-gray-500 flex items-center gap-1">
                   {t('staff.form.nameLabel')} <span className="text-paymint-red">*</span>
                 </label>
                 <input
@@ -857,7 +857,7 @@ export function EmployeeFormModal({
 
               {/* Username */}
               <div className="space-y-2">
-                <label className="label-strong block flex items-center gap-1">
+                <label className="block text-sm font-bold text-gray-400 dark:text-gray-500 flex items-center gap-1">
                   {t('staff.form.usernameLabel')} <span className="text-paymint-red">*</span>
                 </label>
                 <input
@@ -872,7 +872,7 @@ export function EmployeeFormModal({
 
               {/* Email */}
               <div className="space-y-2">
-                <label className="label-strong block flex items-center gap-1">
+                <label className="block text-sm font-bold text-gray-400 dark:text-gray-500 flex items-center gap-1">
                   {t('staff.form.emailLabel')} {role === 'ADMIN' ? <span className="text-paymint-red">*</span> : t('staff.form.emailOptional')}
                 </label>
                 <input
@@ -887,7 +887,7 @@ export function EmployeeFormModal({
 
               {/* Phone */}
               <div className="space-y-2">
-                <label className="label-strong block flex items-center gap-1">
+                <label className="block text-sm font-bold text-gray-400 dark:text-gray-500 flex items-center gap-1">
                   {t('staff.form.phoneLabel')} {t('staff.form.phoneOptional')}
                 </label>
                 <input
@@ -902,7 +902,7 @@ export function EmployeeFormModal({
               {/* Establishment Selection (Only if establishments prop is provided) */}
               {establishments && (
                 <div className="relative space-y-2">
-                  <label className="label-strong block flex items-center gap-1">
+                  <label className="block text-sm font-bold text-gray-400 dark:text-gray-500 flex items-center gap-1">
                     {t('staff.form.accessLabel')} <span className="text-paymint-red">*</span>
                   </label>
                   <button
@@ -1000,7 +1000,7 @@ export function EmployeeFormModal({
 
               {/* Role Selection - Now uses Role Template dropdown */}
               <div className="relative space-y-2">
-                <label className="label-strong block flex items-center justify-between">
+                <label className="block text-sm font-bold text-gray-400 dark:text-gray-500 flex items-center justify-between">
                   <span className="flex items-center gap-1">{t('staff.form.roleLabel')} <span className="text-paymint-red">*</span></span>
                   {isModifiedFromTemplate() && (
                     <span className="text-paymint-red lowercase font-bold tracking-normal">{t('staff.form.modified')}</span>
@@ -1186,7 +1186,7 @@ export function EmployeeFormModal({
 
               {/* Password wrapper start (to match existing indentation/structure) */}
               <div className="pt-4 border-t border-gray-100 dark:border-white/5 space-y-2">
-                <label className="label-strong block flex items-center gap-1">
+                <label className="block text-sm font-bold text-gray-400 dark:text-gray-500 flex items-center gap-1">
                   {initialData ? t('staff.form.newPasswordOptional') : t('staff.form.passwordLabel')} {(!initialData) && <span className="text-paymint-red">*</span>}
                 </label>
                 <div className="relative">
@@ -1209,7 +1209,7 @@ export function EmployeeFormModal({
               </div>
 
               <div className="space-y-2">
-                <label className="label-strong block flex items-center gap-1">
+                <label className="block text-sm font-bold text-gray-400 dark:text-gray-500 flex items-center gap-1">
                   {t('staff.form.confirmPasswordLabel')} {(!initialData || password) && <span className="text-paymint-red">*</span>}
                 </label>
                 <div className="relative">

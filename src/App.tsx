@@ -50,11 +50,6 @@ const SupportAdminPage = lazy(() => import('./pages/support/SupportAdminPage').t
 const SupportAdminDetailPage = lazy(() => import('./pages/support/SupportAdminDetailPage').then(m => ({ default: m.SupportAdminDetailPage })));
 
 // ============================================================================
-// Lazy Imports - Portal Pages
-// ============================================================================
-const PortalPage = lazy(() => import('./pages/portal/PortalPage').then(m => ({ default: m.PortalPage })));
-
-// ============================================================================
 // Lazy Imports - Onboarding
 // ============================================================================
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage').then(m => ({ default: m.OnboardingPage })));
@@ -332,11 +327,7 @@ const router = createBrowserRouter([
           },
           {
             path: "/portal",
-            element: (
-              <PageSuspense>
-                <PortalPage />
-              </PageSuspense>
-            ),
+            element: <Navigate to="/" replace />,
           },
           {
             path: "/onboarding",
@@ -707,4 +698,3 @@ function App() {
 }
 
 export default App;
-

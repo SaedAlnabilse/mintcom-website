@@ -166,7 +166,7 @@
   /* Standardized Label Strong - Replaces "text-xs font-black tracking-widest" */
   .label-strong {
     font-size: var(--label-font-size);
-    @apply text-gray-400 font-black tracking-widest uppercase;
+    @apply font-outfit text-gray-400 font-black tracking-widest uppercase;
   }
   /* Standardized Subtitle */
   .text-subtitle {
@@ -298,6 +298,15 @@
   .popup-surface {
     @apply font-sans text-text-primary dark:text-paymint-text;
   }
+
+  .popup-surface :where(input, textarea, select, option) {
+    font-family: inherit;
+  }
+
+  .popup-surface .overflow-y-auto.pb-safe {
+    padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+  }
+
   .popup-surface :where(
     button,
     label,
@@ -318,31 +327,18 @@
   ) {
     text-transform: none !important;
   }
-
   .popup-surface [class*="tracking-"] {
     letter-spacing: normal !important;
   }
 
   .popup-surface button {
     font-family: inherit;
-    font-size: 0.875rem !important;
-    font-weight: 500 !important;
-    letter-spacing: normal !important;
     line-height: 1.5;
   }
 
   .popup-surface button :where(span, p, strong, small, div) {
-    font-family: inherit !important;
-    font-size: inherit !important;
-    font-weight: inherit !important;
-    letter-spacing: inherit !important;
+    font-family: inherit;
     line-height: inherit;
-  }
-
-  @media (min-width: 640px) {
-    .popup-surface button {
-      font-size: 1rem !important;
-    }
   }
 
   .popup-surface h1,
@@ -683,11 +679,3 @@ body.app-loading #global-blocking-overlay {
 .animate-bounce-subtle {
   animation: bounce-subtle 3s ease-in-out infinite;
 }
-
-
-
-
-
-
-
-

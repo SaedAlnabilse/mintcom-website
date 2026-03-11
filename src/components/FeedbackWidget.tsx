@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Star, CheckCircle2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../config/api';
 import { useAuth } from '../context/AuthContext';
@@ -9,6 +10,7 @@ import { useAuth } from '../context/AuthContext';
 export const FeedbackWidget = () => {
     const { t } = useTranslation();
     const { account } = useAuth();
+    const location = useLocation();
     const isRTL = t('common.locale') === 'ar';
     const [isOpen, setIsOpen] = useState(false);
     const [rating, setRating] = useState(0);
@@ -16,6 +18,11 @@ export const FeedbackWidget = () => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
+
+    // Only show on dashboard, owner, or brand routes
+    const isAppRoute = location.pathname.startsWith('/dashboard') || 
+                       location.pathname.startsWith('/owner') || 
+                       location.pathname.startsWith('/brand');
 
     useEffect(() => {
         const handleOpen = () => setIsOpen(true);
@@ -58,7 +65,7 @@ export const FeedbackWidget = () => {
         }
     };
 
-    if (!isVisible && !isOpen) return null;
+    if (!isAppRoute || (!isVisible && !isOpen)) return null;
 
     return (
         <>

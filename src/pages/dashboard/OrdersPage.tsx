@@ -122,6 +122,8 @@ export function OrdersPage() {
   const [heldOrders, setHeldOrders] = useState<Order[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [overallTotalCount, setOverallTotalCount] = useState(0);
+  const [completedOrderCount, setCompletedOrderCount] = useState(0);
+  const [completedOrderRevenue, setCompletedOrderRevenue] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [, setError] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -531,6 +533,20 @@ export function OrdersPage() {
           })
         : Promise.resolve(null);
 
+      // 2b. Fetch server-side summary for KPI (only completed/paid orders)
+      const summaryPromise = api
+        .get('/reports/historical-summary', {
+          params: {
+            startDate: start.toISOString(),
+            endDate: end.toISOString(),
+          },
+        })
+        .catch((e) => {
+          console.error('Failed summary for KPI', e);
+          return { data: { totalRevenue: 0, taxCollected: 0, totalOrders: 0 } };
+        });
+
+
       // 3. Main Data (Held or Regular)
       const mapHeldOrder = (h: Record<string, any>) => ({
         id: h.id,
@@ -593,7 +609,7 @@ export function OrdersPage() {
       }
 
       // Execute all requests in parallel
-      const [heldRes, overallRes, mainRes] = await Promise.all([heldPromise, overallPromise, mainPromise]);
+      const [heldRes, overallRes, mainRes, summaryRes] = await Promise.all([heldPromise, overallPromise, mainPromise, summaryPromise]);
 
       // Ignore stale responses when a newer request is already in flight.
       if (requestId !== fetchRequestIdRef.current) {
@@ -626,6 +642,12 @@ export function OrdersPage() {
         ? (overallRes?.data?.totalOrders || overallRes?.data?.total || 0)
         : fallbackMainTotal;
       setOverallTotalCount(Number(regularTotalForPeriod) + heldCount);
+
+      // Process server-side summary for KPI revenue (only completed/paid orders)
+      const kpiSummary = summaryRes?.data || {};
+      const serverTotalRevenue = Number(kpiSummary.totalRevenue || 0) + Number(kpiSummary.taxCollected || 0);
+      setCompletedOrderRevenue(serverTotalRevenue);
+      setCompletedOrderCount(Number(kpiSummary.totalOrders || regularTotalForPeriod || 0));
 
       // Process Main Display Data
       if (effectiveStatusFilter === 'HELD') {
@@ -978,7 +1000,7 @@ export function OrdersPage() {
                 ]}
                 placeholder={t('orders.checkShift')}
                 showAllOption={false}
-                buttonClassName="!bg-white dark:!bg-white/5 !text-gray-900 dark:!text-white !border-gray-200 dark:!border-white/10 hover:!bg-gray-50 dark:hover:!bg-white/10 !h-auto !py-2.5 sm:!py-3"
+                buttonClassName="!bg-white dark:!bg-white/5 !text-gray-900 dark:!text-white !border-gray-200 dark:!border-white/10 hover:!bg-gray-50 dark:hover:!bg-white/10 !h-auto !py-2.5 sm:!py-3 !rounded-xl"
               />
             </div>
           )}
@@ -1114,7 +1136,14 @@ export function OrdersPage() {
         {[
           {
             label: t('orders.kpi.totalSales'),
-            value: formatAmount(orders.reduce((acc, o) => acc + (o.total || 0), 0)),
+            value: formatAmount(
+              statusFilter === 'HELD'
+                ? heldOrders.reduce((acc, o) => acc + (o.total || 0), 0)
+                : completedOrderRevenue
+            ),
+            sub: statusFilter === 'HELD'
+              ? t('orders.status.onHold')
+              : t('dashboard.stats.completedOrders', { defaultValue: 'Completed orders' }),
             icon: TrendingUp,
             color: 'text-paymint-green',
             bg: 'bg-paymint-green/10',
@@ -1123,7 +1152,14 @@ export function OrdersPage() {
           },
           {
             label: t('orders.kpi.totalOrders'),
-            value: overallTotalCount.toLocaleString(t('common.locale')),
+            value: (
+              statusFilter === 'HELD'
+                ? totalHeldCount
+                : completedOrderCount
+            ).toLocaleString(t('common.locale')),
+            sub: statusFilter === 'HELD'
+              ? t('orders.status.onHold')
+              : t('dashboard.stats.completedOrders', { defaultValue: 'Completed orders' }),
             icon: ShoppingCart,
             color: 'text-blue-500',
             bg: 'bg-blue-500/10',
@@ -1157,6 +1193,9 @@ export function OrdersPage() {
               <div>
                 <p className="dashboard-card-label mb-0.5">{stat.label}</p>
                 <p className="dashboard-card-value text-lg sm:text-2xl">{stat.value}</p>
+                {stat.sub && (
+                  <p className="text-[10px] font-semibold text-gray-400 dark:text-gray-500 mt-0.5">{stat.sub}</p>
+                )}
               </div>
             </div>
 

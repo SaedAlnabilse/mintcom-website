@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Check, X, ArrowRight, MapPin, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
 
 export const Pricing = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [isYearly, setIsYearly] = useState(false);
 
   // Pricing constants
@@ -41,7 +45,7 @@ export const Pricing = () => {
         t('landing.pricing.features.production')
       ],
       notIncluded: null,
-      cta: t('landing.pricing.startFreeTrial'),
+      cta: isAuthenticated ? t('nav.dashboard', 'Go to Dashboard') : t('landing.pricing.startFreeTrial'),
       highlight: true,
       type: "standard"
     }
@@ -57,7 +61,11 @@ export const Pricing = () => {
       }
       setSelectedPlan(null);
     } else {
-      window.open('/signup', '_blank');
+      if (isAuthenticated) {
+        navigate('/owner');
+      } else {
+        window.open('/signup', '_blank');
+      }
     }
   };
 
@@ -236,7 +244,13 @@ export const Pricing = () => {
             </ul>
 
             <button
-              onClick={() => window.open('/signup', '_blank')}
+              onClick={() => {
+                if (isAuthenticated) {
+                  navigate('/owner');
+                } else {
+                  window.open('/signup', '_blank');
+                }
+              }}
               className="w-full py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 group bg-blue-500 text-white hover:bg-blue-600 shadow-lg shadow-blue-500/20"
             >
               {t('landing.pricing.addLocation')}

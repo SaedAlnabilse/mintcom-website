@@ -1,6 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Play, X, ArrowRight, Zap, BarChart3, Users, TrendingUp, ShoppingCart, DollarSign } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
   return (
@@ -22,9 +24,19 @@ const SplitText = ({ text, className = "" }: { text: string; className?: string 
 
 export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; setIsVideoOpen: (open: boolean) => void }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
+  const handleCtaClick = () => {
+    if (isAuthenticated) {
+      navigate('/owner');
+    } else {
+      window.open('/signup', '_blank');
+    }
+  };
 
   return (
-    <section className="relative pt-32 pb-16 lg:pt-48 lg:pb-20 overflow-hidden bg-white dark:bg-[#0f0f0f]" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
+    <section className="relative pt-24 pb-16 lg:pt-32 lg:pb-20 overflow-hidden bg-white dark:bg-[#0f0f0f]" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -82,10 +94,10 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <motion.button
                 whileTap={{ scale: 0.95 }}
-                onClick={() => window.open('/signup', '_blank')}
+                onClick={handleCtaClick}
                 className="bg-paymint-green text-black px-8 py-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 group"
               >
-                {t('landing.hero.cta')}
+                {isAuthenticated ? t('nav.dashboard', 'Go to Dashboard') : t('landing.hero.cta')}
                 <ArrowRight size={20} className={`transition-transform ${t('common.locale') === 'ar' ? 'rotate-180 group-hover:-translate-x-1' : 'group-hover:translate-x-1'}`} />
               </motion.button>
 
@@ -102,133 +114,54 @@ export const Hero = ({ isVideoOpen, setIsVideoOpen }: { isVideoOpen: boolean; se
 
           </motion.div>
 
-          {/* Visual Content / Abstract Dashboard */}
+          {/* Visual Content / Hardware Mockups */}
           <motion.div
             initial={{ opacity: 0, x: 50, rotateY: -10 }}
             animate={{ opacity: 1, x: 0, rotateY: 0 }}
             transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-            className="flex-1 w-full max-w-[600px] lg:max-w-none perspective-1000"
+            className="flex-1 w-full max-w-[600px] lg:max-w-[700px] xl:max-w-[800px] relative mt-12 lg:mt-0 perspective-1000 lg:-translate-x-12 xl:-translate-x-16"
           >
-            <div className="relative">
-              {/* Abstract Floating Cards */}
-              <motion.div
-                animate={{ y: [0, -20, 0] }}
+            <div className="relative w-full aspect-square sm:aspect-[4/3] flex items-center justify-center">
+              
+              {/* Decorative Background Glow */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-tr from-paymint-green/20 via-transparent to-paymint-green/5 rounded-full blur-3xl -z-20" />
+
+              {/* Main POS Terminal / Desktop (Back/Center) */}
+              <motion.div 
+                className="absolute z-10 w-[85%] max-w-[600px] top-[5%] left-[50%] -translate-x-1/2 drop-shadow-2xl"
+                animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="relative z-20 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl shadow-xl shadow-gray-200/40 dark:shadow-none p-6 overflow-hidden transition-colors duration-300"
               >
-                {/* Mock Header */}
-                <div className="flex items-center justify-between mb-8 border-b border-gray-100 dark:border-gray-800 pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 rounded-full bg-accent/80 dark:bg-accent" />
-                    <div className="w-3 h-3 rounded-full bg-yellow-400 dark:bg-yellow-500" />
-                    <div className="w-3 h-3 rounded-full bg-paymint-green/80 dark:bg-paymint-green" />
-                  </div>
-                  <div className="h-2 w-20 bg-gray-100 dark:bg-gray-800 rounded-full" />
+                {/* Terminal Stand */}
+                <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-40 h-20 bg-gradient-to-b from-gray-300 to-gray-400 dark:from-gray-800 dark:to-gray-900 rounded-b-3xl -z-10 shadow-xl border-x border-b border-gray-200 dark:border-gray-700">
+                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-56 h-4 bg-black/20 dark:bg-black/50 rounded-full blur-md translate-y-3" />
+                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-2 bg-gray-400 dark:bg-gray-700 rounded-full" />
                 </div>
-
-                {/* Mock Content */}
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-100 dark:border-gray-800 transition-colors">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="p-2 bg-paymint-green/10 dark:bg-paymint-green/20 rounded-lg">
-                        <BarChart3 size={16} className="text-paymint-green" />
-                      </div>
-                      <span className="text-gray-500 dark:text-gray-400 text-sm">{t('landing.hero.revenue')}</span>
-                    </div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">{(12450).toLocaleString(t('common.locale'), { style: 'currency', currency: 'JOD', maximumFractionDigits: 0, minimumFractionDigits: 0 })}</div>
-                    <div className="text-xs text-paymint-green mt-1">{(0.15).toLocaleString(t('common.locale'), { style: 'percent' })} {t('landing.hero.fromYesterday')}</div>
-                  </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-100 dark:border-gray-800 transition-colors">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="p-2 bg-blue-500/10 dark:bg-blue-500/20 rounded-lg">
-                        <ShoppingCart size={16} className="text-blue-600 dark:text-blue-500" />
-                      </div>
-                      <span className="text-gray-500 dark:text-gray-400 text-sm">{t('landing.hero.orders')}</span>
-                    </div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">{(142).toLocaleString(t('common.locale'))}</div>
-                    <div className="text-xs text-blue-600 dark:text-blue-500 mt-1">{t('landing.hero.activeRightNow')}</div>
-                  </div>
-                </div>
-
-                {/* Additional Stats Row */}
-                <div className="grid grid-cols-3 gap-3 mb-6">
-                  <div className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-100 dark:border-gray-800 transition-colors">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Users size={14} className="text-purple-500" />
-                      <span className="text-gray-500 dark:text-gray-400 text-xs">{t('landing.hero.customers')}</span>
-                    </div>
-                    <div className="text-lg font-bold text-gray-900 dark:text-white">{(89).toLocaleString(t('common.locale'))}</div>
-                    <div className="text-xs text-purple-500">{(12).toLocaleString(t('common.locale'), { signDisplay: 'always' })} {t('landing.hero.today')}</div>
-                  </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-100 dark:border-white/5 transition-colors">
-                    <div className="flex items-center gap-2 mb-1">
-                      <DollarSign size={14} className="text-amber-500" />
-                      <span className="text-gray-500 dark:text-gray-400 text-xs">{t('landing.hero.avgOrder')}</span>
-                    </div>
-                    <div className="text-lg font-bold text-gray-900 dark:text-white">{(87).toLocaleString(t('common.locale'), { style: 'currency', currency: 'JOD', maximumFractionDigits: 0, minimumFractionDigits: 0 })}</div>
-                    <div className="text-xs text-amber-500">{(0.08).toLocaleString(t('common.locale'), { style: 'percent', signDisplay: 'always' })} {t('landing.hero.thisWeek')}</div>
-                  </div>
-                  <div className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-100 dark:border-gray-800 transition-colors">
-                    <div className="flex items-center gap-2 mb-1">
-                      <TrendingUp size={14} className="text-paymint-green" />
-                      <span className="text-gray-500 dark:text-gray-400 text-xs">{t('landing.hero.growth')}</span>
-                    </div>
-                    <div className="text-lg font-bold text-gray-900 dark:text-white">{(0.23).toLocaleString(t('common.locale'), { style: 'percent' })}</div>
-                    <div className="text-xs text-paymint-green">{t('landing.hero.thisMonth')}</div>
-                  </div>
-                </div>
-
-                {/* Recent Orders List */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 px-1 mb-2">
-                    <span className="font-medium">{t('landing.hero.recentOrders')}</span>
-                    <span className="text-paymint-green cursor-pointer hover:underline">{t('landing.hero.viewAll')}</span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50/50 dark:bg-gray-800/30 rounded-xl transition-colors">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-paymint-green/10 dark:bg-paymint-green/20 flex items-center justify-center">
-                        <span className="text-xs font-bold text-paymint-green">#{(24).toLocaleString(t('common.locale'), { useGrouping: false })}</span>
-                      </div>
-                      <div>
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">{t('landing.hero.table')} {(5).toLocaleString(t('common.locale'))}</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">{(3).toLocaleString(t('common.locale'))} {t('landing.hero.items')} • {(2).toLocaleString(t('common.locale'))} {t('landing.hero.minAgo')}</div>
-                      </div>
-                    </div>
-                    <div className="text-sm font-bold text-paymint-green" dir="ltr">{(45.8).toLocaleString(t('common.locale'), { style: 'currency', currency: 'JOD' })}</div>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50/50 dark:bg-gray-800/30 rounded-xl transition-colors">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-blue-500/10 dark:bg-blue-500/20 flex items-center justify-center">
-                        <span className="text-xs font-bold text-blue-600 dark:text-blue-500">#{(23).toLocaleString(t('common.locale'), { useGrouping: false })}</span>
-                      </div>
-                      <div>
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">{t('landing.hero.takeaway')}</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">{(5).toLocaleString(t('common.locale'))} {t('landing.hero.items')} • {(8).toLocaleString(t('common.locale'))} {t('landing.hero.minAgo')}</div>
-                      </div>
-                    </div>
-                    <div className="text-sm font-bold text-blue-600 dark:text-blue-500" dir="ltr">{(72.5).toLocaleString(t('common.locale'), { style: 'currency', currency: 'JOD' })}</div>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50/50 dark:bg-gray-800/30 rounded-xl transition-colors">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center">
-                        <span className="text-xs font-bold text-amber-600 dark:text-amber-500">#{(22).toLocaleString(t('common.locale'), { useGrouping: false })}</span>
-                      </div>
-                      <div>
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">{t('landing.hero.table')} {(12).toLocaleString(t('common.locale'))}</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">{(7).toLocaleString(t('common.locale'))} {t('landing.hero.items')} • {(15).toLocaleString(t('common.locale'))} {t('landing.hero.minAgo')}</div>
-                      </div>
-                    </div>
-                    <div className="text-sm font-bold text-amber-600 dark:text-amber-500">{(128).toLocaleString(t('common.locale'), { style: 'currency', currency: 'JOD' })}</div>
-                  </div>
+                {/* Terminal Screen */}
+                <div className="w-full bg-white dark:bg-gray-900 rounded-2xl p-2 sm:p-3 border-[3px] border-gray-200 dark:border-gray-700 shadow-2xl overflow-hidden relative">
+                   <div className="w-full aspect-[16/10] bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden relative border border-gray-200 dark:border-gray-800">
+                      <img src="/sales-dashboard.png" alt="PayMint Dashboard" className="w-full h-full object-cover object-left-top opacity-95" />
+                      {/* Glass Reflection */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
+                   </div>
                 </div>
               </motion.div>
 
-              {/* Decorative Elements behind */}
-              <motion.div
-                animate={{ rotate: [0, 5, 0] }}
-                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute top-[-20px] right-[-20px] w-full h-full bg-gradient-to-br from-paymint-green/20 to-paymint-green/10 rounded-xl -z-10 blur-xl opacity-50"
-              />
+              {/* Customer Facing Display (Tablet - Front Left) */}
+              <motion.div 
+                className="absolute z-20 w-[50%] max-w-[320px] bottom-[10%] left-[2%] drop-shadow-2xl"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+              >
+                <div className="w-full bg-gray-800 dark:bg-black rounded-3xl p-2 sm:p-2.5 border-4 border-gray-700 dark:border-gray-800 shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden transform -rotate-3 transition-transform hover:rotate-0 duration-500">
+                   <div className="w-full aspect-[4/3] bg-white dark:bg-gray-900 rounded-2xl overflow-hidden relative">
+                      <img src="/admin-dashboard.png" alt="Customer Display" className="w-full h-full object-cover object-right-bottom scale-125 origin-bottom-right opacity-95" />
+                      <div className="absolute inset-0 bg-black/5 pointer-events-none" />
+                      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-black/50 border border-white/10" />
+                   </div>
+                </div>
+              </motion.div>
+
             </div>
           </motion.div>
         </div>

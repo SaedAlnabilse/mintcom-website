@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Menu, X, Laptop, LogOut, User, Headset, Globe } from 'lucide-react';
+import { Menu, X, Laptop, LogOut, User, Headset } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from './Logo';
-import PaymintLeafIcon from '../assets/small-logo.svg';
 import { ThemeToggle } from './ThemeToggle';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useAuth } from '../context/AuthContext';
@@ -45,13 +44,11 @@ export const Navbar = () => {
         : 'bg-transparent py-6'
         }`}
     >
-      <div className="container mx-auto px-8 md:px-16 lg:px-24 flex justify-between items-center">
-        {/* Logo */}
-        <Link to={isAuthenticated ? "/portal" : "/"} className="flex items-center group">
+      <div className="container mx-auto px-6 md:px-12 lg:px-16 max-w-7xl flex justify-between items-center">
+        <Link to="/" className="flex items-center group">
           <Logo size="lg" className="transition-transform duration-500" />
         </Link>
 
-        {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center gap-10">
           {!isAuthenticated && (
             <>
@@ -64,7 +61,6 @@ export const Navbar = () => {
                     rel={link.href.includes('community-hub') ? 'noopener noreferrer' : undefined}
                     className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-paymint-green dark:hover:text-paymint-green transition-colors"
                     onClick={(e) => {
-                      // Direct smooth scroll if already on homepage
                       if (link.href.startsWith('/#') && window.location.pathname === '/') {
                         const el = document.getElementById(link.href.slice(2));
                         if (el) {
@@ -87,25 +83,11 @@ export const Navbar = () => {
             {isAuthenticated ? (
               <>
                 <Link
-                  to="/"
-                  className="inline-flex items-center gap-2 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white px-4 py-2 rounded-xl text-sm font-bold hover:text-gray-900 dark:hover:text-white"
-                >
-                  <Globe size={16} />
-                  {t('nav.website', 'Website')}
-                </Link>
-                <Link
                   to="/support"
                   className="inline-flex items-center gap-2 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white px-4 py-2 rounded-xl text-sm font-bold hover:text-gray-900 dark:hover:text-white"
                 >
                   <Headset size={16} />
                   {t('nav.support')}
-                </Link>
-                <Link
-                  to="/portal"
-                  className="inline-flex items-center gap-2 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white px-4 py-2 rounded-xl text-sm font-bold hover:text-gray-900 dark:hover:text-white"
-                >
-                  <img src={PaymintLeafIcon} className="w-4 h-4 object-contain" alt="Home" />
-                  {t('nav.home', 'Home')}
                 </Link>
                 <Link
                   to="/owner"
@@ -145,7 +127,6 @@ export const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Toggle */}
         <div className="lg:hidden flex items-center gap-2 sm:gap-4">
           <ThemeToggle />
           <button
@@ -160,7 +141,6 @@ export const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -207,28 +187,12 @@ export const Navbar = () => {
                 {isAuthenticated ? (
                   <>
                     <Link
-                      to="/"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="w-full py-5 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white rounded-[2rem] text-xl font-black tracking-tight text-center flex items-center justify-center gap-3 transition-transform active:scale-95 shadow-sm"
-                    >
-                      <Globe size={20} />
-                      {t('nav.website', 'Website')}
-                    </Link>
-                    <Link
                       to="/support"
                       onClick={() => setIsMobileMenuOpen(false)}
                       className="w-full py-5 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white rounded-[2rem] text-xl font-black tracking-tight text-center flex items-center justify-center gap-3 transition-transform active:scale-95 shadow-sm"
                     >
                       <Headset size={20} />
                       {t('nav.support')}
-                    </Link>
-                    <Link
-                      to="/portal"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="w-full py-5 bg-gray-100 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/5 text-gray-900 dark:text-white rounded-[2rem] text-xl font-black tracking-tight text-center flex items-center justify-center gap-3 transition-transform active:scale-95 shadow-sm"
-                    >
-                      <img src={PaymintLeafIcon} className="w-5 h-5 object-contain" alt="Home" />
-                      {t('nav.home', 'Home')}
                     </Link>
                     <Link
                       to="/owner"
@@ -271,7 +235,6 @@ export const Navbar = () => {
                 )}
               </div>
 
-              {/* Mobile Footer Info */}
               <div className="pt-10 flex flex-col items-center gap-6 opacity-50">
                 <div className="flex gap-8">
                   <LanguageSwitcher />

@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Check, ArrowRight, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
 
 const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {
     return (
@@ -23,6 +25,8 @@ const SplitText = ({ text, className = "" }: { text: string; className?: string 
 
 export const PricingDownload = () => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
+    const { isAuthenticated } = useAuth();
     const [showDetails, setShowDetails] = useState(false);
     const [isYearly, setIsYearly] = useState(false);
 
@@ -54,7 +58,15 @@ export const PricingDownload = () => {
             t('landing.pricing.features.advancedReporting'),
             t('landing.pricing.features.production')
         ],
-        cta: t('landing.pricing.startFreeTrial'),
+        cta: isAuthenticated ? t('nav.dashboard', 'Go to Dashboard') : t('landing.pricing.startFreeTrial'),
+    };
+
+    const handleCtaClick = () => {
+        if (isAuthenticated) {
+            navigate('/owner');
+        } else {
+            window.open('/signup', '_blank');
+        }
     };
 
     return (
@@ -201,7 +213,7 @@ export const PricingDownload = () => {
                                 {/* CTA Button */}
                                 <div className="space-y-4">
                                     <button
-                                        onClick={() => window.open('/signup', '_blank')}
+                                        onClick={handleCtaClick}
                                         className="w-full py-6 bg-paymint-green text-black rounded-[1.5rem] font-black text-xl shadow-[0_20px_40px_-12px_rgba(0,186,124,0.3)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 group/btn relative overflow-hidden"
                                     >
                                         <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500" />
@@ -260,7 +272,7 @@ export const PricingDownload = () => {
 
                                 <button
                                     onClick={() => {
-                                        window.open('/signup', '_blank');
+                                        handleCtaClick();
                                         setShowDetails(false);
                                     }}
                                     className="w-full bg-paymint-green text-black py-5 rounded-2xl font-black text-lg transition-transform active:scale-95 shadow-xl shadow-paymint-green/20"

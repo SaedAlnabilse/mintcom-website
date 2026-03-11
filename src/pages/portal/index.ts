@@ -1,1 +1,0 @@
-export { PortalPage } from './PortalPage';

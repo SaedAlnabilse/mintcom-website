@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import {
@@ -77,6 +77,9 @@ type BrandFormData = {
     establishmentPassword?: string;
 };
 
+const BRAND_LOGIN_ID_MIN_LENGTH = 4;
+const BRAND_LOGIN_ID_REGEX = /^[a-zA-Z0-9_-]+$/;
+
 export function OwnerBrandsPage() {
     const { t } = useTranslation();
     const { establishments, refreshEstablishments } = useAuth();
@@ -99,6 +102,9 @@ export function OwnerBrandsPage() {
     const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
     const [loadingEmployees, setLoadingEmployees] = useState(false);
     const [error, setError] = useState('');
+    const [loginIdCheckState, setLoginIdCheckState] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle');
+    const [loginIdCheckMessage, setLoginIdCheckMessage] = useState('');
+    const loginIdCheckRequestRef = useRef(0);
     const [securityModal, setSecurityModal] = useState<{
         isOpen: boolean,
         targetId: string,
@@ -128,8 +134,91 @@ export function OwnerBrandsPage() {
         establishmentPassword: z.string().min(6, t('owner.brands.validation.passwordMin')),
     }), [t]);
 
-    const { register, handleSubmit, formState: { errors }, reset, trigger } = useForm<z.infer<typeof createBrandSchemaObj>>({
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+        trigger,
+        clearErrors,
+        setError: setFieldError,
+        getValues,
+    } = useForm<z.infer<typeof createBrandSchemaObj>>({
         resolver: zodResolver(createBrandSchemaObj)
+    });
+
+    const resetLoginIdCheckState = useCallback(() => {
+        loginIdCheckRequestRef.current += 1;
+        setLoginIdCheckState('idle');
+        setLoginIdCheckMessage('');
+    }, []);
+
+    const validateEstablishmentLoginIdAvailability = useCallback(async ({ silentNetworkError = false }: { silentNetworkError?: boolean } = {}) => {
+        const rawLoginId = (getValues('establishmentLoginId') || '').trim();
+
+        if (!rawLoginId || rawLoginId.length < BRAND_LOGIN_ID_MIN_LENGTH || !BRAND_LOGIN_ID_REGEX.test(rawLoginId)) {
+            resetLoginIdCheckState();
+            return false;
+        }
+
+        const requestId = loginIdCheckRequestRef.current + 1;
+        loginIdCheckRequestRef.current = requestId;
+        setLoginIdCheckState('checking');
+        setLoginIdCheckMessage('');
+
+        try {
+            const response = await api.get('/api/brands/availability/establishment-login-id', {
+                params: { establishmentLoginId: rawLoginId },
+            });
+
+            if (loginIdCheckRequestRef.current !== requestId) {
+                return false;
+            }
+
+            const message = response.data?.message || (response.data?.available
+                ? t('owner.brands.validation.loginIdAvailable', { defaultValue: 'This Login ID is available.' })
+                : t('owner.brands.validation.loginIdTakenHint', { defaultValue: 'It must be unique across all locations and brands.' }));
+
+            if (!response.data?.available) {
+                setLoginIdCheckState('taken');
+                setLoginIdCheckMessage(message);
+                setFieldError('establishmentLoginId', { type: 'server', message });
+                return false;
+            }
+
+            clearErrors('establishmentLoginId');
+            setLoginIdCheckState('available');
+            setLoginIdCheckMessage(message);
+            return true;
+        } catch (availabilityError: any) {
+            if (loginIdCheckRequestRef.current !== requestId) {
+                return false;
+            }
+
+            resetLoginIdCheckState();
+            const message = availabilityError.response?.data?.message || t('owner.brands.validation.loginIdCheckFailed', {
+                defaultValue: 'Could not verify this Login ID right now. Please try again.',
+            });
+
+            if (!silentNetworkError) {
+                setError(message);
+            }
+
+            return false;
+        }
+    }, [clearErrors, getValues, resetLoginIdCheckState, setFieldError, t]);
+
+    const establishmentLoginIdField = register('establishmentLoginId', {
+        onChange: () => {
+            setError('');
+            resetLoginIdCheckState();
+            if (errors.establishmentLoginId?.type === 'server') {
+                clearErrors('establishmentLoginId');
+            }
+        },
+        onBlur: () => {
+            void validateEstablishmentLoginIdAvailability({ silentNetworkError: true });
+        },
     });
 
     // Close menu when clicking outside or scrolling
@@ -307,11 +396,18 @@ export function OwnerBrandsPage() {
 
     const handleNextStep = async () => {
         if (wizardStep === 1) {
-            const isValid = await trigger();
-            if (isValid) {
-                setWizardStep(2);
-                setError('');
+            const isValid = await trigger(['name', 'establishmentLoginId', 'establishmentPassword']);
+            if (!isValid) {
+                return;
             }
+
+            const isLoginIdAvailable = await validateEstablishmentLoginIdAvailability();
+            if (!isLoginIdAvailable) {
+                return;
+            }
+
+            setWizardStep(2);
+            setError('');
         } else if (wizardStep === 2) {
             if (selectedEstablishments.length < 2) {
                 setError(t('owner.brands.wizard.selectMinLocations'));
@@ -337,6 +433,8 @@ export function OwnerBrandsPage() {
         setSelectedEmployees([]);
         setEmployeesForMerging([]);
         setError('');
+        resetLoginIdCheckState();
+        clearErrors('establishmentLoginId');
         reset();
     };
 
@@ -358,8 +456,18 @@ export function OwnerBrandsPage() {
             fetchBrands();
             refreshEstablishments();
         } catch (error: any) {
-            toast.error(error.response?.data?.message || t('owner.brands.wizard.createFailed'));
-            setError(error.response?.data?.message || t('owner.brands.wizard.createFailed'));
+            const message = error.response?.data?.message || t('owner.brands.wizard.createFailed');
+            toast.error(message);
+
+            if (typeof message === 'string' && message.toLowerCase().includes('establishment id')) {
+                setWizardStep(1);
+                setFieldError('establishmentLoginId', { type: 'server', message });
+                setLoginIdCheckState('taken');
+                setLoginIdCheckMessage(message);
+                setError('');
+            } else {
+                setError(message);
+            }
         } finally {
             setIsCreating(false);
         }
@@ -924,7 +1032,7 @@ export function OwnerBrandsPage() {
                                 {/* Wizard Body */}
                                 <div className="flex-1 overflow-y-auto p-6">
                                     {wizardStep === 1 && (
-                                        <div className="space-y-6 max-w-lg mx-auto py-4">
+                                        <div className="space-y-6 w-full py-4">
                                             <div className="space-y-4">
                                                 <div>
                                                     <label className="block dashboard-card-label mb-2">{t('owner.brands.brandName')}</label>
@@ -944,14 +1052,26 @@ export function OwnerBrandsPage() {
                                                     <div className="relative">
                                                         <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                                                         <input
-                                                            {...register('establishmentLoginId')}
+                                                            {...establishmentLoginIdField}
                                                             className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-paymint-green/20 outline-none transition-all"
                                                             placeholder={t('owner.brands.adminLoginIdPlaceholder')}
                                                         />
                                                     </div>
                                                     <p className="dashboard-card-meta mt-1">
-                                                        {t('owner.brands.adminLoginIdHint')} {t('owner.brands.validation.loginIdTakenHint', 'It must be unique across all locations and brands.')}
+                                                        {t('owner.brands.adminLoginIdHint')} {t('owner.brands.validation.loginIdTakenHint', { defaultValue: 'It must be unique across all locations and brands.' })}
                                                     </p>
+                                                    {loginIdCheckState === 'checking' && (
+                                                        <p className="mt-2 text-xs font-bold text-gray-500 flex items-center gap-2">
+                                                            <Loader2 size={12} className="animate-spin" />
+                                                            {t('owner.brands.validation.loginIdChecking', { defaultValue: 'Checking availability...' })}
+                                                        </p>
+                                                    )}
+                                                    {loginIdCheckState === 'available' && !errors.establishmentLoginId && (
+                                                        <p className="mt-2 text-xs font-bold text-paymint-green flex items-center gap-2">
+                                                            <Check size={12} />
+                                                            {loginIdCheckMessage || t('owner.brands.validation.loginIdAvailable', { defaultValue: 'This Login ID is available.' })}
+                                                        </p>
+                                                    )}
                                                     {errors.establishmentLoginId && <p className="text-[#ef4444] text-xs mt-1 font-bold">{errors.establishmentLoginId.message}</p>}
                                                 </div>
 
@@ -1094,7 +1214,7 @@ export function OwnerBrandsPage() {
 
                                 {/* Footer */}
                                 <div className="p-6 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.01]">
-                                    <div className="max-w-lg mx-auto">
+                                    <div className="w-full">
                                         {error && (
                                             <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold text-center">
                                                 {error}
@@ -1150,5 +1270,3 @@ export function OwnerBrandsPage() {
         </div>
     );
 }
-
-

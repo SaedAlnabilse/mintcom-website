@@ -210,7 +210,7 @@ export function BrandLayout() {
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -10 }}
                                 className="flex items-center cursor-pointer group"
-                                onClick={() => navigate(`/brand/${brandId}`)}
+                                onClick={() => navigate('/')}
                             >
                                 <img
                                     src={PaymintLogoGreen}
@@ -813,5 +813,3 @@ export function BrandLayout() {
         </div>
     );
 }
-
-

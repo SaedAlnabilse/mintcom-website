@@ -153,7 +153,7 @@ export function OwnerLayout() {
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -10 }}
                                 className="flex items-center cursor-pointer group"
-                                onClick={() => navigate('/portal')}
+                                onClick={() => navigate('/')}
                             >
                                 <ArrowLeft size={16} className="text-gray-400 mr-2 group-hover:-translate-x-1 transition-transform" />
                                 <img
@@ -674,5 +674,3 @@ export function OwnerLayout() {
         </div >
     );
 }
-
-
