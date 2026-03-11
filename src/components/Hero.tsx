@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Play, X, ArrowRight, Zap, BarChart3, Users, TrendingUp, ShoppingCart, DollarSign } from 'lucide-react';
+import { Play, X, ArrowRight, Zap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const SplitText = ({ text, className = "" }: { text: string; className?: string }) => {

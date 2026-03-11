@@ -121,7 +121,7 @@ export function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [heldOrders, setHeldOrders] = useState<Order[]>([]);
   const [totalCount, setTotalCount] = useState(0);
-  const [overallTotalCount, setOverallTotalCount] = useState(0);
+  const [, setOverallTotalCount] = useState(0);
   const [completedOrderCount, setCompletedOrderCount] = useState(0);
   const [completedOrderRevenue, setCompletedOrderRevenue] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
